@@ -1,0 +1,7 @@
+native2ascii.exe _XincoExplorer.properties XincoExplorer.properties
+native2ascii.exe _XincoExplorer_cz.properties XincoExplorer_cz.properties
+native2ascii.exe _XincoExplorer_de.properties XincoExplorer_de.properties
+native2ascii.exe _XincoExplorer_fr.properties XincoExplorer_fr.properties
+native2ascii.exe _XincoExplorer_nl.properties XincoExplorer_nl.properties
+native2ascii.exe _XincoExplorer_pl.properties XincoExplorer_pl.properties
+native2ascii.exe _XincoExplorerLocale.properties XincoExplorerLocale.properties
