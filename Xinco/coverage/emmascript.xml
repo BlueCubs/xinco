@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="echoit" name="Coverage Tasks">
+
+    <target name="echoit" description="test target">
+        <echo message="Test succeeded."/>
+    </target>  
+    
+    
+    <target name="instr" description="Instrumenting jars">
+        <echo message="Instrumenting started."/>
+        
+        <java classname="emma">            
+            <classpath >
+                <pathelement location="${emma}"/>
+            </classpath>
+            <arg line="instr -verbose -m overwrite -cp '${jarfiles}' -outdir '${output.dir}' -outfile '${output.dir}/template.emma'"/>
+        </java> 
+        <echo message="Instrumenting done."/>
+    </target>
+    
+    <target name="runjunit" description="running tests">
+        <echo message="${java.class.path}"/>        
+        <java classname="junit.textui.TestRunner">                        
+            <classpath>
+                <pathelement path="${junithack}"/>
+                <pathelement path="${emmahack}"/>
+                <pathelement path="${java.class.path}"/>
+                <pathelement path="${tests}"/>  
+                <pathelement path="${classes}"/>   
+                <pathelement path="${additional.java.class.path}"/>
+            </classpath>
+            <sysproperty key="emma.results.outdir" value="${outdir}"/>
+            <sysproperty key="emma.coverage.out.file" value="${outdir}/Shut-down"/>
+            <arg line="${testname}"/>
+        </java> 
+        <echo message="Running test finished."/>
+    </target>
+
+
+</project>
+
