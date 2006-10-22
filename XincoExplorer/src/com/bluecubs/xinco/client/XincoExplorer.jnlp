@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+###############################################################################
+#
+# @(#)XincoExplorer.jnlp	1.11.00 2006/05/19
+#
+# JNLP File for XincoExplorer
+#
+###############################################################################
+ -->
+
+
+
+<!-- ### IMPORTANT: Change codebase to where your client will be deployed to!                         ### -->
+<!-- ###            e.g. http://your_domain:8080/xinco/client or http://192.168.0.1:8080/xinco/client ### -->
+
+<jnlp spec="0.2 1.0"
+      codebase="http://localhost:8080/xinco/client"
+      href="XincoExplorer.jnlp">
+   <information>
+      <title>XincoExplorer</title>
+      <vendor>blueCubs.com</vendor>
+      <homepage href="http://www.xinco.org"/>
+      <description>XincoExplorer - Client of xinco, the Core of Information and Document Management</description>
+      <description kind="short">XincoExplorer - Client of xinco, the Core of Information and Document Management</description>
+      <icon href="blueCubsIcon.gif"/>
+      <offline-allowed/>
+   </information>
+   <resources>
+      <j2se version="1.4.2+" href="http://java.sun.com/products/autodl/j2se"/>
+      <!-- required libraries, ALL SIGNED -->
+      <jar href="XincoExplorer.jar" main="true" download="eager"/>
+	<jar href="activation.jar" />	
+	<jar href="axis.jar" />	
+	<jar href="commons-discovery-0.2.jar" />	
+	<jar href="commons-logging-1.0.4.jar" />	
+	<jar href="jaxrpc.jar" />	
+	<jar href="mail.jar" />	
+	<jar href="saaj.jar" />	
+	<jar href="swing-layout-1.0.jar" />	
+	<jar href="xercesImpl.jar" />	
+	<jar href="Xinco.jar" />	
+	<jar href="xmlParserAPIs.jar" />	
+   </resources>
+   <security>		
+	<!-- all permissions required on Client-Computer -->
+	<all-permissions/>	
+   </security>
+   <application-desc main-class="com.bluecubs.xinco.client.XincoExplorer"/>
+</jnlp> 
