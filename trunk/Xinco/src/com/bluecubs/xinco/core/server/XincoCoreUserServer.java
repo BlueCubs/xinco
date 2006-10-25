@@ -158,7 +158,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
     
 //create user object for data structures
     public XincoCoreUserServer(int attrID, XincoDBManager DBM) throws XincoException {
-        
         try {
             Statement stmt = DBM.con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_user WHERE id=" + attrID);
@@ -211,22 +210,20 @@ public class XincoCoreUserServer extends XincoCoreUser {
     //write to db
     public int write2DB(XincoDBManager DBM) throws XincoException {
         String sql="";
-        System.out.println("Writing values to the database...");
         try {
             Statement stmt;
             if (getId() > 0) {
                 stmt = DBM.con.createStatement();
-                System.out.println("Update values to the database...");
                 if(isChange())
                     updateAuditTrail("xinco_core_user",new String [] {"id ="+getId()},DBM,getReason());
                 //Sometimes password got re-hashed
                 String password="";
                 if(this.hashPassword)
                     password="userpassword=MD5('" +
-                        getUserpassword().replaceAll("'","\\\\'") + "')";
+                            getUserpassword().replaceAll("'","\\\\'") + "')";
                 else
                     password="userpassword='" +
-                        getUserpassword().replaceAll("'","\\\\'") + "'";
+                            getUserpassword().replaceAll("'","\\\\'") + "'";
                 //---------------------------------
                 sql="UPDATE xinco_core_user SET username='" +
                         getUsername().replaceAll("'","\\\\'") + "', "+password+", name='" +
@@ -236,11 +233,9 @@ public class XincoCoreUserServer extends XincoCoreUser {
                         getStatus_number() + ", attempts="+getAttempts() +
                         ", last_modified='"+getLastModified()+"'"+
                         " WHERE id=" + getId();
-                System.out.println(sql);
                 stmt.executeUpdate(sql);
                 stmt.close();
             } else {
-                System.out.println("Creating values to the database...");
                 setId(DBM.getNewID("xinco_core_user"));
                 stmt = DBM.con.createStatement();
                 sql="INSERT INTO xinco_core_user VALUES (" + getId() +
@@ -250,14 +245,12 @@ public class XincoCoreUserServer extends XincoCoreUser {
                         getFirstname().replaceAll("'","\\\\'") + "', '" +
                         getEmail().replaceAll("'","\\\\'") + "', " +
                         getStatus_number() +", "+ getAttempts() +", '" +getLastModified()+"')";
-                System.out.println(sql);
                 stmt.executeUpdate(sql);
                 stmt.close();
             }
             if(isWriteGroups())
                 writeXincoCoreGroups(DBM);
             DBM.con.commit();
-            System.out.println("Wrting values to the database...Complete!");
         } catch (Exception e) {
             try {
                 DBM.con.rollback();
@@ -271,7 +264,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
         setReason("");
         return getId();
     }
-
+    
 //create complete list of users
     public static Vector getXincoCoreUsers(XincoDBManager DBM) {
         Vector coreUsers = new Vector();
@@ -339,11 +332,11 @@ public class XincoCoreUserServer extends XincoCoreUser {
         return attempts;
     }
     
-     public boolean isHashPassword() {
+    public boolean isHashPassword() {
         return hashPassword;
     }
-     
-      public void setHashPassword(boolean hash) {
+    
+    public void setHashPassword(boolean hash) {
         this.hashPassword=hash;
     }
     
