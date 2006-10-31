@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * -                -                 -
+ * Javier Ortiz     Aug-Dec 2006      Remove dialogs and windows from main code
  *
  *************************************************************
  */
@@ -37,6 +37,7 @@
 package com.bluecubs.xinco.client;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
+import com.bluecubs.xinco.client.dialogs.ACLDialog;
 import com.bluecubs.xinco.client.dialogs.ConnectionDialog;
 import com.bluecubs.xinco.client.frames.InformationFrame;
 import com.bluecubs.xinco.client.dialogs.UserDialog;
@@ -165,21 +166,6 @@ public class XincoExplorer extends JFrame {
     private javax.swing.JMenuItem jMenuItemRepositoryMoveFolderData = null;
     private javax.swing.JMenuItem jMenuItemRepositoryInsertFolderData = null;
     private javax.swing.JDialog jDialogACL = null;
-    private javax.swing.JPanel jContentPaneDialogACL = null;
-    private javax.swing.JLabel jLabelDialogACLGroup = null;
-    private javax.swing.JScrollPane jScrollPaneDialogACLGroup = null;
-    private javax.swing.JList jListDialogACLGroup = null;
-    private javax.swing.JButton jButtonDialogACLAddACE = null;
-    private javax.swing.JButton jButtonDialogACLRemoveACE = null;
-    private javax.swing.JLabel jLabelDialogACLListACL = null;
-    private javax.swing.JScrollPane jScrollPaneDialogACLListACL = null;
-    private javax.swing.JList jListDialogACLListACL = null;
-    private javax.swing.JLabel jLabelDialogACLNote = null;
-    private javax.swing.JButton jButtonDialogACLClose = null;
-    private javax.swing.JCheckBox jCheckBoxDialogACLReadPermission = null;
-    private javax.swing.JCheckBox jCheckBoxDialogACLExecutePermission = null;
-    private javax.swing.JCheckBox jCheckBoxDialogACLWritePermission = null;
-    private javax.swing.JCheckBox jCheckBoxDialogACLAdminPermission = null;
     private javax.swing.JMenuItem jMenuItemRepositoryViewEditAddAttributes = null;
     private javax.swing.JDialog jDialogDataType = null;
     private javax.swing.JPanel jContentPaneDialogDataType = null;
@@ -1186,6 +1172,10 @@ public class XincoExplorer extends JFrame {
             jListDialogLocale.setModel(new DefaultListModel());
         }
         return jListDialogLocale;
+    }
+    
+    public XincoClientSession getSession() {
+        return this.xincoClientSession;
     }
     /**
      * This method initializes jButtonDialogLocaleOk
@@ -2267,10 +2257,6 @@ public class XincoExplorer extends JFrame {
         return xincoClientConfig;
     }
     
-    public XincoClientSession getSession(){
-        return xincoClientSession;
-    }
-    
     /**
      * This method marks menues, etc. according to connection status
      *
@@ -2357,17 +2343,17 @@ public class XincoExplorer extends JFrame {
      *
      * @return javax.swing.JInternalFrame
      */
-	private JInternalFrame getJInternalFrameInformation() {
-		if (jInternalFrameInformation == null) {
-			jInternalFrameInformation = new JInternalFrame();
-			jInternalFrameInformation.setContentPane(getJContentPaneInformation());
-			jInternalFrameInformation.setTitle(xerb.getString("window.information"));
-			//jInternalFrameInformation.setBounds(550, 480, 400, 150);
-			jInternalFrameInformation.setBounds(this.getWidth()-450, this.getHeight()-220, 400, 150);
-		}
-		return jInternalFrameInformation;
-	}
-
+    private JInternalFrame getJInternalFrameInformation() {
+        if (jInternalFrameInformation == null) {
+            jInternalFrameInformation = new JInternalFrame();
+            jInternalFrameInformation.setContentPane(getJContentPaneInformation());
+            jInternalFrameInformation.setTitle(xerb.getString("window.information"));
+            //jInternalFrameInformation.setBounds(550, 480, 400, 150);
+            jInternalFrameInformation.setBounds(this.getWidth()-450, this.getHeight()-220, 400, 150);
+        }
+        return jInternalFrameInformation;
+    }
+    
     /**
      * This method switches the plugable look and feel
      *
@@ -2844,64 +2830,6 @@ public class XincoExplorer extends JFrame {
         return jListDialogFolderLanguage;
     }
     /**
-     * This method marks menues, etc. according to connection status
-     *
-     * @return void
-     */
-    private void reloadJListDialogACLListACL() {
-        int i = 0, j = 0;
-        DefaultListModel dlm;
-        String temp_string = "";
-        Vector temp_vector = new Vector();
-        XincoCoreACE temp_ace;
-        
-        dlm = (DefaultListModel)jListDialogACLListACL.getModel();
-        dlm.removeAllElements();
-        if (xincoClientSession.currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
-            temp_vector = ((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_acl();
-        }
-        if (xincoClientSession.currentTreeNodeSelection.getUserObject().getClass() == XincoCoreData.class) {
-            temp_vector = ((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_acl();
-        }
-        for (i=0;i<temp_vector.size();i++) {
-            temp_ace = (XincoCoreACE)temp_vector.elementAt(i);
-            if (temp_ace.getXinco_core_user_id() > 0) {
-                temp_string = xerb.getString("general.user") + ": " + xerb.getString("general.id") + "=" + temp_ace.getXinco_core_user_id();
-            }
-            if (temp_ace.getXinco_core_group_id() > 0) {
-                for (j=0;j<xincoClientSession.server_groups.size();j++) {
-                    if (((XincoCoreGroup)xincoClientSession.server_groups.elementAt(j)).getId() == temp_ace.getXinco_core_group_id()) {
-                        temp_string = xerb.getString("general.group") + ": " + ((XincoCoreGroup)xincoClientSession.server_groups.elementAt(j)).getDesignation();
-                        break;
-                    }
-                }
-            }
-            temp_string = temp_string + " [";
-            if (temp_ace.isRead_permission()) {
-                temp_string = temp_string + "R";
-            } else {
-                temp_string = temp_string + "-";
-            }
-            if (temp_ace.isWrite_permission()) {
-                temp_string = temp_string + "W";
-            } else {
-                temp_string = temp_string + "-";
-            }
-            if (temp_ace.isExecute_permission()) {
-                temp_string = temp_string + "X";
-            } else {
-                temp_string = temp_string + "-";
-            }
-            if (temp_ace.isAdmin_permission()) {
-                temp_string = temp_string + "A";
-            } else {
-                temp_string = temp_string + "-";
-            }
-            temp_string = temp_string + "]";
-            dlm.addElement(new String(temp_string));
-        }
-    }
-    /**
      * This method initializes jMenuItemRepositoryEditFolderDataACL
      *
      * @return javax.swing.JMenuItem
@@ -2914,18 +2842,19 @@ public class XincoExplorer extends JFrame {
             jMenuItemRepositoryEditFolderDataACL.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     int i = 0, j = 0;
-                    DefaultListModel dlm;
+                    ListModel dlm;
                     if (xincoClientSession.currentTreeNodeSelection != null) {
                         //open ACL dialog
                         jDialogACL = getJDialogACL();
                         //fill group list
-                        dlm = (DefaultListModel)jListDialogACLGroup.getModel();
-                        dlm.removeAllElements();
+                        dlm = (((ACLDialog)jDialogACL).getACLGroupModel());
+                        String[] list = new String[xincoClientSession.server_groups.size()];
                         for (i=0;i<xincoClientSession.server_groups.size();i++) {
-                            dlm.addElement(new String(((XincoCoreGroup)xincoClientSession.server_groups.elementAt(i)).getDesignation()));
+                            list[i]=(new String(((XincoCoreGroup)xincoClientSession.server_groups.elementAt(i)).getDesignation()));
                         }
+                        ((ACLDialog)jDialogACL).setACLGroupModel(list);
                         //fill ACL
-                        reloadJListDialogACLListACL();
+                        ((ACLDialog)jDialogACL).reloadACLListACL();
                         jDialogACL.setVisible(true);
                     }
                 }
@@ -3054,308 +2983,13 @@ public class XincoExplorer extends JFrame {
         return jMenuItemRepositoryInsertFolderData;
     }
     /**
-     * This method initializes jContentPaneDialogACL
-     *
-     * @return javax.swing.JPanel
-     */
-    private javax.swing.JPanel getJContentPaneDialogACL() {
-        if(jContentPaneDialogACL == null) {
-            jContentPaneDialogACL = new javax.swing.JPanel();
-            jContentPaneDialogACL.setLayout(null);
-            jContentPaneDialogACL.add(getJLabelDialogACLGroup(), null);
-            jContentPaneDialogACL.add(getJScrollPaneDialogACLGroup(), null);
-            jContentPaneDialogACL.add(getJCheckBoxDialogACLReadPermission(), null);
-            jContentPaneDialogACL.add(getJCheckBoxDialogACLWritePermission(), null);
-            jContentPaneDialogACL.add(getJCheckBoxDialogACLExecutePermission(), null);
-            jContentPaneDialogACL.add(getJCheckBoxDialogACLAdminPermission(), null);
-            jContentPaneDialogACL.add(getJButtonDialogACLAddACE(), null);
-            jContentPaneDialogACL.add(getJLabelDialogACLListACL(), null);
-            jContentPaneDialogACL.add(getJScrollPaneDialogACLListACL(), null);
-            jContentPaneDialogACL.add(getJButtonDialogACLRemoveACE(), null);
-            jContentPaneDialogACL.add(getJLabelDialogACLNote(), null);
-            jContentPaneDialogACL.add(getJButtonDialogACLClose(), null);
-        }
-        return jContentPaneDialogACL;
-    }
-    /**
      * This method initializes jDialogACL
      *
      * @return javax.swing.JDialog
      */
     private javax.swing.JDialog getJDialogACL() {
-        if(jDialogACL == null) {
-            jDialogACL = new javax.swing.JDialog();
-            jDialogACL.setContentPane(getJContentPaneDialogACL());
-            jDialogACL.setBounds(200, 200, 410, 550);
-            jDialogACL.setResizable(false);
-            jDialogACL.setModal(true);
-            jDialogACL.setTitle(xerb.getString("window.acl") + ": ");
-            jDialogACL.getRootPane().setDefaultButton(getJButtonDialogACLClose());
-        }
+        jDialogACL = new ACLDialog(new javax.swing.JFrame(),true,this);
         return jDialogACL;
-    }
-    /**
-     * This method initializes jLabelDialogACLGroup
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogACLGroup() {
-        if(jLabelDialogACLGroup == null) {
-            jLabelDialogACLGroup = new javax.swing.JLabel();
-            jLabelDialogACLGroup.setBounds(10, 10, 370, 20);
-            jLabelDialogACLGroup.setText(xerb.getString("window.acl.grouplabel"));
-        }
-        return jLabelDialogACLGroup;
-    }
-    /**
-     * This method initializes jScrollPaneDialogACLGroup
-     *
-     * @return javax.swing.JScrollPane
-     */
-    private javax.swing.JScrollPane getJScrollPaneDialogACLGroup() {
-        if(jScrollPaneDialogACLGroup == null) {
-            jScrollPaneDialogACLGroup = new javax.swing.JScrollPane();
-            jScrollPaneDialogACLGroup.setViewportView(getJListDialogACLGroup());
-            jScrollPaneDialogACLGroup.setBounds(10, 40, 370, 80);
-            jScrollPaneDialogACLGroup.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        }
-        return jScrollPaneDialogACLGroup;
-    }
-    /**
-     * This method initializes jListDialogACLGroup
-     *
-     * @return javax.swing.JList
-     */
-    private javax.swing.JList getJListDialogACLGroup() {
-        if(jListDialogACLGroup == null) {
-            DefaultListModel dlm = new DefaultListModel();
-            jListDialogACLGroup = new javax.swing.JList();
-            jListDialogACLGroup.setModel(dlm);
-            jListDialogACLGroup.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        }
-        return jListDialogACLGroup;
-    }
-    /**
-     * This method initializes jButtonDialogACLAddACE
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogACLAddACE() {
-        if(jButtonDialogACLAddACE == null) {
-            jButtonDialogACLAddACE = new javax.swing.JButton();
-            jButtonDialogACLAddACE.setBounds(10, 190, 140, 30);
-            jButtonDialogACLAddACE.setText(xerb.getString("window.acl.addace"));
-            jButtonDialogACLAddACE.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    int i = 0;
-                    Vector temp_acl = new Vector();
-                    if (jListDialogACLGroup.getSelectedIndex() >= 0) {
-                        try {
-                            if (xincoClientSession.currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
-                                temp_acl = ((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_acl();
-                            }
-                            if (xincoClientSession.currentTreeNodeSelection.getUserObject().getClass() == XincoCoreData.class) {
-                                temp_acl = ((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_acl();
-                            }
-                            //check if an ACE already exists for selected group
-                            for (i=0;i<temp_acl.size();i++) {
-                                if (((XincoCoreACE)temp_acl.elementAt(i)).getXinco_core_group_id() == ((XincoCoreGroup)xincoClientSession.server_groups.elementAt(jListDialogACLGroup.getSelectedIndex())).getId()) {
-                                    throw new XincoException(xerb.getString("window.acl.groupexists"));
-                                }
-                            }
-                            //create new ACE
-                            XincoCoreACE newace = new XincoCoreACE();
-                            newace.setXinco_core_group_id(((XincoCoreGroup)xincoClientSession.server_groups.elementAt(jListDialogACLGroup.getSelectedIndex())).getId());
-                            if (xincoClientSession.currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
-                                newace.setXinco_core_node_id(((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getId());
-                            }
-                            if (xincoClientSession.currentTreeNodeSelection.getUserObject().getClass() == XincoCoreData.class) {
-                                newace.setXinco_core_data_id(((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getId());
-                            }
-                            newace.setRead_permission(jCheckBoxDialogACLReadPermission.isSelected());
-                            newace.setWrite_permission(jCheckBoxDialogACLWritePermission.isSelected());
-                            newace.setExecute_permission(jCheckBoxDialogACLExecutePermission.isSelected());
-                            newace.setAdmin_permission(jCheckBoxDialogACLAdminPermission.isSelected());
-                            if ((newace = xincoClientSession.xinco.setXincoCoreACE(newace, xincoClientSession.user)) == null) {
-                                throw new XincoException(xerb.getString("error.noadminpermission"));
-                            }
-                            //add ACE to ACL and reload
-                            temp_acl.add(newace);
-                            reloadJListDialogACLListACL();
-                        } catch (Exception xe) {
-                            JOptionPane.showMessageDialog(jDialogACL, xerb.getString("window.acl.addacefailed") + " " + xerb.getString("general.reason") +  ": " + xe.toString(), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
-                        }
-                    }
-                }
-            });
-        }
-        return jButtonDialogACLAddACE;
-    }
-    /**
-     * This method initializes jButtonDialogACLRemoveACE
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogACLRemoveACE() {
-        if(jButtonDialogACLRemoveACE == null) {
-            jButtonDialogACLRemoveACE = new javax.swing.JButton();
-            jButtonDialogACLRemoveACE.setBounds(10, 370, 140, 30);
-            jButtonDialogACLRemoveACE.setText(xerb.getString("window.acl.removeace"));
-            jButtonDialogACLRemoveACE.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    if (jListDialogACLListACL.getSelectedIndex() >= 0) {
-                        try {
-                            Vector temp_acl = new Vector();
-                            XincoCoreACE temp_ace = new XincoCoreACE();
-                            if (xincoClientSession.currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
-                                temp_acl = ((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_acl();
-                                temp_ace = (XincoCoreACE)temp_acl.elementAt(jListDialogACLListACL.getSelectedIndex());
-                            }
-                            if (xincoClientSession.currentTreeNodeSelection.getUserObject().getClass() == XincoCoreData.class) {
-                                temp_acl = ((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_acl();
-                                temp_ace = (XincoCoreACE)temp_acl.elementAt(jListDialogACLListACL.getSelectedIndex());
-                            }
-                            if (temp_ace.getXinco_core_user_id() > 0) {
-                                throw new XincoException(xerb.getString("window.acl.cannotremoveowner"));
-                            }
-                            if (!xincoClientSession.xinco.removeXincoCoreACE(temp_ace, xincoClientSession.user)) {
-                                throw new XincoException(xerb.getString("error.noadminpermission"));
-                            }
-                            //remove ACE from ACL and reload
-                            temp_acl.removeElementAt(jListDialogACLListACL.getSelectedIndex());
-                            reloadJListDialogACLListACL();
-                        } catch (Exception xe) {
-                            JOptionPane.showMessageDialog(jDialogACL, xerb.getString("window.acl.removefailed") + " " + xerb.getString("general.reason") + ": " + xe.toString(), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
-                        }
-                    }
-                }
-            });
-        }
-        return jButtonDialogACLRemoveACE;
-    }
-    /**
-     * This method initializes jLabelDialogACLListACL
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogACLListACL() {
-        if(jLabelDialogACLListACL == null) {
-            jLabelDialogACLListACL = new javax.swing.JLabel();
-            jLabelDialogACLListACL.setBounds(10, 250, 370, 20);
-            jLabelDialogACLListACL.setText(xerb.getString("window.acl.removeacelabel") + ":");
-        }
-        return jLabelDialogACLListACL;
-    }
-    /**
-     * This method initializes jScrollPaneDialogACLListACL
-     *
-     * @return javax.swing.JScrollPane
-     */
-    private javax.swing.JScrollPane getJScrollPaneDialogACLListACL() {
-        if(jScrollPaneDialogACLListACL == null) {
-            jScrollPaneDialogACLListACL = new javax.swing.JScrollPane();
-            jScrollPaneDialogACLListACL.setViewportView(getJListDialogACLListACL());
-            jScrollPaneDialogACLListACL.setBounds(10, 280, 370, 80);
-            jScrollPaneDialogACLListACL.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        }
-        return jScrollPaneDialogACLListACL;
-    }
-    /**
-     * This method initializes jListDialogACLListACL
-     *
-     * @return javax.swing.JList
-     */
-    private javax.swing.JList getJListDialogACLListACL() {
-        if(jListDialogACLListACL == null) {
-            DefaultListModel dlm = new DefaultListModel();
-            jListDialogACLListACL = new javax.swing.JList();
-            jListDialogACLListACL.setModel(dlm);
-            jListDialogACLListACL.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        }
-        return jListDialogACLListACL;
-    }
-    /**
-     * This method initializes jLabelDialogACLNote
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogACLNote() {
-        if(jLabelDialogACLNote == null) {
-            jLabelDialogACLNote = new javax.swing.JLabel();
-            jLabelDialogACLNote.setBounds(10, 420, 370, 20);
-            jLabelDialogACLNote.setText(xerb.getString("window.acl.note"));
-        }
-        return jLabelDialogACLNote;
-    }
-    /**
-     * This method initializes jButtonDialogACLClose
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogACLClose() {
-        if(jButtonDialogACLClose == null) {
-            jButtonDialogACLClose = new javax.swing.JButton();
-            jButtonDialogACLClose.setBounds(280, 460, 100, 30);
-            jButtonDialogACLClose.setText(xerb.getString("general.close"));
-            jButtonDialogACLClose.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    jDialogACL.setVisible(false);
-                }
-            });
-        }
-        return jButtonDialogACLClose;
-    }
-    /**
-     * This method initializes jCheckBoxDialogACLReadPermission
-     *
-     * @return javax.swing.JCheckBox
-     */
-    private javax.swing.JCheckBox getJCheckBoxDialogACLReadPermission() {
-        if(jCheckBoxDialogACLReadPermission == null) {
-            jCheckBoxDialogACLReadPermission = new javax.swing.JCheckBox();
-            jCheckBoxDialogACLReadPermission.setBounds(10, 130, 180, 20);
-            jCheckBoxDialogACLReadPermission.setText(xerb.getString("general.acl.readpermissio"));
-        }
-        return jCheckBoxDialogACLReadPermission;
-    }
-    /**
-     * This method initializes jCheckBoxDialogACLExecutePermission
-     *
-     * @return javax.swing.JCheckBox
-     */
-    private javax.swing.JCheckBox getJCheckBoxDialogACLExecutePermission() {
-        if(jCheckBoxDialogACLExecutePermission == null) {
-            jCheckBoxDialogACLExecutePermission = new javax.swing.JCheckBox();
-            jCheckBoxDialogACLExecutePermission.setBounds(10, 160, 180, 20);
-            jCheckBoxDialogACLExecutePermission.setText(xerb.getString("general.acl.executepermission"));
-        }
-        return jCheckBoxDialogACLExecutePermission;
-    }
-    /**
-     * This method initializes jCheckBoxDialogACLWritePermission
-     *
-     * @return javax.swing.JCheckBox
-     */
-    private javax.swing.JCheckBox getJCheckBoxDialogACLWritePermission() {
-        if(jCheckBoxDialogACLWritePermission == null) {
-            jCheckBoxDialogACLWritePermission = new javax.swing.JCheckBox();
-            jCheckBoxDialogACLWritePermission.setBounds(200, 130, 180, 20);
-            jCheckBoxDialogACLWritePermission.setText(xerb.getString("general.acl.writepermission"));
-        }
-        return jCheckBoxDialogACLWritePermission;
-    }
-    /**
-     * This method initializes jCheckBoxDialogACLAdminPermission
-     *
-     * @return javax.swing.JCheckBox
-     */
-    private javax.swing.JCheckBox getJCheckBoxDialogACLAdminPermission() {
-        if(jCheckBoxDialogACLAdminPermission == null) {
-            jCheckBoxDialogACLAdminPermission = new javax.swing.JCheckBox();
-            jCheckBoxDialogACLAdminPermission.setBounds(200, 160, 180, 20);
-            jCheckBoxDialogACLAdminPermission.setText(xerb.getString("general.acl.adminpermission"));
-        }
-        return jCheckBoxDialogACLAdminPermission;
     }
     /**
      * This method initializes jMenuItemRepositoryViewEditAddAttributes
@@ -5248,7 +4882,7 @@ public class XincoExplorer extends JFrame {
             this.userDialog= new UserDialog(new javax.swing.JFrame(), true,this);
         this.userDialog.setVisible(true);
     }
-
+    
     /**
      * This method initializes jContentPaneDialogAddAttributesText
      *
