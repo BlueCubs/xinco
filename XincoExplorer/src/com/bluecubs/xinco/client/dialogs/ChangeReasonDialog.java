@@ -114,7 +114,7 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         //Reason can't be empty'
         if(!reason.getText().trim().equals("")){
-//            this.user.setReason(reason.getText());
+            this.user.setReason(reason.getText());
             setVisible(false);
             this.done=true;
         }

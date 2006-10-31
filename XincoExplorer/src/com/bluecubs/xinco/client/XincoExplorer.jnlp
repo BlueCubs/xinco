@@ -16,7 +16,7 @@
 <!-- ###            e.g. http://your_domain:8080/xinco/client or http://192.168.0.1:8080/xinco/client ### -->
 
 <jnlp spec="0.2 1.0"
-      codebase="http://localhost:8080/xinco/client"
+      codebase="http://localhost:8084/xinco/client"
       href="XincoExplorer.jnlp">
    <information>
       <title>XincoExplorer</title>
@@ -38,7 +38,7 @@
 	<jar href="jaxrpc.jar" />	
 	<jar href="mail.jar" />	
 	<jar href="saaj.jar" />	
-	<jar href="swing-layout-1.0.jar" />	
+	<jar href="swing-layout-1.0.1.jar" />	
 	<jar href="xercesImpl.jar" />	
 	<jar href="Xinco.jar" />	
 	<jar href="xmlParserAPIs.jar" />	
