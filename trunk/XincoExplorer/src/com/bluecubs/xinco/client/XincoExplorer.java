@@ -2175,6 +2175,7 @@ public class XincoExplorer extends JFrame {
                             }
                             XincoCoreUser newuser;
                             if ((newuser = xincoClientSession.xinco.getCurrentXincoCoreUser(xincoClientSession.user.getUsername(), xincoClientSession.user.getUserpassword())) == null) {
+                                //Check account is locked
                                 throw new XincoException(xerb.getString("menu.connection.error.user"));
                             }
                             newuser.setUserpassword(xincoClientSession.user.getUserpassword());
