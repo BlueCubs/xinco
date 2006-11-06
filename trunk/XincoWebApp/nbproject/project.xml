@@ -10,12 +10,16 @@
                     <file>${reference.Xinco.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library files="20">
+                <library files="21">
                     <file>${libs.XincoLibs.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library files="1">
                     <file>${reference.XincoExplorer.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${file.reference.wsdl4j.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
@@ -24,7 +28,7 @@
                     <file>${reference.XincoExplorer.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
-                <library files="10">
+                <library files="11">
                     <file>${libs.XincoLibsClient.classpath}</file>
                     <path-in-war>client</path-in-war>
                 </library>
@@ -41,7 +45,7 @@
                     <path-in-war>client</path-in-war>
                 </library>
                 <library files="1">
-                    <file>${file.reference.XincoExplorer.jnlp}</file>
+                    <file>${file.reference.XincoExplorer.jnlp-2}</file>
                     <path-in-war>client</path-in-war>
                 </library>
             </web-module-additional-libraries>
