@@ -40,6 +40,9 @@
  *                                    key entry name in the XincoExplorer.properties file so the
  *                                    reason can be displayed in the selected language!
  *
+ * Javier A. Ortiz  11/06/2006        Bugfix: java.lang.NumberFormatException: null when account is locked,
+ *                                    requesting a null parameter.
+ *
  *************************************************************
  */
 
@@ -159,24 +162,32 @@ public class XincoAdminServlet extends HttpServlet {
                     //Check if the username is correct if not just throw the wrong login message
                     if(!rs.next())
                         throw new XincoException("Login "+rb.getString("general.fail")+" Username and/or Password may be incorrect!");
-                    temp_user = new XincoCoreUserServer(rs.getInt("id"), dbm);
-                    long attempts = Long.parseLong(rb.getString("password.attempts"));
-                    //If user exists increase the atempt tries in the db. If limit reached lock account
-                    if(temp_user.getAttempts()>=attempts && !(Integer.parseInt(request.getParameter("DialogAdminUsersLock")) == 1)){
-                        temp_user.setStatus_number(2);
-                        //The logged in admin does the locking
-                        temp_user.setChangerID(login_user.getId());
-                        temp_user.setWriteGroups(true);
-                        //Register change in audit trail
-                        temp_user.setChange(true);
-                        //Reason for change
-                        temp_user.setReason("password.attempt.limitReached");
-                        //the password retrieved when you logon is already hashed...
-                        temp_user.setHashPassword(false);
-                        temp_user.write2DB(dbm);
-                        throw new XincoException(rb.getString("password.attempt.limitReached"));
+                    rs= stmt.executeQuery("SELECT id FROM xinco_core_user WHERE username='" +
+                            request.getParameter("DialogLoginUsername") + "'");
+                    if(rs.next()){
+                        temp_user = new XincoCoreUserServer(rs.getInt("id"), dbm);
+                        long attempts = Long.parseLong(rb.getString("password.attempts"));
+                        //If user exists increase the atempt tries in the db. If limit reached lock account
+                        if(temp_user.getAttempts()>=attempts &&  rs.getInt("id") != 1){
+                            temp_user.setStatus_number(2);
+                            //The logged in admin does the locking
+                            int adminId=1;
+                            //If no administrator is logged in change is made by default administrator.
+                            if(login_user!=null)
+                                adminId=login_user.getId();
+                            temp_user.setChangerID(adminId);
+                            temp_user.setWriteGroups(true);
+                            //Register change in audit trail
+                            temp_user.setChange(true);
+                            //Reason for change
+                            temp_user.setReason("password.attempt.limitReached");
+                            //the password retrieved when you logon is already hashed...
+                            temp_user.setHashPassword(false);
+                            temp_user.write2DB(dbm);
+                            throw new XincoException(rb.getString("password.attempt.limitReached"));
+                        }
+                        throw new XincoException(rb.getString("password.login.fail"));
                     }
-                    throw new XincoException(rb.getString("password.login.fail"));
                 }
                 //check for admin group
                 for (i=0;i<temp_user.getXinco_core_groups().size();i++) {
@@ -190,13 +201,15 @@ public class XincoAdminServlet extends HttpServlet {
                 current_user_selection = temp_user.getId();
                 session.setAttribute("XincoAdminServlet.current_user_selection", new Integer(current_user_selection));
                 status = 1;
-                Calendar cal = GregorianCalendar.getInstance(),now= GregorianCalendar.getInstance();
-                cal.setTimeInMillis(temp_user.getLastModified().getTime());
-                long diffMillis = now.getTimeInMillis()-cal.getTimeInMillis();
-                long diffDays = diffMillis/(24*60*60*1000);
-                long age = Long.parseLong(rb.getString("password.aging"));
-                if(diffDays >= age)
-                    status =2;
+                if(temp_user.getStatus_number()!=2){
+                    Calendar cal = GregorianCalendar.getInstance(),now= GregorianCalendar.getInstance();
+                    cal.setTimeInMillis(temp_user.getLastModified().getTime());
+                    long diffMillis = now.getTimeInMillis()-cal.getTimeInMillis();
+                    long diffDays = diffMillis/(24*60*60*1000);
+                    long age = Long.parseLong(rb.getString("password.aging"));
+                    if(diffDays >= age)
+                        status =2;
+                }
                 //-----------------------------------------------------------------------------------
                 session.setAttribute("XincoAdminServlet.status", new Integer(status));
                 current_location = "MainMenu";
@@ -204,6 +217,7 @@ public class XincoAdminServlet extends HttpServlet {
                 current_location_desc = "Main Menu";
                 session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
             } catch (Exception e) {
+                e.printStackTrace();
                 error_message = "[" + global_error_message + " | " + e.toString() + "]";
                 status = 0;
                 session.setAttribute("XincoAdminServlet.status", new Integer(status));
