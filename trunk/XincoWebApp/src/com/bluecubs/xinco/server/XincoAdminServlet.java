@@ -169,7 +169,6 @@ public class XincoAdminServlet extends HttpServlet {
                         long attempts = Long.parseLong(rb.getString("password.attempts"));
                         //If user exists increase the atempt tries in the db. If limit reached lock account
                         if(temp_user.getAttempts()>=attempts &&  rs.getInt("id") != 1){
-                            temp_user.setStatus_number(2);
                             //The logged in admin does the locking
                             int adminId=1;
                             //If no administrator is logged in change is made by default administrator.
