@@ -39,7 +39,6 @@ package com.bluecubs.xinco.client;
 import java.util.Vector;
 
 import com.bluecubs.xinco.core.*;
-import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.service.*;
 
 public class XincoClientSession {
