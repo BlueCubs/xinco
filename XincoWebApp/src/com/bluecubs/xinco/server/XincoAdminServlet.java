@@ -29,11 +29,14 @@
  * Modifications:
  *
  * Who?             When?             What?
- * Javier A. Ortiz 09/20/2006         Modified processRequest in order to reflect
+ *
+ * Alexander Manes  11/01/2006        Bugfix: Remove user from selected group (not from all groups!)
+ *
+ * Javier A. Ortiz  09/20/2006        Modified processRequest in order to reflect
  *                                    changes to XincoCoreUser and XincoCoreUserServer
  *                                    for FDA 21 CFR regulation compliance.
  *
- * Javier A. Ortiz 09/22/2006         Changed the text saved into the audit trail to the actual
+ * Javier A. Ortiz  09/22/2006        Changed the text saved into the audit trail to the actual
  *                                    key entry name in the XincoExplorer.properties file so the
  *                                    reason can be displayed in the selected language!
  *
@@ -380,7 +383,7 @@ public class XincoAdminServlet extends HttpServlet {
             if (!(((current_group_selection == 1) && (Integer.parseInt(request.getParameter("DialogEditGroupRemoveUser")) == 1)) || (current_group_selection == 2))) {
                 try {
                     Statement stmt = dbm.con.createStatement();
-                    stmt.executeUpdate("DELETE FROM xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + Integer.parseInt(request.getParameter("DialogEditGroupRemoveUser")));
+                    stmt.executeUpdate("DELETE FROM xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + Integer.parseInt(request.getParameter("DialogEditGroupRemoveUser")) + " AND xinco_core_group_id=" + current_group_selection);
                     stmt.close();
                     dbm.con.commit();
                 } catch (Exception e) {
