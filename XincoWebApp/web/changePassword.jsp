@@ -1,5 +1,6 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
+<%@page import="java.util.ResourceBundle"%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
@@ -16,7 +17,9 @@
             <span class="bigtext">Change your password</span><br/><br/>
             <span class="text">Your password has exeeded the aging period.</span><br/>
             <span class="text">Please provide a new one.</span><br/>
-            <span class="text">The password can't be one used in the past year.</span><br/><br/>
+            <span class="text">The password can't be one used in previous <%
+            ResourceBundle rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+            out.print(rb.getString("password.unusable_period"));%> days.</span><br/><br/>
             <form name="password" action="XincoAdmin" method="post">
             <table border="0">
                <!--
