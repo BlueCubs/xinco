@@ -119,7 +119,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 rs = stmt.executeQuery(sql);
                 //The username is valid but wrong password. Increase the login attempts.
                 if(rs.next()){
-                    this.increaseAtempts(true);
+                    this.increaseAttempts(true);
                 }
                 throw new XincoException();
             }
@@ -229,6 +229,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 //Increase login attempts
                 if(getIncreaseAttempts()){
                     setAttempts(getAttempts()+1);
+                    increaseAttempts(false);
                 }
                 //Lock account if needed. Can't lock main admin.
                 if(getAttempts()>Integer.parseInt(xerb.getString("password.attempts")) &&
@@ -348,11 +349,11 @@ public class XincoCoreUserServer extends XincoCoreUser {
     }
     
     public int getAttempts() {
-        return attempts;
+        return this.attempts;
     }
     
     public boolean isHashPassword() {
-        return hashPassword;
+        return this.hashPassword;
     }
     
     public void setHashPassword(boolean hash) {
@@ -363,7 +364,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
         this.last_modified=last_modified;
     }
     
-    public void increaseAtempts(boolean increase){
+    public void increaseAttempts(boolean increase){
         this.increase=increase;
     }
     
