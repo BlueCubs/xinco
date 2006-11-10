@@ -308,7 +308,7 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_user.setStatus_number(1);
                 //Reset login attempts
                 temp_user.setAttempts(0);
-                //The logged in admin does the locking
+                //The logged in admin does the unlocking
                 temp_user.setChangerID(login_user.getId());
                 temp_user.setWriteGroups(true);
                 //Register change in audit trail
