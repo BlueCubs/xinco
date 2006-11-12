@@ -32,6 +32,7 @@
  * Javier A. Ortiz 09/20/2006         Related changes made to XincoCoreUser (new fields) in the following methods:
  *                                    write2DB, XincoCoreUserServer, XincoCoreUserServer (x 2), getXincoCoreUsers
  * Javier A. Ortiz 11/06/2006         Moved the logic of locking an account due to login attempts from the XincoAdminServlet
+ * Alexander Manes 11/12/2006         Moved the new user features to core class
  *
  *************************************************************
  */
@@ -46,10 +47,8 @@ import java.util.ResourceBundle;
 
 public class XincoCoreUserServer extends XincoCoreUser {
     String sql;
-    private int attempts;
-    private java.sql.Timestamp last_modified;
     private ResourceBundle xerb;
-    private boolean hashPassword=true,increase = false;
+    
     private void fillXincoCoreGroups(XincoDBManager DBM) throws XincoException {
         setXinco_core_groups(new Vector());
         try {
@@ -88,6 +87,8 @@ public class XincoCoreUserServer extends XincoCoreUser {
     
     //create user object and login
     public XincoCoreUserServer(String attrUN, String attrUPW, XincoDBManager DBM) throws XincoException {
+        setHashPassword(true);
+        setIncreaseAttempts(false);
         Statement stmt=null;
         ResultSet rs=null;
         try {
@@ -102,7 +103,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 setId(rs.getInt("id"));
                 setUsername(rs.getString("username"));
                 //previously hashing the already hashed password
-                this.hashPassword=true;
+                setHashPassword(true);
                 setUserpassword(attrUPW);
                 setName(rs.getString("name"));
                 setFirstname(rs.getString("firstname"));
@@ -119,7 +120,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 rs = stmt.executeQuery(sql);
                 //The username is valid but wrong password. Increase the login attempts.
                 if(rs.next()){
-                    this.increaseAttempts(true);
+                    this.setIncreaseAttempts(true);
                 }
                 throw new XincoException();
             }
@@ -145,7 +146,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     setId(rs.getInt("id"));
                     setUsername(rs.getString("username"));
                     //Don't rehash the pasword!
-                    this.hashPassword=false;
+                    setHashPassword(false);
                     setUserpassword(rs.getString("userpassword"));
                     setName(rs.getString("name"));
                     setFirstname(rs.getString("firstname"));
@@ -167,6 +168,8 @@ public class XincoCoreUserServer extends XincoCoreUser {
     
 //create user object for data structures
     public XincoCoreUserServer(int attrID, XincoDBManager DBM) throws XincoException {
+        setHashPassword(true);
+        setIncreaseAttempts(false);
         try {
             Statement stmt = DBM.con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_user WHERE id=" + attrID);
@@ -199,6 +202,8 @@ public class XincoCoreUserServer extends XincoCoreUser {
     public XincoCoreUserServer(int attrID, String attrUN, String attrUPW, String attrN,
             String attrFN, String attrE, int attrSN,int attrAN, java.sql.Timestamp attrTS,
             XincoDBManager DBM) throws XincoException {
+        setHashPassword(true);
+        setIncreaseAttempts(false);
         try {
             setId(attrID);
             setUsername(attrUN);
@@ -227,9 +232,9 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     updateAuditTrail("xinco_core_user",new String [] {"id ="+getId()},DBM,getReason());
                 xerb= ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 //Increase login attempts
-                if(getIncreaseAttempts()){
+                if(isIncreaseAttempts()){
                     setAttempts(getAttempts()+1);
-                    increaseAttempts(false);
+                    setIncreaseAttempts(false);
                 }
                 //Lock account if needed. Can't lock main admin.
                 if(getAttempts()>Integer.parseInt(xerb.getString("password.attempts")) &&
@@ -238,7 +243,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 }
                 //Sometimes password got re-hashed
                 String password="";
-                if(this.hashPassword)
+                if(isHashPassword())
                     password="userpassword=MD5('" +
                             getUserpassword().replaceAll("'","\\\\'") + "')";
                 else
@@ -342,37 +347,5 @@ public class XincoCoreUserServer extends XincoCoreUser {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-    }
-    
-    public void setAttempts(int attempts){
-        this.attempts=attempts;
-    }
-    
-    public int getAttempts() {
-        return this.attempts;
-    }
-    
-    public boolean isHashPassword() {
-        return this.hashPassword;
-    }
-    
-    public void setHashPassword(boolean hash) {
-        this.hashPassword=hash;
-    }
-    
-    public void setLastModified(java.sql.Timestamp last_modified){
-        this.last_modified=last_modified;
-    }
-    
-    public void increaseAttempts(boolean increase){
-        this.increase=increase;
-    }
-    
-    public boolean getIncreaseAttempts() {
-        return this.increase;
-    }
-    
-    public java.sql.Timestamp getLastModified() {
-        return last_modified;
     }
 }
