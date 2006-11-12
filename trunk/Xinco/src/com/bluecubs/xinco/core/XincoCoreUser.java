@@ -7,6 +7,8 @@
 
 package com.bluecubs.xinco.core;
 
+import java.sql.Timestamp;
+
 public class XincoCoreUser  implements java.io.Serializable {
     private java.lang.String email;
 
@@ -32,6 +34,14 @@ public class XincoCoreUser  implements java.io.Serializable {
 
     private boolean writeGroups;
 
+    private int attempts;
+
+    private java.sql.Timestamp lastModified;
+
+    private boolean hashPassword;
+
+    private boolean increaseAttempts;
+
     public XincoCoreUser() {
     }
 
@@ -47,7 +57,11 @@ public class XincoCoreUser  implements java.io.Serializable {
            boolean change,
            int changerID,
            java.lang.String reason,
-           boolean writeGroups) {
+           boolean writeGroups,
+           int attempts,
+           java.sql.Timestamp lastModified,
+           boolean hashPassword,
+           boolean increaseAttempts) {
            this.email = email;
            this.xinco_core_groups = xinco_core_groups;
            this.firstname = firstname;
@@ -60,6 +74,10 @@ public class XincoCoreUser  implements java.io.Serializable {
            this.changerID = changerID;
            this.reason = reason;
            this.writeGroups = writeGroups;
+           this.attempts = attempts;
+           this.lastModified = lastModified;
+           this.hashPassword = hashPassword;
+           this.increaseAttempts = increaseAttempts;
     }
 
 
@@ -302,194 +320,37 @@ public class XincoCoreUser  implements java.io.Serializable {
         this.writeGroups = writeGroups;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof XincoCoreUser)) return false;
-        XincoCoreUser other = (XincoCoreUser) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.email==null && other.getEmail()==null) || 
-             (this.email!=null &&
-              this.email.equals(other.getEmail()))) &&
-            ((this.xinco_core_groups==null && other.getXinco_core_groups()==null) || 
-             (this.xinco_core_groups!=null &&
-              this.xinco_core_groups.equals(other.getXinco_core_groups()))) &&
-            ((this.firstname==null && other.getFirstname()==null) || 
-             (this.firstname!=null &&
-              this.firstname.equals(other.getFirstname()))) &&
-            this.id == other.getId() &&
-            ((this.name==null && other.getName()==null) || 
-             (this.name!=null &&
-              this.name.equals(other.getName()))) &&
-            this.status_number == other.getStatus_number() &&
-            ((this.username==null && other.getUsername()==null) || 
-             (this.username!=null &&
-              this.username.equals(other.getUsername()))) &&
-            ((this.userpassword==null && other.getUserpassword()==null) || 
-             (this.userpassword!=null &&
-              this.userpassword.equals(other.getUserpassword()))) &&
-            this.change == other.isChange() &&
-            this.changerID == other.getChangerID() &&
-            ((this.reason==null && other.getReason()==null) || 
-             (this.reason!=null &&
-              this.reason.equals(other.getReason()))) &&
-            this.writeGroups == other.isWriteGroups();
-        __equalsCalc = null;
-        return _equals;
+    public int getAttempts() {
+        return attempts;
     }
 
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getEmail() != null) {
-            _hashCode += getEmail().hashCode();
-        }
-        if (getXinco_core_groups() != null) {
-            _hashCode += getXinco_core_groups().hashCode();
-        }
-        if (getFirstname() != null) {
-            _hashCode += getFirstname().hashCode();
-        }
-        _hashCode += getId();
-        if (getName() != null) {
-            _hashCode += getName().hashCode();
-        }
-        _hashCode += getStatus_number();
-        if (getUsername() != null) {
-            _hashCode += getUsername().hashCode();
-        }
-        if (getUserpassword() != null) {
-            _hashCode += getUserpassword().hashCode();
-        }
-        _hashCode += (isChange() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += getChangerID();
-        if (getReason() != null) {
-            _hashCode += getReason().hashCode();
-        }
-        _hashCode += (isWriteGroups() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        __hashCodeCalc = false;
-        return _hashCode;
+    public void setAttempts(int attempts) {
+        this.attempts = attempts;
     }
 
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(XincoCoreUser.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("email");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "email"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xinco_core_groups");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_groups"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("firstname");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "firstname"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("id");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "id"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("name");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "name"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("status_number");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "status_number"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("username");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "username"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("userpassword");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "userpassword"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("change");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "change"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("changerID");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "changerID"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("reason");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "reason"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("writeGroups");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "writeGroups"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
+    public Timestamp getLastModified() {
+        return lastModified;
+    }
+    
+    public void setLastModified(Timestamp lastModified) {
+        this.lastModified = lastModified;
+    }
+    
+    public boolean isHashPassword() {
+        return hashPassword;
     }
 
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
+    public void setHashPassword(boolean hashPassword) {
+        this.hashPassword = hashPassword;
+    }
+    
+    public boolean isIncreaseAttempts() {
+        return increaseAttempts;
     }
 
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+    public void setIncreaseAttempts(boolean increaseAttempts) {
+        this.increaseAttempts = increaseAttempts;
     }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
-    }
+    
 
 }
