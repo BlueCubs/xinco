@@ -202,7 +202,7 @@ public class XincoAdminServlet extends HttpServlet {
                 status = 1;
                 if(temp_user.getStatus_number()!=2){
                     Calendar cal = GregorianCalendar.getInstance(),now= GregorianCalendar.getInstance();
-                    cal.setTimeInMillis(temp_user.getLastModified().getTime());
+                    cal.setTimeInMillis(((GregorianCalendar)temp_user.getLastModified()).getTimeInMillis());
                     long diffMillis = now.getTimeInMillis()-cal.getTimeInMillis();
                     long diffDays = diffMillis/(24*60*60*1000);
                     long age = Long.parseLong(rb.getString("password.aging"));
@@ -340,13 +340,15 @@ public class XincoAdminServlet extends HttpServlet {
         if (request.getParameter("DialogNewUserSubmit") != null) {
             try {
                 System.out.println("Creating new user...");
+                GregorianCalendar cal = new GregorianCalendar();
+                cal.setTimeInMillis(System.currentTimeMillis());
                 temp_user = new XincoCoreUserServer(0,
                         request.getParameter("DialogNewUserUsername"),
                         request.getParameter("DialogNewUserPassword"),
                         request.getParameter("DialogNewUserLastname"),
                         request.getParameter("DialogNewUserFirstname"),
                         request.getParameter("DialogNewUserEmail"), 1,0,
-                        new Timestamp(System.currentTimeMillis()), dbm);
+                        cal, dbm);
                 temp_group = new XincoCoreGroupServer(2, dbm);
                 temp_user.getXinco_core_groups().addElement(temp_group);
                 //The logged in admin does the locking
