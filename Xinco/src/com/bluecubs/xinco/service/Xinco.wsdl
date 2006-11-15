@@ -17,18 +17,20 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    </complexType>
    <complexType name="XincoCoreUser">
     <sequence>
+     <element name="attempts" type="xsd:int"/>
+     <element name="change" type="xsd:boolean"/>
+     <element name="changerID" type="xsd:int"/>
      <element name="email" nillable="true" type="xsd:string"/>
-     <element name="xinco_core_groups" nillable="true" type="apachesoap:Vector"/>
      <element name="firstname" nillable="true" type="xsd:string"/>
      <element name="id" type="xsd:int"/>
+     <element name="lastModified" nillable="true" type="xsd:anyType"/>
      <element name="name" nillable="true" type="xsd:string"/>
+     <element name="reason" nillable="true" type="xsd:string"/>
      <element name="status_number" type="xsd:int"/>
      <element name="username" nillable="true" type="xsd:string"/>
      <element name="userpassword" nillable="true" type="xsd:string"/>
-     <element name="change" type="xsd:boolean"/>
-     <element name="changerID" type="xsd:int"/>
-     <element name="reason" nillable="true" type="xsd:string"/>
      <element name="writeGroups" type="xsd:boolean"/>
+     <element name="xinco_core_groups" nillable="true" type="apachesoap:Vector"/>
     </sequence>
    </complexType>
    <complexType name="XincoCoreLanguage">
