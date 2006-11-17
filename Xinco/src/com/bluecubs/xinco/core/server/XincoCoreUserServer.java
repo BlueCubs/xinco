@@ -43,6 +43,7 @@ import java.sql.*;
 import java.util.Vector;
 
 import com.bluecubs.xinco.core.*;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 
@@ -50,7 +51,9 @@ public class XincoCoreUserServer extends XincoCoreUser {
     private String sql;
     private boolean hashPassword = true;
     private boolean increaseAttempts = false;
-    private ResourceBundle xerb;
+    private ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+    private java.util.GregorianCalendar lastModified;
+    private int attempts;
     
     private void fillXincoCoreGroups(XincoDBManager DBM) throws XincoException {
         setXinco_core_groups(new Vector());
@@ -96,11 +99,13 @@ public class XincoCoreUserServer extends XincoCoreUser {
         try {
             stmt = DBM.con.createStatement();
             String sql="SELECT * FROM xinco_core_user WHERE username='" +
-                    attrUN + "' AND userpassword=MD5('" + attrUPW + "') AND status_number=1";
+                    attrUN + "' AND userpassword=MD5('" + attrUPW + "')";// AND status_number=1";
             rs = stmt.executeQuery(sql);
+            System.out.println(sql);
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {
+                System.out.println("Record found...");
                 RowCount++;
                 setId(rs.getInt("id"));
                 setUsername(rs.getString("username"));
@@ -110,11 +115,35 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 setName(rs.getString("name"));
                 setFirstname(rs.getString("firstname"));
                 setEmail(rs.getString("email"));
-                setStatus_number(rs.getInt("status_number"));
+                int status=0;
+                if(rs.getInt("status_number")!=2){
+                    Calendar cal2 = GregorianCalendar.getInstance(),now= GregorianCalendar.getInstance();
+                    cal2.setTime(rs.getTimestamp("last_modified"));
+                    System.out.println(rs.getDate("last_modified"));
+                    System.out.println(rs.getTimestamp("last_modified"));
+                    long diffMillis = now.getTimeInMillis()-cal2.getTimeInMillis();
+                    System.out.println(diffMillis);
+                    long diffDays = diffMillis/(24*60*60*1000);
+                    System.out.println(diffDays);
+                    System.out.println(xerb.getString("password.aging"));
+                    long age = Long.parseLong(xerb.getString("password.aging"));
+                    System.out.println(age);
+                    if(diffDays >= age){
+                        status =2;
+                        System.out.println("Password aged out...");
+                    } else{
+                        status=rs.getInt("status_number");
+                        System.out.println("Password not aged out...");
+                    }
+                } 
+                setStatus_number(status);
                 //Reset login attempts after a successfull login.
-                setAttempts(0);
+                if(rs.getInt("status_number")!=2){
+                    setAttempts(0);
+                } else
+                    setAttempts(rs.getInt("attempts"));
                 cal = new GregorianCalendar();
-                cal.setTime(rs.getDate("last_modified"));
+                cal.setTime(rs.getTimestamp("last_modified"));
                 setLastModified(cal);
                 write2DB(DBM);
             }
@@ -126,6 +155,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 if(rs.next()){
                     increaseAttempts = true;
                 }
+                System.out.println("Throwing exception...");
                 throw new XincoException();
             }
             stmt.close();
@@ -159,7 +189,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     //Increase attempts after a unsuccessfull login.
                     setAttempts(rs.getInt("attempts")+1);
                     cal = new GregorianCalendar();
-                    cal.setTime(rs.getDate("last_modified"));
+                    cal.setTime(rs.getTimestamp("last_modified"));
                     setLastModified(cal);
                     write2DB(dbm);
                 }
@@ -226,6 +256,42 @@ public class XincoCoreUserServer extends XincoCoreUser {
         }
     }
     
+    /**
+     * Gets the attempts value for this XincoCoreUser.
+     *
+     * @return attempts
+     */
+    public int getAttempts() {
+        return attempts;
+    }
+    
+    /**
+     * Sets the attempts value for this XincoCoreUser.
+     *
+     * @param attempts
+     */
+    public void setAttempts(int attempts) {
+        this.attempts = attempts;
+    }
+    
+    /**
+     * Sets the lastModified value for this XincoCoreUser.
+     *
+     * @param lastModified
+     */
+    public void setLastModified(java.util.GregorianCalendar lastModified) {
+        this.lastModified = lastModified;
+    }
+    
+    /**
+     * Gets the lastModified value for this XincoCoreUser.
+     *
+     * @return lastModified
+     */
+    public java.lang.Object getLastModified() {
+        return lastModified;
+    }
+    
     //write to db
     public int write2DB(XincoDBManager DBM) throws XincoException {
         String sql="";
@@ -254,15 +320,19 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 else
                     password="userpassword='" +
                             getUserpassword().replaceAll("'","\\\\'") + "'";
-                //---------------------------------
+                
                 sql="UPDATE xinco_core_user SET username='" +
                         getUsername().replaceAll("'","\\\\'") + "', "+password+", name='" +
                         getName().replaceAll("'","\\\\'") + "', firstname='" +
                         getFirstname().replaceAll("'","\\\\'") + "', email='" +
                         getEmail().replaceAll("'","\\\\'") + "', status_number=" +
                         getStatus_number() + ", attempts="+getAttempts() +
-                        ", last_modified='"+((GregorianCalendar)getLastModified()).get(GregorianCalendar.YEAR)+"-"+(((GregorianCalendar)getLastModified()).get(GregorianCalendar.MONTH)+1)+"-"+((GregorianCalendar)getLastModified()).get(GregorianCalendar.DAY_OF_MONTH)+"'"+
+                        ", last_modified='"+
+                        ((GregorianCalendar)getLastModified()).get(GregorianCalendar.YEAR)+
+                        "-"+(((GregorianCalendar)getLastModified()).get(GregorianCalendar.MONTH)+1)+
+                        "-"+((GregorianCalendar)getLastModified()).get(GregorianCalendar.DAY_OF_MONTH)+"'"+
                         " WHERE id=" + getId();
+                System.out.println(sql);
                 stmt.executeUpdate(sql);
                 stmt.close();
             } else {
@@ -360,15 +430,15 @@ public class XincoCoreUserServer extends XincoCoreUser {
     public boolean isHashPassword() {
         return hashPassword;
     }
-
+    
     public void setHashPassword(boolean hashPassword) {
         this.hashPassword = hashPassword;
     }
-
+    
     public boolean isIncreaseAttempts() {
         return increaseAttempts;
     }
-
+    
     public void setIncreaseAttempts(boolean increaseAttempts) {
         this.increaseAttempts = increaseAttempts;
     }

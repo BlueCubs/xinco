@@ -315,9 +315,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:message name="getCurrentXincoCoreUserRequest">
 
-      <wsdl:part name="in0" type="xsd:string"/>
+      <wsdl:part name="in0" type="soapenc:string"/>
 
-      <wsdl:part name="in1" type="xsd:string"/>
+      <wsdl:part name="in1" type="soapenc:string"/>
 
    </wsdl:message>
 
@@ -337,7 +337,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:message name="findXincoCoreDataRequest">
 
-      <wsdl:part name="in0" type="xsd:string"/>
+      <wsdl:part name="in0" type="soapenc:string"/>
 
       <wsdl:part name="in1" type="tns2:XincoCoreLanguage"/>
 
@@ -379,7 +379,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:message name="findXincoCoreNodesRequest">
 
-      <wsdl:part name="in0" type="xsd:string"/>
+      <wsdl:part name="in0" type="soapenc:string"/>
 
       <wsdl:part name="in1" type="tns2:XincoCoreLanguage"/>
 
@@ -1113,7 +1113,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       <wsdl:port binding="impl:XincoSoapBinding" name="Xinco">
 
-         <wsdlsoap:address location="http://localhost:8080/xinco/services/Xinco"/>
+         <wsdlsoap:address location="http://localhost:8084/xinco/services/Xinco"/>
 
       </wsdl:port>
 
