@@ -108,8 +108,9 @@ public class XincoExplorer extends JFrame {
     private javax.swing.JMenu jMenuView = null;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemViewStyleWindows = null;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemViewStyleJava = null;
-    private javax.swing.ButtonGroup bgwindowstyle;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemViewStyleMotif = null;
+    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemViewStyleNapkin = null;
+    private javax.swing.ButtonGroup bgwindowstyle;
     //client version
     private XincoVersion xincoClientVersion = null;
     //session object
@@ -1222,10 +1223,6 @@ public class XincoExplorer extends JFrame {
         xincoClientVersion.setVersion_mid(0);
         xincoClientVersion.setVersion_low(0);
         xincoClientVersion.setVersion_postfix("");
-        //LAF umschalten
-        //switchPLAF("javax.swing.plaf.metal.MetalLookAndFeel");
-        //switchPLAF("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
-        //switchPLAF("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         switchPLAF((String)xincoClientConfig.elementAt(1));
         this.setBounds(0, 0, (new Double(getToolkit().getScreenSize().getWidth())).intValue()-100,
                 (new Double(getToolkit().getScreenSize().getHeight())).intValue()-75);
@@ -2056,9 +2053,11 @@ public class XincoExplorer extends JFrame {
             jMenuView.add(getJRadioButtonMenuItemViewStyleWindows());
             jMenuView.add(getJRadioButtonMenuItemViewStyleJava());
             jMenuView.add(getJRadioButtonMenuItemViewStyleMotif());
+            jMenuView.add(getJRadioButtonMenuItemViewStyleNapkin());
             bgwindowstyle.add(jMenuView.getItem(0));
             bgwindowstyle.add(jMenuView.getItem(1));
             bgwindowstyle.add(jMenuView.getItem(2));
+            bgwindowstyle.add(jMenuView.getItem(3));
             jMenuView.setText(xerb.getString("menu.view"));
         }
         return jMenuView;
@@ -2086,6 +2085,30 @@ public class XincoExplorer extends JFrame {
             });
         }
         return jRadioButtonMenuItemViewStyleWindows;
+    }
+    /**
+     * This method initializes jRadioButtonMenuItemViewStyleNapkin
+     *
+     * @return javax.swing.JRadioButtonMenuItem
+     */
+    private javax.swing.JRadioButtonMenuItem getJRadioButtonMenuItemViewStyleNapkin() {
+        if(jRadioButtonMenuItemViewStyleNapkin == null) {
+            jRadioButtonMenuItemViewStyleNapkin = new javax.swing.JRadioButtonMenuItem();
+            if (((String)xincoClientConfig.elementAt(1)).equals(new String("net.sourceforge.napkinlaf.NapkinLookAndFeel"))) {
+                jRadioButtonMenuItemViewStyleNapkin.setSelected(true);
+            } else {
+                jRadioButtonMenuItemViewStyleNapkin.setSelected(false);
+            }
+            jRadioButtonMenuItemViewStyleNapkin.setText(xerb.getString("menu.view.napkin"));
+            jRadioButtonMenuItemViewStyleNapkin.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+                    switchPLAF("net.sourceforge.napkinlaf.NapkinLookAndFeel");
+                    xincoClientConfig.setElementAt(new String("net.sourceforge.napkinlaf.NapkinLookAndFeel"), 1);
+                    saveConfig();
+                }
+            });
+        }
+        return jRadioButtonMenuItemViewStyleNapkin;
     }
     /**
      * This method initializes jRadioButtonMenuItemViewStyleJava
@@ -2175,8 +2198,9 @@ public class XincoExplorer extends JFrame {
                             }
                             XincoCoreUser newuser;
                             if ((newuser = xincoClientSession.xinco.getCurrentXincoCoreUser(xincoClientSession.user.getUsername(), xincoClientSession.user.getUserpassword())) == null) {
-                                //Check account is locked
-                                throw new XincoException(xerb.getString("menu.connection.error.user"));
+                                throw new XincoException(xerb.getString("menu.connection.error.user")+" "+
+                                        xerb.getString("password.attempts.remaining").replaceFirst("%n",
+                                        String.valueOf(Long.parseLong(xerb.getString("password.attempts")))));
                             }
                             newuser.setUserpassword(xincoClientSession.user.getUserpassword());
                             xincoClientSession.user = newuser;
@@ -2201,7 +2225,6 @@ public class XincoExplorer extends JFrame {
                             xincoClientSession.currentSearchResult = new Vector();
                             xincoClientSession.status = 2;
                             JOptionPane.showMessageDialog(XincoExplorer.this, status_string, xerb.getString("menu.connection.established"), JOptionPane.INFORMATION_MESSAGE);
-//                            informationFrame.getTextArea().setText(xerb.getString("menu.connection.established"));
                             jLabelInternalFrameInformationText.setText(xerb.getString("menu.connection.established"));
                             
                             //get root
@@ -2362,7 +2385,7 @@ public class XincoExplorer extends JFrame {
      */
     private void switchPLAF(String plaf_string) {
         try {
-            //LAF umschalten
+            //set LAF
             UIManager.setLookAndFeel(plaf_string);
             //update EACH window
             SwingUtilities.updateComponentTreeUI(XincoExplorer.this);
