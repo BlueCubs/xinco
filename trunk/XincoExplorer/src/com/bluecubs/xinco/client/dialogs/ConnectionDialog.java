@@ -28,7 +28,6 @@ public class ConnectionDialog extends javax.swing.JDialog {
     }
     
     public void initialize(){
-//        setBounds(200, 200, 400, 420);
         setTitle(explorer.getResourceBundle().getString("window.connection") + ":");
         setName("DialogConnection");
         setModal(true);
