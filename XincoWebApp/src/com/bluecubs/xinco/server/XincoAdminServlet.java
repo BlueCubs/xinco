@@ -179,7 +179,7 @@ public class XincoAdminServlet extends HttpServlet {
                             //Register change in audit trail
                             temp_user.setChange(true);
                             //Reason for change
-                            temp_user.setReason("password.attempt.limitReached");
+                            temp_user.setReason(rb.getString("password.attempt.limitReached"));
                             //the password retrieved when you logon is already hashed...
                             temp_user.setHashPassword(false);
                             temp_user.write2DB(dbm);
@@ -201,12 +201,13 @@ public class XincoAdminServlet extends HttpServlet {
                 session.setAttribute("XincoAdminServlet.current_user_selection", new Integer(current_user_selection));
                 status = 1;
                 if(temp_user.getStatus_number()!=2){
-                    Calendar cal = GregorianCalendar.getInstance(),now= GregorianCalendar.getInstance();
-                    cal.setTimeInMillis(((GregorianCalendar)temp_user.getLastModified()).getTimeInMillis());
-                    long diffMillis = now.getTimeInMillis()-cal.getTimeInMillis();
-                    long diffDays = diffMillis/(24*60*60*1000);
-                    long age = Long.parseLong(rb.getString("password.aging"));
-                    if(diffDays >= age)
+//                if(temp_user.isPasswordAged()){
+//                    Calendar cal = GregorianCalendar.getInstance(),now= GregorianCalendar.getInstance();
+//                    cal.setTimeInMillis(((GregorianCalendar)temp_user.getLastModified()).getTimeInMillis());
+//                    long diffMillis = now.getTimeInMillis()-cal.getTimeInMillis();
+//                    long diffDays = diffMillis/(24*60*60*1000);
+//                    long age = Long.parseLong(rb.getString("password.aging"));
+//                    if(diffDays >= age)
                         status =2;
                 }
                 //-----------------------------------------------------------------------------------
@@ -562,7 +563,9 @@ public class XincoAdminServlet extends HttpServlet {
                 try {
                     temp_user = new XincoCoreUserServer(id,dbm);
                     temp_user.setUserpassword(request.getParameter("new"));
-                    temp_user.setLastModified(new Timestamp(System.currentTimeMillis()));
+                    GregorianCalendar cal = new GregorianCalendar();
+                    cal.setTimeInMillis(System.currentTimeMillis());
+                    temp_user.setLastModified(cal);
                     //The logged in admin does the locking
                     temp_user.setChangerID(login_user.getId());
                     temp_user.setWriteGroups(true);
