@@ -182,6 +182,7 @@ public class XincoAdminServlet extends HttpServlet {
                             temp_user.setReason(rb.getString("password.attempt.limitReached"));
                             //the password retrieved when you logon is already hashed...
                             temp_user.setHashPassword(false);
+                            temp_user.setIncreaseAttempts(true);
                             temp_user.write2DB(dbm);
                             throw new XincoException(rb.getString("password.attempt.limitReached"));
                         }
