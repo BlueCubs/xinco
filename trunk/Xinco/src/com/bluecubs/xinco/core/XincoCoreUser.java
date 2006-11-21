@@ -8,8 +8,6 @@
 package com.bluecubs.xinco.core;
 
 public class XincoCoreUser  implements java.io.Serializable {
-    private int attempts;
-
     private boolean change;
 
     private int changerID;
@@ -19,8 +17,6 @@ public class XincoCoreUser  implements java.io.Serializable {
     private java.lang.String firstname;
 
     private int id;
-
-    private java.lang.Object lastModified;
 
     private java.lang.String name;
 
@@ -40,13 +36,11 @@ public class XincoCoreUser  implements java.io.Serializable {
     }
 
     public XincoCoreUser(
-           int attempts,
            boolean change,
            int changerID,
            java.lang.String email,
            java.lang.String firstname,
            int id,
-           java.lang.Object lastModified,
            java.lang.String name,
            java.lang.String reason,
            int status_number,
@@ -54,13 +48,11 @@ public class XincoCoreUser  implements java.io.Serializable {
            java.lang.String userpassword,
            boolean writeGroups,
            java.util.Vector xinco_core_groups) {
-           this.attempts = attempts;
            this.change = change;
            this.changerID = changerID;
            this.email = email;
            this.firstname = firstname;
            this.id = id;
-           this.lastModified = lastModified;
            this.name = name;
            this.reason = reason;
            this.status_number = status_number;
@@ -68,26 +60,6 @@ public class XincoCoreUser  implements java.io.Serializable {
            this.userpassword = userpassword;
            this.writeGroups = writeGroups;
            this.xinco_core_groups = xinco_core_groups;
-    }
-
-
-    /**
-     * Gets the attempts value for this XincoCoreUser.
-     * 
-     * @return attempts
-     */
-    public int getAttempts() {
-        return attempts;
-    }
-
-
-    /**
-     * Sets the attempts value for this XincoCoreUser.
-     * 
-     * @param attempts
-     */
-    public void setAttempts(int attempts) {
-        this.attempts = attempts;
     }
 
 
@@ -188,26 +160,6 @@ public class XincoCoreUser  implements java.io.Serializable {
      */
     public void setId(int id) {
         this.id = id;
-    }
-
-
-    /**
-     * Gets the lastModified value for this XincoCoreUser.
-     * 
-     * @return lastModified
-     */
-    public java.lang.Object getLastModified() {
-        return lastModified;
-    }
-
-
-    /**
-     * Sets the lastModified value for this XincoCoreUser.
-     * 
-     * @param lastModified
-     */
-    public void setLastModified(java.lang.Object lastModified) {
-        this.lastModified = lastModified;
     }
 
 
@@ -362,7 +314,6 @@ public class XincoCoreUser  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
-            this.attempts == other.getAttempts() &&
             this.change == other.isChange() &&
             this.changerID == other.getChangerID() &&
             ((this.email==null && other.getEmail()==null) || 
@@ -372,9 +323,6 @@ public class XincoCoreUser  implements java.io.Serializable {
              (this.firstname!=null &&
               this.firstname.equals(other.getFirstname()))) &&
             this.id == other.getId() &&
-            ((this.lastModified==null && other.getLastModified()==null) || 
-             (this.lastModified!=null &&
-              this.lastModified.equals(other.getLastModified()))) &&
             ((this.name==null && other.getName()==null) || 
              (this.name!=null &&
               this.name.equals(other.getName()))) &&
@@ -403,7 +351,6 @@ public class XincoCoreUser  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
-        _hashCode += getAttempts();
         _hashCode += (isChange() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += getChangerID();
         if (getEmail() != null) {
@@ -413,9 +360,6 @@ public class XincoCoreUser  implements java.io.Serializable {
             _hashCode += getFirstname().hashCode();
         }
         _hashCode += getId();
-        if (getLastModified() != null) {
-            _hashCode += getLastModified().hashCode();
-        }
         if (getName() != null) {
             _hashCode += getName().hashCode();
         }
@@ -444,12 +388,6 @@ public class XincoCoreUser  implements java.io.Serializable {
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("attempts");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "attempts"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("change");
         elemField.setXmlName(new javax.xml.namespace.QName("", "change"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
@@ -478,12 +416,6 @@ public class XincoCoreUser  implements java.io.Serializable {
         elemField.setXmlName(new javax.xml.namespace.QName("", "id"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("lastModified");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "lastModified"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
-        elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("name");
