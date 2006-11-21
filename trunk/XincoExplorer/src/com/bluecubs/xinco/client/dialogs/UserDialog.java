@@ -9,7 +9,7 @@ package com.bluecubs.xinco.client.dialogs;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.server.XincoCoreUserServer;
+import java.sql.Timestamp;
 import javax.swing.JOptionPane;
 
 /**
@@ -254,6 +254,21 @@ public class UserDialog extends javax.swing.JDialog {
                     if ((newuser = explorer.getSession().xinco.setXincoCoreUser(newuser, explorer.getSession().user)) != null) {
                         newuser.setUserpassword(new String(password.getPassword()));
                         ChangeReasonDialog crd=null;
+                        if(isAged) {
+                            boolean enable=false;
+                            this.email.setEnabled(enable);
+                            this.lastname.setEditable(enable);
+                            this.name.setEditable(enable);
+                            this.status.setEditable(enable);
+                            this.username.setEditable(enable);
+                        } else{
+                            boolean enable=true;
+                            this.email.setEnabled(enable);
+                            this.lastname.setEditable(enable);
+                            this.name.setEditable(enable);
+                            this.status.setEditable(enable);
+                            this.username.setEditable(enable);
+                        }
                         //Prompt for change reason
                         if(!isAged){
                             crd=new ChangeReasonDialog(new javax.swing.JFrame(), true,newuser,explorer);
@@ -263,13 +278,17 @@ public class UserDialog extends javax.swing.JDialog {
                         newuser.setChangerID(newuser.getId());
                         newuser.setWriteGroups(true);
                         newuser.setChange(true);
-                        if(crd==null)
+                        if(isAged){
                             newuser.setReason("audit.user.account.aged");
-                        else
+                            newuser.setStatus_number(4);
+                            System.err.println("Modifying password");
+                        } else
                             newuser.setReason(crd.getReason());
-                        newuser=explorer.getSession().xinco.setXincoCoreUser(newuser, explorer.getSession().user);
+                        if(isAged)
+                            newuser=explorer.getSession().xinco.setXincoCoreUser(newuser, newuser);
+                        else
+                            newuser=explorer.getSession().xinco.setXincoCoreUser(newuser, explorer.getSession().user);
                         //
-                        explorer.getSession().user = newuser;
                     } else {
                         throw new XincoException(explorer.getResourceBundle().getString("window.userinfo.updatefailedonserver"));
                     }

@@ -315,6 +315,8 @@ public class XincoExplorer extends JFrame {
         //load config
         loadConfig();
         saveConfig();
+        //Apply LAF to all screens including de Locale Dialog
+        switchPLAF((String)xincoClientConfig.elementAt(1));
         //choose language
         getJDialogLocale().setVisible(true);
         //load language data
@@ -2239,7 +2241,9 @@ public class XincoExplorer extends JFrame {
                             markConnectionStatus();
                             
                             if(newuser.getStatus_number()==3){
+                                jLabelInternalFrameInformationText.setText(xerb.getString("password.aged"));
                                 getJDialogUser(true);
+                                newuser.setUserpassword(xincoClientSession.user.getUserpassword());
                             }
                         } catch (Exception cone) {
                             xincoClientSession.status = 0;
