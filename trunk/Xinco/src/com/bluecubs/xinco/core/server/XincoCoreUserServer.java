@@ -47,6 +47,12 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 
+//Status list (in DB)
+//1 = unlocked
+//2 = locked
+//3 = aged password
+//4 = aged password modified, ready to turn unlocked
+
 public class XincoCoreUserServer extends XincoCoreUser {
     private String sql;
     private boolean hashPassword = true;
@@ -119,28 +125,20 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     Calendar cal2 = GregorianCalendar.getInstance(),now= GregorianCalendar.getInstance();
                     cal2.setTime(rs.getTimestamp("last_modified"));
                     long diffMillis = now.getTimeInMillis()-cal2.getTimeInMillis();
-                    System.out.println(diffMillis);
                     long diffDays = diffMillis/(24*60*60*1000);
-                    System.out.println(diffDays);
-                    System.out.println(xerb.getString("password.aging"));
                     long age = Long.parseLong(xerb.getString("password.aging"));
-                    System.out.println(age);
                     if(diffDays >= age){
                         status=3;
                     } else{
                         status=1;
                     }
-                } 
+                }
                 setStatus_number(status);
                 //Reset login attempts after a successfull login.
                 if(rs.getInt("status_number")!=2){
                     setAttempts(0);
                 } else
                     setAttempts(rs.getInt("attempts"));
-                if(rs.getInt("status_number")!=status){
-                    //Changed from other status to unlocked
-                    setChange(true);
-                }
                 cal = new GregorianCalendar();
                 cal.setTime(rs.getTimestamp("last_modified"));
                 setLastModified(rs.getTimestamp("last_modified"));
@@ -172,7 +170,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     ex.printStackTrace();
                 }
                 String sql="SELECT * FROM xinco_core_user WHERE username='" +
-                        attrUN + "' AND status_number<>2";
+                        attrUN + "' AND status_number <> 2";
                 stmt = DBM.con.createStatement();
                 rs = stmt.executeQuery(sql);
                 //increase number of attempts
@@ -295,16 +293,21 @@ public class XincoCoreUserServer extends XincoCoreUser {
         xerb= ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
         try {
             Statement stmt;
+            if(getStatus_number()==4){
+                //Changed from aged out to password changed. Clear status
+                setStatus_number(1);
+                setAttempts(0);
+            }
             //Increase login attempts
-                if(increaseAttempts){
-                    setAttempts(getAttempts()+1);
-                    increaseAttempts = false;
-                }
-                //Lock account if needed. Can't lock main admin.
-                if(getAttempts()>Integer.parseInt(xerb.getString("password.attempts")) &&
-                        getId() > 1){
-                    setStatus_number(2);
-                }
+            if(increaseAttempts){
+                setAttempts(getAttempts()+1);
+                increaseAttempts = false;
+            }
+            //Lock account if needed. Can't lock main admin.
+            if(getAttempts()>Integer.parseInt(xerb.getString("password.attempts")) &&
+                    getId() > 1){
+                setStatus_number(2);
+            }
             if (getId() > 0) {
                 stmt = DBM.con.createStatement();
                 if(isChange()){
