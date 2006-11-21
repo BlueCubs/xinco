@@ -158,7 +158,7 @@ public class XincoAdminServlet extends HttpServlet {
                     //Wrong password or username
                     Statement stmt=dbm.con.createStatement();
                     ResultSet rs= stmt.executeQuery("SELECT id FROM xinco_core_user WHERE username='" +
-                            request.getParameter("DialogLoginUsername") + "' AND status_number=1");
+                            request.getParameter("DialogLoginUsername") + "' AND status_number<>2");
                     //Check if the username is correct if not just throw the wrong login message
                     if(!rs.next())
                         throw new XincoException("Login "+rb.getString("general.fail")+" Username and/or Password may be incorrect!");
@@ -201,14 +201,8 @@ public class XincoAdminServlet extends HttpServlet {
                 current_user_selection = temp_user.getId();
                 session.setAttribute("XincoAdminServlet.current_user_selection", new Integer(current_user_selection));
                 status = 1;
-                if(temp_user.getStatus_number()!=2){
-//                if(temp_user.isPasswordAged()){
-//                    Calendar cal = GregorianCalendar.getInstance(),now= GregorianCalendar.getInstance();
-//                    cal.setTimeInMillis(((GregorianCalendar)temp_user.getLastModified()).getTimeInMillis());
-//                    long diffMillis = now.getTimeInMillis()-cal.getTimeInMillis();
-//                    long diffDays = diffMillis/(24*60*60*1000);
-//                    long age = Long.parseLong(rb.getString("password.aging"));
-//                    if(diffDays >= age)
+                //Check for password aging
+                if(temp_user.getStatus_number()==3){
                         status =2;
                 }
                 //-----------------------------------------------------------------------------------
@@ -342,15 +336,13 @@ public class XincoAdminServlet extends HttpServlet {
         if (request.getParameter("DialogNewUserSubmit") != null) {
             try {
                 System.out.println("Creating new user...");
-                GregorianCalendar cal = new GregorianCalendar();
-                cal.setTimeInMillis(System.currentTimeMillis());
                 temp_user = new XincoCoreUserServer(0,
                         request.getParameter("DialogNewUserUsername"),
                         request.getParameter("DialogNewUserPassword"),
                         request.getParameter("DialogNewUserLastname"),
                         request.getParameter("DialogNewUserFirstname"),
                         request.getParameter("DialogNewUserEmail"), 1,0,
-                        cal, dbm);
+                        new Timestamp(System.currentTimeMillis()), dbm);
                 temp_group = new XincoCoreGroupServer(2, dbm);
                 temp_user.getXinco_core_groups().addElement(temp_group);
                 //The logged in admin does the locking
@@ -564,9 +556,7 @@ public class XincoAdminServlet extends HttpServlet {
                 try {
                     temp_user = new XincoCoreUserServer(id,dbm);
                     temp_user.setUserpassword(request.getParameter("new"));
-                    GregorianCalendar cal = new GregorianCalendar();
-                    cal.setTimeInMillis(System.currentTimeMillis());
-                    temp_user.setLastModified(cal);
+                    temp_user.setLastModified(new Timestamp(System.currentTimeMillis()));
                     //The logged in admin does the locking
                     temp_user.setChangerID(login_user.getId());
                     temp_user.setWriteGroups(true);
