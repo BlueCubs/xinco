@@ -57,6 +57,8 @@ import java.util.zip.*;
 
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.client.*;
+import com.bluecubs.xinco.core.server.Crypter;
+import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.service.*;
 
 import javax.swing.JPanel;
@@ -80,6 +82,9 @@ import org.apache.axis.attachments.AttachmentPart;
 import org.apache.axis.client.Call;
 import javax.xml.namespace.QName;
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.JDialog;
 public class XincoExplorer extends JFrame {
@@ -330,7 +335,6 @@ public class XincoExplorer extends JFrame {
      */
     private JPanel getJContentPaneInformation() {
         if (jContentPaneInformation == null) {
-//            jLabelInternalFrameInformationText=this.informationFrame.getTextArea();
             jLabelInternalFrameInformationText = new JTextArea();
             jLabelInternalFrameInformationText.setBounds(5, 5, 380, 130);
             jLabelInternalFrameInformationText.setAutoscrolls(true);
@@ -2184,23 +2188,21 @@ public class XincoExplorer extends JFrame {
                             String status_string = "";
                             xincoClientSession.xinco_service = new XincoServiceLocator();
                             xincoClientSession.xinco = xincoClientSession.xinco_service.getXinco(new java.net.URL(xincoClientSession.service_endpoint));
-                            status_string = status_string + xerb.getString("menu.connection.connectedto") + ": " + xincoClientSession.service_endpoint + "\n";
+                            status_string += xerb.getString("menu.connection.connectedto") + ": " + xincoClientSession.service_endpoint + "\n";
                             xincoClientSession.server_version = xincoClientSession.xinco.getXincoServerVersion();
-                            status_string = status_string + xerb.getString("general.serverversion") + ": " +
-                                    xincoClientSession.server_version.getVersion_high() + "." +
-                                    xincoClientSession.server_version.getVersion_mid() + "." +
-                                    xincoClientSession.server_version.getVersion_low() +
-                                    xincoClientSession.server_version.getVersion_postfix() + "\n";
-                            status_string = status_string + "\n";
+                            status_string += xerb.getString("general.serverversion") + ": ";
+                            status_string += xincoClientSession.server_version.getVersion_high() + "." ;
+                            status_string += xincoClientSession.server_version.getVersion_mid() + "." ;
+                            status_string += xincoClientSession.server_version.getVersion_low();
+                            status_string += xincoClientSession.server_version.getVersion_postfix() + "\n";
+                            status_string += "\n";
                             //check if client and server versions match
                             if (xincoClientVersion.getVersion_high() != xincoClientSession.server_version.getVersion_high()) {
                                 throw new XincoException(xerb.getString("menu.connection.error.serverversion") + " " + xincoClientSession.server_version.getVersion_high() + ".x");
                             }
                             XincoCoreUser newuser;
                             if ((newuser = xincoClientSession.xinco.getCurrentXincoCoreUser(xincoClientSession.user.getUsername(), xincoClientSession.user.getUserpassword())) == null) {
-                                throw new XincoException(xerb.getString("menu.connection.error.user")+" "+
-                                        xerb.getString("password.attempts.remaining").replaceFirst("%n",
-                                        String.valueOf(Long.parseLong(xerb.getString("password.attempts")))));
+                                throw new XincoException(xerb.getString("menu.connection.error.user"));
                             }
                             newuser.setUserpassword(xincoClientSession.user.getUserpassword());
                             xincoClientSession.user = newuser;
@@ -2236,6 +2238,9 @@ public class XincoExplorer extends JFrame {
                             
                             markConnectionStatus();
                             
+                            if(newuser.getStatus_number()==3){
+                                getJDialogUser(true);
+                            }
                         } catch (Exception cone) {
                             xincoClientSession.status = 0;
                             cone.printStackTrace();
@@ -2335,8 +2340,6 @@ public class XincoExplorer extends JFrame {
                 jInternalFrameRepository.setVisible(false);
                 jInternalFrameSearch.setVisible(false);
                 jInternalFrameInformation.setVisible(false);
-//                this.getJInternalFrameInformation();
-//                this.informationFrame.setVisible(false);
             }
             //status = connected
             if (xincoClientSession.status == 2) {
@@ -2348,20 +2351,10 @@ public class XincoExplorer extends JFrame {
                 jMenuItemConnectionDisconnect.setEnabled(true);
                 jInternalFrameRepository.setVisible(true);
                 jInternalFrameInformation.setVisible(true);
-//                this.getJInternalFrameInformation();
-//                this.informationFrame.setVisible(true);
             }
         }
     }
-    /**
-     * This method initializes jInternalFrameInformation
-     *
-     * @return javax.swing.JInternalFrame
-     */
-//    private void getJInternalFrameInformation() {
-//        if(this.informationFrame==null)
-//            this.informationFrame= new InformationFrame(this);
-//    }
+
     /**
      * This method initializes jInternalFrameInformation
      *
@@ -2372,7 +2365,6 @@ public class XincoExplorer extends JFrame {
             jInternalFrameInformation = new JInternalFrame();
             jInternalFrameInformation.setContentPane(getJContentPaneInformation());
             jInternalFrameInformation.setTitle(xerb.getString("window.information"));
-            //jInternalFrameInformation.setBounds(550, 480, 400, 150);
             jInternalFrameInformation.setBounds(this.getWidth()-450, this.getHeight()-220, 400, 150);
         }
         return jInternalFrameInformation;
@@ -3385,7 +3377,6 @@ public class XincoExplorer extends JFrame {
                 jListDialogDataLanguage.setSelectedIndex(selection);
             }
             jListDialogDataLanguage.ensureIndexIsVisible(jListDialogDataLanguage.getSelectedIndex());
-            //text = "" + ((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getStatus_number();
             if (((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getStatus_number() == 1) {
                 text = xerb.getString("general.status.open") + "";
             }
@@ -4811,7 +4802,7 @@ public class XincoExplorer extends JFrame {
             jMenuItemPreferencesEditUser.setText(xerb.getString("menu.preferences.edituserinfo"));
             jMenuItemPreferencesEditUser.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent e) {
-                    getJDialogUser();
+                    getJDialogUser(false);
                 }
             });
         }
@@ -4891,8 +4882,7 @@ public class XincoExplorer extends JFrame {
         if(jContentPaneDialogUser == null) {
             jContentPaneDialogUser = new javax.swing.JPanel();
             jContentPaneDialogUser.setLayout(null);
-            getJDialogUser();
-//            jContentPaneDialogUser.add(getJButtonDialogUserCancel(), null);
+            getJDialogUser(false);
         }
         return jContentPaneDialogUser;
     }
@@ -4901,9 +4891,9 @@ public class XincoExplorer extends JFrame {
      *
      * @return javax.swing.JDialog
      */
-    private void getJDialogUser() {
+    private void getJDialogUser(boolean aged) {
         if(this.userDialog == null)
-            this.userDialog= new UserDialog(new javax.swing.JFrame(), true,this);
+            this.userDialog= new UserDialog(new javax.swing.JFrame(), true,this,aged);
         this.userDialog.setVisible(true);
     }
     
