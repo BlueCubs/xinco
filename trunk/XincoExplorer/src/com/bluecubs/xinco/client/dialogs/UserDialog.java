@@ -18,12 +18,17 @@ import javax.swing.JOptionPane;
  */
 public class UserDialog extends javax.swing.JDialog {
     private XincoExplorer explorer=null;
+    private boolean isAged=false;
     /** Creates new form UserDialog */
-    public UserDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) {
+    public UserDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer,boolean aged) {
         super(parent, modal);
         this.explorer=explorer;
+        this.isAged=aged;
         initComponents();
         initialize();
+        //Do not allow to close the window. User MUST change password!
+        if(this.isAged)
+            setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
     }
     
     private void initialize(){
@@ -34,9 +39,15 @@ public class UserDialog extends javax.swing.JDialog {
         this.idLabel.setText(explorer.getResourceBundle().getString("general.id") + ":");
         this.username.setText("" + explorer.getSession().user.getUsername());
         this.usernameLabel.setText(explorer.getResourceBundle().getString("general.username") + ":");
-        this.password.setText("" + explorer.getSession().user.getUserpassword());
+        if(this.isAged)
+            this.password.setText("");
+        else
+            this.password.setText("" + explorer.getSession().user.getUserpassword());
         this.passwordLabel.setText(explorer.getResourceBundle().getString("general.password") + ":");
-        this.verification.setText("" + explorer.getSession().user.getUserpassword());
+        if(this.isAged)
+            this.verification.setText("");
+        else
+            this.verification.setText("" + explorer.getSession().user.getUserpassword());
         this.verificationLabel.setText(explorer.getResourceBundle().getString("general.verifypassword") + ":");
         this.name.setText("" + explorer.getSession().user.getFirstname());
         this.nameLabel.setText(explorer.getResourceBundle().getString("window.userinfo.firstname") + ":");
@@ -87,6 +98,7 @@ public class UserDialog extends javax.swing.JDialog {
         jLabel1.setText("jLabel1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setAlwaysOnTop(true);
         idLabel.setText("jLabel1");
 
         id.setEditable(false);
@@ -113,14 +125,14 @@ public class UserDialog extends javax.swing.JDialog {
 
         status.setEditable(false);
 
-        save.setText("Save!");
+        save.setText("Button1");
         save.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveActionPerformed(evt);
             }
         });
 
-        cancel.setText("Cancel");
+        cancel.setText("Button2");
         cancel.setSelected(true);
         cancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -169,7 +181,7 @@ public class UserDialog extends javax.swing.JDialog {
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
                                 .add(save)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 124, Short.MAX_VALUE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 108, Short.MAX_VALUE)
                                 .add(cancel))
                             .add(status, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE))))
                 .addContainerGap())
@@ -219,40 +231,52 @@ public class UserDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
-        setVisible(false);
+        //Can't cancel if the password have aged out
+        if(!this.isAged)
+            setVisible(false);
     }//GEN-LAST:event_cancelActionPerformed
     
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         if ((new String(password.getPassword())).equals(new String(verification.getPassword()))) {
             XincoCoreUser newuser= new XincoCoreUser();
             try {
-                newuser.setId(explorer.getSession().user.getId());
-                newuser.setUsername(explorer.getSession().user.getUsername());
-                newuser.setUserpassword(new String(password.getPassword()));
-                newuser.setFirstname(name.getText());
-                newuser.setName(lastname.getText());
-                newuser.setEmail(email.getText());
-                newuser.setXinco_core_groups(explorer.getSession().user.getXinco_core_groups());
-                newuser.setStatus_number(explorer.getSession().user.getStatus_number());
-                if ((newuser = explorer.getSession().xinco.setXincoCoreUser(newuser, explorer.getSession().user)) != null) {
+                if(this.isAged && (new String(password.getPassword())).equals(explorer.getSession().user.getUserpassword())) {
+                    throw new XincoException(explorer.getResourceBundle().getString("password.unusable"));
+                } else{
+                    newuser.setId(explorer.getSession().user.getId());
+                    newuser.setUsername(explorer.getSession().user.getUsername());
                     newuser.setUserpassword(new String(password.getPassword()));
-                    //Prompt for change reason
-                    ChangeReasonDialog crd=new ChangeReasonDialog(new javax.swing.JFrame(), true,newuser,explorer);
-                    crd.setVisible(true);
-                    while(!crd.done);
-                    newuser.setChangerID(newuser.getId());
-                    newuser.setWriteGroups(true);
-                    newuser.setChange(true);
-                    newuser.setReason(crd.getReason());
-                    newuser=explorer.getSession().xinco.setXincoCoreUser(newuser, explorer.getSession().user);
-                    //
-                    explorer.getSession().user = newuser;
-                } else {
-                    throw new XincoException(explorer.getResourceBundle().getString("window.userinfo.updatefailedonserver"));
+                    newuser.setFirstname(name.getText());
+                    newuser.setName(lastname.getText());
+                    newuser.setEmail(email.getText());
+                    newuser.setXinco_core_groups(explorer.getSession().user.getXinco_core_groups());
+                    newuser.setStatus_number(explorer.getSession().user.getStatus_number());
+                    if ((newuser = explorer.getSession().xinco.setXincoCoreUser(newuser, explorer.getSession().user)) != null) {
+                        newuser.setUserpassword(new String(password.getPassword()));
+                        ChangeReasonDialog crd=null;
+                        //Prompt for change reason
+                        if(!isAged){
+                            crd=new ChangeReasonDialog(new javax.swing.JFrame(), true,newuser,explorer);
+                            crd.setVisible(true);
+                            while(!crd.done);
+                        }
+                        newuser.setChangerID(newuser.getId());
+                        newuser.setWriteGroups(true);
+                        newuser.setChange(true);
+                        if(crd==null)
+                            newuser.setReason("audit.user.account.aged");
+                        else
+                            newuser.setReason(crd.getReason());
+                        newuser=explorer.getSession().xinco.setXincoCoreUser(newuser, explorer.getSession().user);
+                        //
+                        explorer.getSession().user = newuser;
+                    } else {
+                        throw new XincoException(explorer.getResourceBundle().getString("window.userinfo.updatefailedonserver"));
+                    }
+                    //update transaction info
+                    explorer.jLabelInternalFrameInformationText.setText(explorer.getResourceBundle().getString("window.userinfo.updatesuccess"));
+                    setVisible(false);
                 }
-                //update transaction info
-                explorer.jLabelInternalFrameInformationText.setText(explorer.getResourceBundle().getString("window.userinfo.updatesuccess"));
-                setVisible(false);
             } catch (Exception ue) {
                 JOptionPane.showMessageDialog(this, explorer.getResourceBundle().getString("window.userinfo.updatefailed") + " " + explorer.getResourceBundle().getString("general.reason") +  ": " + ue.toString(), explorer.getResourceBundle().getString("general.error"), JOptionPane.WARNING_MESSAGE);
             }
@@ -267,7 +291,7 @@ public class UserDialog extends javax.swing.JDialog {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new UserDialog(new javax.swing.JFrame(), true,null).setVisible(true);
+                new UserDialog(new javax.swing.JFrame(), true,null,false).setVisible(true);
             }
         });
     }

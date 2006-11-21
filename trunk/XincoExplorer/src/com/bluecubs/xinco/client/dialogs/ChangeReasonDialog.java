@@ -121,7 +121,8 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_saveActionPerformed
     
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
-        setVisible(false);
+        this.done=true;
+        this.dispose();
     }//GEN-LAST:event_cancelActionPerformed
     
     /**

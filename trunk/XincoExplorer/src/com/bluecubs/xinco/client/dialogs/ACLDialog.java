@@ -12,9 +12,7 @@ import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import java.util.Vector;
-import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 
@@ -24,7 +22,6 @@ import javax.swing.ListModel;
  */
 public class ACLDialog extends javax.swing.JDialog {
     private XincoExplorer explorer=null;
-    private XincoDBManager DBM=null;
     public boolean done=false;
     private Vector temp_acl = null;
     private XincoCoreACE temp_ace=null;
