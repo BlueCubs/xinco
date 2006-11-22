@@ -51,7 +51,8 @@ import java.util.ResourceBundle;
 //1 = unlocked
 //2 = locked
 //3 = aged password
-//4 = aged password modified, ready to turn unlocked
+//Temporary statuses
+//-1 = aged password modified, ready to turn unlocked 
 
 public class XincoCoreUserServer extends XincoCoreUser {
     private String sql;
@@ -107,7 +108,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
             String sql="SELECT * FROM xinco_core_user WHERE username='" +
                     attrUN + "' AND userpassword=MD5('" + attrUPW + "') AND status_number <> 2";
             rs = stmt.executeQuery(sql);
-            System.out.println(sql);
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {
@@ -153,7 +153,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     increaseAttempts = true;
                     setAttempts(rs.getInt("attempts"));
                 }
-                System.out.println("Throwing exception...No record found");
                 throw new XincoException();
             }
             stmt.close();
@@ -265,7 +264,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
      * @param attempts
      */
     public void setAttempts(int attempts) {
-        System.err.println("Changing attempts from "+this.attempts+" to "+attempts);
         this.attempts = attempts;
     }
     
@@ -293,7 +291,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
         xerb= ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
         try {
             Statement stmt;
-            if(getStatus_number()==4){
+            if(getStatus_number()==-1){
                 //Changed from aged out to password changed. Clear status
                 setStatus_number(1);
                 setAttempts(0);
@@ -334,7 +332,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
                         getStatus_number() + ", attempts="+getAttempts() +
                         ", last_modified='"+getLastModified()+"'"+
                         " WHERE id=" + getId();
-                System.out.println(sql);
                 stmt.executeUpdate(sql);
                 stmt.close();
             } else {
