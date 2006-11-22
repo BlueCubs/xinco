@@ -38,8 +38,12 @@ package com.bluecubs.xinco.client;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.dialogs.ACLDialog;
+import com.bluecubs.xinco.client.dialogs.AddAttributeUniversalDialog;
 import com.bluecubs.xinco.client.dialogs.ConnectionDialog;
-import com.bluecubs.xinco.client.frames.InformationFrame;
+import com.bluecubs.xinco.client.dialogs.DataDialog;
+import com.bluecubs.xinco.client.dialogs.DataFolderDialog;
+import com.bluecubs.xinco.client.dialogs.DataTypeDialog;
+import com.bluecubs.xinco.client.dialogs.LogDialog;
 import com.bluecubs.xinco.client.dialogs.UserDialog;
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -50,15 +54,11 @@ import java.util.TimeZone;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 import java.util.Locale;
-import java.util.Date;
-import java.text.DateFormat;
 import java.io.*;
 import java.util.zip.*;
 
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.client.*;
-import com.bluecubs.xinco.core.server.Crypter;
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.service.*;
 
 import javax.swing.JPanel;
@@ -82,9 +82,6 @@ import org.apache.axis.attachments.AttachmentPart;
 import org.apache.axis.client.Call;
 import javax.xml.namespace.QName;
 import java.net.URL;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 import javax.swing.JDialog;
 public class XincoExplorer extends JFrame {
@@ -103,7 +100,7 @@ public class XincoExplorer extends JFrame {
     private javax.swing.JSplitPane jSplitPaneRepository = null;
     private javax.swing.JScrollPane jScrollPaneRepositoryTree = null;
     private javax.swing.JScrollPane jScrollPaneRepositoryTable = null;
-    private javax.swing.JTree jTreeRepository = null;
+    public javax.swing.JTree jTreeRepository = null;
     private javax.swing.JTable jTableRepository = null;
     private javax.swing.JMenuItem jMenuItemRepositoryRefresh = null;
     private javax.swing.JMenu jMenuSearch = null;
@@ -302,7 +299,6 @@ public class XincoExplorer extends JFrame {
     
     private ConnectionDialog dialogConnection=null;
     private UserDialog userDialog=null;
-    private InformationFrame informationFrame=null;
     private JInternalFrame jInternalFrameInformation=null;
     /**
      * This is the default constructor
@@ -327,9 +323,6 @@ public class XincoExplorer extends JFrame {
         addWindowListener(new WindowClosingAdapter(true));
     }
     
-    public InformationFrame getInformationFrame(){
-        return this.informationFrame;
-    }
     /**
      * This method initializes jContentPaneInformation
      *
@@ -1228,7 +1221,7 @@ public class XincoExplorer extends JFrame {
         xincoClientVersion.setVersion_high(2);
         xincoClientVersion.setVersion_mid(0);
         xincoClientVersion.setVersion_low(0);
-        xincoClientVersion.setVersion_postfix("");
+        xincoClientVersion.setVersion_postfix(" Beta");
         switchPLAF((String)xincoClientConfig.elementAt(1));
         this.setBounds(0, 0, (new Double(getToolkit().getScreenSize().getWidth())).intValue()-100,
                 (new Double(getToolkit().getScreenSize().getHeight())).intValue()-75);
@@ -1396,12 +1389,10 @@ public class XincoExplorer extends JFrame {
             jDesktopPane = new javax.swing.JDesktopPane();
             jDesktopPane.add(getJInternalFrameRepository(), null);
             jDesktopPane.add(getJInternalFrameSearch(), null);
-//            getJInternalFrameInformation();
             jDesktopPane.add(getJInternalFrameInformation(), null);
             jDesktopPane.setLayer(getJInternalFrameRepository(), 0);
             jDesktopPane.setLayer(getJInternalFrameSearch(), 1);
             jDesktopPane.setLayer(jInternalFrameInformation, 10);
-//            jDesktopPane.setLayer(this.informationFrame, 10);
         }
         return jDesktopPane;
     }
@@ -1483,7 +1474,7 @@ public class XincoExplorer extends JFrame {
      *
      * @return javax.swing.JTree
      */
-    private javax.swing.JTree getJTreeRepository() {
+    public javax.swing.JTree getJTreeRepository() {
         if(jTreeRepository == null) {
             jTreeRepository = new javax.swing.JTree();
             jTreeRepository.setModel(xincoClientSession.xincoClientRepository.treemodel);
@@ -2270,6 +2261,7 @@ public class XincoExplorer extends JFrame {
                     true,this);
         }
     }
+    
     /**
      * This method initializes jDialogConnection
      *
@@ -2278,8 +2270,9 @@ public class XincoExplorer extends JFrame {
     private void getJDialogConnection() {
         if(this.dialogConnection == null) {
             this.dialogConnection=new ConnectionDialog(new javax.swing.JFrame(),
-                    true,this);}
-        this.dialogConnection.setVisible(true);
+                    true,this);
+        }
+            this.dialogConnection.setVisible(true);
     }
     
     public ResourceBundle getResourceBundle(){
@@ -2358,7 +2351,7 @@ public class XincoExplorer extends JFrame {
             }
         }
     }
-
+    
     /**
      * This method initializes jInternalFrameInformation
      *
@@ -2560,295 +2553,18 @@ public class XincoExplorer extends JFrame {
         }
         return jMenuItemRepositoryDownloadRevision;
     }
-    /**
-     * This method initializes jContentPaneDialogFolder
-     *
-     * @return javax.swing.JPanel
-     */
-    private javax.swing.JPanel getJContentPaneDialogFolder() {
-        if(jContentPaneDialogFolder == null) {
-            jContentPaneDialogFolder = new javax.swing.JPanel();
-            jContentPaneDialogFolder.setLayout(null);
-            jContentPaneDialogFolder.add(getJLabelDialogFolderID(), null);
-            jContentPaneDialogFolder.add(getJTextFieldDialogFolderID(), null);
-            jContentPaneDialogFolder.add(getJLabelDialogFolderDesignation(), null);
-            jContentPaneDialogFolder.add(getJTextFieldDialogFolderDesignation(), null);
-            jContentPaneDialogFolder.add(getJLabelDialogFolderLanguage(), null);
-            jContentPaneDialogFolder.add(getJScrollPaneDialogFolderLanguage(), null);
-            jContentPaneDialogFolder.add(getJLabelDialogFolderStatus(), null);
-            jContentPaneDialogFolder.add(getJTextFieldDialogFolderStatus(), null);
-            jContentPaneDialogFolder.add(getJButtonDialogFolderSave(), null);
-            jContentPaneDialogFolder.add(getJButtonDialogFolderCancel(), null);
-        }
-        return jContentPaneDialogFolder;
-    }
+    
     /**
      * This method initializes jDialogFolder
      *
      * @return javax.swing.JDialog
      */
     private javax.swing.JDialog getJDialogFolder() {
-        if(jDialogFolder == null) {
-            jDialogFolder = new javax.swing.JDialog();
-            jDialogFolder.setContentPane(getJContentPaneDialogFolder());
-            jDialogFolder.setBounds(200, 200, 400, 270);
-            jDialogFolder.setModal(true);
-            jDialogFolder.setResizable(false);
-            jDialogFolder.setName("DialogFolder");
-            jDialogFolder.setTitle(xerb.getString("window.folder"));
-            jDialogFolder.getRootPane().setDefaultButton(getJButtonDialogFolderSave());
-        }
-        //processing independent of creation
-        int i = 0;
-        String text = "";
-        int selection = -1;
-        int alt_selection = 0;
-        if (!(xincoClientSession.currentTreeNodeSelection.getUserObject() == null)) {
-            text = "" + ((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getId();
-            jTextFieldDialogFolderID.setText(text);
-            text = "" + ((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getDesignation();
-            jTextFieldDialogFolderDesignation.setText(text);
-            jTextFieldDialogFolderDesignation.selectAll();
-            DefaultListModel dlm = (DefaultListModel)jListDialogFolderLanguage.getModel();
-            dlm.removeAllElements();
-            for (i=0;i<xincoClientSession.server_languages.size();i++) {
-                text = ((XincoCoreLanguage)xincoClientSession.server_languages.elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage)xincoClientSession.server_languages.elementAt(i)).getSign() + ")";
-                dlm.addElement(text);
-                if (((XincoCoreLanguage)xincoClientSession.server_languages.elementAt(i)).getId() == ((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_language().getId()) {
-                    jListDialogFolderLanguage.setSelectedIndex(i);
-                }
-                if (((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getId() == 0) {
-                    if (((XincoCoreLanguage)xincoClientSession.server_languages.elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
-                        selection = i;
-                    }
-                    if (((XincoCoreLanguage)xincoClientSession.server_languages.elementAt(i)).getId() == 1) {
-                        alt_selection = i;
-                    }
-                }
-            }
-            if (((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getId() == 0) {
-                if (selection == -1) {
-                    selection = alt_selection;
-                }
-                jListDialogFolderLanguage.setSelectedIndex(selection);
-            }
-            jListDialogFolderLanguage.ensureIndexIsVisible(jListDialogFolderLanguage.getSelectedIndex());
-            //text = "" + ((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getStatus_number();
-            if (((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getStatus_number() == 1) {
-                text = xerb.getString("general.status.open") + "";
-            }
-            if (((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getStatus_number() == 2) {
-                text = xerb.getString("general.status.locked") + " (-)";
-            }
-            if (((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getStatus_number() == 3) {
-                text = xerb.getString("general.status.archived") + " (->)";
-            }
-            jTextFieldDialogFolderStatus.setText(text);
-        }
+        if(jDialogFolder == null)
+            jDialogFolder = new DataFolderDialog(null, true, this);
         return jDialogFolder;
     }
-    /**
-     * This method initializes jLabelDialogFolderID
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogFolderID() {
-        if(jLabelDialogFolderID == null) {
-            jLabelDialogFolderID = new javax.swing.JLabel();
-            jLabelDialogFolderID.setBounds(10, 10, 100, 20);
-            jLabelDialogFolderID.setText(xerb.getString("general.id") + ":");
-        }
-        return jLabelDialogFolderID;
-    }
-    /**
-     * This method initializes jLabelDialogFolderDesignation
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogFolderDesignation() {
-        if(jLabelDialogFolderDesignation == null) {
-            jLabelDialogFolderDesignation = new javax.swing.JLabel();
-            jLabelDialogFolderDesignation.setBounds(10, 40, 100, 20);
-            jLabelDialogFolderDesignation.setText(xerb.getString("general.designation") + ":");
-        }
-        return jLabelDialogFolderDesignation;
-    }
-    /**
-     * This method initializes jLabelDialogFolderLanguage
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogFolderLanguage() {
-        if(jLabelDialogFolderLanguage == null) {
-            jLabelDialogFolderLanguage = new javax.swing.JLabel();
-            jLabelDialogFolderLanguage.setBounds(10, 70, 100, 20);
-            jLabelDialogFolderLanguage.setText(xerb.getString("general.language") + ":");
-        }
-        return jLabelDialogFolderLanguage;
-    }
-    /**
-     * This method initializes jLabelDialogFolderStatus
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogFolderStatus() {
-        if(jLabelDialogFolderStatus == null) {
-            jLabelDialogFolderStatus = new javax.swing.JLabel();
-            jLabelDialogFolderStatus.setBounds(10, 140, 100, 20);
-            jLabelDialogFolderStatus.setText(xerb.getString("general.status") + ":");
-        }
-        return jLabelDialogFolderStatus;
-    }
-    /**
-     * This method initializes jButtonDialogFolderSave
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogFolderSave() {
-        if(jButtonDialogFolderSave == null) {
-            jButtonDialogFolderSave = new javax.swing.JButton();
-            jButtonDialogFolderSave.setBounds(120, 180, 100, 30);
-            jButtonDialogFolderSave.setText(xerb.getString("general.save") + "!");
-            jButtonDialogFolderSave.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    boolean insertnewnode = false;
-                    XincoMutableTreeNode temp_node = null;
-                    XincoCoreNode newnode = (XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject();
-                    //check if inserting new node
-                    if (newnode.getId() <= 0) {
-                        insertnewnode = true;
-                    }
-                    //set altered values
-                    newnode.setDesignation(jTextFieldDialogFolderDesignation.getText());
-                    newnode.setXinco_core_language(((XincoCoreLanguage)xincoClientSession.server_languages.elementAt(jListDialogFolderLanguage.getSelectedIndex())));
-                    try {
-                        //optimize node size
-                        newnode.setXinco_core_nodes(new Vector());
-                        newnode.setXinco_core_data(new Vector());
-                        //invoke web-service
-                        if ((newnode = xincoClientSession.xinco.setXincoCoreNode(newnode, xincoClientSession.user)) != null) {
-                            //update to modified user object
-                            xincoClientSession.currentTreeNodeSelection.setUserObject(newnode);
-                            xincoClientSession.xincoClientRepository.treemodel.nodeChanged((xincoClientSession.currentTreeNodeSelection));
-                            //select parent of new node
-                            if (insertnewnode) {
-                                xincoClientSession.currentTreeNodeSelection = (XincoMutableTreeNode)xincoClientSession.currentTreeNodeSelection.getParent();
-                            }
-                            jTreeRepository.setSelectionPath(new TreePath(xincoClientSession.currentTreeNodeSelection.getPath()));
-                            jLabelInternalFrameInformationText.setText(xerb.getString("window.folder.updatesuccess"));
-                        } else {
-                            throw new XincoException(xerb.getString("error.nowritepermission"));
-                        }
-                    } catch (Exception rmie) {
-                        //remove new node in case off error
-                        if (insertnewnode) {
-                            temp_node = xincoClientSession.currentTreeNodeSelection;
-                            xincoClientSession.currentTreeNodeSelection = (XincoMutableTreeNode)xincoClientSession.currentTreeNodeSelection.getParent();
-                            jTreeRepository.setSelectionPath(new TreePath(xincoClientSession.currentTreeNodeSelection.getPath()));
-                            xincoClientSession.xincoClientRepository.treemodel.removeNodeFromParent(temp_node);
-                        }
-                        JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("window.folder.updatefailed") + " " + xerb.getString("general.reason") + ": " + rmie.toString(), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
-                    }
-                    jDialogFolder.setVisible(false);
-                }
-            });
-        }
-        return jButtonDialogFolderSave;
-    }
-    /**
-     * This method initializes jButtonDialogFolderCancel
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogFolderCancel() {
-        if(jButtonDialogFolderCancel == null) {
-            jButtonDialogFolderCancel = new javax.swing.JButton();
-            jButtonDialogFolderCancel.setBounds(240, 180, 100, 30);
-            jButtonDialogFolderCancel.setText(xerb.getString("general.cancel"));
-            jButtonDialogFolderCancel.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    XincoMutableTreeNode temp_node = null;
-                    //delete new folder from treemodel if not saved to server yet
-                    if (((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getId() == 0) {
-                        temp_node = xincoClientSession.currentTreeNodeSelection;
-                        xincoClientSession.currentTreeNodeSelection = (XincoMutableTreeNode)xincoClientSession.currentTreeNodeSelection.getParent();
-                        jTreeRepository.setSelectionPath(new TreePath(xincoClientSession.currentTreeNodeSelection.getPath()));
-                        xincoClientSession.xincoClientRepository.treemodel.removeNodeFromParent(temp_node);
-                    }
-                    jDialogFolder.setVisible(false);
-                }
-            });
-        }
-        return jButtonDialogFolderCancel;
-    }
-    /**
-     * This method initializes jTextFieldDialogFolderID
-     *
-     * @return javax.swing.JTextField
-     */
-    private javax.swing.JTextField getJTextFieldDialogFolderID() {
-        if(jTextFieldDialogFolderID == null) {
-            jTextFieldDialogFolderID = new javax.swing.JTextField();
-            jTextFieldDialogFolderID.setBounds(120, 10, 250, 20);
-            jTextFieldDialogFolderID.setEnabled(false);
-            jTextFieldDialogFolderID.setEditable(false);
-        }
-        return jTextFieldDialogFolderID;
-    }
-    /**
-     * This method initializes jTextFieldDialogFolderDesignation
-     *
-     * @return javax.swing.JTextField
-     */
-    private javax.swing.JTextField getJTextFieldDialogFolderDesignation() {
-        if(jTextFieldDialogFolderDesignation == null) {
-            jTextFieldDialogFolderDesignation = new javax.swing.JTextField();
-            jTextFieldDialogFolderDesignation.setBounds(120, 40, 250, 20);
-        }
-        return jTextFieldDialogFolderDesignation;
-    }
-    /**
-     * This method initializes jTextFieldDialogFolderStatus
-     *
-     * @return javax.swing.JTextField
-     */
-    private javax.swing.JTextField getJTextFieldDialogFolderStatus() {
-        if(jTextFieldDialogFolderStatus == null) {
-            jTextFieldDialogFolderStatus = new javax.swing.JTextField();
-            jTextFieldDialogFolderStatus.setBounds(120, 140, 250, 20);
-            jTextFieldDialogFolderStatus.setEnabled(false);
-            jTextFieldDialogFolderStatus.setEditable(false);
-        }
-        return jTextFieldDialogFolderStatus;
-    }
-    /**
-     * This method initializes jScrollPaneDialogFolderLanguage
-     *
-     * @return javax.swing.JScrollPane
-     */
-    private javax.swing.JScrollPane getJScrollPaneDialogFolderLanguage() {
-        if(jScrollPaneDialogFolderLanguage == null) {
-            jScrollPaneDialogFolderLanguage = new javax.swing.JScrollPane();
-            jScrollPaneDialogFolderLanguage.setViewportView(getJListDialogFolderLanguage());
-            jScrollPaneDialogFolderLanguage.setBounds(120, 70, 250, 60);
-            jScrollPaneDialogFolderLanguage.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        }
-        return jScrollPaneDialogFolderLanguage;
-    }
-    /**
-     * This method initializes jListDialogFolderLanguage
-     *
-     * @return javax.swing.JList
-     */
-    private javax.swing.JList getJListDialogFolderLanguage() {
-        if(jListDialogFolderLanguage == null) {
-            DefaultListModel dlm = new DefaultListModel();
-            jListDialogFolderLanguage = new javax.swing.JList();
-            jListDialogFolderLanguage.setModel(dlm);
-            jListDialogFolderLanguage.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        }
-        return jListDialogFolderLanguage;
-    }
+    
     /**
      * This method initializes jMenuItemRepositoryEditFolderDataACL
      *
@@ -2952,7 +2668,10 @@ public class XincoExplorer extends JFrame {
                                     } catch (Exception rmie) {
                                         //undo modification
                                         ((XincoCoreNode)temp_node.getUserObject()).setXinco_core_node_id(old_parent_node_id);
-                                        JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("error.movefolderfailed") + " " + xerb.getString("general.reason") + ": " + rmie.toString(), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
+                                        JOptionPane.showMessageDialog(XincoExplorer.this, 
+                                                xerb.getString("error.movefolderfailed") + " " +
+                                                xerb.getString("general.reason") + ": " + rmie.toString(),
+                                                xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
                                         break;
                                     }
                                 }
@@ -3033,132 +2752,6 @@ public class XincoExplorer extends JFrame {
             });
         }
         return jMenuItemRepositoryViewEditAddAttributes;
-    }
-    /**
-     * This method initializes jContentPaneDialogDataType
-     *
-     * @return javax.swing.JPanel
-     */
-    private javax.swing.JPanel getJContentPaneDialogDataType() {
-        if(jContentPaneDialogDataType == null) {
-            jContentPaneDialogDataType = new javax.swing.JPanel();
-            jContentPaneDialogDataType.setLayout(null);
-            jContentPaneDialogDataType.add(getJLabelDialogDataType(), null);
-            jContentPaneDialogDataType.add(getJScrollPaneDialogDataType(), null);
-            jContentPaneDialogDataType.add(getJButtonDialogDataTypeContinue(), null);
-            jContentPaneDialogDataType.add(getJButtonDialogDataTypeCancel(), null);
-        }
-        return jContentPaneDialogDataType;
-    }
-    /**
-     * This method initializes jDialogDataType
-     *
-     * @return javax.swing.JDialog
-     */
-    private javax.swing.JDialog getJDialogDataType() {
-        if(jDialogDataType == null) {
-            jDialogDataType = new javax.swing.JDialog();
-            jDialogDataType.setContentPane(getJContentPaneDialogDataType());
-            jDialogDataType.setBounds(200, 200, 400, 220);
-            jDialogDataType.setTitle(xerb.getString("window.datatype"));
-            jDialogDataType.setModal(true);
-            jDialogDataType.setResizable(false);
-            jDialogDataType.getRootPane().setDefaultButton(getJButtonDialogDataTypeContinue());
-        }
-        //processing independent of creation
-        int i = 0;
-        String text = "";
-        if (!(xincoClientSession.currentTreeNodeSelection.getUserObject() == null)) {
-            DefaultListModel dlm = (DefaultListModel)jListDialogDataType.getModel();
-            dlm.removeAllElements();
-            for (i=0;i<xincoClientSession.server_datatypes.size();i++) {
-                text = ((XincoCoreDataType)xincoClientSession.server_datatypes.elementAt(i)).getDesignation() + " (" + ((XincoCoreDataType)xincoClientSession.server_datatypes.elementAt(i)).getDescription() + ")";
-                dlm.addElement(text);
-                if (((XincoCoreDataType)xincoClientSession.server_datatypes.elementAt(i)).getId() == ((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getId()) {
-                    jListDialogDataType.setSelectedIndex(i);
-                }
-            }
-        }
-        return jDialogDataType;
-    }
-    /**
-     * This method initializes jLabelDialogDataType
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogDataType() {
-        if(jLabelDialogDataType == null) {
-            jLabelDialogDataType = new javax.swing.JLabel();
-            jLabelDialogDataType.setBounds(10, 10, 100, 20);
-            jLabelDialogDataType.setText(xerb.getString("window.datatype.datatype") + ":");
-        }
-        return jLabelDialogDataType;
-    }
-    /**
-     * This method initializes jScrollPaneDialogDataType
-     *
-     * @return javax.swing.JScrollPane
-     */
-    private javax.swing.JScrollPane getJScrollPaneDialogDataType() {
-        if(jScrollPaneDialogDataType == null) {
-            jScrollPaneDialogDataType = new javax.swing.JScrollPane();
-            jScrollPaneDialogDataType.setViewportView(getJListDialogDataType());
-            jScrollPaneDialogDataType.setBounds(120, 10, 250, 100);
-            jScrollPaneDialogDataType.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        }
-        return jScrollPaneDialogDataType;
-    }
-    /**
-     * This method initializes jListDialogDataType
-     *
-     * @return javax.swing.JList
-     */
-    private javax.swing.JList getJListDialogDataType() {
-        if(jListDialogDataType == null) {
-            DefaultListModel dlm = new DefaultListModel();
-            jListDialogDataType = new javax.swing.JList();
-            jListDialogDataType.setModel(dlm);
-            jListDialogDataType.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        }
-        return jListDialogDataType;
-    }
-    /**
-     * This method initializes jButtonDialogDataTypeContinue
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogDataTypeContinue() {
-        if(jButtonDialogDataTypeContinue == null) {
-            jButtonDialogDataTypeContinue = new javax.swing.JButton();
-            jButtonDialogDataTypeContinue.setBounds(120, 130, 100, 30);
-            jButtonDialogDataTypeContinue.setText(xerb.getString("general.continue"));
-            jButtonDialogDataTypeContinue.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    ((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).setXinco_core_data_type((XincoCoreDataType)xincoClientSession.server_datatypes.elementAt(jListDialogDataType.getSelectedIndex()));
-                    global_dialog_return_value = 1;
-                    jDialogDataType.setVisible(false);
-                }
-            });
-        }
-        return jButtonDialogDataTypeContinue;
-    }
-    /**
-     * This method initializes jButtonDialogDataTypeCancel
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogDataTypeCancel() {
-        if(jButtonDialogDataTypeCancel == null) {
-            jButtonDialogDataTypeCancel = new javax.swing.JButton();
-            jButtonDialogDataTypeCancel.setBounds(240, 130, 100, 30);
-            jButtonDialogDataTypeCancel.setText(xerb.getString("general.cancel"));
-            jButtonDialogDataTypeCancel.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    jDialogDataType.setVisible(false);
-                }
-            });
-        }
-        return jButtonDialogDataTypeCancel;
     }
     /**
      * This method initializes jContentPaneDialogRevision
@@ -3310,280 +2903,14 @@ public class XincoExplorer extends JFrame {
         return jButtonDialogRevisionCancel;
     }
     /**
-     * This method initializes jContentPaneDialogData
-     *
-     * @return javax.swing.JPanel
-     */
-    private javax.swing.JPanel getJContentPaneDialogData() {
-        if(jContentPaneDialogData == null) {
-            jContentPaneDialogData = new javax.swing.JPanel();
-            jContentPaneDialogData.setLayout(null);
-            jContentPaneDialogData.add(getJLabelDialogDataID(), null);
-            jContentPaneDialogData.add(getJTextFieldDialogDataID(), null);
-            jContentPaneDialogData.add(getJLabelDialogDataDesignation(), null);
-            jContentPaneDialogData.add(getJTextFieldDialogDataDesignation(), null);
-            jContentPaneDialogData.add(getJLabelDialogDataLanguage(), null);
-            jContentPaneDialogData.add(getJScrollPaneDialogDataLanguage(), null);
-            jContentPaneDialogData.add(getJLabelDialogDataStatus(), null);
-            jContentPaneDialogData.add(getJTextFieldDialogDataStatus(), null);
-            jContentPaneDialogData.add(getJButtonDialogDataSave(), null);
-            jContentPaneDialogData.add(getJButtonDialogDataCancel(), null);
-        }
-        return jContentPaneDialogData;
-    }
-    /**
      * This method initializes jDialogData
      *
      * @return javax.swing.JDialog
      */
     private javax.swing.JDialog getJDialogData() {
-        if(jDialogData == null) {
-            jDialogData = new javax.swing.JDialog();
-            jDialogData.setContentPane(getJContentPaneDialogData());
-            jDialogData.setBounds(200, 200, 400, 270);
-            jDialogData.setTitle(xerb.getString("window.datadetails"));
-            jDialogData.setModal(true);
-            jDialogData.setResizable(false);
-            jDialogData.getRootPane().setDefaultButton(getJButtonDialogDataSave());
-        }
-        //processing independent of creation
-        int i = 0;
-        String text = "";
-        int selection = -1;
-        int alt_selection = 0;
-        if (!(xincoClientSession.currentTreeNodeSelection.getUserObject() == null)) {
-            text = "" + ((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getId();
-            jTextFieldDialogDataID.setText(text);
-            text = "" + ((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getDesignation();
-            jTextFieldDialogDataDesignation.setText(text);
-            jTextFieldDialogDataDesignation.selectAll();
-            DefaultListModel dlm = (DefaultListModel)jListDialogDataLanguage.getModel();
-            dlm.removeAllElements();
-            for (i=0;i<xincoClientSession.server_languages.size();i++) {
-                text = ((XincoCoreLanguage)xincoClientSession.server_languages.elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage)xincoClientSession.server_languages.elementAt(i)).getSign() + ")";
-                dlm.addElement(text);
-                if (((XincoCoreLanguage)xincoClientSession.server_languages.elementAt(i)).getId() == ((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_language().getId()) {
-                    jListDialogDataLanguage.setSelectedIndex(i);
-                }
-                if (((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getId() == 0) {
-                    if (((XincoCoreLanguage)xincoClientSession.server_languages.elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
-                        selection = i;
-                    }
-                    if (((XincoCoreLanguage)xincoClientSession.server_languages.elementAt(i)).getId() == 1) {
-                        alt_selection = i;
-                    }
-                }
-            }
-            if (((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getId() == 0) {
-                if (selection == -1) {
-                    selection = alt_selection;
-                }
-                jListDialogDataLanguage.setSelectedIndex(selection);
-            }
-            jListDialogDataLanguage.ensureIndexIsVisible(jListDialogDataLanguage.getSelectedIndex());
-            if (((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getStatus_number() == 1) {
-                text = xerb.getString("general.status.open") + "";
-            }
-            if (((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getStatus_number() == 2) {
-                text = xerb.getString("general.status.locked") + " (-)";
-            }
-            if (((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getStatus_number() == 3) {
-                text = xerb.getString("general.status.archived") + " (->)";
-            }
-            if (((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getStatus_number() == 4) {
-                text = xerb.getString("general.status.checkedout") + " (X)";
-            }
-            if (((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getStatus_number() == 5) {
-                text = xerb.getString("general.status.published") + " (WWW)";
-            }
-            jTextFieldDialogDataStatus.setText(text);
-        }
+        if(jDialogData == null)
+            jDialogData = new DataDialog(null, true, this);
         return jDialogData;
-    }
-    /**
-     * This method initializes jLabelDialogDataID
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogDataID() {
-        if(jLabelDialogDataID == null) {
-            jLabelDialogDataID = new javax.swing.JLabel();
-            jLabelDialogDataID.setBounds(10, 10, 100, 20);
-            jLabelDialogDataID.setText(xerb.getString("general.id") + ":");
-        }
-        return jLabelDialogDataID;
-    }
-    /**
-     * This method initializes jLabelDialogDataDesignation
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogDataDesignation() {
-        if(jLabelDialogDataDesignation == null) {
-            jLabelDialogDataDesignation = new javax.swing.JLabel();
-            jLabelDialogDataDesignation.setBounds(10, 40, 100, 20);
-            jLabelDialogDataDesignation.setText(xerb.getString("general.designation") + ":");
-        }
-        return jLabelDialogDataDesignation;
-    }
-    /**
-     * This method initializes jLabelDialogDataLanguage
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogDataLanguage() {
-        if(jLabelDialogDataLanguage == null) {
-            jLabelDialogDataLanguage = new javax.swing.JLabel();
-            jLabelDialogDataLanguage.setBounds(10, 70, 100, 20);
-            jLabelDialogDataLanguage.setText(xerb.getString("general.language") + ":");
-        }
-        return jLabelDialogDataLanguage;
-    }
-    /**
-     * This method initializes jLabelDialogDataStatus
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogDataStatus() {
-        if(jLabelDialogDataStatus == null) {
-            jLabelDialogDataStatus = new javax.swing.JLabel();
-            jLabelDialogDataStatus.setBounds(10, 140, 100, 20);
-            jLabelDialogDataStatus.setText(xerb.getString("general.status") + ":");
-        }
-        return jLabelDialogDataStatus;
-    }
-    /**
-     * This method initializes jTextFieldDialogDataID
-     *
-     * @return javax.swing.JTextField
-     */
-    private javax.swing.JTextField getJTextFieldDialogDataID() {
-        if(jTextFieldDialogDataID == null) {
-            jTextFieldDialogDataID = new javax.swing.JTextField();
-            jTextFieldDialogDataID.setBounds(120, 10, 250, 20);
-            jTextFieldDialogDataID.setEditable(false);
-            jTextFieldDialogDataID.setEnabled(false);
-        }
-        return jTextFieldDialogDataID;
-    }
-    /**
-     * This method initializes jTextFieldDialogDataDesignation
-     *
-     * @return javax.swing.JTextField
-     */
-    private javax.swing.JTextField getJTextFieldDialogDataDesignation() {
-        if(jTextFieldDialogDataDesignation == null) {
-            jTextFieldDialogDataDesignation = new javax.swing.JTextField();
-            jTextFieldDialogDataDesignation.setBounds(120, 40, 250, 20);
-        }
-        return jTextFieldDialogDataDesignation;
-    }
-    /**
-     * This method initializes jTextFieldDialogDataStatus
-     *
-     * @return javax.swing.JTextField
-     */
-    private javax.swing.JTextField getJTextFieldDialogDataStatus() {
-        if(jTextFieldDialogDataStatus == null) {
-            jTextFieldDialogDataStatus = new javax.swing.JTextField();
-            jTextFieldDialogDataStatus.setBounds(120, 140, 250, 20);
-            jTextFieldDialogDataStatus.setEnabled(false);
-            jTextFieldDialogDataStatus.setEditable(false);
-        }
-        return jTextFieldDialogDataStatus;
-    }
-    /**
-     * This method initializes jScrollPaneDialogDataLanguage
-     *
-     * @return javax.swing.JScrollPane
-     */
-    private javax.swing.JScrollPane getJScrollPaneDialogDataLanguage() {
-        if(jScrollPaneDialogDataLanguage == null) {
-            jScrollPaneDialogDataLanguage = new javax.swing.JScrollPane();
-            jScrollPaneDialogDataLanguage.setViewportView(getJListDialogDataLanguage());
-            jScrollPaneDialogDataLanguage.setBounds(120, 70, 250, 60);
-            jScrollPaneDialogDataLanguage.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        }
-        return jScrollPaneDialogDataLanguage;
-    }
-    /**
-     * This method initializes jButtonDialogDataSave
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogDataSave() {
-        if(jButtonDialogDataSave == null) {
-            jButtonDialogDataSave = new javax.swing.JButton();
-            jButtonDialogDataSave.setBounds(120, 180, 100, 30);
-            jButtonDialogDataSave.setText(xerb.getString("general.save") + "!");
-            jButtonDialogDataSave.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    //set altered values
-                    ((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).setDesignation(jTextFieldDialogDataDesignation.getText());
-                    ((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).setXinco_core_language(((XincoCoreLanguage)xincoClientSession.server_languages.elementAt(jListDialogDataLanguage.getSelectedIndex())));
-                    global_dialog_return_value = 1;
-                    jDialogData.setVisible(false);
-                }
-            });
-        }
-        return jButtonDialogDataSave;
-    }
-    /**
-     * This method initializes jButtonDialogDataCancel
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogDataCancel() {
-        if(jButtonDialogDataCancel == null) {
-            jButtonDialogDataCancel = new javax.swing.JButton();
-            jButtonDialogDataCancel.setBounds(240, 180, 100, 30);
-            jButtonDialogDataCancel.setText(xerb.getString("general.cancel"));
-            jButtonDialogDataCancel.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    jDialogData.setVisible(false);
-                }
-            });
-        }
-        return jButtonDialogDataCancel;
-    }
-    /**
-     * This method initializes jListDialogDataLanguage
-     *
-     * @return javax.swing.JList
-     */
-    private javax.swing.JList getJListDialogDataLanguage() {
-        if(jListDialogDataLanguage == null) {
-            DefaultListModel dlm = new DefaultListModel();
-            jListDialogDataLanguage = new javax.swing.JList();
-            jListDialogDataLanguage.setModel(dlm);
-            jListDialogDataLanguage.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        }
-        return jListDialogDataLanguage;
-    }
-    /**
-     * This method initializes jContentPaneDialogLog
-     *
-     * @return javax.swing.JPanel
-     */
-    private javax.swing.JPanel getJContentPaneDialogLog() {
-        if(jContentPaneDialogLog == null) {
-            jContentPaneDialogLog = new javax.swing.JPanel();
-            jContentPaneDialogLog.setLayout(null);
-            jContentPaneDialogLog.add(getJLabelDialogLogDescription(), null);
-            jContentPaneDialogLog.add(getJTextFieldDialogLogDescription(), null);
-            jContentPaneDialogLog.add(getJLabelDialogLogVersion(), null);
-            jContentPaneDialogLog.add(getJTextFieldDialogLogVersionHigh(), null);
-            jContentPaneDialogLog.add(getJLabelDialogLogVersionDot1(), null);
-            jContentPaneDialogLog.add(getJTextFieldDialogLogVersionMid(), null);
-            jContentPaneDialogLog.add(getJLabelDialogLogVersionDot2(), null);
-            jContentPaneDialogLog.add(getJTextFieldDialogLogVersionLow(), null);
-            jContentPaneDialogLog.add(getJLabelDialogLogVersionPostfix(), null);
-            jContentPaneDialogLog.add(getJTextFieldDialogLogVersionPostfix(), null);
-            jContentPaneDialogLog.add(getJLabelDialogLogVersionPostfixExplanation(), null);
-            jContentPaneDialogLog.add(getJButtonDialogLogContinue(), null);
-            jContentPaneDialogLog.add(getJButtonDialogLogCancel(), null);
-        }
-        return jContentPaneDialogLog;
     }
     /**
      * This method initializes jDialogLog
@@ -3591,453 +2918,12 @@ public class XincoExplorer extends JFrame {
      * @return javax.swing.JDialog
      */
     private javax.swing.JDialog getJDialogLog() {
-        if(jDialogLog == null) {
-            jDialogLog = new javax.swing.JDialog();
-            jDialogLog.setContentPane(getJContentPaneDialogLog());
-            jDialogLog.setBounds(200, 200, 400, 200);
-            jDialogLog.setTitle(xerb.getString("window.loggingdetails"));
-            jDialogLog.setResizable(false);
-            jDialogLog.setModal(true);
-            jDialogLog.getRootPane().setDefaultButton(getJButtonDialogLogContinue());
-        }
-        //processing independent of creation
-        int i = 0, log_index = 0;
-        String text = "";
-        if (!(xincoClientSession.currentTreeNodeSelection.getUserObject() == null)) {
-            log_index = ((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_logs().size() - 1;
-            text = "" + ((XincoCoreLog)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_description();
-            jTextFieldDialogLogDescription.setText(text);
-            jTextFieldDialogLogDescription.selectAll();
-            text = "" + ((XincoCoreLog)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_high();
-            jTextFieldDialogLogVersionHigh.setText(text);
-            text = "" + ((XincoCoreLog)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_mid();
-            jTextFieldDialogLogVersionMid.setText(text);
-            text = "" + ((XincoCoreLog)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_low();
-            jTextFieldDialogLogVersionLow.setText(text);
-            text = "" + ((XincoCoreLog)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_postfix();
-            jTextFieldDialogLogVersionPostfix.setText(text);
-        }
+//        if(jDialogLog == null) {
+        jDialogLog = new LogDialog(null,true,this);
+//        }
         return jDialogLog;
     }
-    /**
-     * This method initializes jLabelDialogLogDescription
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogLogDescription() {
-        if(jLabelDialogLogDescription == null) {
-            jLabelDialogLogDescription = new javax.swing.JLabel();
-            jLabelDialogLogDescription.setBounds(10, 10, 100, 20);
-            jLabelDialogLogDescription.setText(xerb.getString("window.loggingdetails.action") + ":");
-        }
-        return jLabelDialogLogDescription;
-    }
-    /**
-     * This method initializes jLabelDialogLogVersion
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogLogVersion() {
-        if(jLabelDialogLogVersion == null) {
-            jLabelDialogLogVersion = new javax.swing.JLabel();
-            jLabelDialogLogVersion.setBounds(10, 40, 100, 20);
-            jLabelDialogLogVersion.setText(xerb.getString("general.version") + ":");
-        }
-        return jLabelDialogLogVersion;
-    }
-    /**
-     * This method initializes jTextFieldDialogLogDescription
-     *
-     * @return javax.swing.JTextField
-     */
-    private javax.swing.JTextField getJTextFieldDialogLogDescription() {
-        if(jTextFieldDialogLogDescription == null) {
-            jTextFieldDialogLogDescription = new javax.swing.JTextField();
-            jTextFieldDialogLogDescription.setBounds(120, 10, 250, 20);
-        }
-        return jTextFieldDialogLogDescription;
-    }
-    /**
-     * This method initializes jTextFieldDialogLogVersionHigh
-     *
-     * @return javax.swing.JTextField
-     */
-    private javax.swing.JTextField getJTextFieldDialogLogVersionHigh() {
-        if(jTextFieldDialogLogVersionHigh == null) {
-            jTextFieldDialogLogVersionHigh = new javax.swing.JTextField();
-            jTextFieldDialogLogVersionHigh.setBounds(120, 40, 70, 20);
-        }
-        return jTextFieldDialogLogVersionHigh;
-    }
-    /**
-     * This method initializes jTextFieldDialogLogVersionMid
-     *
-     * @return javax.swing.JTextField
-     */
-    private javax.swing.JTextField getJTextFieldDialogLogVersionMid() {
-        if(jTextFieldDialogLogVersionMid == null) {
-            jTextFieldDialogLogVersionMid = new javax.swing.JTextField();
-            jTextFieldDialogLogVersionMid.setBounds(210, 40, 70, 20);
-        }
-        return jTextFieldDialogLogVersionMid;
-    }
-    /**
-     * This method initializes jTextFieldDialogLogVersionLow
-     *
-     * @return javax.swing.JTextField
-     */
-    private javax.swing.JTextField getJTextFieldDialogLogVersionLow() {
-        if(jTextFieldDialogLogVersionLow == null) {
-            jTextFieldDialogLogVersionLow = new javax.swing.JTextField();
-            jTextFieldDialogLogVersionLow.setBounds(300, 40, 70, 20);
-        }
-        return jTextFieldDialogLogVersionLow;
-    }
-    /**
-     * This method initializes jTextFieldDialogLogVersionPostfix
-     *
-     * @return javax.swing.JTextField
-     */
-    private javax.swing.JTextField getJTextFieldDialogLogVersionPostfix() {
-        if(jTextFieldDialogLogVersionPostfix == null) {
-            jTextFieldDialogLogVersionPostfix = new javax.swing.JTextField();
-            jTextFieldDialogLogVersionPostfix.setBounds(120, 70, 70, 20);
-        }
-        return jTextFieldDialogLogVersionPostfix;
-    }
-    /**
-     * This method initializes jButtonDialogLogContinue
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogLogContinue() {
-        if(jButtonDialogLogContinue == null) {
-            jButtonDialogLogContinue = new javax.swing.JButton();
-            jButtonDialogLogContinue.setBounds(120, 110, 100, 30);
-            jButtonDialogLogContinue.setText(xerb.getString("general.continue"));
-            jButtonDialogLogContinue.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    int log_index = 0;
-                    String text = "";
-                    log_index = ((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_logs().size() - 1;
-                    text = jTextFieldDialogLogDescription.getText();
-                    ((XincoCoreLog)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).setOp_description(text);
-                    text = jTextFieldDialogLogVersionHigh.getText();
-                    try {
-                        ((XincoCoreLog)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().setVersion_high(Integer.parseInt(text));
-                    } catch (Exception nfe) {
-                        ((XincoCoreLog)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().setVersion_high(0);
-                    }
-                    text = jTextFieldDialogLogVersionMid.getText();
-                    try {
-                        ((XincoCoreLog)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().setVersion_mid(Integer.parseInt(text));
-                    } catch (Exception nfe) {
-                        ((XincoCoreLog)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().setVersion_mid(0);
-                    }
-                    text = jTextFieldDialogLogVersionLow.getText();
-                    try {
-                        ((XincoCoreLog)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().setVersion_low(Integer.parseInt(text));
-                    } catch (Exception nfe) {
-                        ((XincoCoreLog)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().setVersion_low(0);
-                    }
-                    text = jTextFieldDialogLogVersionPostfix.getText();
-                    ((XincoCoreLog)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().setVersion_postfix(text);
-                    global_dialog_return_value = 1;
-                    jDialogLog.setVisible(false);
-                }
-            });
-        }
-        return jButtonDialogLogContinue;
-    }
-    /**
-     * This method initializes jButtonDialogLogCancel
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogLogCancel() {
-        if(jButtonDialogLogCancel == null) {
-            jButtonDialogLogCancel = new javax.swing.JButton();
-            jButtonDialogLogCancel.setBounds(240, 110, 100, 30);
-            jButtonDialogLogCancel.setText(xerb.getString("general.cancel"));
-            jButtonDialogLogCancel.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    jDialogLog.setVisible(false);
-                }
-            });
-        }
-        return jButtonDialogLogCancel;
-    }
-    /**
-     * This method initializes jLabelDialogLogVersionPostfix
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogLogVersionPostfix() {
-        if(jLabelDialogLogVersionPostfix == null) {
-            jLabelDialogLogVersionPostfix = new javax.swing.JLabel();
-            jLabelDialogLogVersionPostfix.setBounds(10, 70, 100, 20);
-            jLabelDialogLogVersionPostfix.setText(xerb.getString("general.version.postfix") + ":");
-        }
-        return jLabelDialogLogVersionPostfix;
-    }
-    /**
-     * This method initializes jLabelDialogLogVersionPostfixExplanation
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogLogVersionPostfixExplanation() {
-        if(jLabelDialogLogVersionPostfixExplanation == null) {
-            jLabelDialogLogVersionPostfixExplanation = new javax.swing.JLabel();
-            jLabelDialogLogVersionPostfixExplanation.setBounds(210, 70, 160, 20);
-            jLabelDialogLogVersionPostfixExplanation.setText(xerb.getString("general.version.postfix.explanation"));
-        }
-        return jLabelDialogLogVersionPostfixExplanation;
-    }
-    /**
-     * This method initializes jLabelDialogLogVersionDot1
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogLogVersionDot1() {
-        if(jLabelDialogLogVersionDot1 == null) {
-            jLabelDialogLogVersionDot1 = new javax.swing.JLabel();
-            jLabelDialogLogVersionDot1.setBounds(198, 43, 10, 15);
-            jLabelDialogLogVersionDot1.setText(".");
-        }
-        return jLabelDialogLogVersionDot1;
-    }
-    /**
-     * This method initializes jLabelDialogLogVersionDot2
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogLogVersionDot2() {
-        if(jLabelDialogLogVersionDot2 == null) {
-            jLabelDialogLogVersionDot2 = new javax.swing.JLabel();
-            jLabelDialogLogVersionDot2.setBounds(288, 43, 10, 15);
-            jLabelDialogLogVersionDot2.setText(".");
-        }
-        return jLabelDialogLogVersionDot2;
-    }
-    /**
-     * This method initializes jContentPaneDialogAddAttributesUniversal
-     *
-     * @return javax.swing.JPanel
-     */
-    private javax.swing.JPanel getJContentPaneDialogAddAttributesUniversal() {
-        if(jContentPaneDialogAddAttributesUniversal == null) {
-            jContentPaneDialogAddAttributesUniversal = new javax.swing.JPanel();
-            jContentPaneDialogAddAttributesUniversal.setLayout(null);
-            jContentPaneDialogAddAttributesUniversal.add(getJScrollPaneDialogAddAttributesUniversal(), null);
-            jContentPaneDialogAddAttributesUniversal.add(getJButtonDialogAddAttributesUniversalSave(), null);
-            jContentPaneDialogAddAttributesUniversal.add(getJButtonDialogAddAttributesUniversalCancel(), null);
-        }
-        return jContentPaneDialogAddAttributesUniversal;
-    }
-    /**
-     * This method initializes jDialogAddAttributesUniversal
-     *
-     * @return javax.swing.JDialog
-     */
-    private javax.swing.JDialog getJDialogAddAttributesUniversal() {
-        int i=0,j=0, start = 0;
-        if(jDialogAddAttributesUniversal == null) {
-            jDialogAddAttributesUniversal = new javax.swing.JDialog();
-            jDialogAddAttributesUniversal.setContentPane(getJContentPaneDialogAddAttributesUniversal());
-            jDialogAddAttributesUniversal.setBounds(200, 200, 600, 540);
-            jDialogAddAttributesUniversal.setResizable(false);
-            jDialogAddAttributesUniversal.setModal(true);
-            jDialogAddAttributesUniversal.setTitle(xerb.getString("window.addattributesuniversal"));
-            jDialogAddAttributesUniversal.getRootPane().setDefaultButton(getJButtonDialogAddAttributesUniversalSave());
-        }
-        //reset selection
-        jTableDialogAddAttributesUniversal.editCellAt(-1, -1);
-        //processing independent of creation
-        if (((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getStatus_number() == 1) {
-            jButtonDialogAddAttributesUniversalSave.setEnabled(true);
-        } else {
-            jButtonDialogAddAttributesUniversalSave.setEnabled(false);
-        }
-        DefaultTableModel dtm = (DefaultTableModel)jTableDialogAddAttributesUniversal.getModel();
-        j = dtm.getRowCount();
-        for (i=0;i<j;i++) {
-            dtm.removeRow(0);
-        }
-        String[] rdata = {"",""};
-        //prevent editing of fixed attributes for certain data types
-        start = 0;
-        //file = 1
-        if (((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getId() == 1) {
-            start = 8;
-        }
-        //text = 2
-        if (((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getId() == 2) {
-            start = 1;
-        }
-        for (i=start;i<((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().size();i++) {
-            rdata[0] = ((XincoCoreDataTypeAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation();
-            rdata[1] = "";
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("datetime"))) {
-                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_datetime().getTime().toString();
-            }
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("double"))) {
-                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_double();
-            }
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("int"))) {
-                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_int();
-            }
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("text"))) {
-                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_text();
-            }
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("unsignedint"))) {
-                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint();
-            }
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("varchar"))) {
-                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_varchar();
-            }
-            dtm.addRow(rdata);
-        }
-        //set selection
-        jTableDialogAddAttributesUniversal.editCellAt(0, 1);
-        return jDialogAddAttributesUniversal;
-    }
-    /**
-     * This method initializes jScrollPaneDialogAddAttributesUniversal
-     *
-     * @return javax.swing.JScrollPane
-     */
-    private javax.swing.JScrollPane getJScrollPaneDialogAddAttributesUniversal() {
-        if(jScrollPaneDialogAddAttributesUniversal == null) {
-            jScrollPaneDialogAddAttributesUniversal = new javax.swing.JScrollPane();
-            jScrollPaneDialogAddAttributesUniversal.setViewportView(getJTableDialogAddAttributesUniversal());
-            jScrollPaneDialogAddAttributesUniversal.setBounds(10, 10, 560, 420);
-            jScrollPaneDialogAddAttributesUniversal.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-            jScrollPaneDialogAddAttributesUniversal.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        }
-        return jScrollPaneDialogAddAttributesUniversal;
-    }
-    /**
-     * This method initializes jButtonDialogAddAttributesUniversalSave
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogAddAttributesUniversalSave() {
-        if(jButtonDialogAddAttributesUniversalSave == null) {
-            jButtonDialogAddAttributesUniversalSave = new javax.swing.JButton();
-            jButtonDialogAddAttributesUniversalSave.setBounds(350, 450, 100, 30);
-            jButtonDialogAddAttributesUniversalSave.setText(xerb.getString("general.save") + "!");
-            jButtonDialogAddAttributesUniversalSave.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    int i=0, start=0;
-                    String text = "";
-                    DefaultTableModel dtm;
-                    Date attr_dt = new Date(0);
-                    int attr_i = 0;
-                    long attr_l = 0;
-                    double attr_d = 0;
-                    
-                    //make sure changes are committed
-                    jTableDialogAddAttributesUniversal.editCellAt(-1, -1);
-                    //prevent editing of fixed attributes for certain data types
-                    start = 0;
-                    //file = 1
-                    if (((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getId() == 1) {
-                        start = 8;
-                    }
-                    if (((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getId() == 2) {
-                        start = 1;
-                    }
-                    //update add attributes
-                    for (i=0;i<((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().size()-start;i++) {
-                        dtm = (DefaultTableModel)jTableDialogAddAttributesUniversal.getModel();
-                        try {
-                            text = (String)dtm.getValueAt(i, 1);
-                        } catch (Exception dtme) {
-                            text = "";
-                        }
-                        if (((XincoCoreDataTypeAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("datetime"))) {
-                            try {
-                                DateFormat df = DateFormat.getInstance();
-                                attr_dt = df.parse(text);
-                            } catch (Exception pe) {
-                                attr_dt = new Date(0);
-                            }
-                            ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i+start)).getAttrib_datetime().setTime(attr_dt);
-                        }
-                        if (((XincoCoreDataTypeAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("double"))) {
-                            try {
-                                attr_d = Double.parseDouble(text);
-                            } catch (Exception pe) {
-                                attr_d = 0.0;
-                            }
-                            ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i+start)).setAttrib_double(attr_d);
-                        }
-                        if (((XincoCoreDataTypeAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("int"))) {
-                            try {
-                                attr_i = Integer.parseInt(text);
-                            } catch (Exception pe) {
-                                attr_i = 0;
-                            }
-                            ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i+start)).setAttrib_int(attr_i);
-                        }
-                        if (((XincoCoreDataTypeAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("text"))) {
-                            ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i+start)).setAttrib_text(text);
-                        }
-                        if (((XincoCoreDataTypeAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("unsignedint"))) {
-                            try {
-                                attr_l = Long.parseLong(text);
-                            } catch (Exception pe) {
-                                attr_l = 0;
-                            }
-                            ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i+start)).setAttrib_unsignedint(attr_l);
-                        }
-                        if (((XincoCoreDataTypeAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("varchar"))) {
-                            ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i+start)).setAttrib_varchar(text);
-                        }
-                    }
-                    global_dialog_return_value = 1;
-                    jDialogAddAttributesUniversal.setVisible(false);
-                }
-            });
-        }
-        return jButtonDialogAddAttributesUniversalSave;
-    }
-    /**
-     * This method initializes jButtonDialogAddAttributesUniversalCancel
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogAddAttributesUniversalCancel() {
-        if(jButtonDialogAddAttributesUniversalCancel == null) {
-            jButtonDialogAddAttributesUniversalCancel = new javax.swing.JButton();
-            jButtonDialogAddAttributesUniversalCancel.setBounds(470, 450, 100, 30);
-            jButtonDialogAddAttributesUniversalCancel.setText(xerb.getString("general.cancel"));
-            jButtonDialogAddAttributesUniversalCancel.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    jDialogAddAttributesUniversal.setVisible(false);
-                }
-            });
-        }
-        return jButtonDialogAddAttributesUniversalCancel;
-    }
-    /**
-     * This method initializes jTableDialogAddAttributesUniversal
-     *
-     * @return javax.swing.JTable
-     */
-    private javax.swing.JTable getJTableDialogAddAttributesUniversal() {
-        if(jTableDialogAddAttributesUniversal == null) {
-            String[] cn = {xerb.getString("general.attribute"),xerb.getString("general.details")};
-            DefaultTableModel dtm = new DefaultTableModel(cn, 0);
-            jTableDialogAddAttributesUniversal = new javax.swing.JTable();
-            jTableDialogAddAttributesUniversal.setModel(dtm);
-            jTableDialogAddAttributesUniversal.setCellSelectionEnabled(true);
-            jTableDialogAddAttributesUniversal.setColumnSelectionAllowed(false);
-            jTableDialogAddAttributesUniversal.setRowSelectionAllowed(false);
-            jTableDialogAddAttributesUniversal.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        }
-        return jTableDialogAddAttributesUniversal;
-    }
+    
     /**
      * This method imports files + subfolders of a folder into node
      *
@@ -4229,7 +3115,7 @@ public class XincoExplorer extends JFrame {
      *
      * @return void
      */
-    private void doDataWizard(int wizard_type) {
+    private void doDataWizard(final int wizard_type) {
                 /*
                 wizard type	= 1  = add new data
                                         = 2  = edit data object
@@ -4253,14 +3139,12 @@ public class XincoExplorer extends JFrame {
         
         InputStream in = null;
         byte[] byte_array = null;
-        
         if (xincoClientSession.currentTreeNodeSelection != null) {
-            
             //execute wizard as a whole
             try {
-                
                 //add new data
-                if ((wizard_type == 1) && (xincoClientSession.currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class)) {
+                if ((wizard_type == 1) &&
+                        (xincoClientSession.currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class)) {
                     
                     //set current node to new one
                     newnode = new XincoMutableTreeNode(new XincoCoreData());
@@ -4277,7 +3161,7 @@ public class XincoExplorer extends JFrame {
                     xincoClientSession.currentTreeNodeSelection = newnode;
                     
                     //step 1: select data type
-                    jDialogDataType = getJDialogDataType();
+                    jDialogDataType= new DataTypeDialog(null,true,this);
                     global_dialog_return_value = 0;
                     jDialogDataType.setVisible(true);
                     if (global_dialog_return_value == 0) {
@@ -4288,7 +3172,6 @@ public class XincoExplorer extends JFrame {
                     XincoAddAttribute xaa;
                     for (i=0;i<((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().size();i++) {
                         xaa = new XincoAddAttribute();
-                        //xaa.setAttribute_id(i+1); // bug => attribute_ids might be missing in between
                         xaa.setAttribute_id(((XincoCoreDataTypeAttribute)((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getAttribute_id());
                         xaa.setAttrib_varchar("");
                         xaa.setAttrib_text("");
@@ -4311,7 +3194,9 @@ public class XincoExplorer extends JFrame {
                     
                     //check file attribute count
                     //file = 1
-                    if ((wizard_type == 3) && ((((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1) && (((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().size() <= 3))) {
+                    if ((wizard_type == 3) &&
+                            ((((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1) &&
+                            (((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().size() <= 3))) {
                         throw new XincoException(xerb.getString("datawizard.noaddattributes"));
                     }
                     
@@ -4321,7 +3206,8 @@ public class XincoExplorer extends JFrame {
                         //step 2: edit add attributes
                         //for files -> show filechooser
                         //file = 1
-                        if ((wizard_type == 1) && (((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1)) {
+                        if ((wizard_type == 1) &&
+                                (((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1)) {
                             JFileChooser fc = new JFileChooser();
                             fc.setCurrentDirectory(new File(current_path));
                             fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -4346,9 +3232,12 @@ public class XincoExplorer extends JFrame {
                         }
                         //show dialog for all additional attributes and custom data types
                         //file = 1 / text = 2
-                        if (!(((((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1) && (((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().size() <= 8)) || ((((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 2) && (((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().size() <= 1)))) {
+                        if (!(((((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1) &&
+                                (((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().size() <= 8)) ||
+                                ((((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 2) &&
+                                (((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().size() <= 1)))) {
                             //for other data type -> show universal add attribute dialog
-                            jDialogAddAttributesUniversal = getJDialogAddAttributesUniversal();
+                            jDialogAddAttributesUniversal=new AddAttributeUniversalDialog(null,true,this);
                             global_dialog_return_value = 0;
                             jDialogAddAttributesUniversal.setVisible(true);
                             if (global_dialog_return_value == 0) {
@@ -4775,8 +3664,11 @@ public class XincoExplorer extends JFrame {
                     jTreeRepository.setSelectionPath(new TreePath(xincoClientSession.currentTreeNodeSelection.getPath()));
                 }
                 if (!((wizard_type == 3) && (global_dialog_return_value == 0))) {
-                    JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("datawizard.updatefailed") + " " + xerb.getString("general.reason") + ": " + we.toString(), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("datawizard.updatefailed") +
+                            " " + xerb.getString("general.reason") + ": " +
+                            we.toString(), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
                 }
+                we.printStackTrace();
             }
             
         }
@@ -5438,6 +4330,14 @@ public class XincoExplorer extends JFrame {
             });
         }
         return jButtonDialogArchiveCancel;
+    }
+    
+    public int get_global_dialog_return_value(){
+        return this.global_dialog_return_value;
+    }
+    
+    public void set_global_dialog_return_value(int v){
+        this.global_dialog_return_value=v;
     }
 }
 
