@@ -9,11 +9,8 @@ package com.bluecubs.xinco.client.dialogs;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.server.XincoCoreUserServer;
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import java.awt.HeadlessException;
-import java.sql.Timestamp;
-import javax.swing.JPopupMenu;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -22,7 +19,6 @@ import javax.swing.JPopupMenu;
 public class ChangeReasonDialog extends javax.swing.JDialog {
     private XincoCoreUser user;
     private XincoExplorer explorer=null;
-    private XincoDBManager DBM=null;
     public boolean done=false;
     /** Creates new form ChangeReasonDialog */
     public ChangeReasonDialog(java.awt.Frame parent, boolean modal,
@@ -118,6 +114,11 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
             setVisible(false);
             this.done=true;
         }
+        else
+            JOptionPane.showMessageDialog(this, 
+                    explorer.getResourceBundle().getString("message.warning.reason"),
+                    explorer.getResourceBundle().getString("general.error"), 
+                    JOptionPane.WARNING_MESSAGE);
     }//GEN-LAST:event_saveActionPerformed
     
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
