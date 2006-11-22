@@ -27,7 +27,7 @@
  * Date:            2004
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
@@ -46,96 +46,95 @@ public class XincoCoreNodeServer extends XincoCoreNode {
     
     //create node object for data structures
     public XincoCoreNodeServer(int attrID, XincoDBManager DBM) throws XincoException {
-
+        
         try {
             
             Statement stmt = DBM.con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_node WHERE id=" + attrID);
-
-			//throw exception if no result found
-			int RowCount = 0;
+            
+            //throw exception if no result found
+            int RowCount = 0;
             while (rs.next()) {
-				RowCount++;
+                RowCount++;
                 setId(rs.getInt("id"));
                 setXinco_core_node_id(rs.getInt("xinco_core_node_id"));
                 setXinco_core_language(new XincoCoreLanguageServer(rs.getInt("xinco_core_language_id"), DBM));
                 setDesignation(rs.getString("designation"));
                 setStatus_number(rs.getInt("status_number"));
-				setXinco_core_nodes(new Vector());
-				setXinco_core_data(new Vector());
-				//load acl for this object
-				setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(rs.getInt("id"), "xinco_core_node_id", DBM));
+                setXinco_core_nodes(new Vector());
+                setXinco_core_data(new Vector());
+                //load acl for this object
+                setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(rs.getInt("id"), "xinco_core_node_id", DBM));
             }
-			if (RowCount < 1) {
-				throw new XincoException();
-			}
-
+            if (RowCount < 1) {
+                throw new XincoException();
+            }
+            
             stmt.close();
             
         } catch (Exception e) {
-        	setXinco_core_language(null);
+            setXinco_core_language(null);
             getXinco_core_acl().removeAllElements();
             getXinco_core_nodes().removeAllElements();
             getXinco_core_data().removeAllElements();
-			throw new XincoException();
+            throw new XincoException();
         }
         
     }
     
     //create node object for data structures
     public XincoCoreNodeServer(int attrID, int attrCNID, int attrLID, String attrD, int attrSN, XincoDBManager DBM) throws XincoException {
-
+        
         try {
-			setId(attrID);
-			setXinco_core_node_id(attrCNID);
-			setXinco_core_language(new XincoCoreLanguageServer(attrLID, DBM));
-			setDesignation(attrD);
-			setStatus_number(attrSN);
-			setXinco_core_nodes(new Vector());
-			setXinco_core_data(new Vector());
-			//load acl for this object
-			setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(getId(), "xinco_core_node_id", DBM));
+            setId(attrID);
+            setXinco_core_node_id(attrCNID);
+            setXinco_core_language(new XincoCoreLanguageServer(attrLID, DBM));
+            setDesignation(attrD);
+            setStatus_number(attrSN);
+            setXinco_core_nodes(new Vector());
+            setXinco_core_data(new Vector());
+            //load acl for this object
+            setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(getId(), "xinco_core_node_id", DBM));
+        } catch (Exception e) {
+            setXinco_core_language(null);
+            getXinco_core_acl().removeAllElements();
+            getXinco_core_nodes().removeAllElements();
+            getXinco_core_data().removeAllElements();
+            throw new XincoException();
         }
-        catch (Exception e) {
-			setXinco_core_language(null);
-			getXinco_core_acl().removeAllElements();
-			getXinco_core_nodes().removeAllElements();
-			getXinco_core_data().removeAllElements();
-			throw new XincoException();
-        }
-
+        
     }
-
+    
     //write to db
     public int write2DB(XincoDBManager DBM) throws XincoException {
-
+        
         try {
             
             Statement stmt;
-			String xcnid = "";
+            String xcnid = "";
             
             if (getId() > 0) {
-				stmt = DBM.con.createStatement();
-				//set values of nullable attributes
-				if (getXinco_core_node_id() == 0) {
-					xcnid = "NULL";
-				} else {
-					xcnid = "" + getXinco_core_node_id();
-				}
-				stmt.executeUpdate("UPDATE xinco_core_node SET xinco_core_node_id=" + xcnid + ", xinco_core_language_id=" + getXinco_core_language().getId() + ", designation='" + getDesignation().replaceAll("'","\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
-				stmt.close();
+                stmt = DBM.con.createStatement();
+                //set values of nullable attributes
+                if (getXinco_core_node_id() == 0) {
+                    xcnid = "NULL";
+                } else {
+                    xcnid = "" + getXinco_core_node_id();
+                }
+                stmt.executeUpdate("UPDATE xinco_core_node SET xinco_core_node_id=" + xcnid + ", xinco_core_language_id=" + getXinco_core_language().getId() + ", designation='" + getDesignation().replaceAll("'","\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
+                stmt.close();
             } else {
-				setId(DBM.getNewID("xinco_core_node"));
-
-				stmt = DBM.con.createStatement();
-				//set values of nullable attributes
-				if (getXinco_core_node_id() == 0) {
-					xcnid = "NULL";
-				} else {
-					xcnid = "" + getXinco_core_node_id();
-				}
-				stmt.executeUpdate("INSERT INTO xinco_core_node VALUES (" + getId() + ", " + getXinco_core_node_id() + ", " + getXinco_core_language().getId() + ", '" + getDesignation().replaceAll("'","\\\\'") + "', " + getStatus_number() + ")");
-				stmt.close();
+                setId(DBM.getNewID("xinco_core_node"));
+                
+                stmt = DBM.con.createStatement();
+                //set values of nullable attributes
+                if (getXinco_core_node_id() == 0) {
+                    xcnid = "NULL";
+                } else {
+                    xcnid = "" + getXinco_core_node_id();
+                }
+                stmt.executeUpdate("INSERT INTO xinco_core_node VALUES (" + getId() + ", " + getXinco_core_node_id() + ", " + getXinco_core_language().getId() + ", '" + getDesignation().replaceAll("'","\\\\'") + "', " + getStatus_number() + ")");
+                stmt.close();
             }
             
             DBM.con.commit();
@@ -150,35 +149,35 @@ public class XincoCoreNodeServer extends XincoCoreNode {
         return getId();
         
     }
-
+    
     //delete from db
     public void deleteFromDB(boolean delete_this, XincoDBManager DBM) throws XincoException {
-
+        
         int i=0;
         
-    	try {
+        try {
             
             Statement stmt;
             
-			//fill nodes and data
-			fillXincoCoreNodes(DBM);
-			fillXincoCoreData(DBM);
-			//start recursive deletion
-			for (i=0;i<getXinco_core_nodes().size();i++) {
-				((XincoCoreNodeServer)getXinco_core_nodes().elementAt(i)).deleteFromDB(true, DBM);
-			}
-			for (i=0;i<getXinco_core_data().size();i++) {
-				XincoIndexer.removeXincoCoreData((XincoCoreDataServer)getXinco_core_data().elementAt(i), DBM);
-				((XincoCoreDataServer)getXinco_core_data().elementAt(i)).deleteFromDB(DBM);
-			}
-			if (delete_this) {
-				stmt = DBM.con.createStatement();
-				stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE xinco_core_node_id=" + getId());
-				stmt.close();
-				stmt = DBM.con.createStatement();
-				stmt.executeUpdate("DELETE FROM xinco_core_node WHERE id=" + getId());
-				stmt.close();
-			}
+            //fill nodes and data
+            fillXincoCoreNodes(DBM);
+            fillXincoCoreData(DBM);
+            //start recursive deletion
+            for (i=0;i<getXinco_core_nodes().size();i++) {
+                ((XincoCoreNodeServer)getXinco_core_nodes().elementAt(i)).deleteFromDB(true, DBM);
+            }
+            for (i=0;i<getXinco_core_data().size();i++) {
+                XincoIndexer.removeXincoCoreData((XincoCoreDataServer)getXinco_core_data().elementAt(i), DBM);
+                ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).deleteFromDB(DBM);
+            }
+            if (delete_this) {
+                stmt = DBM.con.createStatement();
+                stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE xinco_core_node_id=" + getId());
+                stmt.close();
+                stmt = DBM.con.createStatement();
+                stmt.executeUpdate("DELETE FROM xinco_core_node WHERE id=" + getId());
+                stmt.close();
+            }
             DBM.con.commit();
         } catch (Exception e) {
             try {
@@ -196,17 +195,17 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             
             Statement stmt = DBM.con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_node WHERE xinco_core_node_id = " + getId() + " ORDER BY designation");
-
+            
             while (rs.next()) {
                 getXinco_core_nodes().addElement(new XincoCoreNodeServer(rs.getInt("id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_language_id"), rs.getString("designation"), rs.getInt("status_number"), DBM));
             }
-
+            
             stmt.close();
             
         } catch (Exception e) {
             getXinco_core_nodes().removeAllElements();
         }
-
+        
     }
     
     public void fillXincoCoreData(XincoDBManager DBM) {
@@ -215,79 +214,79 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             
             Statement stmt = DBM.con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data WHERE xinco_core_node_id = " + getId() + " ORDER BY designation");
-
+            
             while (rs.next()) {
                 getXinco_core_data().addElement(new XincoCoreDataServer(rs.getInt("id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_language_id"), rs.getInt("xinco_core_data_type_id"), rs.getString("designation"), rs.getInt("status_number"), DBM));
             }
-
+            
             stmt.close();
             
         } catch (Exception e) {
             getXinco_core_data().removeAllElements();
         }
-
+        
     }
     
     public static Vector findXincoCoreNodes(String attrS, int attrLID, XincoDBManager DBM) {
-
-    	Vector nodes = null;
-
-		try {
+        
+        Vector nodes = null;
+        
+        try {
             
-			Statement stmt = DBM.con.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_node WHERE xinco_core_language_id = " + attrLID + " AND designation LIKE '" + attrS + "%' ORDER BY designation, xinco_core_language_id");
-
-			int i = 0;
-			while (rs.next()) {
-				nodes.addElement(new XincoCoreNodeServer(rs.getInt("id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_language_id"), rs.getString("designation"), rs.getInt("status_number"), DBM));
-				i++;
-				if (i >= DBM.config.MaxSearchResult) {
-					break;
-				}
-			}
-
-			stmt.close();
+            Statement stmt = DBM.con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_node WHERE xinco_core_language_id = " + attrLID + " AND designation LIKE '" + attrS + "%' ORDER BY designation, xinco_core_language_id");
             
-		} catch (Exception e) {
-			nodes.removeAllElements();
-		}
-
-    	return nodes; 
-
+            int i = 0;
+            while (rs.next()) {
+                nodes.addElement(new XincoCoreNodeServer(rs.getInt("id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_language_id"), rs.getString("designation"), rs.getInt("status_number"), DBM));
+                i++;
+                if (i >= DBM.config.MaxSearchResult) {
+                    break;
+                }
+            }
+            
+            stmt.close();
+            
+        } catch (Exception e) {
+            nodes.removeAllElements();
+        }
+        
+        return nodes;
+        
     }
     
     public static Vector getXincoCoreNodeParents(int attrID, XincoDBManager DBM) {
-
-    	Vector nodes = new Vector();
-    	int id;
-
-		try {
+        
+        Vector nodes = new Vector();
+        int id;
+        
+        try {
             
-			id = attrID;
-			
-			Statement stmt;
-			ResultSet rs;
-			
-			while (id > 0) {
-				stmt = DBM.con.createStatement();
-				rs = stmt.executeQuery("SELECT * FROM xinco_core_node WHERE id = " + id);
-				while (rs.next()) {
-					nodes.addElement(new XincoCoreNodeServer(rs.getInt("id"), DBM));
-					if (id > 1) {
-						id = rs.getInt("xinco_core_node_id");
-					} else {
-						id = 0;
-					}
-				}
-				stmt.close();
-			}
+            id = attrID;
             
-		} catch (Exception e) {
-			nodes.removeAllElements();
-		}
-
-    	return nodes; 
-    	
+            Statement stmt;
+            ResultSet rs;
+            
+            while (id > 0) {
+                stmt = DBM.con.createStatement();
+                rs = stmt.executeQuery("SELECT * FROM xinco_core_node WHERE id = " + id);
+                while (rs.next()) {
+                    nodes.addElement(new XincoCoreNodeServer(rs.getInt("id"), DBM));
+                    if (id > 1) {
+                        id = rs.getInt("xinco_core_node_id");
+                    } else {
+                        id = 0;
+                    }
+                }
+                stmt.close();
+            }
+            
+        } catch (Exception e) {
+            nodes.removeAllElements();
+        }
+        
+        return nodes;
+        
     }
     
 }
