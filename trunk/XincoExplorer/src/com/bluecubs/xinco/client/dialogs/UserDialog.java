@@ -13,13 +13,19 @@ import java.sql.Timestamp;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author  ortizbj
+ * User Dialog
+ * @author ortizbj
  */
 public class UserDialog extends javax.swing.JDialog {
     private XincoExplorer explorer=null;
     private boolean isAged=false;
-    /** Creates new form UserDialog */
+    /**
+     * Creates new form UserDialog
+     * @param parent Dialog's parent.
+     * @param modal Is modal?
+     * @param explorer Related XincoExplorer
+     * @param aged Boolean: Is the user's password aged out?
+     */
     public UserDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer,boolean aged) {
         super(parent, modal);
         this.explorer=explorer;
@@ -303,18 +309,7 @@ public class UserDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, explorer.getResourceBundle().getString("window.userinfo.passwordmismatch"), explorer.getResourceBundle().getString("general.error"), JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_saveActionPerformed
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new UserDialog(new javax.swing.JFrame(), true,null,false).setVisible(true);
-            }
-        });
-    }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;
     private javax.swing.JTextField email;

@@ -36,14 +36,35 @@
 
 package com.bluecubs.xinco.client;
 
+/**
+ * XincoClientConnectionProfile
+ */
 public class XincoClientConnectionProfile implements java.io.Serializable {
 	
+    /**
+     * Profile's name
+     */
 	public String profile_name = null;
+    /**
+     * Service Endpoint
+     */
 	public String service_endpoint = null;
+    /**
+     * Username
+     */
 	public String username = null;
+    /**
+     * Password
+     */
 	public String password = null;
+    /**
+     * Save password?
+     */
 	public boolean save_password = false;
 	
+    /**
+     * XincoClientProfile
+     */
 	public XincoClientConnectionProfile() {
 		profile_name  = "";
 		service_endpoint  = "";
@@ -52,6 +73,10 @@ public class XincoClientConnectionProfile implements java.io.Serializable {
 		save_password = false;
 	}
 	
+    /**
+     * XincoClientConnectionProfile string representation
+     * @return Profile Name.
+     */
 	public String toString() {
 		return profile_name;
 	}

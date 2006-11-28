@@ -13,14 +13,24 @@ import java.awt.HeadlessException;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author  ortizbj
+ * Change Reason Dialog
+ * @author ortizbj
  */
 public class ChangeReasonDialog extends javax.swing.JDialog {
     private XincoCoreUser user;
     private XincoExplorer explorer=null;
+    /**
+     * Is dialog done?
+     */
     public boolean done=false;
-    /** Creates new form ChangeReasonDialog */
+    /**
+     * Creates new form ChangeReasonDialog
+     * @param parent Dialog's parent
+     * @param modal Is modal?
+     * @param user User making the change.
+     * @param explorer Related XincoExplorer.
+     * @throws com.bluecubs.xinco.core.XincoException XincoException thrown
+     */
     public ChangeReasonDialog(java.awt.Frame parent, boolean modal,
             XincoCoreUser user, XincoExplorer explorer) throws XincoException{
         super(parent, modal);
@@ -34,6 +44,10 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
         setLocationRelativeTo(null);
     }
     
+    /**
+     * Get the specified reason.
+     * @return Specified reason.
+     */
     public String getReason() {
         return this.reason.getText();
     }
@@ -125,24 +139,7 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
         this.done=true;
         this.dispose();
     }//GEN-LAST:event_cancelActionPerformed
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new ChangeReasonDialog(new javax.swing.JFrame(), true,null,null).setVisible(true);
-                } catch (HeadlessException ex) {
-                    ex.printStackTrace();
-                } catch (XincoException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
-    }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;
     private javax.swing.JScrollPane jScrollPane1;

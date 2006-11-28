@@ -13,12 +13,17 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 
 /**
- *
- * @author  ortizbj
+ * Data Type Dialog
+ * @author ortizbj
  */
 public class DataTypeDialog extends javax.swing.JDialog {
     private XincoExplorer explorer=null;
-    /** Creates new form DataTypeDialog */
+    /**
+     * Creates new form DataTypeDialog
+     * @param parent Dialog's parent.
+     * @param modal Is modal?
+     * @param explorer Related XincoExplorer.
+     */
     public DataTypeDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) {
         super(parent, modal);
         initComponents();
@@ -121,18 +126,7 @@ public class DataTypeDialog extends javax.swing.JDialog {
         explorer.set_global_dialog_return_value(1);
         setVisible(false);
     }//GEN-LAST:event_continueButtonActionPerformed
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new DataTypeDialog(new javax.swing.JFrame(), true,null).setVisible(true);
-            }
-        });
-    }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;
     private javax.swing.JButton continueButton;
