@@ -17,16 +17,22 @@ import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 
 /**
- *
- * @author  ortizbj
+ * ACL Dialog
+ * @author ortizbj
  */
 public class ACLDialog extends javax.swing.JDialog {
     private XincoExplorer explorer=null;
+    /**
+     * Boolean value that checks if the dialog is done.
+     */
     public boolean done=false;
     private Vector temp_acl = null;
     private XincoCoreACE temp_ace=null;
     /**
      * Creates new form ACLDialog
+     * @param parent Parent of this dialog
+     * @param modal Is dialog modal?
+     * @param explorer XincoExplorer related to this dialog
      */
     public ACLDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) {
         super(parent, modal);
@@ -50,6 +56,9 @@ public class ACLDialog extends javax.swing.JDialog {
         reloadACLListACL();
     }
     
+    /**
+     * Loads the ACL group list
+     */
     public void loadACLGroupListACL() {
         String[] list = new String[this.explorer.getSession().server_groups.size()];
         for (int i=0;i<this.explorer.getSession().server_groups.size();i++) {
@@ -58,6 +67,9 @@ public class ACLDialog extends javax.swing.JDialog {
         setACLGroupModel(list);
     }
     
+    /**
+     * Reloads ACL list
+     */
     public void reloadACLListACL() {
         int i = 0, j = 0;
         String temp_string = "";
@@ -113,6 +125,10 @@ public class ACLDialog extends javax.swing.JDialog {
         setACLListModel(list);
     }
     
+    /**
+     * Sets ACL group model.
+     * @param list String array containing the list.
+     */
     public void setACLGroupModel(final String [] list){
         groupList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = list;
@@ -121,6 +137,10 @@ public class ACLDialog extends javax.swing.JDialog {
         });
     }
     
+    /**
+     * Sets ACL list model.
+     * @param list String array containing the list.
+     */
     public void setACLListModel(final String [] list){
         currentACLList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = list;
@@ -129,6 +149,10 @@ public class ACLDialog extends javax.swing.JDialog {
         });
     }
     
+    /**
+     * Get ACL group model.
+     * @return Group list model.
+     */
     public ListModel getACLGroupModel(){
         return this.groupList.getModel();
     }
@@ -364,18 +388,7 @@ public class ACLDialog extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_AddACEActionPerformed
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ACLDialog(new javax.swing.JFrame(), true,null).setVisible(true);
-            }
-        });
-    }
-    
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ACLWarning;
     private javax.swing.JButton AddACE;

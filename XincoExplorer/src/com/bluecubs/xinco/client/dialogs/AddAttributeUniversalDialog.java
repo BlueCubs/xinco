@@ -16,13 +16,16 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 /**
- *
- * @author  ortizbj
+ * Add Attribute Universal Dialog
+ * @author ortizbj
  */
 public class AddAttributeUniversalDialog extends javax.swing.JDialog {
     private XincoExplorer explorer=null;
     /**
      * Creates new form AddAttributeUniversalDialog
+     * @param parent Dialog's parent
+     * @param modal Is modal?
+     * @param explorer Related XincoExplorer.
      */
     public AddAttributeUniversalDialog(java.awt.Frame parent, boolean modal,XincoExplorer explorer) {
         super(parent, modal);
@@ -231,18 +234,7 @@ public class AddAttributeUniversalDialog extends javax.swing.JDialog {
         explorer.set_global_dialog_return_value(1);
         setVisible(false);
     }//GEN-LAST:event_saveActionPerformed
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddAttributeUniversalDialog(new javax.swing.JFrame(), true,null).setVisible(true);
-            }
-        });
-    }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;
     private javax.swing.JScrollPane jScrollPane1;

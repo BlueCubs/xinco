@@ -41,14 +41,31 @@ import javax.swing.tree.*;
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.service.*;
 
+/**
+ * XincoClientRepository
+ */
 public class XincoClientRepository {
 	
+    /**
+     * DefaultTreeModel
+     */
 	public DefaultTreeModel treemodel = null;
 
+    /**
+     * XincoClientRepository
+     */
 	public XincoClientRepository() {
 		treemodel = new DefaultTreeModel(new XincoMutableTreeNode("root"));
 	}
 	
+    /**
+     * Assign object to tree node
+     * @param node Node to assign object to.
+     * @param object Object to be assigned to node.
+     * @param service Xinco service involved.
+     * @param user User involved
+     * @param depth Node depth.
+     */
 	public void assignObject2TreeNode(XincoMutableTreeNode node, XincoCoreNode object, Xinco service, XincoCoreUser user, int depth) {
 		int i = 0;
 		depth--;

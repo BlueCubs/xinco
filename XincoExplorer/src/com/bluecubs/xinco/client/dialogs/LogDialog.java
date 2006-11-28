@@ -12,13 +12,19 @@ import com.bluecubs.xinco.core.XincoCoreLog;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author  ortizbj
+ * 
+ * Log Dialog
+ * @author ortizbj
  */
 public class LogDialog extends javax.swing.JDialog {
     private XincoExplorer explorer=null;
     private int log_index = 0;
-    /** Creates new form LogDialog */
+    /**
+     * Creates new form LogDialog
+     * @param parent Dialog's parent
+     * @param modal Is modal?
+     * @param explorer Related XincoExplorer
+     */
     public LogDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) {
         super(parent, modal);
         initComponents();
@@ -256,18 +262,7 @@ public class LogDialog extends javax.swing.JDialog {
             setVisible(false);
         }
     }//GEN-LAST:event_continueButtonActionPerformed
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new LogDialog(new javax.swing.JFrame(), true,null).setVisible(true);
-            }
-        });
-    }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField action;
     private javax.swing.JLabel actionLabel;

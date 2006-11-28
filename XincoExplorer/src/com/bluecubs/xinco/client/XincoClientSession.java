@@ -41,27 +41,72 @@ import java.util.Vector;
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.service.*;
 
+/**
+ * XincoClientSession
+ */
 public class XincoClientSession {
     
+    /**
+     * Service Endpoint
+     */
     public String service_endpoint = "";
+    /**
+     * User
+     */
     public XincoCoreUser user = null;
     //web service
+    /**
+     * Xinco Service
+     */
     public XincoService xinco_service = null;
+    /**
+     * Xinco object
+     */
     public Xinco xinco = null;
     //repository
+    /**
+     * XincoClientRepository object
+     */
     public XincoClientRepository xincoClientRepository = null;
+    /**
+     * Server version
+     */
     public XincoVersion server_version = null;
+    /**
+     * Server groups
+     */
     public Vector server_groups = null;
+    /**
+     * Server languages
+     */
     public Vector server_languages = null;
+    /**
+     * Server data type
+     */
     public Vector server_datatypes = null;
+    /**
+     * Current tree node selection
+     */
     public XincoMutableTreeNode currentTreeNodeSelection = null;
+    /**
+     * Clipboard tree node selection
+     */
     public Vector clipboardTreeNodeSelection = null;
+    /**
+     * Current search result
+     */
     public Vector currentSearchResult = null;
+    /**
+     * Status
+     */
     public int status = 0;	//0 = not connected
-    //1 = connecting...
-    //2 = connected
-    //3 = disconnecting
     
+    /**
+     * XincoClientSession
+     * 1 = connecting...
+     * 2 = connected
+     * 3 = disconnecting
+     */
     public XincoClientSession() {
         service_endpoint = "";
         user = new XincoCoreUser();

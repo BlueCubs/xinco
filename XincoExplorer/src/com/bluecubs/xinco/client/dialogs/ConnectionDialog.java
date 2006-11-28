@@ -12,13 +12,16 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 
 /**
- *
- * @author  ortizbj
+ * Connection Dialog
+ * @author ortizbj
  */
 public class ConnectionDialog extends javax.swing.JDialog {
     private XincoExplorer explorer=null;
     /**
      * Creates new form ConnectionDialog
+     * @param parent Dialog's parent
+     * @param modal Is modal?
+     * @param explorer Related XincoExplorer
      */
     public ConnectionDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) {
         super(parent, modal);
@@ -27,6 +30,9 @@ public class ConnectionDialog extends javax.swing.JDialog {
         initialize();
     }
     
+    /**
+     * Initialize the dialog.
+     */
     public void initialize(){
         setTitle(explorer.getResourceBundle().getString("window.connection") + ":");
         setName("DialogConnection");
@@ -64,6 +70,10 @@ public class ConnectionDialog extends javax.swing.JDialog {
         }
     }
     
+    /**
+     * Get profile list.
+     * @return Profile list.
+     */
     public JList getProfileList(){
         return this.profileList;
     }
@@ -279,18 +289,7 @@ public class ConnectionDialog extends javax.swing.JDialog {
         dlm.addElement(new String(ccp.toString()));
         this.profileList.setSelectedIndex(((Vector)explorer.getConfig().elementAt(0)).size()-1);
     }//GEN-LAST:event_CreateActionPerformed
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ConnectionDialog(new javax.swing.JFrame(), true,null).setVisible(true);
-            }
-        });
-    }
-    
+ 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Cancel;
     private javax.swing.JButton Create;

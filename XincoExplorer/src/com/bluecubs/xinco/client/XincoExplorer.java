@@ -84,6 +84,9 @@ import javax.xml.namespace.QName;
 import java.net.URL;
 
 import javax.swing.JDialog;
+/**
+ * XincoExplorer
+ */
 public class XincoExplorer extends JFrame {
     
     //language resources, XincoExplorerResourceBundle
@@ -2918,9 +2921,7 @@ public class XincoExplorer extends JFrame {
      * @return javax.swing.JDialog
      */
     private javax.swing.JDialog getJDialogLog() {
-//        if(jDialogLog == null) {
         jDialogLog = new LogDialog(null,true,this);
-//        }
         return jDialogLog;
     }
     
@@ -3942,7 +3943,6 @@ public class XincoExplorer extends JFrame {
     /**
      * This method saves the configuration
      *
-     * @return void
      */
     public void saveConfig() {
         try {
