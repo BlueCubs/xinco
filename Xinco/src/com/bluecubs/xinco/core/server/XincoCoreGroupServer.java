@@ -78,6 +78,9 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
             Statement stmt;
             if (getId() > 0) {
                 stmt = DBM.con.createStatement();
+                XincoCoreAuditServer audit= new XincoCoreAuditServer();
+                audit.updateAuditTrail("xinco_core_group",new String [] {"id ="+getId()},
+                        DBM,"audit.coregroup.change",1);
                 stmt.executeUpdate("UPDATE xinco_core_group SET designation='" + getDesignation().replaceAll("'","\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
                 stmt.close();
             } else {

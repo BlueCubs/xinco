@@ -189,7 +189,7 @@ public class XincoCoreUser  implements java.io.Serializable {
      * @return reason
      */
     public java.lang.String getReason() {
-        return reason;
+        return this.reason;
     }
 
 
@@ -200,6 +200,7 @@ public class XincoCoreUser  implements java.io.Serializable {
      */
     public void setReason(java.lang.String reason) {
         this.reason = reason;
+        System.out.println("Within XincoCoreUser: "+this.reason);
     }
 
 

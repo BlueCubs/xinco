@@ -121,6 +121,9 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 } else {
                     xcnid = "" + getXinco_core_node_id();
                 }
+                XincoCoreAuditServer audit= new XincoCoreAuditServer();
+                audit.updateAuditTrail("xinco_core_node",new String [] {"id ="+getId()},
+                        DBM,"audit.corenode.change",1);
                 stmt.executeUpdate("UPDATE xinco_core_node SET xinco_core_node_id=" + xcnid + ", xinco_core_language_id=" + getXinco_core_language().getId() + ", designation='" + getDesignation().replaceAll("'","\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
                 stmt.close();
             } else {
