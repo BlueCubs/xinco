@@ -27,7 +27,7 @@
  * Date:            2004
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
@@ -42,6 +42,7 @@ import java.util.GregorianCalendar;
 import java.sql.*;
 
 import com.bluecubs.xinco.core.*;
+import java.util.ResourceBundle;
 
 public class XincoCoreLogServer extends XincoCoreLog {
     
@@ -52,32 +53,32 @@ public class XincoCoreLogServer extends XincoCoreLog {
             
             Statement stmt = DBM.con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_log WHERE id=" + attrID);
-
-			//throw exception if no result found
-			int RowCount = 0;
+            
+            //throw exception if no result found
+            int RowCount = 0;
             while (rs.next()) {
-				RowCount++;
-				setId(rs.getInt("id"));
-				setXinco_core_data_id(rs.getInt("xinco_core_data_id"));
+                RowCount++;
+                setId(rs.getInt("id"));
+                setXinco_core_data_id(rs.getInt("xinco_core_data_id"));
                 setXinco_core_user_id(rs.getInt("xinco_core_user_id"));
-				setOp_code(rs.getInt("op_code"));
-				setOp_datetime(new GregorianCalendar());
-				getOp_datetime().setTime(rs.getDate("op_datetime"));
-				setOp_description(rs.getString("op_description"));
-				setVersion(new XincoVersion());
-				getVersion().setVersion_high(rs.getInt("version_high"));
-				getVersion().setVersion_mid(rs.getInt("version_mid"));
-				getVersion().setVersion_low(rs.getInt("version_low"));
-				getVersion().setVersion_postfix(rs.getString("version_postfix"));
+                setOp_code(rs.getInt("op_code"));
+                setOp_datetime(new GregorianCalendar());
+                getOp_datetime().setTime(rs.getDate("op_datetime"));
+                setOp_description(rs.getString("op_description"));
+                setVersion(new XincoVersion());
+                getVersion().setVersion_high(rs.getInt("version_high"));
+                getVersion().setVersion_mid(rs.getInt("version_mid"));
+                getVersion().setVersion_low(rs.getInt("version_low"));
+                getVersion().setVersion_postfix(rs.getString("version_postfix"));
             }
-			if (RowCount < 1) {
-				throw new XincoException();
-			}
-
+            if (RowCount < 1) {
+                throw new XincoException();
+            }
+            
             stmt.close();
             
         } catch (Exception e) {
-        	throw new XincoException();
+            throw new XincoException();
         }
         
     }
@@ -85,73 +86,77 @@ public class XincoCoreLogServer extends XincoCoreLog {
     //create single log object for data structures
     public XincoCoreLogServer(int attrID, int attrCDID, int attrUID, int attrOC, Calendar attrODT,  String attrOD, int attrVH, int attrVM, int attrVL, String attrVP) throws XincoException {
         
-		setId(attrID);
-		setXinco_core_data_id(attrCDID);
-		setXinco_core_user_id(attrUID);
-		setOp_code(attrOC);
-		setOp_datetime(attrODT);
-		setOp_description(attrOD);
-		setVersion(new XincoVersion());
-		getVersion().setVersion_high(attrVH);
-		getVersion().setVersion_mid(attrVM);
-		getVersion().setVersion_low(attrVL);
-		getVersion().setVersion_postfix(attrVP);
+        setId(attrID);
+        setXinco_core_data_id(attrCDID);
+        setXinco_core_user_id(attrUID);
+        setOp_code(attrOC);
+        setOp_datetime(attrODT);
+        setOp_description(attrOD);
+        setVersion(new XincoVersion());
+        getVersion().setVersion_high(attrVH);
+        getVersion().setVersion_mid(attrVM);
+        getVersion().setVersion_low(attrVL);
+        getVersion().setVersion_postfix(attrVP);
         
     }
     
-	//write to db
-	public int write2DB(XincoDBManager DBM) throws XincoException {
-
-		try {
-            
-			if (getId() > 0) {
-				Statement stmt = DBM.con.createStatement();
-				stmt.executeUpdate("UPDATE xinco_core_log SET xinco_core_data_id=" + getXinco_core_data_id() + ", xinco_core_user_id=" + getXinco_core_user_id() + ", op_code=" + getOp_code() + ", op_datetime=now(), op_description='" + getOp_description().replaceAll("'","\\\\'") + "', version_high=" + getVersion().getVersion_high() + ", version_mid=" + getVersion().getVersion_mid() + ", version_low=" + getVersion().getVersion_low() + ", version_postfix='" + getVersion().getVersion_postfix().replaceAll("'","\\\\'") + "' WHERE id=" + getId());
-				stmt.close();
-			} else {
-				setId(DBM.getNewID("xinco_core_log"));
-
-				Statement stmt = DBM.con.createStatement();
-				stmt.executeUpdate("INSERT INTO xinco_core_log VALUES (" + getId() + ", " + getXinco_core_data_id() + ", " + getXinco_core_user_id() + ", " + getOp_code() + ", now(), '" + getOp_description().replaceAll("'","\\\\'") + "', " + getVersion().getVersion_high() + ", " + getVersion().getVersion_mid() + ", " + getVersion().getVersion_low() + ", '" + getVersion().getVersion_postfix().replaceAll("'","\\\\'") + "')");
-				stmt.close();
-			}
-
-			DBM.con.commit();
-            
-		} catch (Exception e) {
-			try {
-				DBM.con.rollback();
-			} catch (Exception erollback) {
-			}
-			throw new XincoException();
-		}
+    //write to db
+    public int write2DB(XincoDBManager DBM) throws XincoException {
         
-		return getId();
+        try {
             
-	}
+            if (getId() > 0) {
+                Statement stmt = DBM.con.createStatement();
+                XincoCoreAuditServer audit= new XincoCoreAuditServer();
+                ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+                audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+getId()},
+                        DBM,xerb.getString("audit.log.change"),1);
+                stmt.executeUpdate("UPDATE xinco_core_log SET xinco_core_data_id=" + getXinco_core_data_id() + ", xinco_core_user_id=" + getXinco_core_user_id() + ", op_code=" + getOp_code() + ", op_datetime=now(), op_description='" + getOp_description().replaceAll("'","\\\\'") + "', version_high=" + getVersion().getVersion_high() + ", version_mid=" + getVersion().getVersion_mid() + ", version_low=" + getVersion().getVersion_low() + ", version_postfix='" + getVersion().getVersion_postfix().replaceAll("'","\\\\'") + "' WHERE id=" + getId());
+                stmt.close();
+            } else {
+                setId(DBM.getNewID("xinco_core_log"));
+                
+                Statement stmt = DBM.con.createStatement();
+                stmt.executeUpdate("INSERT INTO xinco_core_log VALUES (" + getId() + ", " + getXinco_core_data_id() + ", " + getXinco_core_user_id() + ", " + getOp_code() + ", now(), '" + getOp_description().replaceAll("'","\\\\'") + "', " + getVersion().getVersion_high() + ", " + getVersion().getVersion_mid() + ", " + getVersion().getVersion_low() + ", '" + getVersion().getVersion_postfix().replaceAll("'","\\\\'") + "')");
+                stmt.close();
+            }
+            
+            DBM.con.commit();
+            
+        } catch (Exception e) {
+            try {
+                DBM.con.rollback();
+            } catch (Exception erollback) {
+            }
+            throw new XincoException();
+        }
+        
+        return getId();
+        
+    }
     
-	//create complete log list for data
-	public static Vector getXincoCoreLogs(int attrID, XincoDBManager DBM) {
+    //create complete log list for data
+    public static Vector getXincoCoreLogs(int attrID, XincoDBManager DBM) {
         
-		Vector core_log = new Vector();
-		GregorianCalendar cal = new GregorianCalendar();
+        Vector core_log = new Vector();
+        GregorianCalendar cal = new GregorianCalendar();
         
-		try {
-			Statement stmt = DBM.con.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_log WHERE xinco_core_data_id=" + attrID);
-
-			while (rs.next()) {
-				cal = new GregorianCalendar();
-				cal.setTime( rs.getDate("op_datetime"));
-				core_log.addElement(new XincoCoreLogServer(rs.getInt("id"), rs.getInt("xinco_core_data_id"), rs.getInt("xinco_core_user_id"), rs.getInt("op_code"), cal, rs.getString("op_description"), rs.getInt("version_high"), rs.getInt("version_mid"), rs.getInt("version_low"), rs.getString("version_postfix")));
-			}
-
-			stmt.close();
-		} catch (Exception e) {
-			core_log.removeAllElements();
-		}
-
-		return core_log;
-	}
-
+        try {
+            Statement stmt = DBM.con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_log WHERE xinco_core_data_id=" + attrID);
+            
+            while (rs.next()) {
+                cal = new GregorianCalendar();
+                cal.setTime( rs.getDate("op_datetime"));
+                core_log.addElement(new XincoCoreLogServer(rs.getInt("id"), rs.getInt("xinco_core_data_id"), rs.getInt("xinco_core_user_id"), rs.getInt("op_code"), cal, rs.getString("op_description"), rs.getInt("version_high"), rs.getInt("version_mid"), rs.getInt("version_low"), rs.getString("version_postfix")));
+            }
+            
+            stmt.close();
+        } catch (Exception e) {
+            core_log.removeAllElements();
+        }
+        
+        return core_log;
+    }
+    
 }

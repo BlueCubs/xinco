@@ -142,6 +142,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 cal = new GregorianCalendar();
                 cal.setTime(rs.getTimestamp("last_modified"));
                 setLastModified(rs.getTimestamp("last_modified"));
+                System.out.println("Within XincoCoreUserServer: "+this.getReason());
                 write2DB(DBM);
             }
             if (RowCount < 1) {
@@ -309,7 +310,9 @@ public class XincoCoreUserServer extends XincoCoreUser {
             if (getId() > 0) {
                 stmt = DBM.con.createStatement();
                 if(isChange()){
-                    updateAuditTrail("xinco_core_user",new String [] {"id ="+getId()},DBM,getReason());
+                    XincoCoreAuditServer audit= new XincoCoreAuditServer();
+                    audit.updateAuditTrail("xinco_core_user",new String [] {"id ="+getId()},
+                            DBM,getReason(),getId());
                     Timestamp ts= new Timestamp(System.currentTimeMillis());
                     setLastModified(ts);
                     setChange(false);
@@ -386,44 +389,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
         return coreUsers;
     }
     
-    public void updateAuditTrail(String table,String [] keys, XincoDBManager DBM,String reason){
-        try {
-            //"Copy and Paste" the original record in the audit tables
-            String where="";
-            for(int i=0;i<keys.length;i++){
-                where+=keys[i];
-                if(i<keys.length-1)
-                    where+=" and ";
-            }
-            Statement stmt = DBM.con.createStatement();
-            int record_ID=0;
-            String sql="select * from "+table+" where "+where;
-            ResultSet rs = stmt.executeQuery(sql);
-            try {
-                record_ID=DBM.getNewID("xinco_core_user_modified_record");
-                sql="insert into "+table+"_t values("+record_ID+", ";
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            if(rs.next()) {
-                for(int i=1;i<=rs.getMetaData().getColumnCount();i++){
-                    sql+="'"+rs.getString(i)+"'";
-                    if(i<rs.getMetaData().getColumnCount())
-                        sql+=", ";
-                    else
-                        sql+=")";
-                }
-            }
-            stmt.executeUpdate(sql);
-            sql="insert into `xinco_core_user_modified_record` (`id`, `record_id`, `mod_Time`, " +
-                    "`mod_Reason`) values ("+getId()+", "+record_ID+", '"+
-                    new Timestamp(System.currentTimeMillis())+"', '"+reason+"')";
-            stmt.executeUpdate(sql);
-            DBM.con.commit();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
+    
     
     public boolean isHashPassword() {
         return hashPassword;
