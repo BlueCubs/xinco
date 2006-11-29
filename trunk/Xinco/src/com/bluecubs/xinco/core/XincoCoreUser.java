@@ -78,8 +78,8 @@ public class XincoCoreUser  implements java.io.Serializable {
      * 
      * @param change
      */
-    public void setChange(boolean change) {
-        this.change = change;
+    public void setChange(boolean c) {
+        this.change = c;
     }
 
 
@@ -200,7 +200,6 @@ public class XincoCoreUser  implements java.io.Serializable {
      */
     public void setReason(java.lang.String reason) {
         this.reason = reason;
-        System.out.println("Within XincoCoreUser: "+this.reason);
     }
 
 

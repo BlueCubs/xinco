@@ -139,11 +139,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     setAttempts(0);
                 } else
                     setAttempts(rs.getInt("attempts"));
-                cal = new GregorianCalendar();
-                cal.setTime(rs.getTimestamp("last_modified"));
                 setLastModified(rs.getTimestamp("last_modified"));
-                System.out.println("Within XincoCoreUserServer: "+this.getReason());
-                write2DB(DBM);
             }
             if (RowCount < 1) {
                 sql="SELECT * FROM xinco_core_user WHERE username='" +
@@ -187,6 +183,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     //Increase attempts after a unsuccessfull login.
                     setIncreaseAttempts(true);
                     setLastModified(rs.getTimestamp("last_modified"));
+                    setChange(false);
                     write2DB(dbm);
                 }
             } catch (XincoException ex) {
@@ -309,14 +306,18 @@ public class XincoCoreUserServer extends XincoCoreUser {
             }
             if (getId() > 0) {
                 stmt = DBM.con.createStatement();
+                Timestamp ts=null;
                 if(isChange()){
                     XincoCoreAuditServer audit= new XincoCoreAuditServer();
                     audit.updateAuditTrail("xinco_core_user",new String [] {"id ="+getId()},
                             DBM,getReason(),getId());
-                    Timestamp ts= new Timestamp(System.currentTimeMillis());
+                    ts= new Timestamp(System.currentTimeMillis());
                     setLastModified(ts);
                     setChange(false);
                 }
+                else
+                    ts= (Timestamp)getLastModified();
+                setLastModified(ts);
                 //Sometimes password got re-hashed
                 String password="";
                 if(hashPassword)
@@ -325,8 +326,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 else
                     password="userpassword='" +
                             getUserpassword().replaceAll("'","\\\\'") + "'";
-                Timestamp ts= (Timestamp)getLastModified();
-                setLastModified(ts);
                 sql="UPDATE xinco_core_user SET username='" +
                         getUsername().replaceAll("'","\\\\'") + "', "+password+", name='" +
                         getName().replaceAll("'","\\\\'") + "', firstname='" +
