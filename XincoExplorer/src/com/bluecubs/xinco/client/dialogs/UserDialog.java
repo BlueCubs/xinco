@@ -257,6 +257,8 @@ public class UserDialog extends javax.swing.JDialog {
                     newuser.setEmail(email.getText());
                     newuser.setXinco_core_groups(explorer.getSession().user.getXinco_core_groups());
                     newuser.setStatus_number(explorer.getSession().user.getStatus_number());
+                    //don't update audit trail
+                    newuser.setChange(false);
                     if ((newuser = explorer.getSession().xinco.setXincoCoreUser(newuser, explorer.getSession().user)) != null) {
                         newuser.setUserpassword(new String(password.getPassword()));
                         ChangeReasonDialog crd=null;
@@ -290,11 +292,7 @@ public class UserDialog extends javax.swing.JDialog {
                             System.err.println("Modifying password");
                         } else
                             newuser.setReason(crd.getReason());
-                        System.out.println("In the form: "+newuser.getReason());
-                        if(isAged)
-                            newuser=explorer.getSession().xinco.setXincoCoreUser(newuser, newuser);
-                        else
-                            newuser=explorer.getSession().xinco.setXincoCoreUser(newuser, explorer.getSession().user);
+                        newuser=explorer.getSession().xinco.setXincoCoreUser(newuser, explorer.getSession().user);
                     } else {
                         throw new XincoException(explorer.getResourceBundle().getString("window.userinfo.updatefailedonserver"));
                     }
