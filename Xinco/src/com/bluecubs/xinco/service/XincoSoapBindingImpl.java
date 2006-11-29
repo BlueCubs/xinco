@@ -763,6 +763,9 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         try {
             XincoDBManager dbm = new XincoDBManager();
             XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
+            //Update audit trail
+            user.setChange(in1.isChange());
+            user.write2DB(dbm);
             //update user
             user.setUsername(in0.getUsername());
             user.setUserpassword(in0.getUserpassword());
@@ -770,7 +773,8 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             user.setName(in0.getName());
             user.setEmail(in0.getEmail());
             user.setStatus_number(in0.getStatus_number());
-            user.setChange(in0.isChange());
+            user.setChange(false);
+            user.setReason(in0.getReason());
             user.write2DB(dbm);
             dbm.con.close();
             return (XincoCoreUser)user;
