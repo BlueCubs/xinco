@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 public class ChangeReasonDialog extends javax.swing.JDialog {
     private XincoCoreUser user;
     private XincoExplorer explorer=null;
+    private String reasonS="";
     /**
      * Is dialog done?
      */
@@ -31,11 +32,10 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
      * @param explorer Related XincoExplorer.
      * @throws com.bluecubs.xinco.core.XincoException XincoException thrown
      */
-    public ChangeReasonDialog(java.awt.Frame parent, boolean modal,
-            XincoCoreUser user, XincoExplorer explorer) throws XincoException{
+    public ChangeReasonDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) throws XincoException{
         super(parent, modal);
         initComponents();
-        this.user=user;
+        this.user=explorer.getSession().user;
         this.explorer=explorer;
         setTitle(explorer.getResourceBundle().getString("window.changereason.title"));
         this.reasonLabel.setText(explorer.getResourceBundle().getString("window.changereason.label"));
@@ -49,7 +49,7 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
      * @return Specified reason.
      */
     public String getReason() {
-        return this.reason.getText();
+        return this.reasonS;
     }
     
     /** This method is called from within the constructor to
@@ -125,6 +125,7 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
         //Reason can't be empty'
         if(!reason.getText().trim().equals("")){
             this.user.setReason(reason.getText());
+            this.reasonS=reason.getText();
             setVisible(false);
             this.done=true;
         }
@@ -137,7 +138,7 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
     
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         this.done=true;
-        this.dispose();
+        setVisible(false);
     }//GEN-LAST:event_cancelActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

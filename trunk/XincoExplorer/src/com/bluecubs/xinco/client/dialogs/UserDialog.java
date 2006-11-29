@@ -277,7 +277,7 @@ public class UserDialog extends javax.swing.JDialog {
                         }
                         //Prompt for change reason
                         if(!isAged){
-                            crd=new ChangeReasonDialog(new javax.swing.JFrame(), true,newuser,explorer);
+                            crd=new ChangeReasonDialog(new javax.swing.JFrame(), true,explorer);
                             crd.setVisible(true);
                             while(!crd.done);
                         }
@@ -290,11 +290,11 @@ public class UserDialog extends javax.swing.JDialog {
                             System.err.println("Modifying password");
                         } else
                             newuser.setReason(crd.getReason());
+                        System.out.println("In the form: "+newuser.getReason());
                         if(isAged)
                             newuser=explorer.getSession().xinco.setXincoCoreUser(newuser, newuser);
                         else
                             newuser=explorer.getSession().xinco.setXincoCoreUser(newuser, explorer.getSession().user);
-                        //
                     } else {
                         throw new XincoException(explorer.getResourceBundle().getString("window.userinfo.updatefailedonserver"));
                     }
@@ -309,7 +309,7 @@ public class UserDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, explorer.getResourceBundle().getString("window.userinfo.passwordmismatch"), explorer.getResourceBundle().getString("general.error"), JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_saveActionPerformed
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;
     private javax.swing.JTextField email;
