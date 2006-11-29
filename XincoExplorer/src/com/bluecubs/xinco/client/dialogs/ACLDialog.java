@@ -41,12 +41,12 @@ public class ACLDialog extends javax.swing.JDialog {
         setTitle(explorer.getResourceBundle().getString("window.acl"));
         this.ACLWarning.setText(explorer.getResourceBundle().getString("window.acl.note"));
         this.AddACE.setText(explorer.getResourceBundle().getString("window.acl.addace"));
-        this.Admin.setText(explorer.getResourceBundle().getString("window.acl.permission.admin"));
+        this.Admin.setText(explorer.getResourceBundle().getString("general.acl.adminpermission"));
         this.Close.setText(explorer.getResourceBundle().getString("general.close"));
-        this.Execute.setText(explorer.getResourceBundle().getString("window.acl.permission.execute"));
-        this.Read.setText(explorer.getResourceBundle().getString("window.acl.permission.read"));
+        this.Execute.setText(explorer.getResourceBundle().getString("general.acl.executepermission"));
+        this.Read.setText(explorer.getResourceBundle().getString("general.acl.readpermission"));
         this.RemoveACE.setText(explorer.getResourceBundle().getString("window.acl.removeace"));
-        this.Write.setText(explorer.getResourceBundle().getString("window.acl.permission.write"));
+        this.Write.setText(explorer.getResourceBundle().getString("general.acl.writepermission"));
         this.aclAddLabel.setText(explorer.getResourceBundle().getString("window.acl.grouplabel"));
         this.aclRemoveLabel.setText(explorer.getResourceBundle().getString("window.acl.removeacelabel"));
         setLocationRelativeTo(null);
@@ -88,12 +88,15 @@ public class ACLDialog extends javax.swing.JDialog {
         for (i=0;i<temp_vector.size();i++) {
             temp_ace = (XincoCoreACE)temp_vector.elementAt(i);
             if (temp_ace.getXinco_core_user_id() > 0) {
-                temp_string = this.explorer.getResourceBundle().getString("general.user") + ": " + this.explorer.getResourceBundle().getString("general.id") + "=" + temp_ace.getXinco_core_user_id();
+                temp_string = this.explorer.getResourceBundle().getString("general.user") +
+                        ": " + this.explorer.getResourceBundle().getString("general.id") +
+                        "=" + temp_ace.getXinco_core_user_id();
             }
             if (temp_ace.getXinco_core_group_id() > 0) {
                 for (j=0;j<this.explorer.getSession().server_groups.size();j++) {
                     if (((XincoCoreGroup)this.explorer.getSession().server_groups.elementAt(j)).getId() == temp_ace.getXinco_core_group_id()) {
-                        temp_string = this.explorer.getResourceBundle().getString("general.group") + ": " + ((XincoCoreGroup)this.explorer.getSession().server_groups.elementAt(j)).getDesignation();
+                        temp_string = this.explorer.getResourceBundle().getString("general.group") +
+                                ": " + ((XincoCoreGroup)this.explorer.getSession().server_groups.elementAt(j)).getDesignation();
                         break;
                     }
                 }
@@ -321,11 +324,11 @@ public class ACLDialog extends javax.swing.JDialog {
                 temp_ace = new XincoCoreACE();
                 if (this.explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
                     temp_acl = ((XincoCoreNode)this.explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_acl();
-                    temp_ace = (XincoCoreACE)temp_acl.elementAt(this.groupList.getSelectedIndex());
+                    temp_ace = (XincoCoreACE)temp_acl.elementAt(this.currentACLList.getSelectedIndex());
                 }
                 if (this.explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreData.class) {
                     temp_acl = ((XincoCoreData)this.explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_acl();
-                    temp_ace = (XincoCoreACE)temp_acl.elementAt(this.groupList.getSelectedIndex());
+                    temp_ace = (XincoCoreACE)temp_acl.elementAt(this.currentACLList.getSelectedIndex());
                 }
                 if (temp_ace.getXinco_core_user_id() > 0) {
                     throw new XincoException(this.explorer.getResourceBundle().getString("window.acl.cannotremoveowner"));
@@ -341,6 +344,7 @@ public class ACLDialog extends javax.swing.JDialog {
                         " " + this.explorer.getResourceBundle().getString("general.reason") +
                         ": " + xe.toString(), this.explorer.getResourceBundle().getString("general.error"),
                         JOptionPane.WARNING_MESSAGE);
+                xe.printStackTrace();
             }
         }
     }//GEN-LAST:event_RemoveACEActionPerformed
@@ -388,7 +392,7 @@ public class ACLDialog extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_AddACEActionPerformed
-   
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ACLWarning;
     private javax.swing.JButton AddACE;
