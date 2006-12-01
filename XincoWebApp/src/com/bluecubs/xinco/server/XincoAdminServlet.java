@@ -203,7 +203,7 @@ public class XincoAdminServlet extends HttpServlet {
                 status = 1;
                 //Check for password aging
                 if(temp_user.getStatus_number()==3){
-                        status =2;
+                    status =2;
                 }
                 //-----------------------------------------------------------------------------------
                 session.setAttribute("XincoAdminServlet.status", new Integer(status));
@@ -423,7 +423,6 @@ public class XincoAdminServlet extends HttpServlet {
         //modify user profile
         if (request.getParameter("DialogEditUserProfileSubmit") != null) {
             try {
-                System.out.println("Updating profile...");
                 temp_user = new XincoCoreUserServer(Integer.parseInt(request.getParameter("DialogEditUserProfileID")), dbm);
                 temp_user.setUsername(request.getParameter("DialogEditUserProfileUsername"));
                 temp_user.setUserpassword(request.getParameter("DialogEditUserProfilePassword"));
@@ -431,7 +430,10 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_user.setFirstname(request.getParameter("DialogEditUserProfileFirstname"));
                 temp_user.setEmail(request.getParameter("DialogEditUserProfileEmail"));
                 //The logged in admin does the locking
-                temp_user.setChangerID(login_user.getId());
+                if(login_user==null)
+                    temp_user.setChangerID(temp_user.getId());
+                else
+                    temp_user.setChangerID(login_user.getId());
                 temp_user.setWriteGroups(true);
                 //Register change in audit trail
                 temp_user.setChange(true);
@@ -439,6 +441,7 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_user.setReason("audit.user.account.modified");
                 temp_user.write2DB(dbm);
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         //create new language
@@ -920,7 +923,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("</tr>");
                     out.println("<tr>");
                     out.println("<td class=\"text\">"+rb.getString("general.password")+":</td>");
-                    out.println("<td class=\"text\"><input type=\"password\" name=\"DialogEditUserProfilePassword\" value=\"\" size=\"40\"/></td>");
+                    out.println("<td class=\"text\"><input type=\"password\" name=\"DialogEditUserProfilePassword\" value=\"" + temp_user.getUserpassword() + "\" size=\"40\"/></td>");
                     out.println("</tr>");
                     out.println("<tr>");
                     out.println("<td class=\"text\">"+rb.getString("general.firstname")+":</td>");
