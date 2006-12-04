@@ -43,11 +43,11 @@ import java.sql.Statement;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import com.bluecubs.xinco.core.*;
-import com.bluecubs.xinco.add.*;
 import com.bluecubs.xinco.core.server.*;
+import java.util.ResourceBundle;
 
 public class XincoPublisherServlet extends HttpServlet {
-    
+    ResourceBundle lrb;
     /** Initializes the servlet.
      */
     public void init(ServletConfig config) throws ServletException {
@@ -65,7 +65,7 @@ public class XincoPublisherServlet extends HttpServlet {
      */
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        
+        lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
         int i = 0;
         int j = 0;
         String request_path;
@@ -195,7 +195,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
                 out.println("<tr>");
                 out.println("<td class=\"text\" width=\"100\"><img src=\"blueCubsSmall.gif\" border=\"0\"/></td>");
-                out.println("<td class=\"bigtext\" width=\"650\">XincoPublisher</td>");
+                out.println("<td class=\"bigtext\" width=\"650\">"+lrb.getString("message.admin.main.publisher.label")+"</td>");
                 out.println("</tr>");
                 out.println("</table>");
                 out.println("<br>");
@@ -253,7 +253,7 @@ public class XincoPublisherServlet extends HttpServlet {
                                     temp_path = request.getParameter("Path");
                                     temp_path = new String(new sun.misc.BASE64Decoder().decodeBuffer(temp_path));
                                     out.println("<tr>");
-                                    out.println("<td colspan=\"2\" class=\"text\"><b>Path:</b> " + temp_path + "</td>");
+                                    out.println("<td colspan=\"2\" class=\"text\"><b>"+lrb.getString("general.path")+"</b> " + temp_path + "</td>");
                                     out.println("</tr>");
                                     out.println("<tr>");
                                     out.println("<td colspan=\"2\" class=\"text\">&nbsp;</td>");
@@ -264,7 +264,7 @@ public class XincoPublisherServlet extends HttpServlet {
                                 }
                                 // list public folders
                                 out.println("<tr>");
-                                out.println("<td colspan=\"2\" class=\"text\"><b>Public Sub-Folders:</b></td>");
+                                out.println("<td colspan=\"2\" class=\"text\"><b>"+lrb.getString("message.xincopublisher.subfolders")+"</b></td>");
                                 out.println("</tr>");
                                 out.flush();
                                 for (i=0;i<xnode_temp.getXinco_core_nodes().size();i++) {
@@ -340,17 +340,17 @@ public class XincoPublisherServlet extends HttpServlet {
                     }
                 } else {
                     out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=list\" class=\"link\"><b>List</b></a> all publicly available data!</td>");
+                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=list\" class=\"link\">"+lrb.getString("message.xincopublisher.list")+"</td>");
                     out.println("</tr>");
                     out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path=" + (new sun.misc.BASE64Encoder().encode((new String("xincoRoot")).getBytes())) + "\" class=\"link\"><b>Browse</b></a> the repository for publicly available data!</td>");
+                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path=" + (new sun.misc.BASE64Encoder().encode((new String("xincoRoot")).getBytes())) + "\" class=\"link\">"+lrb.getString("message.xincopublisher.browse")+"</td>");
                     out.println("</tr>");
                 }
                 out.println("<tr>");
                 out.println("<td class=\"text\" colspan=\"2\">&nbsp;<br><br></td>");
                 out.println("</tr>");
                 out.println("<tr>");
-                out.println("<td class=\"text\" colspan=\"2\"><b>HowTo:</b><br>When linking to published documents, use the following URL Syntax:<br><b>http://[server_name]:[port]/xinco/XincoPublisher/[id]/[designation|filename]</b></td>");
+                out.println("<td class=\"text\" colspan=\"2\">"+lrb.getString("message.xincopublisher.howto")+"</td>");
                 out.println("</tr>");
                 out.println("</table>");
             }
@@ -403,7 +403,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
                 out.println("<tr>");
                 out.println("<td class=\"text\">&nbsp;</td>");
-                out.println("<td class=\"text\">&copy; 2004-2006, <a href=\"http://www.bluecubs.com\" target=\"_blank\" class=\"link\">blueCubs.com</a> and <a href=\"http://www.xinco.org\" target=\"_blank\" class=\"link\">xinco.org</a></td>");
+                out.println("<td class=\"text\">"+lrb.getString("message.admin.main.footer")+"</td>");
                 out.println("</tr>");
                 out.println("</table>");
             }
