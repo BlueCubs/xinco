@@ -60,6 +60,7 @@ import java.util.zip.*;
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.client.*;
 import com.bluecubs.xinco.service.*;
+import java.awt.Component;
 
 import javax.swing.JPanel;
 import javax.swing.JInternalFrame;
@@ -82,6 +83,7 @@ import org.apache.axis.attachments.AttachmentPart;
 import org.apache.axis.client.Call;
 import javax.xml.namespace.QName;
 import java.net.URL;
+import java.sql.Timestamp;
 
 import javax.swing.JDialog;
 /**
@@ -1469,9 +1471,13 @@ public class XincoExplorer extends JFrame {
         if(jScrollPaneRepositoryTable == null) {
             jScrollPaneRepositoryTable = new javax.swing.JScrollPane();
             jScrollPaneRepositoryTable.setViewportView(getJTableRepository());
+            jScrollPaneRepositoryTable.setHorizontalScrollBarPolicy(jScrollPaneRepositoryTable.HORIZONTAL_SCROLLBAR_ALWAYS);
         }
         return jScrollPaneRepositoryTable;
     }
+    
+    
+    
     /**
      * This method initializes jTreeRepository
      *
@@ -1853,7 +1859,8 @@ public class XincoExplorer extends JFrame {
                                     cal = (Calendar)(Calendar)((XincoCoreLog)((XincoCoreData)node.getUserObject()).getXinco_core_logs().elementAt(i)).getOp_datetime().clone();
                                     realcal = ((XincoCoreLog)((XincoCoreData)node.getUserObject()).getXinco_core_logs().elementAt(i)).getOp_datetime();
                                     cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - realcal.get(Calendar.ZONE_OFFSET)) - (ngc.get(Calendar.DST_OFFSET) + realcal.get(Calendar.DST_OFFSET)) );
-                                    rdata[0] = "" + cal.get(Calendar.YEAR) + " / "  + (cal.get(Calendar.MONTH) + 1) + " / "  + cal.get(Calendar.DAY_OF_MONTH);
+                                    Timestamp ts = new Timestamp(cal.getTimeInMillis());
+                                    rdata[0] = "" + (cal.get(Calendar.MONTH) + 1) + " / "  + cal.get(Calendar.DAY_OF_MONTH) + " / "  + cal.get(Calendar.YEAR) +" "+ cal.get(Calendar.HOUR_OF_DAY)+":"+ cal.get(Calendar.MINUTE)+":"+ cal.get(Calendar.SECOND);
                                 } catch (Exception ce) {
                                 }
                             } else {
@@ -1910,7 +1917,12 @@ public class XincoExplorer extends JFrame {
     private javax.swing.JTable getJTableRepository() {
         if(jTableRepository == null) {
             String[] cn = {xerb.getString("window.repository.table.attribute"),xerb.getString("window.repository.table.details")};
-            DefaultTableModel dtm = new DefaultTableModel(cn, 0);
+            DefaultTableModel dtm = new DefaultTableModel(cn, 0){
+                public boolean isCellEditable(int row, int column){
+                    return false;
+                }
+                
+            };
             jTableRepository = new javax.swing.JTable();
             jTableRepository.setModel(dtm);
             jTableRepository.setColumnSelectionAllowed(false);
@@ -2275,7 +2287,7 @@ public class XincoExplorer extends JFrame {
             this.dialogConnection=new ConnectionDialog(new javax.swing.JFrame(),
                     true,this);
         }
-            this.dialogConnection.setVisible(true);
+        this.dialogConnection.setVisible(true);
     }
     
     public ResourceBundle getResourceBundle(){
@@ -2671,7 +2683,7 @@ public class XincoExplorer extends JFrame {
                                     } catch (Exception rmie) {
                                         //undo modification
                                         ((XincoCoreNode)temp_node.getUserObject()).setXinco_core_node_id(old_parent_node_id);
-                                        JOptionPane.showMessageDialog(XincoExplorer.this, 
+                                        JOptionPane.showMessageDialog(XincoExplorer.this,
                                                 xerb.getString("error.movefolderfailed") + " " +
                                                 xerb.getString("general.reason") + ": " + rmie.toString(),
                                                 xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
