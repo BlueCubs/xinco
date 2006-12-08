@@ -7,6 +7,8 @@
 
 package com.bluecubs.xinco.core;
 
+import java.sql.Timestamp;
+
 public class XincoCoreLog  implements java.io.Serializable {
     private int id;
 

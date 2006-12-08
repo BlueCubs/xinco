@@ -63,7 +63,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 setXinco_core_user_id(rs.getInt("xinco_core_user_id"));
                 setOp_code(rs.getInt("op_code"));
                 setOp_datetime(new GregorianCalendar());
-                getOp_datetime().setTime(rs.getDate("op_datetime"));
+                getOp_datetime().setTime(rs.getTimestamp("op_datetime"));
                 setOp_description(rs.getString("op_description"));
                 setVersion(new XincoVersion());
                 getVersion().setVersion_high(rs.getInt("version_high"));
@@ -147,7 +147,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
             
             while (rs.next()) {
                 cal = new GregorianCalendar();
-                cal.setTime( rs.getDate("op_datetime"));
+                cal.setTime( rs.getTimestamp("op_datetime"));
                 core_log.addElement(new XincoCoreLogServer(rs.getInt("id"), rs.getInt("xinco_core_data_id"), rs.getInt("xinco_core_user_id"), rs.getInt("op_code"), cal, rs.getString("op_description"), rs.getInt("version_high"), rs.getInt("version_mid"), rs.getInt("version_low"), rs.getString("version_postfix")));
             }
             
