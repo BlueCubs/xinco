@@ -37,6 +37,7 @@
     <jar href="xercesImpl.jar"/>
     <jar href="Xinco.jar"/>
     <jar href="xmlParserAPIs.jar"/>
+    <jar href="napkinlaf.jar"/>
   </resources>
   <security>
     <!-- all permissions required on Client-Computer -->
