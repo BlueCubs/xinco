@@ -77,5 +77,6 @@
         <signjar jar="${build.dir}/web/client/Xinco.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/XincoExplorer.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/xmlParserAPIs.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
+        <signjar jar="${build.dir}/web/client/napkinlaf.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
     </target>
 </project>
