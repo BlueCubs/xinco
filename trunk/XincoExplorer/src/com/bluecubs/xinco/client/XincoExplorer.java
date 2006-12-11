@@ -3984,7 +3984,7 @@ public class XincoExplorer extends JFrame {
      */
     public void saveConfig() {
         try {
-            java.io.FileOutputStream fout = new java.io.FileOutputStream("xincoClientConfig.dat");
+            java.io.FileOutputStream fout = new java.io.FileOutputStream(System.getProperty("user.home")+"/xincoClientConfig.dat");
             java.io.ObjectOutputStream os = new java.io.ObjectOutputStream(fout);
             os.writeObject(xincoClientConfig);
             os.close();
@@ -4021,7 +4021,7 @@ public class XincoExplorer extends JFrame {
                 tmp_vector_old = null;
             }
             
-            fin = new FileInputStream("xincoClientConfig.dat");
+            fin = new FileInputStream(System.getProperty("user.home")+"/xincoClientConfig.dat");
             ois = new ObjectInputStream(fin);
             
             try {
