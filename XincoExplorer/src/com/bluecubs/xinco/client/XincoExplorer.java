@@ -29,7 +29,8 @@
  * Modifications:
  *
  * Who?             When?             What?
- * Javier Ortiz     Aug-Dec 2006      Remove dialogs and windows from main code
+ * Javier Ortiz     Aug-Dec 2006      1. Remove dialogs and windows from main code
+ *                                    2. Incorporate 21 CFR regulatory features
  *
  *************************************************************
  */
@@ -45,6 +46,7 @@ import com.bluecubs.xinco.client.dialogs.DataFolderDialog;
 import com.bluecubs.xinco.client.dialogs.DataTypeDialog;
 import com.bluecubs.xinco.client.dialogs.LogDialog;
 import com.bluecubs.xinco.client.dialogs.UserDialog;
+import com.bluecubs.xinco.client.object.XincoMenuRepository;
 import javax.swing.*;
 import javax.swing.tree.*;
 import javax.swing.table.*;
@@ -60,7 +62,6 @@ import java.util.zip.*;
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.client.*;
 import com.bluecubs.xinco.service.*;
-import java.awt.Component;
 
 import javax.swing.JPanel;
 import javax.swing.JInternalFrame;
@@ -126,9 +127,9 @@ public class XincoExplorer extends JFrame {
     //connection profiles
     private Vector xincoClientConfig = null;
     //current path and filename
-    private String current_filename = "";
-    private String current_path = "";
-    private String current_fullpath = "";
+    public String current_filename = "";
+    public String current_path = "";
+    public String current_fullpath = "";
     //global dialog return value
     private int global_dialog_return_value = 0;
     private javax.swing.JMenuItem jMenuItemConnectionConnect = null;
@@ -400,7 +401,6 @@ public class XincoExplorer extends JFrame {
     private JInternalFrame getJInternalFrameSearch() {
         if (jInternalFrameSearch == null) {
             jInternalFrameSearch = new JInternalFrame();
-            //jInternalFrameSearch.setBounds(450, 50, 500, 400);
             jInternalFrameSearch.setBounds(this.getWidth()-750, this.getHeight()-710, 700, 460);
             jInternalFrameSearch.setContentPane(getJContentPaneSearch());
             jInternalFrameSearch.setIconifiable(true);
@@ -679,88 +679,6 @@ public class XincoExplorer extends JFrame {
         return jCheckBoxSearchAllLanguages;
     }
     /**
-     * This method initializes jMenuItemRepositoryAddDataStructure
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private JMenuItem getJMenuItemRepositoryAddDataStructure() {
-        if (jMenuItemRepositoryAddDataStructure == null) {
-            jMenuItemRepositoryAddDataStructure = new JMenuItem();
-            jMenuItemRepositoryAddDataStructure.setText(xerb.getString("menu.repository.adddatastructure"));
-            jMenuItemRepositoryAddDataStructure.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryAddDataStructure.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    //import data structure
-                    if (xincoClientSession.currentTreeNodeSelection != null) {
-                        if (xincoClientSession.currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
-                            JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("window.massiveimport.info"), xerb.getString("window.massiveimport"), JOptionPane.INFORMATION_MESSAGE);
-                            try {
-                                JFileChooser fc = new JFileChooser();
-                                fc.setCurrentDirectory(new File(current_path));
-                                fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                                //show dialog
-                                int result = fc.showOpenDialog(XincoExplorer.this);
-                                if(result == JFileChooser.APPROVE_OPTION) {
-                                    setCurrentPath(fc.getSelectedFile().toString());
-                                } else {
-                                    throw new XincoException(xerb.getString("datawizard.updatecancel"));
-                                }
-                                //update transaction info
-                                JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("window.massiveimport.progress"), xerb.getString("window.massiveimport"), JOptionPane.INFORMATION_MESSAGE);
-                                jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.progress"));
-                                importContentOfFolder((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject(), new File(current_path));
-                                //select current path
-                                jTreeRepository.setSelectionPath(new TreePath(xincoClientSession.currentTreeNodeSelection.getPath()));
-                                //update transaction info
-                                jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.importsuccess"));
-                            } catch (Exception ie) {
-                                JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("window.massiveimport.importfailed") + " " + xerb.getString("general.reason") + ": " + ie.toString(), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
-                                jLabelInternalFrameInformationText.setText("");
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        return jMenuItemRepositoryAddDataStructure;
-    }
-    /**
-     * This method initializes jMenuItemRepositoryViewURL
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private JMenuItem getJMenuItemRepositoryViewURL() {
-        if (jMenuItemRepositoryViewURL == null) {
-            jMenuItemRepositoryViewURL = new JMenuItem();
-            jMenuItemRepositoryViewURL.setText(xerb.getString("menu.repository.viewurl"));
-            jMenuItemRepositoryViewURL.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryViewURL.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    doDataWizard(8);
-                }
-            });
-        }
-        return jMenuItemRepositoryViewURL;
-    }
-    /**
-     * This method initializes jMenuItemRepositoryEmailContact
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private JMenuItem getJMenuItemRepositoryEmailContact() {
-        if (jMenuItemRepositoryEmailContact == null) {
-            jMenuItemRepositoryEmailContact = new JMenuItem();
-            jMenuItemRepositoryEmailContact.setText(xerb.getString("menu.repository.emailcontact"));
-            jMenuItemRepositoryEmailContact.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryEmailContact.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    doDataWizard(9);
-                }
-            });
-        }
-        return jMenuItemRepositoryEmailContact;
-    }
-    /**
      * This method initializes jComboBoxSearchOperator
      *
      * @return javax.swing.JComboBox
@@ -858,230 +776,14 @@ public class XincoExplorer extends JFrame {
         return jButtonSearchResetQuery;
     }
     /**
-     * This method initializes jMenuItemRepositoryCommentData
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private JMenuItem getJMenuItemRepositoryCommentData() {
-        if (jMenuItemRepositoryCommentData == null) {
-            jMenuItemRepositoryCommentData = new JMenuItem();
-            jMenuItemRepositoryCommentData.setText(xerb.getString("menu.edit.commentdata"));
-            jMenuItemRepositoryCommentData.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_8, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryCommentData.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    doDataWizard(13);
-                }
-            });
-        }
-        return jMenuItemRepositoryCommentData;
-    }
-    /**
      * This method initializes jPopupMenuRepository
      *
      * @return javax.swing.JPopupMenu
      */
     private JPopupMenu getJPopupMenuRepository() {
         JMenuItem tmi = null;
-        jPopupMenuRepository = new JPopupMenu();
+        jPopupMenuRepository = new XincoMenuRepository(this);
         jPopupMenuRepository.setEnabled(jMenuRepository.isEnabled());
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryRefresh().getText());
-        tmi.setEnabled(getJMenuItemRepositoryRefresh().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryRefresh().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        jPopupMenuRepository.addSeparator();
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryAddFolder().getText());
-        tmi.setEnabled(getJMenuItemRepositoryAddFolder().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryAddFolder().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryAddData().getText());
-        tmi.setEnabled(getJMenuItemRepositoryAddData().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryAddData().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryAddDataStructure().getText());
-        tmi.setEnabled(getJMenuItemRepositoryAddDataStructure().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryAddDataStructure().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        jPopupMenuRepository.addSeparator();
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryEditFolderData().getText());
-        tmi.setEnabled(getJMenuItemRepositoryEditFolderData().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryEditFolderData().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryViewEditAddAttributes().getText());
-        tmi.setEnabled(getJMenuItemRepositoryViewEditAddAttributes().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryViewEditAddAttributes().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryEditFolderDataACL().getText());
-        tmi.setEnabled(getJMenuItemRepositoryEditFolderDataACL().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryEditFolderDataACL().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        jPopupMenuRepository.addSeparator();
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryMoveFolderData().getText());
-        tmi.setEnabled(getJMenuItemRepositoryMoveFolderData().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryMoveFolderData().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryInsertFolderData().getText());
-        tmi.setEnabled(getJMenuItemRepositoryInsertFolderData().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryInsertFolderData().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        jPopupMenuRepository.addSeparator();
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryViewURL().getText());
-        tmi.setEnabled(getJMenuItemRepositoryViewURL().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryViewURL().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryEmailContact().getText());
-        tmi.setEnabled(getJMenuItemRepositoryEmailContact().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryEmailContact().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryViewData().getText());
-        tmi.setEnabled(getJMenuItemRepositoryViewData().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryViewData().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryCheckoutData().getText());
-        tmi.setEnabled(getJMenuItemRepositoryCheckoutData().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryCheckoutData().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryUndoCheckoutData().getText());
-        tmi.setEnabled(getJMenuItemRepositoryUndoCheckoutData().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryUndoCheckoutData().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryCheckinData().getText());
-        tmi.setEnabled(getJMenuItemRepositoryCheckinData().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryCheckinData().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryPublishData().getText());
-        tmi.setEnabled(getJMenuItemRepositoryPublishData().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryPublishData().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryLockData().getText());
-        tmi.setEnabled(getJMenuItemRepositoryLockData().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryLockData().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryDownloadRevision().getText());
-        tmi.setEnabled(getJMenuItemRepositoryDownloadRevision().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryDownloadRevision().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
-        //add item
-        tmi = new JMenuItem();
-        tmi.setText(getJMenuItemRepositoryCommentData().getText());
-        tmi.setEnabled(getJMenuItemRepositoryCommentData().isEnabled());
-        tmi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                getJMenuItemRepositoryCommentData().doClick();
-            }
-        });
-        jPopupMenuRepository.add(tmi);
         return jPopupMenuRepository;
     }
     /**
@@ -1296,30 +998,31 @@ public class XincoExplorer extends JFrame {
      */
     private javax.swing.JMenu getJMenuRepository() {
         if(jMenuRepository == null) {
+            getJPopupMenuRepository();
             jMenuRepository = new javax.swing.JMenu();
-            jMenuRepository.add(getJMenuItemRepositoryRefresh());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryRefresh());
             jMenuRepository.addSeparator();
-            jMenuRepository.add(getJMenuItemRepositoryAddFolder());
-            jMenuRepository.add(getJMenuItemRepositoryAddData());
-            jMenuRepository.add(getJMenuItemRepositoryAddDataStructure());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryAddFolder());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryAddData());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryAddDataStructure());
             jMenuRepository.addSeparator();
-            jMenuRepository.add(getJMenuItemRepositoryEditFolderData());
-            jMenuRepository.add(getJMenuItemRepositoryViewEditAddAttributes());
-            jMenuRepository.add(getJMenuItemRepositoryEditFolderDataACL());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryEditFolderData());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryViewEditAddAttributes());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryEditFolderDataACL());
             jMenuRepository.addSeparator();
-            jMenuRepository.add(getJMenuItemRepositoryMoveFolderData());
-            jMenuRepository.add(getJMenuItemRepositoryInsertFolderData());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryMoveFolderData());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryInsertFolderData());
             jMenuRepository.addSeparator();
-            jMenuRepository.add(getJMenuItemRepositoryViewURL());
-            jMenuRepository.add(getJMenuItemRepositoryEmailContact());
-            jMenuRepository.add(getJMenuItemRepositoryViewData());
-            jMenuRepository.add(getJMenuItemRepositoryCheckoutData());
-            jMenuRepository.add(getJMenuItemRepositoryUndoCheckoutData());
-            jMenuRepository.add(getJMenuItemRepositoryCheckinData());
-            jMenuRepository.add(getJMenuItemRepositoryPublishData());
-            jMenuRepository.add(getJMenuItemRepositoryLockData());
-            jMenuRepository.add(getJMenuItemRepositoryDownloadRevision());
-            jMenuRepository.add(getJMenuItemRepositoryCommentData());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryViewURL());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryEmailContact());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryViewData());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryCheckoutData());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryUndoCheckoutData());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryCheckinData());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryPublishData());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryLockData());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryDownloadRevision());
+            jMenuRepository.add(((XincoMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryCommentData());
             jMenuRepository.setText(xerb.getString("menu.repository"));
             jMenuRepository.setName("Repository");
             jMenuRepository.setEnabled(false);
@@ -1934,34 +1637,6 @@ public class XincoExplorer extends JFrame {
         return jTableRepository;
     }
     /**
-     * This method initializes jMenuItemRepositoryRefresh
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private javax.swing.JMenuItem getJMenuItemRepositoryRefresh() {
-        if(jMenuItemRepositoryRefresh == null) {
-            jMenuItemRepositoryRefresh = new javax.swing.JMenuItem();
-            jMenuItemRepositoryRefresh.setText(xerb.getString("menu.repository.refresh"));
-            jMenuItemRepositoryRefresh.setName("Refresh");
-            jMenuItemRepositoryRefresh.setEnabled(true);
-            jMenuItemRepositoryRefresh.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
-            jMenuItemRepositoryRefresh.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    try {
-                        //get root
-                        XincoCoreNode xnode = new XincoCoreNode();
-                        xnode.setId(1);
-                        xnode = xincoClientSession.xinco.getXincoCoreNode(xnode, xincoClientSession.user);
-                        xincoClientSession.xincoClientRepository.assignObject2TreeNode((XincoMutableTreeNode)((DefaultTreeModel)xincoClientSession.xincoClientRepository.treemodel).getRoot(), xnode, xincoClientSession.xinco, xincoClientSession.user, 2);
-                        jTreeRepository.expandPath(new TreePath(xincoClientSession.xincoClientRepository.treemodel.getPathToRoot(((XincoMutableTreeNode)((DefaultTreeModel)xincoClientSession.xincoClientRepository.treemodel).getRoot()))));
-                    } catch (Exception rmie) {
-                    }
-                }
-            });
-        }
-        return jMenuItemRepositoryRefresh;
-    }
-    /**
      * This method initializes jMenuSearch
      *
      * @return javax.swing.JMenu
@@ -1995,63 +1670,6 @@ public class XincoExplorer extends JFrame {
             });
         }
         return jMenuItemSearchRepository;
-    }
-    /**
-     * This method initializes jMenuItemRepositoryAddFolder
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private javax.swing.JMenuItem getJMenuItemRepositoryAddFolder() {
-        if(jMenuItemRepositoryAddFolder == null) {
-            jMenuItemRepositoryAddFolder = new javax.swing.JMenuItem();
-            jMenuItemRepositoryAddFolder.setText(xerb.getString("menu.repository.addfolder"));
-            jMenuItemRepositoryAddFolder.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryAddFolder.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    XincoMutableTreeNode newnode;
-                    
-                    //open folder dialog
-                    if (xincoClientSession.currentTreeNodeSelection != null) {
-                        if (xincoClientSession.currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
-                            //set current node to new one
-                            newnode = new XincoMutableTreeNode(new XincoCoreNode());
-                            //set node attributes
-                            ((XincoCoreNode)newnode.getUserObject()).setXinco_core_node_id(((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getId());
-                            ((XincoCoreNode)newnode.getUserObject()).setDesignation(xerb.getString("general.newfolder"));
-                            ((XincoCoreNode)newnode.getUserObject()).setXinco_core_language((XincoCoreLanguage)xincoClientSession.server_languages.elementAt(0));
-                            ((XincoCoreNode)newnode.getUserObject()).setStatus_number(1);
-                            xincoClientSession.xincoClientRepository.treemodel.insertNodeInto(newnode, xincoClientSession.currentTreeNodeSelection, xincoClientSession.currentTreeNodeSelection.getChildCount());
-                            xincoClientSession.currentTreeNodeSelection = newnode;
-                            jDialogFolder = getJDialogFolder();
-                            jDialogFolder.setVisible(true);
-                            //update treemodel
-                            xincoClientSession.xincoClientRepository.treemodel.reload(xincoClientSession.currentTreeNodeSelection);
-                            xincoClientSession.xincoClientRepository.treemodel.nodeChanged(xincoClientSession.currentTreeNodeSelection);
-                        }
-                    }
-                }
-            });
-        }
-        return jMenuItemRepositoryAddFolder;
-    }
-    /**
-     * This method initializes jMenuItemRepositoryAddData
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private javax.swing.JMenuItem getJMenuItemRepositoryAddData() {
-        if(jMenuItemRepositoryAddData == null) {
-            jMenuItemRepositoryAddData = new javax.swing.JMenuItem();
-            jMenuItemRepositoryAddData.setText(xerb.getString("menu.repository.adddata"));
-            jMenuItemRepositoryAddData.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryAddData.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    //data wizard -> add new data object
-                    doDataWizard(1);
-                }
-            });
-        }
-        return jMenuItemRepositoryAddData;
     }
     /**
      * This method initializes jMenuView
@@ -2456,343 +2074,25 @@ public class XincoExplorer extends JFrame {
         } catch (Exception plafe) {
             //System.err.println(plafe.toString());
         }
-    }
-    
-    /**
-     * This method initializes jMenuItemRepositoryEditFolderData
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private javax.swing.JMenuItem getJMenuItemRepositoryEditFolderData() {
-        if(jMenuItemRepositoryEditFolderData == null) {
-            jMenuItemRepositoryEditFolderData = new javax.swing.JMenuItem();
-            jMenuItemRepositoryEditFolderData.setText(xerb.getString("menu.edit.folderdata"));
-            jMenuItemRepositoryEditFolderData.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryEditFolderData.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    if (xincoClientSession.currentTreeNodeSelection != null) {
-                        if (xincoClientSession.currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
-                            //open folder dialog
-                            jDialogFolder = getJDialogFolder();
-                            jDialogFolder.setVisible(true);
-                        }
-                        if (xincoClientSession.currentTreeNodeSelection.getUserObject().getClass() == XincoCoreData.class) {
-                            //data wizard -> edit data object
-                            doDataWizard(2);
-                        }
-                    }
-                }
-            });
-        }
-        return jMenuItemRepositoryEditFolderData;
-    }
-    /**
-     * This method initializes jMenuItemRepositoryCheckoutData
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private javax.swing.JMenuItem getJMenuItemRepositoryCheckoutData() {
-        if(jMenuItemRepositoryCheckoutData == null) {
-            jMenuItemRepositoryCheckoutData = new javax.swing.JMenuItem();
-            jMenuItemRepositoryCheckoutData.setText(xerb.getString("menu.edit.checkoutfile"));
-            jMenuItemRepositoryCheckoutData.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_2, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryCheckoutData.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    doDataWizard(4);
-                }
-            });
-        }
-        return jMenuItemRepositoryCheckoutData;
-    }
-    /**
-     * This method initializes jMenuItemRepositoryUndoCheckoutData
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private javax.swing.JMenuItem getJMenuItemRepositoryUndoCheckoutData() {
-        if(jMenuItemRepositoryUndoCheckoutData == null) {
-            jMenuItemRepositoryUndoCheckoutData = new javax.swing.JMenuItem();
-            jMenuItemRepositoryUndoCheckoutData.setText(xerb.getString("menu.edit.undocheckout"));
-            jMenuItemRepositoryUndoCheckoutData.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryUndoCheckoutData.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    doDataWizard(5);
-                }
-            });
-        }
-        return jMenuItemRepositoryUndoCheckoutData;
-    }
-    /**
-     * This method initializes jMenuItemRepositoryCheckinData
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private javax.swing.JMenuItem getJMenuItemRepositoryCheckinData() {
-        if(jMenuItemRepositoryCheckinData == null) {
-            jMenuItemRepositoryCheckinData = new javax.swing.JMenuItem();
-            jMenuItemRepositoryCheckinData.setText(xerb.getString("menu.edit.checkinfile"));
-            jMenuItemRepositoryCheckinData.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_4, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryCheckinData.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    doDataWizard(6);
-                }
-            });
-        }
-        return jMenuItemRepositoryCheckinData;
-    }
-    /**
-     * This method initializes jMenuItemRepositoryPublishData
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private javax.swing.JMenuItem getJMenuItemRepositoryPublishData() {
-        if(jMenuItemRepositoryPublishData == null) {
-            jMenuItemRepositoryPublishData = new javax.swing.JMenuItem();
-            jMenuItemRepositoryPublishData.setText(xerb.getString("menu.edit.publishdata"));
-            jMenuItemRepositoryPublishData.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_5, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryPublishData.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    doDataWizard(10);
-                }
-            });
-        }
-        return jMenuItemRepositoryPublishData;
-    }
-    /**
-     * This method initializes jMenuItemRepositoryLockData
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private javax.swing.JMenuItem getJMenuItemRepositoryLockData() {
-        if(jMenuItemRepositoryLockData == null) {
-            jMenuItemRepositoryLockData = new javax.swing.JMenuItem();
-            jMenuItemRepositoryLockData.setText(xerb.getString("menu.edit.lockdata"));
-            jMenuItemRepositoryLockData.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_6, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryLockData.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    doDataWizard(12);
-                }
-            });
-        }
-        return jMenuItemRepositoryLockData;
-    }
-    /**
-     * This method initializes jMenuItemRepositoryDownloadRevision
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private javax.swing.JMenuItem getJMenuItemRepositoryDownloadRevision() {
-        if(jMenuItemRepositoryDownloadRevision == null) {
-            jMenuItemRepositoryDownloadRevision = new javax.swing.JMenuItem();
-            jMenuItemRepositoryDownloadRevision.setText(xerb.getString("menu.edit.downloadrevision"));
-            jMenuItemRepositoryDownloadRevision.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_7, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryDownloadRevision.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    doDataWizard(11);
-                }
-            });
-        }
-        return jMenuItemRepositoryDownloadRevision;
-    }
-    
+    }   
     /**
      * This method initializes jDialogFolder
      *
      * @return javax.swing.JDialog
      */
-    private javax.swing.JDialog getJDialogFolder() {
+    public javax.swing.JDialog getJDialogFolder() {
         if(jDialogFolder == null)
             jDialogFolder = new DataFolderDialog(null, true, this);
         return jDialogFolder;
-    }
-    
-    /**
-     * This method initializes jMenuItemRepositoryEditFolderDataACL
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private javax.swing.JMenuItem getJMenuItemRepositoryEditFolderDataACL() {
-        if(jMenuItemRepositoryEditFolderDataACL == null) {
-            jMenuItemRepositoryEditFolderDataACL = new javax.swing.JMenuItem();
-            jMenuItemRepositoryEditFolderDataACL.setText(xerb.getString("menu.edit.acl"));
-            jMenuItemRepositoryEditFolderDataACL.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryEditFolderDataACL.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    int i = 0, j = 0;
-                    ListModel dlm;
-                    if (xincoClientSession.currentTreeNodeSelection != null) {
-                        //open ACL dialog
-                        jDialogACL = getJDialogACL();
-                        //fill group list
-                        dlm = (((ACLDialog)jDialogACL).getACLGroupModel());
-                        String[] list = new String[xincoClientSession.server_groups.size()];
-                        for (i=0;i<xincoClientSession.server_groups.size();i++) {
-                            list[i]=(new String(((XincoCoreGroup)xincoClientSession.server_groups.elementAt(i)).getDesignation()));
-                        }
-                        ((ACLDialog)jDialogACL).setACLGroupModel(list);
-                        //fill ACL
-                        ((ACLDialog)jDialogACL).reloadACLListACL();
-                        jDialogACL.setVisible(true);
-                    }
-                }
-            });
-        }
-        return jMenuItemRepositoryEditFolderDataACL;
-    }
-    /**
-     * This method initializes jMenuItemRepositoryMoveFolderData
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private javax.swing.JMenuItem getJMenuItemRepositoryMoveFolderData() {
-        if(jMenuItemRepositoryMoveFolderData == null) {
-            jMenuItemRepositoryMoveFolderData = new javax.swing.JMenuItem();
-            jMenuItemRepositoryMoveFolderData.setText(xerb.getString("menu.edit.movefolderdatatoclipboard"));
-            jMenuItemRepositoryMoveFolderData.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryMoveFolderData.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    int i;
-                    TreePath[] tps;
-                    //cut node
-                    tps =jTreeRepository.getSelectionPaths();
-                    xincoClientSession.clipboardTreeNodeSelection.removeAllElements();
-                    for (i=0;i<jTreeRepository.getSelectionCount();i++) {
-                        xincoClientSession.clipboardTreeNodeSelection.addElement(tps[i].getLastPathComponent());
-                    }
-                    //update transaction info
-                    jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movemessage"));
-                }
-            });
-        }
-        return jMenuItemRepositoryMoveFolderData;
-    }
-    /**
-     * This method initializes jMenuItemRepositoryInsertFolderData
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private javax.swing.JMenuItem getJMenuItemRepositoryInsertFolderData() {
-        if(jMenuItemRepositoryInsertFolderData == null) {
-            jMenuItemRepositoryInsertFolderData = new javax.swing.JMenuItem();
-            jMenuItemRepositoryInsertFolderData.setText(xerb.getString("menu.edit.insertfolderdata"));
-            jMenuItemRepositoryInsertFolderData.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryInsertFolderData.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    if ((xincoClientSession.currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) && (xincoClientSession.clipboardTreeNodeSelection != null)) {
-                        int old_parent_node_id = 0;
-                        int i;
-                        int cb_size;
-                        XincoMutableTreeNode temp_node;
-                        cb_size = xincoClientSession.clipboardTreeNodeSelection.size();
-                        for (i=0;i<cb_size;i++) {
-                            temp_node = (XincoMutableTreeNode)xincoClientSession.clipboardTreeNodeSelection.elementAt(0);
-                            if (xincoClientSession.currentTreeNodeSelection != temp_node) {
-                                //paste node
-                                if (temp_node.getUserObject().getClass() == XincoCoreNode.class) {
-                                    //modify moved node
-                                    old_parent_node_id = ((XincoCoreNode)temp_node.getUserObject()).getXinco_core_node_id();
-                                    ((XincoCoreNode)temp_node.getUserObject()).setXinco_core_node_id(((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getId());
-                                    try {
-                                        //modify treemodel
-                                        xincoClientSession.xincoClientRepository.treemodel.removeNodeFromParent(temp_node);
-                                        xincoClientSession.xincoClientRepository.treemodel.insertNodeInto(temp_node, xincoClientSession.currentTreeNodeSelection, xincoClientSession.currentTreeNodeSelection.getChildCount());
-                                        //optimize node size
-                                        ((XincoCoreNode)temp_node.getUserObject()).setXinco_core_nodes(new Vector());
-                                        ((XincoCoreNode)temp_node.getUserObject()).setXinco_core_data(new Vector());
-                                        //invoke web-service
-                                        if (xincoClientSession.xinco.setXincoCoreNode((XincoCoreNode)temp_node.getUserObject(), xincoClientSession.user) != null) {
-                                            //update transaction info
-                                            jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movefoldersuccess"));
-                                        } else {
-                                            throw new XincoException(xerb.getString("error.nowritepermission"));
-                                        }
-                                    } catch (Exception rmie) {
-                                        //undo modification
-                                        ((XincoCoreNode)temp_node.getUserObject()).setXinco_core_node_id(old_parent_node_id);
-                                        JOptionPane.showMessageDialog(XincoExplorer.this,
-                                                xerb.getString("error.movefolderfailed") + " " +
-                                                xerb.getString("general.reason") + ": " + rmie.toString(),
-                                                xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
-                                        break;
-                                    }
-                                }
-                                //paste data
-                                if (temp_node.getUserObject().getClass() == XincoCoreData.class) {
-                                    //modify moved data
-                                    old_parent_node_id = ((XincoCoreData)temp_node.getUserObject()).getXinco_core_node_id();
-                                    ((XincoCoreData)temp_node.getUserObject()).setXinco_core_node_id(((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getId());
-                                    try {
-                                        //modify treemodel
-                                        xincoClientSession.xincoClientRepository.treemodel.removeNodeFromParent(temp_node);
-                                        xincoClientSession.xincoClientRepository.treemodel.insertNodeInto(temp_node, xincoClientSession.currentTreeNodeSelection, xincoClientSession.currentTreeNodeSelection.getChildCount());
-                                        //invoke web-service
-                                        if (xincoClientSession.xinco.setXincoCoreData((XincoCoreData)temp_node.getUserObject(), xincoClientSession.user) != null) {
-                                            //insert log
-                                            try {
-                                                XincoCoreLog newlog = new XincoCoreLog();
-                                                Vector oldlogs = ((XincoCoreData)temp_node.getUserObject()).getXinco_core_logs();
-                                                newlog.setXinco_core_data_id(((XincoCoreData)temp_node.getUserObject()).getId());
-                                                newlog.setXinco_core_user_id(xincoClientSession.user.getId());
-                                                newlog.setOp_code(2);
-                                                newlog.setOp_description(xerb.getString("menu.edit.movedtofolder") + " " + ((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getDesignation() + " (" + ((XincoCoreNode)xincoClientSession.currentTreeNodeSelection.getUserObject()).getId() + ") " + xerb.getString("general.by") + " " + xincoClientSession.user.getUsername());
-                                                newlog.setOp_datetime(null);
-                                                newlog.setVersion(((XincoCoreLog)oldlogs.elementAt(oldlogs.size()-1)).getVersion());
-                                                xincoClientSession.xinco.setXincoCoreLog(newlog, xincoClientSession.user);
-                                            } catch (Exception loge) {
-                                            }
-                                            //update transaction info
-                                            jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movedatasuccess"));
-                                        } else {
-                                            throw new XincoException(xerb.getString("error.nowritepermission"));
-                                        }
-                                    } catch (Exception rmie) {
-                                        //undo modification
-                                        ((XincoCoreData)temp_node.getUserObject()).setXinco_core_node_id(old_parent_node_id);
-                                        JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("error.movedatafailed") + " " + xerb.getString("general.reason") + ": " + rmie.toString(), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
-                                        break;
-                                    }
-                                }
-                            }
-                            //remove moved element from clipboard
-                            xincoClientSession.clipboardTreeNodeSelection.removeElementAt(0);
-                        }
-                    }
-                }
-            });
-        }
-        return jMenuItemRepositoryInsertFolderData;
     }
     /**
      * This method initializes jDialogACL
      *
      * @return javax.swing.JDialog
      */
-    private javax.swing.JDialog getJDialogACL() {
+    public javax.swing.JDialog getJDialogACL() {
         jDialogACL = new ACLDialog(new javax.swing.JFrame(),true,this);
         return jDialogACL;
-    }
-    /**
-     * This method initializes jMenuItemRepositoryViewEditAddAttributes
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private javax.swing.JMenuItem getJMenuItemRepositoryViewEditAddAttributes() {
-        if(jMenuItemRepositoryViewEditAddAttributes == null) {
-            jMenuItemRepositoryViewEditAddAttributes = new javax.swing.JMenuItem();
-            jMenuItemRepositoryViewEditAddAttributes.setText(xerb.getString("menu.repository.vieweditaddattributes"));
-            jMenuItemRepositoryViewEditAddAttributes.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryViewEditAddAttributes.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    if (xincoClientSession.currentTreeNodeSelection != null) {
-                        if (xincoClientSession.currentTreeNodeSelection.getUserObject().getClass() == XincoCoreData.class) {
-                            //data wizard -> edit add attributes
-                            doDataWizard(3);
-                        }
-                    }
-                }
-            });
-        }
-        return jMenuItemRepositoryViewEditAddAttributes;
     }
     /**
      * This method initializes jContentPaneDialogRevision
@@ -2968,7 +2268,7 @@ public class XincoExplorer extends JFrame {
      *
      * @return void
      */
-    private void importContentOfFolder(XincoCoreNode node, File folder) throws Exception {
+    public void importContentOfFolder(XincoCoreNode node, File folder) throws Exception {
         int i=0;
         int j=0;
         File[] folder_list = null;
@@ -3154,7 +2454,7 @@ public class XincoExplorer extends JFrame {
      *
      * @return void
      */
-    private void doDataWizard(final int wizard_type) {
+    public void doDataWizard(final int wizard_type) {
                 /*
                 wizard type	= 1  = add new data
                                         = 2  = edit data object
@@ -3781,32 +3081,13 @@ public class XincoExplorer extends JFrame {
      *
      * @return void
      */
-    private void setCurrentPath(String s) {
+    public void setCurrentPath(String s) {
         if (!(s.substring(s.length()-1).equals(System.getProperty("file.separator")))) {
             s = s + System.getProperty("file.separator");
         }
         current_filename = "";
         current_path = s;
         current_fullpath = s;
-    }
-    /**
-     * This method initializes jMenuItemRepositoryViewData
-     *
-     * @return javax.swing.JMenuItem
-     */
-    private javax.swing.JMenuItem getJMenuItemRepositoryViewData() {
-        if(jMenuItemRepositoryViewData == null) {
-            jMenuItemRepositoryViewData = new javax.swing.JMenuItem();
-            jMenuItemRepositoryViewData.setText(xerb.getString("menu.repository.downloadfile"));
-            jMenuItemRepositoryViewData.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1, java.awt.event.KeyEvent.ALT_MASK));
-            jMenuItemRepositoryViewData.setEnabled(false);
-            jMenuItemRepositoryViewData.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    doDataWizard(7);
-                }
-            });
-        }
-        return jMenuItemRepositoryViewData;
     }
     /**
      * This method initializes jContentPaneDialogUser
@@ -4378,4 +3659,3 @@ public class XincoExplorer extends JFrame {
         this.global_dialog_return_value=v;
     }
 }
-
