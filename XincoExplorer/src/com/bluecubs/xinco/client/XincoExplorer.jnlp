@@ -38,6 +38,7 @@
     <jar href="Xinco.jar"/>
     <jar href="xmlParserAPIs.jar"/>
     <jar href="napkinlaf.jar"/>
+    <jar href="substance.jar"/>
   </resources>
   <security>
     <!-- all permissions required on Client-Computer -->
