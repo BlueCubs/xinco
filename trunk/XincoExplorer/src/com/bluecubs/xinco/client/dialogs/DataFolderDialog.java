@@ -88,6 +88,7 @@ public class DataFolderDialog extends javax.swing.JDialog {
             }
             this.state.setText(text);
         }
+        setVisible(true);
     }
     
     /** This method is called from within the constructor to
