@@ -289,6 +289,7 @@ public class XincoExplorer extends JFrame {
     private ConnectionDialog dialogConnection=null;
     private UserDialog userDialog=null;
     private JInternalFrame jInternalFrameInformation=null;
+    private JMenuItem jMenuItemConnectionExit=null;
     /**
      * This is the default constructor
      */
@@ -912,7 +913,7 @@ public class XincoExplorer extends JFrame {
         xincoClientVersion.setVersion_high(2);
         xincoClientVersion.setVersion_mid(0);
         xincoClientVersion.setVersion_low(0);
-        xincoClientVersion.setVersion_postfix(" Beta");
+        xincoClientVersion.setVersion_postfix(" Beta 2");
         switchPLAF((String)xincoClientConfig.elementAt(1));
         this.setBounds(0, 0, (new Double(getToolkit().getScreenSize().getWidth())).intValue()-100,
                 (new Double(getToolkit().getScreenSize().getHeight())).intValue()-75);
@@ -955,10 +956,28 @@ public class XincoExplorer extends JFrame {
             jMenuConnection = new javax.swing.JMenu();
             jMenuConnection.add(getJMenuItemConnectionConnect());
             jMenuConnection.add(getJMenuItemConnectionDisconnect());
+            jMenuConnection.add(getJMenuItemConnectionExit());
             jMenuConnection.setName("Connection");
             jMenuConnection.setText(xerb.getString("menu.connection"));
         }
         return jMenuConnection;
+    }
+    private JMenuItem getJMenuItemConnectionExit(){
+        if(jMenuItemConnectionExit == null) {
+            jMenuItemConnectionExit = new javax.swing.JMenuItem();
+            jMenuItemConnectionExit.setName("Exit");
+            jMenuItemConnectionExit.setText(xerb.getString("menu.connection.exit"));
+            jMenuItemConnectionExit.setEnabled(true);
+            jMenuItemConnectionExit.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    xincoClientSession.status = 0;
+                    markConnectionStatus();
+                    dispose();
+                    System.exit(0);
+                }
+            });
+        }
+        return jMenuItemConnectionExit;
     }
     /**
      * This method initializes jMenuAbout
