@@ -1192,9 +1192,7 @@ public class XincoAdminServlet extends HttpServlet {
                 } catch (Exception e) {
                     out.println("</table>");
                 }
-                
             }
-            
         }
         
         //show footer
@@ -1204,8 +1202,12 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<td class=\"text\">&nbsp;</td>");
         out.println("<td class=\"text\">&copy; "+rb.getString("general.copyright.date")+", <a href=\"http://www.bluecubs.com\" target=\"_blank\" class=\"link\">blueCubs.com</a> and <a href=\"http://www.xinco.org\" target=\"_blank\" class=\"link\">xinco.org</a></td>");
         out.println("</tr>");
-        out.println("</table>");
-        
+        out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
+                rb.getString("message.admin.main.backtomain")+"' />" +
+                "<input type='hidden' name='list' value="+request.getParameter("list")+"/></form></tr>" +
+                "<tr><FORM><INPUT TYPE='button' VALUE='"+rb.getString("message.admin.main.back")+
+                "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value="+
+                request.getParameter("list")+"/></FORM></tr>");
         out.println("</span>");
         out.println("</center>");
         out.println("</body>");
