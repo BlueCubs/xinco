@@ -52,7 +52,7 @@ import java.util.ResourceBundle;
 //2 = locked
 //3 = aged password
 //Temporary statuses
-//-1 = aged password modified, ready to turn unlocked 
+//-1 = aged password modified, ready to turn unlocked
 
 public class XincoCoreUserServer extends XincoCoreUser {
     private String sql;
@@ -314,8 +314,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     ts= new Timestamp(System.currentTimeMillis());
                     setLastModified(ts);
                     setChange(false);
-                }
-                else
+                } else
                     ts= (Timestamp)getLastModified();
                 setLastModified(ts);
                 //Sometimes password got re-hashed
@@ -406,5 +405,36 @@ public class XincoCoreUserServer extends XincoCoreUser {
         this.increaseAttempts = increaseAttempts;
     }
     
-    
+    public boolean isPasswordUsable(String newPass){
+        ResultSet rs=null;
+        String sql=null;
+        int id=0;
+        boolean passwordIsUsable=false;
+        try {
+            XincoDBManager DBM=null;
+            try {
+                DBM = new XincoDBManager();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            Statement stmt=DBM.con.createStatement();
+            sql="select id from xinco_core_user where username='"+getUsername()+"'";
+            rs=stmt.executeQuery(sql);
+            rs.next();
+            id = rs.getInt(1);
+            sql="select userpassword from xinco_core_user_t where id=" +
+                    id+
+                    " and DATEDIFF(NOW(),last_modified) <= "+
+                    xerb.getString("password.unusable_period") + " and MD5('"+
+                    newPass+"') = userpassword";
+            rs=stmt.executeQuery(sql);
+            //Here we'll catch if the password have been used in the unusable period
+            rs.next();
+            rs.getString(1);
+            //---------------------------
+        } catch (SQLException ex) {
+            passwordIsUsable=true;
+        }
+        return passwordIsUsable;
+    }
 }
