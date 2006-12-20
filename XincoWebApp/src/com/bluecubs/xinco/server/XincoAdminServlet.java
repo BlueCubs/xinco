@@ -510,37 +510,34 @@ public class XincoAdminServlet extends HttpServlet {
             ResultSet rs=null;
             String sql=null;
             int id=0;
-            boolean passwordIsUsable=false;
+            XincoDBManager DBM=null;
             try {
-                Statement stmt=dbm.con.createStatement();
-                sql="select id from xinco_core_user where username='"+
-                        request.getParameter("user").replaceAll("/","")+"'";
+                DBM = new XincoDBManager();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            try {
+                Statement stmt=DBM.con.createStatement();
+                sql="select id from xinco_core_user where username='"+request.getParameter("user").substring(0,request.getParameter("user").length()-1)+"'";
                 rs=stmt.executeQuery(sql);
                 rs.next();
                 id = rs.getInt(1);
-                sql="select userpassword from xinco_core_user_t where id=" +
-                        id+
-                        " and DATEDIFF(NOW(),last_modified) <= "+
-                        rb.getString("password.unusable_period") + " and MD5('"+
-                        request.getParameter("new")+"') = userpassword";
-                rs=stmt.executeQuery(sql);
-                //Here we'll catch if the password have been used in the unusable period
-                rs.next();
-                rs.getString(1);
-                //---------------------------
-            } catch (SQLException ex) {
-                System.err.println(sql);
-                passwordIsUsable=true;
+                temp_user = new XincoCoreUserServer(id,dbm);
+            } catch (XincoException ex) {
+                ex.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
+            boolean passwordIsUsable=temp_user.isPasswordUsable(request.getParameter("confirm"));
             if(!request.getParameter("new").equals(request.getParameter("confirm"))){
                 //show welcome message
                 out.println("<br><center><img src=\"blueCubs.gif\" border=\"0\"/>");
                 out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
                 out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
                 out.println(rb.getString("password.noMatch")+"<br><br>" +
-                        "<input type='submit' value='Continue' name='changePassword' />");
+                        "<input type='submit' value='"+rb.getString("general.continue")+"' name='changePassword' />");
                 out.println("<input type='hidden' name='user' value="+
-                        request.getParameter("user")+"/>");
+                        request.getParameter("id")+"/>");
                 out.println("</form></center>");
                 return;
             }
@@ -550,7 +547,7 @@ public class XincoAdminServlet extends HttpServlet {
                 out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
                 out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
                 out.println(rb.getString("password.unusable")+"<br><br>" +
-                        "<input type='submit' value='Continue' name='changePassword' />");
+                        "<input type='submit' value='"+rb.getString("general.continue")+"' name='changePassword' />");
                 out.println("<input type='hidden' name='user' value="+
                         request.getParameter("user")+"/>");
                 out.println("</form></center>");
@@ -620,7 +617,7 @@ public class XincoAdminServlet extends HttpServlet {
             out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
             out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
             out.println(rb.getString("password.aged")+"<br><br>" +
-                    "<input type='submit' value='Continue' name='changePassword' />");
+                    "<input type='submit' value='"+rb.getString("general.continue")+"' name='changePassword' />");
             out.println("<input type='hidden' name='user' value="+
                     request.getParameter("DialogLoginUsername")+"/>");
             out.println("</form>");
