@@ -14,35 +14,26 @@
     <body class="text">
         <center>
             <br/><img src="blueCubs.gif" width="356" height="400" alt="blueCubs"/><br/>
-            <span class="bigtext">Change your password</span><br/><br/>
-            <span class="text">Your password has exeeded the aging period.</span><br/>
-            <span class="text">Please provide a new one.</span><br/>
-            <span class="text">The password can't be one used in previous <%
+            <%
             ResourceBundle rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
-            out.print(rb.getString("password.unusable_period"));%> days.</span><br/><br/>
+            out.println("<span class='bigtext'>"+rb.getString("password.aged")+"</span><br/><br/>");
+            out.print(rb.getString("password.change.warning").replaceAll("%n",rb.getString("password.unusable_period")));%>
+            </span><br/><br/>
             <form name="password" action="XincoAdmin" method="post">
             <table border="0">
-               <!--
-                <thead>
-                    <tr>
-                        <th class="text">Description</th>
-                        <th class="text">Value</th>
-                    </tr>
-                </thead>
-                -->
                 <tbody>
                     <tr>
-                        <td class="text">New password:</td>
+                        <td class="text"><%out.println(rb.getString("general.password")+":");%></td>
                         <td class="text"><input type="password" name="new" value="" /></td>
                     </tr>
                     <tr>
-                        <td class="text">Confirm password:</td>
+                        <td class="text"><%out.println(rb.getString("password.confirm")+":");%></td>
                         <td class="text"><input type="password" name="confirm" value="" /></td>
                     </tr>
                 </tbody>
             </table>
                 <br/>
-                <input type="submit" value="Change Password" name="changePassword" />
+                <input type="submit" value="<%out.println(rb.getString("password.change"));%>" name="changePassword" />
                 <input type="hidden" name="user" value="<% out.print(request.getParameter("user")); %>"/>
             </form>
         </center>
