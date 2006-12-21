@@ -19,10 +19,12 @@
     <description kind="short">XincoExplorer - Client of xinco, the Core of Information and Document Management</description>
     <icon href="blueCubsIcon.gif"/>
     <offline-allowed/>
-    <shortcut online="true"/>
+    <shortcut online="true">
+      <desktop/>
+    </shortcut>
   </information>
-  <resources>
-    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.4.2+"/>
+  <resources locale="" os="">
+    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.6.0+"/>
     <!-- required libraries, ALL SIGNED -->
     <jar download="eager" href="XincoExplorer.jar" main="true"/>
     <jar href="activation.jar"/>
