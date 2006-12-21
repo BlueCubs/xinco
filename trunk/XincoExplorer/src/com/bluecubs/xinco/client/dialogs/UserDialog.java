@@ -263,7 +263,7 @@ public class UserDialog extends javax.swing.JDialog {
                     explorer.getUser().setXinco_core_groups(explorer.getSession().user.getXinco_core_groups());
                     explorer.getUser().setStatus_number(explorer.getSession().user.getStatus_number());
                     //don't update audit trail
-                    explorer.getUser().setChange(false);
+                    explorer.getUser().setChange(true);
                     if ((temp = explorer.getSession().xinco.setXincoCoreUser(explorer.getUser(), explorer.getSession().user)) != null) {
                         explorer.getUser().setUserpassword(new String(password.getPassword()));
                         ChangeReasonDialog crd=null;
@@ -291,12 +291,14 @@ public class UserDialog extends javax.swing.JDialog {
                         explorer.getUser().setChangerID(explorer.getUser().getId());
                         explorer.getUser().setWriteGroups(true);
                         explorer.getUser().setChange(true);
+                        explorer.getUser().setStatus_number(1);
                         if(isAged){
                             explorer.getUser().setReason("audit.user.account.aged");
                             explorer.getUser().setStatus_number(4);
                             System.err.println("Modifying password");
                         } else
                             explorer.getUser().setReason(crd.getReason());
+                        
                         temp=explorer.getSession().xinco.setXincoCoreUser(explorer.getUser(), explorer.getSession().user);
                         explorer.getSession().user=explorer.getUser();
                     } else {

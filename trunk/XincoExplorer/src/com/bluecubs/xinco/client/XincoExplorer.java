@@ -1857,7 +1857,6 @@ public class XincoExplorer extends JFrame {
                     }
                     //establish connection and login
                     if (xincoClientSession.status == 1) {
-//                        final XincoCoreUser newuser;
                         try {
                             xincoClientSession.xinco_service = new XincoServiceLocator();
                             xincoClientSession.xinco = xincoClientSession.xinco_service.getXinco(new java.net.URL(xincoClientSession.service_endpoint));
@@ -1899,6 +1898,11 @@ public class XincoExplorer extends JFrame {
                             ex.printStackTrace();
                         } catch (ServiceException ex) {
                             ex.printStackTrace();
+                        } catch (Exception cone) {
+                            xincoClientSession.status = 0;
+                            cone.printStackTrace();
+                            markConnectionStatus();
+                            JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("menu.connection.failed") + " " + xerb.getString("general.reason") + ": " + cone.toString(), xerb.getString("menu.connection.failed"), JOptionPane.WARNING_MESSAGE);
                         }
                         loginThread loginT= new loginThread();
                         loginT.start();
