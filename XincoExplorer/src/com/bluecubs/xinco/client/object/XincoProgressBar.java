@@ -12,12 +12,8 @@ package com.bluecubs.xinco.client.object;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Random;
-import javax.swing.JButton;
+import java.util.ResourceBundle;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
@@ -32,7 +28,8 @@ public class XincoProgressBar extends JFrame{
     
     public XincoProgressBar() {
         this.setAlwaysOnTop(true);
-        setTitle("Initializing repository. Please wait...");
+        ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+        setTitle(xerb.getString("message.progressbar.title"));
         setSize( 210, 65 );
         setBackground( Color.gray );
         
