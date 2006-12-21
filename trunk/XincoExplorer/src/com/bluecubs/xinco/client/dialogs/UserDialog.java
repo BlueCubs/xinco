@@ -33,8 +33,13 @@ public class UserDialog extends javax.swing.JDialog {
         initComponents();
         initialize();
         //Do not allow to close the window. User MUST change password!
-        if(this.isAged)
+        if(this.isAged){
             setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+            this.cancel.setEnabled(false);
+            this.name.setEnabled(false);
+            this.lastname.setEnabled(false);
+            this.email.setEnabled(false);
+        }
     }
     
     private void initialize(){
@@ -244,23 +249,23 @@ public class UserDialog extends javax.swing.JDialog {
     
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         if ((new String(password.getPassword())).equals(new String(verification.getPassword()))) {
-            XincoCoreUser newuser= new XincoCoreUser();
+            XincoCoreUser temp;
             try {
                 if(this.isAged && (new String(password.getPassword())).equals(explorer.getSession().user.getUserpassword())) {
                     throw new XincoException(explorer.getResourceBundle().getString("password.unusable"));
                 } else{
-                    newuser.setId(explorer.getSession().user.getId());
-                    newuser.setUsername(explorer.getSession().user.getUsername());
-                    newuser.setUserpassword(new String(password.getPassword()));
-                    newuser.setFirstname(name.getText());
-                    newuser.setName(lastname.getText());
-                    newuser.setEmail(email.getText());
-                    newuser.setXinco_core_groups(explorer.getSession().user.getXinco_core_groups());
-                    newuser.setStatus_number(explorer.getSession().user.getStatus_number());
+                    explorer.getUser().setId(explorer.getSession().user.getId());
+                    explorer.getUser().setUsername(explorer.getSession().user.getUsername());
+                    explorer.getUser().setUserpassword(new String(password.getPassword()));
+                    explorer.getUser().setFirstname(name.getText());
+                    explorer.getUser().setName(lastname.getText());
+                    explorer.getUser().setEmail(email.getText());
+                    explorer.getUser().setXinco_core_groups(explorer.getSession().user.getXinco_core_groups());
+                    explorer.getUser().setStatus_number(explorer.getSession().user.getStatus_number());
                     //don't update audit trail
-                    newuser.setChange(false);
-                    if ((newuser = explorer.getSession().xinco.setXincoCoreUser(newuser, explorer.getSession().user)) != null) {
-                        newuser.setUserpassword(new String(password.getPassword()));
+                    explorer.getUser().setChange(false);
+                    if ((temp = explorer.getSession().xinco.setXincoCoreUser(explorer.getUser(), explorer.getSession().user)) != null) {
+                        explorer.getUser().setUserpassword(new String(password.getPassword()));
                         ChangeReasonDialog crd=null;
                         if(isAged) {
                             boolean enable=false;
@@ -283,16 +288,17 @@ public class UserDialog extends javax.swing.JDialog {
                             crd.setVisible(true);
                             while(!crd.done);
                         }
-                        newuser.setChangerID(newuser.getId());
-                        newuser.setWriteGroups(true);
-                        newuser.setChange(true);
+                        explorer.getUser().setChangerID(explorer.getUser().getId());
+                        explorer.getUser().setWriteGroups(true);
+                        explorer.getUser().setChange(true);
                         if(isAged){
-                            newuser.setReason("audit.user.account.aged");
-                            newuser.setStatus_number(4);
+                            explorer.getUser().setReason("audit.user.account.aged");
+                            explorer.getUser().setStatus_number(4);
                             System.err.println("Modifying password");
                         } else
-                            newuser.setReason(crd.getReason());
-                        newuser=explorer.getSession().xinco.setXincoCoreUser(newuser, explorer.getSession().user);
+                            explorer.getUser().setReason(crd.getReason());
+                        temp=explorer.getSession().xinco.setXincoCoreUser(explorer.getUser(), explorer.getSession().user);
+                        explorer.getSession().user=explorer.getUser();
                     } else {
                         throw new XincoException(explorer.getResourceBundle().getString("window.userinfo.updatefailedonserver"));
                     }

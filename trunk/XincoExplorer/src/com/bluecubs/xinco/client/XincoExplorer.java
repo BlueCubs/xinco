@@ -298,6 +298,8 @@ public class XincoExplorer extends JFrame {
     private JInternalFrame jInternalFrameInformation=null;
     private JMenuItem jMenuItemConnectionExit=null;
     private String status_string_1="",status_string_2="";
+    private XincoCoreUser temp;
+    private final XincoCoreUser newuser= new XincoCoreUser();
     /**
      * This is the default constructor
      */
@@ -1855,7 +1857,7 @@ public class XincoExplorer extends JFrame {
                     }
                     //establish connection and login
                     if (xincoClientSession.status == 1) {
-                        final XincoCoreUser newuser;
+//                        final XincoCoreUser newuser;
                         try {
                             xincoClientSession.xinco_service = new XincoServiceLocator();
                             xincoClientSession.xinco = xincoClientSession.xinco_service.getXinco(new java.net.URL(xincoClientSession.service_endpoint));
@@ -1864,11 +1866,18 @@ public class XincoExplorer extends JFrame {
                             if (xincoClientVersion.getVersion_high() != xincoClientSession.server_version.getVersion_high()) {
                                 throw new XincoException(xerb.getString("menu.connection.error.serverversion") + " " + xincoClientSession.server_version.getVersion_high() + ".x");
                             }
-                            if ((newuser = xincoClientSession.xinco.getCurrentXincoCoreUser(xincoClientSession.user.getUsername(), xincoClientSession.user.getUserpassword())) == null) {
+                            if ((temp = xincoClientSession.xinco.getCurrentXincoCoreUser(xincoClientSession.user.getUsername(), xincoClientSession.user.getUserpassword())) == null) {
                                 throw new XincoException(xerb.getString("menu.connection.error.user"));
                             }
-                            newuser.setUserpassword(xincoClientSession.user.getUserpassword());
-                            xincoClientSession.user = newuser;
+                            temp.setUserpassword(xincoClientSession.user.getUserpassword());
+                            newuser.setEmail(temp.getEmail());
+                            newuser.setFirstname(temp.getFirstname());
+                            newuser.setId(temp.getId());
+                            newuser.setName(temp.getName());
+                            newuser.setStatus_number(temp.getStatus_number());
+                            newuser.setUsername(temp.getUsername());
+                            newuser.setUserpassword(temp.getUserpassword());
+                            xincoClientSession.user = xincoClientSession.xinco.getCurrentXincoCoreUser(newuser.getUsername(), newuser.getUserpassword());
                             progressBar.setVisible( true );
                             progressBar.pack();
                             progress=0;
@@ -1899,11 +1908,15 @@ public class XincoExplorer extends JFrame {
         return jMenuItemConnectionConnect;
     }
     
+    public XincoCoreUser getUser(){
+        return this.newuser;
+    }
+    
     private class loginThread extends Thread {
         public void run() {
             try {
                 String status_string = "";
-                XincoCoreUser temp=xincoClientSession.xinco.getCurrentXincoCoreUser(xincoClientSession.user.getUsername(), xincoClientSession.user.getUserpassword());
+                temp=xincoClientSession.xinco.getCurrentXincoCoreUser(xincoClientSession.user.getUsername(), xincoClientSession.user.getUserpassword());
                 progressBar.setProgress(progress++);
                 status_string += xerb.getString("menu.connection.connectedto") + ": " + xincoClientSession.service_endpoint + "\n";
                 progressBar.setProgress(progress++);
@@ -1961,7 +1974,6 @@ public class XincoExplorer extends JFrame {
                 if(temp.getStatus_number()==3){
                     jLabelInternalFrameInformationText.setText(xerb.getString("password.aged"));
                     getJDialogUser(true);
-                    temp.setUserpassword(xincoClientSession.user.getUserpassword());
                 }
                 progressBar.setVisible(false);
             } catch (Exception cone) {
