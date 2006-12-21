@@ -24,7 +24,7 @@
     </shortcut>
   </information>
   <resources locale="" os="">
-    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.6.0+"/>
+    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.5.0+"/>
     <!-- required libraries, ALL SIGNED -->
     <jar download="eager" href="XincoExplorer.jar" main="true"/>
     <jar href="activation.jar"/>
