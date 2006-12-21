@@ -431,7 +431,7 @@ public class XincoMenuRepository extends JMenu{
         add(this.items[18]);
     }
     public void resetItems(){
-        for(int i=0;i<this.items.length;i++){
+        for(int i=1;i<this.items.length;i++){
             if(this.items[i]!=null)
                 this.itemSetEnable(i,false);
         }

@@ -458,7 +458,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
         explorer.progressBar.setProgress(explorer.progress++);
     }
     public void resetItems(){
-        for(int i=0;i<this.items.length;i++){
+        for(int i=1;i<this.items.length;i++){
             if(this.items[i]!=null)
                 this.itemSetEnable(i,false);
         }
