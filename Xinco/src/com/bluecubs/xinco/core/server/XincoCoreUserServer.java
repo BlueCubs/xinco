@@ -287,12 +287,15 @@ public class XincoCoreUserServer extends XincoCoreUser {
     public int write2DB(XincoDBManager DBM) throws XincoException {
         String sql="";
         xerb= ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+        Timestamp ts=null;
         try {
             Statement stmt;
-            if(getStatus_number()==-1){
+            if(getStatus_number()==3){
                 //Changed from aged out to password changed. Clear status
                 setStatus_number(1);
                 setAttempts(0);
+                setChange(true);
+                ts= new Timestamp(System.currentTimeMillis());
             }
             //Increase login attempts
             if(increaseAttempts){
@@ -306,7 +309,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
             }
             if (getId() > 0) {
                 stmt = DBM.con.createStatement();
-                Timestamp ts=null;
                 if(isChange()){
                     XincoCoreAuditServer audit= new XincoCoreAuditServer();
                     audit.updateAuditTrail("xinco_core_user",new String [] {"id ="+getId()},
@@ -333,11 +335,12 @@ public class XincoCoreUserServer extends XincoCoreUser {
                         getStatus_number() + ", attempts="+getAttempts() +
                         ", last_modified='"+getLastModified()+"'"+
                         " WHERE id=" + getId();
+                System.out.println(sql);
                 stmt.executeUpdate(sql);
                 stmt.close();
             } else {
                 setId(DBM.getNewID("xinco_core_user"));
-                Timestamp ts= new Timestamp(System.currentTimeMillis());
+                ts= new Timestamp(System.currentTimeMillis());
                 stmt = DBM.con.createStatement();
                 sql="INSERT INTO xinco_core_user VALUES (" + getId() +
                         ", '" + getUsername().replaceAll("'","\\\\'") +
