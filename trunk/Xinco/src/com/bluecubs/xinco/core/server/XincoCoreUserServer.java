@@ -295,6 +295,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 setStatus_number(1);
                 setAttempts(0);
                 setChange(true);
+                setReason("audit.user.account.aged");
                 ts= new Timestamp(System.currentTimeMillis());
             }
             //Increase login attempts
