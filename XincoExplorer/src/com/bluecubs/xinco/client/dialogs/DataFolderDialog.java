@@ -10,7 +10,7 @@ import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.XincoMutableTreeNode;
 import com.bluecubs.xinco.core.XincoCoreLanguage;
 import com.bluecubs.xinco.core.XincoCoreNode;
-import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.XincoException; 
 import java.util.Locale;
 import java.util.Vector;
 import javax.swing.DefaultListModel;

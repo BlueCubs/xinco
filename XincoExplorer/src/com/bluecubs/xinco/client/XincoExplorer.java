@@ -2332,8 +2332,7 @@ public class XincoExplorer extends JFrame {
      * @return javax.swing.JDialog
      */
     private javax.swing.JDialog getJDialogData() {
-        if(jDialogData == null)
-            jDialogData = new DataDialog(null, true, this);
+        jDialogData = new DataDialog(null, true, this);
         return jDialogData;
     }
     /**

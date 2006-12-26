@@ -24,32 +24,32 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="idLabel" alignment="0" pref="43" max="32767" attributes="0"/>
+                          <Component id="idLabel" alignment="0" pref="59" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="designationLabel" max="32767" attributes="0"/>
+                              <Component id="designationLabel" pref="50" max="32767" attributes="0"/>
                               <EmptySpace min="9" pref="9" max="9" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="languageLabel" max="32767" attributes="0"/>
+                              <Component id="languageLabel" pref="50" max="32767" attributes="0"/>
                               <EmptySpace min="9" pref="9" max="9" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="statusLabel" max="32767" attributes="0"/>
+                              <Component id="statusLabel" pref="50" max="32767" attributes="0"/>
                               <EmptySpace min="9" pref="9" max="9" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="status" pref="174" max="32767" attributes="2"/>
-                          <Component id="jScrollPane1" alignment="0" pref="174" max="32767" attributes="2"/>
-                          <Component id="designation" alignment="0" pref="174" max="32767" attributes="2"/>
-                          <Component id="id" alignment="0" pref="174" max="32767" attributes="2"/>
+                          <Component id="status" pref="190" max="32767" attributes="2"/>
+                          <Component id="jScrollPane1" alignment="0" pref="190" max="32767" attributes="2"/>
+                          <Component id="designation" alignment="0" pref="190" max="32767" attributes="2"/>
+                          <Component id="id" alignment="0" pref="190" max="32767" attributes="2"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="save" pref="75" max="32767" attributes="0"/>
+                      <Component id="save" pref="91" max="32767" attributes="0"/>
                       <EmptySpace min="-2" pref="71" max="-2" attributes="0"/>
-                      <Component id="cancel" max="32767" attributes="0"/>
+                      <Component id="cancel" pref="91" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -60,16 +60,16 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Group type="102" alignment="3" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                       <Component id="idLabel" max="32767" attributes="0"/>
                   </Group>
                   <Component id="id" alignment="3" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Group type="102" alignment="3" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                       <Component id="designationLabel" max="32767" attributes="0"/>
                   </Group>
@@ -84,8 +84,8 @@
                   <Component id="jScrollPane1" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Group type="102" alignment="3" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                       <Component id="statusLabel" max="32767" attributes="0"/>
                   </Group>

@@ -10,7 +10,7 @@ import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataType;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
+import javax.swing.ImageIcon; 
 
 /**
  * Data Type Dialog

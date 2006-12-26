@@ -8,7 +8,7 @@ package com.bluecubs.xinco.client.dialogs;
 
 import com.bluecubs.xinco.client.*;
 import java.util.Vector;
-import javax.swing.DefaultListModel;
+import javax.swing.DefaultListModel; 
 import javax.swing.JList;
 
 /**
