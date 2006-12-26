@@ -10,7 +10,7 @@ import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoException;
 import java.awt.HeadlessException;
-import javax.swing.JOptionPane;
+import javax.swing.JOptionPane; 
 
 /**
  * Change Reason Dialog

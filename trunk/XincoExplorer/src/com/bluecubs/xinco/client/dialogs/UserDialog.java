@@ -11,7 +11,7 @@ import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoException;
 import java.sql.Timestamp;
 import javax.swing.JOptionPane;
-
+ 
 /**
  * User Dialog
  * @author ortizbj
