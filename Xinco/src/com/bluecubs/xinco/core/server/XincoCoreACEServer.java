@@ -238,7 +238,6 @@ public class XincoCoreACEServer extends XincoCoreACE {
             match_ace = false;
             //check if user is mentioned in ACE
             if (((XincoCoreACE)attrACL.elementAt(i)).getXinco_core_user_id() == attrU.getId()) { match_ace = true; }
-            System.out.println(match_ace);
             //check if group of user is mentioned in ACE
             if (!match_ace) {
                 for (j=0;j<attrU.getXinco_core_groups().size();j++) {
