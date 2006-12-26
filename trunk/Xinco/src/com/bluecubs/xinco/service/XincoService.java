@@ -6,7 +6,7 @@
  */
 
 package com.bluecubs.xinco.service;
-
+ 
 public interface XincoService extends javax.xml.rpc.Service {
     public java.lang.String getXincoAddress();
 

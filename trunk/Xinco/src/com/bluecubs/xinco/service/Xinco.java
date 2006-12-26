@@ -5,7 +5,7 @@
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
-package com.bluecubs.xinco.service;
+package com.bluecubs.xinco.service; 
 
 public interface Xinco extends java.rmi.Remote {
     public com.bluecubs.xinco.core.XincoVersion getXincoServerVersion() throws java.rmi.RemoteException;

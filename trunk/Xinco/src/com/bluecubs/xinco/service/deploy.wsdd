@@ -1,4 +1,4 @@
-<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Use this file to deploy some handlers/chains and services      --> 
 <!-- Two ways to do this:                                           -->
 <!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
 <!--      after the axis server is running                          -->
