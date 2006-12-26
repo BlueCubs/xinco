@@ -38,13 +38,16 @@ public class XincoCoreAuditServer {
             ResultSet rs = stmt.executeQuery(sql);
             try {
                 record_ID=DBM.getNewID("xinco_core_user_modified_record");
-                sql="insert into "+table+"_t values("+record_ID+", ";
+                sql="insert into "+table+"_t values('"+record_ID+"', ";
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
             if(rs.next()) {
                 for(int i=1;i<=rs.getMetaData().getColumnCount();i++){
-                    sql+="'"+rs.getString(i)+"'";
+                    if(rs.getString(i)==null)
+                        sql+=rs.getString(i);
+                    else
+                        sql+="'"+rs.getString(i)+"'";
                     if(i<rs.getMetaData().getColumnCount())
                         sql+=", ";
                     else
@@ -53,17 +56,18 @@ public class XincoCoreAuditServer {
             }
             stmt.executeUpdate(sql);
             sql="insert into `xinco_core_user_modified_record` (`id`, `record_id`, `mod_Time`, " +
-                    "`mod_Reason`) values ("+id+", "+record_ID+", '"+
+                    "`mod_Reason`) values ('"+id+"', "+record_ID+", '"+
                     new Timestamp(System.currentTimeMillis())+"', '"+reason+"')";
+            System.out.println(sql);
             stmt.executeUpdate(sql);
             DBM.con.commit();
         } catch (SQLException ex) {
+            ex.printStackTrace();
             try {
                 DBM.con.rollback();
             } catch (SQLException ex2) {
                 ex2.printStackTrace();
             }
-            ex.printStackTrace();
         }
     }
 }
