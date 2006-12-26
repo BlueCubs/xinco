@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions targetNamespace="urn:Xinco" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:Xinco" xmlns:intf="urn:Xinco" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns2="http://core.xinco.bluecubs.com" xmlns:tns3="http://add.xinco.bluecubs.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<wsdl:definitions targetNamespace="urn:Xinco" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:Xinco" xmlns:intf="urn:Xinco" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns2="http://core.xinco.bluecubs.com" xmlns:tns3="http://add.xinco.bluecubs.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/">
 <!--WSDL created by Apache Axis version: 1.4
-Built on Apr 22, 2006 (06:55:48 PDT)-->
+Built on Apr 22, 2006 (06:55:48 PDT)--> 
  <wsdl:types>
   <schema targetNamespace="http://core.xinco.bluecubs.com" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://xml.apache.org/xml-soap"/>
