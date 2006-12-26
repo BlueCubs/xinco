@@ -126,6 +126,9 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             Statement stmt = null;
             
             stmt = DBM.con.createStatement();
+            XincoCoreAuditServer audit= new XincoCoreAuditServer();
+            audit.updateAuditTrail("xinco_core_language",new String [] {"id ="+attrCL.getId()},
+                    DBM,"audit.general.delete",1);
             stmt.executeUpdate("DELETE FROM xinco_core_language WHERE id=" + attrCL.getId());
             stmt.close();
             

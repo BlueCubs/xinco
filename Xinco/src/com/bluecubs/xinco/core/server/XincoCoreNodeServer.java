@@ -174,10 +174,15 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).deleteFromDB(DBM);
             }
             if (delete_this) {
+                XincoCoreAuditServer audit= new XincoCoreAuditServer();
+                audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+getId()},
+                        DBM,"audit.general.delete",1);
                 stmt = DBM.con.createStatement();
                 stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE xinco_core_node_id=" + getId());
                 stmt.close();
                 stmt = DBM.con.createStatement();
+                audit.updateAuditTrail("xinco_core_node",new String [] {"id ="+getId()},
+                        DBM,"audit.general.delete",1);
                 stmt.executeUpdate("DELETE FROM xinco_core_node WHERE id=" + getId());
                 stmt.close();
             }

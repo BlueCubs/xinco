@@ -42,7 +42,7 @@ import java.sql.*;
 import com.bluecubs.xinco.core.*;
 
 public class XincoCoreACEServer extends XincoCoreACE {
-    
+    private int userID=1;
     //create single ace object for data structures
     public XincoCoreACEServer(int attrID, XincoDBManager DBM) throws XincoException {
         
@@ -179,11 +179,13 @@ public class XincoCoreACEServer extends XincoCoreACE {
     }
     
     //remove from db
-    public static int removeFromDB(XincoCoreACE attrCACE, XincoDBManager DBM) throws XincoException {
+    public static int removeFromDB(XincoCoreACE attrCACE, XincoDBManager DBM, int userID) throws XincoException {
         
         try {
-            
             Statement stmt = DBM.con.createStatement();
+            XincoCoreAuditServer audit= new XincoCoreAuditServer();
+            audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+attrCACE.getId()},
+                    DBM,"audit.general.delete",userID);
             stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE id=" + attrCACE.getId());
             stmt.close();
             
@@ -194,6 +196,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 DBM.con.rollback();
             } catch (Exception erollback) {
             }
+            e.printStackTrace();
             throw new XincoException();
         }
         
@@ -235,6 +238,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
             match_ace = false;
             //check if user is mentioned in ACE
             if (((XincoCoreACE)attrACL.elementAt(i)).getXinco_core_user_id() == attrU.getId()) { match_ace = true; }
+            System.out.println(match_ace);
             //check if group of user is mentioned in ACE
             if (!match_ace) {
                 for (j=0;j<attrU.getXinco_core_groups().size();j++) {
@@ -264,8 +268,11 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 }
             }
         }
-        
         return core_ace;
+    }
+
+    public void setUserId(int i) {
+        this.userID=i;
     }
     
 }

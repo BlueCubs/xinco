@@ -616,6 +616,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 data.setXinco_core_data_type(in0.getXinco_core_data_type());
                 data.setXinco_add_attributes(in0.getXinco_add_attributes());
                 data.setStatus_number(in0.getStatus_number());
+                data.setUser(user);
                 data.write2DB(dbm);
                 
                 //index data (not on checkout, only when status = open = 1)
@@ -628,6 +629,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                     XincoCoreACEServer newace;
                     //owner
                     newace = new XincoCoreACEServer(0, user.getId(), 0, 0, data.getId(), true, true, true, true);
+                    newace.setUserId(user.getId());
                     newace.write2DB(dbm);
                                         /*
                                         //admins
@@ -693,6 +695,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 newace.setWrite_permission(in0.isWrite_permission());
                 newace.setExecute_permission(in0.isExecute_permission());
                 newace.setAdmin_permission(in0.isAdmin_permission());
+                newace.setUserId(user.getId());
                 newace.write2DB(dbm);
                 dbm.con.close();
                 return (XincoCoreACE)newace;
@@ -721,7 +724,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 ace = XincoCoreACEServer.checkAccess(user, data.getXinco_core_acl());
             }
             if (ace.isAdmin_permission()) {
-                XincoCoreACEServer.removeFromDB(in0, dbm);
+                XincoCoreACEServer.removeFromDB(in0, dbm,user.getId());
                 dbm.con.close();
                 return true;
             } else {
@@ -751,6 +754,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             log.setOp_description(in0.getOp_description());
             log.setOp_datetime(in0.getOp_datetime());
             log.setVersion(in0.getVersion());
+            log.setUser(user);
             log.write2DB(dbm);
             dbm.con.close();
             return (XincoCoreLog)log;

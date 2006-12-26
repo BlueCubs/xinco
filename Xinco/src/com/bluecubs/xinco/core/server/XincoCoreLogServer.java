@@ -45,7 +45,7 @@ import com.bluecubs.xinco.core.*;
 import java.util.ResourceBundle;
 
 public class XincoCoreLogServer extends XincoCoreLog {
-    
+    private XincoCoreUser user;
     //create single log object for data structures
     public XincoCoreLogServer(int attrID, XincoDBManager DBM) throws XincoException {
         
@@ -83,6 +83,10 @@ public class XincoCoreLogServer extends XincoCoreLog {
         
     }
     
+    public void setUser(XincoCoreUserServer user){
+        this.user=user;
+    }
+    
     //create single log object for data structures
     public XincoCoreLogServer(int attrID, int attrCDID, int attrUID, int attrOC, Calendar attrODT,  String attrOD, int attrVH, int attrVM, int attrVL, String attrVP) throws XincoException {
         
@@ -110,7 +114,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 XincoCoreAuditServer audit= new XincoCoreAuditServer();
                 ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+getId()},
-                        DBM,xerb.getString("audit.log.change"),1);
+                        DBM,xerb.getString("audit.log.change"),this.user.getId());
                 stmt.executeUpdate("UPDATE xinco_core_log SET xinco_core_data_id=" + getXinco_core_data_id() + ", xinco_core_user_id=" + getXinco_core_user_id() + ", op_code=" + getOp_code() + ", op_datetime=now(), op_description='" + getOp_description().replaceAll("'","\\\\'") + "', version_high=" + getVersion().getVersion_high() + ", version_mid=" + getVersion().getVersion_mid() + ", version_low=" + getVersion().getVersion_low() + ", version_postfix='" + getVersion().getVersion_postfix().replaceAll("'","\\\\'") + "' WHERE id=" + getId());
                 stmt.close();
             } else {
