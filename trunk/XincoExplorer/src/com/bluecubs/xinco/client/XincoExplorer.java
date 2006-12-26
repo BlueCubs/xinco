@@ -1273,6 +1273,10 @@ public class XincoExplorer extends JFrame {
                     if (temp_ace.isAdmin_permission()) {
                         ((XincoMenuRepository) jMenuRepository).itemSetEnable(4,true);
                         ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(4,true);
+                        ((XincoMenuRepository) jMenuRepository).itemSetEnable(6,true);
+                        ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(6,true);
+                        ((XincoMenuRepository) jMenuRepository).itemSetEnable(7,true);
+                        ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(7,true);
                     }
                     if (node.getUserObject().getClass() == XincoCoreNode.class) {
                         if (temp_ace.isWrite_permission()) {
@@ -2148,6 +2152,9 @@ public class XincoExplorer extends JFrame {
             if (jDialogTransactionInfo != null) {
                 SwingUtilities.updateComponentTreeUI(jDialogTransactionInfo);
             }
+            if(jTreeRepository != null){
+                SwingUtilities.updateComponentTreeUI(jTreeRepository);
+            }
         } catch (Exception plafe) {
             //System.err.println(plafe.toString());
         }
@@ -2158,8 +2165,7 @@ public class XincoExplorer extends JFrame {
      * @return javax.swing.JDialog
      */
     public javax.swing.JDialog getJDialogFolder() {
-        if(jDialogFolder == null)
-            jDialogFolder = new DataFolderDialog(null, true, this);
+        jDialogFolder = new DataFolderDialog(null, true, this);
         return jDialogFolder;
     }
     /**
