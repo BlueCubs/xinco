@@ -218,6 +218,8 @@ public class DataFolderDialog extends javax.swing.JDialog {
         }
         //set altered values
         newnode.setDesignation(this.designation.getText());
+        if(this.language.getSelectedIndex()<0)
+            this.language.setSelectedIndex(0);
         newnode.setXinco_core_language(((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(this.language.getSelectedIndex())));
         try {
             //optimize node size
