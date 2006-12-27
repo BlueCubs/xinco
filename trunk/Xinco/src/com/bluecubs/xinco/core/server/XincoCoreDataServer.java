@@ -121,7 +121,12 @@ public class XincoCoreDataServer extends XincoCoreData {
                 XincoCoreAuditServer audit= new XincoCoreAuditServer();
                 audit.updateAuditTrail("xinco_core_data",new String [] {"id ="+getId()},
                         DBM,"audit.data.change",this.user.getId());
-                stmt.executeUpdate("UPDATE xinco_core_data SET xinco_core_node_id=" + getXinco_core_node_id() + ", xinco_core_language_id=" + getXinco_core_language().getId() + ", xinco_core_data_type_id=" + getXinco_core_data_type().getId() + ", designation='" + getDesignation().replaceAll("'","\\\\'") + "', status_number=" + getStatus_number() + " WHERE id =" + getId());
+                stmt.executeUpdate("UPDATE xinco_core_data SET xinco_core_node_id=" +
+                        getXinco_core_node_id() + ", xinco_core_language_id=" +
+                        getXinco_core_language().getId() + ", xinco_core_data_type_id=" +
+                        getXinco_core_data_type().getId() + ", designation='" +
+                        getDesignation().replaceAll("'","\\\\'") + "', status_number=" +
+                        getStatus_number() + " WHERE id =" + getId());
                 stmt.close();
                 
             } else {
