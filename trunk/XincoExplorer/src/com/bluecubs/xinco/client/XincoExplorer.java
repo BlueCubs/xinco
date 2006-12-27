@@ -1299,6 +1299,8 @@ public class XincoExplorer extends JFrame {
                     if (node.getUserObject().getClass() == XincoCoreData.class) {
                         //file = 1
                         if (((XincoCoreData)node.getUserObject()).getXinco_core_data_type().getId() == 1) {
+                            ((XincoMenuRepository) jMenuRepository).itemSetEnable(17,true);
+                            ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(17,true);
                             if (temp_ace.isRead_permission()) {
                                 if (((XincoCoreData)node.getUserObject()).getStatus_number() != 3) {
                                     ((XincoMenuRepository) jMenuRepository).itemSetEnable(5,true);
