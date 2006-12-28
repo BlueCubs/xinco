@@ -78,8 +78,8 @@ public class XincoCoreUser  implements java.io.Serializable {
      * 
      * @param change
      */
-    public void setChange(boolean c) {
-        this.change = c;
+    public void setChange(boolean change) {
+        this.change = change;
     }
 
 
@@ -189,7 +189,7 @@ public class XincoCoreUser  implements java.io.Serializable {
      * @return reason
      */
     public java.lang.String getReason() {
-        return this.reason;
+        return reason;
     }
 
 

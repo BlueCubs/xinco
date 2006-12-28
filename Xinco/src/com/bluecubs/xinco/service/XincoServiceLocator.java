@@ -5,7 +5,7 @@
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
-package com.bluecubs.xinco.service; 
+package com.bluecubs.xinco.service;
 
 public class XincoServiceLocator extends org.apache.axis.client.Service implements com.bluecubs.xinco.service.XincoService {
 
@@ -22,7 +22,7 @@ public class XincoServiceLocator extends org.apache.axis.client.Service implemen
     }
 
     // Use to get a proxy class for Xinco
-    private java.lang.String Xinco_address = "http://localhost:8084/xinco/services/Xinco";
+    private java.lang.String Xinco_address = "http://localhost:8080/xinco/services/Xinco";
 
     public java.lang.String getXincoAddress() {
         return Xinco_address;

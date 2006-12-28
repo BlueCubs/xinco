@@ -5,7 +5,7 @@
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
-package com.bluecubs.xinco.service; 
+package com.bluecubs.xinco.service;
 
 public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements com.bluecubs.xinco.service.Xinco {
     private java.util.Vector cachedSerClasses = new java.util.Vector();
@@ -16,7 +16,7 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
     static org.apache.axis.description.OperationDesc [] _operations;
 
     static {
-        _operations = new org.apache.axis.description.OperationDesc[24];
+        _operations = new org.apache.axis.description.OperationDesc[25];
         _initOperationDesc1();
         _initOperationDesc2();
         _initOperationDesc3();
@@ -36,9 +36,9 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getCurrentXincoCoreUser");
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
         oper.setReturnType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"));
         oper.setReturnClass(com.bluecubs.xinco.core.XincoCoreUser.class);
@@ -180,7 +180,7 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("findXincoCoreNodes");
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreLanguage"), com.bluecubs.xinco.core.XincoCoreLanguage.class, false, false);
         oper.addParameter(param);
@@ -195,7 +195,7 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("findXincoCoreData");
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreLanguage"), com.bluecubs.xinco.core.XincoCoreLanguage.class, false, false);
         oper.addParameter(param);
@@ -342,6 +342,21 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
         oper.setStyle(org.apache.axis.constants.Style.RPC);
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
         _operations[23] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("checkXincoCoreUserNewPassword");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        oper.setReturnClass(boolean.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "checkXincoCoreUserNewPasswordReturn"));
+        oper.setStyle(org.apache.axis.constants.Style.RPC);
+        oper.setUse(org.apache.axis.constants.Use.ENCODED);
+        _operations[24] = oper;
 
     }
 
@@ -1255,6 +1270,37 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
                 return (com.bluecubs.xinco.add.XincoAddAttribute) _resp;
             } catch (java.lang.Exception _exception) {
                 return (com.bluecubs.xinco.add.XincoAddAttribute) org.apache.axis.utils.JavaUtils.convert(_resp, com.bluecubs.xinco.add.XincoAddAttribute.class);
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+  throw axisFaultException;
+}
+    }
+
+    public boolean checkXincoCoreUserNewPassword(java.lang.String in0, com.bluecubs.xinco.core.XincoCoreUser in1, com.bluecubs.xinco.core.XincoCoreUser in2) throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[24]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("urn:Xinco", "checkXincoCoreUserNewPassword"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return ((java.lang.Boolean) _resp).booleanValue();
+            } catch (java.lang.Exception _exception) {
+                return ((java.lang.Boolean) org.apache.axis.utils.JavaUtils.convert(_resp, boolean.class)).booleanValue();
             }
         }
   } catch (org.apache.axis.AxisFault axisFaultException) {

@@ -5,7 +5,7 @@
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
-package com.bluecubs.xinco.service; 
+package com.bluecubs.xinco.service;
 
 public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinco, org.apache.axis.wsdl.Skeleton {
     private com.bluecubs.xinco.service.Xinco impl;
@@ -42,8 +42,8 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
         }
         ((java.util.List)_myOperations.get("getXincoServerVersion")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("getCurrentXincoCoreUser", _params, new javax.xml.namespace.QName("", "getCurrentXincoCoreUserReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"));
@@ -183,7 +183,7 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
         }
         ((java.util.List)_myOperations.get("uploadXincoCoreData")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreLanguage"), com.bluecubs.xinco.core.XincoCoreLanguage.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
         };
@@ -197,7 +197,7 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
         }
         ((java.util.List)_myOperations.get("findXincoCoreNodes")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreLanguage"), com.bluecubs.xinco.core.XincoCoreLanguage.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
         };
@@ -340,6 +340,20 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
             _myOperations.put("getXincoAddAttribute", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("getXincoAddAttribute")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("checkXincoCoreUserNewPassword", _params, new javax.xml.namespace.QName("", "checkXincoCoreUserNewPasswordReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "checkXincoCoreUserNewPassword"));
+        _oper.setSoapAction("");
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("checkXincoCoreUserNewPassword") == null) {
+            _myOperations.put("checkXincoCoreUserNewPassword", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("checkXincoCoreUserNewPassword")).add(_oper);
     }
 
     public XincoSoapBindingSkeleton() {
@@ -490,6 +504,12 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
     public com.bluecubs.xinco.add.XincoAddAttribute getXincoAddAttribute(com.bluecubs.xinco.add.XincoAddAttribute in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.add.XincoAddAttribute ret = impl.getXincoAddAttribute(in0, in1);
+        return ret;
+    }
+
+    public boolean checkXincoCoreUserNewPassword(java.lang.String in0, com.bluecubs.xinco.core.XincoCoreUser in1, com.bluecubs.xinco.core.XincoCoreUser in2) throws java.rmi.RemoteException
+    {
+        boolean ret = impl.checkXincoCoreUserNewPassword(in0, in1, in2);
         return ret;
     }
 
