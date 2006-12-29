@@ -9,6 +9,7 @@
 
 package com.bluecubs.xinco.client.object;
 
+import com.bluecubs.xinco.client.XincoExplorer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
@@ -24,27 +25,29 @@ import javax.swing.JProgressBar;
 public class XincoProgressBar extends JFrame{
     private	JProgressBar    progress;
     private	JPanel          topPanel;
+    private XincoExplorer explorer;
     
-    
-    public XincoProgressBar() {
+    public XincoProgressBar(XincoExplorer explorer) {
         this.setAlwaysOnTop(true);
-        ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+        this.explorer=explorer;
+        ResourceBundle xerb = this.explorer.getResourceBundle();
         setTitle(xerb.getString("message.progressbar.title"));
-        setSize( 210, 65 );
+        setSize( 410, 65 );
         setBackground( Color.gray );
         
         topPanel = new JPanel();
-        topPanel.setPreferredSize( new Dimension( 310, 40 ) );
+        topPanel.setPreferredSize( new Dimension( 410, 40 ) );
         getContentPane().add( topPanel );
         
         // Create progress bar
         
         progress = new JProgressBar();
-        progress.setPreferredSize( new Dimension( 300, 20 ) );
+        progress.setPreferredSize( new Dimension( 400, 20 ) );
         progress.setMinimum( 0 );
         progress.setMaximum( 100 );
         progress.setValue( 0 );
         progress.setBounds( 20, 35, 260, 20 );
+        progress.setIndeterminate(true);
         topPanel.add( progress );
     }
     
@@ -61,13 +64,5 @@ public class XincoProgressBar extends JFrame{
         progress.paintImmediately( progressRect );
         if(p==progress.getMaximum())
             this.setVisible(false);
-    }
-    
-    public static void main( String args[] ) {
-        // Create an instance of the test application
-        XincoProgressBar mainFrame= new XincoProgressBar();
-        mainFrame.setVisible( true );
-        mainFrame.pack();
-        mainFrame.setProgress(50);
     }
 }

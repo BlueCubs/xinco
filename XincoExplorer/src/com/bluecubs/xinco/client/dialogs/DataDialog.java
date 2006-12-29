@@ -53,7 +53,7 @@ public class DataDialog extends javax.swing.JDialog {
                 text = ((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getSign() + ")";
                 dlm.addElement(text);
                 if (((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getId() == ((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_language().getId()) {
-                    this.language.setSelectedIndex(i);
+                    selection=i;
                 }
                 if (((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getId() == 0) {
                     if (((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
@@ -69,8 +69,8 @@ public class DataDialog extends javax.swing.JDialog {
                 if (selection == -1) {
                     selection = alt_selection;
                 }
-                language.setSelectedIndex(selection);
             }
+            this.language.setSelectedIndex(selection);
             language.ensureIndexIsVisible(language.getSelectedIndex());
             if (((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getStatus_number() == 1) {
                 text = explorer.getResourceBundle().getString("general.status.open") + "";
@@ -221,7 +221,7 @@ public class DataDialog extends javax.swing.JDialog {
         explorer.set_global_dialog_return_value(1);
         setVisible(false);
     }//GEN-LAST:event_saveActionPerformed
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;
     private javax.swing.JTextField designation;
