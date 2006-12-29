@@ -5,7 +5,7 @@
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
-package com.bluecubs.xinco.service; 
+package com.bluecubs.xinco.service;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.core.XincoCoreACE;
@@ -14,6 +14,7 @@ import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoCoreUser;
+import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoVersion;
 import com.bluecubs.xinco.core.server.XincoCoreACEServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
@@ -58,6 +59,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             dbm.con.close();
             return (XincoCoreUser)user;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -71,6 +73,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             dbm.con.close();
             return v;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -84,6 +87,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             dbm.con.close();
             return v;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -97,6 +101,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             dbm.con.close();
             return v;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -132,6 +137,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 return null;
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -150,6 +156,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 return null;
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -779,6 +786,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             user.setStatus_number(in0.getStatus_number());
             user.setChange(false);
             user.setReason(in0.getReason());
+            user.setAttempts(0);
             user.write2DB(dbm);
             dbm.con.close();
             return (XincoCoreUser)user;
@@ -803,11 +811,22 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     }
     
     public com.bluecubs.xinco.add.XincoAddAttribute getXincoAddAttribute(com.bluecubs.xinco.add.XincoAddAttribute in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
-        //dummy: not to be implemented!
         return null;
     }
-
+    
+    /*in1 is the original XincoUser, in0 is the new XincoUser with the proposed new password
+     **/
     public boolean checkXincoCoreUserNewPassword(java.lang.String in0, com.bluecubs.xinco.core.XincoCoreUser in1, com.bluecubs.xinco.core.XincoCoreUser in2) throws java.rmi.RemoteException {
-        return false;
+        XincoDBManager dbm=null;
+        XincoCoreUserServer user=null;
+        try {
+            dbm = new XincoDBManager();
+            user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
+        } catch (XincoException ex) {
+            ex.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return user.isPasswordUsable(in0);
     }
 }
