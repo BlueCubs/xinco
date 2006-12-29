@@ -80,10 +80,10 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[0]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         addSeparator();
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[1] = new JMenuItem();
         this.items[1].setText(xerb.getString("menu.repository.addfolder"));
@@ -114,7 +114,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[1]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[2] = new JMenuItem();
         this.items[2].setText(xerb.getString("menu.repository.adddata"));
@@ -126,7 +126,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[2]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[3] = new JMenuItem();
         this.items[3].setText(xerb.getString("menu.repository.adddatastructure"));
@@ -167,10 +167,10 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[3]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         addSeparator();
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[4] = new JMenuItem();
         this.items[4].setText(xerb.getString("menu.edit.folderdata"));
@@ -191,7 +191,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[4]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[5] = new JMenuItem();
         this.items[5].setText(xerb.getString("menu.repository.vieweditaddattributes"));
@@ -203,7 +203,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[5]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[6] = new JMenuItem();
         this.items[6].setText(xerb.getString("menu.edit.acl"));
@@ -229,10 +229,10 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[6]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         addSeparator();
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[7] = new JMenuItem();
         this.items[7].setText(xerb.getString("menu.edit.movefolderdatatoclipboard"));
@@ -252,7 +252,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[7]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[8] = new JMenuItem();
         this.items[8].setText(xerb.getString("menu.edit.insertfolderdata"));
@@ -341,21 +341,21 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[8]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         addSeparator();
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[9] = new JMenuItem();
         this.items[9].setText(xerb.getString("menu.repository.viewurl"));
         this.items[9].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.KeyEvent.ALT_MASK));
         this.items[9].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                 explorer.doDataWizard(8);
+                explorer.doDataWizard(8);
             }
         });
         add(this.items[9]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[10] = new JMenuItem();
         this.items[10].setText(xerb.getString("menu.repository.emailcontact"));
@@ -366,7 +366,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[10]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[11] = new JMenuItem();
         this.items[11].setText(xerb.getString("menu.repository.downloadfile"));
@@ -378,7 +378,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[11]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[12] = new JMenuItem();
         this.items[12].setText(xerb.getString("menu.edit.checkoutfile"));
@@ -389,7 +389,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[12]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[13] = new JMenuItem();
         this.items[13].setText(xerb.getString("menu.edit.undocheckout"));
@@ -400,7 +400,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[13]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[14] = new JMenuItem();
         this.items[14].setText(xerb.getString("menu.edit.checkinfile"));
@@ -411,7 +411,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[14]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[15] = new JMenuItem();
         this.items[15].setText(xerb.getString("menu.edit.publishdata"));
@@ -422,7 +422,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[15]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[16] = new JMenuItem();
         this.items[16].setText(xerb.getString("menu.edit.lockdata"));
@@ -433,7 +433,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[16]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[17] = new JMenuItem();
         this.items[17].setText(xerb.getString("menu.edit.downloadrevision"));
@@ -444,7 +444,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[17]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
         //add item
         this.items[18] = new JMenuItem();
         this.items[18].setText(xerb.getString("menu.edit.commentdata"));
@@ -455,7 +455,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
             }
         });
         add(this.items[18]);
-        explorer.progressBar.setProgress(explorer.progress++);
+        
     }
     public void resetItems(){
         for(int i=1;i<this.items.length;i++){
