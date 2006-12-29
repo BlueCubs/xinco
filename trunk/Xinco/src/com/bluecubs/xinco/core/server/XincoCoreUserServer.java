@@ -191,6 +191,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
+            e.printStackTrace();
             throw new XincoException();
         }
     }
@@ -290,7 +291,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
         Timestamp ts=null;
         try {
             Statement stmt;
-            if(getStatus_number()==3){
+            if(getStatus_number()==3 || getStatus_number()==4){
                 //Changed from aged out to password changed. Clear status
                 setStatus_number(1);
                 setAttempts(0);
@@ -431,10 +432,11 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     " and DATEDIFF(NOW(),last_modified) <= "+
                     xerb.getString("password.unusable_period") + " and MD5('"+
                     newPass+"') = userpassword";
+            System.out.println(sql);
             rs=stmt.executeQuery(sql);
             //Here we'll catch if the password have been used in the unusable period
             rs.next();
-            rs.getString(1);
+            System.out.println("Password: "+rs.getString(1));
             //---------------------------
         } catch (SQLException ex) {
             passwordIsUsable=true;
