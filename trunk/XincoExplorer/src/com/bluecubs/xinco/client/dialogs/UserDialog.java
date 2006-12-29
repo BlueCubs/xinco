@@ -11,7 +11,7 @@ import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoException;
 import java.sql.Timestamp;
 import javax.swing.JOptionPane;
- 
+
 /**
  * User Dialog
  * @author ortizbj
@@ -251,7 +251,10 @@ public class UserDialog extends javax.swing.JDialog {
         if ((new String(password.getPassword())).equals(new String(verification.getPassword()))) {
             XincoCoreUser temp;
             try {
-                if(this.isAged && (new String(password.getPassword())).equals(explorer.getSession().user.getUserpassword())) {
+                if(this.isAged && !this.explorer.getSession().xinco.checkXincoCoreUserNewPassword(new String(password.getPassword()),
+                        this.explorer.getSession().user,null)) {
+                    System.out.println(this.explorer.getSession().xinco.checkXincoCoreUserNewPassword(new String(password.getPassword()),
+                        this.explorer.getSession().user,null));
                     throw new XincoException(explorer.getResourceBundle().getString("password.unusable"));
                 } else{
                     explorer.getUser().setId(explorer.getSession().user.getId());
@@ -262,7 +265,6 @@ public class UserDialog extends javax.swing.JDialog {
                     explorer.getUser().setEmail(email.getText());
                     explorer.getUser().setXinco_core_groups(explorer.getSession().user.getXinco_core_groups());
                     explorer.getUser().setStatus_number(explorer.getSession().user.getStatus_number());
-                    //don't update audit trail
                     explorer.getUser().setChange(true);
                     if ((temp = explorer.getSession().xinco.setXincoCoreUser(explorer.getUser(), explorer.getSession().user)) != null) {
                         explorer.getUser().setUserpassword(new String(password.getPassword()));
