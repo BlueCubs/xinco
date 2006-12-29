@@ -290,8 +290,7 @@ public class XincoExplorer extends JFrame {
     private JScrollPane jScrollPaneDialogLocale = null;
     private JList jListDialogLocale = null;
     private JButton jButtonDialogLocaleOk = null;
-    public XincoProgressBar progressBar=new XincoProgressBar();
-    public int progress =0;
+    public XincoProgressBar progressBar;
     
     private ConnectionDialog dialogConnection=null;
     private UserDialog userDialog=null;
@@ -318,6 +317,7 @@ public class XincoExplorer extends JFrame {
         //load language data
         xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", (Locale)xincoClientConfig.elementAt(2));
         xerb.getLocale();
+        progressBar=new XincoProgressBar(this);
         initialize();
         //Windows-Listener
         addWindowListener(new WindowClosingAdapter(true));
@@ -1885,17 +1885,12 @@ public class XincoExplorer extends JFrame {
                             xincoClientSession.user = xincoClientSession.xinco.getCurrentXincoCoreUser(newuser.getUsername(), newuser.getUserpassword());
                             progressBar.setVisible( true );
                             progressBar.pack();
-                            progress=0;
-                            progressBar.setProgress(progress);
                             for (i=0;i<xincoClientSession.user.getXinco_core_groups().size();i++) {
                                 status_string_1 = status_string_1 + "      + " + ((XincoCoreGroup)xincoClientSession.user.getXinco_core_groups().elementAt(i)).getDesignation() + "\n";
-                                progressBar.setProgress(progress++);
                             }
                             for (i=0;i<xincoClientSession.server_datatypes.size();i++) {
                                 status_string_2 = status_string_2 + "      + " + ((XincoCoreDataType)xincoClientSession.server_datatypes.elementAt(i)).getDesignation() + "\n";
-                                progressBar.setProgress(progress++);
                             }
-                            progressBar.setProgress(progress++);
                         } catch (RemoteException ex) {
                             ex.printStackTrace();
                         } catch (MalformedURLException ex) {
@@ -1927,60 +1922,34 @@ public class XincoExplorer extends JFrame {
             try {
                 String status_string = "";
                 temp=xincoClientSession.xinco.getCurrentXincoCoreUser(xincoClientSession.user.getUsername(), xincoClientSession.user.getUserpassword());
-                progressBar.setProgress(progress++);
                 status_string += xerb.getString("menu.connection.connectedto") + ": " + xincoClientSession.service_endpoint + "\n";
-                progressBar.setProgress(progress++);
                 status_string += xerb.getString("general.serverversion") + ": ";
-                progressBar.setProgress(progress++);
                 status_string += xincoClientSession.server_version.getVersion_high() + "." ;
-                progressBar.setProgress(progress++);
                 status_string += xincoClientSession.server_version.getVersion_mid() + "." ;
-                progressBar.setProgress(progress++);
                 status_string += xincoClientSession.server_version.getVersion_low();
-                progressBar.setProgress(progress++);status_string += xincoClientSession.server_version.getVersion_postfix() + "\n";
+                status_string += xincoClientSession.server_version.getVersion_postfix() + "\n";
                 status_string += "\n";
-                progressBar.setProgress(progress++);
                 status_string = status_string + xerb.getString("general.user") + ": " + xincoClientSession.user.getFirstname() + " " + xincoClientSession.user.getName() + " <" + xincoClientSession.user.getEmail() + ">\n";
-                progressBar.setProgress(progress++);
                 status_string = status_string + xerb.getString("general.memberof") + ":\n";
-                progressBar.setProgress(progress++);
                 status_string += status_string_1 + "\n";
-                progressBar.setProgress(progress++);
                 xincoClientSession.server_groups = xincoClientSession.xinco.getAllXincoCoreGroups(xincoClientSession.user);
-                progressBar.setProgress(progress++);
                 status_string = status_string + xerb.getString("general.groupsonserver") + ": " + xincoClientSession.server_groups.size() + "\n";
-                progressBar.setProgress(progress++);
                 xincoClientSession.server_languages = xincoClientSession.xinco.getAllXincoCoreLanguages(xincoClientSession.user);
-                progressBar.setProgress(progress++);
                 status_string = status_string + xerb.getString("general.languagesonserver") + ": " + xincoClientSession.server_languages.size() + "\n";
-                progressBar.setProgress(progress++);
                 xincoClientSession.server_datatypes = xincoClientSession.xinco.getAllXincoCoreDataTypes(xincoClientSession.user);
-                progressBar.setProgress(progress++);
                 status_string = status_string + xerb.getString("general.datatypesonserver") + ": " + xincoClientSession.server_datatypes.size() + "\n";
-                progressBar.setProgress(progress++);
                 status_string += status_string_2 + "\n";
-                progressBar.setProgress(progress++);
                 xincoClientSession.currentSearchResult = new Vector();
-                progressBar.setProgress(progress++);
                 xincoClientSession.status = 2;
-                progressBar.setProgress(progress++);
                 JOptionPane.showMessageDialog(XincoExplorer.this, status_string, xerb.getString("menu.connection.established"), JOptionPane.INFORMATION_MESSAGE);
-                progressBar.setProgress(progress++);
                 jLabelInternalFrameInformationText.setText(xerb.getString("menu.connection.established"));
-                progressBar.setProgress(progress++);
                 //get root
                 XincoCoreNode xnode = new XincoCoreNode();
-                progressBar.setProgress(progress++);
                 xnode.setId(1);
-                progressBar.setProgress(progress++);
                 xnode = xincoClientSession.xinco.getXincoCoreNode(xnode, xincoClientSession.user);
-                progressBar.setProgress(progress++);
                 xincoClientSession.xincoClientRepository.assignObject2TreeNode((XincoMutableTreeNode)((DefaultTreeModel)xincoClientSession.xincoClientRepository.treemodel).getRoot(), xnode, xincoClientSession.xinco, xincoClientSession.user, 2);
-                progressBar.setProgress(progress++);
                 jTreeRepository.expandPath(new TreePath(xincoClientSession.xincoClientRepository.treemodel.getPathToRoot(((XincoMutableTreeNode)((DefaultTreeModel)xincoClientSession.xincoClientRepository.treemodel).getRoot()))));
-                progressBar.setProgress(progress++);
                 markConnectionStatus();
-                progressBar.setProgress(progress++);
                 if(temp.getStatus_number()==3){
                     jLabelInternalFrameInformationText.setText(xerb.getString("password.aged"));
                     getJDialogUser(true);
@@ -2040,21 +2009,16 @@ public class XincoExplorer extends JFrame {
             j = dtm.getRowCount();
             for (i=0;i<j;i++) {
                 dtm.removeRow(0);
-                progressBar.setProgress(progress++);
             }
             dtm = (DefaultTableModel)jTableSearchResult.getModel();
             j = dtm.getRowCount();
             for (i=0;i<j;i++) {
                 dtm.removeRow(0);
-                progressBar.setProgress(progress++);
             }
             //reset selection
             xincoClientSession.currentTreeNodeSelection = null;
-            progressBar.setProgress(progress++);
             xincoClientSession.clipboardTreeNodeSelection = new Vector();
-            progressBar.setProgress(progress++);
             xincoClientSession.currentSearchResult = new Vector();
-            progressBar.setProgress(progress++);
             //reset menus
             getJPopupMenuRepository();
             ((XincoPopUpMenuRepository) jPopupMenuRepository).resetItems();
@@ -2071,25 +2035,18 @@ public class XincoExplorer extends JFrame {
                 jInternalFrameRepository.setVisible(false);
                 jInternalFrameSearch.setVisible(false);
                 jInternalFrameInformation.setVisible(false);
+                initialize();
             }
             //status = connected
             if (xincoClientSession.status == 2) {
                 jMenuRepository.setEnabled(true);
-                progressBar.setProgress(progress++);
                 jMenuSearch.setEnabled(true);
-                progressBar.setProgress(progress++);
                 jMenuItemSearchRepository.setEnabled(true);
-                progressBar.setProgress(progress++);
                 jMenuPreferences.setEnabled(true);
-                progressBar.setProgress(progress++);
                 jMenuItemConnectionConnect.setEnabled(false);
-                progressBar.setProgress(progress++);
                 jMenuItemConnectionDisconnect.setEnabled(true);
-                progressBar.setProgress(progress++);
                 jInternalFrameRepository.setVisible(true);
-                progressBar.setProgress(progress++);
                 jInternalFrameInformation.setVisible(true);
-                progressBar.setProgress(progress++);
             }
         }
     }
