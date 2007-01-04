@@ -104,27 +104,30 @@ public class XincoDBManager {
             int size = rs.getMetaData().getColumnCount();
             while(rs.next()){
                 for(int i=1;i<=size;i++) {
+                    String value=canReplace(rs.getString(i));
+                    if(rs.getMetaData().getColumnName(i).contains("password"))
+                        value = "******************************";
                     if(i==size && details) {
                         out.println("<td><form action='Detail.jsp' method='post'><input type='submit' value='Get Details' onclick='Detail.jsp'><input type='hidden' name = 'key' value='"+
-                                canReplace(rs.getString(i))+"'><input type='hidden' name='Page' value='ProcessData.jsp'></form></td>");
+                                value+"'><input type='hidden' name='Page' value='ProcessData.jsp'></form></td>");
                     } else {
                         if(i==columnAsLink && linkType==this.EmailLink){
-                            if(canReplace(rs.getString(i))==null)
+                            if(value==null)
                                 out.println("<td>No email address available</td>");
                             else
-                                out.println("<td><a href= mailto:"+canReplace(rs.getString(i))+">Email this person</a></td>");
+                                out.println("<td><a href= mailto:"+value+">Email this person</a></td>");
                         }
                         if(i==columnAsLink && linkType==this.DataLink){
-                            if(canReplace(rs.getString(i))==null)
+                            if(value==null)
                                 out.println("<td>No code available</td>");
                             else
-                                out.println("<td>"+canReplace(rs.getString(i))+"</td><td><form action='Detail.jsp' method='post'><input type='submit' value='Get Details' onclick='Detail.jsp'><input type='hidden' name = 'key' value='"+
-                                        canReplace(rs.getString(i))+"'><input type='hidden' name='Page' value='Codes.jsp'></form></td>");
+                                out.println("<td>"+value+"</td><td><form action='Detail.jsp' method='post'><input type='submit' value='Get Details' onclick='Detail.jsp'><input type='hidden' name = 'key' value='"+
+                                        value+"'><input type='hidden' name='Page' value='Codes.jsp'></form></td>");
                         } else {
-                            if(canReplace(rs.getString(i))==null)
+                            if(value==null)
                                 out.println("<td>No data available</td>");
                             else
-                                out.println("<td>"+canReplace(rs.getString(i))+"</td>");
+                                out.println("<td>"+value+"</td>");
                         }
                     }
                 }
