@@ -1163,8 +1163,12 @@ public class XincoAdminServlet extends HttpServlet {
                     if(request.getParameter("table").equals("xinco_core_data_type_attribute"))
                         column="xinco_core_data_type_id";
                     rs=DBM.con.createStatement().executeQuery("select * from "+request.getParameter("table")+
-                            "_t a, xinco_core_user_modified_record b where b.record_id =a.record_id and a."+column+" = '"+
-                            request.getParameter("id")+"' order by a.record_id desc");
+                            "_t a, (select concat(concat(a.firstname,' '),a.name) "+
+                            rb.getString("general.user")+", b.mod_time "+rb.getString("general.audit.modtime")+
+                            " ,b.mod_reason"+rb.getString("general.reason")+" ,b.record_id " +
+                            "from xinco_core_user a,xinco_core_user_modified_record b where a.id=b.id and" +
+                            " a.id = "+request.getParameter("id")+") b where b.record_id =a.record_id and a."+column+
+                            " = '"+request.getParameter("id")+"' order by a.record_id desc");
                     DBM.drawTable(rs,response.getWriter(),DBM.getColumnNames(rs),
                             "<center>"+rb.getString("general.audit.results").replaceAll("%i",
                             request.getParameter("id")).replaceAll("%t",
@@ -1209,6 +1213,9 @@ public class XincoAdminServlet extends HttpServlet {
                         column="xinco_core_data_id";
                     if(request.getParameter("table").equals("xinco_core_data_type_attribute"))
                         column="xinco_core_data_type_id";
+                    rs=DBM.con.createStatement().executeQuery("select distinct * from "+request.getParameter("table")+
+                            " where "+column+" in (select distinct "+column+" from "+request.getParameter("table")+"_t)");
+                    DBM.drawTable(rs,response.getWriter(),DBM.getColumnNames(rs),"",-1,false,-1);
                     rs=DBM.con.createStatement().executeQuery("select distinct "+column+" from "+request.getParameter("table")+"_t");
                     out.println("<form action='XincoAdmin?MenuAudit=AuditTable' method='POST'>");
                     rs=DBM.con.createStatement().executeQuery("select distinct "+column+" from "+
@@ -1216,7 +1223,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("Select record id: ");
                     out.println("<select name='id'>");
                     while(rs.next()){
-                        out.println("<option>"+rs.getString(1)+"</option>");
+                        out.println("<option value='"+rs.getString(1)+"'>"+rs.getString(1)+"</option>");
                     }
                     out.println("</select>");
                     out.println("<br><br><input type='submit' value='"+rb.getString("menu.view")+"' />" +
@@ -1228,6 +1235,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("</html>\n");
                 }catch(Exception e){
                     global_error_message = global_error_message + e.toString();
+                    e.printStackTrace();
                 }
             }
             if (current_location.compareTo("AuditMenu") == 0) {
@@ -1281,6 +1289,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("</html>\n");
                 }catch(Exception e){
                     global_error_message = global_error_message + e.toString();
+                    e.printStackTrace();
                 }
             }
             if (current_location.compareTo("RebuildIndex") == 0) {
