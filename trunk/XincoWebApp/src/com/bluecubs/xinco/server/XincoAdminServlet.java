@@ -152,6 +152,7 @@ public class XincoAdminServlet extends HttpServlet {
             try {
                 try {
                     temp_user = new XincoCoreUserServer(request.getParameter("DialogLoginUsername"), request.getParameter("DialogLoginPassword"), dbm);
+                    temp_user.setChange(false);
                     //Know who's logged in as administrator since temp_user might be used for other purposes later
                     login_user=temp_user;
                 } catch (Exception loginex) {
@@ -272,6 +273,30 @@ public class XincoAdminServlet extends HttpServlet {
             current_location = "RebuildIndex";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
             current_location_desc = "Rebuild Index";
+            session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
+        }
+        //switch to Audit Menu
+        if (request.getParameter("MenuAudit") != null &&
+                request.getParameter("MenuAudit").equals("AuditMenu")) {
+            current_location = "AuditMenu";
+            session.setAttribute("XincoAdminServlet.current_location", current_location);
+            current_location_desc = "Audit Menu";
+            session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
+        }
+        //switch to Audit Query
+        if (request.getParameter("MenuAudit") != null &&
+                request.getParameter("MenuAudit").equals("AuditQuery")) {
+            current_location = "AuditQuery";
+            session.setAttribute("XincoAdminServlet.current_location", current_location);
+            current_location_desc = "Audit Query";
+            session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
+        }
+        //switch to Audit Table
+        if (request.getParameter("MenuAudit") != null &&
+                request.getParameter("MenuAudit").equals("AuditTable")) {
+            current_location = "AuditTable";
+            session.setAttribute("XincoAdminServlet.current_location", current_location);
+            current_location_desc = "Audit Tale Results";
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //lock user
@@ -648,6 +673,8 @@ public class XincoAdminServlet extends HttpServlet {
             out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainEmptyTrash=EmptyTrash\" class=\"link\">"+rb.getString("message.admin.trash")+"</a></td>");
             out.println("<td class=\"text\">|</td>");
             out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainRebuildIndex=RebuildIndex\" class=\"link\">"+rb.getString("message.admin.index")+"</a></td>");
+            out.println("<td class=\"text\">|</td>");
+            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuAudit=AuditMenu\" class=\"link\">"+rb.getString("general.audit.menu")+"</a></td>");
             out.println("<td class=\"text\">|</td>");
             out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainLogout=Logout\" class=\"link\">"+rb.getString("general.logout")+"</a></td>");
             out.println("</tr>");
@@ -1103,6 +1130,157 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("</tr>");
                     out.println("</table>");
                 } catch (Exception e) {
+                }
+            }
+            if (current_location.compareTo("AuditTable") == 0) {
+                try{
+                    out.write("\n");
+                    out.write("\n");
+                    out.write(" \n");
+                    out.write(" \n");
+                    out.write("\n");
+                    out.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n");
+                    out.write("\"http://www.w3.org/TR/html4/loose.dtd\">\n");
+                    out.write("\n");
+                    out.write("<html>\n");
+                    out.write("    <head>\n");
+                    out.write("        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n");
+                    out.write("        <title>");
+                    out.println(rb.getString("general.audit.results").replaceAll("%i",
+                            request.getParameter("id")).replaceAll("%t",
+                            request.getParameter("table")));
+                    out.write("</title>\n");
+                    out.write("    </head>\n");
+                    out.write("    <body>\n");
+                    out.write("        <center>");
+                    out.write("            ");
+                    
+                    ResultSet rs;
+                    XincoDBManager DBM = new XincoDBManager();
+                    String column="id";
+                    if(request.getParameter("table").equals("xinco_add_attribute"))
+                        column="xinco_core_data_id";
+                    if(request.getParameter("table").equals("xinco_core_data_type_attribute"))
+                        column="xinco_core_data_type_id";
+                    rs=DBM.con.createStatement().executeQuery("select * from "+request.getParameter("table")+
+                            "_t a, xinco_core_user_modified_record b where b.record_id =a.record_id and a."+column+" = '"+
+                            request.getParameter("id")+"' order by a.record_id desc");
+                    DBM.drawTable(rs,response.getWriter(),DBM.getColumnNames(rs),
+                            "<center>"+rb.getString("general.audit.results").replaceAll("%i",
+                            request.getParameter("id")).replaceAll("%t",
+                            request.getParameter("table"))+"<br>",-1,false,-1);
+                    
+                    out.write("\n");
+                    out.write("        </center>\n");
+                    out.write("    </body>\n");
+                    out.write("</html>\n");
+                }catch(Exception e){
+                    global_error_message = global_error_message + e.toString();
+                }
+            }
+            if (current_location.compareTo("AuditQuery") == 0) {
+                try{
+                    out.write("\n");
+                    out.write("\n");
+                    out.write(" \n");
+                    out.write(" \n");
+                    out.write("\n");
+                    out.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n");
+                    out.write("\"http://www.w3.org/TR/html4/loose.dtd\">\n");
+                    out.write("\n");
+                    out.write("<html>\n");
+                    out.write("    <head>\n");
+                    out.write("        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n");
+                    out.write("        <title>");
+                    out.println(rb.getString("general.audit.select.searchparameters"));
+                    out.write("</title>\n");
+                    out.write("    </head>\n");
+                    out.write("    <body>\n");
+                    out.write("        <center>");
+                    out.write("            <h1>");
+                    out.println(rb.getString("general.audit.select.record")+request.getParameter("table"));
+                    out.write("</h1>\n");
+                    out.write("            ");
+                    
+                    ResultSet rs;
+                    XincoDBManager DBM = new XincoDBManager();
+                    String column="id";
+                    if(request.getParameter("table").equals("xinco_add_attribute"))
+                        column="xinco_core_data_id";
+                    if(request.getParameter("table").equals("xinco_core_data_type_attribute"))
+                        column="xinco_core_data_type_id";
+                    rs=DBM.con.createStatement().executeQuery("select distinct "+column+" from "+request.getParameter("table")+"_t");
+                    out.println("<form action='XincoAdmin?MenuAudit=AuditTable' method='POST'>");
+                    rs=DBM.con.createStatement().executeQuery("select distinct "+column+" from "+
+                            request.getParameter("table")+"_t");
+                    out.println("Select record id: ");
+                    out.println("<select name='id'>");
+                    while(rs.next()){
+                        out.println("<option>"+rs.getString(1)+"</option>");
+                    }
+                    out.println("</select>");
+                    out.println("<br><br><input type='submit' value='"+rb.getString("menu.view")+"' />" +
+                            "<input type='hidden' name='table' value="+request.getParameter("table")+" /></form>");
+                    
+                    out.write("\n");
+                    out.write("        </center>\n");
+                    out.write("    </body>\n");
+                    out.write("</html>\n");
+                }catch(Exception e){
+                    global_error_message = global_error_message + e.toString();
+                }
+            }
+            if (current_location.compareTo("AuditMenu") == 0) {
+                try{
+                    out.write("\n");
+                    out.write("\n");
+                    out.write(" \n");
+                    out.write(" \n");
+                    out.write("\n");
+                    out.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n");
+                    out.write("\"http://www.w3.org/TR/html4/loose.dtd\">\n");
+                    out.write("\n");
+                    out.write("<html>\n");
+                    out.write("    <head>\n");
+                    out.write("        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n");
+                    out.write("        <title>");
+                    out.println(rb.getString("message.warning.attribute.remove"));
+                    out.write("</title>\n");
+                    out.write("    </head>\n");
+                    out.write("    <body>\n");
+                    out.write("        \n");
+                    out.write("        <center><h1>");
+                    out.write("        ");
+                    
+                    ResultSet rs;
+                    XincoDBManager DBM = new XincoDBManager();
+                    DatabaseMetaData meta = DBM.con.getMetaData();
+                    String[] types =  {
+                        "TABLE"
+                    };
+                    rs = meta.getTables(null, null, null, types);
+                    out.println("<center><table border='1'><tbody><thead><tr><th>"+
+                            rb.getString("general.table")+"</th><th>"+
+                            rb.getString("general.audit.action")+"</th></tr>");
+                    while (rs.next()) {
+                        if(!rs.getString("TABLE_NAME").endsWith("_t")&&
+                                !rs.getString("TABLE_NAME").equals("xinco_id")&&
+                                !rs.getString("TABLE_NAME").equals("xinco_core_user_modified_record") &&
+                                rs.getString("TABLE_NAME").startsWith("xinco") &&
+                                !rs.getString("TABLE_NAME").equals("xinco_core_user_has_xinco_core_group")){
+                            out.println("<form action='XincoAdmin?MenuAudit=AuditQuery' method='POST'>");
+                            out.println("<tr><td>"+rs.getString("TABLE_NAME")+"</td><td><center><input type='submit' value='"+
+                                    rb.getString("general.continue")+"'/></center></td></tr>" +
+                                    "<input type='hidden' name='table' value='"+rs.getString("TABLE_NAME")+"' /></form>");
+                        }
+                    }
+                    out.println("</tbody></table></center>");
+                    
+                    out.write("\n");
+                    out.write("    </body>\n");
+                    out.write("</html>\n");
+                }catch(Exception e){
+                    global_error_message = global_error_message + e.toString();
                 }
             }
             if (current_location.compareTo("RebuildIndex") == 0) {
