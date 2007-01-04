@@ -1163,11 +1163,11 @@ public class XincoAdminServlet extends HttpServlet {
                     if(request.getParameter("table").equals("xinco_core_data_type_attribute"))
                         column="xinco_core_data_type_id";
                     rs=DBM.con.createStatement().executeQuery("select * from "+request.getParameter("table")+
-                            "_t a, (select concat(concat(a.firstname,' '),a.name) "+
-                            rb.getString("general.user")+", b.mod_time "+rb.getString("general.audit.modtime")+
-                            " ,b.mod_reason"+rb.getString("general.reason")+" ,b.record_id " +
-                            "from xinco_core_user a,xinco_core_user_modified_record b where a.id=b.id and" +
-                            " a.id = "+request.getParameter("id")+") b where b.record_id =a.record_id and a."+column+
+                            "_t a, (select concat(concat(a.firstname,' '),a.name) '"+
+                            rb.getString("general.user")+"' , b.mod_time '"+rb.getString("general.audit.modtime")+
+                            "' ,b.mod_reason '"+rb.getString("general.reason")+"' ,b.record_id " +
+                            "from xinco_core_user a,xinco_core_user_modified_record b where a.id=b.id " +
+                            ") b where b.record_id =a.record_id and a."+column+
                             " = '"+request.getParameter("id")+"' order by a.record_id desc");
                     DBM.drawTable(rs,response.getWriter(),DBM.getColumnNames(rs),
                             "<center>"+rb.getString("general.audit.results").replaceAll("%i",
@@ -1223,7 +1223,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("Select record id: ");
                     out.println("<select name='id'>");
                     while(rs.next()){
-                        out.println("<option value='"+rs.getString(1)+"'>"+rs.getString(1)+"</option>");
+                        out.println("<option >"+rs.getString(1)+"</option>");
                     }
                     out.println("</select>");
                     out.println("<br><br><input type='submit' value='"+rb.getString("menu.view")+"' />" +
@@ -1273,6 +1273,7 @@ public class XincoAdminServlet extends HttpServlet {
                     while (rs.next()) {
                         if(!rs.getString("TABLE_NAME").endsWith("_t")&&
                                 !rs.getString("TABLE_NAME").equals("xinco_id")&&
+                                !rs.getString("TABLE_NAME").equals("xinco_core_log")&&
                                 !rs.getString("TABLE_NAME").equals("xinco_core_user_modified_record") &&
                                 rs.getString("TABLE_NAME").startsWith("xinco") &&
                                 !rs.getString("TABLE_NAME").equals("xinco_core_user_has_xinco_core_group")){
