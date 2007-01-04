@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * -                -                 -
+ * Javier A. Ortiz  01/04/2007        Added methods for result set manipulation and formating
  *
  *************************************************************
  */
@@ -98,10 +98,10 @@ public class XincoDBManager {
     /**Draws a table with results of the query stored in the ResultSet rs in the PrintWriter out*/
     public void drawTable(ResultSet rs, PrintWriter out , String header, String title , int columnAsLink, boolean details, int linkType) {
         try{
+            int size = rs.getMetaData().getColumnCount();
             out.println(title);
             out.println("<center><table border =1 ><tr>");
             out.println(header+"</td></tr><tr>");
-            int size = rs.getMetaData().getColumnCount();
             while(rs.next()){
                 for(int i=1;i<=size;i++) {
                     String value=canReplace(rs.getString(i));
@@ -125,7 +125,7 @@ public class XincoDBManager {
                                         value+"'><input type='hidden' name='Page' value='Codes.jsp'></form></td>");
                         } else {
                             if(value==null)
-                                out.println("<td>No data available</td>");
+                                out.println("<td>"+lrb.getString("general.nodata")+"</td>");
                             else
                                 out.println("<td>"+value+"</td>");
                         }
@@ -135,6 +135,7 @@ public class XincoDBManager {
             }
             out.println("</tr></table></center>");
         } catch(Exception e) {
+            out.println(lrb.getString("general.nodata"));
             System.out.println("Exception drawing table: " + e.getMessage());
         }
     }
@@ -178,7 +179,12 @@ public class XincoDBManager {
         return header;
     }
     
+    /*Replace a string with contents of resource bundle is applicable
+     *Used to transform db contents to human readable form.
+     */
     private String canReplace(String s){
+        if(s==null)
+            return null;
         try{
             lrb.getString(s);
         }catch (MissingResourceException e){
