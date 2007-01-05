@@ -40,6 +40,7 @@ package com.bluecubs.xinco.client;
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.dialogs.ACLDialog;
 import com.bluecubs.xinco.client.dialogs.AddAttributeUniversalDialog;
+import com.bluecubs.xinco.client.dialogs.ArchiveDialog;
 import com.bluecubs.xinco.client.dialogs.ConnectionDialog;
 import com.bluecubs.xinco.client.dialogs.DataDialog;
 import com.bluecubs.xinco.client.dialogs.DataFolderDialog;
@@ -1949,6 +1950,7 @@ public class XincoExplorer extends JFrame {
                 cone.printStackTrace();
                 markConnectionStatus();
                 JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("menu.connection.failed") + " " + xerb.getString("general.reason") + ": " + cone.toString(), xerb.getString("menu.connection.failed"), JOptionPane.WARNING_MESSAGE);
+                progressBar.setVisible(false);
             }
         }
     }
@@ -2333,6 +2335,8 @@ public class XincoExplorer extends JFrame {
         }
         xcl1 = (XincoCoreLanguage)xincoClientSession.server_languages.elementAt(selection);
         //process files
+        progressBar.setTitle(xerb.getString("datawizard.fileuploadinfo"));
+        progressBar.setVisible(true);
         for (i=0;i<folder_list.length;i++) {
             if (folder_list[i].isFile()) {
                 //set current node to new one
@@ -2478,6 +2482,7 @@ public class XincoExplorer extends JFrame {
                 //jTreeRepository.setSelectionPath(new TreePath(xincoClientSession.currentTreeNodeSelection.getPath()));
             }
         }
+        progressBar.setVisible(false);
     }
     /**
      * This method leads through data adding/editing
@@ -2752,6 +2757,8 @@ public class XincoExplorer extends JFrame {
                     if (((wizard_type == 1) || (wizard_type == 6)) && (((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1)) {
                         try {
                             //update transaction info
+                            progressBar.setTitle(xerb.getString("datawizard.fileuploadinfo"));
+                            progressBar.setVisible(true);
                             jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.fileuploadinfo"));
                             in = new CheckedInputStream(new FileInputStream(current_fullpath), new CRC32());
                             if (useSAAJ) {
@@ -2776,6 +2783,7 @@ public class XincoExplorer extends JFrame {
                                 in.close();
                             }
                         } catch (Exception fe) {
+                            progressBar.setVisible(false);
                             throw new XincoException(xerb.getString("datawizard.unabletoloadfile"));
                         }
                     }
@@ -2832,11 +2840,16 @@ public class XincoExplorer extends JFrame {
                         in.close();
                         //update transaction info
                         jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.fileuploadsuccess"));
+                        progressBar.setVisible(false);
                     }
                     //download file
                     //file = 1
-                    if (((wizard_type == 4) || (wizard_type == 7) || (wizard_type == 11) || (wizard_type == 14)) && (((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1)) {
+                    if (((wizard_type == 4) || (wizard_type == 7) || (wizard_type == 11) || 
+                            (wizard_type == 14)) && 
+                            (((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1)) {
                         //determine requested revision and set log vector
+                        progressBar.setTitle(xerb.getString("datawizard.filedownloadinfo"));
+                        progressBar.setVisible(true);
                         Vector DataLogVector = null;
                         if (wizard_type == 11) {
                             jDialogRevision = getJDialogRevision();
@@ -2965,6 +2978,7 @@ public class XincoExplorer extends JFrame {
                                 } catch(Throwable t) {}
                             }
                         }
+                        progressBar.setVisible(false);
                     }
                     //Open in Browser
                     //URL = 3
@@ -3408,278 +3422,13 @@ public class XincoExplorer extends JFrame {
      */
     private javax.swing.JDialog getJDialogArchive() {
         if(jDialogArchive == null) {
-            jDialogArchive = new javax.swing.JDialog();
-            jDialogArchive.setContentPane(getJContentPaneDialogArchive());
-            jDialogArchive.setBounds(200, 200, 400, 220);
+            jDialogArchive = new ArchiveDialog(null,true,this);
             jDialogArchive.setTitle(xerb.getString("window.archive"));
-            jDialogArchive.setModal(true);
             jDialogArchive.setResizable(false);
-            jDialogArchive.getRootPane().setDefaultButton(getJButtonDialogArchiveContinue());
         }
-        //processing independent of creation
-        if (((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(3)).getAttrib_unsignedint() == 0) {
-            jCheckBoxDialogArchiveRevisionModel.setSelected(false);
-        } else {
-            jCheckBoxDialogArchiveRevisionModel.setSelected(true);
-        }
-        DefaultComboBoxModel dcbm;
-        //fill archiving model list
-        dcbm = (DefaultComboBoxModel)jComboBoxDialogArchiveArchivingModel.getModel();
-        dcbm.removeAllElements();
-        dcbm.addElement(xerb.getString("window.archive.archivingmodel.none"));
-        dcbm.addElement(xerb.getString("window.archive.archivingmodel.archivedate"));
-        dcbm.addElement(xerb.getString("window.archive.archivingmodel.archivedays"));
-        jComboBoxDialogArchiveArchivingModel.setSelectedIndex((int)((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(4)).getAttrib_unsignedint());
-        //set date / days
-        //convert clone from remote time to local time
-        Calendar cal = (Calendar)((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(5)).getAttrib_datetime().clone();
-        Calendar realcal = ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(5)).getAttrib_datetime();
-        Calendar ngc = new GregorianCalendar();
-        cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - realcal.get(Calendar.ZONE_OFFSET)) - (ngc.get(Calendar.DST_OFFSET) + realcal.get(Calendar.DST_OFFSET)) );
-        jTextFieldDialogArchiveDateYear.setText("" + cal.get(Calendar.YEAR));
-        jTextFieldDialogArchiveDateMonth.setText("" + (cal.get(Calendar.MONTH) + 1));
-        jTextFieldDialogArchiveDateDay.setText("" + cal.get(Calendar.DAY_OF_MONTH));
-        jTextFieldDialogArchiveDays.setText("" + ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(6)).getAttrib_unsignedint());
         return jDialogArchive;
     }
-    /**
-     * This method initializes jContentPaneDialogArchive
-     *
-     * @return javax.swing.JPanel
-     */
-    private javax.swing.JPanel getJContentPaneDialogArchive() {
-        if(jContentPaneDialogArchive == null) {
-            jContentPaneDialogArchive = new javax.swing.JPanel();
-            jContentPaneDialogArchive.setLayout(null);
-            jContentPaneDialogArchive.add(getJLabelDialogArchiveRevisionModel(), null);
-            jContentPaneDialogArchive.add(getJCheckBoxDialogArchiveRevisionModel(), null);
-            jContentPaneDialogArchive.add(getJLabelDialogArchiveArchivingModel(), null);
-            jContentPaneDialogArchive.add(getJComboBoxDialogArchiveArchivingModel(), null);
-            jContentPaneDialogArchive.add(getJLabelDialogArchiveDate(), null);
-            jContentPaneDialogArchive.add(getJTextFieldDialogArchiveDateYear(), null);
-            jContentPaneDialogArchive.add(getJTextFieldDialogArchiveDateMonth(), null);
-            jContentPaneDialogArchive.add(getJTextFieldDialogArchiveDateDay(), null);
-            jContentPaneDialogArchive.add(getJLabelDialogArchiveDays(), null);
-            jContentPaneDialogArchive.add(getJTextFieldDialogArchiveDays(), null);
-            jContentPaneDialogArchive.add(getJButtonDialogArchiveContinue(), null);
-            jContentPaneDialogArchive.add(getJButtonDialogArchiveCancel(), null);
-        }
-        return jContentPaneDialogArchive;
-    }
-    /**
-     * This method initializes jLabelDialogArchiveRevisionModel
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogArchiveRevisionModel() {
-        if(jLabelDialogArchiveRevisionModel == null) {
-            jLabelDialogArchiveRevisionModel = new javax.swing.JLabel();
-            jLabelDialogArchiveRevisionModel.setBounds(10, 10, 100, 20);
-            jLabelDialogArchiveRevisionModel.setText(xerb.getString("window.archive.revisionmodel") + ":");
-        }
-        return jLabelDialogArchiveRevisionModel;
-    }
-    /**
-     * This method initializes jCheckBoxDialogArchiveRevisionModel
-     *
-     * @return javax.swing.JCheckBox
-     */
-    private javax.swing.JCheckBox getJCheckBoxDialogArchiveRevisionModel() {
-        if(jCheckBoxDialogArchiveRevisionModel == null) {
-            jCheckBoxDialogArchiveRevisionModel = new javax.swing.JCheckBox();
-            jCheckBoxDialogArchiveRevisionModel.setBounds(120, 10, 250, 20);
-        }
-        return jCheckBoxDialogArchiveRevisionModel;
-    }
-    /**
-     * This method initializes jLabelDialogArchiveArchivingModel
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogArchiveArchivingModel() {
-        if(jLabelDialogArchiveArchivingModel == null) {
-            jLabelDialogArchiveArchivingModel = new javax.swing.JLabel();
-            jLabelDialogArchiveArchivingModel.setBounds(10, 40, 100, 20);
-            jLabelDialogArchiveArchivingModel.setText(xerb.getString("window.archive.archivingmodel") + ":");
-        }
-        return jLabelDialogArchiveArchivingModel;
-    }
-    /**
-     * This method initializes jComboBoxDialogArchiveArchivingModel
-     *
-     * @return javax.swing.JComboBox
-     */
-    private JComboBox getJComboBoxDialogArchiveArchivingModel() {
-        if (jComboBoxDialogArchiveArchivingModel == null) {
-            DefaultComboBoxModel dcbm = new DefaultComboBoxModel();
-            jComboBoxDialogArchiveArchivingModel = new JComboBox();
-            jComboBoxDialogArchiveArchivingModel.setModel(dcbm);
-            jComboBoxDialogArchiveArchivingModel.setBounds(120, 40, 250, 20);
-            jComboBoxDialogArchiveArchivingModel.setEditable(false);
-            jComboBoxDialogArchiveArchivingModel.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    if (jComboBoxDialogArchiveArchivingModel.getSelectedIndex() == 1) {
-                        jTextFieldDialogArchiveDateYear.setEnabled(true);
-                        jTextFieldDialogArchiveDateMonth.setEnabled(true);
-                        jTextFieldDialogArchiveDateDay.setEnabled(true);
-                        jTextFieldDialogArchiveDays.setEnabled(false);
-                    } else if (jComboBoxDialogArchiveArchivingModel.getSelectedIndex() == 2) {
-                        jTextFieldDialogArchiveDateYear.setEnabled(false);
-                        jTextFieldDialogArchiveDateMonth.setEnabled(false);
-                        jTextFieldDialogArchiveDateDay.setEnabled(false);
-                        jTextFieldDialogArchiveDays.setEnabled(true);
-                    } else {
-                        jTextFieldDialogArchiveDateYear.setEnabled(false);
-                        jTextFieldDialogArchiveDateMonth.setEnabled(false);
-                        jTextFieldDialogArchiveDateDay.setEnabled(false);
-                        jTextFieldDialogArchiveDays.setEnabled(false);
-                    }
-                }
-            });
-        }
-        return jComboBoxDialogArchiveArchivingModel;
-    }
-    /**
-     * This method initializes jLabelDialogArchiveDate
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogArchiveDate() {
-        if(jLabelDialogArchiveDate == null) {
-            jLabelDialogArchiveDate = new javax.swing.JLabel();
-            jLabelDialogArchiveDate.setBounds(10, 70, 100, 20);
-            jLabelDialogArchiveDate.setText(xerb.getString("window.archive.archivedate") + ":");
-        }
-        return jLabelDialogArchiveDate;
-    }
-    /**
-     * This method initializes jTextFieldDialogArchiveDateYear
-     *
-     * @return javax.swing.JTextField
-     */
-    private JTextField getJTextFieldDialogArchiveDateYear() {
-        if (jTextFieldDialogArchiveDateYear == null) {
-            jTextFieldDialogArchiveDateYear = new JTextField();
-            jTextFieldDialogArchiveDateYear.setBounds(120, 70, 100, 20);
-        }
-        return jTextFieldDialogArchiveDateYear;
-    }
-    /**
-     * This method initializes jTextFieldDialogArchiveDateMonth
-     *
-     * @return javax.swing.JTextField
-     */
-    private JTextField getJTextFieldDialogArchiveDateMonth() {
-        if (jTextFieldDialogArchiveDateMonth == null) {
-            jTextFieldDialogArchiveDateMonth = new JTextField();
-            jTextFieldDialogArchiveDateMonth.setBounds(230, 70, 50, 20);
-        }
-        return jTextFieldDialogArchiveDateMonth;
-    }
-    /**
-     * This method initializes jTextFieldDialogArchiveDateDay
-     *
-     * @return javax.swing.JTextField
-     */
-    private JTextField getJTextFieldDialogArchiveDateDay() {
-        if (jTextFieldDialogArchiveDateDay == null) {
-            jTextFieldDialogArchiveDateDay = new JTextField();
-            jTextFieldDialogArchiveDateDay.setBounds(290, 70, 50, 20);
-        }
-        return jTextFieldDialogArchiveDateDay;
-    }
-    /**
-     * This method initializes jLabelDialogArchiveDays
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogArchiveDays() {
-        if(jLabelDialogArchiveDays == null) {
-            jLabelDialogArchiveDays = new javax.swing.JLabel();
-            jLabelDialogArchiveDays.setBounds(10, 100, 100, 20);
-            jLabelDialogArchiveDays.setText(xerb.getString("window.archive.archivedays") + ":");
-        }
-        return jLabelDialogArchiveDays;
-    }
-    /**
-     * This method initializes jTextFieldDialogArchiveDays
-     *
-     * @return javax.swing.JTextField
-     */
-    private JTextField getJTextFieldDialogArchiveDays() {
-        if (jTextFieldDialogArchiveDays == null) {
-            jTextFieldDialogArchiveDays = new JTextField();
-            jTextFieldDialogArchiveDays.setBounds(120, 100, 100, 20);
-        }
-        return jTextFieldDialogArchiveDays;
-    }
-    /**
-     * This method initializes jButtonDialogArchiveContinue
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogArchiveContinue() {
-        if(jButtonDialogArchiveContinue == null) {
-            jButtonDialogArchiveContinue = new javax.swing.JButton();
-            jButtonDialogArchiveContinue.setBounds(120, 130, 100, 30);
-            jButtonDialogArchiveContinue.setText(xerb.getString("general.continue"));
-            jButtonDialogArchiveContinue.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    //update archiving options of selected data
-                    if (jCheckBoxDialogArchiveRevisionModel.isSelected()) {
-                        ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(1);
-                    } else {
-                        ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(0);
-                    }
-                    ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(4)).setAttrib_unsignedint(jComboBoxDialogArchiveArchivingModel.getSelectedIndex());
-                    int temp_year_int = 0;
-                    int temp_month_int = 0;
-                    int temp_day_int = 0;
-                    int temp_days_int = 0;
-                    try {
-                        temp_year_int = Integer.parseInt(jTextFieldDialogArchiveDateYear.getText());
-                        temp_month_int = Integer.parseInt(jTextFieldDialogArchiveDateMonth.getText());
-                        temp_day_int = Integer.parseInt(jTextFieldDialogArchiveDateDay.getText());
-                        //set FIXED date: GMT, no DST
-                        Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-                        cal.set(Calendar.DST_OFFSET, 0);
-                        cal.set(Calendar.YEAR, temp_year_int);
-                        cal.set(Calendar.MONTH, (temp_month_int-1));
-                        cal.set(Calendar.DAY_OF_MONTH, temp_day_int);
-                        cal.set(Calendar.HOUR_OF_DAY, 0);
-                        cal.set(Calendar.MINUTE, 0);
-                        cal.set(Calendar.SECOND, 0);
-                        ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(5)).setAttrib_datetime(cal);
-                        temp_days_int = Integer.parseInt(jTextFieldDialogArchiveDays.getText());
-                        ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(6)).setAttrib_unsignedint(temp_days_int);
-                        //close dialog
-                        global_dialog_return_value = 1;
-                        jDialogArchive.setVisible(false);
-                    } catch (Exception parseex) {
-                    }
-                }
-            });
-        }
-        return jButtonDialogArchiveContinue;
-    }
-    /**
-     * This method initializes jButtonDialogArchiveCancel
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogArchiveCancel() {
-        if(jButtonDialogArchiveCancel == null) {
-            jButtonDialogArchiveCancel = new javax.swing.JButton();
-            jButtonDialogArchiveCancel.setBounds(240, 130, 100, 30);
-            jButtonDialogArchiveCancel.setText(xerb.getString("general.cancel"));
-            jButtonDialogArchiveCancel.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    jDialogArchive.setVisible(false);
-                }
-            });
-        }
-        return jButtonDialogArchiveCancel;
-    }
+    
     
     public int get_global_dialog_return_value(){
         return this.global_dialog_return_value;
