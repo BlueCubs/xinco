@@ -55,8 +55,8 @@ public class XincoMenuRepository extends JMenu{
      * Creates a new instance of XincoMenuRepository
      */
     public XincoMenuRepository(final XincoExplorer explorer) {
-        xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
         this.explorer=explorer;
+        xerb=this.explorer.getResourceBundle();
         //add item
         this.items[0] = new JMenuItem();
         this.items[0].setText(xerb.getString("menu.repository.refresh"));
