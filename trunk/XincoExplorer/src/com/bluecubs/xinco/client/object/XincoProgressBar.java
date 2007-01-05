@@ -32,17 +32,16 @@ public class XincoProgressBar extends JFrame{
         this.explorer=explorer;
         ResourceBundle xerb = this.explorer.getResourceBundle();
         setTitle(xerb.getString("message.progressbar.title"));
-        setSize( 410, 65 );
-        setBackground( Color.gray );
-        
+        setSize( 700, 65 );
+        setBackground( Color.gray );      
         topPanel = new JPanel();
-        topPanel.setPreferredSize( new Dimension( 410, 40 ) );
+        topPanel.setPreferredSize( new Dimension( 700, 40 ) );
         getContentPane().add( topPanel );
         
         // Create progress bar
         
         progress = new JProgressBar();
-        progress.setPreferredSize( new Dimension( 400, 20 ) );
+        progress.setPreferredSize( new Dimension(700, 20 ) );
         progress.setMinimum( 0 );
         progress.setMaximum( 100 );
         progress.setValue( 0 );
