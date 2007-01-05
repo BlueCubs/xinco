@@ -111,6 +111,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {
+                System.out.println("Login successfull");
                 RowCount++;
                 setId(rs.getInt("id"));
                 setUsername(rs.getString("username"));
@@ -132,14 +133,12 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     } else{
                         status=1;
                     }
-                }
-                setStatus_number(status);
-                //Reset login attempts after a successfull login.
-                if(rs.getInt("status_number")!=2){
                     setAttempts(0);
                 } else
                     setAttempts(rs.getInt("attempts"));
+                setStatus_number(status);
                 setLastModified(rs.getTimestamp("last_modified"));
+                write2DB(DBM);
             }
             if (RowCount < 1) {
                 sql="SELECT * FROM xinco_core_user WHERE username='" +
@@ -263,6 +262,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
      * @param attempts
      */
     public void setAttempts(int attempts) {
+        System.out.println("changing attempts to: "+attempts);
         this.attempts = attempts;
     }
     
