@@ -111,7 +111,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {
-                System.out.println("Login successfull");
                 RowCount++;
                 setId(rs.getInt("id"));
                 setUsername(rs.getString("username"));
@@ -262,7 +261,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
      * @param attempts
      */
     public void setAttempts(int attempts) {
-        System.out.println("changing attempts to: "+attempts);
         this.attempts = attempts;
     }
     
@@ -329,16 +327,14 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 else
                     password="userpassword='" +
                             getUserpassword().replaceAll("'","\\\\'") + "'";
-                sql="UPDATE xinco_core_user SET username='" +
+                stmt.executeUpdate("UPDATE xinco_core_user SET username='" +
                         getUsername().replaceAll("'","\\\\'") + "', "+password+", name='" +
                         getName().replaceAll("'","\\\\'") + "', firstname='" +
                         getFirstname().replaceAll("'","\\\\'") + "', email='" +
                         getEmail().replaceAll("'","\\\\'") + "', status_number=" +
                         getStatus_number() + ", attempts="+getAttempts() +
                         ", last_modified='"+getLastModified()+"'"+
-                        " WHERE id=" + getId();
-                System.out.println(sql);
-                stmt.executeUpdate(sql);
+                        " WHERE id=" + getId());
                 stmt.close();
             } else {
                 setId(DBM.getNewID("xinco_core_user"));
@@ -427,16 +423,12 @@ public class XincoCoreUserServer extends XincoCoreUser {
             rs=stmt.executeQuery(sql);
             rs.next();
             id = rs.getInt(1);
-            sql="select userpassword from xinco_core_user_t where id=" +
-                    id+
-                    " and DATEDIFF(NOW(),last_modified) <= "+
+            rs=stmt.executeQuery("select userpassword from xinco_core_user_t where id=" +
+                    id+" and DATEDIFF(NOW(),last_modified) <= "+
                     xerb.getString("password.unusable_period") + " and MD5('"+
-                    newPass+"') = userpassword";
-            System.out.println(sql);
-            rs=stmt.executeQuery(sql);
+                    newPass+"') = userpassword");
             //Here we'll catch if the password have been used in the unusable period
             rs.next();
-            System.out.println("Password: "+rs.getString(1));
             //---------------------------
         } catch (SQLException ex) {
             passwordIsUsable=true;
