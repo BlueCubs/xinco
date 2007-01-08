@@ -33,7 +33,9 @@
  *                                    write2DB, XincoCoreUserServer, XincoCoreUserServer (x 2), getXincoCoreUsers
  * Javier A. Ortiz 11/06/2006         Moved the logic of locking an account due to login attempts from the XincoAdminServlet
  * Alexander Manes 11/12/2006         Moved the new user features to core class
- * Javier A. Ortiz 11/20/2006         Undo previous changes and corrected a bug that increased twice the attempts in the DB when wrong password was used
+ * Javier A. Ortiz 11/20/2006         Undo previous changes and corrected a bug that increased twice 
+ *                                    the attempts in the DB when wrong password was used
+ * Javier A. Ortiz 01/08/2007         
  *************************************************************
  */
 
@@ -58,7 +60,8 @@ public class XincoCoreUserServer extends XincoCoreUser {
     private String sql;
     private boolean hashPassword = true;
     private boolean increaseAttempts = false;
-    private ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+    private ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages"),
+            settings=ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
     private java.sql.Timestamp lastModified;
     private int attempts;
     
@@ -126,9 +129,10 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     cal2.setTime(rs.getTimestamp("last_modified"));
                     long diffMillis = now.getTimeInMillis()-cal2.getTimeInMillis();
                     long diffDays = diffMillis/(24*60*60*1000);
-                    long age = Long.parseLong(xerb.getString("password.aging"));
+                    long age = Long.parseLong(settings.getString("password.aging"));
                     if(diffDays >= age){
                         status=3;
+                        System.out.println("Password must be changed!");
                     } else{
                         status=1;
                     }
@@ -289,8 +293,10 @@ public class XincoCoreUserServer extends XincoCoreUser {
         Timestamp ts=null;
         try {
             Statement stmt;
-            if(getStatus_number()==3 || getStatus_number()==4){
+//            if(getStatus_number()==3 || getStatus_number()==4){
+            if(getStatus_number()==4){
                 //Changed from aged out to password changed. Clear status
+                System.out.println("");
                 setStatus_number(1);
                 setAttempts(0);
                 setChange(true);
@@ -303,7 +309,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 increaseAttempts = false;
             }
             //Lock account if needed. Can't lock main admin.
-            if(getAttempts()>Integer.parseInt(xerb.getString("password.attempts")) &&
+            if(getAttempts()>Integer.parseInt(settings.getString("password.attempts")) &&
                     getId() > 1){
                 setStatus_number(2);
             }
@@ -425,10 +431,11 @@ public class XincoCoreUserServer extends XincoCoreUser {
             id = rs.getInt(1);
             rs=stmt.executeQuery("select userpassword from xinco_core_user_t where id=" +
                     id+" and DATEDIFF(NOW(),last_modified) <= "+
-                    xerb.getString("password.unusable_period") + " and MD5('"+
+                    settings.getString("password.unusable_period") + " and MD5('"+
                     newPass+"') = userpassword");
             //Here we'll catch if the password have been used in the unusable period
             rs.next();
+            rs.getString(1);
             //---------------------------
         } catch (SQLException ex) {
             passwordIsUsable=true;
