@@ -254,7 +254,7 @@ public class UserDialog extends javax.swing.JDialog {
                 if(this.isAged && !this.explorer.getSession().xinco.checkXincoCoreUserNewPassword(new String(password.getPassword()),
                         this.explorer.getSession().user,null)) {
                     System.out.println(this.explorer.getSession().xinco.checkXincoCoreUserNewPassword(new String(password.getPassword()),
-                        this.explorer.getSession().user,null));
+                            this.explorer.getSession().user,null));
                     throw new XincoException(explorer.getResourceBundle().getString("password.unusable"));
                 } else{
                     explorer.getUser().setId(explorer.getSession().user.getId());
@@ -297,7 +297,6 @@ public class UserDialog extends javax.swing.JDialog {
                         if(isAged){
                             explorer.getUser().setReason("audit.user.account.aged");
                             explorer.getUser().setStatus_number(4);
-                            System.err.println("Modifying password");
                         } else
                             explorer.getUser().setReason(crd.getReason());
                         
