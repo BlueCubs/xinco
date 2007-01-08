@@ -43,6 +43,7 @@
  * Javier A. Ortiz  11/06/2006        Bugfix: java.lang.NumberFormatException: null when account is locked,
  *                                    requesting a null parameter.
  *
+ * Javier A. Ortiz  01/08/2007        Bugfix: java.lang.NullPointerException: null when changing password
  *************************************************************
  */
 
@@ -65,6 +66,7 @@ import java.util.ResourceBundle;
 
 public class XincoAdminServlet extends HttpServlet {
     private ResourceBundle rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+    private ResourceBundle settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
     private String credentialID="";
     /** Initializes the servlet.
      */
@@ -167,7 +169,7 @@ public class XincoAdminServlet extends HttpServlet {
                             request.getParameter("DialogLoginUsername") + "'");
                     if(rs.next()){
                         temp_user = new XincoCoreUserServer(rs.getInt("id"), dbm);
-                        long attempts = Long.parseLong(rb.getString("password.attempts"));
+                        long attempts = Long.parseLong(settings.getString("password.attempts"));
                         //If user exists increase the atempt tries in the db. If limit reached lock account
                         if(temp_user.getAttempts()>=attempts &&  rs.getInt("id") != 1){
                             //The logged in admin does the locking
@@ -582,8 +584,11 @@ public class XincoAdminServlet extends HttpServlet {
                     temp_user = new XincoCoreUserServer(id,dbm);
                     temp_user.setUserpassword(request.getParameter("new"));
                     temp_user.setLastModified(new Timestamp(System.currentTimeMillis()));
-                    //The logged in admin does the locking
-                    temp_user.setChangerID(login_user.getId());
+                    //The logged in admin does the locking if none loged in the default admin does the locking
+                    if(login_user==null)
+                        temp_user.setChangerID(1);
+                    else
+                        temp_user.setChangerID(login_user.getId());
                     temp_user.setWriteGroups(true);
                     //Register change in audit trail
                     temp_user.setChange(true);

@@ -15,9 +15,10 @@
         <center>
             <br/><img src="blueCubs.gif" width="356" height="400" alt="blueCubs"/><br/>
             <%
-            ResourceBundle rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+            ResourceBundle rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages"),
+                    settings=ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
             out.println("<span class='bigtext'>"+rb.getString("password.aged")+"</span><br/><br/>");
-            out.print(rb.getString("password.change.warning").replaceAll("%n",rb.getString("password.unusable_period")));%>
+            out.print(rb.getString("password.change.warning").replaceAll("%n",settings.getString("password.unusable_period")));%>
             </span><br/><br/>
             <form name="password" action="XincoAdmin" method="post">
             <table border="0">
