@@ -127,6 +127,7 @@ public class DataFolderDialog extends javax.swing.JDialog {
 
         stateLabel.setText("jLabel1");
 
+        state.setEditable(false);
         state.setText("jTextField1");
 
         save.setText("jButton1");
