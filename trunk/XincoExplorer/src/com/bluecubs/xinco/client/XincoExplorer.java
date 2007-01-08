@@ -297,6 +297,7 @@ public class XincoExplorer extends JFrame {
     private String status_string_1="",status_string_2="";
     private XincoCoreUser temp;
     private final XincoCoreUser newuser= new XincoCoreUser();
+    private loginThread loginT;
     /**
      * This is the default constructor
      */
@@ -921,7 +922,7 @@ public class XincoExplorer extends JFrame {
         xincoClientVersion.setVersion_high(2);
         xincoClientVersion.setVersion_mid(0);
         xincoClientVersion.setVersion_low(0);
-        xincoClientVersion.setVersion_postfix(" Beta 2");
+        xincoClientVersion.setVersion_postfix("");
         switchPLAF((String)xincoClientConfig.elementAt(1));
         this.setBounds(0, 0, (new Double(getToolkit().getScreenSize().getWidth())).intValue()-100,
                 (new Double(getToolkit().getScreenSize().getHeight())).intValue()-75);
@@ -1009,30 +1010,6 @@ public class XincoExplorer extends JFrame {
     private javax.swing.JMenu getJMenuRepository() {
         if(jMenuRepository == null) {
             jMenuRepository = new XincoMenuRepository(this);
-//            getJPopupMenuRepository();
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryRefresh());
-//            jMenuRepository.addSeparator();
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryAddFolder());
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryAddData());
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryAddDataStructure());
-//            jMenuRepository.addSeparator();
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryEditFolderData());
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryViewEditAddAttributes());
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryEditFolderDataACL());
-//            jMenuRepository.addSeparator();
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryMoveFolderData());
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryInsertFolderData());
-//            jMenuRepository.addSeparator();
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryViewURL());
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryEmailContact());
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryViewData());
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryCheckoutData());
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryUndoCheckoutData());
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryCheckinData());
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryPublishData());
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryLockData());
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryDownloadRevision());
-//            jMenuRepository.add(((XincoPopUpMenuRepository)jPopupMenuRepository).getJMenuItemRepositoryCommentData());
             jMenuRepository.setText(xerb.getString("menu.repository"));
             jMenuRepository.setName("Repository");
             jMenuRepository.setEnabled(false);
@@ -1054,6 +1031,7 @@ public class XincoExplorer extends JFrame {
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     xincoClientSession.status = 0;
                     markConnectionStatus();
+                    loginT.resetStrings();
                 }
             });
         }
@@ -1845,6 +1823,8 @@ public class XincoExplorer extends JFrame {
      * @return javax.swing.JMenuItem
      */
     private javax.swing.JMenuItem getJMenuItemConnectionConnect() {
+        status_string_1="";
+        status_string_2="";
         if(jMenuItemConnectionConnect == null) {
             jMenuItemConnectionConnect = new javax.swing.JMenuItem();
             jMenuItemConnectionConnect.setText(xerb.getString("menu.connection.connect"));
@@ -1889,7 +1869,7 @@ public class XincoExplorer extends JFrame {
                             for (i=0;i<xincoClientSession.server_datatypes.size();i++) {
                                 status_string_2 = status_string_2 + "      + " + ((XincoCoreDataType)xincoClientSession.server_datatypes.elementAt(i)).getDesignation() + "\n";
                             }
-                            loginThread loginT= new loginThread();
+                            loginT= new loginThread();
                             loginT.start();
                         }catch (Exception cone) {
                             xincoClientSession.status = 0;
@@ -1952,6 +1932,10 @@ public class XincoExplorer extends JFrame {
                 JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("menu.connection.failed") + " " + xerb.getString("general.reason") + ": " + cone.toString(), xerb.getString("menu.connection.failed"), JOptionPane.WARNING_MESSAGE);
                 progressBar.setVisible(false);
             }
+        }
+        public void resetStrings(){
+            status_string_1="";
+            status_string_2="";
         }
     }
     /**
@@ -2844,8 +2828,8 @@ public class XincoExplorer extends JFrame {
                     }
                     //download file
                     //file = 1
-                    if (((wizard_type == 4) || (wizard_type == 7) || (wizard_type == 11) || 
-                            (wizard_type == 14)) && 
+                    if (((wizard_type == 4) || (wizard_type == 7) || (wizard_type == 11) ||
+                            (wizard_type == 14)) &&
                             (((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1)) {
                         //determine requested revision and set log vector
                         progressBar.setTitle(xerb.getString("datawizard.filedownloadinfo"));
