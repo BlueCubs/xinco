@@ -20,7 +20,6 @@
     <icon href="blueCubsIcon.gif"/>
     <offline-allowed/>
     <shortcut online="true">
-      <desktop/>
     </shortcut>
   </information>
   <resources locale="" os="">
