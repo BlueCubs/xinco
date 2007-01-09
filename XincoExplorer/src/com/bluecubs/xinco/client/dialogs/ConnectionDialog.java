@@ -41,6 +41,7 @@ public class ConnectionDialog extends javax.swing.JDialog {
         setLocationRelativeTo(null);
         this.profileLabel.setText(explorer.getResourceBundle().getString("window.connection.profilename") + ":");
         this.connect.setText(explorer.getResourceBundle().getString("window.connection.connect"));
+        this.Create.setText(explorer.getResourceBundle().getString("general.create"));
         this.Cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
         this.deleteProfile.setText(explorer.getResourceBundle().getString("window.connection.deleteprofile"));
         this.profileNameLabel.setText(explorer.getResourceBundle().getString("window.connection.profile"));
