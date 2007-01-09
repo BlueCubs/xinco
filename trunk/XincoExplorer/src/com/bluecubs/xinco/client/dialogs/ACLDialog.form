@@ -19,36 +19,27 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Group type="102" alignment="1" attributes="1">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="Admin" pref="310" max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" max="-2" attributes="0">
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="aclAddLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" alignment="0" pref="310" max="32767" attributes="1"/>
-                          <Component id="Read" alignment="0" max="32767" attributes="1"/>
-                          <Component id="Execute" alignment="0" max="32767" attributes="1"/>
-                      </Group>
-                  </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="ACLWarning" min="-2" max="-2" attributes="0"/>
+                      <Component id="ACLWarning" pref="355" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="1">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="Admin" pref="355" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="125" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="RemoveACE" alignment="0" max="32767" attributes="0"/>
-                          <Component id="Close" alignment="0" pref="75" max="32767" attributes="0"/>
+                          <Component id="RemoveACE" alignment="0" pref="120" max="32767" attributes="0"/>
+                          <Component id="Close" alignment="0" pref="120" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="120" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" pref="310" max="32767" attributes="1"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Component id="jScrollPane2" pref="355" max="32767" attributes="2"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
@@ -56,12 +47,23 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="123" max="-2" attributes="0"/>
-                      <Component id="AddACE" max="32767" attributes="0"/>
+                      <Component id="AddACE" pref="120" max="32767" attributes="0"/>
                       <EmptySpace min="122" pref="122" max="122" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="Write" pref="310" max="32767" attributes="0"/>
+                      <Component id="Write" pref="355" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jScrollPane1" alignment="0" pref="355" max="32767" attributes="2"/>
+                          <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="aclAddLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="Read" alignment="0" max="32767" attributes="1"/>
+                              <Component id="Execute" alignment="0" max="32767" attributes="1"/>
+                          </Group>
+                      </Group>
                   </Group>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -83,7 +85,7 @@
               <Component id="Write" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="Admin" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="16" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="aclRemoveLabel" min="-2" max="-2" attributes="0"/>
@@ -98,8 +100,8 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="RemoveACE" min="-2" pref="23" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-              <Component id="ACLWarning" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+              <Component id="ACLWarning" min="-2" pref="26" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="Close" min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
