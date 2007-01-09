@@ -21,7 +21,7 @@
     lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
     locales = lrb.getString("AvailableLocales").split(",");
     out.println("<form name='language' action='menu.jsp'>" +
-    "<table border='1'>" +
+    "<table border='0'>" +
     "<tbody><td>Please Choose a language</td><td>");
     out.println("<select name='list'>");
     for (i=0;i<locales.length;i++)
