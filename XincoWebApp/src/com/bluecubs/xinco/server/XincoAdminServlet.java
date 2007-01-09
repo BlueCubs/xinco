@@ -665,11 +665,11 @@ public class XincoAdminServlet extends HttpServlet {
             out.println("<tr>");
             out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainOverview=Overview\" class=\"link\">"+rb.getString("message.admin.overview")+"</a></td>");
             out.println("<td class=\"text\">|</td>");
-            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainAdminUsers=AdminUsers\" class=\"link\">Edit&nbsp;"+rb.getString("general.user")+"</a></td>");
+            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainAdminUsers=AdminUsers\" class=\"link\">"+rb.getString("message.admin.userAdmin")+"</a></td>");
             out.println("<td class=\"text\">|</td>");
-            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainAdminGroups=AdminGroups\" class=\"link\">Edit&nbsp;"+rb.getString("general.group")+"</a></td>");
+            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainAdminGroups=AdminGroups\" class=\"link\">"+rb.getString("message.admin.groupAdmin")+"</a></td>");
             out.println("<td class=\"text\">|</td>");
-            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainEditUserProfile=EditProfile\" class=\"link\">Edit&nbsp;"+rb.getString("window.connection.profile")+"</a></td>");
+            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainEditUserProfile=EditProfile\" class=\"link\">"+rb.getString("message.admin.userProfile")+"</a></td>");
             out.println("<td class=\"text\">|</td>");
             out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainAdminLanguages=AdminLanguages\" class=\"link\">"+rb.getString("message.admin.language")+"</a></td>");
             out.println("<td class=\"text\">|</td>");
@@ -1272,7 +1272,7 @@ public class XincoAdminServlet extends HttpServlet {
                         "TABLE"
                     };
                     rs = meta.getTables(null, null, null, types);
-                    out.println("<center><table border='1'><tbody><thead><tr><th>"+
+                    out.println("<center><table border='0'><tbody><thead><tr><th>"+
                             rb.getString("general.table")+"</th><th>"+
                             rb.getString("general.audit.action")+"</th></tr>");
                     while (rs.next()) {
