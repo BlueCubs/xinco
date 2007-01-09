@@ -2523,6 +2523,7 @@ public class XincoExplorer extends JFrame {
                     global_dialog_return_value = 0;
                     jDialogDataType.setVisible(true);
                     if (global_dialog_return_value == 0) {
+                        this.progressBar.setVisible(false);
                         throw new XincoException(xerb.getString("datawizard.updatecancel"));
                     }
                     
@@ -2555,6 +2556,7 @@ public class XincoExplorer extends JFrame {
                     if ((wizard_type == 3) &&
                             ((((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1) &&
                             (((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().size() <= 3))) {
+                        this.progressBar.setVisible(false);
                         throw new XincoException(xerb.getString("datawizard.noaddattributes"));
                     }
                     
@@ -2575,6 +2577,7 @@ public class XincoExplorer extends JFrame {
                                 setCurrentPathFilename(fc.getSelectedFile().getPath());
                                 ((XincoCoreData)newnode.getUserObject()).setDesignation(current_filename);
                             } else {
+                                this.progressBar.setVisible(false);
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                         }
@@ -2585,6 +2588,7 @@ public class XincoExplorer extends JFrame {
                             global_dialog_return_value = 0;
                             jDialogAddAttributesText.setVisible(true);
                             if (global_dialog_return_value == 0) {
+                                this.progressBar.setVisible(false);
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                         }
@@ -2599,6 +2603,7 @@ public class XincoExplorer extends JFrame {
                             global_dialog_return_value = 0;
                             jDialogAddAttributesUniversal.setVisible(true);
                             if (global_dialog_return_value == 0) {
+                                this.progressBar.setVisible(false);
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                         }
@@ -2624,6 +2629,7 @@ public class XincoExplorer extends JFrame {
                         global_dialog_return_value = 0;
                         jDialogLog.setVisible(true);
                         if (global_dialog_return_value == 0) {
+                            this.progressBar.setVisible(false);
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
                         }
                         newlog.setOp_description(newlog.getOp_description() + " (" + xerb.getString("general.user") + ": " + xincoClientSession.user.getUsername() + ")");
@@ -2666,6 +2672,7 @@ public class XincoExplorer extends JFrame {
                             global_dialog_return_value = 0;
                             jDialogLog.setVisible(true);
                             if (global_dialog_return_value == 0) {
+                                this.progressBar.setVisible(false);
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                             newlog.setOp_description(newlog.getOp_description() + " (" + xerb.getString("general.user") + ": " + xincoClientSession.user.getUsername() + ")");
@@ -2689,6 +2696,7 @@ public class XincoExplorer extends JFrame {
                         if(result == JFileChooser.APPROVE_OPTION) {
                             setCurrentPathFilename(fc.getSelectedFile().getPath());
                         } else {
+                            this.progressBar.setVisible(false);
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
                         }
                     }
@@ -2704,6 +2712,7 @@ public class XincoExplorer extends JFrame {
                         global_dialog_return_value = 0;
                         jDialogData.setVisible(true);
                         if (global_dialog_return_value == 0) {
+                            this.progressBar.setVisible(false);
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
                         }
                         
@@ -2713,6 +2722,7 @@ public class XincoExplorer extends JFrame {
                             global_dialog_return_value = 0;
                             jDialogArchive.setVisible(true);
                             if (global_dialog_return_value == 0) {
+                                this.progressBar.setVisible(false);
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                         }
@@ -2897,6 +2907,7 @@ public class XincoExplorer extends JFrame {
                                 ((XincoCoreData)newnode.getUserObject()).setXinco_core_logs(DataLogVector);
                             }
                             JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("datawizard.filedownloadfailed"), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
+                            this.progressBar.setVisible(false);
                             throw(ce);
                         }
                         
@@ -3035,6 +3046,7 @@ public class XincoExplorer extends JFrame {
                             " " + xerb.getString("general.reason") + ": " +
                             we.toString(), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
                 }
+                this.progressBar.setVisible(false);
                 we.printStackTrace();
             }
             
