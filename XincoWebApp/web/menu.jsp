@@ -7,7 +7,6 @@
 "http://www.w3.org/TR/html4/loose.dtd">
 <%
 Locale loc=new Locale(request.getParameter("list"));
-loc.setDefault(new Locale(request.getParameter("list")));
 ResourceBundle rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
 rb.getLocale();
 out.println("<html>");

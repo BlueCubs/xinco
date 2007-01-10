@@ -174,8 +174,8 @@ public class XincoCronServlet extends HttpServlet {
                 lrb.getString("message.admin.main.backtomain")+"' />" +
                 "<input type='hidden' name='list' value='"+request.getParameter("list")+"'/></form></tr>" +
                 "<tr><FORM><INPUT TYPE='button' VALUE='"+lrb.getString("message.admin.main.back")+
-                "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value="+
-                request.getParameter("list")+"/></FORM></tr>");
+                "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value='"+
+                request.getParameter("list")+"'/></FORM></tr>");
         
         out.println("</span>");
         out.println("</center>");
