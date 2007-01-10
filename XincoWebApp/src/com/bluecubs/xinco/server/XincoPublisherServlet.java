@@ -290,7 +290,10 @@ public class XincoPublisherServlet extends HttpServlet {
                                         }
                                         out.println("<tr>");
                                         out.println("<td class=\"text\">&nbsp;</td>");
-                                        out.println("<td class=\"text\"><a href=\"" + "XincoPublisher?MainMenu=browse&FolderId=" + xnode_temp2.getId() + temp_path2 + "\">[" + xnode_temp2.getDesignation() + " (" + xnode_temp2.getXinco_core_language().getSign() + ")" + "]</a></td>");
+                                        out.println("<td class=\"text\"><a href=\"" + "XincoPublisher?MainMenu=browse&FolderId=" + 
+                                                xnode_temp2.getId() + temp_path2 + "&list='"+request.getParameter("list")+"'\">[" +
+                                                xnode_temp2.getDesignation() + " (" + xnode_temp2.getXinco_core_language().getSign() + ")" +
+                                                "]</a></td>");
                                         out.println("</tr>");
                                         out.flush();
                                     }
@@ -343,10 +346,10 @@ public class XincoPublisherServlet extends HttpServlet {
                     }
                 } else {
                     out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=list\" class=\"link\">"+rb.getString("message.xincopublisher.list")+"</td>");
+                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=list&list='"+request.getParameter("list")+"' class=\"link\">"+rb.getString("message.xincopublisher.list")+"</td>");
                     out.println("</tr>");
                     out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path=" + (new sun.misc.BASE64Encoder().encode((new String("xincoRoot")).getBytes())) + "\" class=\"link\">"+rb.getString("message.xincopublisher.browse")+"</td>");
+                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path=" + (new sun.misc.BASE64Encoder().encode((new String("xincoRoot")).getBytes())) + "&list='"+request.getParameter("list")+"' class=\"link\">"+rb.getString("message.xincopublisher.browse")+"</td>");
                     out.println("</tr>");
                 }
                 out.println("<tr>");
