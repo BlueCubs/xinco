@@ -66,7 +66,12 @@ public class XincoPublisherServlet extends HttpServlet {
      */
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        Locale loc=new Locale(request.getParameter("list"));
+        Locale loc = null;
+        try {
+            loc = new Locale(request.getParameter("list"));
+        } catch (Exception e) {
+            loc = Locale.getDefault();
+        }
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
         int i = 0;
         int j = 0;
