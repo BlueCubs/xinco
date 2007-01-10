@@ -44,6 +44,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.server.*;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class XincoPublisherServlet extends HttpServlet {
@@ -65,7 +66,8 @@ public class XincoPublisherServlet extends HttpServlet {
      */
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+        Locale loc=new Locale(request.getParameter("list"));
+        rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
         int i = 0;
         int j = 0;
         String request_path;
@@ -408,7 +410,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 out.println("</tr>");
                 out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                         rb.getString("message.admin.main.backtomain")+"' />" +
-                        "<input type='hidden' name='list' value="+request.getParameter("list")+"/></form></tr>" +
+                        "<input type='hidden' name='list' value='"+request.getParameter("list")+"'/></form></tr>" +
                         "<tr><FORM><INPUT TYPE='button' VALUE='"+rb.getString("message.admin.main.back")+
                         "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value="+
                         request.getParameter("list")+"/></FORM></tr>");
