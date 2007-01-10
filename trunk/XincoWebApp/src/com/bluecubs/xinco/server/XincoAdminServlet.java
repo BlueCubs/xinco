@@ -120,7 +120,7 @@ public class XincoAdminServlet extends HttpServlet {
             session.setAttribute("XincoAdminServlet.status", new Integer(status));
             current_location = "MainLogin";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
-            current_location_desc = "Login Dialog";
+            current_location_desc = rb.getString("message.location.desc.login");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
             current_user_selection = 0;
             session.setAttribute("XincoAdminServlet.current_user_selection", new Integer(current_user_selection));
@@ -138,7 +138,7 @@ public class XincoAdminServlet extends HttpServlet {
             if (status == 0) {
                 current_location = "MainLogin";
                 session.setAttribute("XincoAdminServlet.current_location", current_location);
-                current_location_desc = "Login Dialog";
+                current_location_desc = rb.getString("message.location.desc.login");
                 session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
                 current_user_selection = 0;
                 session.setAttribute("XincoAdminServlet.current_user_selection", new Integer(current_user_selection));
@@ -212,7 +212,7 @@ public class XincoAdminServlet extends HttpServlet {
                 session.setAttribute("XincoAdminServlet.status", new Integer(status));
                 current_location = "MainMenu";
                 session.setAttribute("XincoAdminServlet.current_location", current_location);
-                current_location_desc = "Main Menu";
+                current_location_desc = rb.getString("message.location.desc.mainmenu");
                 session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -225,56 +225,56 @@ public class XincoAdminServlet extends HttpServlet {
         if (request.getParameter("MenuMainOverview") != null) {
             current_location = "MainMenu";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
-            current_location_desc = "Main Menu";
+            current_location_desc = rb.getString("message.location.desc.mainmenu");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //switch to user admin
         if (request.getParameter("MenuMainAdminUsers") != null) {
             current_location = "UserAdmin";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
-            current_location_desc = "User Administration";
+            current_location_desc = rb.getString("message.location.desc.useradmin");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //switch to group admin
         if (request.getParameter("MenuMainAdminGroups") != null) {
             current_location = "GroupAdmin";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
-            current_location_desc = "Group Administration";
+            current_location_desc = rb.getString("message.location.desc.groupadmin");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //switch to user profile modification
         if (request.getParameter("MenuMainEditUserProfile") != null) {
             current_location = "UserProfileEdit";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
-            current_location_desc = "User Profile";
+            current_location_desc = rb.getString("message.location.desc.userprofile");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //switch to language admin
         if (request.getParameter("MenuMainAdminLanguages") != null) {
             current_location = "LanguageAdmin";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
-            current_location_desc = "Language Administration";
+            current_location_desc = rb.getString("message.location.desc.languageadmin");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //switch to atrributes admin
         if (request.getParameter("MenuMainAdminAttributes") != null) {
             current_location = "AttributesAdmin";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
-            current_location_desc = "Attributes Administration";
+            current_location_desc = rb.getString("message.location.desc.attributeadmin");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //switch to empty trash
         if (request.getParameter("MenuMainEmptyTrash") != null) {
             current_location = "MainMenu";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
-            current_location_desc = "Main Menu";
+            current_location_desc = rb.getString("message.location.desc.mainmenu");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //switch to index rebuilt
         if (request.getParameter("MenuMainRebuildIndex") != null) {
             current_location = "RebuildIndex";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
-            current_location_desc = "Rebuild Index";
+            current_location_desc = rb.getString("message.location.desc.rebuild");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //switch to Audit Menu
@@ -282,7 +282,7 @@ public class XincoAdminServlet extends HttpServlet {
                 request.getParameter("MenuAudit").equals("AuditMenu")) {
             current_location = "AuditMenu";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
-            current_location_desc = "Audit Menu";
+            current_location_desc = rb.getString("message.location.desc.auditmenu");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //switch to Audit Query
@@ -290,7 +290,7 @@ public class XincoAdminServlet extends HttpServlet {
                 request.getParameter("MenuAudit").equals("AuditQuery")) {
             current_location = "AuditQuery";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
-            current_location_desc = "Audit Query";
+            current_location_desc = rb.getString("message.location.desc.auditquery");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //switch to Audit Table
@@ -298,7 +298,7 @@ public class XincoAdminServlet extends HttpServlet {
                 request.getParameter("MenuAudit").equals("AuditTable")) {
             current_location = "AuditTable";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
-            current_location_desc = "Audit Tale Results";
+            current_location_desc = rb.getString("message.location.desc.auditresult");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //lock user
@@ -401,7 +401,7 @@ public class XincoAdminServlet extends HttpServlet {
             session.setAttribute("XincoAdminServlet.current_group_selection", new Integer(current_group_selection));
             current_location = "GroupAdminSingle";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
-            current_location_desc = "Specific Group Administration";
+            current_location_desc = rb.getString("message.location.desc.specificgroupadmin");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //modify group
@@ -495,7 +495,7 @@ public class XincoAdminServlet extends HttpServlet {
             session.setAttribute("XincoAdminServlet.current_datatype_selection", new Integer(current_datatype_selection));
             current_location = "AttributesAdminSingle";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
-            current_location_desc = "Specific Attributes Administration";
+            current_location_desc = rb.getString("message.location.desc.specificattributeadmin");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //create new attribute
@@ -660,7 +660,7 @@ public class XincoAdminServlet extends HttpServlet {
             out.println("<td class=\"bigtext\" colspan=\"5\">XincoAdmin</td>");
             out.println("</tr>");
             out.println("<tr>");
-            out.println("<td class=\"text\" colspan=\"5\">Location: " + current_location_desc + "</td>");
+            out.println("<td class=\"text\" colspan=\"5\">"+rb.getString("general.location")+": " + current_location_desc + "</td>");
             out.println("</tr>");
             out.println("<tr>");
             out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainOverview=Overview\" class=\"link\">"+rb.getString("message.admin.overview")+"</a></td>");
@@ -1390,7 +1390,7 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; "+rb.getString("general.copyright.date")+", <a href=\"http://www.bluecubs.com\" target=\"_blank\" class=\"link\">blueCubs.com</a> and <a href=\"http://www.xinco.org\" target=\"_blank\" class=\"link\">xinco.org</a></td>");
+        out.println("<td class=\"text\">&copy; "+rb.getString("general.copyright.date")+", "+rb.getString("message.admin.main.footer"));
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                 rb.getString("message.admin.main.backtomain")+"' />" +
