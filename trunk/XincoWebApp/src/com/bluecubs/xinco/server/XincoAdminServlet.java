@@ -1394,7 +1394,7 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                 rb.getString("message.admin.main.backtomain")+"' />" +
-                "<input type='hidden' name='list' value="+request.getParameter("list")+"/></form></tr>" +
+                "<input type='hidden' name='list' value='"+request.getParameter("list")+"'/></form></tr>" +
                 "<tr><FORM><INPUT TYPE='button' VALUE='"+rb.getString("message.admin.main.back")+
                 "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value="+
                 request.getParameter("list")+"/></FORM></tr>");
