@@ -27,6 +27,7 @@ public class DataTypeDialog extends javax.swing.JDialog {
     public DataTypeDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
         this.explorer=explorer;
         setTitle(explorer.getResourceBundle().getString("window.datatype"));
         this.continueButton.setText(explorer.getResourceBundle().getString("general.continue"));

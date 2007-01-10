@@ -32,6 +32,7 @@ public class UserDialog extends javax.swing.JDialog {
         this.isAged=aged;
         initComponents();
         initialize();
+        setLocationRelativeTo(null);
         //Do not allow to close the window. User MUST change password!
         if(this.isAged){
             setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);

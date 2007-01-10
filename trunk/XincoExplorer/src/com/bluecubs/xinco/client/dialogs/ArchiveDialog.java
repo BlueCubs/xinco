@@ -26,6 +26,7 @@ public class ArchiveDialog extends javax.swing.JDialog {
     public ArchiveDialog(java.awt.Frame parent, boolean modal, final XincoExplorer explorer) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
         this.explorer=explorer;
         this.xerb=this.explorer.getResourceBundle();
         this.revisionModelLabel.setText(xerb.getString("window.archive.revisionmodel") + ":");

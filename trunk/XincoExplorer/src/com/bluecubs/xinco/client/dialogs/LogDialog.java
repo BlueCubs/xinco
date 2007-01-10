@@ -28,6 +28,7 @@ public class LogDialog extends javax.swing.JDialog {
     public LogDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
         this.explorer=explorer;
         setTitle(explorer.getResourceBundle().getString("window.loggingdetails"));
         this.actionLabel.setText(explorer.getResourceBundle().getString("window.loggingdetails.action") + ":");

@@ -28,6 +28,7 @@ public class ConnectionDialog extends javax.swing.JDialog {
         initComponents();
         this.explorer=explorer;
         initialize();
+        setLocationRelativeTo(null);
     }
     
     /**
