@@ -60,7 +60,7 @@ out.println("<td class='text'>&nbsp;</td>");
 out.println("</tr>");
 out.println("<tr>");
 out.println("<td class='text'>&nbsp;</td>");
-out.println("<td class='text'>"+rb.getString("message.admin.main.footer")+"</a></td>");
+out.println("<td class='text'>&copy; "+rb.getString("general.copyright.date")+", "+rb.getString("message.admin.main.footer")+"</a></td>");
 out.println("</tr>");
 out.println("</table>");
 out.println("</span>");
