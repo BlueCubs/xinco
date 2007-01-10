@@ -166,9 +166,14 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">"+lrb.getString("message.admin.main.footer")+"</a></td>");
+        out.println("<td class=\"text\">&copy; "+lrb.getString("general.copyright.date")+", "+lrb.getString("message.admin.main.footer"));
         out.println("</tr>");
-        out.println("</table>");
+        out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
+                lrb.getString("message.admin.main.backtomain")+"' />" +
+                "<input type='hidden' name='list' value="+request.getParameter("list")+"/></form></tr>" +
+                "<tr><FORM><INPUT TYPE='button' VALUE='"+lrb.getString("message.admin.main.back")+
+                "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value="+
+                request.getParameter("list")+"/></FORM></tr>");
         
         out.println("</span>");
         out.println("</center>");

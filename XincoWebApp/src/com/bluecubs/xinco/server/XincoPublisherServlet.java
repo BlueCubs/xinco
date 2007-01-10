@@ -404,14 +404,14 @@ public class XincoPublisherServlet extends HttpServlet {
                 out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
                 out.println("<tr>");
                 out.println("<td class=\"text\">&nbsp;</td>");
-                out.println("<td class=\"text\">"+rb.getString("message.admin.main.footer")+"</td>");
+                out.println("<td class=\"text\">&copy; "+rb.getString("general.copyright.date")+", "+rb.getString("message.admin.main.footer"));
                 out.println("</tr>");
                 out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
-                rb.getString("message.admin.main.backtomain")+"' />" +
-                "<input type='hidden' name='list' value="+request.getParameter("list")+"/></form></tr>" +
-                "<tr><FORM><INPUT TYPE='button' VALUE='"+rb.getString("message.admin.main.back")+
-                "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value="+
-                request.getParameter("list")+"/></FORM></tr></table>");
+                        rb.getString("message.admin.main.backtomain")+"' />" +
+                        "<input type='hidden' name='list' value="+request.getParameter("list")+"/></form></tr>" +
+                        "<tr><FORM><INPUT TYPE='button' VALUE='"+rb.getString("message.admin.main.back")+
+                        "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value="+
+                        request.getParameter("list")+"/></FORM></tr>");
             }
             
             out.println("</span>");
