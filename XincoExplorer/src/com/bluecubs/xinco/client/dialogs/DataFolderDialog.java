@@ -33,6 +33,7 @@ public class DataFolderDialog extends javax.swing.JDialog {
     public DataFolderDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
         this.explorer=explorer;
         setTitle(explorer.getResourceBundle().getString("window.folder"));
         this.save.setText(explorer.getResourceBundle().getString("general.save")+"!");

@@ -33,6 +33,7 @@ public class AddAttributeUniversalDialog extends javax.swing.JDialog {
         this.explorer=explorer;
         setTitle(explorer.getResourceBundle().getString("window.addattributesuniversal"));
         setBounds(200, 200, 600, 540);
+        setLocationRelativeTo(null);
         this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
         this.save.setText(explorer.getResourceBundle().getString("general.save")+"!");
         
