@@ -193,7 +193,7 @@ public class XincoCoreDataServer extends XincoCoreData {
             //delete file / file = 1
             if (getXinco_core_data_type().getId() == 1) {
                 try {
-                    (new File(DBM.config.FileRepositoryPath + getId())).delete();
+                    (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.FileRepositoryPath, getId(), "" + getId()))).delete();
                 } catch (Exception dfe) {
                     // continue, file might not exists
                 }
@@ -201,7 +201,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                 for (i=0;i<this.getXinco_core_logs().size();i++) {
                     if ((((XincoCoreLog)getXinco_core_logs().elementAt(i)).getOp_code() == 1) || (((XincoCoreLog)getXinco_core_logs().elementAt(i)).getOp_code() == 5))
                         try {
-                            (new File(DBM.config.FileRepositoryPath + getId() + "-" + ((XincoCoreLog)getXinco_core_logs().elementAt(i)).getId())).delete();
+                            (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.FileRepositoryPath, getId(), getId() + "-" + ((XincoCoreLog)getXinco_core_logs().elementAt(i)).getId()))).delete();
                         } catch (Exception drfe) {
                             // continue, delete next revision
                         }
@@ -271,6 +271,39 @@ public class XincoCoreDataServer extends XincoCoreData {
         
         return data;
         
+    }
+    
+    public static String getXincoCoreDataPath(String attrRP, int attrID, String attrFN) {
+        String path = null;
+        // convert ID to String
+        String path4Id = "" + attrID;
+        // fill ID String with zeros
+        while (path4Id.length() < 10) {
+            path4Id = "0" + path4Id;
+        }
+        // shorten to 7 chars
+        path4Id = path4Id.substring(0, 7);
+        // add seperator
+        for (int i=0; i<7; i++) {
+            path4Id = path4Id.substring(0, (i*2+1)) + System.getProperty("file.separator") + path4Id.substring((i*2+1));
+        }
+        // create path if neccessary
+        (new File(attrRP + path4Id)).mkdirs();
+        // check if file exists at NEW location (>= xinco DMS 2.0)
+        if ((new File(attrRP + path4Id + attrFN)).exists()) {
+            // output NEW location
+            path = attrRP + path4Id + attrFN;
+        } else {
+            // check if file exists at OLD location (pre xinco DMS 2.0)
+            if ((new File(attrRP + attrFN)).exists()) {
+                // output OLD location
+                path = attrRP + attrFN;
+            } else {
+                // output NEW location for NEW file
+                path = attrRP + path4Id + attrFN;
+            }
+        }
+        return path;
     }
     
 }
