@@ -26,7 +26,11 @@ out.println("<td class='text'>"+rb.getString("message.admin.main.webstart")+"</t
 out.println("</tr>");
 out.println("<tr>");
 out.println("<td class='text'>"+rb.getString("message.admin.main.endpoint.label")+"</td>");
-out.println("<td class='text'>"+rb.getString("message.admin.main.endpointdesc"));
+//out.println("<td class='text'>"+rb.getString("message.admin.main.endpointdesc")+"</td>");
+String xinco_service_endpoint = request.getRequestURL().toString();
+xinco_service_endpoint = xinco_service_endpoint.substring(0, xinco_service_endpoint.indexOf("/menu.jsp"));
+xinco_service_endpoint = xinco_service_endpoint + "/services/Xinco";
+out.println("<td class='text'><b>"+xinco_service_endpoint+"</b></td>");
 out.println("</tr>");
 out.println("<tr>");
 out.println("<td class='text'><a href='XincoPublisher?list="+request.getParameter("list")+"' class='link'>"+rb.getString("message.admin.main.publisher.label")+"</a></td>");
