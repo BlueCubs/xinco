@@ -71,6 +71,7 @@ public class XincoArchiver {
 			String ArchiveBaseDir = dbm.config.FileRepositoryPath + ArchiveName;
 			String ArchiveFileDir = null;
 			Vector OrgFileNames = new Vector();
+			Vector OrgFileIDs = new Vector();
 			String FileName = null;
 			int querycount = 0;
 			String[] query = new String[2];
@@ -117,17 +118,19 @@ public class XincoArchiver {
 					//copy file + revisions
 					//build file list
 					OrgFileNames.add(new String("" + xdata_temp.getId())); 
+					OrgFileIDs.add(new Integer(xdata_temp.getId())); 
 					for (i=0;i<xdata_temp.getXinco_core_logs().size();i++) {
 						xlog_temp = ((XincoCoreLogServer)xdata_temp.getXinco_core_logs().elementAt(i));
 						if ((xlog_temp.getOp_code() == 1) || (xlog_temp.getOp_code() == 5)) {
 							OrgFileNames.add(new String("" + xdata_temp.getId() + "-" + xlog_temp.getId())); 
+                					OrgFileIDs.add(new Integer(xdata_temp.getId())); 
 						}
 					}
 					//copy + delete files
 					for (k=0;k<OrgFileNames.size();k++) {
 						FileName = ((String)OrgFileNames.elementAt(k)) + "_" + ((XincoAddAttribute)xdata_temp.getXinco_add_attributes().elementAt(0)).getAttrib_varchar();
-						if ((new File(dbm.config.FileRepositoryPath + ((String)OrgFileNames.elementAt(k)))).exists()) {
-							fcis  = new FileInputStream(new File(dbm.config.FileRepositoryPath + ((String)OrgFileNames.elementAt(k))));
+						if ((new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, ((Integer)OrgFileIDs.elementAt(k)).intValue(), ((String)OrgFileNames.elementAt(k))))).exists()) {
+							fcis  = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, ((Integer)OrgFileIDs.elementAt(k)).intValue(), ((String)OrgFileNames.elementAt(k)))));
 							fcos = new FileOutputStream(new File(ArchiveBaseDir + ArchiveFileDir + System.getProperty("file.separator") + FileName));
 							fcbuf = new byte[4096];
 							len = 0;
@@ -137,7 +140,7 @@ public class XincoArchiver {
 							fcis.close();
 							fcos.close();
 							//delete
-							(new File(dbm.config.FileRepositoryPath + ((String)OrgFileNames.elementAt(k)))).delete();
+							(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, ((Integer)OrgFileIDs.elementAt(k)).intValue(), ((String)OrgFileNames.elementAt(k))))).delete();
 						}
 					}
 					//update data + log
