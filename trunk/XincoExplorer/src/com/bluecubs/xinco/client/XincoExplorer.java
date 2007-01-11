@@ -160,6 +160,10 @@ public class XincoExplorer extends JFrame {
     public String current_filename = "";
     public String current_path = "";
     public String current_fullpath = "";
+    //previous path and filename
+    public String previous_filename = "";
+    public String previous_path = "";
+    public String previous_fullpath = "";
     //global dialog return value
     private int global_dialog_return_value = 0;
     private javax.swing.JMenuItem jMenuItemConnectionConnect = null;
@@ -1633,6 +1637,7 @@ public class XincoExplorer extends JFrame {
                                 //file = 1
                                 if (((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getId() == 1) {
                                     doDataWizard(14);
+                                    setCurrentPathFilename(previous_fullpath);
                                 }
                             }
                         }
@@ -3113,6 +3118,39 @@ public class XincoExplorer extends JFrame {
         return jMenuItemPreferencesEditUser;
     }
     /**
+     * This method sets previous path and filename
+     *
+     * @return void
+     */
+    private void setPreviousPathFilename(String s) {
+    int i=0,j=0;
+        if(s != null) {
+            try {
+                previous_fullpath = s;
+                i = s.lastIndexOf(System.getProperty("file.separator"));
+                                /*j = s.lastIndexOf("\\");
+                                //select i as index wanted
+                                if (j>i) {
+                                        i = j;
+                                }*/
+                previous_filename = s.substring(i+1);
+                if (i > 0) {
+                    previous_path = s.substring(0, i+1);
+                } else {
+                    previous_path = "";
+                }
+            } catch (Exception e) {
+                previous_filename = "";
+                previous_path = "";
+                previous_fullpath = "";
+            }
+        } else {
+            previous_filename = "";
+            previous_path = "";
+            previous_fullpath = "";
+        }
+    }
+    /**
      * This method sets current path and filename
      *
      * @return void
@@ -3121,6 +3159,7 @@ public class XincoExplorer extends JFrame {
         int i=0,j=0;
         if(s != null) {
             try {
+                setPreviousPathFilename(current_fullpath);
                 current_fullpath = s;
                 i = s.lastIndexOf(System.getProperty("file.separator"));
                                 /*j = s.lastIndexOf("\\");
