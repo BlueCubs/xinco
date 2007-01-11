@@ -85,7 +85,12 @@ public class XincoAdminServlet extends HttpServlet {
      */
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        Locale loc=new Locale(request.getParameter("list"));
+        Locale loc = null;
+        try {
+            loc = new Locale(request.getParameter("list"));
+        } catch (Exception e) {
+            loc = Locale.getDefault();
+        }
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
         settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings",loc);
         XincoDBManager dbm;
@@ -758,7 +763,7 @@ public class XincoAdminServlet extends HttpServlet {
                 out.println("<tr>");
                 out.println("<td class=\"text\">&nbsp;</td>");
                 out.println("<td class=\"text\"><input type=\"submit\" name=\"DialogNewUserSubmit\" value=\""+
-                        rb.getString("genera.add.user")+"\"/></td>");
+                        rb.getString("general.add.user")+"\"/></td>");
                 out.println("</tr>");
                 out.println("</table>");
                 out.println("</form>");
@@ -1110,7 +1115,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("</tr>");
                     out.println("<tr>");
                     out.println("<td class=\"text\">"+rb.getString("general.size")+":</td>");
-                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewAttributeSize\" size=\"5\" value=\"0\"/> (required for String/varchar)</td>");
+                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogNewAttributeSize\" size=\"5\" value=\"0\"/> "+rb.getString("message.admin.attribute.req4string")+"</td>");
                     out.println("</tr>");
                     out.println("<tr>");
                     out.println("<td class=\"text\">&nbsp;</td>");

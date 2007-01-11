@@ -77,7 +77,12 @@ public class XincoCronServlet extends HttpServlet {
      */
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        Locale loc=new Locale(request.getParameter("list"));
+        Locale loc = null;
+        try {
+            loc = new Locale(request.getParameter("list"));
+        } catch (Exception e) {
+            loc = Locale.getDefault();
+        }
         lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
         //start output
         response.setContentType("text/html");
