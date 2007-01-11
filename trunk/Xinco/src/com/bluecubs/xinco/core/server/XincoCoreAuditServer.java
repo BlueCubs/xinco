@@ -54,7 +54,6 @@ public class XincoCoreAuditServer {
                         sql+=")";
                 }
             }
-            System.out.println(sql);
             stmt.executeUpdate(sql);
             sql="insert into `xinco_core_user_modified_record` (`id`, `record_id`, `mod_Time`, " +
                     "`mod_Reason`) values ('"+id+"', "+record_ID+", '"+
