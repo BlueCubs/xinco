@@ -1,5 +1,5 @@
 alter table xinco_core_user add `attempts` int(10) unsigned zerofill NOT NULL;
-alter table xinco_core_user add `last_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP;
+alter table xinco_core_user add `last_modified` timestamp NOT NULL;
 
 --
 -- Table structure for audit tables 
@@ -173,4 +173,5 @@ CREATE TABLE xinco_core_user_modified_record (
 TYPE=InnoDB;
 
 update xinco_core_user set last_modified = now();
+
 
