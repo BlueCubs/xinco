@@ -93,7 +93,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
                 XincoCoreAuditServer audit= new XincoCoreAuditServer();
                 ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 audit.updateAuditTrail("xinco_core_language",new String [] {"id ="+getId()},
-                        DBM,xerb.getString("audit.data.change"),1);
+                        DBM,xerb.getString("audit.data.change"),this.getChangerID());
                 stmt.executeUpdate("UPDATE xinco_core_language SET sign='" + getSign().replaceAll("'","\\\\'") + "', designation='" + getDesignation().replaceAll("'","\\\\'") + "' WHERE id=" + getId());
                 stmt.close();
             } else {
@@ -119,7 +119,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     }
     
     //delete from db
-    public static int deleteFromDB(XincoCoreLanguage attrCL, XincoDBManager DBM) throws XincoException {
+    public int deleteFromDB(XincoCoreLanguage attrCL, XincoDBManager DBM) throws XincoException {
         
         try {
             
@@ -128,7 +128,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             stmt = DBM.con.createStatement();
             XincoCoreAuditServer audit= new XincoCoreAuditServer();
             audit.updateAuditTrail("xinco_core_language",new String [] {"id ="+attrCL.getId()},
-                    DBM,"audit.general.delete",1);
+                    DBM,"audit.general.delete",this.getChangerID());
             stmt.executeUpdate("DELETE FROM xinco_core_language WHERE id=" + attrCL.getId());
             stmt.close();
             

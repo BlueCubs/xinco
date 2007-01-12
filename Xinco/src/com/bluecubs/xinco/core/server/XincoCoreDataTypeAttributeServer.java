@@ -42,7 +42,7 @@ import java.sql.*;
 import com.bluecubs.xinco.core.*;
 
 public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute {
-    
+    private static int changer=0;
     //create data type attribute object for data structures
     public XincoCoreDataTypeAttributeServer(int attrID1, int attrID2, XincoDBManager DBM) throws XincoException {
         
@@ -95,7 +95,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             
             XincoCoreAuditServer audit= new XincoCoreAuditServer();
             audit.updateAuditTrail("xinco_add_attribute",new String [] {"id ="+getAttribute_id()},
-                    DBM,"audit.datatype.attribute.change",1);
+                    DBM,"audit.datatype.attribute.change",this.getChangerID());
             
             stmt = DBM.con.createStatement();
             stmt.executeUpdate("INSERT INTO xinco_add_attribute SELECT id, " + getAttribute_id() + ", 0, 0, 0, '', '', now() FROM xinco_core_data WHERE xinco_core_data_type_id = " + getXinco_core_data_type_id());
@@ -116,7 +116,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     }
     
     //delete from db
-    public static int deleteFromDB(XincoCoreDataTypeAttribute attrCDTA, XincoDBManager DBM) throws XincoException {
+    public int deleteFromDB(XincoCoreDataTypeAttribute attrCDTA, XincoDBManager DBM) throws XincoException {
         
         try {
             
@@ -127,7 +127,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             audit.updateAuditTrail("xinco_add_attribute",new String [] {"xinco_add_attribute.attribute_id=" + attrCDTA.getAttribute_id(),
             "xinco_add_attribute.xinco_core_data_id IN (SELECT id FROM xinco_core_data WHERE xinco_core_data.xinco_core_data_type_id=" +
                     attrCDTA.getXinco_core_data_type_id()+ ")"},
-                    DBM,"audit.general.delete",1);
+                    DBM,"audit.general.delete",this.getChangerID());
             stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_add_attribute.attribute_id=" +
                     attrCDTA.getAttribute_id() + " AND xinco_add_attribute.xinco_core_data_id IN (SELECT id FROM xinco_core_data WHERE xinco_core_data.xinco_core_data_type_id=" +
                     attrCDTA.getXinco_core_data_type_id() + ")");
@@ -135,7 +135,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             
             stmt = DBM.con.createStatement();
             audit.updateAuditTrail("xinco_core_data_type_attribute",new String [] {"xinco_core_data_type_id=" + attrCDTA.getXinco_core_data_type_id(), "attribute_id=" + attrCDTA.getAttribute_id()},
-                        DBM,"audit.general.delete",1);
+                        DBM,"audit.general.delete",this.getChangerID());
             stmt.executeUpdate("DELETE FROM xinco_core_data_type_attribute WHERE xinco_core_data_type_id=" + attrCDTA.getXinco_core_data_type_id() + " AND attribute_id=" + attrCDTA.getAttribute_id());
             stmt.close();
             

@@ -120,7 +120,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                 stmt = DBM.con.createStatement();
                 XincoCoreAuditServer audit= new XincoCoreAuditServer();
                 audit.updateAuditTrail("xinco_core_data",new String [] {"id ="+getId()},
-                        DBM,"audit.data.change",this.user.getId());
+                        DBM,"audit.data.change",this.getChangerID());
                 stmt.executeUpdate("UPDATE xinco_core_data SET xinco_core_node_id=" +
                         getXinco_core_node_id() + ", xinco_core_language_id=" +
                         getXinco_core_language().getId() + ", xinco_core_data_type_id=" +
@@ -176,18 +176,18 @@ public class XincoCoreDataServer extends XincoCoreData {
             
             XincoCoreAuditServer audit= new XincoCoreAuditServer();
             audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+getId()},
-                    DBM,"audit.general.delete",1);
+                    DBM,"audit.general.delete",this.getChangerID());
             stmt = DBM.con.createStatement();
             stmt.executeUpdate("DELETE FROM xinco_core_log WHERE xinco_core_data_id=" + getId());
             stmt.close();
             stmt = DBM.con.createStatement();
             audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+getId()},
-                    DBM,"audit.general.delete",1);
+                    DBM,"audit.general.delete",this.getChangerID());
             stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE xinco_core_data_id=" + getId());
             stmt.close();
             stmt = DBM.con.createStatement();
             audit.updateAuditTrail("xinco_add_attribute",new String [] {"id ="+getId()},
-                    DBM,"audit.general.delete",1);
+                    DBM,"audit.general.delete",this.getChangerID());
             stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_core_data_id=" + getId());
             stmt.close();
             //delete file / file = 1

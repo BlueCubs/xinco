@@ -12,6 +12,8 @@ public class XincoCoreLog  implements java.io.Serializable {
 
     private int op_code;
 
+    private int changerID;
+
     private java.util.Calendar op_datetime;
 
     private java.lang.String op_description;
@@ -28,6 +30,7 @@ public class XincoCoreLog  implements java.io.Serializable {
     public XincoCoreLog(
            int id,
            int op_code,
+           int changerID,
            java.util.Calendar op_datetime,
            java.lang.String op_description,
            com.bluecubs.xinco.core.XincoVersion version,
@@ -35,6 +38,7 @@ public class XincoCoreLog  implements java.io.Serializable {
            int xinco_core_user_id) {
            this.id = id;
            this.op_code = op_code;
+           this.changerID = changerID;
            this.op_datetime = op_datetime;
            this.op_description = op_description;
            this.version = version;
@@ -80,6 +84,26 @@ public class XincoCoreLog  implements java.io.Serializable {
      */
     public void setOp_code(int op_code) {
         this.op_code = op_code;
+    }
+
+
+    /**
+     * Gets the changerID value for this XincoCoreLog.
+     * 
+     * @return changerID
+     */
+    public int getChangerID() {
+        return changerID;
+    }
+
+
+    /**
+     * Sets the changerID value for this XincoCoreLog.
+     * 
+     * @param changerID
+     */
+    public void setChangerID(int changerID) {
+        this.changerID = changerID;
     }
 
 
@@ -196,6 +220,7 @@ public class XincoCoreLog  implements java.io.Serializable {
         _equals = true && 
             this.id == other.getId() &&
             this.op_code == other.getOp_code() &&
+            this.changerID == other.getChangerID() &&
             ((this.op_datetime==null && other.getOp_datetime()==null) || 
              (this.op_datetime!=null &&
               this.op_datetime.equals(other.getOp_datetime()))) &&
@@ -220,6 +245,7 @@ public class XincoCoreLog  implements java.io.Serializable {
         int _hashCode = 1;
         _hashCode += getId();
         _hashCode += getOp_code();
+        _hashCode += getChangerID();
         if (getOp_datetime() != null) {
             _hashCode += getOp_datetime().hashCode();
         }
@@ -250,6 +276,12 @@ public class XincoCoreLog  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("op_code");
         elemField.setXmlName(new javax.xml.namespace.QName("", "op_code"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("changerID");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "changerID"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
