@@ -1,5 +1,5 @@
 alter table xinco_core_user add `attempts` int(10) unsigned zerofill NOT NULL;
-alter table xinco_core_user add `last_modified` timestamp NOT NULL;
+alter table xinco_core_user add `last_modified` Date NOT NULL;
 
 --
 -- Table structure for audit tables 
