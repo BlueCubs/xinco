@@ -10,6 +10,8 @@ package com.bluecubs.xinco.core;
 public class XincoCoreACE  implements java.io.Serializable {
     private boolean admin_permission;
 
+    private int changerID;
+
     private boolean execute_permission;
 
     private int xinco_core_data_id;
@@ -31,6 +33,7 @@ public class XincoCoreACE  implements java.io.Serializable {
 
     public XincoCoreACE(
            boolean admin_permission,
+           int changerID,
            boolean execute_permission,
            int xinco_core_data_id,
            int xinco_core_group_id,
@@ -40,6 +43,7 @@ public class XincoCoreACE  implements java.io.Serializable {
            boolean read_permission,
            boolean write_permission) {
            this.admin_permission = admin_permission;
+           this.changerID = changerID;
            this.execute_permission = execute_permission;
            this.xinco_core_data_id = xinco_core_data_id;
            this.xinco_core_group_id = xinco_core_group_id;
@@ -68,6 +72,26 @@ public class XincoCoreACE  implements java.io.Serializable {
      */
     public void setAdmin_permission(boolean admin_permission) {
         this.admin_permission = admin_permission;
+    }
+
+
+    /**
+     * Gets the changerID value for this XincoCoreACE.
+     * 
+     * @return changerID
+     */
+    public int getChangerID() {
+        return changerID;
+    }
+
+
+    /**
+     * Sets the changerID value for this XincoCoreACE.
+     * 
+     * @param changerID
+     */
+    public void setChangerID(int changerID) {
+        this.changerID = changerID;
     }
 
 
@@ -243,6 +267,7 @@ public class XincoCoreACE  implements java.io.Serializable {
         boolean _equals;
         _equals = true && 
             this.admin_permission == other.isAdmin_permission() &&
+            this.changerID == other.getChangerID() &&
             this.execute_permission == other.isExecute_permission() &&
             this.xinco_core_data_id == other.getXinco_core_data_id() &&
             this.xinco_core_group_id == other.getXinco_core_group_id() &&
@@ -263,6 +288,7 @@ public class XincoCoreACE  implements java.io.Serializable {
         __hashCodeCalc = true;
         int _hashCode = 1;
         _hashCode += (isAdmin_permission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += getChangerID();
         _hashCode += (isExecute_permission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += getXinco_core_data_id();
         _hashCode += getXinco_core_group_id();
@@ -285,6 +311,12 @@ public class XincoCoreACE  implements java.io.Serializable {
         elemField.setFieldName("admin_permission");
         elemField.setXmlName(new javax.xml.namespace.QName("", "admin_permission"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("changerID");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "changerID"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();

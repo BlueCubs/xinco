@@ -540,6 +540,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 //moving node requires write permission to target node
                 if (in0.getXinco_core_node_id() != node.getXinco_core_node_id()) {
                     parent_node = new XincoCoreNodeServer(in0.getXinco_core_node_id(), dbm);
+                    parent_node.setChangerID(in1.getId());
                     parent_ace = XincoCoreACEServer.checkAccess(user, parent_node.getXinco_core_acl());
                 }
                 ace = XincoCoreACEServer.checkAccess(user, node.getXinco_core_acl());
@@ -547,6 +548,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             if ((ace.isWrite_permission()) && (parent_ace.isWrite_permission())) {
                 //update information
                 node.setXinco_core_node_id(in0.getXinco_core_node_id());
+                node.setChangerID(in1.getId());
                 node.setDesignation(in0.getDesignation());
                 node.setXinco_core_language(in0.getXinco_core_language());
                 node.setStatus_number(in0.getStatus_number());
@@ -611,6 +613,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 //moving node requires write permission to target node
                 if (in0.getXinco_core_node_id() != data.getXinco_core_node_id()) {
                     parent_node = new XincoCoreNodeServer(in0.getXinco_core_node_id(), dbm);
+                    parent_node.setChangerID(in1.getId());
                     parent_ace = XincoCoreACEServer.checkAccess(user, parent_node.getXinco_core_acl());
                 }
                 ace = XincoCoreACEServer.checkAccess(user, data.getXinco_core_acl());
@@ -618,6 +621,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             if ((ace.isWrite_permission()) && (parent_ace.isWrite_permission())) {
                 //update information
                 data.setXinco_core_node_id(in0.getXinco_core_node_id());
+                data.setChangerID(in1.getId());
                 data.setDesignation(in0.getDesignation());
                 data.setXinco_core_language(in0.getXinco_core_language());
                 data.setXinco_core_data_type(in0.getXinco_core_data_type());
@@ -680,10 +684,12 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
             if (in0.getXinco_core_node_id() > 0) {
                 node = new XincoCoreNodeServer(in0.getXinco_core_node_id(), dbm);
+                node.setChangerID(in1.getId());
                 ace = XincoCoreACEServer.checkAccess(user, node.getXinco_core_acl());
             }
             if (in0.getXinco_core_data_id() > 0) {
                 data = new XincoCoreDataServer(in0.getXinco_core_data_id(), dbm);
+                data.setChangerID(in1.getId());
                 ace = XincoCoreACEServer.checkAccess(user, data.getXinco_core_acl());
             }
             if (ace.isAdmin_permission()) {
@@ -695,6 +701,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 }
                 //update ACE
                 newace.setXinco_core_node_id(in0.getXinco_core_node_id());
+                newace.setChangerID(in1.getId());
                 newace.setXinco_core_data_id(in0.getXinco_core_data_id());
                 newace.setXinco_core_user_id(in0.getXinco_core_user_id());
                 newace.setXinco_core_group_id(in0.getXinco_core_group_id());
@@ -724,10 +731,12 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
             if (in0.getXinco_core_node_id() > 0) {
                 node = new XincoCoreNodeServer(in0.getXinco_core_node_id(), dbm);
+                node.setChangerID(in1.getId());
                 ace = XincoCoreACEServer.checkAccess(user, node.getXinco_core_acl());
             }
             if (in0.getXinco_core_data_id() > 0) {
                 data = new XincoCoreDataServer(in0.getXinco_core_data_id(), dbm);
+                data.setChangerID(in1.getId());
                 ace = XincoCoreACEServer.checkAccess(user, data.getXinco_core_acl());
             }
             if (ace.isAdmin_permission()) {
@@ -756,6 +765,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             }
             //update log
             log.setXinco_core_data_id(in0.getXinco_core_data_id());
+            log.setChangerID(in1.getId());
             log.setXinco_core_user_id(in0.getXinco_core_user_id());
             log.setOp_code(in0.getOp_code());
             log.setOp_description(in0.getOp_description());

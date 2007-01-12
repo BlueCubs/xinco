@@ -10,6 +10,8 @@ package com.bluecubs.xinco.core;
 public class XincoCoreNode  implements java.io.Serializable {
     private java.lang.String designation;
 
+    private int changerID;
+
     private java.util.Vector xinco_core_acl;
 
     private java.util.Vector xinco_core_data;
@@ -29,6 +31,7 @@ public class XincoCoreNode  implements java.io.Serializable {
 
     public XincoCoreNode(
            java.lang.String designation,
+           int changerID,
            java.util.Vector xinco_core_acl,
            java.util.Vector xinco_core_data,
            com.bluecubs.xinco.core.XincoCoreLanguage xinco_core_language,
@@ -37,6 +40,7 @@ public class XincoCoreNode  implements java.io.Serializable {
            int id,
            int status_number) {
            this.designation = designation;
+           this.changerID = changerID;
            this.xinco_core_acl = xinco_core_acl;
            this.xinco_core_data = xinco_core_data;
            this.xinco_core_language = xinco_core_language;
@@ -64,6 +68,26 @@ public class XincoCoreNode  implements java.io.Serializable {
      */
     public void setDesignation(java.lang.String designation) {
         this.designation = designation;
+    }
+
+
+    /**
+     * Gets the changerID value for this XincoCoreNode.
+     * 
+     * @return changerID
+     */
+    public int getChangerID() {
+        return changerID;
+    }
+
+
+    /**
+     * Sets the changerID value for this XincoCoreNode.
+     * 
+     * @param changerID
+     */
+    public void setChangerID(int changerID) {
+        this.changerID = changerID;
     }
 
 
@@ -221,6 +245,7 @@ public class XincoCoreNode  implements java.io.Serializable {
             ((this.designation==null && other.getDesignation()==null) || 
              (this.designation!=null &&
               this.designation.equals(other.getDesignation()))) &&
+            this.changerID == other.getChangerID() &&
             ((this.xinco_core_acl==null && other.getXinco_core_acl()==null) || 
              (this.xinco_core_acl!=null &&
               this.xinco_core_acl.equals(other.getXinco_core_acl()))) &&
@@ -250,6 +275,7 @@ public class XincoCoreNode  implements java.io.Serializable {
         if (getDesignation() != null) {
             _hashCode += getDesignation().hashCode();
         }
+        _hashCode += getChangerID();
         if (getXinco_core_acl() != null) {
             _hashCode += getXinco_core_acl().hashCode();
         }
@@ -280,6 +306,12 @@ public class XincoCoreNode  implements java.io.Serializable {
         elemField.setXmlName(new javax.xml.namespace.QName("", "designation"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("changerID");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "changerID"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("xinco_core_acl");

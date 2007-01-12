@@ -34,6 +34,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <complexType name="XincoCoreLanguage">
     <sequence>
      <element name="designation" nillable="true" type="xsd:string"/>
+     <element name="changerID" type="xsd:int"/>
      <element name="id" type="xsd:int"/>
      <element name="sign" nillable="true" type="xsd:string"/>
     </sequence>
@@ -41,6 +42,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <complexType name="XincoCoreNode">
     <sequence>
      <element name="designation" nillable="true" type="xsd:string"/>
+     <element name="changerID" type="xsd:int"/>
      <element name="xinco_core_acl" nillable="true" type="apachesoap:Vector"/>
      <element name="xinco_core_data" nillable="true" type="apachesoap:Vector"/>
      <element name="xinco_core_language" nillable="true" type="tns2:XincoCoreLanguage"/>
@@ -54,6 +56,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <sequence>
      <element name="designation" nillable="true" type="xsd:string"/>
      <element name="id" type="xsd:int"/>
+     <element name="changerID" type="xsd:int"/>
      <element name="description" nillable="true" type="xsd:string"/>
      <element name="xinco_core_data_type_attributes" nillable="true" type="apachesoap:Vector"/>
     </sequence>
@@ -62,6 +65,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <sequence>
      <element name="designation" nillable="true" type="xsd:string"/>
      <element name="xinco_core_acl" nillable="true" type="apachesoap:Vector"/>
+     <element name="changerID" type="xsd:int"/>
      <element name="xinco_core_data_type" nillable="true" type="tns2:XincoCoreDataType"/>
      <element name="xinco_core_language" nillable="true" type="tns2:XincoCoreLanguage"/>
      <element name="xinco_core_node_id" type="xsd:int"/>
@@ -74,6 +78,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <complexType name="XincoCoreACE">
     <sequence>
      <element name="admin_permission" type="xsd:boolean"/>
+     <element name="changerID" type="xsd:int"/>
      <element name="execute_permission" type="xsd:boolean"/>
      <element name="xinco_core_data_id" type="xsd:int"/>
      <element name="xinco_core_group_id" type="xsd:int"/>
@@ -88,6 +93,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <sequence>
      <element name="id" type="xsd:int"/>
      <element name="op_code" type="xsd:int"/>
+     <element name="changerID" type="xsd:int"/>
      <element name="op_datetime" nillable="true" type="xsd:dateTime"/>
      <element name="op_description" nillable="true" type="xsd:string"/>
      <element name="version" nillable="true" type="tns2:XincoVersion"/>
@@ -98,6 +104,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <complexType name="XincoCoreGroup">
     <sequence>
      <element name="designation" nillable="true" type="xsd:string"/>
+     <element name="changerID" type="xsd:int"/>
      <element name="id" type="xsd:int"/>
      <element name="status_number" type="xsd:int"/>
     </sequence>
@@ -105,6 +112,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <complexType name="XincoCoreDataTypeAttribute">
     <sequence>
      <element name="designation" nillable="true" type="xsd:string"/>
+     <element name="changerID" type="xsd:int"/>
      <element name="attribute_id" type="xsd:int"/>
      <element name="data_type" nillable="true" type="xsd:string"/>
      <element name="size" type="xsd:int"/>
@@ -1153,7 +1161,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       <wsdl:port binding="impl:XincoSoapBinding" name="Xinco">
 
-         <wsdlsoap:address location="http://localhost:8080/xinco/services/Xinco"/>
+         <wsdlsoap:address location="http://localhost:8084/xinco/services/Xinco"/>
 
       </wsdl:port>
 

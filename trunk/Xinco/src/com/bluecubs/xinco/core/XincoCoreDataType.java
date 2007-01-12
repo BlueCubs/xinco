@@ -12,6 +12,8 @@ public class XincoCoreDataType  implements java.io.Serializable {
 
     private int id;
 
+    private int changerID;
+
     private java.lang.String description;
 
     private java.util.Vector xinco_core_data_type_attributes;
@@ -22,10 +24,12 @@ public class XincoCoreDataType  implements java.io.Serializable {
     public XincoCoreDataType(
            java.lang.String designation,
            int id,
+           int changerID,
            java.lang.String description,
            java.util.Vector xinco_core_data_type_attributes) {
            this.designation = designation;
            this.id = id;
+           this.changerID = changerID;
            this.description = description;
            this.xinco_core_data_type_attributes = xinco_core_data_type_attributes;
     }
@@ -68,6 +72,26 @@ public class XincoCoreDataType  implements java.io.Serializable {
      */
     public void setId(int id) {
         this.id = id;
+    }
+
+
+    /**
+     * Gets the changerID value for this XincoCoreDataType.
+     * 
+     * @return changerID
+     */
+    public int getChangerID() {
+        return changerID;
+    }
+
+
+    /**
+     * Sets the changerID value for this XincoCoreDataType.
+     * 
+     * @param changerID
+     */
+    public void setChangerID(int changerID) {
+        this.changerID = changerID;
     }
 
 
@@ -126,6 +150,7 @@ public class XincoCoreDataType  implements java.io.Serializable {
              (this.designation!=null &&
               this.designation.equals(other.getDesignation()))) &&
             this.id == other.getId() &&
+            this.changerID == other.getChangerID() &&
             ((this.description==null && other.getDescription()==null) || 
              (this.description!=null &&
               this.description.equals(other.getDescription()))) &&
@@ -147,6 +172,7 @@ public class XincoCoreDataType  implements java.io.Serializable {
             _hashCode += getDesignation().hashCode();
         }
         _hashCode += getId();
+        _hashCode += getChangerID();
         if (getDescription() != null) {
             _hashCode += getDescription().hashCode();
         }
@@ -172,6 +198,12 @@ public class XincoCoreDataType  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("id");
         elemField.setXmlName(new javax.xml.namespace.QName("", "id"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("changerID");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "changerID"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);

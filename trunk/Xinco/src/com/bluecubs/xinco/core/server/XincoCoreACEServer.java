@@ -148,7 +148,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
             if (getId() > 0) {
                 Statement stmt = DBM.con.createStatement();
                 audit.updateAuditTrail("xinco_core_ace",new String [] {"xinco_core_user_id ="+getId()},
-                        DBM,"window.acl",getXinco_core_user_id());
+                        DBM,"window.acl",this.getChangerID());
                 stmt.executeUpdate("UPDATE xinco_core_ace SET xinco_core_user_id=" + xcuid +
                         ", xinco_core_group_id=" + xcgid + ", xinco_core_node_id=" + xcnid +
                         ", xinco_core_data_id=" + xcdid + ", read_permission=" + rp +

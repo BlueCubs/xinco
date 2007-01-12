@@ -10,6 +10,8 @@ package com.bluecubs.xinco.core;
 public class XincoCoreLanguage  implements java.io.Serializable {
     private java.lang.String designation;
 
+    private int changerID;
+
     private int id;
 
     private java.lang.String sign;
@@ -19,9 +21,11 @@ public class XincoCoreLanguage  implements java.io.Serializable {
 
     public XincoCoreLanguage(
            java.lang.String designation,
+           int changerID,
            int id,
            java.lang.String sign) {
            this.designation = designation;
+           this.changerID = changerID;
            this.id = id;
            this.sign = sign;
     }
@@ -44,6 +48,26 @@ public class XincoCoreLanguage  implements java.io.Serializable {
      */
     public void setDesignation(java.lang.String designation) {
         this.designation = designation;
+    }
+
+
+    /**
+     * Gets the changerID value for this XincoCoreLanguage.
+     * 
+     * @return changerID
+     */
+    public int getChangerID() {
+        return changerID;
+    }
+
+
+    /**
+     * Sets the changerID value for this XincoCoreLanguage.
+     * 
+     * @param changerID
+     */
+    public void setChangerID(int changerID) {
+        this.changerID = changerID;
     }
 
 
@@ -101,6 +125,7 @@ public class XincoCoreLanguage  implements java.io.Serializable {
             ((this.designation==null && other.getDesignation()==null) || 
              (this.designation!=null &&
               this.designation.equals(other.getDesignation()))) &&
+            this.changerID == other.getChangerID() &&
             this.id == other.getId() &&
             ((this.sign==null && other.getSign()==null) || 
              (this.sign!=null &&
@@ -119,6 +144,7 @@ public class XincoCoreLanguage  implements java.io.Serializable {
         if (getDesignation() != null) {
             _hashCode += getDesignation().hashCode();
         }
+        _hashCode += getChangerID();
         _hashCode += getId();
         if (getSign() != null) {
             _hashCode += getSign().hashCode();
@@ -138,6 +164,12 @@ public class XincoCoreLanguage  implements java.io.Serializable {
         elemField.setXmlName(new javax.xml.namespace.QName("", "designation"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("changerID");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "changerID"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("id");
