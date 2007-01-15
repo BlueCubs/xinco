@@ -74,8 +74,8 @@ CREATE TABLE xinco_core_user (
 )
 TYPE=InnoDB;
 
-INSERT INTO xinco_core_user VALUES (1, 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', 1, 0, '2006-01-01'); 
-INSERT INTO xinco_core_user VALUES (2, 'user', MD5('user'), 'User', 'Default', 'user@xinco.org', 1, 0, '2006-01-01');
+INSERT INTO xinco_core_user VALUES (1, 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', 1, 0, now()); 
+INSERT INTO xinco_core_user VALUES (2, 'user', MD5('user'), 'User', 'Default', 'user@xinco.org', 1, 0, now());
 
 
 CREATE TABLE xinco_core_data_type (
