@@ -524,7 +524,7 @@
 </INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="1040" Tablename="xinco_core_user" PrevTableName="Table_05" XPos="1400" YPos="680" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_core_user VALUES (1, \aadmin\a, MD5(\aadmin\a), \aAdministrator\a, \aXinco\a, \aadmin@xinco.org\a, 1, 0, \a2006-01-01\a); \nINSERT INTO xinco_core_user VALUES (2, \auser\a, MD5(\auser\a), \aUser\a, \aDefault\a, \auser@xinco.org\a, 1, 0, \a2006-01-01\a);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="Status: \nopen = 1 \nlocked = 2 \n" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="6" >
+<TABLE ID="1040" Tablename="xinco_core_user" PrevTableName="Table_05" XPos="1400" YPos="680" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_core_user VALUES (1, \aadmin\a, MD5(\aadmin\a), \aAdministrator\a, \aXinco\a, \aadmin@xinco.org\a, 1, 0, now()); \nINSERT INTO xinco_core_user VALUES (2, \auser\a, MD5(\auser\a), \aUser\a, \aDefault\a, \auser@xinco.org\a, 1, 0, now());\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="Status: \nopen = 1 \nlocked = 2 \n" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="6" >
 <COLUMNS>
 <COLUMN ID="1042" ColName="id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
 <OPTIONSELECTED>
