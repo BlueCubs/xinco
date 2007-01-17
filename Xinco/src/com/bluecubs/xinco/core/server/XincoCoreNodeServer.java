@@ -154,7 +154,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
     }
     
     //delete from db
-    public void deleteFromDB(boolean delete_this, XincoDBManager DBM) throws XincoException {
+    public void deleteFromDB(boolean delete_this, XincoDBManager DBM,int userID) throws XincoException {
         
         int i=0;
         
@@ -167,10 +167,12 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             fillXincoCoreData(DBM);
             //start recursive deletion
             for (i=0;i<getXinco_core_nodes().size();i++) {
-                ((XincoCoreNodeServer)getXinco_core_nodes().elementAt(i)).deleteFromDB(true, DBM);
+                ((XincoCoreNodeServer)getXinco_core_nodes().elementAt(i)).deleteFromDB(true, DBM,userID);
             }
             for (i=0;i<getXinco_core_data().size();i++) {
                 XincoIndexer.removeXincoCoreData((XincoCoreDataServer)getXinco_core_data().elementAt(i), DBM);
+                ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).removeFromDB(DBM,userID,
+                        ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).getId());
                 ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).deleteFromDB(DBM);
             }
             if (delete_this) {

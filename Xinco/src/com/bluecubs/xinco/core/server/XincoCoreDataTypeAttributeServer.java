@@ -116,7 +116,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     }
     
     //delete from db
-    public int deleteFromDB(XincoCoreDataTypeAttribute attrCDTA, XincoDBManager DBM) throws XincoException {
+    public static int deleteFromDB(XincoCoreDataTypeAttribute attrCDTA, XincoDBManager DBM, int userID) throws XincoException {
         
         try {
             
@@ -127,7 +127,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             audit.updateAuditTrail("xinco_add_attribute",new String [] {"xinco_add_attribute.attribute_id=" + attrCDTA.getAttribute_id(),
             "xinco_add_attribute.xinco_core_data_id IN (SELECT id FROM xinco_core_data WHERE xinco_core_data.xinco_core_data_type_id=" +
                     attrCDTA.getXinco_core_data_type_id()+ ")"},
-                    DBM,"audit.general.delete",this.getChangerID());
+                    DBM,"audit.general.delete",userID);
             stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_add_attribute.attribute_id=" +
                     attrCDTA.getAttribute_id() + " AND xinco_add_attribute.xinco_core_data_id IN (SELECT id FROM xinco_core_data WHERE xinco_core_data.xinco_core_data_type_id=" +
                     attrCDTA.getXinco_core_data_type_id() + ")");
@@ -135,7 +135,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             
             stmt = DBM.con.createStatement();
             audit.updateAuditTrail("xinco_core_data_type_attribute",new String [] {"xinco_core_data_type_id=" + attrCDTA.getXinco_core_data_type_id(), "attribute_id=" + attrCDTA.getAttribute_id()},
-                        DBM,"audit.general.delete",this.getChangerID());
+                        DBM,"audit.general.delete",userID);
             stmt.executeUpdate("DELETE FROM xinco_core_data_type_attribute WHERE xinco_core_data_type_id=" + attrCDTA.getXinco_core_data_type_id() + " AND attribute_id=" + attrCDTA.getAttribute_id());
             stmt.close();
             

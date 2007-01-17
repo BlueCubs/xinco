@@ -119,7 +119,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     }
     
     //delete from db
-    public int deleteFromDB(XincoCoreLanguage attrCL, XincoDBManager DBM) throws XincoException {
+    public static int deleteFromDB(XincoCoreLanguage attrCL, XincoDBManager DBM,int userID) throws XincoException {
         
         try {
             
@@ -128,7 +128,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             stmt = DBM.con.createStatement();
             XincoCoreAuditServer audit= new XincoCoreAuditServer();
             audit.updateAuditTrail("xinco_core_language",new String [] {"id ="+attrCL.getId()},
-                    DBM,"audit.general.delete",this.getChangerID());
+                    DBM,"audit.general.delete",userID);
             stmt.executeUpdate("DELETE FROM xinco_core_language WHERE id=" + attrCL.getId());
             stmt.close();
             
