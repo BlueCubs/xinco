@@ -50,6 +50,7 @@ INSERT INTO xinco_id VALUES ('xinco_core_node', 1000);
 INSERT INTO xinco_id VALUES ('xinco_core_data', 1000);  
 INSERT INTO xinco_id VALUES ('xinco_core_ace', 1000);   
 INSERT INTO xinco_id VALUES ('xinco_core_log', 1000);   
+INSERT INTO xinco_id VALUES ('xinco_core_user_modified_record', 0);  
 
 
 -- ------------------------------------------------------------
@@ -66,7 +67,7 @@ CREATE TABLE xinco_core_user (
   firstname VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL,
   status_number INTEGER UNSIGNED NOT NULL,
-  attempts INTEGER UNSIGNED NOT NULL,
+  attempts INTEGER UNSIGNED NOT NULL DEFAULT 0,
   last_modified DATE NOT NULL,
   PRIMARY KEY(id),
   INDEX xinco_core_user_index_username(username),

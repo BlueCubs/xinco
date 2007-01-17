@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="yes" ?>
 <DBMODEL Version="4.0">
 <SETTINGS>
-<GLOBALSETTINGS ModelName="xinco_main_DBD4" IDModel="0" IDVersion="0" VersionStr="1.0.0.0" Comments="" UseVersionHistroy="1" AutoIncVersion="1" DatabaseType="MySQL" ZoomFac="80.00" XPos="985" YPos="192" DefaultDataType="5" DefaultTablePrefix="0" DefSaveDBConn="" DefSyncDBConn="xinco" DefQueryDBConn="" Printer="PDF-Datei" HPageCount="4.059464816650148" PageAspectRatio="1.436398386069229" PageOrientation="1" PageFormat="A4 (210x297 mm, 8.26x11.7 inches)" SelectedPages="0;1;5" UsePositionGrid="1" PositionGridX="20" PositionGridY="20" TableNameInRefs="1" DefaultTableType="1" ActivateRefDefForNewRelations="1" FKPrefix="" FKPostfix="" CreateFKRefDefIndex="1" DBQuoteCharacter="`" CreateSQLforLinkedObjects="0" DefModelFont="Tahoma" CanvasWidth="4096" CanvasHeight="2842" />
+<GLOBALSETTINGS ModelName="xinco_main_DBD4" IDModel="0" IDVersion="0" VersionStr="1.0.0.0" Comments="" UseVersionHistroy="1" AutoIncVersion="1" DatabaseType="MySQL" ZoomFac="80.00" XPos="985" YPos="144" DefaultDataType="5" DefaultTablePrefix="0" DefSaveDBConn="" DefSyncDBConn="xinco" DefQueryDBConn="" Printer="PDF-Datei" HPageCount="4.059464816650148" PageAspectRatio="1.436398386069229" PageOrientation="1" PageFormat="A4 (210x297 mm, 8.26x11.7 inches)" SelectedPages="0;1;5" UsePositionGrid="1" PositionGridX="20" PositionGridY="20" TableNameInRefs="1" DefaultTableType="1" ActivateRefDefForNewRelations="1" FKPrefix="" FKPostfix="" CreateFKRefDefIndex="1" DBQuoteCharacter="`" CreateSQLforLinkedObjects="0" DefModelFont="Tahoma" CanvasWidth="4096" CanvasHeight="2842" />
 <DATATYPEGROUPS>
 <DATATYPEGROUP Name="Numeric Types" Icon="1" />
 <DATATYPEGROUP Name="Date and Time Types" Icon="2" />
@@ -563,10 +563,10 @@
 <OPTIONSELECT Value="0" />
 </OPTIONSELECTED>
 </COLUMN>
-<COLUMN ID="1567" ColName="attempts" PrevColName="" Pos="7" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<COLUMN ID="1567" ColName="attempts" PrevColName="" Pos="7" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="0" Comments="">
 <OPTIONSELECTED>
 <OPTIONSELECT Value="1" />
-<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
 </OPTIONSELECTED>
 </COLUMN>
 <COLUMN ID="1568" ColName="last_modified" PrevColName="" Pos="8" idDatatype="14" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
@@ -683,7 +683,7 @@
 </INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="1181" Tablename="xinco_id" PrevTableName="Table_10" XPos="220" YPos="100" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_id VALUES (\axinco_core_language\a, 1000); \nINSERT INTO xinco_id VALUES (\axinco_core_data_type\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_user\a, 1000);  \nINSERT INTO xinco_id VALUES (\axinco_core_group\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_node\a, 1000); \nINSERT INTO xinco_id VALUES (\axinco_core_data\a, 1000);  \nINSERT INTO xinco_id VALUES (\axinco_core_ace\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_log\a, 1000);   \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="9" >
+<TABLE ID="1181" Tablename="xinco_id" PrevTableName="Table_10" XPos="220" YPos="100" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_id VALUES (\axinco_core_language\a, 1000); \nINSERT INTO xinco_id VALUES (\axinco_core_data_type\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_user\a, 1000);  \nINSERT INTO xinco_id VALUES (\axinco_core_group\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_node\a, 1000); \nINSERT INTO xinco_id VALUES (\axinco_core_data\a, 1000);  \nINSERT INTO xinco_id VALUES (\axinco_core_ace\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_log\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_user_modified_record\a, 0);  \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="9" >
 <COLUMNS>
 <COLUMN ID="1183" ColName="tablename" PrevColName="" Pos="0" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
 <OPTIONSELECTED>
