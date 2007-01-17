@@ -68,6 +68,7 @@ public class XincoAdminServlet extends HttpServlet {
     private ResourceBundle rb;
     private ResourceBundle settings;
     private String credentialID="";
+    private XincoCoreUserServer login_user=null;
     /** Initializes the servlet.
      */
     public void init(ServletConfig config) throws ServletException {
@@ -96,7 +97,7 @@ public class XincoAdminServlet extends HttpServlet {
         XincoDBManager dbm;
         String global_error_message = "";
         int i = 0, j = 0;
-        XincoCoreUserServer temp_user=null,login_user=null;
+        XincoCoreUserServer temp_user=null;
         XincoCoreGroupServer temp_group;
         XincoCoreLanguageServer temp_language;
         XincoCoreDataTypeAttributeServer temp_attribute;
@@ -505,7 +506,7 @@ public class XincoAdminServlet extends HttpServlet {
         if (request.getParameter("DialogAdminLanguagesDelete") != null) {
             try {
                 temp_language = new XincoCoreLanguageServer(Integer.parseInt(request.getParameter("DialogAdminLanguagesDelete")), dbm);
-                XincoCoreLanguageServer.deleteFromDB(temp_language, dbm);
+                XincoCoreLanguageServer.deleteFromDB(temp_language, dbm,login_user.getId());
             } catch (Exception e) {
             }
         }
@@ -530,14 +531,14 @@ public class XincoAdminServlet extends HttpServlet {
         if (request.getParameter("DialogEditAttributesRemoveAttributeId") != null) {
             try {
                 temp_attribute = new XincoCoreDataTypeAttributeServer(current_datatype_selection, Integer.parseInt(request.getParameter("DialogEditAttributesRemoveAttributeId")), dbm);
-                XincoCoreDataTypeAttributeServer.deleteFromDB(temp_attribute, dbm);
+                XincoCoreDataTypeAttributeServer.deleteFromDB(temp_attribute, dbm,login_user.getId());
             } catch (Exception e) {
             }
         }
         //empty trash
         if (request.getParameter("MenuMainEmptyTrash") != null) {
             try {
-                (new XincoCoreNodeServer(2, dbm)).deleteFromDB(false, dbm);
+                (new XincoCoreNodeServer(2, dbm)).deleteFromDB(false, dbm,login_user.getId());
             } catch (Exception e) {
             }
         }
