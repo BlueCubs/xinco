@@ -165,31 +165,41 @@ public class XincoCoreDataServer extends XincoCoreData {
         
     }
     
+    public static void removeFromDB(XincoDBManager DBM,int userID,int id)throws XincoException{
+        try{
+        Statement stmt;
+        XincoCoreAuditServer audit= new XincoCoreAuditServer();
+        audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+id},
+                DBM,"audit.general.delete",userID);
+        stmt = DBM.con.createStatement();
+        stmt.executeUpdate("DELETE FROM xinco_core_log WHERE xinco_core_data_id=" + id);
+        stmt.close();
+        stmt = DBM.con.createStatement();
+        audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+id},
+                DBM,"audit.general.delete",userID);
+        stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE xinco_core_data_id=" + id);
+        stmt.close();
+        stmt = DBM.con.createStatement();
+        audit.updateAuditTrail("xinco_add_attribute",new String [] {"id ="+id},
+                DBM,"audit.general.delete",userID);
+        stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_core_data_id=" + id);
+        stmt.close();
+        }catch (Exception e) {
+            try {
+                DBM.con.rollback();
+            } catch (Exception erollback) {
+            }
+            throw new XincoException();
+        }
+    }
+    
     //delete from db
     public void deleteFromDB(XincoDBManager DBM) throws XincoException {
         
         int i=0;
         
         try {
-            
             Statement stmt;
-            
-            XincoCoreAuditServer audit= new XincoCoreAuditServer();
-            audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+getId()},
-                    DBM,"audit.general.delete",this.getChangerID());
-            stmt = DBM.con.createStatement();
-            stmt.executeUpdate("DELETE FROM xinco_core_log WHERE xinco_core_data_id=" + getId());
-            stmt.close();
-            stmt = DBM.con.createStatement();
-            audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+getId()},
-                    DBM,"audit.general.delete",this.getChangerID());
-            stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE xinco_core_data_id=" + getId());
-            stmt.close();
-            stmt = DBM.con.createStatement();
-            audit.updateAuditTrail("xinco_add_attribute",new String [] {"id ="+getId()},
-                    DBM,"audit.general.delete",this.getChangerID());
-            stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_core_data_id=" + getId());
-            stmt.close();
             //delete file / file = 1
             if (getXinco_core_data_type().getId() == 1) {
                 try {
