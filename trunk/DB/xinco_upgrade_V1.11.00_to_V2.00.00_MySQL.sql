@@ -1,5 +1,5 @@
-alter table xinco_core_user add `attempts` int(10) unsigned zerofill NOT NULL;
-alter table xinco_core_user add `last_modified` Date NOT NULL;
+ALTER TABLE xinco_core_user ADD attempts INTEGER UNSIGNED NOT NULL;
+ALTER TABLE xinco_core_user ADD last_modified DATE NOT NULL;
 
 --
 -- Table structure for audit tables 
@@ -172,6 +172,6 @@ CREATE TABLE xinco_core_user_modified_record (
 )
 TYPE=InnoDB;
 
-update xinco_core_user set last_modified = now();
+UPDATE xinco_core_user SET last_modified = now();
 
 
