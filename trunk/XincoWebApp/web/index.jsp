@@ -11,8 +11,17 @@
 <body>
 <center>
 <span class="text"><br><img src="blueCubs.gif" border="0"/>
-<br><span class="bigtext">xinco DMS - the Core of Information and Document Management</span><br><br>
-<%
+<br><span class="bigtext">xinco DMS - the Core of Information and Document Management</span>
+<br><br>
+
+<form name='language' action='menu.jsp'>
+
+<table border='0'>
+<tbody>
+<tr>
+<td class="text">Please choose a language:&nbsp;</td>
+<td class="text">
+    <%
     int i = 0;
     ResourceBundle lrb = null;
     String[] locales;
@@ -20,18 +29,32 @@
     //load locales
     lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
     locales = lrb.getString("AvailableLocales").split(",");
-    out.println("<form name='language' action='menu.jsp'>" +
-    "<table border='0'>" +
-    "<tbody><td>Please Choose a language</td><td>");
+    out.println("" +
+    "" +
+    "");
     out.println("<select name='list'>");
     for (i=0;i<locales.length;i++)
         out.println("<option value='"+locales[i]+"'>"+lrb.getString("Locale." + locales[i]) + "</option>");
-    out.println("</select></td></tbody></table><input type='submit' value='Submit' /></form>");
-    %></td>
-
+    out.println("</select>&nbsp;");
+    %>
+</td>
+<td class="text">
+<input type='submit' value='Submit' />
+</td>
+</tr>
 </table>
 
 </form>
+
+<br>
+<span class="text" style="font-size: 10px;">
+    <%
+    //load settings
+    ResourceBundle settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
+    out.println("[Version " + settings.getString("version.high") + "." + settings.getString("version.mid") + "." + settings.getString("version.low") + " " + settings.getString("version.postfix") + "]");
+    %>
+</span>
+
 </span>
 </center>
 </body>
