@@ -948,14 +948,15 @@ public class XincoExplorer extends JFrame {
      * @return void
      */
     private void initialize() {
+        ResourceBundle settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
         //init session
         xincoClientSession = new XincoClientSession();
         //set client version
         xincoClientVersion = new XincoVersion();
-        xincoClientVersion.setVersion_high(2);
-        xincoClientVersion.setVersion_mid(0);
-        xincoClientVersion.setVersion_low(0);
-        xincoClientVersion.setVersion_postfix("");
+        xincoClientVersion.setVersion_high(Integer.parseInt(settings.getString("version.high")));
+        xincoClientVersion.setVersion_mid(Integer.parseInt(settings.getString("version.mid")));
+        xincoClientVersion.setVersion_low(Integer.parseInt(settings.getString("version.low")));
+        xincoClientVersion.setVersion_postfix(settings.getString("version.postfix"));
         switchPLAF((String)xincoClientConfig.elementAt(1));
         this.setBounds(0, 0, (new Double(getToolkit().getScreenSize().getWidth())).intValue()-100,
                 (new Double(getToolkit().getScreenSize().getHeight())).intValue()-75);
@@ -3373,7 +3374,7 @@ public class XincoExplorer extends JFrame {
      */
     public void saveConfig() {
         try {
-            java.io.FileOutputStream fout = new java.io.FileOutputStream(System.getProperty("user.home")+"/xincoClientConfig.dat");
+            java.io.FileOutputStream fout = new java.io.FileOutputStream(System.getProperty("user.home")+System.getProperty("file.separator")+"xincoClientConfig.dat");
             java.io.ObjectOutputStream os = new java.io.ObjectOutputStream(fout);
             os.writeObject(xincoClientConfig);
             os.close();
@@ -3410,7 +3411,7 @@ public class XincoExplorer extends JFrame {
                 tmp_vector_old = null;
             }
             
-            fin = new FileInputStream(System.getProperty("user.home")+"/xincoClientConfig.dat");
+            fin = new FileInputStream(System.getProperty("user.home")+System.getProperty("file.separator")+"xincoClientConfig.dat");
             ois = new ObjectInputStream(fin);
             
             try {
