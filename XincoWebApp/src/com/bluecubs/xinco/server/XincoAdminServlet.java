@@ -630,7 +630,7 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<title>XincoAdmin</title>");
         out.println("<link rel=\"stylesheet\" href=\"xincostyle.css\" type=\"text/css\"/>");
         out.println("</head>");
-        out.println("<body>");
+        out.println("<body onload=\"document.forms[0].elements[0].focus();\">");
         out.println("<center>");
         out.println("<span class=\"text\">");
         
