@@ -1,4 +1,4 @@
-ALTER TABLE xinco_core_user ADD attempts INTEGER UNSIGNED NOT NULL;
+ALTER TABLE xinco_core_user ADD attempts INTEGER UNSIGNED NOT NULL DEFAULT 0;
 ALTER TABLE xinco_core_user ADD last_modified DATE NOT NULL;
 
 --
@@ -174,4 +174,4 @@ TYPE=InnoDB;
 
 UPDATE xinco_core_user SET last_modified = now();
 
-
+INSERT INTO xinco_id VALUES ('xinco_core_user_modified_record', 0);  
