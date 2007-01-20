@@ -34,8 +34,8 @@ CREATE TABLE xinco_core_user_t (
   firstname VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL,
   status_number INTEGER(10) UNSIGNED NOT NULL,
-  attempts INTEGER(10) UNSIGNED ZEROFILL NOT NULL,
-  last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  attempts INTEGER(10) UNSIGNED NOT NULL,
+  last_modified DATE NOT NULL,
   PRIMARY KEY(record_id)
 )
 TYPE=InnoDB;
