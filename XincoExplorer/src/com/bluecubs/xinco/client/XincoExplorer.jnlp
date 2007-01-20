@@ -33,7 +33,7 @@
     <jar href="jaxrpc.jar"/>
     <jar href="mail.jar"/>
     <jar href="saaj.jar"/>
-    <jar href="swing-lXincoExplorer.jnlp requested for wsdl4.jarayout-1.0.jar"/>
+    <jar href="swing-layout-1.0.jar"/>
     <jar href="wsdl4.jar"/>
     <jar href="xercesImpl.jar"/>
     <jar href="Xinco.jar"/>
