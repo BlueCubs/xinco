@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!-- #################### xinco DMS Configuration for Tomcat >=5.5 ####################-->
+
 <Context docBase="xinco" path="/xinco" reloadable="true">
+
   <!-- #################### PLEASE CONFIGURE #############################-->
   <!-- ### Params: username, password, url, driverClassName            ###-->
   <!-- ###################################################################-->
@@ -18,12 +21,14 @@
   type="javax.sql.DataSource" 
   url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true" username="root" password=""/>
   <!-- #################### ################ ####################-->
+
   <ResourceParams name="jdbc/XincoDB">
     <parameter>
       <name>factory</name>
       <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
     </parameter>
   </ResourceParams>
+
   <!-- #################### PLEASE CONFIGURE ####################-->
   <!-- Full Path where xinco saves files:                        -->
   <Environment name="xinco/FileRepositoryPath" override="false" type="java.lang.String" value="C:\Temp\xinco\file_repository\"/>
@@ -34,6 +39,7 @@
   <!-- Time frame for repeatingly running the archiver (milliseconds): -->
   <Environment name="xinco/FileArchivePeriod" override="false" type="java.lang.Long" value="14400000"/>
   <!-- #################### ################ ####################-->
+
   <!-- ################# Optional Configuration #################-->
   <!-- File Extensions of Documents to be indexed with a special Indexer: (seperate with ;) -->
   <Environment name="xinco/FileIndexerCount" override="false" type="java.lang.Integer" value="5"/>
@@ -50,6 +56,7 @@
   <!-- Files with different extensions will be indexed as text, excluding the ones below: (seperate with ;) -->
   <Environment name="xinco/IndexNoIndex" override="false" type="java.lang.String" value=";aac;ac3;ace;ade;adp;aif;aifc;aiff;amf;arc;arj;asx;au;avi;b64;bh;bmp;bz;bz2;cab;cda;chm;class;com;div;divx;ear;exe;far;fla;gif;gz;hlp;ico;;iso;jar;jpe;jpeg;jpg;lha;lzh;mda;mdb;mde;mdn;mdt;mdw;mid;midi;mim;mod;mov;mp1;mp2;mp2v;mp3;mp4;mpa;mpe;mpeg;mpg;mpg4;mpv2;msi;ntx;ocx;ogg;ogm;okt;pae;pcx;pk3;png;pot;ppa;pps;ppt;pwz;qwk;ra;ram;rar;raw;rep;rm;rmi;snd;swf;swt;tar;taz;tbz;tbz2;tgz;tif;tiff;uu;uue;vxd;war;wav;wbm;wbmp;wma;wmd;wmf;wmv;xpi;xxe;z;zip;zoo;;;"/>
   <!-- ################# ###################### #################-->
+
   <!-- ################# Optional Configuration #################-->
   <!-- Database JNDI Name -->
   <Environment name="xinco/JNDIDB" override="false" type="java.lang.String" value="java:comp/env/jdbc/XincoDB"/>
