@@ -815,7 +815,7 @@
 <COLUMN ID="3757" ColName="attempts" PrevColName="" Pos="8" idDatatype="5" DatatypeParams="(10)" Width="0" Prec="0" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
 <OPTIONSELECTED>
 <OPTIONSELECT Value="1" />
-<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
 </OPTIONSELECTED>
 </COLUMN>
 <COLUMN ID="3758" ColName="last_modified" PrevColName="" Pos="9" idDatatype="14" DatatypeParams="" Width="0" Prec="0" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
