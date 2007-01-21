@@ -58,10 +58,10 @@ CREATE TABLE xinco_core_ace_t (
   xinco_core_group_id INTEGER(10) UNSIGNED NOT NULL,
   xinco_core_node_id INTEGER(10) UNSIGNED NOT NULL,
   xinco_core_data_id INTEGER(10) UNSIGNED NOT NULL,
-  read_permission TINYINT(1) NOT NULL,
-  write_permission TINYINT(1) NOT NULL,
-  execute_permission TINYINT(1) NOT NULL,
-  admin_permission TINYINT(1) NOT NULL,
+  read_permission BOOL NOT NULL,
+  write_permission BOOL NOT NULL,
+  execute_permission BOOL NOT NULL,
+  admin_permission BOOL NOT NULL,
   PRIMARY KEY(record_id)
 )
 TYPE=InnoDB;
