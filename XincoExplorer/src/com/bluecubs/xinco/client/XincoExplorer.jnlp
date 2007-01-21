@@ -34,7 +34,7 @@
     <jar href="mail.jar"/>
     <jar href="saaj.jar"/>
     <jar href="swing-layout-1.0.jar"/>
-    <jar href="wsdl4.jar"/>
+    <jar href="wsdl4j-1.5.1.jar"/>
     <jar href="xercesImpl.jar"/>
     <jar href="Xinco.jar"/>
     <jar href="xmlParserAPIs.jar"/>
