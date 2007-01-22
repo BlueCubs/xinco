@@ -77,7 +77,8 @@ public class XincoClientRepository {
 		//} else {
 		//}
 		node.setUserObject(object);
-		for (i=0;i<object.getXinco_core_nodes().size();i++) {
+                int size=object.getXinco_core_nodes().size();
+		for (i=0;i<size;i++) {
 			XincoMutableTreeNode temp_xmtn = new XincoMutableTreeNode(object.getXinco_core_nodes().elementAt(i));
 			treemodel.insertNodeInto(temp_xmtn, node, node.getChildCount());
 			//expand one more level
