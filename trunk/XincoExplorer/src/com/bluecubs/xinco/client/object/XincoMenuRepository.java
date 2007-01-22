@@ -72,6 +72,7 @@ public class XincoMenuRepository extends JMenu{
                     explorer.getSession().xincoClientRepository.assignObject2TreeNode((XincoMutableTreeNode)((DefaultTreeModel)explorer.getSession().xincoClientRepository.treemodel).getRoot(), xnode, explorer.getSession().xinco, explorer.getSession().user, 2);
                     explorer.jTreeRepository.expandPath(new TreePath(explorer.getSession().xincoClientRepository.treemodel.getPathToRoot(((XincoMutableTreeNode)((DefaultTreeModel)explorer.getSession().xincoClientRepository.treemodel).getRoot()))));
                 } catch (Exception rmie) {
+                    rmie.printStackTrace();
                 }
             }
         });

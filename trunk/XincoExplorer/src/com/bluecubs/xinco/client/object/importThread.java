@@ -28,7 +28,6 @@ public class importThread extends Thread {
         if(this.explorer!=null){
             ResourceBundle xerb = this.explorer.getResourceBundle();
             //import data structure
-            explorer.progressBar.setVisible(true);
             if (explorer.getSession().currentTreeNodeSelection != null) {
                 if (explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
                     JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.info"), xerb.getString("window.massiveimport"), JOptionPane.INFORMATION_MESSAGE);
@@ -43,6 +42,8 @@ public class importThread extends Thread {
                         } else {
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
                         }
+                        explorer.progressBar.setTitle(xerb.getString("window.massiveimport.progress"));
+                        explorer.progressBar.show();
                         //update transaction info
                         JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.progress"), xerb.getString("window.massiveimport"), JOptionPane.INFORMATION_MESSAGE);
                         explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.progress"));
@@ -56,11 +57,11 @@ public class importThread extends Thread {
                                 " " + xerb.getString("general.reason") + ": " + ie.toString(), xerb.getString("general.error"),
                                 JOptionPane.WARNING_MESSAGE);
                         explorer.jLabelInternalFrameInformationText.setText("");
-                        explorer.progressBar.setVisible(false);
+                        explorer.progressBar.hide();
                     }
                 }
             }
-            explorer.progressBar.setVisible(false);
+            explorer.progressBar.hide();
         }
     }
     
