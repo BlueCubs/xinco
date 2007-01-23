@@ -21,13 +21,13 @@
  *
  * Name:            XincoTreeCellRenderer
  *
- * Description:     cell renderer on client side 
+ * Description:     cell renderer on client side
  *
  * Original Author: Alexander Manes
  * Date:            2004
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
@@ -43,40 +43,40 @@ import javax.swing.tree.*;
 import com.bluecubs.xinco.core.*;
 
 class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
-
+    
     public XincoTreeCellRenderer() {
     }
-
+    
     public Component getTreeCellRendererComponent(
-                        JTree tree,
-                        Object value,
-                        boolean sel,
-                        boolean expanded,
-                        boolean leaf,
-                        int row,
-                        boolean hasFocus) {
-
+            JTree tree,
+            Object value,
+            boolean sel,
+            boolean expanded,
+            boolean leaf,
+            int row,
+            boolean hasFocus) {
+        
         super.getTreeCellRendererComponent(
-                        tree, value, sel,
-                        expanded, leaf, row,
-                        hasFocus);
-                        
+                tree, value, sel,
+                expanded, leaf, row,
+                hasFocus);
+        
         if (leaf && isFolder(value)) {
             setIcon(getClosedIcon());
             setToolTipText("");
         } else {
             setToolTipText(null); //no tool tip
-        } 
-
+        }
+        
         return this;
     }
-
+    
     protected boolean isFolder(Object value) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
         if(node.getUserObject().getClass() == XincoCoreNode.class) {
-        	return true;
+            return true;
         } else {
-			return false;
+            return false;
         }
     }
 }
