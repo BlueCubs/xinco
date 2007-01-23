@@ -1893,12 +1893,14 @@ public class XincoExplorer extends JFrame {
         status_string_1="";
         status_string_2="";
         if(jMenuItemConnectionConnect == null) {
-            initialize();
             jMenuItemConnectionConnect = new javax.swing.JMenuItem();
             jMenuItemConnectionConnect.setText(xerb.getString("menu.connection.connect"));
             jMenuItemConnectionConnect.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     int i = 0;
+                    //init session
+                    xincoClientSession = new XincoClientSession();
+                    getJTreeRepository().setModel(xincoClientSession.xincoClientRepository.treemodel);
                     xincoClientSession.status = 0;
                     //open connection dialog
                     getJDialogConnection();
@@ -2065,29 +2067,34 @@ public class XincoExplorer extends JFrame {
             //reset menus
             getJPopupMenuRepository();
             ((XincoPopUpMenuRepository) jPopupMenuRepository).resetItems();
-            
             ((XincoMenuRepository) jMenuRepository).resetItems();
             //status = disconnected
             if (xincoClientSession.status == 0) {
+                // set menus
                 jMenuRepository.setEnabled(false);
                 jMenuSearch.setEnabled(false);
                 jMenuItemSearchRepository.setEnabled(false);
                 jMenuPreferences.setEnabled(false);
                 jMenuItemConnectionConnect.setEnabled(true);
                 jMenuItemConnectionDisconnect.setEnabled(false);
+                // set frames
                 jInternalFrameRepository.setVisible(false);
                 jInternalFrameSearch.setVisible(false);
                 jInternalFrameInformation.setVisible(false);
-                initialize();
+                //init session
+                xincoClientSession = new XincoClientSession();
+                getJTreeRepository().setModel(xincoClientSession.xincoClientRepository.treemodel);
             }
             //status = connected
             if (xincoClientSession.status == 2) {
+                // set menus
                 jMenuRepository.setEnabled(true);
                 jMenuSearch.setEnabled(true);
                 jMenuItemSearchRepository.setEnabled(true);
                 jMenuPreferences.setEnabled(true);
                 jMenuItemConnectionConnect.setEnabled(false);
                 jMenuItemConnectionDisconnect.setEnabled(true);
+                // set frames
                 jInternalFrameRepository.setVisible(true);
                 jInternalFrameInformation.setVisible(true);
             }

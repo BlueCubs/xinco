@@ -85,7 +85,6 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
         });
 
         cancel.setText("Cancel");
-        cancel.setSelected(true);
         cancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelActionPerformed(evt);
@@ -103,7 +102,7 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
                     .add(reasonLabel)
                     .add(layout.createSequentialGroup()
                         .add(save)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 38, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 40, Short.MAX_VALUE)
                         .add(cancel)))
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );

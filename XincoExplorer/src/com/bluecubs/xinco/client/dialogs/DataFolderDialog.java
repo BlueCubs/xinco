@@ -59,7 +59,7 @@ public class DataFolderDialog extends javax.swing.JDialog {
                 text = ((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getSign() + ")";
                 dlm.addElement(text);
                 if (((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getId() == ((XincoCoreNode)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_language().getId()) {
-                    this.language.setSelectedIndex(i);
+                    selection=i;
                 }
                 if (((XincoCoreNode)explorer.getSession().currentTreeNodeSelection.getUserObject()).getId() == 0) {
                     if (((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
@@ -75,8 +75,8 @@ public class DataFolderDialog extends javax.swing.JDialog {
                 if (selection == -1) {
                     selection = alt_selection;
                 }
-                this.language.setSelectedIndex(selection);
             }
+            this.language.setSelectedIndex(selection);
             this.language.ensureIndexIsVisible(this.language.getSelectedIndex());
             if (((XincoCoreNode)explorer.getSession().currentTreeNodeSelection.getUserObject()).getStatus_number() == 1) {
                 text = explorer.getResourceBundle().getString("general.status.open") + "";
