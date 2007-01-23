@@ -237,7 +237,7 @@ public class LogDialog extends javax.swing.JDialog {
             log_index = 0;
             String text = "";
             log_index = ((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().size() - 1;
-            text = this.action.getText()+this.reason.getText();
+            text = this.action.getText()+" "+this.reason.getText();
             ((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).setOp_description(text);
             text = this.versionHigh.getText(); 
             try {
