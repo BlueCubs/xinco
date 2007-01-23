@@ -1679,6 +1679,7 @@ public class XincoExplorer extends JFrame {
             jTreeRepository.collapseRow(row);
             row--;
         }
+        jTreeRepository.expandRow(0);
     }
     /**
      * This method initializes jTableRepository
