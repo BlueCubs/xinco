@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ResourceBundle;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.CheckedOutputStream;
@@ -42,12 +43,13 @@ import org.apache.axis.attachments.AttachmentPart;
 
 public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     public com.bluecubs.xinco.core.XincoVersion getXincoServerVersion() throws java.rmi.RemoteException {
+        ResourceBundle settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
         //return current version of server
         XincoVersion version = new XincoVersion();
-        version.setVersion_high(2);
-        version.setVersion_mid(0);
-        version.setVersion_low(0);
-        version.setVersion_postfix("");
+        version.setVersion_high(Integer.parseInt(settings.getString("version.high")));
+        version.setVersion_mid(Integer.parseInt(settings.getString("version.mid")));
+        version.setVersion_low(Integer.parseInt(settings.getString("version.low")));
+        version.setVersion_postfix(settings.getString("version.postfix"));
         return version;
     }
     
