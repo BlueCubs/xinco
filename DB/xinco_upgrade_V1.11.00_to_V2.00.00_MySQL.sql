@@ -128,46 +128,6 @@ CREATE TABLE xinco_core_user_modified_record (
   FOREIGN KEY(id)
     REFERENCES xinco_core_user(id)
       ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(record_id)
-    REFERENCES xinco_core_user_has_xinco_core_group_t(record_id)
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(record_id)
-    REFERENCES xinco_core_data_type_attribute_t(record_id)
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(record_id)
-    REFERENCES xinco_core_user_t(record_id)
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(record_id)
-    REFERENCES xinco_add_attribute_t(record_id)
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(record_id)
-    REFERENCES xinco_core_ace_t(record_id)
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(record_id)
-    REFERENCES xinco_core_data_t(record_id)
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(record_id)
-    REFERENCES xinco_core_data_type_t(record_id)
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(record_id)
-    REFERENCES xinco_core_group_t(record_id)
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(record_id)
-    REFERENCES xinco_core_language_t(record_id)
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(record_id)
-    REFERENCES xinco_core_node_t(record_id)
-      ON DELETE NO ACTION
       ON UPDATE NO ACTION
 )
 TYPE=InnoDB;
