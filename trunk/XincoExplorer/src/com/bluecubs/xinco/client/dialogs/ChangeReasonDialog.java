@@ -23,7 +23,7 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
     /**
      * Is dialog done?
      */
-    public boolean done=false;
+    boolean done=false;
     /**
      * Creates new form ChangeReasonDialog
      * @param parent Dialog's parent

@@ -50,6 +50,7 @@ extends WindowAdapter
  {
    this(false);
  }
+ @Override
  public void windowClosing(WindowEvent event)
  {
    event.getWindow().setVisible(false);

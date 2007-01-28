@@ -46,7 +46,7 @@ public class XincoAutofitTableColumns
      * @param int columnPadding, how many extra pixels do you want on the end of each column
      * @returns The table width, just in case the caller wants it...
      */
-    public static int autoResizeTable ( JTable aTable, boolean includeColumnHeaderWidth, int columnPadding )
+    protected static int autoResizeTable ( JTable aTable, boolean includeColumnHeaderWidth, int columnPadding )
     {
         int columnCount = aTable.getColumnCount();
         int currentTableWidth = aTable.getWidth();

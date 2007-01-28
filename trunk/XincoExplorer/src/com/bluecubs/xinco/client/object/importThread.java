@@ -24,6 +24,7 @@ import javax.swing.tree.TreePath;
  */
 public class importThread extends Thread {
     private XincoExplorer explorer;
+    @Override
     public void run() {
         if(this.explorer!=null){
             ResourceBundle xerb = this.explorer.getResourceBundle();
@@ -33,24 +34,29 @@ public class importThread extends Thread {
                     JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.info"), xerb.getString("window.massiveimport"), JOptionPane.INFORMATION_MESSAGE);
                     try {
                         JFileChooser fc = new JFileChooser();
+
                         fc.setCurrentDirectory(new File(explorer.current_path));
                         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                        //show dialog
+                        // show dialog
                         int result = fc.showOpenDialog(explorer);
-                        if(result == JFileChooser.APPROVE_OPTION) {
-                            explorer.setCurrentPath(fc.getSelectedFile().toString());
-                        } else {
+
+                        if (result != JFileChooser.APPROVE_OPTION) {
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
                         }
+                        explorer.setCurrentPath(fc.getSelectedFile().toString());
                         explorer.progressBar.setTitle(xerb.getString("window.massiveimport.progress"));
                         explorer.progressBar.show();
-                        //update transaction info
-                        JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.progress"), xerb.getString("window.massiveimport"), JOptionPane.INFORMATION_MESSAGE);
+                        // update transaction info
+                        JOptionPane.showMessageDialog(explorer,
+                                                      xerb.getString("window.massiveimport.progress"),
+                                                      xerb.getString("window.massiveimport"),
+                                                      JOptionPane.INFORMATION_MESSAGE);
                         explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.progress"));
-                        explorer.importContentOfFolder((XincoCoreNode)explorer.getSession().currentTreeNodeSelection.getUserObject(), new File(explorer.current_path));
-                        //select current path
+                        explorer.importContentOfFolder((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject(),
+                                                       new File(explorer.current_path));
+                        // select current path
                         explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().currentTreeNodeSelection.getPath()));
-                        //update transaction info
+                        // update transaction info
                         explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.importsuccess"));
                     } catch (Exception ie) {
                         JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.importfailed") +

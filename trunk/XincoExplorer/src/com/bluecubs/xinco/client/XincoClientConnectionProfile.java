@@ -77,7 +77,8 @@ public class XincoClientConnectionProfile implements java.io.Serializable {
      * XincoClientConnectionProfile string representation
      * @return Profile Name.
      */
-	public String toString() {
+	@Override
+         public String toString() {
 		return profile_name;
 	}
 

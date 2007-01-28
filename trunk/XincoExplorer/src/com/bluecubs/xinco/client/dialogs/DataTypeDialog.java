@@ -35,7 +35,7 @@ public class DataTypeDialog extends javax.swing.JDialog {
         this.dataTypeLabel.setText(explorer.getResourceBundle().getString("window.datatype.datatype") + ":");
         int i = 0;
         String text = "";
-        if (!(explorer.getSession().currentTreeNodeSelection.getUserObject() == null)) {
+        if (explorer.getSession().currentTreeNodeSelection.getUserObject() != null) {
             DefaultListModel dlm = new DefaultListModel();
             dlm.removeAllElements();
             for (i=0;i<explorer.getSession().server_datatypes.size();i++) {

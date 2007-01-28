@@ -47,6 +47,7 @@ class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
     public XincoTreeCellRenderer() {
     }
     
+    @Override
     public Component getTreeCellRendererComponent(
             JTree tree,
             Object value,
@@ -72,11 +73,11 @@ class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
     }
     
     protected boolean isFolder(Object value) {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
-        if(node.getUserObject().getClass() == XincoCoreNode.class) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+
+        if (node.getUserObject().getClass() == XincoCoreNode.class) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 }

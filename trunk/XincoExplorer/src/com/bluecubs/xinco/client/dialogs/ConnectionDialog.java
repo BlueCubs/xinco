@@ -34,7 +34,7 @@ public class ConnectionDialog extends javax.swing.JDialog {
     /**
      * Initialize the dialog.
      */
-    public void initialize(){
+    protected void initialize(){
         setTitle(explorer.getResourceBundle().getString("window.connection") + ":");
         setName("DialogConnection");
         setModal(true);
