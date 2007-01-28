@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.web.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/web-project/3">
+            <name>xinco</name>
+            <minimum-ant-version>1.6</minimum-ant-version>
+            <web-module-libraries>
+                <library files="1">
+                    <file>${reference.Xinco.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="21">
+                    <file>${libs.XincoLibs.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${reference.XincoExplorer.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+            </web-module-libraries>
+            <web-module-additional-libraries>
+                <library files="1">
+                    <file>${reference.XincoExplorer.jar}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+                <library files="13">
+                    <file>${libs.XincoLibsClient.classpath}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${file.reference.blueCubsIcon.gif}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${reference.Xinco.jar}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.swing-layout.classpath}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${file.reference.XincoExplorer.jnlp-2}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+            </web-module-additional-libraries>
+            <source-roots>
+                <root id="src.src.dir" name="Source Packages"/>
+            </source-roots>
+            <test-roots>
+                <root id="test.src.dir"/>
+            </test-roots>
+        </data>
+        <references xmlns="http://www.netbeans.org/ns/ant-project-references/1">
+            <reference>
+                <foreign-project>Xinco</foreign-project>
+                <artifact-type>jar</artifact-type>
+                <script>build.xml</script>
+                <target>jar</target>
+                <clean-target>clean</clean-target>
+                <id>jar</id>
+            </reference>
+            <reference>
+                <foreign-project>XincoExplorer</foreign-project>
+                <artifact-type>jar</artifact-type>
+                <script>build.xml</script>
+                <target>jar</target>
+                <clean-target>clean</clean-target>
+                <id>jar</id>
+            </reference>
+        </references>
+    </configuration>
+</project>
