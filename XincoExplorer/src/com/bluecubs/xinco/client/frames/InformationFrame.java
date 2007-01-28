@@ -15,13 +15,13 @@ import com.bluecubs.xinco.client.XincoExplorer;
 public class InformationFrame extends javax.swing.JInternalFrame {
     private XincoExplorer explorer=null;
     /** Creates new form InformationFrame */
-    public InformationFrame(XincoExplorer explorer) {
+    private InformationFrame(XincoExplorer explorer) {
         initComponents();
         this.explorer=explorer;
         setTitle(explorer.getResourceBundle().getString("window.information"));
     }
     
-    public javax.swing.JTextArea getTextArea(){
+    private javax.swing.JTextArea getTextArea(){
         return this.Text;
     }
     /** This method is called from within the constructor to

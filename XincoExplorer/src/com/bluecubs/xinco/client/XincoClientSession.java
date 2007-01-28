@@ -58,7 +58,7 @@ public class XincoClientSession {
     /**
      * Xinco Service
      */
-    public XincoService xinco_service = null;
+    XincoService xinco_service = null;
     /**
      * Xinco object
      */
@@ -71,7 +71,7 @@ public class XincoClientSession {
     /**
      * Server version
      */
-    public XincoVersion server_version = null;
+    XincoVersion server_version = null;
     /**
      * Server groups
      */

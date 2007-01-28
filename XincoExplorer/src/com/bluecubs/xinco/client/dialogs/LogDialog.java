@@ -43,7 +43,7 @@ public class LogDialog extends javax.swing.JDialog {
         //processing independent of creation
         int i = 0;
         String text = "";
-        if (!(explorer.getSession().currentTreeNodeSelection.getUserObject() == null)) {
+        if (explorer.getSession().currentTreeNodeSelection.getUserObject() != null) {
             //For some reason 
             log_index = ((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().size() - 1;
             if(((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code()==1)

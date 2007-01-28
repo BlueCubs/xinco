@@ -18,6 +18,7 @@ import com.bluecubs.xinco.client.XincoExplorer;
 public class XincoProgressBarThread extends Thread{
     private XincoExplorer explorer;
     private XincoProgressBar progressBar;
+    @Override
     public void run() {
         progressBar=new XincoProgressBar(this.explorer);
         progressBar.pack();
@@ -32,6 +33,7 @@ public class XincoProgressBarThread extends Thread{
     }
     public void show() {
         progressBar.setVisible(true);
+        progressBar.repaint();
     }
     public void setTitle(String t){
         progressBar.setTitle(t);

@@ -42,7 +42,7 @@ public class DataDialog extends javax.swing.JDialog {
         String text = "";
         int selection = -1;
         int alt_selection = 0;
-        if (!(explorer.getSession().currentTreeNodeSelection.getUserObject() == null)) {
+        if (explorer.getSession().currentTreeNodeSelection.getUserObject() != null) {
             text = "" + ((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getId();
             this.id.setText(text);
             text = "" + ((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getDesignation();

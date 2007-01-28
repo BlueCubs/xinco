@@ -46,6 +46,7 @@ public class XincoMutableTreeNode extends DefaultMutableTreeNode {
         super(o);
     }
     
+    @Override
     public String toString() {
         String s = null;
         String status = null;

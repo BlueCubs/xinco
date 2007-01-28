@@ -47,7 +47,7 @@ public class DataFolderDialog extends javax.swing.JDialog {
         String text = "";
         int selection = -1;
         int alt_selection = 0;
-        if (!(explorer.getSession().currentTreeNodeSelection.getUserObject() == null)) {
+        if (explorer.getSession().currentTreeNodeSelection.getUserObject() != null) {
             text = "" + ((XincoCoreNode)explorer.getSession().currentTreeNodeSelection.getUserObject()).getId();
             this.id.setText(text);
             text = "" + ((XincoCoreNode)explorer.getSession().currentTreeNodeSelection.getUserObject()).getDesignation();
@@ -224,23 +224,23 @@ public class DataFolderDialog extends javax.swing.JDialog {
             this.language.setSelectedIndex(0);
         newnode.setXinco_core_language(((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(this.language.getSelectedIndex())));
         try {
-            //optimize node size
+            // optimize node size
             newnode.setXinco_core_nodes(new Vector());
             newnode.setXinco_core_data(new Vector());
-            //invoke web-service
-            if ((newnode = explorer.getSession().xinco.setXincoCoreNode(newnode, explorer.getSession().user)) != null) {
-                //update to modified user object
-                explorer.getSession().currentTreeNodeSelection.setUserObject(newnode);
-                explorer.getSession().xincoClientRepository.treemodel.nodeChanged((explorer.getSession().currentTreeNodeSelection));
-                //select parent of new node
-                if (insertnewnode) {
-                    explorer.getSession().currentTreeNodeSelection = (XincoMutableTreeNode)explorer.getSession().currentTreeNodeSelection.getParent();
-                }
-                explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().currentTreeNodeSelection.getPath()));
-                explorer.jLabelInternalFrameInformationText.setText(explorer.getResourceBundle().getString("window.folder.updatesuccess"));
-            } else {
+            if ((newnode = explorer.getSession().xinco.setXincoCoreNode(newnode,
+                                                                    explorer.getSession().user)) ==
+            null) {
                 throw new XincoException(explorer.getResourceBundle().getString("error.nowritepermission"));
             }
+            // update to modified user object
+            explorer.getSession().currentTreeNodeSelection.setUserObject(newnode);
+            explorer.getSession().xincoClientRepository.treemodel.nodeChanged(explorer.getSession().currentTreeNodeSelection);
+            // select parent of new node
+            if (insertnewnode) {
+                explorer.getSession().currentTreeNodeSelection = (XincoMutableTreeNode) explorer.getSession().currentTreeNodeSelection.getParent();
+            }
+            explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().currentTreeNodeSelection.getPath()));
+            explorer.jLabelInternalFrameInformationText.setText(explorer.getResourceBundle().getString("window.folder.updatesuccess"));
         } catch (Exception rmie) {
             //remove new node in case off error
             if (insertnewnode) {

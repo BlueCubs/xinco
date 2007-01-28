@@ -251,64 +251,66 @@ public class UserDialog extends javax.swing.JDialog {
         if ((new String(password.getPassword())).equals(new String(verification.getPassword()))) {
             XincoCoreUser temp;
             try {
-                if(this.isAged && !this.explorer.getSession().xinco.checkXincoCoreUserNewPassword(new String(password.getPassword()),
-                        this.explorer.getSession().user,null)) {
+                if (this.isAged &&
+                    !this.explorer.getSession().xinco.checkXincoCoreUserNewPassword(new String(password.getPassword()),
+                                                                                    this.explorer.getSession().user,
+                                                                                    null)) {
                     System.out.println(this.explorer.getSession().xinco.checkXincoCoreUserNewPassword(new String(password.getPassword()),
-                            this.explorer.getSession().user,null));
+                                                                                                      this.explorer.getSession().user,
+                                                                                                      null));
                     throw new XincoException(explorer.getResourceBundle().getString("password.unusable"));
-                } else{
-                    explorer.getUser().setId(explorer.getSession().user.getId());
-                    explorer.getUser().setUsername(explorer.getSession().user.getUsername());
-                    explorer.getUser().setUserpassword(new String(password.getPassword()));
-                    explorer.getUser().setFirstname(name.getText());
-                    explorer.getUser().setName(lastname.getText());
-                    explorer.getUser().setEmail(email.getText());
-                    explorer.getUser().setXinco_core_groups(explorer.getSession().user.getXinco_core_groups());
-                    explorer.getUser().setStatus_number(explorer.getSession().user.getStatus_number());
-                    explorer.getUser().setChange(true);
-                    if ((temp = explorer.getSession().xinco.setXincoCoreUser(explorer.getUser(), explorer.getSession().user)) != null) {
-                        explorer.getUser().setUserpassword(new String(password.getPassword()));
-                        ChangeReasonDialog crd=null;
-                        if(isAged) {
-                            boolean enable=false;
-                            this.email.setEnabled(enable);
-                            this.lastname.setEditable(enable);
-                            this.name.setEditable(enable);
-                            this.status.setEditable(enable);
-                            this.username.setEditable(enable);
-                        } else{
-                            boolean enable=true;
-                            this.email.setEnabled(enable);
-                            this.lastname.setEditable(enable);
-                            this.name.setEditable(enable);
-                            this.status.setEditable(enable);
-                            this.username.setEditable(enable);
-                        }
-                        //Prompt for change reason
-                        if(!isAged){
-                            crd=new ChangeReasonDialog(new javax.swing.JFrame(), true,explorer);
-                            crd.setVisible(true);
-                            while(!crd.done);
-                        }
-                        explorer.getUser().setChangerID(explorer.getUser().getId());
-                        explorer.getUser().setWriteGroups(true);
-                        explorer.getUser().setChange(true);
-                        explorer.getUser().setStatus_number(1);
-                        if(isAged){
-                            explorer.getUser().setReason("audit.user.account.aged");
-                            explorer.getUser().setStatus_number(4);
-                        } else
-                            explorer.getUser().setReason(crd.getReason());
-                        
-                        temp=explorer.getSession().xinco.setXincoCoreUser(explorer.getUser(), explorer.getSession().user);
-                        explorer.getSession().user=explorer.getUser();
-                    } else {
+                }
+                explorer.getUser().setId(explorer.getSession().user.getId());
+                explorer.getUser().setUsername(explorer.getSession().user.getUsername());
+                explorer.getUser().setUserpassword(new String(password.getPassword()));
+                explorer.getUser().setFirstname(name.getText());
+                explorer.getUser().setName(lastname.getText());
+                explorer.getUser().setEmail(email.getText());
+                explorer.getUser().setXinco_core_groups(explorer.getSession().user.getXinco_core_groups());
+                explorer.getUser().setStatus_number(explorer.getSession().user.getStatus_number());
+                explorer.getUser().setChange(true);
+                {
+                    if ((temp = explorer.getSession().xinco.setXincoCoreUser(explorer.getUser(),
+                                                                         explorer.getSession().user)) ==
+                    null) {
                         throw new XincoException(explorer.getResourceBundle().getString("window.userinfo.updatefailedonserver"));
                     }
-                    //update transaction info
-                    explorer.jLabelInternalFrameInformationText.setText(explorer.getResourceBundle().getString("window.userinfo.updatesuccess"));
-                    setVisible(false);
+                    explorer.getUser().setUserpassword(new String(password.getPassword()));
+                    ChangeReasonDialog crd = null;
+                    boolean enable;
+                    if (isAged)
+                        enable = false;
+                    else
+                        enable = true;
+                    this.email.setEnabled(enable);
+                    this.lastname.setEditable(enable);
+                    this.name.setEditable(enable);
+                    this.status.setEditable(enable);
+                    this.username.setEditable(enable);
+                    // Prompt for change reason
+                    if (!isAged) {
+                        crd = new ChangeReasonDialog(new javax.swing.JFrame(),
+                                                     true, explorer);
+                        crd.setVisible(true);
+                        while (!crd.done)
+                            ;
+                    }
+                    explorer.getUser().setChangerID(explorer.getUser().getId());
+                    explorer.getUser().setWriteGroups(true);
+                    explorer.getUser().setChange(true);
+                    explorer.getUser().setStatus_number(1);
+                    if (isAged) {
+                        explorer.getUser().setReason("audit.user.account.aged");
+                        explorer.getUser().setStatus_number(4);
+                    } else
+                        explorer.getUser().setReason(crd.getReason());
+                    temp = explorer.getSession().xinco.setXincoCoreUser(explorer.getUser(),
+                                                                        explorer.getSession().user);
+                    explorer.getSession().user = explorer.getUser();
                 }
+                // update transaction info
+                explorer.jLabelInternalFrameInformationText.setText(explorer.getResourceBundle().getString("window.userinfo.updatesuccess"));
+                setVisible(false);
             } catch (Exception ue) {
                 JOptionPane.showMessageDialog(this, explorer.getResourceBundle().getString("window.userinfo.updatefailed") + " " + explorer.getResourceBundle().getString("general.reason") +  ": " + ue.toString(), explorer.getResourceBundle().getString("general.error"), JOptionPane.WARNING_MESSAGE);
             }

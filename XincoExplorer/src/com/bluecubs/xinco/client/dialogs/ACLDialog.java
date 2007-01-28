@@ -22,10 +22,6 @@ import javax.swing.ListModel;
  */
 public class ACLDialog extends javax.swing.JDialog {
     private XincoExplorer explorer=null;
-    /**
-     * Boolean value that checks if the dialog is done.
-     */
-    public boolean done=false;
     private Vector temp_acl = null;
     private XincoCoreACE temp_ace=null;
     /**
@@ -59,7 +55,7 @@ public class ACLDialog extends javax.swing.JDialog {
     /**
      * Loads the ACL group list
      */
-    public void loadACLGroupListACL() {
+    protected void loadACLGroupListACL() {
         String[] list = new String[this.explorer.getSession().server_groups.size()];
         for (int i=0;i<this.explorer.getSession().server_groups.size();i++) {
             list[i]=new String(((XincoCoreGroup)this.explorer.getSession().server_groups.elementAt(i)).getDesignation());
@@ -144,7 +140,7 @@ public class ACLDialog extends javax.swing.JDialog {
      * Sets ACL list model.
      * @param list String array containing the list.
      */
-    public void setACLListModel(final String [] list){
+    protected void setACLListModel(final String [] list){
         currentACLList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = list;
             public int getSize() { return strings.length; }

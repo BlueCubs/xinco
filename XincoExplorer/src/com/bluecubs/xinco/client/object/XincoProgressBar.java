@@ -51,7 +51,7 @@ public class XincoProgressBar extends JFrame{
     }
     
     
-    public void setProgress(int p){
+    private void setProgress(int p){
         // Update the progress indicator 
         
         progress.setValue( p );
