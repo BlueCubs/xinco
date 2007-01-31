@@ -158,7 +158,6 @@ public class XincoCoreACEServer extends XincoCoreACE {
             } else {
                 setId(DBM.getNewID("xinco_core_ace"));
                 
-                System.out.println("New ACE");
                 Statement stmt = DBM.con.createStatement();
                 stmt.executeUpdate("INSERT INTO xinco_core_ace VALUES (" + getId() + ", " + xcuid + ", " + xcgid + ", " + xcnid + ", " + xcdid + ", " + rp + ", " + wp + ", " + xp + ", " + ap + ")");
                 stmt.close();

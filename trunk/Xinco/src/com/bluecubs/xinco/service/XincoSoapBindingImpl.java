@@ -841,4 +841,12 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         }
         return user.isPasswordUsable(in0);
     }
+    
+    public com.bluecubs.xinco.core.XincoCoreAuditDataSchedule getXincoCoreAuditSchedule(com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
+        return null;
+    }
+    
+    public com.bluecubs.xinco.core.XincoCoreAuditDataSchedule setXincoCoreAuditSchedule(com.bluecubs.xinco.core.XincoCoreAuditDataSchedule in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
+        return null;
+    }
 }
