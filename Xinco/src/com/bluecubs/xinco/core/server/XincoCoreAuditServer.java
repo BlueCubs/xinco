@@ -59,7 +59,6 @@ public class XincoCoreAuditServer {
                     "mod_Reason) values ("+id+", "+record_ID+", '"+
                     new Timestamp(System.currentTimeMillis())+"', '"+reason+"')";
             stmt.executeUpdate(sql);
-            System.out.println(sql);
             DBM.con.commit();
         } catch (SQLException ex) {
             ex.printStackTrace();

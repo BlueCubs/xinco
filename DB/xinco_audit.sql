@@ -112,17 +112,4 @@ CREATE TABLE xinco_core_data_type_attribute_t (
 )
 TYPE=InnoDB;
 
-CREATE TABLE xinco_core_user_modified_record (
-  id INTEGER(10) UNSIGNED NOT NULL,
-  record_id INTEGER(10) UNSIGNED NOT NULL,
-  mod_Time TIMESTAMP NOT NULL,
-  mod_Reason VARCHAR(255) NULL,
-  PRIMARY KEY(id, record_id),
-  FOREIGN KEY(id)
-    REFERENCES xinco_core_user(id)
-      ON DELETE NO ACTION
-      ON UPDATE NO ACTION
-)
-TYPE=InnoDB;
-
 

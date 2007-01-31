@@ -44,6 +44,10 @@
                     <file>${file.reference.swing-layout-1.0.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
+                <library files="1">
+                    <file>${file.reference.jcalendar.jar}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
             </web-module-additional-libraries>
             <source-roots>
                 <root id="src.src.dir" name="Source Packages"/>
