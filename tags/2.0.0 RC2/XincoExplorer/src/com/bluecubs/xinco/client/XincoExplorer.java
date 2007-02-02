@@ -1352,13 +1352,20 @@ public class XincoExplorer extends JFrame {
                                             " / " +
                                             cal.get(Calendar.DAY_OF_MONTH) +
                                             " / " +
-                                            cal.get(Calendar.YEAR) +
-                                            " " +
-                                            cal.get(Calendar.HOUR_OF_DAY) +
-                                            ":" +
-                                            cal.get(Calendar.MINUTE) +
-                                            ":" +
-                                            cal.get(Calendar.SECOND);
+                                            cal.get(Calendar.YEAR)+
+                                            " " ;
+                                    if(cal.get(Calendar.HOUR_OF_DAY)<10)
+                                        rdata[0]+="0"+cal.get(Calendar.HOUR_OF_DAY)+":";
+                                    else
+                                        rdata[0]+=cal.get(Calendar.HOUR_OF_DAY)+":";
+                                    if(cal.get(Calendar.MINUTE)<10)
+                                        rdata[0]+="0"+cal.get(Calendar.MINUTE)+":";
+                                    else
+                                        rdata[0]+=cal.get(Calendar.MINUTE)+":";
+                                    if(cal.get(Calendar.SECOND)<10)
+                                        rdata[0]+="0"+cal.get(Calendar.SECOND);
+                                    else
+                                        rdata[0]+=cal.get(Calendar.SECOND);
                                 } catch (Exception ce) {
                                 }
                             } else {
