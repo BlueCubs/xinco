@@ -1689,9 +1689,9 @@ public class XincoExplorer extends JFrame {
                             xincoClientSession.xinco_service = new XincoServiceLocator();
                             xincoClientSession.xinco = xincoClientSession.xinco_service.getXinco(new java.net.URL(xincoClientSession.service_endpoint));
                             xincoClientSession.server_version = xincoClientSession.xinco.getXincoServerVersion();
-                            //check if client and server versions match
-                            if (xincoClientVersion.getVersion_high() != xincoClientSession.server_version.getVersion_high()) {
-                                throw new XincoException(xerb.getString("menu.connection.error.serverversion") + " " + xincoClientSession.server_version.getVersion_high() + ".x");
+                            //check if client and server versions match (high AND mid must match!)
+                            if ((xincoClientVersion.getVersion_high() != xincoClientSession.server_version.getVersion_high()) || (xincoClientVersion.getVersion_mid() != xincoClientSession.server_version.getVersion_mid())) {
+                                throw new XincoException(xerb.getString("menu.connection.error.serverversion") + " " + xincoClientSession.server_version.getVersion_high() + "." + xincoClientSession.server_version.getVersion_mid() + ".x");
                             }
                             if ((temp = xincoClientSession.xinco.getCurrentXincoCoreUser(xincoClientSession.user.getUsername(), xincoClientSession.user.getUserpassword())) == null) {
                                 throw new XincoException(xerb.getString("menu.connection.error.user"));
