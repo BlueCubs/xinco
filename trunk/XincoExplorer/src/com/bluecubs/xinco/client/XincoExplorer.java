@@ -425,6 +425,7 @@ public class XincoExplorer extends JFrame {
             jDialogLocale.setBounds(400, 400, 300, 200);
             jDialogLocale.setResizable(false);
             jDialogLocale.setModal(true);
+            jDialogLocale.setAlwaysOnTop(true);
             jDialogLocale.getRootPane().setDefaultButton(getJButtonDialogLocaleOk());
         }
         //processing independent of creation

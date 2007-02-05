@@ -304,9 +304,8 @@ public class UserDialog extends javax.swing.JDialog {
                         explorer.getUser().setStatus_number(4);
                     } else
                         explorer.getUser().setReason(crd.getReason());
-                    temp = explorer.getSession().xinco.setXincoCoreUser(explorer.getUser(),
+                    explorer.getSession().user = explorer.getSession().xinco.setXincoCoreUser(explorer.getUser(),
                                                                         explorer.getSession().user);
-                    explorer.getSession().user = explorer.getUser();
                 }
                 // update transaction info
                 explorer.jLabelInternalFrameInformationText.setText(explorer.getResourceBundle().getString("window.userinfo.updatesuccess"));
