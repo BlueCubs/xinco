@@ -1214,15 +1214,16 @@ public class XincoAdminServlet extends HttpServlet {
                     
                     ResultSet rs;
                     XincoDBManager DBM = new XincoDBManager();
+                    DBM.setLoc(loc);
                     String column="id";
                     if(request.getParameter("table").equals("xinco_add_attribute"))
                         column="xinco_core_data_id";
                     if(request.getParameter("table").equals("xinco_core_data_type_attribute"))
                         column="xinco_core_data_type_id";
                     rs=DBM.con.createStatement().executeQuery("select * from "+request.getParameter("table")+
-                            "_t a, (select a.firstname || ' ' || a.name as "+
-                            rb.getString("general.user").replaceAll(" ", "_")+" , b.mod_time as "+rb.getString("general.audit.modtime").replaceAll(" ", "_")+
-                            " ,b.mod_reason as "+rb.getString("general.reason").replaceAll(" ", "_")+" ,b.record_id " +
+                            "_t a, (select a.firstname || ' ' || a.name as \""+
+                            rb.getString("general.user")+"\" , b.mod_time as \""+rb.getString("general.audit.modtime")+
+                            "\" ,b.mod_reason as \""+rb.getString("general.reason")+"\" ,b.record_id " +
                             "from xinco_core_user a,xinco_core_user_modified_record b where a.id=b.id " +
                             ") b where b.record_id =a.record_id and a."+column+
                             " = '"+request.getParameter("id")+"' order by a.record_id desc");
@@ -1237,6 +1238,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("</html>\n");
                 }catch(Exception e){
                     global_error_message = global_error_message + e.toString();
+                    e.printStackTrace();
                 }
             }
             if (current_location.compareTo("AuditQuery") == 0) {
