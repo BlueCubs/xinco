@@ -38,6 +38,7 @@ public class ACLDialog extends javax.swing.JDialog {
         this.ACLWarning.setText(explorer.getResourceBundle().getString("window.acl.note"));
         this.AddACE.setText(explorer.getResourceBundle().getString("window.acl.addace"));
         this.Admin.setText(explorer.getResourceBundle().getString("general.acl.adminpermission"));
+        this.Audit.setText(explorer.getResourceBundle().getString("general.acl.auditpermission"));
         this.Close.setText(explorer.getResourceBundle().getString("general.close"));
         this.Execute.setText(explorer.getResourceBundle().getString("general.acl.executepermission"));
         this.Read.setText(explorer.getResourceBundle().getString("general.acl.readpermission"));
@@ -115,6 +116,11 @@ public class ACLDialog extends javax.swing.JDialog {
             }
             if (temp_ace.isAdmin_permission()) {
                 temp_string = temp_string + "A";
+            } else {
+                temp_string = temp_string + "-";
+            }
+            if (temp_ace.isAudit_permission()) {
+                temp_string = temp_string + "Au";
             } else {
                 temp_string = temp_string + "-";
             }

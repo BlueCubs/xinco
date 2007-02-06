@@ -1147,6 +1147,13 @@ public class XincoExplorer extends JFrame {
                             rdata[1] = rdata[1] +
                                     "-";
                         }
+                        if (temp_ace.isAudit_permission()) {
+                            rdata[1] = rdata[1] +
+                                    "Au";
+                        } else {
+                            rdata[1] = rdata[1] +
+                                    "-";
+                        }
                         rdata[1] = rdata[1] +
                                 "]";
                         dtm.addRow(rdata);
@@ -1235,6 +1242,13 @@ public class XincoExplorer extends JFrame {
                         if (temp_ace.isAdmin_permission()) {
                             rdata[1] = rdata[1] +
                                     "A";
+                        } else {
+                            rdata[1] = rdata[1] +
+                                    "-";
+                        }
+                        if (temp_ace.isAudit_permission()) {
+                            rdata[1] = rdata[1] +
+                                    "Au";
                         } else {
                             rdata[1] = rdata[1] +
                                     "-";
