@@ -29,11 +29,11 @@ public class Repository extends javax.swing.JPanel {
         JTabbedPane tabbedPane = new JTabbedPane();
         JComponent panel1 = makeTextPanel("Panel #1");
         tabbedPane.addTab(xerb.getString("window.tab.title.metadata"),
-                createImageIcon("blueCubsIcon.gif"),
+                createImageIcon("blueCubsIconSmall.gif"),
                 this.explorer.getJScrollPaneRepositoryTable(),
                 xerb.getString("window.tab.tooltip.metadata"));
         tabbedPane.addTab(xerb.getString("window.tab.title.audit"), 
-                createImageIcon("blueCubsIcon.gif"), new AuditTablePanel(this.explorer),
+                createImageIcon("blueCubsIconSmall.gif"), new AuditTablePanel(this.explorer),
                 xerb.getString("window.tab.tooltip.audit"));
         this.SplitPane.setLeftComponent(this.explorer.getJScrollPaneRepositoryTree());
         this.SplitPane.setRightComponent(tabbedPane);
