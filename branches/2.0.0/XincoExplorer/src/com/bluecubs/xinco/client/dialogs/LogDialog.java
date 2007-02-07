@@ -1,4 +1,37 @@
-/*
+/**
+ *Copyright 2006 blueCubs.com
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License");
+ *you may not use this file except in compliance with the License.
+ *You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *Unless required by applicable law or agreed to in writing, software
+ *distributed under the License is distributed on an "AS IS" BASIS,
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *See the License for the specific language governing permissions and
+ *limitations under the License.
+ *
+ *************************************************************
+ * This project supports the blueCubs vision of giving back
+ * to the community in exchange for free software!
+ * More information on: http://www.bluecubs.org
+ *************************************************************
+ *
+ * Name:            LogDialog
+ *
+ * Description:     Log Dialog
+ *
+ * Original Author: Javier A. Ortiz
+ * Date:            2006
+ *
+ * Modifications:
+ *
+ * Who?             When?             What?
+ * 
+ *
+ *************************************************************
  * LogDialog.java
  *
  * Created on November 22, 2006, 10:09 AM
@@ -33,7 +66,6 @@ public class LogDialog extends javax.swing.JDialog {
         setTitle(explorer.getResourceBundle().getString("window.loggingdetails"));
         this.actionLabel.setText(explorer.getResourceBundle().getString("window.loggingdetails.action") + ":");
         this.versionLabel.setText(explorer.getResourceBundle().getString("general.version") + ":");
-        this.versionLabel.setText(explorer.getResourceBundle().getString("general.version") + ":");
         this.continueButton.setText(explorer.getResourceBundle().getString("general.continue"));
         this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
         this.versionPostfixLabel.setText(explorer.getResourceBundle().getString("general.version.postfix"));
@@ -53,10 +85,14 @@ public class LogDialog extends javax.swing.JDialog {
             text = "" + ((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_description();
             this.action.setText(text);
             //Increase high after a checkin
-            if(((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code()==5)
+            if(((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code()==5){
                 text = "" + (((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_high()+1);
-            else
+                this.versionHigh.setEditable(false);
+            }
+            else{
                 text = "" + ((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_high();
+                this.versionHigh.setEditable(true);
+            }
             this.versionHigh.setText(text);
             //TODO Increase based on workflow
 //            if(((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code()==<review op code>)
@@ -65,10 +101,14 @@ public class LogDialog extends javax.swing.JDialog {
             text = "" + ((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_mid();
             this.versionMid.setText(text);
             //Increase low after adding a comment or changing metadata
-            if(((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code()==9)
+            if(((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code()==9){
                 text = "" + (((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_low()+1);
-            else
+                this.versionLow.setEditable(false);
+            }
+            else{
                 text = "" + ((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_low();
+                this.versionLow.setEditable(true);
+            }
             this.versionLow.setText(text);
             //TODO set different postfixes for workflows: draft, review, etc...
 //            if(((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code()==<review op code>)

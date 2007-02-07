@@ -25,19 +25,19 @@
                   <Group type="102" attributes="0">
                       <Component id="actionLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="action" pref="292" max="32767" attributes="0"/>
+                      <Component id="action" pref="296" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="reasonLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="292" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="296" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="versionLabel" pref="49" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Component id="versionHigh" pref="74" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel1" pref="19" max="32767" attributes="0"/>
+                      <Component id="jLabel1" pref="23" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Component id="versionMid" pref="74" max="32767" attributes="0"/>
                       <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
@@ -50,7 +50,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="versionPostfix" min="-2" pref="94" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="versionPostfixExplanation" pref="192" max="32767" attributes="0"/>
+                      <Component id="versionPostfixExplanation" pref="196" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="continueButton" min="-2" max="-2" attributes="0"/>
