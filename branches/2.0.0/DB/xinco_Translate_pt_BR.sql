@@ -18,7 +18,7 @@ UPDATE xinco_core_language SET designation = 'Russo' WHERE id=7;
 
 
 -- Original Designation: File Description: Files stored on the server file system.
-UPDATE xinco_core_data_type SET designation = 'Database', description = 'Arquivos armazenados no sistema de arquivos do servidor.' WHERE id=1;
+UPDATE xinco_core_data_type SET designation = 'Arquivo', description = 'Arquivos armazenados no sistema de arquivos do servidor.' WHERE id=1;
 -- Original Designation: Text Description: Text stored inside the data base.
 UPDATE xinco_core_data_type SET designation = 'Texto', description = 'Texto armazenado na base de dados.' WHERE id=2;
 -- Original Designation: URL Description: General uniform ressource locator.
