@@ -22,27 +22,27 @@ UPDATE xinco_core_data_type SET designation = 'Datei', description = 'Im Server-
 UPDATE xinco_core_data_type SET designation = 'Text', description = 'In der Datenbank gespeicherter Text.' WHERE id=2;
 -- Original Designation: URL Description: General uniform ressource locator.
 UPDATE xinco_core_data_type SET designation = 'URL', description = 'Allgemeiner externer Link.' WHERE id=3;
--- Original Designation: Contact Description: Contact', 'Personal and business contacts.
+-- Original Designation: Contact Description: Personal and business contacts.
 UPDATE xinco_core_data_type SET designation = 'Kontakt', description = 'Persönliche und Geschäftskontakte' WHERE id=4;
 
 
 
--- Original Designation: File Name
+-- Original Designation: File_Name
 UPDATE xinco_core_data_type_attribute SET designation = 'Dateiname' WHERE xinco_core_data_type_id=1 AND attribute_id=1;
 -- Original Designation: Size
 UPDATE xinco_core_data_type_attribute SET designation = 'Groesse' WHERE xinco_core_data_type_id=1 AND attribute_id=2;
 -- Original Designation: Checksum
 UPDATE xinco_core_data_type_attribute SET designation = 'Pruefsumme' WHERE xinco_core_data_type_id=1 AND attribute_id=3;
 
--- Original Designation: Revision Model
+-- Original Designation: Revision_Model
 UPDATE xinco_core_data_type_attribute SET designation = 'Revisionsmodell' WHERE xinco_core_data_type_id=1 AND attribute_id=4;
--- Original Designation: Archiving Model
+-- Original Designation: Archiving_Model
 UPDATE xinco_core_data_type_attribute SET designation = 'Archivierungsmodell' WHERE xinco_core_data_type_id=1 AND attribute_id=5;
--- Original Designation: Archiving Date
+-- Original Designation: Archiving_Date
 UPDATE xinco_core_data_type_attribute SET designation = 'Archivierungsdatum' WHERE xinco_core_data_type_id=1 AND attribute_id=6;
--- Original Designation: Archiving Days
+-- Original Designation: Archiving_Days
 UPDATE xinco_core_data_type_attribute SET designation = 'Archivierungstage' WHERE xinco_core_data_type_id=1 AND attribute_id=7;
--- Original Designation: Archiving Location
+-- Original Designation: Archiving_Location
 UPDATE xinco_core_data_type_attribute SET designation = 'Archiverungsort' WHERE xinco_core_data_type_id=1 AND attribute_id=8;
 
 -- Original Designation: Description
@@ -61,17 +61,17 @@ UPDATE xinco_core_data_type_attribute SET designation = 'Text' WHERE xinco_core_
 UPDATE xinco_core_data_type_attribute SET designation = 'Anrede' WHERE xinco_core_data_type_id=4 AND attribute_id=1;
 -- Original Designation: Firstname
 UPDATE xinco_core_data_type_attribute SET designation = 'Vorname' WHERE xinco_core_data_type_id=4 AND attribute_id=2;
--- Original Designation: Middle Name
+-- Original Designation: Middle_Name
 UPDATE xinco_core_data_type_attribute SET designation = 'Zweiter_Vorname' WHERE xinco_core_data_type_id=4 AND attribute_id=3;
--- Original Designation: Last Name
+-- Original Designation: Last_Name
 UPDATE xinco_core_data_type_attribute SET designation = 'Nachname' WHERE xinco_core_data_type_id=4 AND attribute_id=4;
--- Original Designation: Name Affix
+-- Original Designation: Name_Affix
 UPDATE xinco_core_data_type_attribute SET designation = 'Namenszusatz' WHERE xinco_core_data_type_id=4 AND attribute_id=5;
--- Original Designation: Phone (business)
+-- Original Designation: Phone_business
 UPDATE xinco_core_data_type_attribute SET designation = 'Telefon_geschaeftlich' WHERE xinco_core_data_type_id=4 AND attribute_id=6;
--- Original Designation: Phone (private)
+-- Original Designation: Phone_private
 UPDATE xinco_core_data_type_attribute SET designation = 'Telefon_privat' WHERE xinco_core_data_type_id=4 AND attribute_id=7;
--- Original Designation:  Phone (mobile)
+-- Original Designation: Phone_mobile
 UPDATE xinco_core_data_type_attribute SET designation = 'Telefon_mobil' WHERE xinco_core_data_type_id=4 AND attribute_id=8;
 -- Original Designation: Fax
 UPDATE xinco_core_data_type_attribute SET designation = 'Fax' WHERE xinco_core_data_type_id=4 AND attribute_id=9;
@@ -79,17 +79,17 @@ UPDATE xinco_core_data_type_attribute SET designation = 'Fax' WHERE xinco_core_d
 UPDATE xinco_core_data_type_attribute SET designation = 'Email' WHERE xinco_core_data_type_id=4 AND attribute_id=10;
 -- Original Designation: Website
 UPDATE xinco_core_data_type_attribute SET designation = 'Website' WHERE xinco_core_data_type_id=4 AND attribute_id=11;
--- Original Designation: Street Address
+-- Original Designation: Street_Address
 UPDATE xinco_core_data_type_attribute SET designation = 'Strasse' WHERE xinco_core_data_type_id=4 AND attribute_id=12;
--- Original Designation: Postal Code
+-- Original Designation: Postal_Code
 UPDATE xinco_core_data_type_attribute SET designation = 'PLZ' WHERE xinco_core_data_type_id=4 AND attribute_id=13;
 -- Original Designation: City
 UPDATE xinco_core_data_type_attribute SET designation = 'Stadt' WHERE xinco_core_data_type_id=4 AND attribute_id=14;
--- Original Designation: State / Province
+-- Original Designation: State_Province
 UPDATE xinco_core_data_type_attribute SET designation = 'Bundesland' WHERE xinco_core_data_type_id=4 AND attribute_id=15;
 -- Original Designation: Country
 UPDATE xinco_core_data_type_attribute SET designation = 'Land' WHERE xinco_core_data_type_id=4 AND attribute_id=16;
--- Original Designation: Company Name
+-- Original Designation: Company_Name
 UPDATE xinco_core_data_type_attribute SET designation = 'Firmenname' WHERE xinco_core_data_type_id=4 AND attribute_id=17;
 -- Original Designation: Position
 UPDATE xinco_core_data_type_attribute SET designation = 'Position' WHERE xinco_core_data_type_id=4 AND attribute_id=18;
