@@ -147,7 +147,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
             
             if (getId() > 0) {
                 Statement stmt = DBM.con.createStatement();
-                audit.updateAuditTrail("xinco_core_ace",new String [] {"xinco_core_user_id ="+getId()},
+                audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+getId()},
                         DBM,"window.acl",this.getChangerID());
                 stmt.executeUpdate("UPDATE xinco_core_ace SET xinco_core_user_id=" + xcuid +
                         ", xinco_core_group_id=" + xcgid + ", xinco_core_node_id=" + xcnid +
@@ -158,7 +158,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
             } else {
                 setId(DBM.getNewID("xinco_core_ace"));
                 
-                System.out.println("New ACE");
+                //System.out.println("New ACE");
                 Statement stmt = DBM.con.createStatement();
                 stmt.executeUpdate("INSERT INTO xinco_core_ace VALUES (" + getId() + ", " + xcuid + ", " + xcgid + ", " + xcnid + ", " + xcdid + ", " + rp + ", " + wp + ", " + xp + ", " + ap + ")");
                 stmt.close();

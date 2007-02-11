@@ -93,7 +93,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
                 XincoCoreAuditServer audit= new XincoCoreAuditServer();
                 ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 audit.updateAuditTrail("xinco_core_language",new String [] {"id ="+getId()},
-                        DBM,xerb.getString("audit.data.change"),this.getChangerID());
+                        DBM,xerb.getString("audit.language.change"),this.getChangerID());
                 stmt.executeUpdate("UPDATE xinco_core_language SET sign='" + getSign().replaceAll("'","\\\\'") + "', designation='" + getDesignation().replaceAll("'","\\\\'") + "' WHERE id=" + getId());
                 stmt.close();
             } else {

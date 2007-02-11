@@ -169,19 +169,28 @@ public class XincoCoreDataServer extends XincoCoreData {
         try{
         Statement stmt;
         XincoCoreAuditServer audit= new XincoCoreAuditServer();
+        /*
+         * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
         audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+id},
                 DBM,"audit.general.delete",userID);
+        */
         stmt = DBM.con.createStatement();
         stmt.executeUpdate("DELETE FROM xinco_core_log WHERE xinco_core_data_id=" + id);
         stmt.close();
-        stmt = DBM.con.createStatement();
+        /*
+         * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
         audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+id},
                 DBM,"audit.general.delete",userID);
+        */
+        stmt = DBM.con.createStatement();
         stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE xinco_core_data_id=" + id);
         stmt.close();
-        stmt = DBM.con.createStatement();
+        /*
+         * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
         audit.updateAuditTrail("xinco_add_attribute",new String [] {"id ="+id},
                 DBM,"audit.general.delete",userID);
+        */
+        stmt = DBM.con.createStatement();
         stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_core_data_id=" + id);
         stmt.close();
         }catch (Exception e) {
@@ -200,6 +209,7 @@ public class XincoCoreDataServer extends XincoCoreData {
         
         try {
             Statement stmt;
+            XincoCoreAuditServer audit= new XincoCoreAuditServer();
             //delete file / file = 1
             if (getXinco_core_data_type().getId() == 1) {
                 try {
@@ -217,6 +227,8 @@ public class XincoCoreDataServer extends XincoCoreData {
                         }
                 }
             }
+            audit.updateAuditTrail("xinco_core_data",new String [] {"id ="+ getId()},
+                    DBM,"audit.general.delete",this.getChangerID());
             stmt = DBM.con.createStatement();
             stmt.executeUpdate("DELETE FROM xinco_core_data WHERE id=" + getId());
             stmt.close();

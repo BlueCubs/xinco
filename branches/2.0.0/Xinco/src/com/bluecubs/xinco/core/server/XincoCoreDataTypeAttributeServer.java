@@ -93,9 +93,14 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             stmt.executeUpdate("INSERT INTO xinco_core_data_type_attribute VALUES (" + getXinco_core_data_type_id() + ", " + getAttribute_id() + ", '" + getDesignation() + "', '" + getData_type() + "', " + getSize() + ")");
             stmt.close();
             
+            /*
+             * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
             XincoCoreAuditServer audit= new XincoCoreAuditServer();
-            audit.updateAuditTrail("xinco_add_attribute",new String [] {"id ="+getAttribute_id()},
+            audit.updateAuditTrail("xinco_add_attribute",new String [] {"xinco_add_attribute.attribute_id=" + getAttribute_id(),
+            "xinco_add_attribute.xinco_core_data_id IN (SELECT id FROM xinco_core_data WHERE xinco_core_data.xinco_core_data_type_id=" +
+                    getXinco_core_data_type_id()+ ")"},
                     DBM,"audit.datatype.attribute.change",this.getChangerID());
+             */
             
             stmt = DBM.con.createStatement();
             stmt.executeUpdate("INSERT INTO xinco_add_attribute SELECT id, " + getAttribute_id() + ", 0, 0, 0, '', '', now() FROM xinco_core_data WHERE xinco_core_data_type_id = " + getXinco_core_data_type_id());
@@ -124,10 +129,13 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             
             stmt = DBM.con.createStatement();
             XincoCoreAuditServer audit= new XincoCoreAuditServer();
+            /*
+             * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
             audit.updateAuditTrail("xinco_add_attribute",new String [] {"xinco_add_attribute.attribute_id=" + attrCDTA.getAttribute_id(),
             "xinco_add_attribute.xinco_core_data_id IN (SELECT id FROM xinco_core_data WHERE xinco_core_data.xinco_core_data_type_id=" +
                     attrCDTA.getXinco_core_data_type_id()+ ")"},
                     DBM,"audit.general.delete",userID);
+            */
             stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_add_attribute.attribute_id=" +
                     attrCDTA.getAttribute_id() + " AND xinco_add_attribute.xinco_core_data_id IN (SELECT id FROM xinco_core_data WHERE xinco_core_data.xinco_core_data_type_id=" +
                     attrCDTA.getXinco_core_data_type_id() + ")");
