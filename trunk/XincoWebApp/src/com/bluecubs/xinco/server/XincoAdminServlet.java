@@ -1214,6 +1214,7 @@ public class XincoAdminServlet extends HttpServlet {
                     
                     ResultSet rs;
                     XincoDBManager DBM = new XincoDBManager();
+                    DBM.setLoc(loc);
                     String column="id";
                     if(request.getParameter("table").equals("xinco_add_attribute"))
                         column="xinco_core_data_id";
@@ -1237,6 +1238,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("</html>\n");
                 }catch(Exception e){
                     global_error_message = global_error_message + e.toString();
+                    e.printStackTrace();
                 }
             }
             if (current_location.compareTo("AuditQuery") == 0) {

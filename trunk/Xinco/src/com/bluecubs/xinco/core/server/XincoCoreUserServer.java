@@ -291,6 +291,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
         String sql="";
         xerb= ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
         Timestamp ts=null;
+        XincoCoreAuditServer audit= new XincoCoreAuditServer();
         try {
             Statement stmt;
 //            if(getStatus_number()==3 || getStatus_number()==4){
@@ -316,7 +317,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
             if (getId() > 0) {
                 stmt = DBM.con.createStatement();
                 if(isChange()){
-                    XincoCoreAuditServer audit= new XincoCoreAuditServer();
                     audit.updateAuditTrail("xinco_core_user",new String [] {"id ="+getId()},
                             DBM,getReason(),getId());
                     ts= new Timestamp(System.currentTimeMillis());
@@ -354,6 +354,8 @@ public class XincoCoreUserServer extends XincoCoreUser {
                         getEmail().replaceAll("'","\\\\'") + "', " +
                         getStatus_number() +", "+ getAttempts() +", '"+ts.toString()+"')";
                 stmt.executeUpdate(sql);
+                audit.updateAuditTrail("xinco_core_user",new String [] {"id ="+getId()},
+                            DBM,"audit.general.create",getId());
                 stmt.close();
             }
             if(isWriteGroups())

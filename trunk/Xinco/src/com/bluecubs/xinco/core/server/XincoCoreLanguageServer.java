@@ -87,20 +87,22 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
         try {
             
             Statement stmt;
+            XincoCoreAuditServer audit= new XincoCoreAuditServer();
+            ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
             
             if (getId() > 0) {
                 stmt = DBM.con.createStatement();
-                XincoCoreAuditServer audit= new XincoCoreAuditServer();
-                ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+                stmt.executeUpdate("UPDATE xinco_core_language SET sign='" + getSign().replaceAll("'","\\\\'") + "', designation='" + getDesignation().replaceAll("'","\\\\'") + "' WHERE id=" + getId());
                 audit.updateAuditTrail("xinco_core_language",new String [] {"id ="+getId()},
                         DBM,xerb.getString("audit.data.change"),this.getChangerID());
-                stmt.executeUpdate("UPDATE xinco_core_language SET sign='" + getSign().replaceAll("'","\\\\'") + "', designation='" + getDesignation().replaceAll("'","\\\\'") + "' WHERE id=" + getId());
                 stmt.close();
             } else {
                 setId(DBM.getNewID("xinco_core_language"));
                 
                 stmt = DBM.con.createStatement();
                 stmt.executeUpdate("INSERT INTO xinco_core_language VALUES (" + getId() + ", '" + getSign().replaceAll("'","\\\\'") + "', '" + getDesignation().replaceAll("'","\\\\'") + "')");
+                audit.updateAuditTrail("xinco_core_language",new String [] {"id ="+getId()},
+                        DBM,xerb.getString("audit.general.create"),this.getChangerID());
                 stmt.close();
             }
             

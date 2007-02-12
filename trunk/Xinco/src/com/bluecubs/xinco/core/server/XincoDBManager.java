@@ -41,6 +41,7 @@ import javax.sql.DataSource;
 import javax.naming.InitialContext;
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import java.io.PrintWriter;
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
@@ -52,6 +53,7 @@ public class XincoDBManager {
     public static int count = 0;
     private int EmailLink=1,DataLink=2;
     private ResourceBundle lrb = null;
+    private Locale loc=null;
     
     public XincoDBManager() throws Exception {
         lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
@@ -191,5 +193,17 @@ public class XincoDBManager {
             return s;
         }
         return lrb.getString(s);
+    }
+    
+    public void setLoc(Locale loc) {
+        this.loc = loc;
+        if (loc==null)
+            loc = Locale.getDefault();
+        else
+            try {
+                lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
     }
 }

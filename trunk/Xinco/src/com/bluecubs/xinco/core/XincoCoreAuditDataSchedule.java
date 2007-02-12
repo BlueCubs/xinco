@@ -18,6 +18,8 @@ public class XincoCoreAuditDataSchedule  implements java.io.Serializable {
 
     private boolean completed;
 
+    private int idChanger;
+
     public XincoCoreAuditDataSchedule() {
     }
 
@@ -26,12 +28,14 @@ public class XincoCoreAuditDataSchedule  implements java.io.Serializable {
            int data_id,
            int schedule_type_id,
            java.util.Date scheduled_date,
-           boolean completed) {
+           boolean completed,
+           int idChanger) {
            this.schedule_id = schedule_id;
            this.data_id = data_id;
            this.schedule_type_id = schedule_type_id;
            this.scheduled_date = scheduled_date;
            this.completed = completed;
+           this.idChanger = idChanger;
     }
 
 
@@ -134,6 +138,26 @@ public class XincoCoreAuditDataSchedule  implements java.io.Serializable {
         this.completed = completed;
     }
 
+
+    /**
+     * Gets the idChanger value for this XincoCoreAuditDataSchedule.
+     * 
+     * @return idChanger
+     */
+    public int getIdChanger() {
+        return idChanger;
+    }
+
+
+    /**
+     * Sets the idChanger value for this XincoCoreAuditDataSchedule.
+     * 
+     * @param idChanger
+     */
+    public void setIdChanger(int idChanger) {
+        this.idChanger = idChanger;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof XincoCoreAuditDataSchedule)) return false;
@@ -152,7 +176,8 @@ public class XincoCoreAuditDataSchedule  implements java.io.Serializable {
             ((this.scheduled_date==null && other.getScheduled_date()==null) || 
              (this.scheduled_date!=null &&
               this.scheduled_date.equals(other.getScheduled_date()))) &&
-            this.completed == other.isCompleted();
+            this.completed == other.isCompleted() &&
+            this.idChanger == other.getIdChanger();
         __equalsCalc = null;
         return _equals;
     }
@@ -171,6 +196,7 @@ public class XincoCoreAuditDataSchedule  implements java.io.Serializable {
             _hashCode += getScheduled_date().hashCode();
         }
         _hashCode += (isCompleted() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += getIdChanger();
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -209,6 +235,12 @@ public class XincoCoreAuditDataSchedule  implements java.io.Serializable {
         elemField.setFieldName("completed");
         elemField.setXmlName(new javax.xml.namespace.QName("", "completed"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("idChanger");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "idChanger"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
     }

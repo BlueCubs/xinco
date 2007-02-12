@@ -112,6 +112,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             
             Statement stmt;
             String xcnid = "";
+            XincoCoreAuditServer audit= new XincoCoreAuditServer();
             
             if (getId() > 0) {
                 stmt = DBM.con.createStatement();
@@ -121,10 +122,10 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 } else {
                     xcnid = "" + getXinco_core_node_id();
                 }
-                XincoCoreAuditServer audit= new XincoCoreAuditServer();
+
+                stmt.executeUpdate("UPDATE xinco_core_node SET xinco_core_node_id=" + xcnid + ", xinco_core_language_id=" + getXinco_core_language().getId() + ", designation='" + getDesignation().replaceAll("'","\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
                 audit.updateAuditTrail("xinco_core_node",new String [] {"id ="+getId()},
                         DBM,"audit.corenode.change",this.getChangerID());
-                stmt.executeUpdate("UPDATE xinco_core_node SET xinco_core_node_id=" + xcnid + ", xinco_core_language_id=" + getXinco_core_language().getId() + ", designation='" + getDesignation().replaceAll("'","\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
                 stmt.close();
             } else {
                 setId(DBM.getNewID("xinco_core_node"));
@@ -137,6 +138,8 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                     xcnid = "" + getXinco_core_node_id();
                 }
                 stmt.executeUpdate("INSERT INTO xinco_core_node VALUES (" + getId() + ", " + getXinco_core_node_id() + ", " + getXinco_core_language().getId() + ", '" + getDesignation().replaceAll("'","\\\\'") + "', " + getStatus_number() + ")");
+                audit.updateAuditTrail("xinco_core_node",new String [] {"id ="+getId()},
+                        DBM,"audit.general.create",this.getChangerID());
                 stmt.close();
             }
             

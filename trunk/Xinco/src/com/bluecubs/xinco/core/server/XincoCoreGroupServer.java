@@ -76,17 +76,19 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
     public int write2DB(XincoDBManager DBM) throws XincoException{
         try {
             Statement stmt;
+            XincoCoreAuditServer audit= new XincoCoreAuditServer();
             if (getId() > 0) {
                 stmt = DBM.con.createStatement();
-                XincoCoreAuditServer audit= new XincoCoreAuditServer();
+                stmt.executeUpdate("UPDATE xinco_core_group SET designation='" + getDesignation().replaceAll("'","\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
                 audit.updateAuditTrail("xinco_core_group",new String [] {"id ="+getId()},
                         DBM,"audit.coregroup.change",this.getChangerID());
-                stmt.executeUpdate("UPDATE xinco_core_group SET designation='" + getDesignation().replaceAll("'","\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
                 stmt.close();
             } else {
                 setId(DBM.getNewID("xinco_core_group"));
                 stmt = DBM.con.createStatement();
                 stmt.executeUpdate("INSERT INTO xinco_core_group VALUES (" + getId() + ", '" + getDesignation().replaceAll("'","\\\\'") + "', " + getStatus_number() + ")");
+                audit.updateAuditTrail("xinco_core_group",new String [] {"id ="+getId()},
+                        DBM,"audit.general.create",this.getChangerID());
                 stmt.close();
             }
             DBM.con.commit();

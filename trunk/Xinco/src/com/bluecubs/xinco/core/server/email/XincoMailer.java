@@ -21,17 +21,17 @@ import java.io.*;
 
 public class XincoMailer {
     private XincoDBManager DBM;
-    private String SMTP_HOST_NAME = "smtp.bluecubs.com";
-    private String SMTP_AUTH_USER = "myuser@bluecubs.com";
+    private String SMTP_HOST_NAME = "smtp.alcohtgroup.com";
+    private String SMTP_AUTH_USER = "alexisgonzalez@alcohtgroup.com";
     private String SMTP_AUTH_PWD  = "mypsswd";
     
-    private static final String emailMsgTxt      = "Online Order Confirmation Message. Also include the Tracking Number.";
-    private static final String emailSubjectTxt  = "Order Confirmation Subject";
-    private static final String emailFromAddress = "sudhir@javacommerce.com";
+    private static final String emailMsgTxt      = "Xinco email test. Please ignore.";
+    private static final String emailSubjectTxt  = "Xinco email test";
+    private static final String emailFromAddress = "alexisgonzalez@alcohtgroup.com";
     private static final String port = "25";
     
     // Add List of Email address to who email needs to be sent to
-    private static final String[] emailList = {"javier_ortiz@baxter.com"};
+    private static final String[] emailList = {"alexisgonzalez@alcohtgroup.com"};
     
     public static void main(String args[]) throws Exception {
         XincoMailer Xmailer = new XincoMailer();
@@ -58,10 +58,9 @@ public class XincoMailer {
         //Set the host smtp address and related properties
         Properties props = new Properties();
         props.put("mail.smtp.host", SMTP_HOST_NAME);
-        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.auth", "false");//"true");
         props.put("mail.smtp.port", this.port);
-        props.put("mail.smtp.starttls.enable","true");
-        props.put("mail.smtp.auth ", "true ");
+        props.put("mail.smtp.starttls.enable","false");//"true");
         
         Authenticator auth = new SMTPAuthenticator();
         Session session = Session.getDefaultInstance(props, auth);

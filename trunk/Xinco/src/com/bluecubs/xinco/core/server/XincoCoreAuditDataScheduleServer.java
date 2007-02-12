@@ -46,13 +46,65 @@ public class XincoCoreAuditDataScheduleServer extends XincoCoreAuditDataSchedule
         } catch (Exception e) {
             throw new XincoException();
         }
+        try {
+            write2DB(new XincoDBManager());
+        } catch (XincoException ex) {
+            ex.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
     
-    public XincoCoreAuditDataScheduleServer(int s_id,int d_id,int s_type_id,Timestamp s_date,boolean c) {
+    public XincoCoreAuditDataScheduleServer(int s_id,int d_id,int s_type_id,Timestamp s_date,boolean c) throws XincoException{
         setSchedule_id(s_id);
         setData_id(d_id);
         setSchedule_type_id(s_type_id);
         setScheduled_date(s_date);
         setCompleted(c);
+        try {
+            write2DB(new XincoDBManager());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public int write2DB(XincoDBManager DBM) throws XincoException {
+        
+        try {
+            XincoCoreAuditServer audit= new XincoCoreAuditServer();
+            
+            if (getSchedule_id() > 0) {
+                Statement stmt = DBM.con.createStatement();
+                stmt.executeUpdate("UPDATE xinco_schedule_audit SET schedule_id=" + getSchedule_id() +
+                        ", xinco_core_data_id=" + getData_id() + ", xinco_schedule_type_id=" + getSchedule_type_id() +
+                        ", xinco_scheduled_date=" + getScheduled_date() + ", schedule_completed=" + isCompleted() +
+                        " WHERE schedule_id=" + getSchedule_id());
+                audit.updateAuditTrail("xinco_schedule_audit",new String [] {"schedule_id ="+getSchedule_id()},
+                        DBM,"audit.scheduledaudit.change",this.getIdChanger());
+                stmt.close();
+            } else {
+                setSchedule_id(DBM.getNewID("xinco_schedule_audit"));
+                
+                Statement stmt = DBM.con.createStatement();
+                stmt.executeUpdate("INSERT INTO xinco_schedule_audit VALUES (" + getSchedule_id() +
+                        ", " + getData_id() + ", " + getSchedule_type_id() + ", " + getScheduled_date() +
+                        ", " + isCompleted()+")");
+                audit.updateAuditTrail("xinco_schedule_audit",new String [] {"schedule_id ="+getSchedule_id()},
+                        DBM,"audit.general.create",this.getIdChanger());
+                stmt.close();
+            }
+            
+            DBM.con.commit();
+            
+        } catch (Exception e) {
+            try {
+                DBM.con.rollback();
+            } catch (Exception erollback) {
+            }
+            throw new XincoException();
+        }
+        
+        return getSchedule_id();
+        
     }
 }

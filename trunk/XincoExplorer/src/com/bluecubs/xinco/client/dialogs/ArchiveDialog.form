@@ -27,11 +27,11 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="revisionModelLabel" pref="170" max="32767" attributes="0"/>
+                      <Component id="revisionModelLabel" pref="173" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="archiveModelLabel" pref="170" max="32767" attributes="0"/>
+                      <Component id="archiveModelLabel" pref="173" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
@@ -65,12 +65,12 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="dayAmountTextBox" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="146" max="-2" attributes="0"/>
+                              <EmptySpace pref="149" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="revisionModelCheckbox" alignment="0" pref="192" max="32767" attributes="0"/>
+                          <Component id="revisionModelCheckbox" alignment="0" pref="195" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="scheduleAuditCheckBox" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="179" max="-2" attributes="0"/>
+                              <EmptySpace pref="182" max="-2" attributes="0"/>
                           </Group>
                           <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
                               <Component id="scheduleAuditComboBox" alignment="0" max="32767" attributes="1"/>
