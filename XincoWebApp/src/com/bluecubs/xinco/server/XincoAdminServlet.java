@@ -382,7 +382,7 @@ public class XincoAdminServlet extends HttpServlet {
         //create new user
         if (request.getParameter("DialogNewUserSubmit") != null) {
             try {
-                System.out.println("Creating new user...");
+                //System.out.println("Creating new user...");
                 temp_user = new XincoCoreUserServer(0,
                         request.getParameter("DialogNewUserUsername"),
                         request.getParameter("DialogNewUserPassword"),
@@ -411,6 +411,7 @@ public class XincoAdminServlet extends HttpServlet {
         if (request.getParameter("DialogNewGroupSubmit") != null) {
             try {
                 temp_group = new XincoCoreGroupServer(0, request.getParameter("DialogNewGroupName"), 1);
+                temp_group.setChangerID(login_user.getId());
                 temp_group.write2DB(dbm);
             } catch (Exception e) {
             }
@@ -429,6 +430,7 @@ public class XincoAdminServlet extends HttpServlet {
             try {
                 temp_group = new XincoCoreGroupServer(current_group_selection, dbm);
                 temp_group.setDesignation(request.getParameter("DialogEditGroupName"));
+                temp_group.setChangerID(login_user.getId());
                 temp_group.write2DB(dbm);
             } catch (Exception e) {
             }
@@ -1214,6 +1216,7 @@ public class XincoAdminServlet extends HttpServlet {
                     
                     ResultSet rs;
                     XincoDBManager DBM = new XincoDBManager();
+                    DBM.setLoc(loc);
                     String column="id";
                     if(request.getParameter("table").equals("xinco_add_attribute"))
                         column="xinco_core_data_id";
@@ -1237,6 +1240,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("</html>\n");
                 }catch(Exception e){
                     global_error_message = global_error_message + e.toString();
+                    e.printStackTrace();
                 }
             }
             if (current_location.compareTo("AuditQuery") == 0) {

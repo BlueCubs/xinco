@@ -171,20 +171,24 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             }
             for (i=0;i<getXinco_core_data().size();i++) {
                 XincoIndexer.removeXincoCoreData((XincoCoreDataServer)getXinco_core_data().elementAt(i), DBM);
-                ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).removeFromDB(DBM,userID,
+                XincoCoreDataServer.removeFromDB(DBM,userID,
                         ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).getId());
+                ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).setChangerID(userID);
                 ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).deleteFromDB(DBM);
             }
             if (delete_this) {
                 XincoCoreAuditServer audit= new XincoCoreAuditServer();
+                /*
+                 * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
                 audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+getId()},
-                        DBM,"audit.general.delete",this.getChangerID());
+                        DBM,"audit.general.delete",userID);
+                */
                 stmt = DBM.con.createStatement();
                 stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE xinco_core_node_id=" + getId());
                 stmt.close();
-                stmt = DBM.con.createStatement();
                 audit.updateAuditTrail("xinco_core_node",new String [] {"id ="+getId()},
-                        DBM,"audit.general.delete",this.getChangerID());
+                        DBM,"audit.general.delete",userID);
+                stmt = DBM.con.createStatement();
                 stmt.executeUpdate("DELETE FROM xinco_core_node WHERE id=" + getId());
                 stmt.close();
             }

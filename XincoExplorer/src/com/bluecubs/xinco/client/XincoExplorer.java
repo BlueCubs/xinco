@@ -52,7 +52,6 @@ import com.bluecubs.xinco.client.object.XincoAutofitTableColumns;
 import com.bluecubs.xinco.client.object.XincoMenuRepository;
 import com.bluecubs.xinco.client.object.XincoPopUpMenuRepository;
 import com.bluecubs.xinco.client.object.XincoProgressBarThread;
-import com.bluecubs.xinco.client.panel.Repository;
 import com.bluecubs.xinco.core.XincoCoreACE;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataType;
@@ -85,6 +84,7 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.CheckedOutputStream;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -110,6 +110,7 @@ import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.event.MouseInputListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -553,7 +554,7 @@ public class XincoExplorer extends JFrame {
                 xerb.getString("general.version") + " " +
                 xincoClientVersion.getVersion_high() + "." +
                 xincoClientVersion.getVersion_mid() + "." +
-                xincoClientVersion.getVersion_low() + " " +
+                xincoClientVersion.getVersion_low() + "" +
                 xincoClientVersion.getVersion_postfix());
         this.setJMenuBar(getJJMenuBar());
         this.setContentPane(getJDesktopPane());
@@ -721,11 +722,9 @@ public class XincoExplorer extends JFrame {
      */
     private javax.swing.JPanel getJContentPaneRepository() {
         if(jContentPaneRepository == null) {
-            getJTableRepository();
-            jContentPaneRepository = new Repository(this);
-//            jContentPaneRepository = new javax.swing.JPanel();
-//            jContentPaneRepository.setLayout(new java.awt.BorderLayout());
-//            jContentPaneRepository.add(getJSplitPaneRepository(), java.awt.BorderLayout.CENTER);
+            jContentPaneRepository = new javax.swing.JPanel();
+            jContentPaneRepository.setLayout(new java.awt.BorderLayout());
+            jContentPaneRepository.add(getJSplitPaneRepository(), java.awt.BorderLayout.CENTER);
         }
         return jContentPaneRepository;
     }
@@ -769,7 +768,7 @@ public class XincoExplorer extends JFrame {
      *
      * @return javax.swing.JScrollPane
      */
-    public javax.swing.JScrollPane getJScrollPaneRepositoryTree() {
+    private javax.swing.JScrollPane getJScrollPaneRepositoryTree() {
         if(jScrollPaneRepositoryTree == null) {
             jScrollPaneRepositoryTree = new javax.swing.JScrollPane();
             jScrollPaneRepositoryTree.setViewportView(getJTreeRepository());
@@ -781,7 +780,7 @@ public class XincoExplorer extends JFrame {
      *
      * @return javax.swing.JScrollPane
      */
-    public javax.swing.JScrollPane getJScrollPaneRepositoryTable() {
+    private javax.swing.JScrollPane getJScrollPaneRepositoryTable() {
         if(jScrollPaneRepositoryTable == null) {
             jScrollPaneRepositoryTable = new javax.swing.JScrollPane();
             jScrollPaneRepositoryTable.setViewportView(getJTableRepository());
@@ -789,7 +788,9 @@ public class XincoExplorer extends JFrame {
         }
         return jScrollPaneRepositoryTable;
     }
-        
+    
+    
+    
     /**
      * This method initializes jTreeRepository
      *
@@ -1147,13 +1148,6 @@ public class XincoExplorer extends JFrame {
                             rdata[1] = rdata[1] +
                                     "-";
                         }
-                        if (temp_ace.isAudit_permission()) {
-                            rdata[1] = rdata[1] +
-                                    "Au";
-                        } else {
-                            rdata[1] = rdata[1] +
-                                    "-";
-                        }
                         rdata[1] = rdata[1] +
                                 "]";
                         dtm.addRow(rdata);
@@ -1242,13 +1236,6 @@ public class XincoExplorer extends JFrame {
                         if (temp_ace.isAdmin_permission()) {
                             rdata[1] = rdata[1] +
                                     "A";
-                        } else {
-                            rdata[1] = rdata[1] +
-                                    "-";
-                        }
-                        if (temp_ace.isAudit_permission()) {
-                            rdata[1] = rdata[1] +
-                                    "Au";
                         } else {
                             rdata[1] = rdata[1] +
                                     "-";
@@ -1366,9 +1353,9 @@ public class XincoExplorer extends JFrame {
                                             " / " +
                                             cal.get(Calendar.DAY_OF_MONTH) +
                                             " / " +
-                                            cal.get(Calendar.YEAR) +
-                                            " ";
-                                            if(cal.get(Calendar.HOUR_OF_DAY)<10)
+                                            cal.get(Calendar.YEAR)+
+                                            " " ;
+                                    if(cal.get(Calendar.HOUR_OF_DAY)<10)
                                         rdata[0]+="0"+cal.get(Calendar.HOUR_OF_DAY)+":";
                                     else
                                         rdata[0]+=cal.get(Calendar.HOUR_OF_DAY)+":";
@@ -1475,7 +1462,8 @@ public class XincoExplorer extends JFrame {
     private javax.swing.JTable getJTableRepository() {
         if(jTableRepository == null) {
             String[] cn = {xerb.getString("window.repository.table.attribute"),xerb.getString("window.repository.table.details")};
-            DefaultTableModel dtm = new DefaultTableModel(cn, 0) { 
+            DefaultTableModel dtm = new DefaultTableModel(cn, 0) {
+                
                 @Override
                 public boolean isCellEditable(int row, int column) {
                     return false;
@@ -1702,9 +1690,9 @@ public class XincoExplorer extends JFrame {
                             xincoClientSession.xinco_service = new XincoServiceLocator();
                             xincoClientSession.xinco = xincoClientSession.xinco_service.getXinco(new java.net.URL(xincoClientSession.service_endpoint));
                             xincoClientSession.server_version = xincoClientSession.xinco.getXincoServerVersion();
-                            //check if client and server versions match
-                            if (xincoClientVersion.getVersion_high() != xincoClientSession.server_version.getVersion_high()) {
-                                throw new XincoException(xerb.getString("menu.connection.error.serverversion") + " " + xincoClientSession.server_version.getVersion_high() + ".x");
+                            //check if client and server versions match (high AND mid must match!)
+                            if ((xincoClientVersion.getVersion_high() != xincoClientSession.server_version.getVersion_high()) || (xincoClientVersion.getVersion_mid() != xincoClientSession.server_version.getVersion_mid())) {
+                                throw new XincoException(xerb.getString("menu.connection.error.serverversion") + " " + xincoClientSession.server_version.getVersion_high() + "." + xincoClientSession.server_version.getVersion_mid() + ".x");
                             }
                             if ((temp = xincoClientSession.xinco.getCurrentXincoCoreUser(xincoClientSession.user.getUsername(), xincoClientSession.user.getUserpassword())) == null) {
                                 throw new XincoException(xerb.getString("menu.connection.error.user"));

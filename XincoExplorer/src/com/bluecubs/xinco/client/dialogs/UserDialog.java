@@ -1,4 +1,37 @@
-/*
+/**
+ *Copyright 2006 blueCubs.com
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License");
+ *you may not use this file except in compliance with the License.
+ *You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *Unless required by applicable law or agreed to in writing, software
+ *distributed under the License is distributed on an "AS IS" BASIS,
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *See the License for the specific language governing permissions and
+ *limitations under the License.
+ *
+ *************************************************************
+ * This project supports the blueCubs vision of giving back
+ * to the community in exchange for free software!
+ * More information on: http://www.bluecubs.org
+ *************************************************************
+ *
+ * Name:            UserDialog
+ *
+ * Description:     User Dialog
+ *
+ * Original Author: Javier A. Ortiz
+ * Date:            2006
+ *
+ * Modifications:
+ *
+ * Who?             When?             What?
+ * 
+ *
+ *************************************************************
  * UserDialog.java
  *
  * Created on September 25, 2006, 6:16 PM
@@ -249,15 +282,14 @@ public class UserDialog extends javax.swing.JDialog {
     
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         if ((new String(password.getPassword())).equals(new String(verification.getPassword()))) {
-            XincoCoreUser temp;
             try {
                 if (this.isAged &&
                     !this.explorer.getSession().xinco.checkXincoCoreUserNewPassword(new String(password.getPassword()),
                                                                                     this.explorer.getSession().user,
                                                                                     null)) {
-                    System.out.println(this.explorer.getSession().xinco.checkXincoCoreUserNewPassword(new String(password.getPassword()),
+                    this.explorer.getSession().xinco.checkXincoCoreUserNewPassword(new String(password.getPassword()),
                                                                                                       this.explorer.getSession().user,
-                                                                                                      null));
+                                                                                                      null);
                     throw new XincoException(explorer.getResourceBundle().getString("password.unusable"));
                 }
                 explorer.getUser().setId(explorer.getSession().user.getId());
@@ -269,44 +301,39 @@ public class UserDialog extends javax.swing.JDialog {
                 explorer.getUser().setXinco_core_groups(explorer.getSession().user.getXinco_core_groups());
                 explorer.getUser().setStatus_number(explorer.getSession().user.getStatus_number());
                 explorer.getUser().setChange(true);
-                {
-                    if ((temp = explorer.getSession().xinco.setXincoCoreUser(explorer.getUser(),
-                                                                         explorer.getSession().user)) ==
-                    null) {
-                        throw new XincoException(explorer.getResourceBundle().getString("window.userinfo.updatefailedonserver"));
-                    }
-                    explorer.getUser().setUserpassword(new String(password.getPassword()));
-                    ChangeReasonDialog crd = null;
-                    boolean enable;
-                    if (isAged)
-                        enable = false;
-                    else
-                        enable = true;
-                    this.email.setEnabled(enable);
-                    this.lastname.setEditable(enable);
-                    this.name.setEditable(enable);
-                    this.status.setEditable(enable);
-                    this.username.setEditable(enable);
-                    // Prompt for change reason
-                    if (!isAged) {
-                        crd = new ChangeReasonDialog(new javax.swing.JFrame(),
-                                                     true, explorer);
-                        crd.setVisible(true);
-                        while (!crd.done)
-                            ;
-                    }
-                    explorer.getUser().setChangerID(explorer.getUser().getId());
-                    explorer.getUser().setWriteGroups(true);
-                    explorer.getUser().setChange(true);
-                    explorer.getUser().setStatus_number(1);
-                    if (isAged) {
-                        explorer.getUser().setReason("audit.user.account.aged");
-                        explorer.getUser().setStatus_number(4);
-                    } else
-                        explorer.getUser().setReason(crd.getReason());
-                    explorer.getSession().user = explorer.getSession().xinco.setXincoCoreUser(explorer.getUser(),
-                                                                        explorer.getSession().user);
+                explorer.getUser().setUserpassword(new String(password.getPassword()));
+                ChangeReasonDialog crd = null;
+                boolean enable;
+                if (isAged)
+                    enable = false;
+                else
+                    enable = true;
+                this.email.setEnabled(enable);
+                this.lastname.setEditable(enable);
+                this.name.setEditable(enable);
+                this.status.setEditable(enable);
+                this.username.setEditable(enable);
+                // Prompt for change reason
+                if (!isAged) {
+                    crd = new ChangeReasonDialog(new javax.swing.JFrame(),
+                                                 true, explorer);
+                    crd.setVisible(true);
+                    while (!crd.done)
+                        ;
                 }
+                explorer.getUser().setChangerID(explorer.getUser().getId());
+                explorer.getUser().setWriteGroups(true);
+                explorer.getUser().setChange(true);
+                explorer.getUser().setStatus_number(1);
+                if (isAged) {
+                    explorer.getUser().setReason("audit.user.account.aged");
+                    explorer.getUser().setStatus_number(4);
+                } else
+                    explorer.getUser().setReason(crd.getReason());
+                explorer.getSession().user = explorer.getSession().xinco.setXincoCoreUser(explorer.getUser(),
+                                                                    explorer.getSession().user);
+                // set plain-text password
+                explorer.getSession().user.setUserpassword(explorer.getUser().getUserpassword());
                 // update transaction info
                 explorer.jLabelInternalFrameInformationText.setText(explorer.getResourceBundle().getString("window.userinfo.updatesuccess"));
                 setVisible(false);

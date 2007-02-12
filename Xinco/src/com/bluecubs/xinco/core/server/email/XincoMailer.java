@@ -36,7 +36,7 @@ public class XincoMailer {
     public static void main(String args[]) throws Exception {
         XincoMailer Xmailer = new XincoMailer();
         Xmailer.postMail( emailList, emailSubjectTxt, emailMsgTxt, emailFromAddress);
-        System.out.println("Sucessfully Sent mail to All Users");
+        //System.out.println("Sucessfully Sent mail to All Users");
     }
     
     public void setHost(String host){

@@ -1,4 +1,37 @@
-/*
+/**
+ *Copyright 2006 blueCubs.com
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License");
+ *you may not use this file except in compliance with the License.
+ *You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *Unless required by applicable law or agreed to in writing, software
+ *distributed under the License is distributed on an "AS IS" BASIS,
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *See the License for the specific language governing permissions and
+ *limitations under the License.
+ *
+ *************************************************************
+ * This project supports the blueCubs vision of giving back
+ * to the community in exchange for free software!
+ * More information on: http://www.bluecubs.org
+ *************************************************************
+ *
+ * Name:            ACLDialog
+ *
+ * Description:     ACL Dialog
+ *
+ * Original Author: Javier A. Ortiz
+ * Date:            2006
+ *
+ * Modifications:
+ *
+ * Who?             When?             What?
+ * 
+ *
+ *************************************************************
  * ACLDialog.java
  *
  * Created on October 31, 2006, 8:21 AM
@@ -38,7 +71,6 @@ public class ACLDialog extends javax.swing.JDialog {
         this.ACLWarning.setText(explorer.getResourceBundle().getString("window.acl.note"));
         this.AddACE.setText(explorer.getResourceBundle().getString("window.acl.addace"));
         this.Admin.setText(explorer.getResourceBundle().getString("general.acl.adminpermission"));
-        this.Audit.setText(explorer.getResourceBundle().getString("general.acl.auditpermission"));
         this.Close.setText(explorer.getResourceBundle().getString("general.close"));
         this.Execute.setText(explorer.getResourceBundle().getString("general.acl.executepermission"));
         this.Read.setText(explorer.getResourceBundle().getString("general.acl.readpermission"));
@@ -119,11 +151,6 @@ public class ACLDialog extends javax.swing.JDialog {
             } else {
                 temp_string = temp_string + "-";
             }
-            if (temp_ace.isAudit_permission()) {
-                temp_string = temp_string + "Au";
-            } else {
-                temp_string = temp_string + "-";
-            }
             temp_string = temp_string + "]";
             list[i]=new String(temp_string);
         }
@@ -136,18 +163,6 @@ public class ACLDialog extends javax.swing.JDialog {
      */
     public void setACLGroupModel(final String [] list){
         groupList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = list;
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-    }
-    
-    /**
-     * Sets ACL user model.
-     * @param list String array containing the list.
-     */
-    public void setACLUserModel(final String [] list){
-        userList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = list;
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
@@ -174,14 +189,6 @@ public class ACLDialog extends javax.swing.JDialog {
         return this.groupList.getModel();
     }
     
-    /**
-     * Get ACL user model.
-     * @return Group list model.
-     */
-    public ListModel getACLUserModel(){
-        return this.userList.getModel();
-    }
-    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -203,13 +210,15 @@ public class ACLDialog extends javax.swing.JDialog {
         RemoveACE = new javax.swing.JButton();
         ACLWarning = new javax.swing.JLabel();
         Close = new javax.swing.JButton();
-        Audit = new javax.swing.JCheckBox();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        userList = new javax.swing.JList();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         aclAddLabel.setText("jLabel1");
 
+        groupList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "test" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
         groupList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(groupList);
 
@@ -257,53 +266,45 @@ public class ACLDialog extends javax.swing.JDialog {
             }
         });
 
-        Audit.setText("jCheckBox1");
-        Audit.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        Audit.setMargin(new java.awt.Insets(0, 0, 0, 0));
-
-        userList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane3.setViewportView(userList);
-
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE))
-                    .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
                         .add(ACLWarning, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(Admin, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(125, 125, 125)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(RemoveACE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
                             .add(Close, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
                         .add(120, 120, 120))
-                    .add(layout.createSequentialGroup()
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
                         .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE))
-                    .add(layout.createSequentialGroup()
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(aclRemoveLabel))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                        .add(123, 123, 123)
+                        .add(AddACE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                        .add(122, 122, 122))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(Write, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
-                            .add(aclAddLabel)))
-                    .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(aclRemoveLabel)
-                        .add(79, 79, 79)
-                        .add(AddACE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-                        .add(122, 122, 122))
-                    .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(Read, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
-                            .add(Admin, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, Write, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, Audit, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, Execute, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE))))
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                                .add(aclAddLabel)
+                                .add(Read, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .add(Execute, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -312,9 +313,7 @@ public class ACLDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .add(aclAddLabel)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 55, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 53, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(Read)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -323,8 +322,6 @@ public class ACLDialog extends javax.swing.JDialog {
                 .add(Write)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(Admin)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(Audit)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
@@ -409,7 +406,6 @@ public class ACLDialog extends javax.swing.JDialog {
                 newace.setWrite_permission(this.Write.isSelected());
                 newace.setExecute_permission(this.Execute.isSelected());
                 newace.setAdmin_permission(this.Admin.isSelected());
-                newace.setAudit_permission(this.Audit.isSelected());
                 if ((newace = this.explorer.getSession().xinco.setXincoCoreACE(newace, this.explorer.getSession().user)) == null) {
                     throw new XincoException(this.explorer.getResourceBundle().getString("error.noadminpermission"));
                 }
@@ -428,7 +424,6 @@ public class ACLDialog extends javax.swing.JDialog {
     private javax.swing.JLabel ACLWarning;
     private javax.swing.JButton AddACE;
     private javax.swing.JCheckBox Admin;
-    private javax.swing.JCheckBox Audit;
     private javax.swing.JButton Close;
     private javax.swing.JCheckBox Execute;
     private javax.swing.JCheckBox Read;
@@ -440,8 +435,6 @@ public class ACLDialog extends javax.swing.JDialog {
     private javax.swing.JList groupList;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JList userList;
     // End of variables declaration//GEN-END:variables
     
 }

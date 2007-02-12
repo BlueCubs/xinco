@@ -79,6 +79,5 @@
         <signjar jar="${build.dir}/web/client/xmlParserAPIs.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/napkinlaf.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/substance.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/jcalendar.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
     </target>
 </project>
