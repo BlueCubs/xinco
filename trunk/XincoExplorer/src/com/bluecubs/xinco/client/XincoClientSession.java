@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * Javier A. Ortiz  02/07/2006        Added vector of all users.
+ * -                -                 -
  *
  *************************************************************
  */
@@ -77,10 +77,6 @@ public class XincoClientSession {
      */
     public Vector server_groups = null;
     /**
-     * Server groups
-     */
-    public Vector server_users = null;
-    /**
      * Server languages
      */
     public Vector server_languages = null;
@@ -118,7 +114,6 @@ public class XincoClientSession {
         xincoClientRepository = new XincoClientRepository();
         server_version = new XincoVersion();
         server_groups = new Vector();
-        server_users = new Vector();
         server_languages = new Vector();
         server_datatypes = new Vector();
         clipboardTreeNodeSelection = new Vector();

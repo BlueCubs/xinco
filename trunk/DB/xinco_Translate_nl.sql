@@ -22,36 +22,36 @@ UPDATE xinco_core_data_type SET designation = 'Data', description = 'Op server o
 UPDATE xinco_core_data_type SET designation = 'Text', description = 'In de database opgeslagen tekst.' WHERE id=2;
 -- Original Designation: URL Description: General uniform ressource locator.
 UPDATE xinco_core_data_type SET designation = 'URL', description = 'Algemene externe links.' WHERE id=3;
--- Original Designation: Contact Description: Contact', 'Personal and business contacts.
+-- Original Designation: Contact Description: Personal and business contacts.
 UPDATE xinco_core_data_type SET designation = 'Contact', description = 'Persoonlijke en organisatiecontacten' WHERE id=4;
 
 
 
--- Original Designation: File Name
+-- Original Designation: File_Name
 UPDATE xinco_core_data_type_attribute SET designation = 'Bestandsnaam' WHERE xinco_core_data_type_id=1 AND attribute_id=1;
 -- Original Designation: Size
 UPDATE xinco_core_data_type_attribute SET designation = 'Grootte' WHERE xinco_core_data_type_id=1 AND attribute_id=2;
 -- Original Designation: Checksum
 UPDATE xinco_core_data_type_attribute SET designation = 'Checksum' WHERE xinco_core_data_type_id=1 AND attribute_id=3;
 
--- Original Designation: Revision Model
+-- Original Designation: Revision_Model
 UPDATE xinco_core_data_type_attribute SET designation = 'Revisiemodel' WHERE xinco_core_data_type_id=1 AND attribute_id=4;
--- Original Designation: Archiving Model
+-- Original Designation: Archiving_Model
 UPDATE xinco_core_data_type_attribute SET designation = 'Archiveringsmodel' WHERE xinco_core_data_type_id=1 AND attribute_id=5;
--- Original Designation: Archiving Date
+-- Original Designation: Archiving_Date
 UPDATE xinco_core_data_type_attribute SET designation = 'Archiveringsdatum' WHERE xinco_core_data_type_id=1 AND attribute_id=6;
--- Original Designation: Archiving Days
+-- Original Designation: Archiving_Days
 UPDATE xinco_core_data_type_attribute SET designation = 'Archiveringsdagen' WHERE xinco_core_data_type_id=1 AND attribute_id=7;
--- Original Designation: Archiving Location
+-- Original Designation: Archiving_Location
 UPDATE xinco_core_data_type_attribute SET designation = 'Archiveringsplek' WHERE xinco_core_data_type_id=1 AND attribute_id=8;
 
 -- Original Designation: Description
 UPDATE xinco_core_data_type_attribute SET designation = 'Beschrijving' WHERE xinco_core_data_type_id=1 AND attribute_id=9;
--- Original Designation: Keyword 1
+-- Original Designation: Keyword_1
 UPDATE xinco_core_data_type_attribute SET designation = 'Steekwoord_1' WHERE xinco_core_data_type_id=1 AND attribute_id=10;
--- Original Designation: Keyword 2
+-- Original Designation: Keyword_2
 UPDATE xinco_core_data_type_attribute SET designation = 'Steekwoord_2' WHERE xinco_core_data_type_id=1 AND attribute_id=11;
--- Original Designation: Keyword 3
+-- Original Designation: Keyword_3
 UPDATE xinco_core_data_type_attribute SET designation = 'Steekwoord_3' WHERE xinco_core_data_type_id=1 AND attribute_id=12;
 
 -- Original Designation: Text
@@ -61,17 +61,17 @@ UPDATE xinco_core_data_type_attribute SET designation = 'Tekst' WHERE xinco_core
 UPDATE xinco_core_data_type_attribute SET designation = 'Aanspreektitel' WHERE xinco_core_data_type_id=4 AND attribute_id=1;
 -- Original Designation: Firstname
 UPDATE xinco_core_data_type_attribute SET designation = 'Voornaam' WHERE xinco_core_data_type_id=4 AND attribute_id=2;
--- Original Designation: Middle Name
+-- Original Designation: Middle_Name
 UPDATE xinco_core_data_type_attribute SET designation = 'Tweede_Voornaam' WHERE xinco_core_data_type_id=4 AND attribute_id=3;
--- Original Designation: Last Name
+-- Original Designation: Last_Name
 UPDATE xinco_core_data_type_attribute SET designation = 'Achternaam' WHERE xinco_core_data_type_id=4 AND attribute_id=4;
--- Original Designation: Name Affix
+-- Original Designation: Name_Affix
 UPDATE xinco_core_data_type_attribute SET designation = 'Achtervoegsel' WHERE xinco_core_data_type_id=4 AND attribute_id=5;
--- Original Designation: Phone (business)
+-- Original Designation: Phone_business
 UPDATE xinco_core_data_type_attribute SET designation = 'Telefoon_bedrijf' WHERE xinco_core_data_type_id=4 AND attribute_id=6;
--- Original Designation: Phone (private)
+-- Original Designation: Phone_private
 UPDATE xinco_core_data_type_attribute SET designation = 'Telefoon_prive' WHERE xinco_core_data_type_id=4 AND attribute_id=7;
--- Original Designation:  Phone (mobile)
+-- Original Designation: Phone_mobile
 UPDATE xinco_core_data_type_attribute SET designation = 'Telefoon_mobiel' WHERE xinco_core_data_type_id=4 AND attribute_id=8;
 -- Original Designation: Fax
 UPDATE xinco_core_data_type_attribute SET designation = 'Fax' WHERE xinco_core_data_type_id=4 AND attribute_id=9;
@@ -79,17 +79,17 @@ UPDATE xinco_core_data_type_attribute SET designation = 'Fax' WHERE xinco_core_d
 UPDATE xinco_core_data_type_attribute SET designation = 'E-mail' WHERE xinco_core_data_type_id=4 AND attribute_id=10;
 -- Original Designation: Website
 UPDATE xinco_core_data_type_attribute SET designation = 'Website' WHERE xinco_core_data_type_id=4 AND attribute_id=11;
--- Original Designation: Street Address
+-- Original Designation: Street_Address
 UPDATE xinco_core_data_type_attribute SET designation = 'Straat' WHERE xinco_core_data_type_id=4 AND attribute_id=12;
--- Original Designation: Postal Code
+-- Original Designation: Postal_Code
 UPDATE xinco_core_data_type_attribute SET designation = 'Postcode' WHERE xinco_core_data_type_id=4 AND attribute_id=13;
 -- Original Designation: City
 UPDATE xinco_core_data_type_attribute SET designation = 'Plaatsnaam' WHERE xinco_core_data_type_id=4 AND attribute_id=14;
--- Original Designation: State / Province
+-- Original Designation: State_Province
 UPDATE xinco_core_data_type_attribute SET designation = 'Provincie' WHERE xinco_core_data_type_id=4 AND attribute_id=15;
 -- Original Designation: Country
 UPDATE xinco_core_data_type_attribute SET designation = 'Land' WHERE xinco_core_data_type_id=4 AND attribute_id=16;
--- Original Designation: Company Name
+-- Original Designation: Company_Name
 UPDATE xinco_core_data_type_attribute SET designation = 'Bedrijfsnaam' WHERE xinco_core_data_type_id=4 AND attribute_id=17;
 -- Original Designation: Position
 UPDATE xinco_core_data_type_attribute SET designation = 'Positie' WHERE xinco_core_data_type_id=4 AND attribute_id=18;

@@ -66,7 +66,6 @@ public class LogDialog extends javax.swing.JDialog {
         setTitle(explorer.getResourceBundle().getString("window.loggingdetails"));
         this.actionLabel.setText(explorer.getResourceBundle().getString("window.loggingdetails.action") + ":");
         this.versionLabel.setText(explorer.getResourceBundle().getString("general.version") + ":");
-        this.versionLabel.setText(explorer.getResourceBundle().getString("general.version") + ":");
         this.continueButton.setText(explorer.getResourceBundle().getString("general.continue"));
         this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
         this.versionPostfixLabel.setText(explorer.getResourceBundle().getString("general.version.postfix"));
@@ -86,10 +85,14 @@ public class LogDialog extends javax.swing.JDialog {
             text = "" + ((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_description();
             this.action.setText(text);
             //Increase high after a checkin
-            if(((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code()==5)
+            if(((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code()==5){
                 text = "" + (((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_high()+1);
-            else
+                this.versionHigh.setEditable(false);
+            }
+            else{
                 text = "" + ((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_high();
+                this.versionHigh.setEditable(true);
+            }
             this.versionHigh.setText(text);
             //TODO Increase based on workflow
 //            if(((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code()==<review op code>)
@@ -98,10 +101,14 @@ public class LogDialog extends javax.swing.JDialog {
             text = "" + ((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_mid();
             this.versionMid.setText(text);
             //Increase low after adding a comment or changing metadata
-            if(((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code()==9)
+            if(((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code()==9){
                 text = "" + (((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_low()+1);
-            else
+                this.versionLow.setEditable(false);
+            }
+            else{
                 text = "" + ((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_low();
+                this.versionLow.setEditable(true);
+            }
             this.versionLow.setText(text);
             //TODO set different postfixes for workflows: draft, review, etc...
 //            if(((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code()==<review op code>)

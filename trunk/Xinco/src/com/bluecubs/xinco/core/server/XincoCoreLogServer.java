@@ -108,11 +108,11 @@ public class XincoCoreLogServer extends XincoCoreLog {
     public int write2DB(XincoDBManager DBM) throws XincoException {
         
         try {
-            XincoCoreAuditServer audit= new XincoCoreAuditServer();
-            ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
             
             if (getId() > 0) {
                 Statement stmt = DBM.con.createStatement();
+                XincoCoreAuditServer audit= new XincoCoreAuditServer();
+                ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+getId()},
                         DBM,xerb.getString("audit.log.change"),this.getChangerID());
                 stmt.executeUpdate("UPDATE xinco_core_log SET xinco_core_data_id=" + getXinco_core_data_id() + ", xinco_core_user_id=" + getXinco_core_user_id() + ", op_code=" + getOp_code() + ", op_datetime=now(), op_description='" + getOp_description().replaceAll("'","\\\\'") + "', version_high=" + getVersion().getVersion_high() + ", version_mid=" + getVersion().getVersion_mid() + ", version_low=" + getVersion().getVersion_low() + ", version_postfix='" + getVersion().getVersion_postfix().replaceAll("'","\\\\'") + "' WHERE id=" + getId());
@@ -122,8 +122,6 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 
                 Statement stmt = DBM.con.createStatement();
                 stmt.executeUpdate("INSERT INTO xinco_core_log VALUES (" + getId() + ", " + getXinco_core_data_id() + ", " + getXinco_core_user_id() + ", " + getOp_code() + ", now(), '" + getOp_description().replaceAll("'","\\\\'") + "', " + getVersion().getVersion_high() + ", " + getVersion().getVersion_mid() + ", " + getVersion().getVersion_low() + ", '" + getVersion().getVersion_postfix().replaceAll("'","\\\\'") + "')");
-                audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+getId()},
-                        DBM,xerb.getString("audit.general.create"),this.getChangerID());
                 stmt.close();
             }
             

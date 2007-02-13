@@ -112,7 +112,6 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             
             Statement stmt;
             String xcnid = "";
-            XincoCoreAuditServer audit= new XincoCoreAuditServer();
             
             if (getId() > 0) {
                 stmt = DBM.con.createStatement();
@@ -122,10 +121,10 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 } else {
                     xcnid = "" + getXinco_core_node_id();
                 }
-
-                stmt.executeUpdate("UPDATE xinco_core_node SET xinco_core_node_id=" + xcnid + ", xinco_core_language_id=" + getXinco_core_language().getId() + ", designation='" + getDesignation().replaceAll("'","\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
+                XincoCoreAuditServer audit= new XincoCoreAuditServer();
                 audit.updateAuditTrail("xinco_core_node",new String [] {"id ="+getId()},
                         DBM,"audit.corenode.change",this.getChangerID());
+                stmt.executeUpdate("UPDATE xinco_core_node SET xinco_core_node_id=" + xcnid + ", xinco_core_language_id=" + getXinco_core_language().getId() + ", designation='" + getDesignation().replaceAll("'","\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
                 stmt.close();
             } else {
                 setId(DBM.getNewID("xinco_core_node"));
@@ -138,8 +137,6 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                     xcnid = "" + getXinco_core_node_id();
                 }
                 stmt.executeUpdate("INSERT INTO xinco_core_node VALUES (" + getId() + ", " + getXinco_core_node_id() + ", " + getXinco_core_language().getId() + ", '" + getDesignation().replaceAll("'","\\\\'") + "', " + getStatus_number() + ")");
-                audit.updateAuditTrail("xinco_core_node",new String [] {"id ="+getId()},
-                        DBM,"audit.general.create",this.getChangerID());
                 stmt.close();
             }
             
@@ -174,20 +171,24 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             }
             for (i=0;i<getXinco_core_data().size();i++) {
                 XincoIndexer.removeXincoCoreData((XincoCoreDataServer)getXinco_core_data().elementAt(i), DBM);
-                ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).removeFromDB(DBM,userID,
+                XincoCoreDataServer.removeFromDB(DBM,userID,
                         ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).getId());
+                ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).setChangerID(userID);
                 ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).deleteFromDB(DBM);
             }
             if (delete_this) {
                 XincoCoreAuditServer audit= new XincoCoreAuditServer();
+                /*
+                 * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
                 audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+getId()},
-                        DBM,"audit.general.delete",this.getChangerID());
+                        DBM,"audit.general.delete",userID);
+                */
                 stmt = DBM.con.createStatement();
                 stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE xinco_core_node_id=" + getId());
                 stmt.close();
-                stmt = DBM.con.createStatement();
                 audit.updateAuditTrail("xinco_core_node",new String [] {"id ="+getId()},
-                        DBM,"audit.general.delete",this.getChangerID());
+                        DBM,"audit.general.delete",userID);
+                stmt = DBM.con.createStatement();
                 stmt.executeUpdate("DELETE FROM xinco_core_node WHERE id=" + getId());
                 stmt.close();
             }

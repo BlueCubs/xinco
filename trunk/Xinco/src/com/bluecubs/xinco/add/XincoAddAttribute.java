@@ -24,8 +24,6 @@ public class XincoAddAttribute  implements java.io.Serializable {
 
     private int xinco_core_data_id;
 
-    private int changerID;
-
     public XincoAddAttribute() {
     }
 
@@ -37,8 +35,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
            long attrib_unsignedint,
            java.lang.String attrib_varchar,
            int attribute_id,
-           int xinco_core_data_id,
-           int changerID) {
+           int xinco_core_data_id) {
            this.attrib_datetime = attrib_datetime;
            this.attrib_double = attrib_double;
            this.attrib_int = attrib_int;
@@ -47,7 +44,6 @@ public class XincoAddAttribute  implements java.io.Serializable {
            this.attrib_varchar = attrib_varchar;
            this.attribute_id = attribute_id;
            this.xinco_core_data_id = xinco_core_data_id;
-           this.changerID = changerID;
     }
 
 
@@ -210,26 +206,6 @@ public class XincoAddAttribute  implements java.io.Serializable {
         this.xinco_core_data_id = xinco_core_data_id;
     }
 
-
-    /**
-     * Gets the changerID value for this XincoAddAttribute.
-     * 
-     * @return changerID
-     */
-    public int getChangerID() {
-        return changerID;
-    }
-
-
-    /**
-     * Sets the changerID value for this XincoAddAttribute.
-     * 
-     * @param changerID
-     */
-    public void setChangerID(int changerID) {
-        this.changerID = changerID;
-    }
-
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof XincoAddAttribute)) return false;
@@ -255,8 +231,7 @@ public class XincoAddAttribute  implements java.io.Serializable {
              (this.attrib_varchar!=null &&
               this.attrib_varchar.equals(other.getAttrib_varchar()))) &&
             this.attribute_id == other.getAttribute_id() &&
-            this.xinco_core_data_id == other.getXinco_core_data_id() &&
-            this.changerID == other.getChangerID();
+            this.xinco_core_data_id == other.getXinco_core_data_id();
         __equalsCalc = null;
         return _equals;
     }
@@ -282,7 +257,6 @@ public class XincoAddAttribute  implements java.io.Serializable {
         }
         _hashCode += getAttribute_id();
         _hashCode += getXinco_core_data_id();
-        _hashCode += getChangerID();
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -338,12 +312,6 @@ public class XincoAddAttribute  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("xinco_core_data_id");
         elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_data_id"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("changerID");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "changerID"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);

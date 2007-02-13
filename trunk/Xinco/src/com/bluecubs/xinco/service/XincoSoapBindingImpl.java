@@ -9,7 +9,6 @@ package com.bluecubs.xinco.service;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.core.XincoCoreACE;
-import com.bluecubs.xinco.core.XincoCoreAuditDataSchedule;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreLog;
@@ -18,7 +17,6 @@ import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoVersion;
 import com.bluecubs.xinco.core.server.XincoCoreACEServer;
-import com.bluecubs.xinco.core.server.XincoCoreAuditDataScheduleServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataTypeServer;
 import com.bluecubs.xinco.core.server.XincoCoreGroupServer;
@@ -35,12 +33,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.rmi.RemoteException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ResourceBundle;
-import java.util.Vector;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.CheckedOutputStream;
@@ -82,6 +75,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             dbm.con.close();
             return v;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -565,7 +559,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 if (insertnewnode) {
                     XincoCoreACEServer newace;
                     //owner
-                    newace = new XincoCoreACEServer(0, user.getId(), 0, node.getId(), 0, true, true, true, true,false,true);
+                    newace = new XincoCoreACEServer(0, user.getId(), 0, node.getId(), 0, true, true, true, true);
                     newace.write2DB(dbm);
                                         /*
                                         //admins
@@ -647,7 +641,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 if (insertnewdata) {
                     XincoCoreACEServer newace;
                     //owner
-                    newace = new XincoCoreACEServer(0, user.getId(), 0, 0, data.getId(), true, true, true, true,false,true);
+                    newace = new XincoCoreACEServer(0, user.getId(), 0, 0, data.getId(), true, true, true, true);
                     newace.setUserId(user.getId());
                     newace.write2DB(dbm);
                                         /*
@@ -705,7 +699,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 if (in0.getId() > 0) {
                     newace = new XincoCoreACEServer(in0.getId(), dbm);
                 } else {
-                    newace = new XincoCoreACEServer(0, 0, 0, 0, 0, false, false, false, false, false, false);
+                    newace = new XincoCoreACEServer(0, 0, 0, 0, 0, false, false, false, false);
                 }
                 //update ACE
                 newace.setXinco_core_node_id(in0.getXinco_core_node_id());
@@ -717,8 +711,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 newace.setWrite_permission(in0.isWrite_permission());
                 newace.setExecute_permission(in0.isExecute_permission());
                 newace.setAdmin_permission(in0.isAdmin_permission());
-                newace.setAudit_permission(in0.isAudit_permission());
-                newace.setOwner(in0.isOwner());
                 newace.setUserId(user.getId());
                 newace.write2DB(dbm);
                 dbm.con.close();
@@ -795,7 +787,8 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             XincoDBManager dbm = new XincoDBManager();
             XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
             //Update audit trail
-            user.setChange(in1.isChange());
+            user.setChange(in0.isChange());
+            user.setReason(in0.getReason());
             user.write2DB(dbm);
             //update user
             user.setUsername(in0.getUsername());
@@ -805,7 +798,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             user.setEmail(in0.getEmail());
             user.setStatus_number(in0.getStatus_number());
             user.setChange(false);
-            user.setReason(in0.getReason());
             user.setAttempts(0);
             user.write2DB(dbm);
             dbm.con.close();
@@ -848,49 +840,5 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             ex.printStackTrace();
         }
         return user.isPasswordUsable(in0);
-    }
-    
-    public com.bluecubs.xinco.core.XincoCoreAuditDataSchedule getXincoCoreAuditSchedule(com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
-        return null;
-    }
-    
-    public com.bluecubs.xinco.core.XincoCoreAuditDataSchedule setXincoCoreAuditSchedule(com.bluecubs.xinco.core.XincoCoreAuditDataSchedule in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
-        return null;
-    }
-    
-    public com.bluecubs.xinco.core.XincoCoreAuditDataSchedule getXincoCoreAuditSchedule(com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1, int in2) throws java.rmi.RemoteException {
-        XincoDBManager dbm=null;
-        XincoCoreAuditDataScheduleServer audit=null;
-        ResultSet rs=null;
-        try {
-            dbm = new XincoDBManager();
-            rs=dbm.con.createStatement().executeQuery("SELECT schedule_id FROM xinco_schedule_audit WHERE xinco_core_data_id=" + in0.getId());
-            rs.next();
-            audit = new XincoCoreAuditDataScheduleServer(rs.getInt(1), dbm);
-        } catch (XincoException ex) {
-            ex.printStackTrace();
-        } catch (SQLException ex) {
-            try {
-                audit = new XincoCoreAuditDataScheduleServer(0,in0.getId(),in2,new Timestamp(System.currentTimeMillis()),false);
-            } catch (XincoException e) {
-                e.printStackTrace();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return (XincoCoreAuditDataSchedule)audit;
-    }
-
-    public Vector getAllXincoUsers(XincoCoreUser in0) throws RemoteException {
-         try {
-            XincoDBManager dbm = new XincoDBManager();
-            //check if user exists
-            XincoCoreUserServer user = new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), dbm);
-            java.util.Vector v = user.getXincoCoreUsers(dbm);
-            dbm.con.close();
-            return v;
-        } catch (Exception e) {
-            return null;
-        }
     }
 }

@@ -37,7 +37,7 @@ out.println("<td class='text'><a href='XincoPublisher?list="+request.getParamete
 out.println("<td class='text'>"+rb.getString("message.admin.main.publisherdesc")+"</td>");
 out.println("</tr>");
 out.println("<tr>");
-out.println("<td class='text'><a href='http://java.sun.com/j2se/' " +
+out.println("<td class='text'><a href='http://java.sun.com' " +
 "target='_blank' class='link'>"+rb.getString("message.admin.main.java.label")+"</a></td>");
 out.println("<td class='text'>"+rb.getString("message.admin.main.javadesc")+"</td>");
 out.println("</tr>");

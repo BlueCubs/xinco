@@ -115,9 +115,10 @@ public class XincoCoreDataServer extends XincoCoreData {
         try {
             
             Statement stmt;
-            XincoCoreAuditServer audit= new XincoCoreAuditServer();
+            
             if (getId() > 0) {
                 stmt = DBM.con.createStatement();
+                XincoCoreAuditServer audit= new XincoCoreAuditServer();
                 audit.updateAuditTrail("xinco_core_data",new String [] {"id ="+getId()},
                         DBM,"audit.data.change",this.getChangerID());
                 stmt.executeUpdate("UPDATE xinco_core_data SET xinco_core_node_id=" +
@@ -133,9 +134,8 @@ public class XincoCoreDataServer extends XincoCoreData {
                 
                 stmt = DBM.con.createStatement();
                 stmt.executeUpdate("INSERT INTO xinco_core_data VALUES (" + getId() + ", " + getXinco_core_node_id() + ", " + getXinco_core_language().getId() + ", " + getXinco_core_data_type().getId() + ", '" + getDesignation().replaceAll("'","\\\\'") + "', " + getStatus_number() + ")");
-                audit.updateAuditTrail("xinco_core_data",new String [] {"id ="+getId()},
-                        DBM,"audit.general.create",this.getChangerID());
                 stmt.close();
+                
             }
             
             //write add attributes
@@ -169,19 +169,28 @@ public class XincoCoreDataServer extends XincoCoreData {
         try{
         Statement stmt;
         XincoCoreAuditServer audit= new XincoCoreAuditServer();
+        /*
+         * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
         audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+id},
                 DBM,"audit.general.delete",userID);
+        */
         stmt = DBM.con.createStatement();
         stmt.executeUpdate("DELETE FROM xinco_core_log WHERE xinco_core_data_id=" + id);
         stmt.close();
-        stmt = DBM.con.createStatement();
+        /*
+         * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
         audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+id},
                 DBM,"audit.general.delete",userID);
+        */
+        stmt = DBM.con.createStatement();
         stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE xinco_core_data_id=" + id);
         stmt.close();
-        stmt = DBM.con.createStatement();
+        /*
+         * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
         audit.updateAuditTrail("xinco_add_attribute",new String [] {"id ="+id},
                 DBM,"audit.general.delete",userID);
+        */
+        stmt = DBM.con.createStatement();
         stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_core_data_id=" + id);
         stmt.close();
         }catch (Exception e) {
@@ -200,6 +209,7 @@ public class XincoCoreDataServer extends XincoCoreData {
         
         try {
             Statement stmt;
+            XincoCoreAuditServer audit= new XincoCoreAuditServer();
             //delete file / file = 1
             if (getXinco_core_data_type().getId() == 1) {
                 try {
@@ -217,10 +227,9 @@ public class XincoCoreDataServer extends XincoCoreData {
                         }
                 }
             }
+            audit.updateAuditTrail("xinco_core_data",new String [] {"id ="+ getId()},
+                    DBM,"audit.general.delete",this.getChangerID());
             stmt = DBM.con.createStatement();
-            //Delete children first
-            deleteChildren(getId(),getChangerID(),DBM);
-            //Then delete parent
             stmt.executeUpdate("DELETE FROM xinco_core_data WHERE id=" + getId());
             stmt.close();
             DBM.con.commit();
@@ -240,24 +249,6 @@ public class XincoCoreDataServer extends XincoCoreData {
         
         return binary_data;
         
-    }
-    
-    private static void deleteChildren(int id,int changerID,XincoDBManager DBM)throws XincoException{
-        ResultSet rs=null;
-        Statement stmt = null;
-        //Delete related xinco_add_attribute 
-        try {
-            XincoCoreAuditServer audit= new XincoCoreAuditServer();
-            rs=DBM.con.createStatement().executeQuery("select attribute_id from " +
-                    "xinco_add_attribute where xinco_core_data_id = "+id);
-            XincoAddAttributeServer aas=null;
-            while(rs.next()){
-                aas=new XincoAddAttributeServer(id,rs.getInt("attribute_id"),DBM);
-                aas.deleteFromDB(id,rs.getInt("attribute_id"),DBM,changerID);
-            } 
-        } catch (Exception ex) {
-            throw new XincoException();
-        }
     }
     
     public static int saveBinaryData(XincoCoreData attrCD, byte[] attrBD) {

@@ -132,7 +132,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     long age = Long.parseLong(settings.getString("password.aging"));
                     if(diffDays >= age){
                         status=3;
-                        System.out.println("Password must be changed!");
+                        //System.out.println("Password must be changed!");
                     } else{
                         status=1;
                     }
@@ -291,13 +291,11 @@ public class XincoCoreUserServer extends XincoCoreUser {
         String sql="";
         xerb= ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
         Timestamp ts=null;
-        XincoCoreAuditServer audit= new XincoCoreAuditServer();
         try {
             Statement stmt;
 //            if(getStatus_number()==3 || getStatus_number()==4){
             if(getStatus_number()==4){
                 //Changed from aged out to password changed. Clear status
-                System.out.println("");
                 setStatus_number(1);
                 setAttempts(0);
                 setChange(true);
@@ -317,6 +315,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
             if (getId() > 0) {
                 stmt = DBM.con.createStatement();
                 if(isChange()){
+                    XincoCoreAuditServer audit= new XincoCoreAuditServer();
                     audit.updateAuditTrail("xinco_core_user",new String [] {"id ="+getId()},
                             DBM,getReason(),getId());
                     ts= new Timestamp(System.currentTimeMillis());
@@ -354,8 +353,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
                         getEmail().replaceAll("'","\\\\'") + "', " +
                         getStatus_number() +", "+ getAttempts() +", '"+ts.toString()+"')";
                 stmt.executeUpdate(sql);
-                audit.updateAuditTrail("xinco_core_user",new String [] {"id ="+getId()},
-                            DBM,"audit.general.create",getId());
                 stmt.close();
             }
             if(isWriteGroups())

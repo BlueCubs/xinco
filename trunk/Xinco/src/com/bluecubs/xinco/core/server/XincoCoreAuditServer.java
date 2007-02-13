@@ -38,11 +38,11 @@ public class XincoCoreAuditServer {
             ResultSet rs = stmt.executeQuery(sql);
             try {
                 record_ID=DBM.getNewID("xinco_core_user_modified_record");
-                sql="insert into "+table+"_t values('"+record_ID+"', ";
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
             if(rs.next()) {
+                sql="insert into "+table+"_t values('"+record_ID+"', ";
                 for(int i=1;i<=rs.getMetaData().getColumnCount();i++){
                     if(rs.getString(i)==null)
                         sql+=rs.getString(i);
@@ -53,13 +53,13 @@ public class XincoCoreAuditServer {
                     else
                         sql+=")";
                 }
+                stmt.executeUpdate(sql);
             }
-            System.out.println(sql);
-            stmt.executeUpdate(sql);
             sql="insert into xinco_core_user_modified_record (id, record_id, mod_Time, " +
                     "mod_Reason) values ("+id+", "+record_ID+", '"+
                     new Timestamp(System.currentTimeMillis())+"', '"+reason+"')";
             stmt.executeUpdate(sql);
+            //System.out.println(sql);
             DBM.con.commit();
         } catch (SQLException ex) {
             ex.printStackTrace();
