@@ -42,7 +42,6 @@ import java.sql.*;
 import com.bluecubs.xinco.core.*;
 
 public class XincoCoreACEServer extends XincoCoreACE {
-    private int userID=1;
     //create single ace object for data structures
     public XincoCoreACEServer(int attrID, XincoDBManager DBM) throws XincoException {
         
@@ -169,21 +168,23 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 setId(DBM.getNewID("xinco_core_ace"));
                 
                 Statement stmt = DBM.con.createStatement();
-                stmt.executeUpdate("INSERT INTO xinco_core_ace VALUES (" + getId() +
+                String sql="INSERT INTO xinco_core_ace VALUES (" + getId() +
                         ", " + xcuid + ", " + xcgid + ", " + xcnid +
                         ", " + xcdid + ", " + rp + ", " + wp + ", " +
-                        xp + ", " + ap +  ", " + ad +", " + ow +")");
+                        xp + ", " + ap +  ", " + ad +", " + ow +")";
+                System.out.println(sql);
+                stmt.executeUpdate(sql);
                 stmt.close();
                 audit.updateAuditTrail("xinco_core_ace",new String [] {"xinco_core_user_id ="+getId()},
                         DBM,"audit.general.create",this.getChangerID());
             }
             DBM.con.commit();
         } catch (Exception e) {
+            e.printStackTrace();
             try {
                 DBM.con.rollback();
             } catch (Exception erollback) {
             }
-            e.printStackTrace();
             throw new XincoException();
         }
         
@@ -293,9 +294,4 @@ public class XincoCoreACEServer extends XincoCoreACE {
         }
         return core_ace;
     }
-    
-    public void setUserId(int i) {
-        this.userID=i;
-    }
-    
 }

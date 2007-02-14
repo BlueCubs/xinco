@@ -134,14 +134,12 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
             
             stmt = DBM.con.createStatement();
             if(getAttribute_id()>0){
-                String sql="update xinco_add_attribute set xinco_core_data_id=" +
+                stmt.executeUpdate("update xinco_add_attribute set xinco_core_data_id=" +
                         getXinco_core_data_id() + ", attribute_id=" + getAttribute_id() +
                         ",attrib_int= " + getAttrib_int() + ", attrib_unsignedint=" + getAttrib_unsignedint() +
                         ", attrib_double=" + getAttrib_double() + ", attrib_varchar='" + attrVC + "', " +
                         "attrib_text= '" + attrT + "', attrib_datetime ='" + attrDT + "' where xinco_core_data_id="+
-                        getXinco_core_data_id() + " and attribute_id=" + getAttribute_id();
-                System.out.println(sql);
-                stmt.executeUpdate(sql);
+                        getXinco_core_data_id() + " and attribute_id=" + getAttribute_id());
                 if(isChange())
                     audit.updateAuditTrail("xinco_add_attribute",new String [] {"id ="+getAttribute_id()},
                             DBM,"audit.addattribute.change",this.getChangerID());

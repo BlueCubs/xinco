@@ -91,7 +91,6 @@ public class LogDialog extends javax.swing.JDialog {
             }
             else{
                 text = "" + ((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_high();
-                this.versionHigh.setEditable(true);
             }
             this.versionHigh.setText(text);
             //TODO Increase based on workflow
@@ -107,7 +106,6 @@ public class LogDialog extends javax.swing.JDialog {
             }
             else{
                 text = "" + ((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_low();
-                this.versionLow.setEditable(true);
             }
             this.versionLow.setText(text);
             //TODO set different postfixes for workflows: draft, review, etc...

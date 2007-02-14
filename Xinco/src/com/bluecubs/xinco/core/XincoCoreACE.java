@@ -28,6 +28,10 @@ public class XincoCoreACE  implements java.io.Serializable {
 
     private boolean write_permission;
 
+    private boolean audit_permission;
+
+    private boolean owner;
+
     public XincoCoreACE() {
     }
 
@@ -41,7 +45,9 @@ public class XincoCoreACE  implements java.io.Serializable {
            int xinco_core_user_id,
            int id,
            boolean read_permission,
-           boolean write_permission) {
+           boolean write_permission,
+           boolean audit_permission,
+           boolean owner) {
            this.admin_permission = admin_permission;
            this.changerID = changerID;
            this.execute_permission = execute_permission;
@@ -52,6 +58,8 @@ public class XincoCoreACE  implements java.io.Serializable {
            this.id = id;
            this.read_permission = read_permission;
            this.write_permission = write_permission;
+           this.audit_permission = audit_permission;
+           this.owner = owner;
     }
 
 
@@ -254,6 +262,46 @@ public class XincoCoreACE  implements java.io.Serializable {
         this.write_permission = write_permission;
     }
 
+
+    /**
+     * Gets the audit_permission value for this XincoCoreACE.
+     * 
+     * @return audit_permission
+     */
+    public boolean isAudit_permission() {
+        return audit_permission;
+    }
+
+
+    /**
+     * Sets the audit_permission value for this XincoCoreACE.
+     * 
+     * @param audit_permission
+     */
+    public void setAudit_permission(boolean audit_permission) {
+        this.audit_permission = audit_permission;
+    }
+
+
+    /**
+     * Gets the owner value for this XincoCoreACE.
+     * 
+     * @return owner
+     */
+    public boolean isOwner() {
+        return owner;
+    }
+
+
+    /**
+     * Sets the owner value for this XincoCoreACE.
+     * 
+     * @param owner
+     */
+    public void setOwner(boolean owner) {
+        this.owner = owner;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof XincoCoreACE)) return false;
@@ -275,7 +323,9 @@ public class XincoCoreACE  implements java.io.Serializable {
             this.xinco_core_user_id == other.getXinco_core_user_id() &&
             this.id == other.getId() &&
             this.read_permission == other.isRead_permission() &&
-            this.write_permission == other.isWrite_permission();
+            this.write_permission == other.isWrite_permission() &&
+            this.audit_permission == other.isAudit_permission() &&
+            this.owner == other.isOwner();
         __equalsCalc = null;
         return _equals;
     }
@@ -297,6 +347,8 @@ public class XincoCoreACE  implements java.io.Serializable {
         _hashCode += getId();
         _hashCode += (isRead_permission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isWrite_permission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += (isAudit_permission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += (isOwner() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -364,6 +416,18 @@ public class XincoCoreACE  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("write_permission");
         elemField.setXmlName(new javax.xml.namespace.QName("", "write_permission"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("audit_permission");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "audit_permission"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("owner");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "owner"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);

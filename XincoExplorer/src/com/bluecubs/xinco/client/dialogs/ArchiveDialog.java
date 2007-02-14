@@ -72,19 +72,13 @@ public class ArchiveDialog extends javax.swing.JDialog {
         this.archiveModelDropDown.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 if (archiveModelDropDown.getSelectedIndex() == 1) {
-                    yearTextBox.setEnabled(true);
-                    monthTextBox.setEnabled(true);
-                    dayTextBox.setEnabled(true);
+                    archiveDate.setEnabled(true);
                     dayAmountTextBox.setEnabled(false);
                 } else if (archiveModelDropDown.getSelectedIndex() == 2) {
-                    yearTextBox.setEnabled(false);
-                    monthTextBox.setEnabled(false);
-                    dayTextBox.setEnabled(false);
+                    archiveDate.setEnabled(false);
                     dayAmountTextBox.setEnabled(true);
                 } else {
-                    yearTextBox.setEnabled(false);
-                    monthTextBox.setEnabled(false);
-                    dayTextBox.setEnabled(false);
+                    archiveDate.setEnabled(false);
                     dayAmountTextBox.setEnabled(false);
                 }
             }
@@ -105,12 +99,13 @@ public class ArchiveDialog extends javax.swing.JDialog {
                 int temp_month_int = 0;
                 int temp_day_int = 0;
                 int temp_days_int = 0;
+                Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+                cal.setTime(archiveDate.getDate());
                 try {
-                    temp_year_int = Integer.parseInt(yearTextBox.getText());
-                    temp_month_int = Integer.parseInt(monthTextBox.getText());
-                    temp_day_int = Integer.parseInt(dayTextBox.getText());
+                    temp_year_int = cal.get(cal.YEAR);
+                    temp_month_int = cal.get(cal.MONTH);
+                    temp_day_int = cal.get(cal.DAY_OF_MONTH);
                     //set FIXED date: GMT, no DST
-                    Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
                     cal.set(Calendar.DST_OFFSET, 0);
                     cal.set(Calendar.YEAR, temp_year_int);
                     cal.set(Calendar.MONTH, (temp_month_int-1));
@@ -152,9 +147,7 @@ public class ArchiveDialog extends javax.swing.JDialog {
         Calendar realcal = ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(5)).getAttrib_datetime();
         Calendar ngc = new GregorianCalendar();
         cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - realcal.get(Calendar.ZONE_OFFSET)) - (ngc.get(Calendar.DST_OFFSET) + realcal.get(Calendar.DST_OFFSET)) );
-        yearTextBox.setText("" + cal.get(Calendar.YEAR));
-        monthTextBox.setText("" + (cal.get(Calendar.MONTH) + 1));
-        dayTextBox.setText("" + cal.get(Calendar.DAY_OF_MONTH));
+        archiveDate.setDate(cal.getTime());
         dayAmountTextBox.setText("" + ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(6)).getAttrib_unsignedint());
     }
     /** This method is called from within the constructor to
@@ -169,13 +162,11 @@ public class ArchiveDialog extends javax.swing.JDialog {
         archiveModelLabel = new javax.swing.JLabel();
         archiveModelDropDown = new javax.swing.JComboBox();
         dateLabel = new javax.swing.JLabel();
-        yearTextBox = new javax.swing.JTextField();
-        monthTextBox = new javax.swing.JTextField();
-        dayTextBox = new javax.swing.JTextField();
         dayAmount = new javax.swing.JLabel();
         dayAmountTextBox = new javax.swing.JTextField();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
+        archiveDate = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         revisionModelLabel.setText("jLabel1");
@@ -188,18 +179,6 @@ public class ArchiveDialog extends javax.swing.JDialog {
         archiveModelDropDown.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         dateLabel.setText("jLabel1");
-
-        yearTextBox.setColumns(5);
-        yearTextBox.setText("jTextField1");
-        yearTextBox.setEnabled(false);
-
-        monthTextBox.setColumns(4);
-        monthTextBox.setText("jTextField1");
-        monthTextBox.setEnabled(false);
-
-        dayTextBox.setColumns(4);
-        dayTextBox.setText("jTextField1");
-        dayTextBox.setEnabled(false);
 
         dayAmount.setText("jLabel1");
 
@@ -235,14 +214,9 @@ public class ArchiveDialog extends javax.swing.JDialog {
                     .add(cancelButton)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                         .add(dayAmountTextBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(layout.createSequentialGroup()
-                            .add(monthTextBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(dayTextBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(yearTextBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .add(archiveModelDropDown, 0, 189, Short.MAX_VALUE)
-                        .add(revisionModelCheckbox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)))
+                        .add(revisionModelCheckbox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE))
+                    .add(archiveDate, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -257,11 +231,9 @@ public class ArchiveDialog extends javax.swing.JDialog {
                     .add(archiveModelLabel)
                     .add(archiveModelDropDown, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(dateLabel)
-                    .add(monthTextBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(dayTextBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(yearTextBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(archiveDate, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(dayAmount)
@@ -276,18 +248,16 @@ public class ArchiveDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.toedter.calendar.JDateChooser archiveDate;
     private javax.swing.JComboBox archiveModelDropDown;
     private javax.swing.JLabel archiveModelLabel;
     private javax.swing.JButton cancelButton;
     private javax.swing.JLabel dateLabel;
     private javax.swing.JLabel dayAmount;
     private javax.swing.JTextField dayAmountTextBox;
-    private javax.swing.JTextField dayTextBox;
-    private javax.swing.JTextField monthTextBox;
     private javax.swing.JButton okButton;
     private javax.swing.JCheckBox revisionModelCheckbox;
     private javax.swing.JLabel revisionModelLabel;
-    private javax.swing.JTextField yearTextBox;
     // End of variables declaration//GEN-END:variables
     
 }

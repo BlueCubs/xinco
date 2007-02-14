@@ -45,16 +45,10 @@
                   <Component id="cancelButton" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Group type="103" alignment="1" groupAlignment="0" attributes="0">
                       <Component id="dayAmountTextBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="monthTextBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="dayTextBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="yearTextBox" min="-2" max="-2" attributes="0"/>
-                      </Group>
                       <Component id="archiveModelDropDown" alignment="0" pref="189" max="32767" attributes="0"/>
                       <Component id="revisionModelCheckbox" pref="189" max="32767" attributes="0"/>
                   </Group>
+                  <Component id="archiveDate" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -73,12 +67,10 @@
                   <Component id="archiveModelLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="archiveModelDropDown" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="dateLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="monthTextBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="dayTextBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="yearTextBox" alignment="3" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="dateLabel" min="-2" max="-2" attributes="0"/>
+                  <Component id="archiveDate" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -135,27 +127,6 @@
         <Property name="text" type="java.lang.String" value="jLabel1"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="yearTextBox">
-      <Properties>
-        <Property name="columns" type="int" value="5"/>
-        <Property name="text" type="java.lang.String" value="jTextField1"/>
-        <Property name="enabled" type="boolean" value="false"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="monthTextBox">
-      <Properties>
-        <Property name="columns" type="int" value="4"/>
-        <Property name="text" type="java.lang.String" value="jTextField1"/>
-        <Property name="enabled" type="boolean" value="false"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="dayTextBox">
-      <Properties>
-        <Property name="columns" type="int" value="4"/>
-        <Property name="text" type="java.lang.String" value="jTextField1"/>
-        <Property name="enabled" type="boolean" value="false"/>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JLabel" name="dayAmount">
       <Properties>
         <Property name="text" type="java.lang.String" value="jLabel1"/>
@@ -177,6 +148,8 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="jButton2"/>
       </Properties>
+    </Component>
+    <Component class="com.toedter.calendar.JDateChooser" name="archiveDate">
     </Component>
   </SubComponents>
 </Form>

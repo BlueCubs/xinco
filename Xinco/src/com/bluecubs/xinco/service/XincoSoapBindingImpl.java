@@ -565,7 +565,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 if (insertnewnode) {
                     XincoCoreACEServer newace;
                     //owner
-                    newace = new XincoCoreACEServer(0, user.getId(), 0, node.getId(), 0, true, true, true, true,true,true);
+                    newace = new XincoCoreACEServer(0, user.getId(), 0, node.getId(), 0, true, true, true, true,false,true);
                     newace.write2DB(dbm);
                                         /*
                                         //admins
@@ -648,7 +648,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                     XincoCoreACEServer newace;
                     //owner
                     newace = new XincoCoreACEServer(0, user.getId(), 0, 0, data.getId(), true, true, true, true,false,true);
-                    newace.setUserId(user.getId());
+                    newace.setChangerID(user.getId());
                     newace.write2DB(dbm);
                                         /*
                                         //admins
@@ -720,7 +720,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 newace.setAdmin_permission(in0.isAdmin_permission());
                 newace.setAudit_permission(in0.isAudit_permission());
                 newace.setOwner(in0.isOwner());
-                newace.setUserId(user.getId());
+                newace.setChangerID(user.getId());
                 newace.write2DB(dbm);
                 dbm.con.close();
                 return (XincoCoreACE)newace;

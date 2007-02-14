@@ -1714,6 +1714,7 @@ public class XincoExplorer extends JFrame {
                             for (i=0;i<xincoClientSession.server_datatypes.size();i++) {
                                 status_string_2 = status_string_2 + "      + " + ((XincoCoreDataType)xincoClientSession.server_datatypes.elementAt(i)).getDesignation() + "\n";
                             }
+                            xincoClientSession.server_users=xincoClientSession.xinco.getAllXincoUsers(xincoClientSession.user);
                             loginT= new loginThread();
                             loginT.start();
                         }catch (Exception cone) {
@@ -1781,6 +1782,7 @@ public class XincoExplorer extends JFrame {
                 markConnectionStatus();
                 JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("menu.connection.failed") + " " + xerb.getString("general.reason") + ": " + cone.toString(), xerb.getString("menu.connection.failed"), JOptionPane.WARNING_MESSAGE);
                 progressBar.hide();
+                return;
             }
         }
         public void resetStrings(){
