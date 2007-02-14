@@ -89,6 +89,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
                     <element name="write_permission" type="xsd:boolean"/>
                     <element name="audit_permission" type="boolean"></element>
                     <element name="owner" type="boolean"></element>
+                    <element name="userId" type="int"></element>
                 </sequence>
             </complexType>
             <complexType name="XincoCoreLog">
@@ -127,8 +128,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
                     <element name="data_id" type="xsd:int"/>
                     <element name="schedule_type_id" type="xsd:int"/>
                     <element name="scheduled_date" type="xsd:date"/>
-                    <element name="completed" type="xsd:boolean"/>
+                    <element name="completion_date" type="date"/>
                     <element name="idChanger" type="xsd:int"/>
+                    <element name="completedBy" type="int"></element>
                 </sequence>
             </complexType>
         </schema>
