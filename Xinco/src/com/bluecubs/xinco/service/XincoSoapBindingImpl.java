@@ -569,10 +569,10 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                     newace.write2DB(dbm);
                                         /*
                                         //admins
-                                        newace = new XincoCoreACEServer(0, 0, 1, node.getId(), 0, true, true, true, true);
+                                        newace = new XincoCoreACEServer(0, 0, 1, node.getId(), 0, true, true, true, true,false,true);
                                         newace.write2DB(dbm);
                                         //all users
-                                        newace = new XincoCoreACEServer(0, 0, 2, node.getId(), 0, true, false, false, false);
+                                        newace = new XincoCoreACEServer(0, 0, 2, node.getId(), 0, true, false, false, false,false,false);
                                         newace.write2DB(dbm);
                                          */
                     //inherit all group ACEs

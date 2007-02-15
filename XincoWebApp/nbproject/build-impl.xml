@@ -464,6 +464,7 @@
         <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir.real}/client"/>
         <copy file="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir.real}/client"/>
         <copy file="${file.reference.jcalendar.jar}" todir="${build.web.dir.real}/client"/>
+        <copy file="${file.reference.blueCubsIcon16x16.GIF}" todir="${build.web.dir.real}/client"/>
         <mkdir dir="${build.web.dir.real}/META-INF"/>
         <manifest file="${build.web.dir.real}/META-INF/MANIFEST.MF" mode="update">
             <attribute name="Class-Path" value="${included.lib.libs.XincoLibs.classpath.1.X} ${included.lib.libs.XincoLibs.classpath.2.X} ${included.lib.libs.XincoLibs.classpath.3.X} ${included.lib.libs.XincoLibs.classpath.4.X} ${included.lib.libs.XincoLibs.classpath.5.X} ${included.lib.libs.XincoLibs.classpath.6.X} ${included.lib.libs.XincoLibs.classpath.7.X} ${included.lib.libs.XincoLibs.classpath.8.X} ${included.lib.libs.XincoLibs.classpath.9.X} ${included.lib.libs.XincoLibs.classpath.10.X} ${included.lib.libs.XincoLibs.classpath.11.X} ${included.lib.libs.XincoLibs.classpath.12.X} ${included.lib.libs.XincoLibs.classpath.13.X} ${included.lib.libs.XincoLibs.classpath.14.X} ${included.lib.libs.XincoLibs.classpath.15.X} ${included.lib.libs.XincoLibs.classpath.16.X} ${included.lib.libs.XincoLibs.classpath.17.X} ${included.lib.libs.XincoLibs.classpath.18.X} ${included.lib.libs.XincoLibs.classpath.19.X} ${included.lib.libs.XincoLibs.classpath.20.X} ${included.lib.libs.XincoLibs.classpath.21.X} ${included.lib.reference.Xinco.jar} ${included.lib.reference.XincoExplorer.jar} "/>
@@ -512,6 +513,7 @@
         <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir.real}/client"/>
         <copy file="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir.real}/client"/>
         <copy file="${file.reference.jcalendar.jar}" todir="${build.web.dir.real}/client"/>
+        <copy file="${file.reference.blueCubsIcon16x16.GIF}" todir="${build.web.dir.real}/client"/>
     </target>
     <target name="do-ear-dist" depends="init,compile,compile-jsps,-pre-dist,library-inclusion-in-manifest">
         <dirname property="dist.jar.dir" file="${dist.ear.war}"/>

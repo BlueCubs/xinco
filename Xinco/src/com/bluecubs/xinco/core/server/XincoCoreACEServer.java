@@ -78,8 +78,9 @@ public class XincoCoreACEServer extends XincoCoreACE {
     }
     
     //create single ace object for data structures
-    public XincoCoreACEServer(int attrID, int attrUID, int attrGID, int attrNID, int attrDID, boolean attrRP, boolean attrWP, boolean attrEP, boolean attrAP,boolean attrAD, boolean owner) throws XincoException {
-        
+    public XincoCoreACEServer(int attrID, int attrUID, int attrGID, int attrNID,
+            int attrDID, boolean attrRP, boolean attrWP, boolean attrEP, 
+            boolean attrAP,boolean attrAD, boolean owner) throws XincoException {
         setId(attrID);
         setXinco_core_user_id(attrUID);
         setXinco_core_group_id(attrGID);
@@ -90,6 +91,11 @@ public class XincoCoreACEServer extends XincoCoreACE {
         setExecute_permission(attrEP);
         setAdmin_permission(attrAP);
         setAudit_permission(attrAD);
+        try {
+            write2DB(new XincoDBManager());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
     
     //write to db
@@ -160,7 +166,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                         ", xinco_core_data_id=" + xcdid + ", read_permission=" + rp +
                         ", write_permission=" + wp + ", execute_permission=" + xp +
                         ", admin_permission=" + ap + " , audit_permission=" + ad +
-                        " , owner=" + ad +"WHERE id=" + getId());
+                        " , owner=" + ad +" WHERE id=" + getId());
                 stmt.close();
                 audit.updateAuditTrail("xinco_core_ace",new String [] {"xinco_core_user_id ="+getId()},
                         DBM,"window.acl",this.getChangerID());
@@ -175,6 +181,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 System.out.println(sql);
                 stmt.executeUpdate(sql);
                 stmt.close();
+                DBM.con.commit();
                 audit.updateAuditTrail("xinco_core_ace",new String [] {"xinco_core_user_id ="+getId()},
                         DBM,"audit.general.create",this.getChangerID());
             }
@@ -239,6 +246,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
             stmt.close();
         } catch (Exception e) {
             core_acl.removeAllElements();
+            e.printStackTrace();
         }
         return core_acl;
     }
