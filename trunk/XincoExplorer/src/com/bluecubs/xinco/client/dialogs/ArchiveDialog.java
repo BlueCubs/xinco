@@ -72,13 +72,13 @@ public class ArchiveDialog extends javax.swing.JDialog {
         this.archiveModelDropDown.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 if (archiveModelDropDown.getSelectedIndex() == 1) {
-                    archiveDate.setEnabled(true);
+                    archiveDate.setVisible(true);
                     dayAmountTextBox.setEnabled(false);
                 } else if (archiveModelDropDown.getSelectedIndex() == 2) {
-                    archiveDate.setEnabled(false);
+                    archiveDate.setVisible(false);
                     dayAmountTextBox.setEnabled(true);
                 } else {
-                    archiveDate.setEnabled(false);
+                    archiveDate.setVisible(false);
                     dayAmountTextBox.setEnabled(false);
                 }
             }

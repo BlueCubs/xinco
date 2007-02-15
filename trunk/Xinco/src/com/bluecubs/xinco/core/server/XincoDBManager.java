@@ -40,11 +40,14 @@ import java.sql.*;
 import javax.sql.DataSource;
 import javax.naming.InitialContext;
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
+import com.bluecubs.xinco.core.XincoCoreGroup;
+import com.bluecubs.xinco.core.XincoException;
 import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 public class XincoDBManager {
     
@@ -205,5 +208,77 @@ public class XincoDBManager {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+    }
+    
+    /*
+     *Reset database tables keeping the standard inserts (assuming those inserts have id's greater than the ones specified in the xinco_id table
+     */
+    public void resetDB(XincoCoreUserServer user) throws XincoException{
+        Vector groups=user.getXinco_core_groups();
+        boolean isAdmin=false;
+        for(int i=0;i<groups.size();i++){
+            if(((XincoCoreGroup)groups.elementAt(i)).getId()==1)
+                isAdmin=true;
+        }
+        if(isAdmin){
+            ResultSet rs;
+            String[] types =  {"TABLE"};
+            Statement s=null;
+            String column="id",sql=null,condition=null;
+            int number;
+            DatabaseMetaData meta;
+            try {
+                meta = con.getMetaData();
+                //Get table names
+                rs = meta.getTables(null, null, null, types);
+                //Delete content of tables
+                s=con.createStatement();
+                while(rs.next()){
+                    if(!rs.getString("TABLE_NAME").equals("xinco_id")){
+                        number=1000;
+                        column="id";
+                        //Modify primary key name if needed
+                        if(rs.getString("TABLE_NAME").equals("xinco_add_attribute"))
+                            column="xinco_core_data_id";
+                        if(rs.getString("TABLE_NAME").equals("xinco_core_data_type_attribute"))
+                            column="xinco_core_data_type_id";
+                        if(rs.getString("TABLE_NAME").equals("xinco_scheduled_audit_has_xinco_core_group"))
+                            column="xinco_scheduled_audit_schedule_id";
+                        if(rs.getString("TABLE_NAME").equals("xinco_scheduled_audit_type"))
+                            column="scheduled_type_id";
+                        if(rs.getString("TABLE_NAME").equals("xinco_core_user_modified_record")||
+                                rs.getString("TABLE_NAME").equals("xinco_scheduled_audit"))
+                            number = -1;
+                        condition = column +" > "+number;
+                        sql="delete from "+rs.getString("TABLE_NAME")+" where "+condition;
+                        s.executeUpdate(sql);
+                    }
+                }
+                s.close();
+                s=con.createStatement();
+                rs=s.executeQuery("select * from xinco_id");
+                int value=0;
+                while(rs.next()){
+                    //Based on xinco_id standard inserts
+                    if(rs.getString("tablename").equals("xinco_core_user_modified_record")||
+                            rs.getString("tablename").equals("xinco_scheduled_audit"))
+                        value=0;
+                    else
+                        value=1000;
+                    s.executeUpdate("update "+rs.getString("tablename")+ " set last_id="+value);
+                }
+                con.commit();
+                s.close();
+                rs=null;
+            } catch (SQLException ex) {
+                try {
+                    con.rollback();
+                } catch (SQLException e2) {
+                    e2.printStackTrace();
+                }
+                ex.printStackTrace();
+            }
+        } else
+            throw new XincoException(lrb.getString("error.noadminpermission"));
     }
 }
