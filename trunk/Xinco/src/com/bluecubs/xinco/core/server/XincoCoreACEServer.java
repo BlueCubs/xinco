@@ -91,11 +91,6 @@ public class XincoCoreACEServer extends XincoCoreACE {
         setExecute_permission(attrEP);
         setAdmin_permission(attrAP);
         setAudit_permission(attrAD);
-        try {
-            write2DB(new XincoDBManager());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
     
     //write to db
@@ -157,7 +152,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 ow = 1;
             }
             
-            XincoCoreAuditServer audit= new XincoCoreAuditServer();
+            XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
             
             if (getId() > 0) {
                 Statement stmt = DBM.con.createStatement();
@@ -204,7 +199,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
         
         try {
             Statement stmt = DBM.con.createStatement();
-            XincoCoreAuditServer audit= new XincoCoreAuditServer();
+            XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
             audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+attrCACE.getId()},
                     DBM,"audit.general.delete",userID);
             stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE id=" + attrCACE.getId());

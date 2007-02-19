@@ -90,7 +90,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             
             if (getId() > 0) {
                 stmt = DBM.con.createStatement();
-                XincoCoreAuditServer audit= new XincoCoreAuditServer();
+                XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
                 ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 audit.updateAuditTrail("xinco_core_language",new String [] {"id ="+getId()},
                         DBM,xerb.getString("audit.language.change"),this.getChangerID());
@@ -126,7 +126,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             Statement stmt = null;
             
             stmt = DBM.con.createStatement();
-            XincoCoreAuditServer audit= new XincoCoreAuditServer();
+            XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
             audit.updateAuditTrail("xinco_core_language",new String [] {"id ="+attrCL.getId()},
                     DBM,"audit.general.delete",userID);
             stmt.executeUpdate("DELETE FROM xinco_core_language WHERE id=" + attrCL.getId());

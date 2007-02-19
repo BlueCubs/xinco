@@ -105,7 +105,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
     public int write2DB(XincoDBManager DBM) throws XincoException {
         
         try {
-            XincoCoreAuditServer audit= new XincoCoreAuditServer();
+            XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
             Statement stmt;
             String attrT = "";
             String attrVC = "";
@@ -186,7 +186,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
     
     public static int deleteFromDB(int xinco_core_data_id, int attribute_id, XincoDBManager DBM, int userID) throws XincoException {
         Statement stmt = null;
-        XincoCoreAuditServer audit= new XincoCoreAuditServer();
+        XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
         try {
             stmt = DBM.con.createStatement();
             stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_add_attribute.attribute_id=" +
