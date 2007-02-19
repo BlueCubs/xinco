@@ -46,7 +46,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class XincoCronServlet extends HttpServlet {
-    ResourceBundle lrb;
+    ResourceBundle lrb,settings;
     //single instance of archiving thread
     XincoArchiveThread xat = null;
     
@@ -84,6 +84,7 @@ public class XincoCronServlet extends HttpServlet {
             loc = Locale.getDefault();
         }
         lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
+        settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings",loc);
         //start output
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
@@ -173,7 +174,7 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; "+lrb.getString("general.copyright.date")+", "+lrb.getString("message.admin.main.footer"));
+        out.println("<td class=\"text\">&copy; "+settings.getString("general.copyright.date")+", "+lrb.getString("message.admin.main.footer"));
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                 lrb.getString("message.admin.main.backtomain")+"' />" +
