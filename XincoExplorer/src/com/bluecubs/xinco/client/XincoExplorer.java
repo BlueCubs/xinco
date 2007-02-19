@@ -48,10 +48,12 @@ import com.bluecubs.xinco.client.dialogs.DataTypeDialog;
 import com.bluecubs.xinco.client.dialogs.LogDialog;
 import com.bluecubs.xinco.client.dialogs.SearchDialog;
 import com.bluecubs.xinco.client.dialogs.UserDialog;
+import com.bluecubs.xinco.client.frames.XincoInformationFrame;
 import com.bluecubs.xinco.client.object.XincoAutofitTableColumns;
 import com.bluecubs.xinco.client.object.XincoMenuRepository;
 import com.bluecubs.xinco.client.object.XincoPopUpMenuRepository;
 import com.bluecubs.xinco.client.object.XincoProgressBarThread;
+import com.bluecubs.xinco.client.pane.RepositoryPanel;
 import com.bluecubs.xinco.core.XincoCoreACE;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataType;
@@ -84,7 +86,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.CheckedOutputStream;
 import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -110,7 +111,6 @@ import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.event.MouseInputListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -127,7 +127,7 @@ import org.apache.axis.utils.ByteArrayOutputStream;
 public class XincoExplorer extends JFrame {
     
     //language resources, XincoExplorerResourceBundle
-    private ResourceBundle xerb = null;
+    private ResourceBundle xerb = null,settings =null;
     private javax.swing.JMenuBar jJMenuBar = null;
     private javax.swing.JMenu jMenuConnection = null;
     private javax.swing.JMenu jMenuAbout = null;
@@ -136,12 +136,13 @@ public class XincoExplorer extends JFrame {
     private javax.swing.JMenuItem jMenuItemAboutAboutXinco = null;
     private javax.swing.JDesktopPane jDesktopPane = null;
     private javax.swing.JInternalFrame jInternalFrameRepository = null;
-    private javax.swing.JPanel jContentPaneRepository = null;
+    private java.awt.Panel jContentPaneRepository = null;
     private javax.swing.JSplitPane jSplitPaneRepository = null;
     private javax.swing.JScrollPane jScrollPaneRepositoryTree = null;
     private javax.swing.JScrollPane jScrollPaneRepositoryTable = null;
     public javax.swing.JTree jTreeRepository = null;
     private javax.swing.JTable jTableRepository = null;
+    private javax.swing.JTable jTableAudit =null;
     private javax.swing.JMenu jMenuSearch = null;
     private javax.swing.JMenuItem jMenuItemSearchRepository = null;
     private javax.swing.JMenu jMenuView = null;
@@ -360,6 +361,7 @@ public class XincoExplorer extends JFrame {
         //load language data
         xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", (Locale)xincoClientConfig.elementAt(2));
         xerb.getLocale();
+        settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
         progressBar=new XincoProgressBarThread(this);
         initialize();
         //Windows-Listener
@@ -536,7 +538,6 @@ public class XincoExplorer extends JFrame {
      * @return void
      */
     private void initialize() {
-        ResourceBundle settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
         //init session
         xincoClientSession = new XincoClientSession();
         //set client version
@@ -720,11 +721,12 @@ public class XincoExplorer extends JFrame {
      *
      * @return javax.swing.JPanel
      */
-    private javax.swing.JPanel getJContentPaneRepository() {
+    private java.awt.Panel getJContentPaneRepository() {
         if(jContentPaneRepository == null) {
-            jContentPaneRepository = new javax.swing.JPanel();
-            jContentPaneRepository.setLayout(new java.awt.BorderLayout());
-            jContentPaneRepository.add(getJSplitPaneRepository(), java.awt.BorderLayout.CENTER);
+            jContentPaneRepository= new RepositoryPanel(this);
+//            jContentPaneRepository = new javax.swing.JPanel();
+//            jContentPaneRepository.setLayout(new java.awt.BorderLayout());
+//            jContentPaneRepository.add(getJSplitPaneRepository(), java.awt.BorderLayout.CENTER);
         }
         return jContentPaneRepository;
     }
@@ -744,6 +746,7 @@ public class XincoExplorer extends JFrame {
             jInternalFrameRepository.setMaximizable(true);
             jInternalFrameRepository.setName("Repository");
             jInternalFrameRepository.setTitle(xerb.getString("window.repository"));
+            jInternalFrameRepository.setFrameIcon(new javax.swing.ImageIcon(XincoExplorer.class.getResource("blueCubsIcon16x16.GIF")));
         }
         return jInternalFrameRepository;
     }
@@ -768,7 +771,7 @@ public class XincoExplorer extends JFrame {
      *
      * @return javax.swing.JScrollPane
      */
-    private javax.swing.JScrollPane getJScrollPaneRepositoryTree() {
+    public javax.swing.JScrollPane getJScrollPaneRepositoryTree() {
         if(jScrollPaneRepositoryTree == null) {
             jScrollPaneRepositoryTree = new javax.swing.JScrollPane();
             jScrollPaneRepositoryTree.setViewportView(getJTreeRepository());
@@ -780,7 +783,7 @@ public class XincoExplorer extends JFrame {
      *
      * @return javax.swing.JScrollPane
      */
-    private javax.swing.JScrollPane getJScrollPaneRepositoryTable() {
+    public javax.swing.JScrollPane getJScrollPaneRepositoryTable() {
         if(jScrollPaneRepositoryTable == null) {
             jScrollPaneRepositoryTable = new javax.swing.JScrollPane();
             jScrollPaneRepositoryTable.setViewportView(getJTableRepository());
@@ -1473,7 +1476,7 @@ public class XincoExplorer extends JFrame {
      *
      * @return javax.swing.JTable
      */
-    private javax.swing.JTable getJTableRepository() {
+    public javax.swing.JTable getJTableRepository() {
         if(jTableRepository == null) {
             String[] cn = {xerb.getString("window.repository.table.attribute"),xerb.getString("window.repository.table.details")};
             DefaultTableModel dtm = new DefaultTableModel(cn, 0) {
@@ -1906,6 +1909,7 @@ public class XincoExplorer extends JFrame {
             jInternalFrameInformation.setContentPane(getJContentPaneInformation());
             jInternalFrameInformation.setTitle(xerb.getString("window.information"));
             jInternalFrameInformation.setBounds(this.getWidth()-450, this.getHeight()-220, 400, 150);
+            jInternalFrameInformation.setFrameIcon(new javax.swing.ImageIcon(XincoExplorer.class.getResource("blueCubsIcon16x16.GIF")));
         }
         return jInternalFrameInformation;
     }
@@ -3365,5 +3369,17 @@ public class XincoExplorer extends JFrame {
     
     public void set_global_dialog_return_value(int v){
         this.global_dialog_return_value=v;
+    }
+
+    public javax.swing.JTable getJTableAudit() {
+        return jTableAudit;
+    }
+
+    public void setJTableAudit(javax.swing.JTable jTableAudit) {
+        this.jTableAudit = jTableAudit;
+    }
+
+    public ResourceBundle getSettings() {
+        return settings;
     }
 }

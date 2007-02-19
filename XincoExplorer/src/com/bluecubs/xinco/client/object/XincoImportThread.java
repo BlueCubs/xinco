@@ -52,7 +52,7 @@ import javax.swing.tree.TreePath;
  *
  * @author ortizbj
  */
-public class importThread extends Thread {
+public class XincoImportThread extends Thread {
     private XincoExplorer explorer;
     @Override
     public void run() {
