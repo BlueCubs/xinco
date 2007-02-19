@@ -133,6 +133,16 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
                     <element name="completedBy" type="int"></element>
                 </sequence>
             </complexType>
+            <complexType name="XincoSetting">
+                <sequence>
+                    <element name="id" type="int"></element>
+                    <element name="description" type="string"></element>
+                    <element name="int_value" type="int"></element>
+                    <element name="string_value" type="string"></element>
+                    <element name="bool_value" type="boolean"></element>
+                    <element name="xinco_settings"></element>
+                </sequence>
+            </complexType>
         </schema>
         <schema targetNamespace="http://xml.apache.org/xml-soap" xmlns="http://www.w3.org/2001/XMLSchema">
             <import namespace="http://add.xinco.bluecubs.com"/>
@@ -548,6 +558,12 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <wsdl:message name="getAllXincoUsersRequest">
         <wsdl:part name="in0" type="tns2:XincoCoreUser"/>
     </wsdl:message>
+    <wsdl:message name="getXincoSettingRequest">
+        <wsdl:part name="in0" type="tns2:XincoCoreUser"/>
+    </wsdl:message>
+    <wsdl:message name="getXincoSettingResponse">
+        <wsdl:part name="getXincosettingReturn" type="apachesoap:Vector"/>
+    </wsdl:message>
     <wsdl:portType name="Xinco">
         
         <wsdl:operation name="getXincoServerVersion">
@@ -768,6 +784,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         <wsdl:operation name="getAllXincoUsers">
             <wsdl:input name="getAllXincoUsersRequest" message="impl:getAllXincoUsersRequest"/>
             <wsdl:output name="getAllXincoUsersResponse" message="impl:getAllXincoUsersResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getXincoSetting">
+            <wsdl:input name="getXincoSettingRequest" message="impl:getXincoSettingRequest"/>
+            <wsdl:output name="getXincoSettingResponse" message="impl:getXincoSettingResponse"/>
         </wsdl:operation>
     </wsdl:portType>
     
@@ -1248,6 +1268,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         <wsdl:operation name="checkXincoCoreUserNewPassword">
             <wsdl:input name="checkXincoCoreUserNewPasswordRequest"/>
             <wsdl:output name="checkXincoCoreUserNewPasswordResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getXincoSetting">
+            <wsdl:input name="getXincoSettingRequest"/>
+            <wsdl:output name="getXincoSettingResponse"/>
         </wsdl:operation>
     </wsdl:binding>
     <wsdl:service name="XincoService">
