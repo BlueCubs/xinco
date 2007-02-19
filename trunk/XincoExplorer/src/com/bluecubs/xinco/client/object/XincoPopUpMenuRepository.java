@@ -173,7 +173,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
         this.items[3].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.KeyEvent.ALT_MASK));
         this.items[3].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                importThread importT = new importThread();
+                XincoImportThread importT = new XincoImportThread();
                 importT.setXincoExplorer(explorer);
                 importT.start();
             }
