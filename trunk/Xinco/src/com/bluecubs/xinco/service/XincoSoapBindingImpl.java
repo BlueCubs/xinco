@@ -10,7 +10,6 @@ package com.bluecubs.xinco.service;
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.core.XincoCoreACE;
 import com.bluecubs.xinco.core.XincoCoreAudit;
-import com.bluecubs.xinco.core.XincoCoreAuditDataSchedule;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreLog;
@@ -19,7 +18,6 @@ import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoVersion;
 import com.bluecubs.xinco.core.server.XincoCoreACEServer;
-import com.bluecubs.xinco.core.server.XincoCoreAuditDataScheduleServer;
 import com.bluecubs.xinco.core.server.XincoCoreAuditServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataTypeServer;
@@ -875,9 +873,9 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         }
         return (XincoCoreAudit)audit;
     }
-
+    
     public Vector getAllXincoUsers(XincoCoreUser in0) throws RemoteException {
-         try {
+        try {
             XincoDBManager dbm = new XincoDBManager();
             //check if user exists
             XincoCoreUserServer user = new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), dbm);
@@ -888,12 +886,18 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             return null;
         }
     }
-
+    
     public XincoCoreAudit getXincoCoreAudit(XincoCoreData in0, XincoCoreUser in1, int in2) throws RemoteException {
         return null;
     }
-
+    
     public XincoCoreAudit setXincoCoreAudit(XincoCoreAudit in0, XincoCoreUser in1) throws RemoteException {
+        return null;
+    }
+    
+    public java.util.Vector getXincoSetting(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException {
+        //verify if user is in Administrators group
+        Vector groups=in0.getXinco_core_groups();
         return null;
     }
 }

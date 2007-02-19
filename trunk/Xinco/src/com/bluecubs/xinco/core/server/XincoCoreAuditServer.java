@@ -75,7 +75,7 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
             
             if (getSchedule_id() > 0) {
                 Statement stmt = DBM.con.createStatement();
-                stmt.executeUpdate("UPDATE xinco_schedule_audit SET schedule_id=" + getSchedule_id() +
+                stmt.executeUpdate("UPDATE xinco_audit SET id=" + getSchedule_id() +
                         ", xinco_core_data_id=" + getData_id() + ", xinco_schedule_type_id=" + getSchedule_type_id() +
                         ", xinco_scheduled_date=" + getScheduled_date() +
                         " WHERE schedule_id=" + getSchedule_id());
@@ -87,11 +87,11 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
                 setSchedule_id(DBM.getNewID("xinco_schedule_audit"));
                 
                 Statement stmt = DBM.con.createStatement();
-                stmt.executeUpdate("INSERT INTO xinco_schedule_audit VALUES (" + getSchedule_id() +
+                stmt.executeUpdate("INSERT INTO xinco_audit VALUES (" + getSchedule_id() +
                         ", " + getData_id() + ", " + getSchedule_type_id() + ", " + getScheduled_date() +")");
                 stmt.close();
                 DBM.con.commit();
-                audit.updateAuditTrail("xinco_schedule_audit",new String [] {"schedule_id ="+getSchedule_id()},
+                audit.updateAuditTrail("xinco_audit",new String [] {"id ="+getSchedule_id()},
                         DBM,"audit.general.create",this.getIdChanger());
             }
             

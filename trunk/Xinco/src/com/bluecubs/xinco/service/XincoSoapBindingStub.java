@@ -16,7 +16,7 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
     static org.apache.axis.description.OperationDesc [] _operations;
 
     static {
-        _operations = new org.apache.axis.description.OperationDesc[28];
+        _operations = new org.apache.axis.description.OperationDesc[29];
         _initOperationDesc1();
         _initOperationDesc2();
         _initOperationDesc3();
@@ -396,6 +396,17 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
         oper.setStyle(org.apache.axis.constants.Style.RPC);
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
         _operations[27] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("getXincoSetting");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
+        oper.setReturnClass(java.util.Vector.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "getXincosettingReturn"));
+        oper.setStyle(org.apache.axis.constants.Style.RPC);
+        oper.setUse(org.apache.axis.constants.Use.ENCODED);
+        _operations[28] = oper;
 
     }
 
@@ -1440,6 +1451,37 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
                 return ((java.lang.Boolean) _resp).booleanValue();
             } catch (java.lang.Exception _exception) {
                 return ((java.lang.Boolean) org.apache.axis.utils.JavaUtils.convert(_resp, boolean.class)).booleanValue();
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+  throw axisFaultException;
+}
+    }
+
+    public java.util.Vector getXincoSetting(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[28]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("", "getXincoSetting"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (java.util.Vector) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (java.util.Vector) org.apache.axis.utils.JavaUtils.convert(_resp, java.util.Vector.class);
             }
         }
   } catch (org.apache.axis.AxisFault axisFaultException) {

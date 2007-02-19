@@ -391,6 +391,17 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
             _myOperations.put("checkXincoCoreUserNewPassword", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("checkXincoCoreUserNewPassword")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getXincoSetting", _params, new javax.xml.namespace.QName("", "getXincosettingReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
+        _oper.setElementQName(new javax.xml.namespace.QName("", "getXincoSetting"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getXincoSetting") == null) {
+            _myOperations.put("getXincoSetting", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getXincoSetting")).add(_oper);
     }
 
     public XincoSoapBindingSkeleton() {
@@ -565,6 +576,12 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
     public boolean checkXincoCoreUserNewPassword(java.lang.String in0, com.bluecubs.xinco.core.XincoCoreUser in1, com.bluecubs.xinco.core.XincoCoreUser in2) throws java.rmi.RemoteException
     {
         boolean ret = impl.checkXincoCoreUserNewPassword(in0, in1, in2);
+        return ret;
+    }
+
+    public java.util.Vector getXincoSetting(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException
+    {
+        java.util.Vector ret = impl.getXincoSetting(in0);
         return ret;
     }
 
