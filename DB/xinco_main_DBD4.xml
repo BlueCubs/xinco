@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="yes" ?>
 <DBMODEL Version="4.0">
 <SETTINGS>
-<GLOBALSETTINGS ModelName="xinco_main_DBD4" IDModel="0" IDVersion="0" VersionStr="1.0.0.0" Comments="" UseVersionHistroy="1" AutoIncVersion="1" DatabaseType="MySQL" ZoomFac="80.00" XPos="1068" YPos="81" DefaultDataType="5" DefaultTablePrefix="0" DefSaveDBConn="" DefSyncDBConn="xinco" DefQueryDBConn="" Printer="PDF-Datei" HPageCount="4.059464816650148" PageAspectRatio="1.436398386069229" PageOrientation="1" PageFormat="A4 (210x297 mm, 8.26x11.7 inches)" SelectedPages="0;1;5" UsePositionGrid="1" PositionGridX="20" PositionGridY="20" TableNameInRefs="1" DefaultTableType="1" ActivateRefDefForNewRelations="1" FKPrefix="" FKPostfix="" CreateFKRefDefIndex="1" DBQuoteCharacter="`" CreateSQLforLinkedObjects="0" DefModelFont="Tahoma" CanvasWidth="4096" CanvasHeight="2842" />
+<GLOBALSETTINGS ModelName="xinco_main_DBD4" IDModel="0" IDVersion="0" VersionStr="1.0.0.0" Comments="" UseVersionHistroy="1" AutoIncVersion="1" DatabaseType="MySQL" ZoomFac="80.00" XPos="0" YPos="0" DefaultDataType="5" DefaultTablePrefix="0" DefSaveDBConn="" DefSyncDBConn="Xinco 2.1" DefQueryDBConn="" Printer="PDF-Datei" HPageCount="4.059464816650148" PageAspectRatio="1.436398386069229" PageOrientation="1" PageFormat="A4 (210x297 mm, 8.26x11.7 inches)" SelectedPages="0;1;5" UsePositionGrid="1" PositionGridX="20" PositionGridY="20" TableNameInRefs="1" DefaultTableType="1" ActivateRefDefForNewRelations="1" FKPrefix="" FKPostfix="" CreateFKRefDefIndex="1" DBQuoteCharacter="`" CreateSQLforLinkedObjects="0" DefModelFont="Tahoma" CanvasWidth="4096" CanvasHeight="2842" />
 <DATATYPEGROUPS>
 <DATATYPEGROUP Name="Numeric Types" Icon="1" />
 <DATATYPEGROUP Name="Date and Time Types" Icon="2" />
@@ -533,7 +533,7 @@
 </INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="1040" Tablename="xinco_core_user" PrevTableName="Table_05" XPos="1480" YPos="1040" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_core_user VALUES (1, \aadmin\a, MD5(\aadmin\a), \aAdministrator\a, \aXinco\a, \aadmin@xinco.org\a, 1, 0, now()); \nINSERT INTO xinco_core_user VALUES (2, \auser\a, MD5(\auser\a), \aUser\a, \aDefault\a, \auser@xinco.org\a, 1, 0, now());\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="Status: \nopen = 1 \nlocked = 2 \n" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="6" >
+<TABLE ID="1040" Tablename="xinco_core_user" PrevTableName="Table_05" XPos="1480" YPos="1200" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_core_user VALUES (1, \aadmin\a, MD5(\aadmin\a), \aAdministrator\a, \aXinco\a, \aadmin@xinco.org\a, 1, 0, now()); \nINSERT INTO xinco_core_user VALUES (2, \auser\a, MD5(\auser\a), \aUser\a, \aDefault\a, \auser@xinco.org\a, 1, 0, now());\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="Status: \nopen = 1 \nlocked = 2 \n" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="6" >
 <COLUMNS>
 <COLUMN ID="1042" ColName="id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
 <OPTIONSELECTED>
@@ -588,6 +588,7 @@
 <RELATION_START ID="1065" />
 <RELATION_START ID="1499" />
 <RELATION_START ID="1649" />
+<RELATION_START ID="3869" />
 </RELATIONS_START>
 <INDICES>
 <INDEX ID="1043" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
@@ -645,7 +646,7 @@
 </INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="1056" Tablename="xinco_core_user_has_xinco_core_group" PrevTableName="" XPos="1580" YPos="1340" TableType="1" TablePrefix="0" nmTable="1" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_core_user_has_xinco_core_group VALUES (1, 1, 1);\nINSERT INTO xinco_core_user_has_xinco_core_group VALUES (1, 2, 1);  \nINSERT INTO xinco_core_user_has_xinco_core_group VALUES (2, 2, 1);  \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="Status:  \nopen = 1  \nlocked = 2  \n" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="8" >
+<TABLE ID="1056" Tablename="xinco_core_user_has_xinco_core_group" PrevTableName="" XPos="1580" YPos="1500" TableType="1" TablePrefix="0" nmTable="1" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_core_user_has_xinco_core_group VALUES (1, 1, 1);\nINSERT INTO xinco_core_user_has_xinco_core_group VALUES (1, 2, 1);  \nINSERT INTO xinco_core_user_has_xinco_core_group VALUES (2, 2, 1);  \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="Status:  \nopen = 1  \nlocked = 2  \n" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="8" >
 <COLUMNS>
 <COLUMN ID="1278" ColName="xinco_core_user_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
 <OPTIONSELECTED>
@@ -694,7 +695,7 @@
 </INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="1181" Tablename="xinco_id" PrevTableName="Table_10" XPos="220" YPos="100" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_id VALUES (\axinco_core_language\a, 1000); \nINSERT INTO xinco_id VALUES (\axinco_core_data_type\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_user\a, 1000);  \nINSERT INTO xinco_id VALUES (\axinco_core_group\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_node\a, 1000); \nINSERT INTO xinco_id VALUES (\axinco_core_data\a, 1000);  \nINSERT INTO xinco_id VALUES (\axinco_core_ace\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_log\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_user_modified_record\a, 0);  \nINSERT INTO xinco_id VALUES (\axinco_scheduled_audit\a, 0); \nINSERT INTO xinco_id VALUES (\axinco_scheduled_audit_type\a, 1000); \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="9" >
+<TABLE ID="1181" Tablename="xinco_id" PrevTableName="Table_10" XPos="40" YPos="20" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_id VALUES (\axinco_core_language\a, 1000); \nINSERT INTO xinco_id VALUES (\axinco_core_data_type\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_user\a, 1000);  \nINSERT INTO xinco_id VALUES (\axinco_core_group\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_node\a, 1000); \nINSERT INTO xinco_id VALUES (\axinco_core_data\a, 1000);  \nINSERT INTO xinco_id VALUES (\axinco_core_ace\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_log\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_user_modified_record\a, 0);  \nINSERT INTO xinco_id VALUES (\axinco_scheduled_audit\a, 0); \nINSERT INTO xinco_id VALUES (\axinco_scheduled_audit_type\a, 1000); \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="9" >
 <COLUMNS>
 <COLUMN ID="1183" ColName="tablename" PrevColName="" Pos="0" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
 <OPTIONSELECTED>
@@ -938,15 +939,15 @@
 </INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="1627" Tablename="xinco_scheduled_audit" PrevTableName="Table_13" XPos="980" YPos="640" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="29" >
+<TABLE ID="1627" Tablename="xinco_audit" PrevTableName="Table_13" XPos="980" YPos="640" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="29" >
 <COLUMNS>
-<COLUMN ID="1629" ColName="schedule_id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="1" IsForeignKey="0" DefaultValue="" Comments="">
+<COLUMN ID="1629" ColName="id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="1" IsForeignKey="0" DefaultValue="" Comments="">
 <OPTIONSELECTED>
 <OPTIONSELECT Value="1" />
 <OPTIONSELECT Value="0" />
 </OPTIONSELECTED>
 </COLUMN>
-<COLUMN ID="1644" ColName="xinco_scheduled_audit_type_schedule_type_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<COLUMN ID="3922" ColName="xinco_audit_type_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
 <OPTIONSELECTED>
 <OPTIONSELECT Value="1" />
 <OPTIONSELECT Value="0" />
@@ -974,18 +975,19 @@
 </COLUMN>
 </COLUMNS>
 <RELATIONS_START>
+<RELATION_START ID="3868" />
 <RELATION_START ID="1653" />
 </RELATIONS_START>
 <RELATIONS_END>
 <RELATION_END ID="1631" />
-<RELATION_END ID="1643" />
 <RELATION_END ID="1649" />
+<RELATION_END ID="3921" />
 </RELATIONS_END>
 <INDICES>
 <INDEX ID="1630" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
 <INDEXCOLUMNS>
 <INDEXCOLUMN idColumn="1629" LengthParam="0" />
-<INDEXCOLUMN idColumn="1644" LengthParam="0" />
+<INDEXCOLUMN idColumn="3922" LengthParam="0" />
 </INDEXCOLUMNS>
 </INDEX>
 <INDEX ID="1633" IndexName="xinco_scheduled_audit_FKIndex1" IndexKind="1" FKRefDef_Obj_id="1631">
@@ -993,21 +995,45 @@
 <INDEXCOLUMN idColumn="1632" LengthParam="0" />
 </INDEXCOLUMNS>
 </INDEX>
-<INDEX ID="1645" IndexName="xinco_scheduled_audit_FKIndex2" IndexKind="1" FKRefDef_Obj_id="1643">
-<INDEXCOLUMNS>
-<INDEXCOLUMN idColumn="1644" LengthParam="0" />
-</INDEXCOLUMNS>
-</INDEX>
 <INDEX ID="1651" IndexName="xinco_scheduled_audit_FKIndex3" IndexKind="1" FKRefDef_Obj_id="1649">
 <INDEXCOLUMNS>
 <INDEXCOLUMN idColumn="1650" LengthParam="0" />
 </INDEXCOLUMNS>
 </INDEX>
+<INDEX ID="3923" IndexName="xinco_audit_FKIndex3" IndexKind="1" FKRefDef_Obj_id="3921">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="3922" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="1634" Tablename="xinco_scheduled_audit_type" PrevTableName="Table_14" XPos="1440" YPos="460" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_scheduled_audit_type (schedule_type_id, description) VALUES(1, \ascheduled.audit.monthly\a);\nINSERT INTO xinco_scheduled_audit_type (schedule_type_id, description) VALUES(2, \ascheduled.audit.yearly\a);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="31" >
+<TABLE ID="1634" Tablename="xinco_audit_type" PrevTableName="Table_14" XPos="1440" YPos="460" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_audit_type (id, days, weeks, months, years, description) VALUES(1,0,0,1,0,\ascheduled.audit.monthly\a);\nINSERT INTO xinco_audit_type (id, days, weeks, months, years, description) VALUES(2,0,0,0,1,\ascheduled.audit.yearly\a);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="31" >
 <COLUMNS>
-<COLUMN ID="1637" ColName="schedule_type_id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="1" IsForeignKey="0" DefaultValue="" Comments="">
+<COLUMN ID="1637" ColName="id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="1" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="3887" ColName="days" PrevColName="" Pos="2" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="3888" ColName="weeks" PrevColName="" Pos="3" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="3890" ColName="months" PrevColName="" Pos="5" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="3889" ColName="years" PrevColName="" Pos="4" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
 <OPTIONSELECTED>
 <OPTIONSELECT Value="1" />
 <OPTIONSELECT Value="0" />
@@ -1020,7 +1046,7 @@
 </COLUMN>
 </COLUMNS>
 <RELATIONS_START>
-<RELATION_START ID="1643" />
+<RELATION_START ID="3921" />
 </RELATIONS_START>
 <INDICES>
 <INDEX ID="1638" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
@@ -1030,21 +1056,21 @@
 </INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="1652" Tablename="xinco_scheduled_audit_has_xinco_core_group" PrevTableName="" XPos="1420" YPos="640" TableType="1" TablePrefix="0" nmTable="1" Temporary="0" UseStandardInserts="0" StandardInserts="" TableOptions="" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="34" >
+<TABLE ID="1652" Tablename="xinco_audit_has_xinco_core_group" PrevTableName="" XPos="1440" YPos="640" TableType="1" TablePrefix="0" nmTable="1" Temporary="0" UseStandardInserts="0" StandardInserts="\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="34" >
 <COLUMNS>
-<COLUMN ID="1656" ColName="xinco_scheduled_audit_type_schedule_type_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<COLUMN ID="3879" ColName="xinco_core_group_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
 <OPTIONSELECTED>
 <OPTIONSELECT Value="1" />
 <OPTIONSELECT Value="0" />
 </OPTIONSELECTED>
 </COLUMN>
-<COLUMN ID="1655" ColName="xinco_scheduled_audit_schedule_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<COLUMN ID="3924" ColName="xinco_audit_type_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
 <OPTIONSELECTED>
 <OPTIONSELECT Value="1" />
 <OPTIONSELECT Value="0" />
 </OPTIONSELECTED>
 </COLUMN>
-<COLUMN ID="1658" ColName="xinco_core_group_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<COLUMN ID="3927" ColName="xinco_audit_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
 <OPTIONSELECTED>
 <OPTIONSELECT Value="1" />
 <OPTIONSELECT Value="0" />
@@ -1052,26 +1078,109 @@
 </COLUMN>
 </COLUMNS>
 <RELATIONS_END>
-<RELATION_END ID="1653" />
 <RELATION_END ID="1654" />
+<RELATION_END ID="1653" />
 </RELATIONS_END>
 <INDICES>
-<INDEX ID="1660" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
+<INDEX ID="3881" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
 <INDEXCOLUMNS>
-<INDEXCOLUMN idColumn="1656" LengthParam="0" />
-<INDEXCOLUMN idColumn="1655" LengthParam="0" />
-<INDEXCOLUMN idColumn="1658" LengthParam="0" />
+<INDEXCOLUMN idColumn="3879" LengthParam="0" />
+<INDEXCOLUMN idColumn="3924" LengthParam="0" />
+<INDEXCOLUMN idColumn="3927" LengthParam="0" />
 </INDEXCOLUMNS>
 </INDEX>
-<INDEX ID="1657" IndexName="xinco_scheduled_audit_has_xinco_core_group_FKIndex1" IndexKind="1" FKRefDef_Obj_id="1653">
+<INDEX ID="3880" IndexName="xinco_audit_has_xinco_core_group_FKIndex1" IndexKind="1" FKRefDef_Obj_id="1654">
 <INDEXCOLUMNS>
-<INDEXCOLUMN idColumn="1655" LengthParam="0" />
-<INDEXCOLUMN idColumn="1656" LengthParam="0" />
+<INDEXCOLUMN idColumn="3879" LengthParam="0" />
 </INDEXCOLUMNS>
 </INDEX>
-<INDEX ID="1659" IndexName="xinco_scheduled_audit_has_xinco_core_group_FKIndex2" IndexKind="1" FKRefDef_Obj_id="1654">
+<INDEX ID="3885" IndexName="xinco_audit_has_xinco_core_group_FKIndex2" IndexKind="1" FKRefDef_Obj_id="1653">
 <INDEXCOLUMNS>
-<INDEXCOLUMN idColumn="1658" LengthParam="0" />
+<INDEXCOLUMN idColumn="3924" LengthParam="0" />
+<INDEXCOLUMN idColumn="3927" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+</INDICES>
+</TABLE>
+<TABLE ID="3867" Tablename="xinco_audit_has_xinco_core_user" PrevTableName="" XPos="1500" YPos="840" TableType="1" TablePrefix="0" nmTable="1" Temporary="0" UseStandardInserts="0" StandardInserts="" TableOptions="" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="37" >
+<COLUMNS>
+<COLUMN ID="3873" ColName="xinco_core_user_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="3925" ColName="xinco_audit_type_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="3928" ColName="xinco_audit_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+</COLUMNS>
+<RELATIONS_END>
+<RELATION_END ID="3868" />
+<RELATION_END ID="3869" />
+</RELATIONS_END>
+<INDICES>
+<INDEX ID="3875" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="3873" LengthParam="0" />
+<INDEXCOLUMN idColumn="3925" LengthParam="0" />
+<INDEXCOLUMN idColumn="3928" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="3872" IndexName="xinco_audit_has_xinco_core_user_FKIndex1" IndexKind="1" FKRefDef_Obj_id="3868">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="3925" LengthParam="0" />
+<INDEXCOLUMN idColumn="3928" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="3874" IndexName="xinco_audit_has_xinco_core_user_FKIndex2" IndexKind="1" FKRefDef_Obj_id="3869">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="3873" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+</INDICES>
+</TABLE>
+<TABLE ID="4025" Tablename="xinco_setting" PrevTableName="Table_17" XPos="40" YPos="100" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(1,\aversion.high\a, 2,null,null );\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(2,\aversion.med\a, 1,null ,null );\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(3,\aversion.low\a, 0,\anull,null );\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(4,\aversion.postfix\a, null,null ,null );\n\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(5,\apassword.aging\a, 120,null,null );\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(6,\apassword.unusable_period\a, 365,null,null);\n\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(7,\ageneral.copyright.date\a, null,\a2004-2007\a ,null);\n\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(8,\ageneral.enable.savepassword\a, null,null ,0);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="40" >
+<COLUMNS>
+<COLUMN ID="4027" ColName="id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="1" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="4044" ColName="description" PrevColName="" Pos="1" idDatatype="20" DatatypeParams="(45)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="4045" ColName="int_value" PrevColName="" Pos="2" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="4046" ColName="string_value" PrevColName="" Pos="3" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="4047" ColName="bool_value" PrevColName="" Pos="4" idDatatype="22" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+</OPTIONSELECTED>
+</COLUMN>
+</COLUMNS>
+<INDICES>
+<INDEX ID="4028" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="4027" LengthParam="0" />
 </INDEXCOLUMNS>
 </INDEX>
 </INDICES>
@@ -1084,7 +1193,7 @@
 <RELATION ID="1029" RelationName="is_language_of_xinco_core_data" Kind="2" SrcTable="1019" DestTable="1008" FKFields="id=xinco_core_language_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="0" OptionalStart="0" OptionalEnd="1" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=0\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1030" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="17" />
 <RELATION ID="1057" RelationName="is_user_of_xinco_core_group" Kind="1" SrcTable="1040" DestTable="1056" FKFields="id=xinco_core_user_id\n" FKFieldsComments="\n" relDirection="3" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="45" CaptionOffsetY="9" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1060" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="18" />
 <RELATION ID="1058" RelationName="is_group_of_xinco_core_user" Kind="1" SrcTable="1048" DestTable="1056" FKFields="id=xinco_core_group_id\n" FKFieldsComments="\n" relDirection="3" MidOffset="25" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="-1" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1062" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="19" />
-<RELATION ID="1065" RelationName="is_user_of_xinco_core_ace" Kind="2" SrcTable="1040" DestTable="1031" FKFields="id=xinco_core_user_id\n" FKFieldsComments="\n" relDirection="1" MidOffset="250" OptionalStart="1" OptionalEnd="1" CaptionOffsetX="-1" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1066" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="20" />
+<RELATION ID="1065" RelationName="is_user_of_xinco_core_ace" Kind="2" SrcTable="1040" DestTable="1031" FKFields="id=xinco_core_user_id\n" FKFieldsComments="\n" relDirection="1" MidOffset="290" OptionalStart="1" OptionalEnd="1" CaptionOffsetX="-1" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1066" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="20" />
 <RELATION ID="1067" RelationName="is_group_of_xinco_core_ace" Kind="2" SrcTable="1048" DestTable="1031" FKFields="id=xinco_core_group_id\n" FKFieldsComments="\n" relDirection="1" MidOffset="0" OptionalStart="1" OptionalEnd="1" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1068" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="21" />
 <RELATION ID="1069" RelationName="is_node_of_xinco_core_ace" Kind="2" SrcTable="1000" DestTable="1031" FKFields="id=xinco_core_node_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="0" OptionalStart="1" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1071" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="22" />
 <RELATION ID="1295" RelationName="is_data_type_of_xinco_core_data" Kind="2" SrcTable="1279" DestTable="1008" FKFields="id=xinco_core_data_type_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="0" OptionalStart="0" OptionalEnd="1" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=0\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1297" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="23" />
@@ -1093,11 +1202,13 @@
 <RELATION ID="1072" RelationName="is_data_of_xinco_core_ace" Kind="2" SrcTable="1008" DestTable="1031" FKFields="id=xinco_core_data_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="0" OptionalStart="1" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1482" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="26" />
 <RELATION ID="1497" RelationName="is_log_of_xinco_core_data" Kind="2" SrcTable="1008" DestTable="1486" FKFields="id=xinco_core_data_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="0" OptionalStart="0" OptionalEnd="1" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1498" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="27" />
 <RELATION ID="1499" RelationName="is_log_of_xinco_core_user" Kind="2" SrcTable="1040" DestTable="1486" FKFields="id=xinco_core_user_id\n" FKFieldsComments="\n" relDirection="4" MidOffset="0" OptionalStart="0" OptionalEnd="1" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1500" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="28" />
-<RELATION ID="1631" RelationName="has_schedule_audit" Kind="2" SrcTable="1008" DestTable="1627" FKFields="id=xinco_core_data_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1633" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="30" />
-<RELATION ID="1643" RelationName="is from type" Kind="1" SrcTable="1634" DestTable="1627" FKFields="schedule_type_id=xinco_scheduled_audit_type_schedule_type_id\n" FKFieldsComments="\n" relDirection="4" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1645" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="32" />
+<RELATION ID="1631" RelationName="has_audit" Kind="2" SrcTable="1008" DestTable="1627" FKFields="id=xinco_core_data_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1633" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="30" />
 <RELATION ID="1649" RelationName="completed_by" Kind="2" SrcTable="1040" DestTable="1627" FKFields="id=xinco_core_user_id\n" FKFieldsComments="\n" relDirection="4" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1651" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="33" />
-<RELATION ID="1653" RelationName="assigned_to_group" Kind="1" SrcTable="1627" DestTable="1652" FKFields="schedule_id=xinco_scheduled_audit_schedule_id\nxinco_scheduled_audit_type_schedule_type_id=xinco_scheduled_audit_type_schedule_type_id\n" FKFieldsComments="\n\n" relDirection="2" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1657" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="35" />
-<RELATION ID="1654" RelationName="group_has_assigned_audit" Kind="1" SrcTable="1048" DestTable="1652" FKFields="id=xinco_core_group_id\n" FKFieldsComments="\n" relDirection="4" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1659" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="36" />
+<RELATION ID="3868" RelationName="assigned_to_user" Kind="1" SrcTable="1627" DestTable="3867" FKFields="xinco_audit_type_id=xinco_audit_type_id\nid=xinco_audit_id\n" FKFieldsComments="\n\n" relDirection="2" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="-52" CaptionOffsetY="2" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="3872" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="38" />
+<RELATION ID="3869" RelationName="Rel_22" Kind="1" SrcTable="1040" DestTable="3867" FKFields="id=xinco_core_user_id\n" FKFieldsComments="\n" relDirection="1" MidOffset="-39" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=3\nOnUpdate=3\n" Comments="" FKRefDefIndex_Obj_id="3874" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="39" />
+<RELATION ID="1654" RelationName="group_has_assigned_audit" Kind="1" SrcTable="1048" DestTable="1652" FKFields="id=xinco_core_group_id\n" FKFieldsComments="\n" relDirection="4" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="3880" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="36" />
+<RELATION ID="1653" RelationName="assigned_to_group" Kind="1" SrcTable="1627" DestTable="1652" FKFields="xinco_audit_type_id=xinco_audit_type_id\nid=xinco_audit_id\n" FKFieldsComments="\n\n" relDirection="2" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="3885" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="35" />
+<RELATION ID="3921" RelationName="is from type" Kind="1" SrcTable="1634" DestTable="1627" FKFields="id=xinco_audit_type_id\n" FKFieldsComments="\n" relDirection="4" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="3923" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="39" />
 </RELATIONS>
 <NOTES>
 </NOTES>
@@ -1110,6 +1221,11 @@
 </PLUGINDATA>
 <QUERYDATA>
 <QUERYRECORDS>
+<QUERYRECORD SQLCmdType="4" StoredPosition="19.02 16:24:44" SQLText="SELECT * \nFROM xinco_setting\nORDER BY id" />
+<QUERYRECORD SQLCmdType="4" StoredPosition="19.02 16:12:45" SQLText="INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(1,\aversion.high\a, 2,\a\a ,null );" />
+<QUERYRECORD SQLCmdType="4" StoredPosition="19.02 16:01:50" SQLText="SELECT * \nFROM xinco_settings\nORDER BY id" />
+<QUERYRECORD SQLCmdType="4" StoredPosition="19.02 16:01:02" SQLText="INSERT INTO xinco_settings (id, version_mid, version_low, version_postfix, password_aging, password_attempts, password_unusable_period, general_copyright_date, general_enable_savepassword) VALUES(1,2,1,\a\a,120,3,365,\a2004-2007\a,0);" />
+<QUERYRECORD SQLCmdType="4" StoredPosition="19.02 16:00:40" SQLText="INSERT INTO xinco_settings (id, version_mid, version_low, version_postfix, password_aging, password_attempts, password_unusable_period, general_copyright_date, general_enable_savepassword) VALUES(1,2,1,0,\a\a,120,3,365,\a2004-2007\a,0);" />
 <QUERYRECORD SQLCmdType="4" StoredPosition="19.09 14:21:59" SQLText="SELECT * \nFROM xinco_id\nORDER BY tablename" />
 <QUERYRECORD SQLCmdType="4" StoredPosition="19.09 14:21:06" SQLText="CREATE TABLE xinco_core_user_has_xinco_core_group_t (\n  xinco_core_user_id INTEGER UNSIGNED NOT NULL,\n  xinco_core_group_id INTEGER UNSIGNED NOT NULL,\n  status_number INTEGER UNSIGNED NOT NULL,\n  PRIMARY KEY(xinco_core_user_id, xinco_core_group_id),\n  INDEX xinco_core_user_has_xinco_core_group_FKIndex1(xinco_core_user_id),\n  INDEX xinco_core_user_has_xinco_core_group_FKIndex2(xinco_core_group_id),\n  INDEX xinco_core_user_has_xinco_core_group_index_status(status_number)\n)\nTYPE=InnoDB;" />
 <QUERYRECORD SQLCmdType="4" StoredPosition="19.09 14:20:03" SQLText="SELECT * \nFROM xinco_core_log\nORDER BY id" />
