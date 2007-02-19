@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * 
+ *
  *
  *************************************************************
  * ArchiveDialog.java
@@ -69,66 +69,14 @@ public class ArchiveDialog extends javax.swing.JDialog {
         this.archiveModelDropDown.setModel(dcbm);
         this.archiveModelDropDown.setBounds(120, 40, 250, 20);
         this.archiveModelDropDown.setEditable(false);
-        this.archiveModelDropDown.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                if (archiveModelDropDown.getSelectedIndex() == 1) {
-                    archiveDate.setVisible(true);
-                    dayAmountTextBox.setEnabled(false);
-                } else if (archiveModelDropDown.getSelectedIndex() == 2) {
-                    archiveDate.setVisible(false);
-                    dayAmountTextBox.setEnabled(true);
-                } else {
-                    archiveDate.setVisible(false);
-                    dayAmountTextBox.setEnabled(false);
-                }
-            }
-        });
         this.dateLabel.setText(xerb.getString("window.archive.archivedate") + ":");
         this.dayAmount.setText(xerb.getString("window.archive.archivedays") + ":");
-        okButton.setText(xerb.getString("general.continue"));
-        okButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                //update archiving options of selected data
-                if (revisionModelCheckbox.isSelected()) {
-                    ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(1);
-                } else {
-                    ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(0);
-                }
-                ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(4)).setAttrib_unsignedint(archiveModelDropDown.getSelectedIndex());
-                int temp_year_int = 0;
-                int temp_month_int = 0;
-                int temp_day_int = 0;
-                int temp_days_int = 0;
-                Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-                cal.setTime(archiveDate.getDate());
-                try {
-                    temp_year_int = cal.get(cal.YEAR);
-                    temp_month_int = cal.get(cal.MONTH);
-                    temp_day_int = cal.get(cal.DAY_OF_MONTH);
-                    //set FIXED date: GMT, no DST
-                    cal.set(Calendar.DST_OFFSET, 0);
-                    cal.set(Calendar.YEAR, temp_year_int);
-                    cal.set(Calendar.MONTH, (temp_month_int-1));
-                    cal.set(Calendar.DAY_OF_MONTH, temp_day_int);
-                    cal.set(Calendar.HOUR_OF_DAY, 0);
-                    cal.set(Calendar.MINUTE, 0);
-                    cal.set(Calendar.SECOND, 0);
-                    ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(5)).setAttrib_datetime(cal);
-                    temp_days_int = Integer.parseInt(dayAmountTextBox.getText());
-                    ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(6)).setAttrib_unsignedint(temp_days_int);
-                    //close dialog
-                    explorer.set_global_dialog_return_value(1);
-                    setVisible(false);
-                } catch (Exception parseex) {
-                }
-            }
-        });
-        cancelButton.setText(xerb.getString("general.cancel"));
-        cancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                setVisible(false);
-            }
-        });
+        this.okButton.setText(xerb.getString("general.continue"));
+        this.auditCheckbox.setText(xerb.getString("window.archive.audit"));
+        this.auditTypeLabel.setText(xerb.getString("window.archive.audit.type"));
+        this.auditFlexibilityLabel.setText(xerb.getString("window.archive.audit.flexibility"));
+        this.auditDateLabel.setText(xerb.getString("window.archive.audit.date"));
+        this.cancelButton.setText(xerb.getString("general.cancel"));
         //processing independent of creation
         if (((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(3)).getAttrib_unsignedint() == 0) {
             revisionModelCheckbox.setSelected(false);
@@ -149,6 +97,10 @@ public class ArchiveDialog extends javax.swing.JDialog {
         cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - realcal.get(Calendar.ZONE_OFFSET)) - (ngc.get(Calendar.DST_OFFSET) + realcal.get(Calendar.DST_OFFSET)) );
         archiveDate.setDate(cal.getTime());
         dayAmountTextBox.setText("" + ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(6)).getAttrib_unsignedint());
+        
+        //Inititalize the audit type list
+        this.auditTypeList.removeAllItems();
+        
     }
     /** This method is called from within the constructor to
      * initialize the form.
@@ -167,6 +119,14 @@ public class ArchiveDialog extends javax.swing.JDialog {
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         archiveDate = new com.toedter.calendar.JDateChooser();
+        enableFileAudit = new javax.swing.JCheckBox();
+        auditCheckbox = new javax.swing.JLabel();
+        auditTypeList = new javax.swing.JComboBox();
+        auditTypeLabel = new javax.swing.JLabel();
+        auditFlexibility = new javax.swing.JCheckBox();
+        auditFlexibilityLabel = new javax.swing.JLabel();
+        auditDate = new com.toedter.calendar.JDateChooser();
+        auditDateLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         revisionModelLabel.setText("jLabel1");
@@ -177,6 +137,11 @@ public class ArchiveDialog extends javax.swing.JDialog {
         archiveModelLabel.setText("jLabel1");
 
         archiveModelDropDown.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        archiveModelDropDown.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                archiveModelDropDownActionPerformed(evt);
+            }
+        });
 
         dateLabel.setText("jLabel1");
 
@@ -187,36 +152,92 @@ public class ArchiveDialog extends javax.swing.JDialog {
         dayAmountTextBox.setEnabled(false);
 
         okButton.setText("jButton1");
+        okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                okButtonActionPerformed(evt);
+            }
+        });
 
         cancelButton.setText("jButton2");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+
+        enableFileAudit.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        enableFileAudit.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        enableFileAudit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableFileAuditActionPerformed(evt);
+            }
+        });
+
+        auditCheckbox.setText("jLabel1");
+
+        auditTypeLabel.setText("jLabel1");
+
+        auditFlexibility.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        auditFlexibility.setMargin(new java.awt.Insets(0, 0, 0, 0));
+
+        auditFlexibilityLabel.setText("jLabel1");
+
+        auditDateLabel.setText("jLabel1");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(layout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                                .add(layout.createSequentialGroup()
+                                                    .add(dateLabel)
+                                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 157, Short.MAX_VALUE))
+                                                .add(revisionModelLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+                                                .add(archiveModelLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE))
+                                            .add(layout.createSequentialGroup()
+                                                .add(dayAmount)
+                                                .add(157, 157, 157))))
+                                    .add(layout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .add(auditCheckbox)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
+                                .add(layout.createSequentialGroup()
+                                    .addContainerGap()
+                                    .add(auditTypeLabel)
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
                             .add(layout.createSequentialGroup()
-                                .add(dateLabel)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 157, Short.MAX_VALUE))
-                            .add(revisionModelLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
-                            .add(archiveModelLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE))
+                                .add(107, 107, 107)
+                                .add(okButton)
+                                .add(19, 19, 19)))
                         .add(layout.createSequentialGroup()
-                            .add(dayAmount)
-                            .add(157, 157, 157)))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(okButton)
-                        .add(21, 21, 21)))
+                            .addContainerGap()
+                            .add(auditFlexibilityLabel)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(auditDateLabel)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(cancelButton)
+                    .add(auditDate, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(dayAmountTextBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(archiveModelDropDown, 0, 189, Short.MAX_VALUE)
-                        .add(revisionModelCheckbox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE))
-                    .add(archiveDate, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(auditFlexibility)
+                        .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, cancelButton)
+                            .add(auditTypeList, 0, 189, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, enableFileAudit)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, dayAmountTextBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, archiveModelDropDown, 0, 189, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, revisionModelCheckbox, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, archiveDate, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -238,23 +259,117 @@ public class ArchiveDialog extends javax.swing.JDialog {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(dayAmount)
                     .add(dayAmountTextBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(17, 17, 17)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(cancelButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(okButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(enableFileAudit)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(auditTypeList, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(layout.createSequentialGroup()
+                        .add(auditCheckbox)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(auditTypeLabel)))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(auditFlexibility)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(auditDate, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(13, 13, 13)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(okButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(cancelButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .add(layout.createSequentialGroup()
+                        .add(auditFlexibilityLabel)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(auditDateLabel)))
                 .addContainerGap())
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
+    private void enableFileAuditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableFileAuditActionPerformed
+        this.auditTypeLabel.setVisible(this.enableFileAudit.isSelected());
+        this.auditTypeList.setVisible(this.enableFileAudit.isSelected());
+        this.auditFlexibility.setVisible(this.enableFileAudit.isSelected());
+        this.auditFlexibilityLabel.setVisible(this.enableFileAudit.isSelected());
+        this.auditDate.setVisible(this.enableFileAudit.isSelected());
+        this.auditDateLabel.setVisible(this.enableFileAudit.isSelected());
+    }//GEN-LAST:event_enableFileAuditActionPerformed
+    
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        setVisible(false);
+    }//GEN-LAST:event_cancelButtonActionPerformed
+    
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+        
+        //update archiving options of selected data
+        if (revisionModelCheckbox.isSelected()) {
+            ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(1);
+        } else {
+            ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(0);
+        }
+        ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(4)).setAttrib_unsignedint(archiveModelDropDown.getSelectedIndex());
+        int temp_year_int = 0;
+        int temp_month_int = 0;
+        int temp_day_int = 0;
+        int temp_days_int = 0;
+        Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+        cal.setTime(archiveDate.getDate());
+        try {
+            temp_year_int = cal.get(cal.YEAR);
+            temp_month_int = cal.get(cal.MONTH);
+            temp_day_int = cal.get(cal.DAY_OF_MONTH);
+            //set FIXED date: GMT, no DST
+            cal.set(Calendar.DST_OFFSET, 0);
+            cal.set(Calendar.YEAR, temp_year_int);
+            cal.set(Calendar.MONTH, (temp_month_int-1));
+            cal.set(Calendar.DAY_OF_MONTH, temp_day_int);
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(5)).setAttrib_datetime(cal);
+            temp_days_int = Integer.parseInt(dayAmountTextBox.getText());
+            ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(6)).setAttrib_unsignedint(temp_days_int);
+            //close dialog
+            explorer.set_global_dialog_return_value(1);
+            setVisible(false);
+        } catch (Exception parseex) {
+        }
+    }//GEN-LAST:event_okButtonActionPerformed
+    
+    private void archiveModelDropDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveModelDropDownActionPerformed
+        if (archiveModelDropDown.getSelectedIndex() == 1) {
+            archiveDate.setVisible(true);
+            dateLabel.setVisible(true);
+            dayAmountTextBox.setVisible(false);
+        } else if (archiveModelDropDown.getSelectedIndex() == 2) {
+            archiveDate.setVisible(false);
+            dateLabel.setVisible(false);
+            dayAmountTextBox.setVisible(true);
+        } else {
+            archiveDate.setVisible(false);
+            dateLabel.setVisible(false);
+            dayAmountTextBox.setVisible(false);
+        }
+    }//GEN-LAST:event_archiveModelDropDownActionPerformed
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.toedter.calendar.JDateChooser archiveDate;
     private javax.swing.JComboBox archiveModelDropDown;
     private javax.swing.JLabel archiveModelLabel;
+    private javax.swing.JLabel auditCheckbox;
+    private com.toedter.calendar.JDateChooser auditDate;
+    private javax.swing.JLabel auditDateLabel;
+    private javax.swing.JCheckBox auditFlexibility;
+    private javax.swing.JLabel auditFlexibilityLabel;
+    private javax.swing.JLabel auditTypeLabel;
+    private javax.swing.JComboBox auditTypeList;
     private javax.swing.JButton cancelButton;
     private javax.swing.JLabel dateLabel;
     private javax.swing.JLabel dayAmount;
     private javax.swing.JTextField dayAmountTextBox;
+    private javax.swing.JCheckBox enableFileAudit;
     private javax.swing.JButton okButton;
     private javax.swing.JCheckBox revisionModelCheckbox;
     private javax.swing.JLabel revisionModelLabel;

@@ -50,6 +50,7 @@ public class XincoMutableTreeNode extends DefaultMutableTreeNode {
     public String toString() {
         String s = null;
         String status = null;
+        
         if (this.getUserObject() != null) {
             if (this.getUserObject().getClass() == XincoCoreNode.class) {
                 s = ((XincoCoreNode)this.getUserObject()).getDesignation();
