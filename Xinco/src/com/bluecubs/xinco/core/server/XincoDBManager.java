@@ -244,13 +244,20 @@ public class XincoDBManager {
                             column="xinco_core_data_type_id";
                         if(rs.getString("TABLE_NAME").equals("xinco_scheduled_audit_has_xinco_core_group"))
                             column="xinco_scheduled_audit_schedule_id";
+                        if(rs.getString("TABLE_NAME").equals("xinco_core_user_has_xinco_core_group"))
+                            column="xinco_core_user_id";
                         if(rs.getString("TABLE_NAME").equals("xinco_scheduled_audit_type"))
                             column="scheduled_type_id";
+                        if(rs.getString("TABLE_NAME").equals("xinco_scheduled_audit"))
+                            column="schedule_id";
+                        if(rs.getString("TABLE_NAME").endsWith("_t"))
+                            column="record_id";
                         if(rs.getString("TABLE_NAME").equals("xinco_core_user_modified_record")||
                                 rs.getString("TABLE_NAME").equals("xinco_scheduled_audit"))
                             number = -1;
                         condition = column +" > "+number;
                         sql="delete from "+rs.getString("TABLE_NAME")+" where "+condition;
+                        System.out.println(sql);
                         s.executeUpdate(sql);
                     }
                 }

@@ -32,6 +32,8 @@ public class XincoCoreACE  implements java.io.Serializable {
 
     private boolean owner;
 
+    private int userId;
+
     public XincoCoreACE() {
     }
 
@@ -47,7 +49,8 @@ public class XincoCoreACE  implements java.io.Serializable {
            boolean read_permission,
            boolean write_permission,
            boolean audit_permission,
-           boolean owner) {
+           boolean owner,
+           int userId) {
            this.admin_permission = admin_permission;
            this.changerID = changerID;
            this.execute_permission = execute_permission;
@@ -60,6 +63,7 @@ public class XincoCoreACE  implements java.io.Serializable {
            this.write_permission = write_permission;
            this.audit_permission = audit_permission;
            this.owner = owner;
+           this.userId = userId;
     }
 
 
@@ -302,6 +306,26 @@ public class XincoCoreACE  implements java.io.Serializable {
         this.owner = owner;
     }
 
+
+    /**
+     * Gets the userId value for this XincoCoreACE.
+     * 
+     * @return userId
+     */
+    public int getUserId() {
+        return userId;
+    }
+
+
+    /**
+     * Sets the userId value for this XincoCoreACE.
+     * 
+     * @param userId
+     */
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof XincoCoreACE)) return false;
@@ -325,7 +349,8 @@ public class XincoCoreACE  implements java.io.Serializable {
             this.read_permission == other.isRead_permission() &&
             this.write_permission == other.isWrite_permission() &&
             this.audit_permission == other.isAudit_permission() &&
-            this.owner == other.isOwner();
+            this.owner == other.isOwner() &&
+            this.userId == other.getUserId();
         __equalsCalc = null;
         return _equals;
     }
@@ -349,6 +374,7 @@ public class XincoCoreACE  implements java.io.Serializable {
         _hashCode += (isWrite_permission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isAudit_permission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isOwner() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += getUserId();
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -429,6 +455,12 @@ public class XincoCoreACE  implements java.io.Serializable {
         elemField.setFieldName("owner");
         elemField.setXmlName(new javax.xml.namespace.QName("", "owner"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("userId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "userId"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
     }

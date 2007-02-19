@@ -9,6 +9,7 @@ package com.bluecubs.xinco.service;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.core.XincoCoreACE;
+import com.bluecubs.xinco.core.XincoCoreAudit;
 import com.bluecubs.xinco.core.XincoCoreAuditDataSchedule;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreGroup;
@@ -19,6 +20,7 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoVersion;
 import com.bluecubs.xinco.core.server.XincoCoreACEServer;
 import com.bluecubs.xinco.core.server.XincoCoreAuditDataScheduleServer;
+import com.bluecubs.xinco.core.server.XincoCoreAuditServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataTypeServer;
 import com.bluecubs.xinco.core.server.XincoCoreGroupServer;
@@ -851,35 +853,27 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         return user.isPasswordUsable(in0);
     }
     
-    public com.bluecubs.xinco.core.XincoCoreAuditDataSchedule getXincoCoreAuditSchedule(com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
-        return null;
-    }
-    
-    public com.bluecubs.xinco.core.XincoCoreAuditDataSchedule setXincoCoreAuditSchedule(com.bluecubs.xinco.core.XincoCoreAuditDataSchedule in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
-        return null;
-    }
-    
-    public com.bluecubs.xinco.core.XincoCoreAuditDataSchedule getXincoCoreAuditSchedule(com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1, int in2) throws java.rmi.RemoteException {
+    public com.bluecubs.xinco.core.XincoCoreAudit getXincoCoreAuditSchedule(com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1, int in2) throws java.rmi.RemoteException {
         XincoDBManager dbm=null;
-        XincoCoreAuditDataScheduleServer audit=null;
+        XincoCoreAuditServer audit=null;
         ResultSet rs=null;
         try {
             dbm = new XincoDBManager();
             rs=dbm.con.createStatement().executeQuery("SELECT schedule_id FROM xinco_schedule_audit WHERE xinco_core_data_id=" + in0.getId());
             rs.next();
-            audit = new XincoCoreAuditDataScheduleServer(rs.getInt(1), dbm);
+            audit = new XincoCoreAuditServer(rs.getInt(1), dbm);
         } catch (XincoException ex) {
             ex.printStackTrace();
         } catch (SQLException ex) {
             try {
-                audit = new XincoCoreAuditDataScheduleServer(0,in0.getId(),in2,new Timestamp(System.currentTimeMillis()),false);
+                audit = new XincoCoreAuditServer(0,in0.getId(),in2,new Timestamp(System.currentTimeMillis()));
             } catch (XincoException e) {
                 e.printStackTrace();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return (XincoCoreAuditDataSchedule)audit;
+        return (XincoCoreAudit)audit;
     }
 
     public Vector getAllXincoUsers(XincoCoreUser in0) throws RemoteException {
@@ -893,5 +887,13 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public XincoCoreAudit getXincoCoreAudit(XincoCoreData in0, XincoCoreUser in1, int in2) throws RemoteException {
+        return null;
+    }
+
+    public XincoCoreAudit setXincoCoreAudit(XincoCoreAudit in0, XincoCoreUser in1) throws RemoteException {
+        return null;
     }
 }

@@ -95,7 +95,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             
             /*
              * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
-            XincoCoreAuditServer audit= new XincoCoreAuditServer();
+            XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
             audit.updateAuditTrail("xinco_add_attribute",new String [] {"xinco_add_attribute.attribute_id=" + getAttribute_id(),
             "xinco_add_attribute.xinco_core_data_id IN (SELECT id FROM xinco_core_data WHERE xinco_core_data.xinco_core_data_type_id=" +
                     getXinco_core_data_type_id()+ ")"},
@@ -128,7 +128,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             Statement stmt = null;
             
             stmt = DBM.con.createStatement();
-            XincoCoreAuditServer audit= new XincoCoreAuditServer();
+            XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
             /*
              * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
             audit.updateAuditTrail("xinco_add_attribute",new String [] {"xinco_add_attribute.attribute_id=" + attrCDTA.getAttribute_id(),

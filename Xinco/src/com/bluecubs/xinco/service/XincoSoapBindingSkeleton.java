@@ -345,28 +345,28 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, false, false), 
         };
-        _oper = new org.apache.axis.description.OperationDesc("getXincoCoreAuditSchedule", _params, new javax.xml.namespace.QName("", "getXincoCoreAuditScheduleReturn"));
-        _oper.setReturnType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreAuditDataSchedule"));
-        _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "getXincoCoreAuditSchedule"));
+        _oper = new org.apache.axis.description.OperationDesc("getXincoCoreAudit", _params, new javax.xml.namespace.QName("", "getXincoCoreAuditScheduleReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreAudit"));
+        _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "getXincoCoreAudit"));
         _oper.setSoapAction("");
         _myOperationsList.add(_oper);
-        if (_myOperations.get("getXincoCoreAuditSchedule") == null) {
-            _myOperations.put("getXincoCoreAuditSchedule", new java.util.ArrayList());
+        if (_myOperations.get("getXincoCoreAudit") == null) {
+            _myOperations.put("getXincoCoreAudit", new java.util.ArrayList());
         }
-        ((java.util.List)_myOperations.get("getXincoCoreAuditSchedule")).add(_oper);
+        ((java.util.List)_myOperations.get("getXincoCoreAudit")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreAuditDataSchedule"), com.bluecubs.xinco.core.XincoCoreAuditDataSchedule.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreAudit"), com.bluecubs.xinco.core.XincoCoreAudit.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
         };
-        _oper = new org.apache.axis.description.OperationDesc("setXincoCoreAuditSchedule", _params, new javax.xml.namespace.QName("", "setXincoCoreAuditScheduleReturn"));
-        _oper.setReturnType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreAuditDataSchedule"));
-        _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "setXincoCoreAuditSchedule"));
+        _oper = new org.apache.axis.description.OperationDesc("setXincoCoreAudit", _params, new javax.xml.namespace.QName("", "setXincoCoreAuditScheduleReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreAudit"));
+        _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "setXincoCoreAudit"));
         _oper.setSoapAction("");
         _myOperationsList.add(_oper);
-        if (_myOperations.get("setXincoCoreAuditSchedule") == null) {
-            _myOperations.put("setXincoCoreAuditSchedule", new java.util.ArrayList());
+        if (_myOperations.get("setXincoCoreAudit") == null) {
+            _myOperations.put("setXincoCoreAudit", new java.util.ArrayList());
         }
-        ((java.util.List)_myOperations.get("setXincoCoreAuditSchedule")).add(_oper);
+        ((java.util.List)_myOperations.get("setXincoCoreAudit")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
         };
@@ -544,15 +544,15 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
         return ret;
     }
 
-    public com.bluecubs.xinco.core.XincoCoreAuditDataSchedule getXincoCoreAuditSchedule(com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1, int in2) throws java.rmi.RemoteException
+    public com.bluecubs.xinco.core.XincoCoreAudit getXincoCoreAudit(com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1, int in2) throws java.rmi.RemoteException
     {
-        com.bluecubs.xinco.core.XincoCoreAuditDataSchedule ret = impl.getXincoCoreAuditSchedule(in0, in1, in2);
+        com.bluecubs.xinco.core.XincoCoreAudit ret = impl.getXincoCoreAudit(in0, in1, in2);
         return ret;
     }
 
-    public com.bluecubs.xinco.core.XincoCoreAuditDataSchedule setXincoCoreAuditSchedule(com.bluecubs.xinco.core.XincoCoreAuditDataSchedule in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
+    public com.bluecubs.xinco.core.XincoCoreAudit setXincoCoreAudit(com.bluecubs.xinco.core.XincoCoreAudit in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
-        com.bluecubs.xinco.core.XincoCoreAuditDataSchedule ret = impl.setXincoCoreAuditSchedule(in0, in1);
+        com.bluecubs.xinco.core.XincoCoreAudit ret = impl.setXincoCoreAudit(in0, in1);
         return ret;
     }
 

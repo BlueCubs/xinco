@@ -122,7 +122,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
                     <element name="xinco_core_data_type_id" type="xsd:int"/>
                 </sequence>
             </complexType>
-            <complexType name="XincoCoreAuditDataSchedule">
+            <complexType name="XincoCoreAudit">
                 <sequence>
                     <element name="schedule_id" type="xsd:int"/>
                     <element name="data_id" type="xsd:int"/>
@@ -283,7 +283,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         
     </wsdl:message>
     
-    <wsdl:message name="getXincoCoreAuditScheduleRequest">
+    <wsdl:message name="getXincoCoreAuditRequest">
         
         <wsdl:part name="in0" type="tns2:XincoCoreData"/>
         
@@ -317,9 +317,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         
     </wsdl:message>
     
-    <wsdl:message name="setXincoCoreAuditScheduleRequest">
+    <wsdl:message name="setXincoCoreAuditRequest">
         
-        <wsdl:part name="in0" type="tns2:XincoCoreAuditDataSchedule"/>
+        <wsdl:part name="in0" type="tns2:XincoCoreAudit"/>
         
         <wsdl:part name="in1" type="tns2:XincoCoreUser"/>
         
@@ -371,9 +371,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         
     </wsdl:message>
     
-    <wsdl:message name="getXincoCoreAuditScheduleResponse">
+    <wsdl:message name="getXincoCoreAuditResponse">
         
-        <wsdl:part name="getXincoCoreAuditScheduleReturn" type="tns2:XincoCoreAuditDataSchedule"/>
+        <wsdl:part name="getXincoCoreAuditScheduleReturn" type="tns2:XincoCoreAudit"/>
         
     </wsdl:message>
     
@@ -453,9 +453,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         
     </wsdl:message>
     
-    <wsdl:message name="setXincoCoreAuditScheduleResponse">
+    <wsdl:message name="setXincoCoreAuditResponse">
         
-        <wsdl:part name="setXincoCoreAuditScheduleReturn" type="tns2:XincoCoreAuditDataSchedule"/>
+        <wsdl:part name="setXincoCoreAuditScheduleReturn" type="tns2:XincoCoreAudit"/>
         
     </wsdl:message>
     
@@ -750,19 +750,19 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
             
         </wsdl:operation>
         
-        <wsdl:operation name="getXincoCoreAuditSchedule" parameterOrder="in0 in1 in2">
+        <wsdl:operation name="getXincoCoreAudit" parameterOrder="in0 in1 in2">
             
-            <wsdl:input name="getXincoCoreAuditScheduleRequest" message="impl:getXincoCoreAuditScheduleRequest"/>
+            <wsdl:input name="getXincoCoreAuditScheduleRequest" message="impl:getXincoCoreAuditRequest"/>
             
-            <wsdl:output name="getXincoCoreAuditScheduleResponse" message="impl:getXincoCoreAuditScheduleResponse"/>
+            <wsdl:output name="getXincoCoreAuditScheduleResponse" message="impl:getXincoCoreAuditResponse"/>
             
         </wsdl:operation>
         
-        <wsdl:operation name="setXincoCoreAuditSchedule" parameterOrder="in0 in1">
+        <wsdl:operation name="setXincoCoreAudit" parameterOrder="in0 in1">
             
-            <wsdl:input name="setXincoCoreAuditScheduleRequest" message="impl:setXincoCoreAuditScheduleRequest"/>
+            <wsdl:input name="setXincoCoreAuditScheduleRequest" message="impl:setXincoCoreAuditRequest"/>
             
-            <wsdl:output name="setXincoCoreAuditScheduleResponse" message="impl:setXincoCoreAuditScheduleResponse"/>
+            <wsdl:output name="setXincoCoreAuditScheduleResponse" message="impl:setXincoCoreAuditResponse"/>
             
         </wsdl:operation>
         <wsdl:operation name="getAllXincoUsers">
@@ -774,7 +774,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <wsdl:binding name="XincoSoapBinding" type="impl:Xinco">
         
         <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
-        
         <wsdl:operation name="getXincoServerVersion">
             
             <wsdlsoap:operation soapAction=""/>
@@ -1207,7 +1206,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
             
         </wsdl:operation>
         
-        <wsdl:operation name="getXincoCoreAuditSchedule">
+        <wsdl:operation name="getXincoCoreAudit">
             
             <wsdlsoap:operation soapAction=""/>
             
@@ -1225,7 +1224,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
             
         </wsdl:operation>
         
-        <wsdl:operation name="setXincoCoreAuditSchedule">
+        <wsdl:operation name="setXincoCoreAudit">
             
             <wsdlsoap:operation soapAction=""/>
             
@@ -1251,7 +1250,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
             <wsdl:output name="checkXincoCoreUserNewPasswordResponse"/>
         </wsdl:operation>
     </wsdl:binding>
-    
     <wsdl:service name="XincoService">
         
         <wsdl:port binding="impl:XincoSoapBinding" name="Xinco">
