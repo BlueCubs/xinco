@@ -1,5 +1,5 @@
 ALTER TABLE xinco_core_user ADD attempts INTEGER NOT NULL DEFAULT 0;
-ALTER TABLE xinco_core_user ADD last_modified DATE NOT NULL;
+ALTER TABLE xinco_core_user ADD last_modified DATE;
 
 --
 -- Table structure for audit tables 
@@ -133,5 +133,6 @@ CREATE TABLE xinco_core_user_modified_record (
 ;
 
 UPDATE xinco_core_user SET last_modified = now();
+ALTER TABLE xinco_core_user SET last_modified NOT NULL;
 
 INSERT INTO xinco_id VALUES ('xinco_core_user_modified_record', 0);  
