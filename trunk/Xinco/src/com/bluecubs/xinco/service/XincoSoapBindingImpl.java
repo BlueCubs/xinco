@@ -16,6 +16,7 @@ import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.XincoSetting;
 import com.bluecubs.xinco.core.XincoVersion;
 import com.bluecubs.xinco.core.server.XincoCoreACEServer;
 import com.bluecubs.xinco.core.server.XincoCoreAuditServer;
@@ -27,6 +28,7 @@ import com.bluecubs.xinco.core.server.XincoCoreLogServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.XincoSettingServer;
 import com.bluecubs.xinco.index.XincoIndexThread;
 import com.bluecubs.xinco.index.XincoIndexer;
 import java.io.ByteArrayInputStream;
@@ -50,13 +52,18 @@ import org.apache.axis.attachments.AttachmentPart;
 
 public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     public com.bluecubs.xinco.core.XincoVersion getXincoServerVersion() throws java.rmi.RemoteException {
-        ResourceBundle settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
         //return current version of server
+        XincoSetting [] settings=null;
+        Vector settingsVector=null;
+        settingsVector = new XincoSettingServer().getXinco_settings();
+        settings= new XincoSetting[settingsVector.size()];
+        for(int i=0;i<settingsVector.size();i++)
+            settings[i]=(XincoSetting)settingsVector.elementAt(i);
         XincoVersion version = new XincoVersion();
-        version.setVersion_high(Integer.parseInt(settings.getString("version.high")));
-        version.setVersion_mid(Integer.parseInt(settings.getString("version.mid")));
-        version.setVersion_low(Integer.parseInt(settings.getString("version.low")));
-        version.setVersion_postfix(settings.getString("version.postfix"));
+        version.setVersion_high(settings[0].getInt_value());
+        version.setVersion_mid(settings[1].getInt_value());
+        version.setVersion_low(settings[2].getInt_value());
+        version.setVersion_postfix(settings[3].getString_value());
         return version;
     }
     
@@ -896,8 +903,11 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     }
     
     public java.util.Vector getXincoSetting(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException {
-        //verify if user is in Administrators group
-        Vector groups=in0.getXinco_core_groups();
+        XincoSettingServer setting=new XincoSettingServer();
+        return setting.getXinco_settings();
+    }
+    public com.bluecubs.xinco.core.XincoSetting setXincoSetting(com.bluecubs.xinco.core.XincoSetting in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
+        //Dummy
         return null;
     }
 }

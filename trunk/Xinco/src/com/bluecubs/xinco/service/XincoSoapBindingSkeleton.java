@@ -402,6 +402,18 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
             _myOperations.put("getXincoSetting", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("getXincoSetting")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoSetting"), com.bluecubs.xinco.core.XincoSetting.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("setXincoSetting", _params, new javax.xml.namespace.QName("", "setXincoSettingResponse"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoSetting"));
+        _oper.setElementQName(new javax.xml.namespace.QName("", "setXincoSetting"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("setXincoSetting") == null) {
+            _myOperations.put("setXincoSetting", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("setXincoSetting")).add(_oper);
     }
 
     public XincoSoapBindingSkeleton() {
@@ -582,6 +594,12 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
     public java.util.Vector getXincoSetting(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException
     {
         java.util.Vector ret = impl.getXincoSetting(in0);
+        return ret;
+    }
+
+    public com.bluecubs.xinco.core.XincoSetting setXincoSetting(com.bluecubs.xinco.core.XincoSetting in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
+    {
+        com.bluecubs.xinco.core.XincoSetting ret = impl.setXincoSetting(in0, in1);
         return ret;
     }
 
