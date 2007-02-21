@@ -212,7 +212,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 }
                 String sql="SELECT * FROM xinco_core_user WHERE username='" +
                         attrUN + "' AND status_number <> 2";
-                stmt = DBM.con.createStatement();
+                stmt = dbm.con.createStatement();
                 rs = stmt.executeQuery(sql);
                 //increase number of attempts
                 if(rs.next()){
@@ -231,8 +231,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     setChange(false);
                     write2DB(dbm);
                 }
-            } catch (XincoException ex) {
-                ex.printStackTrace();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

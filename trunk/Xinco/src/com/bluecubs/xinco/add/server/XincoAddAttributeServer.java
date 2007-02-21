@@ -149,7 +149,6 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                         DBM,"audit.general.create",this.getChangerID());
             }
             stmt.close();
-            
         } catch (Exception e) {
             //no commit or rollback -> CoreData manages exceptions!
             e.printStackTrace();
