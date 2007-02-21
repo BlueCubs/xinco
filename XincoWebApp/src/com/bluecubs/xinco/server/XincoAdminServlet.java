@@ -59,14 +59,12 @@ import javax.servlet.http.*;
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.server.*;
 import com.bluecubs.xinco.index.XincoIndexer;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class XincoAdminServlet extends HttpServlet {
     private ResourceBundle rb;
-    private ResourceBundle settings;
+    private XincoSetting [] settings;
     private String credentialID="";
     private XincoCoreUserServer login_user=null;
     /** Initializes the servlet.
@@ -93,7 +91,11 @@ public class XincoAdminServlet extends HttpServlet {
             loc = Locale.getDefault();
         }
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
-        settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings",loc);
+        Vector settingsVector=null;
+        settingsVector = new XincoSettingServer().getXinco_settings();
+        settings= new XincoSetting[settingsVector.size()];
+        for(int i=0;i<settingsVector.size();i++)
+            settings[i]=(XincoSetting)settingsVector.elementAt(i);
         XincoDBManager dbm;
         String global_error_message = "";
         int i = 0, j = 0;
@@ -178,7 +180,7 @@ public class XincoAdminServlet extends HttpServlet {
                             request.getParameter("DialogLoginUsername") + "'");
                     if(rs.next()){
                         temp_user = new XincoCoreUserServer(rs.getInt("id"), dbm);
-                        long attempts = Long.parseLong(settings.getString("password.attempts"));
+                        long attempts = settings[7].getInt_value();
                         //If user exists increase the atempt tries in the db. If limit reached lock account
                         if(temp_user.getAttempts()>=attempts &&  rs.getInt("id") != 1){
                             //The logged in admin does the locking
@@ -1466,7 +1468,7 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; "+settings.getString("general.copyright.date")+", "+rb.getString("message.admin.main.footer"));
+        out.println("<td class=\"text\">&copy; "+settings[7].getString_value()+", "+rb.getString("message.admin.main.footer"));
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                 rb.getString("message.admin.main.backtomain")+"' />" +
