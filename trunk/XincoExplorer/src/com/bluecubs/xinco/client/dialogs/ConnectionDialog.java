@@ -90,6 +90,7 @@ public class ConnectionDialog extends javax.swing.JDialog {
         for (int i=0;i<((Vector)explorer.getConfig().elementAt(0)).size();i++) {
             dlm.addElement(new String(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(i)).toString()));
         }
+        getRootPane().setDefaultButton(connect);
     }
     
     /**
