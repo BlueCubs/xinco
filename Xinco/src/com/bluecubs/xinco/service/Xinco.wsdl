@@ -140,7 +140,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
                     <element name="int_value" type="int"></element>
                     <element name="string_value" type="string"></element>
                     <element name="bool_value" type="boolean"></element>
-                    <element name="xinco_settings"></element>
+                    <element name="changerID" type="int"></element>
                 </sequence>
             </complexType>
         </schema>
@@ -564,6 +564,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <wsdl:message name="getXincoSettingResponse">
         <wsdl:part name="getXincosettingReturn" type="apachesoap:Vector"/>
     </wsdl:message>
+    <wsdl:message name="setXincoSettingRequest">
+        <wsdl:part name="in0" type="tns2:XincoSetting"/>
+        <wsdl:part name="in1" type="tns2:XincoCoreUser"/>
+    </wsdl:message>
+    <wsdl:message name="setXincoSettingResponse">
+        <wsdl:part name="setXincoSettingResponse" type="tns2:XincoSetting"/>
+    </wsdl:message>
     <wsdl:portType name="Xinco">
         
         <wsdl:operation name="getXincoServerVersion">
@@ -788,6 +795,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         <wsdl:operation name="getXincoSetting">
             <wsdl:input name="getXincoSettingRequest" message="impl:getXincoSettingRequest"/>
             <wsdl:output name="getXincoSettingResponse" message="impl:getXincoSettingResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setXincoSetting">
+            <wsdl:input name="setXincoSettingRequest" message="impl:setXincoSettingRequest"/>
+            <wsdl:output name="setXincoSettingResponse" message="impl:setXincoSettingResponse"/>
         </wsdl:operation>
     </wsdl:portType>
     
@@ -1272,6 +1283,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         <wsdl:operation name="getXincoSetting">
             <wsdl:input name="getXincoSettingRequest"/>
             <wsdl:output name="getXincoSettingResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setXincoSetting">
+            <wsdl:input name="setXincoSettingRequest"/>
+            <wsdl:output name="setXincoSettingResponse"/>
         </wsdl:operation>
     </wsdl:binding>
     <wsdl:service name="XincoService">

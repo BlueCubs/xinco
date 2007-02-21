@@ -42,7 +42,7 @@ import java.sql.*;
 import com.bluecubs.xinco.core.*;
 
 public class XincoCoreGroupServer extends XincoCoreGroup {
-    
+    private XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
     //create group object for data structures
     public XincoCoreGroupServer(int attrID, XincoDBManager DBM) throws XincoException {
         try {
@@ -76,8 +76,8 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
     public int write2DB(XincoDBManager DBM) throws XincoException{
         try {
             Statement stmt;
+            boolean isNew=false;
             if (getId() > 0) {
-                XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
                 audit.updateAuditTrail("xinco_core_group",new String [] {"id ="+getId()},
                         DBM,"audit.coregroup.change",this.getChangerID());
                 stmt = DBM.con.createStatement();
@@ -88,8 +88,14 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
                 stmt = DBM.con.createStatement();
                 stmt.executeUpdate("INSERT INTO xinco_core_group VALUES (" + getId() + ", '" + getDesignation().replaceAll("'","\\\\'") + "', " + getStatus_number() + ")");
                 stmt.close();
+                isNew=true;
             }
             DBM.con.commit();
+            if(isNew){
+                isNew=false;
+                audit.updateAuditTrail("xinco_core_group",new String [] {"id ="+getId()},
+                        DBM,"audit.general.created",this.getChangerID());
+            }
         } catch (Exception e) {
             try {
                 DBM.con.rollback();
@@ -114,5 +120,9 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
             coreGroups.removeAllElements();
         }
         return coreGroups;
+    }
+    
+    public static void removeFromDB(XincoDBManager DBM){
+        
     }
 }

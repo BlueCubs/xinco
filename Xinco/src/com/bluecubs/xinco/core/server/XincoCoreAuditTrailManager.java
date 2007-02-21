@@ -37,7 +37,6 @@ public class XincoCoreAuditTrailManager {
             Statement stmt = DBM.con.createStatement();
             int record_ID=0;
             String sql="select * from "+table+" where "+where;
-            System.out.println(sql);
             ResultSet rs = stmt.executeQuery(sql);
             try {
                 record_ID=DBM.getNewID("xinco_core_user_modified_record");
@@ -56,7 +55,6 @@ public class XincoCoreAuditTrailManager {
                     else
                         sql+=")";
                 }
-                System.out.println(sql);
                 stmt.executeUpdate(sql);
                 sql="insert into xinco_core_user_modified_record (id, record_id, mod_Time, " +
                         "mod_Reason) values ("+id+", "+record_ID+", '"+

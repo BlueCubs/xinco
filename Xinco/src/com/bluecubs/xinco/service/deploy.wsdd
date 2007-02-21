@@ -57,6 +57,14 @@
       />
       <typeMapping
         xmlns:ns="http://core.xinco.bluecubs.com"
+        qname="ns:XincoSetting"
+        type="java:com.bluecubs.xinco.core.XincoSetting"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://core.xinco.bluecubs.com"
         qname="ns:XincoCoreNode"
         type="java:com.bluecubs.xinco.core.XincoCoreNode"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
