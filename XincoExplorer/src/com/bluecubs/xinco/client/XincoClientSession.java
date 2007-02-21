@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * -                -                 -
+ * -Javier A. Ortiz 02/20/2007        Add XincoSetting vector to client session
  *
  *************************************************************
  */
@@ -81,6 +81,10 @@ public class XincoClientSession {
      */
     public Vector server_users = null;
     /**
+     * Server settings
+     */
+    public Vector server_settings = null;
+    /**
      * Server languages
      */
     public Vector server_languages = null;
@@ -123,6 +127,7 @@ public class XincoClientSession {
         server_datatypes = new Vector();
         clipboardTreeNodeSelection = new Vector();
         currentSearchResult = new Vector();
+        server_settings = new Vector();
         status = 0;
     }
     

@@ -21,15 +21,15 @@
  *
  * Name:            XincoClientConnectionProfile
  *
- * Description:     connection profiles for client 
+ * Description:     connection profiles for client
  *
  * Original Author: Alexander Manes
  * Date:            2004
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
- * -                -                 -
+ * Javier A. Ortiz  02/20/2007        Save password feature disabled due to 21 CFR regualtion potential issues
  *
  *************************************************************
  */
@@ -40,46 +40,44 @@ package com.bluecubs.xinco.client;
  * XincoClientConnectionProfile
  */
 public class XincoClientConnectionProfile implements java.io.Serializable {
-	
+    
     /**
      * Profile's name
      */
-	public String profile_name = null;
+    public String profile_name = null;
     /**
      * Service Endpoint
      */
-	public String service_endpoint = null;
+    public String service_endpoint = null;
     /**
      * Username
      */
-	public String username = null;
-    /**
-     * Password
+    public String username = null;
+    /** Password
      */
-	public String password = null;
+    public String password = null;
     /**
-     * Save password?
+     * Save password? Not used, kept for compability issues
      */
-	public boolean save_password = false;
-	
+    public boolean save_password = false;
     /**
      * XincoClientProfile
      */
-	public XincoClientConnectionProfile() {
-		profile_name  = "";
-		service_endpoint  = "";
-		username  = "";
-		password  = "";
-		save_password = false;
-	}
-	
+    public XincoClientConnectionProfile() {
+        profile_name  = "";
+        service_endpoint  = "";
+        username  = "";
+        password  = "";
+        save_password = false;
+    }
+    
     /**
      * XincoClientConnectionProfile string representation
      * @return Profile Name.
      */
-	@Override
-         public String toString() {
-		return profile_name;
-	}
-
+    @Override
+    public String toString() {
+        return profile_name;
+    }
+    
 }

@@ -81,7 +81,6 @@ public class SearchDialog extends javax.swing.JDialog {
         this.goToSelectionButton.setText(xerb.getString("window.search.gotoselection"));
         this.addToQueryButton.setText(xerb.getString("window.search.addtoquery"));
         this.resetButton.setText(xerb.getString("general.reset"));
-        String[] cn = {xerb.getString("window.search.table.designation"),xerb.getString("window.search.table.path")};
         resultTable.setModel(new DefaultTableModel(new Object[][]{},
                 new String[]{xerb.getString("window.search.table.designation"),
                 xerb.getString("window.search.table.path")}) {
@@ -99,7 +98,7 @@ public class SearchDialog extends javax.swing.JDialog {
         String text = "";
         int selection = -1;
         int alt_selection = 0;
-        ListModel dlm;
+        ListModel dlm=null;
         XincoCoreDataType xcdt = null;
         this.operatorComboBox.setSelectedIndex(0);
         //load fields
@@ -232,20 +231,13 @@ public class SearchDialog extends javax.swing.JDialog {
 
         jScrollPane2.setAutoscrolls(true);
         jScrollPane2.setDoubleBuffered(true);
-        resultTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+        resultTable.setModel(new DefaultTableModel(new Object[][]{},
+                              new String[]{"Title 1", "Title 2"}) {
+            boolean[] canEdit = new boolean[]{false, false};
 
-            },
-            new String [] {
-                "Title 1", "Title 2"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false
-            };
-
+            @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return canEdit[columnIndex];
             }
         });
         jScrollPane2.setViewportView(resultTable);

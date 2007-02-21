@@ -193,7 +193,7 @@ public class ACLDialog extends javax.swing.JDialog {
      * Sets ACL user model.
      * @param list String array containing the list.
      */
-    public void setACLUserModel(final String [] list){
+    protected void setACLUserModel(final String [] list){
         userList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = list;
             public int getSize() { return strings.length; }
@@ -225,7 +225,7 @@ public class ACLDialog extends javax.swing.JDialog {
      * Get ACL user model.
      * @return Group list model.
      */
-    public ListModel getACLUserModel(){
+    private ListModel getACLUserModel(){
         return this.userList.getModel();
     }
     
