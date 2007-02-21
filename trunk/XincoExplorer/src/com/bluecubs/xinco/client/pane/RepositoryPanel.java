@@ -20,7 +20,6 @@ import javax.swing.JTabbedPane;
 public class RepositoryPanel extends java.awt.Panel {
     private XincoExplorer explorer;
     private ResourceBundle rb;
-    ImageIcon icon=null;
     /** Creates new form RepositoryPanel */
     public RepositoryPanel(XincoExplorer e) {
         this.explorer=e;
@@ -40,12 +39,12 @@ public class RepositoryPanel extends java.awt.Panel {
         /** Returns an ImageIcon, or null if the path was invalid. */
     protected static ImageIcon createImageIcon(String path) {
         java.net.URL imgURL = XincoExplorer.class.getResource(path);
+
         if (imgURL != null) {
             return new ImageIcon(imgURL);
-        } else {
-            System.err.println("Couldn't find file: " + path);
-            return null;
         }
+        System.err.println("Couldn\'t find file: " + path);
+        return null;
     }
     
     /** This method is called from within the constructor to

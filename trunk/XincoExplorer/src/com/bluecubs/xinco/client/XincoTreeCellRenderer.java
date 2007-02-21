@@ -93,11 +93,11 @@ class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
         System.err.println(value.toString());
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
         if (node.getUserObject().getClass() == XincoCoreData.class) {
-            Vector attr=((XincoCoreData)node.getUserObject()).getXinco_add_attributes();
-            if(attr.size()==0)
+            Vector attr = ((XincoCoreData) node.getUserObject()).getXinco_add_attributes();
+
+            if (attr.size() == 0)
                 return null;
-            else
-                return ((XincoAddAttribute)(attr.get(0))).getAttrib_varchar();
+            return ((XincoAddAttribute) (attr.get(0))).getAttrib_varchar();
         }
         return null;
     }

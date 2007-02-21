@@ -73,7 +73,6 @@ public class LogDialog extends javax.swing.JDialog {
         this.reasonLabel.setText(explorer.getResourceBundle().getString("general.reason"));
         
         //processing independent of creation
-        int i = 0;
         String text = "";
         if (explorer.getSession().currentTreeNodeSelection.getUserObject() != null) {
             //For some reason 

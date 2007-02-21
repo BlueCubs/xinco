@@ -48,7 +48,6 @@ import com.bluecubs.xinco.client.dialogs.DataTypeDialog;
 import com.bluecubs.xinco.client.dialogs.LogDialog;
 import com.bluecubs.xinco.client.dialogs.SearchDialog;
 import com.bluecubs.xinco.client.dialogs.UserDialog;
-import com.bluecubs.xinco.client.frames.XincoInformationFrame;
 import com.bluecubs.xinco.client.object.XincoAutofitTableColumns;
 import com.bluecubs.xinco.client.object.XincoMenuRepository;
 import com.bluecubs.xinco.client.object.XincoPopUpMenuRepository;
@@ -64,6 +63,7 @@ import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.XincoSetting;
 import com.bluecubs.xinco.core.XincoVersion;
 import com.bluecubs.xinco.core.client.XincoCoreACEClient;
 import com.bluecubs.xinco.service.XincoServiceLocator;
@@ -76,6 +76,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -89,8 +90,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -127,7 +126,8 @@ import org.apache.axis.utils.ByteArrayOutputStream;
 public class XincoExplorer extends JFrame {
     
     //language resources, XincoExplorerResourceBundle
-    private ResourceBundle xerb = null,settings =null;
+    private ResourceBundle xerb = null,xesettings=null;
+    private XincoSetting [] settings=null;
     private javax.swing.JMenuBar jJMenuBar = null;
     private javax.swing.JMenu jMenuConnection = null;
     private javax.swing.JMenu jMenuAbout = null;
@@ -169,7 +169,6 @@ public class XincoExplorer extends JFrame {
     //global dialog return value
     private int global_dialog_return_value = 0;
     private javax.swing.JMenuItem jMenuItemConnectionConnect = null;
-    private javax.swing.JPanel jContentPaneDialogConnection = null;
     private javax.swing.JDialog jDialogConnection = null;
     private javax.swing.JLabel jLabelDialogConnectionServerEndpoint = null;
     private javax.swing.JTextField jTextFieldDialogConnectionUsername = null;
@@ -177,25 +176,19 @@ public class XincoExplorer extends JFrame {
     private javax.swing.JPasswordField jPasswordFieldDialogConnectionPassword = null;
     private javax.swing.JLabel jLabelDialogConnectionUsername = null;
     private javax.swing.JLabel jLabelDialogConnectionPassword = null;
-    private javax.swing.JButton jButtonDialogConnectionConnect = null;
-    private javax.swing.JButton jButtonDialogConnectionCancel = null;
     private javax.swing.JLabel jLabelDialogConnectionProfile = null;
     private javax.swing.JList jListDialogConnectionProfile = null;
     private javax.swing.JLabel jLabelDialogConnectionProfileName = null;
     private javax.swing.JTextField jTextFieldDialogConnectionProfileName = null;
-    private javax.swing.JButton jButtonDialogConnectionNewProfile = null;
-    private javax.swing.JButton jButtonDialogConnectionDeleteProfile = null;
     private javax.swing.JLabel jLabelDialogConnectionSavePassword = null;
-    private javax.swing.JCheckBox jCheckBoxDialogConnectionSavePassword = null;
     private javax.swing.JScrollPane jScrollPaneDialogConnectionProfile = null;
     private javax.swing.JDialog jDialogFolder = null;
-    private javax.swing.JPanel jContentPaneDialogFolder = null;
     private javax.swing.JLabel jLabelDialogFolderID = null;
     private javax.swing.JLabel jLabelDialogFolderDesignation = null;
     private javax.swing.JLabel jLabelDialogFolderLanguage = null;
     private javax.swing.JLabel jLabelDialogFolderStatus = null;
-    private javax.swing.JButton jButtonDialogFolderSave = null;
-    private javax.swing.JButton jButtonDialogFolderCancel = null;
+    
+    
     private javax.swing.JTextField jTextFieldDialogFolderID = null;
     private javax.swing.JTextField jTextFieldDialogFolderDesignation = null;
     private javax.swing.JTextField jTextFieldDialogFolderStatus = null;
@@ -203,12 +196,10 @@ public class XincoExplorer extends JFrame {
     private javax.swing.JList jListDialogFolderLanguage = null;
     private javax.swing.JDialog jDialogACL = null;
     private javax.swing.JDialog jDialogDataType = null;
-    private javax.swing.JPanel jContentPaneDialogDataType = null;
     private javax.swing.JLabel jLabelDialogDataType = null;
     private javax.swing.JScrollPane jScrollPaneDialogDataType = null;
     private javax.swing.JList jListDialogDataType = null;
-    private javax.swing.JButton jButtonDialogDataTypeContinue = null;
-    private javax.swing.JButton jButtonDialogDataTypeCancel = null;
+    
     private javax.swing.JDialog jDialogRevision = null;
     private javax.swing.JPanel jContentPaneDialogRevision = null;
     private javax.swing.JLabel jLabelDialogRevision = null;
@@ -217,7 +208,6 @@ public class XincoExplorer extends JFrame {
     private javax.swing.JButton jButtonDialogRevisionContinue = null;
     private javax.swing.JButton jButtonDialogRevisionCancel = null;
     private javax.swing.JDialog jDialogData = null;
-    private javax.swing.JPanel jContentPaneDialogData = null;
     private javax.swing.JLabel jLabelDialogDataID = null;
     private javax.swing.JLabel jLabelDialogDataDesignation = null;
     private javax.swing.JLabel jLabelDialogDataLanguage = null;
@@ -226,25 +216,16 @@ public class XincoExplorer extends JFrame {
     private javax.swing.JTextField jTextFieldDialogDataDesignation = null;
     private javax.swing.JTextField jTextFieldDialogDataStatus = null;
     private javax.swing.JScrollPane jScrollPaneDialogDataLanguage = null;
-    private javax.swing.JButton jButtonDialogDataSave = null;
-    private javax.swing.JButton jButtonDialogDataCancel = null;
     private javax.swing.JList jListDialogDataLanguage = null;
     private javax.swing.JDialog jDialogArchive = null;
-    private javax.swing.JPanel jContentPaneDialogArchive = null;
     private javax.swing.JLabel jLabelDialogArchiveRevisionModel = null;
-    private JCheckBox jCheckBoxDialogArchiveRevisionModel = null;
-    private javax.swing.JLabel jLabelDialogArchiveArchivingModel = null;
-    private JComboBox jComboBoxDialogArchiveArchivingModel = null;
     private javax.swing.JLabel jLabelDialogArchiveDate = null;
     private javax.swing.JTextField jTextFieldDialogArchiveDateYear = null;
     private javax.swing.JTextField jTextFieldDialogArchiveDateMonth = null;
     private javax.swing.JTextField jTextFieldDialogArchiveDateDay = null;
     private javax.swing.JLabel jLabelDialogArchiveDays = null;
     private javax.swing.JTextField jTextFieldDialogArchiveDays = null;
-    private javax.swing.JButton jButtonDialogArchiveContinue = null;
-    private javax.swing.JButton jButtonDialogArchiveCancel = null;
     private javax.swing.JDialog jDialogLog = null;
-    private javax.swing.JPanel jContentPaneDialogLog = null;
     private javax.swing.JLabel jLabelDialogLogDescription = null;
     private javax.swing.JLabel jLabelDialogLogVersion = null;
     private javax.swing.JTextField jTextFieldDialogLogDescription = null;
@@ -252,17 +233,12 @@ public class XincoExplorer extends JFrame {
     private javax.swing.JTextField jTextFieldDialogLogVersionMid = null;
     private javax.swing.JTextField jTextFieldDialogLogVersionLow = null;
     private javax.swing.JTextField jTextFieldDialogLogVersionPostfix = null;
-    private javax.swing.JButton jButtonDialogLogContinue = null;
-    private javax.swing.JButton jButtonDialogLogCancel = null;
     private javax.swing.JLabel jLabelDialogLogVersionPostfix = null;
     private javax.swing.JLabel jLabelDialogLogVersionPostfixExplanation = null;
     private javax.swing.JLabel jLabelDialogLogVersionDot1 = null;
     private javax.swing.JLabel jLabelDialogLogVersionDot2 = null;
     private javax.swing.JDialog jDialogAddAttributesUniversal = null;
-    private javax.swing.JPanel jContentPaneDialogAddAttributesUniversal = null;
     private javax.swing.JScrollPane jScrollPaneDialogAddAttributesUniversal = null;
-    private javax.swing.JButton jButtonDialogAddAttributesUniversalSave = null;
-    private javax.swing.JButton jButtonDialogAddAttributesUniversalCancel = null;
     private javax.swing.JTable jTableDialogAddAttributesUniversal = null;
     private javax.swing.JMenu jMenuPreferences = null;
     private javax.swing.JMenuItem jMenuItemPreferencesEditUser = null;
@@ -271,7 +247,6 @@ public class XincoExplorer extends JFrame {
     private javax.swing.JLabel jLabelDialogUserID = null;
     private javax.swing.JLabel jLabelDialogUserUsername = null;
     private javax.swing.JLabel jLabelDialogUserPassword = null;
-    private javax.swing.JLabel jLabeDialogUserVerifyPassword = null;
     private javax.swing.JLabel jLabelDialogUserFirstname = null;
     private javax.swing.JLabel jLabelDialogUserLastname = null;
     private javax.swing.JLabel jLabelDialogUserEmail = null;
@@ -284,8 +259,6 @@ public class XincoExplorer extends JFrame {
     private javax.swing.JTextField jTextFieldDialogUserLastname = null;
     private javax.swing.JTextField jTextFieldDialogUserEmail = null;
     private javax.swing.JTextField jTextFieldDialogUserStatus = null;
-    private javax.swing.JButton jButtonDialogUserSave = null;
-    private javax.swing.JButton jButtonDialogUserCancel = null;
     private javax.swing.JDialog jDialogAddAttributesText = null;
     private javax.swing.JPanel jContentPaneDialogAddAttributesText = null;
     private javax.swing.JTextArea jTextAreaDialogAddAttributesText = null;
@@ -297,8 +270,6 @@ public class XincoExplorer extends JFrame {
     private javax.swing.JLabel jLabelDialogTransactionInfoText = null;
     private javax.swing.JPanel jContentPaneInformation = null;
     public javax.swing.JTextArea jLabelInternalFrameInformationText = null;
-    private JPanel jContentPaneSearch = null;
-    private JInternalFrame jInternalFrameSearch = null;
     private JTable jTableSearchResult = null;
     private JScrollPane jScrollPaneSearchResult = null;
     private JLabel jLabelSearchQuery = null;
@@ -309,14 +280,8 @@ public class XincoExplorer extends JFrame {
     private JTextField jTextFieldSearchQuery = null;
     private JScrollPane jScrollPaneSearchLanguage = null;
     private JList jListSearchLanguage = null;
-    private JButton jButtonSearch = null;
-    private JButton jButtonSearchGoToSelection = null;
-    private JCheckBox jCheckBoxSearchAllLanguages = null;
-    private JComboBox jComboBoxSearchOperator = null;
-    private JComboBox jComboBoxSearchField = null;
+    
     private JTextField jTextFieldSearchKeyword = null;
-    private JButton jButtonSearchAddToQuery = null;
-    private JButton jButtonSearchResetQuery = null;
     private JPopupMenu jPopupMenuRepository = null;
     private JPanel jContentPaneDialogLocale = null;
     private JDialog jDialogLocale = null;
@@ -338,10 +303,9 @@ public class XincoExplorer extends JFrame {
     private byte[] byte_array;
     private XincoCoreData xdata;
     private XincoCoreLog newlog;
-    private Vector DataLogVector = null;
-    private InputStream in=null;
     private final XincoExplorer explorer=this;
     private SearchDialog search;
+    private Process process = null;
     
     /**
      * This is the default constructor
@@ -361,7 +325,8 @@ public class XincoExplorer extends JFrame {
         //load language data
         xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", (Locale)xincoClientConfig.elementAt(2));
         xerb.getLocale();
-        settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
+        //get Xinco Explorer settings
+        xesettings=ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
         progressBar=new XincoProgressBarThread(this);
         initialize();
         //Windows-Listener
@@ -395,7 +360,6 @@ public class XincoExplorer extends JFrame {
      * @return javax.swing.JPopupMenu
      */
     public JPopupMenu getJPopupMenuRepository() {
-        JMenuItem tmi = null;
         if(jPopupMenuRepository==null)
             jPopupMenuRepository = new XincoPopUpMenuRepository(this);
         jPopupMenuRepository.setEnabled(jMenuRepository.isEnabled());
@@ -542,10 +506,10 @@ public class XincoExplorer extends JFrame {
         xincoClientSession = new XincoClientSession();
         //set client version
         xincoClientVersion = new XincoVersion();
-        xincoClientVersion.setVersion_high(Integer.parseInt(settings.getString("version.high")));
-        xincoClientVersion.setVersion_mid(Integer.parseInt(settings.getString("version.mid")));
-        xincoClientVersion.setVersion_low(Integer.parseInt(settings.getString("version.low")));
-        xincoClientVersion.setVersion_postfix(settings.getString("version.postfix"));
+        xincoClientVersion.setVersion_high(Integer.parseInt(xesettings.getString("version.high")));
+        xincoClientVersion.setVersion_mid(Integer.parseInt(xesettings.getString("version.mid")));
+        xincoClientVersion.setVersion_low(Integer.parseInt(xesettings.getString("version.low")));
+        xincoClientVersion.setVersion_postfix(xesettings.getString("version.postfix"));
         switchPLAF((String)xincoClientConfig.elementAt(1));
         this.setBounds(0, 0, (new Double(getToolkit().getScreenSize().getWidth())).intValue()-100,
                 (new Double(getToolkit().getScreenSize().getHeight())).intValue()-75);
@@ -555,7 +519,7 @@ public class XincoExplorer extends JFrame {
                 xerb.getString("general.version") + " " +
                 xincoClientVersion.getVersion_high() + "." +
                 xincoClientVersion.getVersion_mid() + "." +
-                xincoClientVersion.getVersion_low() + "" +
+                xincoClientVersion.getVersion_low() + " " +
                 xincoClientVersion.getVersion_postfix());
         this.setJMenuBar(getJJMenuBar());
         this.setContentPane(getJDesktopPane());
@@ -1476,7 +1440,7 @@ public class XincoExplorer extends JFrame {
      *
      * @return javax.swing.JTable
      */
-    public javax.swing.JTable getJTableRepository() {
+    protected javax.swing.JTable getJTableRepository() {
         if(jTableRepository == null) {
             String[] cn = {xerb.getString("window.repository.table.attribute"),xerb.getString("window.repository.table.details")};
             DefaultTableModel dtm = new DefaultTableModel(cn, 0) {
@@ -1706,11 +1670,20 @@ public class XincoExplorer extends JFrame {
                         try {
                             xincoClientSession.xinco_service = new XincoServiceLocator();
                             xincoClientSession.xinco = xincoClientSession.xinco_service.getXinco(new java.net.URL(xincoClientSession.service_endpoint));
+                            //get settings
+                            Vector settingsVector=null;
+                            settingsVector = xincoClientSession.xinco.getXincoSetting(new XincoCoreUser());
+                            settings= new XincoSetting[settingsVector.size()];
+                            for(int j=0;j<settingsVector.size();j++)
+                                settings[j]=(XincoSetting)settingsVector.elementAt(j);
+
                             xincoClientSession.server_version = xincoClientSession.xinco.getXincoServerVersion();
                             //check if client and server versions match (high AND mid must match!)
                             if ((xincoClientVersion.getVersion_high() != xincoClientSession.server_version.getVersion_high()) || (xincoClientVersion.getVersion_mid() != xincoClientSession.server_version.getVersion_mid())) {
                                 throw new XincoException(xerb.getString("menu.connection.error.serverversion") + " " + xincoClientSession.server_version.getVersion_high() + "." + xincoClientSession.server_version.getVersion_mid() + ".x");
                             }
+                            System.out.println(xincoClientSession.user.getUsername());
+                            System.out.println(xincoClientSession.user.getUserpassword());
                             if ((temp = xincoClientSession.xinco.getCurrentXincoCoreUser(xincoClientSession.user.getUsername(), xincoClientSession.user.getUserpassword())) == null) {
                                 throw new XincoException(xerb.getString("menu.connection.error.user"));
                             }
@@ -2383,7 +2356,7 @@ public class XincoExplorer extends JFrame {
                                         = 13 = comment data
                                         = 14 = preview data
                  */
-        int i=0, j=0;
+        int i=0;
         XincoMutableTreeNode newnode = new XincoMutableTreeNode(new XincoCoreData());
         XincoCoreData xdata = null;
         XincoCoreLog newlog = new XincoCoreLog();
@@ -2845,7 +2818,6 @@ public class XincoExplorer extends JFrame {
                         //update transaction info
                         jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.filedownloadsuccess"));
                         //open file in default application
-                        Process process = null;
                         boolean open_file = false;
                         if (System.getProperty("os.name").toLowerCase().indexOf("mac") > -1) {
                             if (wizard_type == 14) {
@@ -2882,7 +2854,7 @@ public class XincoExplorer extends JFrame {
                     //URL = 3
                     if ((wizard_type == 8) && (((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 3)) {
                         //open URL in default browser
-                        Process process = null;
+                        process = null;
                         String temp_url = ((XincoAddAttribute)((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().elementAt(0)).getAttrib_varchar();
                         if(System.getProperty("os.name").toLowerCase().indexOf("mac") > -1) {
                             try {
@@ -2900,7 +2872,7 @@ public class XincoExplorer extends JFrame {
                     //contact = 4
                     if ((wizard_type == 9) && (((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 4)) {
                         //open URL in default browser
-                        Process process = null;
+                        process = null;
                         String temp_email = ((XincoAddAttribute)((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().elementAt(9)).getAttrib_varchar();
                         if(System.getProperty("os.name").toLowerCase().indexOf("mac") > -1) {
                             try {
@@ -3242,7 +3214,8 @@ public class XincoExplorer extends JFrame {
      */
     public void saveConfig() {
         try {
-            java.io.FileOutputStream fout = new java.io.FileOutputStream(System.getProperty("user.home")+System.getProperty("file.separator")+"xincoClientConfig.dat");
+            java.io.FileOutputStream fout = new java.io.FileOutputStream(System.getProperty("user.home")+
+                    System.getProperty("file.separator")+"xincoClientConfig.dat");
             java.io.ObjectOutputStream os = new java.io.ObjectOutputStream(fout);
             os.writeObject(xincoClientConfig);
             os.close();
@@ -3279,7 +3252,8 @@ public class XincoExplorer extends JFrame {
                 tmp_vector_old = null;
             }
             
-            fin = new FileInputStream(System.getProperty("user.home")+System.getProperty("file.separator")+"xincoClientConfig.dat");
+            fin = new FileInputStream(System.getProperty("user.home")+
+                    System.getProperty("file.separator")+"xincoClientConfig.dat");
             ois = new ObjectInputStream(fin);
             
             try {
@@ -3316,31 +3290,31 @@ public class XincoExplorer extends JFrame {
                 ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).service_endpoint = "http://xinco.org:8080/xinco_demo/services/Xinco";
                 ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).username = "user";
                 ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).password = "user";
-                ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).save_password = true;
+                ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).save_password = false;
                 ((Vector)xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
                 ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).profile_name = "xinco Demo Admin";
                 ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).service_endpoint = "http://xinco.org:8080/xinco_demo/services/Xinco";
                 ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).username = "admin";
                 ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).password = "admin";
-                ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).save_password = true;
+                ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).save_password = false;
                 ((Vector)xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
                 ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).profile_name = "Template Profile";
                 ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).service_endpoint = "http://[server_domain]:8080/xinco/services/Xinco";
                 ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).username = "your_username";
-                ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).password = "your_password";
-                ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).save_password = true;
+                ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).password = "";
+                ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).save_password = false;
                 ((Vector)xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
                 ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).profile_name = "Admin (localhost)";
                 ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).service_endpoint = "http://localhost:8080/xinco/services/Xinco";
                 ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).username = "admin";
-                ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).password = "admin";
-                ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).save_password = true;
+                ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).password = "";
+                ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).save_password = false;
                 ((Vector)xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
                 ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).profile_name = "User (localhost)";
                 ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).service_endpoint = "http://localhost:8080/xinco/services/Xinco";
                 ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).username = "user";
-                ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).password = "user";
-                ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).save_password = true;
+                ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).password = "";
+                ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).save_password = false;
             }
             //add Pluggable Look and Feel
             xincoClientConfig.addElement(new String("javax.swing.plaf.metal.MetalLookAndFeel"));
@@ -3370,16 +3344,16 @@ public class XincoExplorer extends JFrame {
     public void set_global_dialog_return_value(int v){
         this.global_dialog_return_value=v;
     }
-
-    public javax.swing.JTable getJTableAudit() {
+    
+    private javax.swing.JTable getJTableAudit() {
         return jTableAudit;
     }
-
+    
     public void setJTableAudit(javax.swing.JTable jTableAudit) {
         this.jTableAudit = jTableAudit;
     }
-
-    public ResourceBundle getSettings() {
+    
+    public XincoSetting[] getSettings() {
         return settings;
     }
 }

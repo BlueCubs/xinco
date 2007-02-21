@@ -83,29 +83,9 @@ public class ConnectionDialog extends javax.swing.JDialog {
         this.endpointLabel.setText(explorer.getResourceBundle().getString("window.connection.serverendpoint"));
         this.usernameLabel.setText(explorer.getResourceBundle().getString("general.username"));
         this.passwordLabel.setText(explorer.getResourceBundle().getString("general.password"));
-        this.savePWLabel.setText(explorer.getResourceBundle().getString("window.connection.savepassword"));
         DefaultListModel dlm = new DefaultListModel();
         this.profileList.setModel(dlm);
         this.profileList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-//        this.profileList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-//            public void valueChanged(javax.swing.event.ListSelectionEvent e) {
-//                int sel;
-//                sel = profileList.getSelectedIndex();
-//                if (sel >= 0) {
-//                    profileName.setText(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).profile_name);
-//                    endpoint.setText(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).service_endpoint);
-//                    username.setText(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).username);
-//                    password.setText(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).password);
-//                    savePW.setSelected(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).save_password);
-//                }
-//            }
-//        });
-        //Check if save password feature should be enabled
-        if(this.explorer.getSettings().getString("general.enable.savepassword").equals("no")){
-            this.savePW.setEnabled(false);
-            this.savePW.setSelected(false);
-        } else
-            this.savePW.setEnabled(true);
         dlm = (DefaultListModel)this.profileList.getModel();
         for (int i=0;i<((Vector)explorer.getConfig().elementAt(0)).size();i++) {
             dlm.addElement(new String(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(i)).toString()));
@@ -139,8 +119,6 @@ public class ConnectionDialog extends javax.swing.JDialog {
         usernameLabel = new javax.swing.JLabel();
         username = new javax.swing.JTextField();
         passwordLabel = new javax.swing.JLabel();
-        savePWLabel = new javax.swing.JLabel();
-        savePW = new javax.swing.JCheckBox();
         connect = new javax.swing.JButton();
         deleteProfile = new javax.swing.JButton();
         password = new javax.swing.JPasswordField();
@@ -181,11 +159,6 @@ public class ConnectionDialog extends javax.swing.JDialog {
 
         passwordLabel.setText("Password:");
 
-        savePWLabel.setText("Save Pasword?");
-
-        savePW.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        savePW.setMargin(new java.awt.Insets(0, 0, 0, 0));
-
         connect.setText("Connect");
         connect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -213,29 +186,27 @@ public class ConnectionDialog extends javax.swing.JDialog {
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                             .add(layout.createSequentialGroup()
                                 .add(Create, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 91, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 83, Short.MAX_VALUE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 91, Short.MAX_VALUE)
                                 .add(deleteProfile, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 86, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)))
+                            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)))
                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                        .add(10, 10, 10)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                             .add(usernameLabel)
-                            .add(savePWLabel)
                             .add(passwordLabel)
                             .add(endpointLabel)
                             .add(profileNameLabel))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(savePW)
-                            .add(password, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
-                            .add(username, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
-                            .add(endpoint, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
-                            .add(profileName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                        .add(24, 24, 24)
-                        .add(connect, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 102, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(72, 72, 72)
-                        .add(Cancel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 90, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .add(40, 40, 40))
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                .add(connect, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 87, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 79, Short.MAX_VALUE)
+                                .add(Cancel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 90, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(password, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
+                            .add(username, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
+                            .add(endpoint, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
+                            .add(profileName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE))))
+                .add(57, 57, 57))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -249,29 +220,25 @@ public class ConnectionDialog extends javax.swing.JDialog {
                     .add(deleteProfile)
                     .add(Create))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE, false)
                     .add(profileNameLabel)
-                    .add(profileName))
+                    .add(profileName, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE, false)
                     .add(endpointLabel)
-                    .add(endpoint))
+                    .add(endpoint, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(9, 9, 9)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE, false)
                     .add(usernameLabel)
-                    .add(username, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE))
+                    .add(username, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(9, 9, 9)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE, false)
                     .add(passwordLabel)
-                    .add(password, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(savePW)
-                    .add(savePWLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .add(38, 38, 38)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(connect, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(Cancel))
+                    .add(password, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(58, 58, 58)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE, false)
+                    .add(Cancel)
+                    .add(connect))
                 .add(38, 38, 38))
         );
         pack();
@@ -284,11 +251,6 @@ public class ConnectionDialog extends javax.swing.JDialog {
             profileName.setText(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).profile_name);
             endpoint.setText(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).service_endpoint);
             username.setText(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).username);
-            password.setText(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).password);
-            if(this.explorer.getSettings().getString("general.enable.savepassword").equals("no")){
-                savePW.setSelected(false);
-            } else
-                savePW.setSelected(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).save_password);
         }
     }//GEN-LAST:event_profileListValueChanged
     
@@ -307,12 +269,6 @@ public class ConnectionDialog extends javax.swing.JDialog {
             ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).profile_name = this.profileName.getText();
             ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).service_endpoint = this.endpoint.getText();
             ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).username = this.username.getText();
-            if (this.savePW.isSelected()) {
-                ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).password = new String(this.password.getPassword());
-            } else {
-                ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).password = "";
-            }
-            ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).save_password = this.savePW.isSelected();
         }
         //save profiles
         explorer.saveConfig();
@@ -337,12 +293,6 @@ public class ConnectionDialog extends javax.swing.JDialog {
             ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).profile_name = this.profileName.getText();
             ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).service_endpoint = this.endpoint.getText();
             ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).username = this.username.getText();
-            if (this.savePW.isSelected()) {
-                ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).password = new String(this.password.getPassword());
-            } else {
-                ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).password = "";
-            }
-            ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).save_password = this.savePW.isSelected();
             dlm.setElementAt(new String(this.profileName.getText()), this.profileList.getSelectedIndex());
         }
         XincoClientConnectionProfile ccp = new XincoClientConnectionProfile();
@@ -366,8 +316,6 @@ public class ConnectionDialog extends javax.swing.JDialog {
     private javax.swing.JList profileList;
     private javax.swing.JTextField profileName;
     private javax.swing.JLabel profileNameLabel;
-    private javax.swing.JCheckBox savePW;
-    private javax.swing.JLabel savePWLabel;
     private javax.swing.JTextField username;
     private javax.swing.JLabel usernameLabel;
     // End of variables declaration//GEN-END:variables
