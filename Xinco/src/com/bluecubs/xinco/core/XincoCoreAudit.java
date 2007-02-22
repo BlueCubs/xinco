@@ -18,7 +18,7 @@ public class XincoCoreAudit  implements java.io.Serializable {
 
     private java.util.Date completion_date;
 
-    private int idChanger;
+    private int changerID;
 
     private int completedBy;
 
@@ -31,14 +31,14 @@ public class XincoCoreAudit  implements java.io.Serializable {
            int schedule_type_id,
            java.util.Date scheduled_date,
            java.util.Date completion_date,
-           int idChanger,
+           int changerID,
            int completedBy) {
            this.schedule_id = schedule_id;
            this.data_id = data_id;
            this.schedule_type_id = schedule_type_id;
            this.scheduled_date = scheduled_date;
            this.completion_date = completion_date;
-           this.idChanger = idChanger;
+           this.changerID = changerID;
            this.completedBy = completedBy;
     }
 
@@ -144,22 +144,22 @@ public class XincoCoreAudit  implements java.io.Serializable {
 
 
     /**
-     * Gets the idChanger value for this XincoCoreAudit.
+     * Gets the changerID value for this XincoCoreAudit.
      * 
-     * @return idChanger
+     * @return changerID
      */
-    public int getIdChanger() {
-        return idChanger;
+    public int getChangerID() {
+        return changerID;
     }
 
 
     /**
-     * Sets the idChanger value for this XincoCoreAudit.
+     * Sets the changerID value for this XincoCoreAudit.
      * 
-     * @param idChanger
+     * @param changerID
      */
-    public void setIdChanger(int idChanger) {
-        this.idChanger = idChanger;
+    public void setChangerID(int changerID) {
+        this.changerID = changerID;
     }
 
 
@@ -203,7 +203,7 @@ public class XincoCoreAudit  implements java.io.Serializable {
             ((this.completion_date==null && other.getCompletion_date()==null) || 
              (this.completion_date!=null &&
               this.completion_date.equals(other.getCompletion_date()))) &&
-            this.idChanger == other.getIdChanger() &&
+            this.changerID == other.getChangerID() &&
             this.completedBy == other.getCompletedBy();
         __equalsCalc = null;
         return _equals;
@@ -225,7 +225,7 @@ public class XincoCoreAudit  implements java.io.Serializable {
         if (getCompletion_date() != null) {
             _hashCode += getCompletion_date().hashCode();
         }
-        _hashCode += getIdChanger();
+        _hashCode += getChangerID();
         _hashCode += getCompletedBy();
         __hashCodeCalc = false;
         return _hashCode;
@@ -268,8 +268,8 @@ public class XincoCoreAudit  implements java.io.Serializable {
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("idChanger");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "idChanger"));
+        elemField.setFieldName("changerID");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "changerID"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);

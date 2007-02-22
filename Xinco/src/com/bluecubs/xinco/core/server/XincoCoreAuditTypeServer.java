@@ -36,65 +36,69 @@
 
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.XincoCoreAuditType;
+import com.bluecubs.xinco.core.XincoException;
+import java.sql.SQLException;
+
 /**
  *
  * @author Javier A. Ortiz
  */
-public class XincoCoreAuditTypeServer{
-    private int id,days,weeks,months,years;
-    private String description;
+public class XincoCoreAuditTypeServer extends XincoCoreAuditType{
+    XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
     /**
      * Creates a new instance of XincoCoreAuditTypeServer
      */
-    public XincoCoreAuditTypeServer() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getDays() {
-        return days;
-    }
-
-    public void setDays(int days) {
-        this.days = days;
-    }
-
-    public int getWeeks() {
-        return weeks;
-    }
-
-    public void setWeeks(int weeks) {
-        this.weeks = weeks;
-    }
-
-    public int getMonths() {
-        return months;
-    }
-
-    public void setMonths(int months) {
-        this.months = months;
-    }
-
-    public int getYears() {
-        return years;
-    }
-
-    public void setYears(int years) {
-        this.years = years;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public XincoCoreAuditTypeServer(int id, XincoDBManager DBM) {
+        
     }
     
+    public XincoCoreAuditTypeServer(
+            int id,
+            int days,
+            int weeks,
+            int months,
+            int years,
+            java.lang.String description,
+            boolean due_same_day,
+            boolean due_same_week,
+            boolean due_same_month,
+            int changerID) {
+        setId(id);
+        setDays(days);
+        setWeeks(weeks);
+        setMonths(months);
+        setYears(years);
+        setDescription(description);
+        setDue_same_day(due_same_day);
+        setDue_same_week(due_same_week);
+        setDue_same_month(due_same_month);
+    }
+    
+    private void write2DB(XincoDBManager DBM) throws XincoException{
+        if(getId()>0){
+            try {
+                DBM.con.createStatement().executeUpdate("update xinco_audit_type set id="+
+                        getId()+", days="+getDays()+", weeks="+getWeeks()+", months="+getMonths()+
+                        ", years="+getYears()+", description='"+getDescription()+"', due_same_day="+isDue_same_day()+
+                        ", due_same_week="+isDue_same_week()+", due_same_month="+isDue_same_month());
+                audit.updateAuditTrail("xinco_audit_type",new String [] {"id ="+getId()},
+                        DBM,"audit.general.modified",this.getChangerID());
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }else{
+            try {
+                setId(DBM.getNewID("xinco_audit_type"));
+                DBM.con.createStatement().executeUpdate("insert into xinco_audit_type values("+getId()+", "+
+                        getDays()+", "+getWeeks()+", "+getMonths()+", "+getYears()+", "+
+                        getDescription()+", "+isDue_same_day()+", "+isDue_same_week()
+                        +", "+isDue_same_month()+")");
+                audit.updateAuditTrail("xinco_audit_type",new String [] {"id ="+getId()},
+                        DBM,"audit.general.create",this.getChangerID());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 }

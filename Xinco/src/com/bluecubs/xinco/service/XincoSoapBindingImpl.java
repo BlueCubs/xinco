@@ -10,6 +10,7 @@ package com.bluecubs.xinco.service;
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.core.XincoCoreACE;
 import com.bluecubs.xinco.core.XincoCoreAudit;
+import com.bluecubs.xinco.core.XincoCoreAuditType;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreLog;
@@ -908,6 +909,10 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     }
     public com.bluecubs.xinco.core.XincoSetting setXincoSetting(com.bluecubs.xinco.core.XincoSetting in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
         //Dummy
+        return null;
+    }
+
+    public XincoCoreAuditType getXincoCoreAuditType(XincoCoreUser in0, int in1) throws RemoteException {
         return null;
     }
 }

@@ -129,7 +129,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
                     <element name="schedule_type_id" type="xsd:int"/>
                     <element name="scheduled_date" type="xsd:date"/>
                     <element name="completion_date" type="date"/>
-                    <element name="idChanger" type="xsd:int"/>
+                    <element name="changerID" type="xsd:int"/>
                     <element name="completedBy" type="int"></element>
                 </sequence>
             </complexType>
@@ -140,6 +140,20 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
                     <element name="int_value" type="int"></element>
                     <element name="string_value" type="string"></element>
                     <element name="bool_value" type="boolean"></element>
+                    <element name="changerID" type="int"></element>
+                </sequence>
+            </complexType>
+            <complexType name="XincoCoreAuditType">
+                <sequence>
+                    <element name="id" type="int"></element>
+                    <element name="days" type="int"></element>
+                    <element name="weeks" type="int"></element>
+                    <element name="months" type="int"></element>
+                    <element name="years" type="int"></element>
+                    <element name="description" type="string"></element>
+                    <element name="due_same_day" type="boolean"></element>
+                    <element name="due_same_week" type="boolean"></element>
+                    <element name="due_same_month" type="boolean"></element>
                     <element name="changerID" type="int"></element>
                 </sequence>
             </complexType>
@@ -571,6 +585,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <wsdl:message name="setXincoSettingResponse">
         <wsdl:part name="setXincoSettingResponse" type="tns2:XincoSetting"/>
     </wsdl:message>
+    <wsdl:message name="getXincoCoreAuditTypeRequest">
+        <wsdl:part name="in0" type="tns2:XincoCoreUser"/>
+        <wsdl:part name="in1" type="xsd:int"/>
+    </wsdl:message>
+    <wsdl:message name="getXincoCoreAuditTypeResponse">
+        <wsdl:part name="in0" type="tns2:XincoCoreAuditType"/>
+    </wsdl:message>
     <wsdl:portType name="Xinco">
         
         <wsdl:operation name="getXincoServerVersion">
@@ -799,6 +820,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         <wsdl:operation name="setXincoSetting">
             <wsdl:input name="setXincoSettingRequest" message="impl:setXincoSettingRequest"/>
             <wsdl:output name="setXincoSettingResponse" message="impl:setXincoSettingResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getXincoCoreAuditType">
+            <wsdl:input name="getXincoCoreAuditTypeRequest" message="impl:getXincoCoreAuditTypeRequest"/>
+            <wsdl:output name="getXincoCoreAuditTypeResponse" message="impl:getXincoCoreAuditTypeResponse"/>
         </wsdl:operation>
     </wsdl:portType>
     
@@ -1287,6 +1312,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         <wsdl:operation name="setXincoSetting">
             <wsdl:input name="setXincoSettingRequest"/>
             <wsdl:output name="setXincoSettingResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getXincoCoreAuditType">
+            <wsdl:input name="getXincoCoreAuditTypeRequest"/>
+            <wsdl:output name="getXincoCoreAuditTypeResponse"/>
         </wsdl:operation>
     </wsdl:binding>
     <wsdl:service name="XincoService">

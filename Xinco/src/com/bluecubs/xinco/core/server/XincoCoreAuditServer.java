@@ -82,7 +82,7 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
                 stmt.close();
                 DBM.con.commit();
                 audit.updateAuditTrail("xinco_schedule_audit",new String [] {"schedule_id ="+getSchedule_id()},
-                        DBM,"audit.scheduledaudit.change",this.getIdChanger());
+                        DBM,"audit.scheduledaudit.change",this.getChangerID());
             } else {
                 setSchedule_id(DBM.getNewID("xinco_schedule_audit"));
                 
@@ -92,7 +92,7 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
                 stmt.close();
                 DBM.con.commit();
                 audit.updateAuditTrail("xinco_audit",new String [] {"id ="+getSchedule_id()},
-                        DBM,"audit.general.create",this.getIdChanger());
+                        DBM,"audit.general.create",this.getChangerID());
             }
             
         } catch (Exception e) {
