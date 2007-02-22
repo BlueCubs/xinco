@@ -53,13 +53,13 @@ public class XincoClientConnectionProfile implements java.io.Serializable {
      * Username
      */
     public String username = null;
-//    /** Password
-//     */
-//    public String password = null;
-//    /**
-//     * Save password? Not used, kept for compability issues
-//     */
-//    public boolean save_password = false;
+    /** Password
+     */
+    public String password = null;
+    /**
+     * Save password? Not used, kept for compability issues
+     */
+    public boolean save_password = false;
     /**
      * XincoClientProfile
      */
@@ -67,8 +67,8 @@ public class XincoClientConnectionProfile implements java.io.Serializable {
         profile_name  = "";
         service_endpoint  = "";
         username  = "";
-//        password  = "";
-//        save_password = false;
+        password  = "";
+        save_password = false;
     }
     
     /**
