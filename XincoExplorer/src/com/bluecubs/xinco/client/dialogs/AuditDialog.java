@@ -30,7 +30,13 @@ public class AuditDialog extends javax.swing.JDialog {
         this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
         this.ok.setText(explorer.getResourceBundle().getString("general.ok"));
         this.auditTypeList.setEnabled(false);
-        this.auditFlexibility.setEnabled(false);
+        this.due_same_day.setText(explorer.getResourceBundle().getString("window.audit.duesameday"));
+        this.due_same_week.setText(explorer.getResourceBundle().getString("window.audit.duesameweek"));
+        this.due_same_month.setText(explorer.getResourceBundle().getString("window.audit.duesamemonth"));
+        this.auditSetting.add(this.due_same_day);
+        this.auditSetting.add(this.due_same_week);
+        this.auditSetting.add(this.due_same_month);
+        
         this.auditDate.setEnabled(false);
         //Inititalize the audit type list
         this.auditTypeList.removeAllItems();
@@ -43,16 +49,19 @@ public class AuditDialog extends javax.swing.JDialog {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+        auditSetting = new javax.swing.ButtonGroup();
         auditCheckbox = new javax.swing.JLabel();
         auditTypeLabel = new javax.swing.JLabel();
         auditFlexibilityLabel = new javax.swing.JLabel();
         auditDateLabel = new javax.swing.JLabel();
         auditDate = new com.toedter.calendar.JDateChooser();
-        auditFlexibility = new javax.swing.JCheckBox();
         auditTypeList = new javax.swing.JComboBox();
         enableFileAudit = new javax.swing.JCheckBox();
         ok = new javax.swing.JButton();
         cancel = new javax.swing.JButton();
+        due_same_day = new javax.swing.JRadioButton();
+        due_same_week = new javax.swing.JRadioButton();
+        due_same_month = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         auditCheckbox.setText("jLabel1");
@@ -62,9 +71,6 @@ public class AuditDialog extends javax.swing.JDialog {
         auditFlexibilityLabel.setText("jLabel1");
 
         auditDateLabel.setText("jLabel1");
-
-        auditFlexibility.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        auditFlexibility.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
         enableFileAudit.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         enableFileAudit.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -88,6 +94,18 @@ public class AuditDialog extends javax.swing.JDialog {
             }
         });
 
+        due_same_day.setText("jRadioButton1");
+        due_same_day.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        due_same_day.setMargin(new java.awt.Insets(0, 0, 0, 0));
+
+        due_same_week.setText("jRadioButton2");
+        due_same_week.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        due_same_week.setMargin(new java.awt.Insets(0, 0, 0, 0));
+
+        due_same_month.setText("jRadioButton3");
+        due_same_month.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        due_same_month.setMargin(new java.awt.Insets(0, 0, 0, 0));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -99,26 +117,29 @@ public class AuditDialog extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(auditCheckbox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(auditTypeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(auditFlexibilityLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(auditDateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(auditFlexibilityLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(115, 115, 115)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(enableFileAudit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(176, 176, 176))
-                            .addComponent(auditTypeList, 0, 189, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(auditFlexibility, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(176, 176, 176))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(auditDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(56, 56, 56))))
+                            .addComponent(due_same_day)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(enableFileAudit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGap(176, 176, 176))
+                                .addComponent(auditTypeList, 0, 189, Short.MAX_VALUE))
+                            .addComponent(due_same_week)
+                            .addComponent(due_same_month)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(95, 95, 95)
                         .addComponent(ok)
                         .addGap(30, 30, 30)
                         .addComponent(cancel)))
                 .addGap(52, 52, 52))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(auditDateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(115, 115, 115)
+                .addComponent(auditDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(108, 108, 108))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -129,25 +150,27 @@ public class AuditDialog extends javax.swing.JDialog {
                     .addComponent(enableFileAudit))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(auditTypeList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(auditTypeList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(due_same_day))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(auditTypeLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(14, 14, 14)
-                                .addComponent(auditFlexibility)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(auditDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(auditFlexibilityLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(auditDateLabel)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ok)
-                    .addComponent(cancel))
+                        .addGap(6, 6, 6)
+                        .addComponent(auditFlexibilityLabel)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(due_same_week)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(due_same_month)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(auditDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(15, 15, 15)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(ok)
+                            .addComponent(cancel)))
+                    .addComponent(auditDateLabel))
                 .addContainerGap())
         );
         pack();
@@ -164,30 +187,22 @@ public class AuditDialog extends javax.swing.JDialog {
     
     private void enableFileAuditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableFileAuditActionPerformed
         this.auditTypeList.setEnabled(this.enableFileAudit.isSelected());
-        this.auditFlexibility.setEnabled(this.enableFileAudit.isSelected());
+
         this.auditDate.setVisible(this.enableFileAudit.isSelected());
     }//GEN-LAST:event_enableFileAuditActionPerformed
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AuditDialog(new javax.swing.JFrame(), true,null).setVisible(true);
-            }
-        });
-    }
-    
+  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel auditCheckbox;
     private com.toedter.calendar.JDateChooser auditDate;
     private javax.swing.JLabel auditDateLabel;
-    private javax.swing.JCheckBox auditFlexibility;
     private javax.swing.JLabel auditFlexibilityLabel;
+    private javax.swing.ButtonGroup auditSetting;
     private javax.swing.JLabel auditTypeLabel;
     private javax.swing.JComboBox auditTypeList;
     private javax.swing.JButton cancel;
+    private javax.swing.JRadioButton due_same_day;
+    private javax.swing.JRadioButton due_same_month;
+    private javax.swing.JRadioButton due_same_week;
     private javax.swing.JCheckBox enableFileAudit;
     private javax.swing.JButton ok;
     // End of variables declaration//GEN-END:variables

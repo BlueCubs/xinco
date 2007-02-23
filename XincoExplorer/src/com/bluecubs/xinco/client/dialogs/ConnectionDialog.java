@@ -98,15 +98,14 @@ public class ConnectionDialog extends javax.swing.JDialog {
     public void updateProfile(){
         //update profile
         if(finalSelection >=0){
-            System.out.println("Updating...");
             ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(finalSelection)).profile_name = this.profileName.getText();
             ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(finalSelection)).service_endpoint = this.endpoint.getText();
             ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(finalSelection)).username = this.username.getText();
-            if(this.explorer.getSettings()[8].isBool_value()){
+            if(!this.explorer.getSettings()[8].isBool_value()){
                 ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(finalSelection)).password = "";
                 ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(finalSelection)).save_password=false;
             }else {
-                ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(finalSelection)).password = this.password.getPassword().toString();
+                ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(finalSelection)).password = new String(this.password.getPassword());
                 ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(finalSelection)).save_password=this.savePassword.isSelected();
             }
         }
@@ -288,7 +287,7 @@ public class ConnectionDialog extends javax.swing.JDialog {
             endpoint.setText(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).service_endpoint);
             username.setText(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).username);
             if(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).save_password)
-                password.setText(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).password);
+               password.setText(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).password);
             savePassword.setSelected(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).save_password);
             finalSelection =sel;
         }

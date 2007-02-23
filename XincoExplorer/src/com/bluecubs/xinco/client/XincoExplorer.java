@@ -49,6 +49,7 @@ import com.bluecubs.xinco.client.dialogs.DataTypeDialog;
 import com.bluecubs.xinco.client.dialogs.LogDialog;
 import com.bluecubs.xinco.client.dialogs.SearchDialog;
 import com.bluecubs.xinco.client.dialogs.UserDialog;
+import com.bluecubs.xinco.client.object.XincoActionHandler;
 import com.bluecubs.xinco.client.object.XincoAutofitTableColumns;
 import com.bluecubs.xinco.client.object.XincoMenuRepository;
 import com.bluecubs.xinco.client.object.XincoPopUpMenuRepository;
@@ -309,6 +310,7 @@ public class XincoExplorer extends JFrame {
     private Process process = null;
     private XincoAuditPanel xincoAuditPanel=null;
     private AuditDialog auditDialog=null;
+    private XincoActionHandler actionHandler=null;
     
     /**
      * This is the default constructor
@@ -597,7 +599,7 @@ public class XincoExplorer extends JFrame {
      *
      * @return javax.swing.JMenu
      */
-    private javax.swing.JMenu getJMenuRepository() {
+    public javax.swing.JMenu getJMenuRepository() {
         if(jMenuRepository == null) {
             jMenuRepository = new XincoMenuRepository(this);
             jMenuRepository.setText(xerb.getString("menu.repository"));
@@ -854,28 +856,28 @@ public class XincoExplorer extends JFrame {
                     // reset menus
                     getJPopupMenuRepository();
                     ((XincoPopUpMenuRepository) jPopupMenuRepository).resetItems();
-                    ((XincoMenuRepository) jMenuRepository).resetItems();
+                    ((XincoMenuRepository) getJMenuRepository()).resetItems();
                     // dynamic enabling
                     if (temp_ace.isWrite_permission()) {
-                        ((XincoMenuRepository) jMenuRepository).itemSetEnable(4,
+                        ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(4,
                                 true);
                         ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(4,
                                 true);
-                        ((XincoMenuRepository) jMenuRepository).itemSetEnable(7,
+                        ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(7,
                                 true);
                         ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(7,
                                 true);
                     }
                     if (temp_ace.isAdmin_permission()) {
-                        ((XincoMenuRepository) jMenuRepository).itemSetEnable(4,
+                        ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(4,
                                 true);
                         ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(4,
                                 true);
-                        ((XincoMenuRepository) jMenuRepository).itemSetEnable(6,
+                        ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(6,
                                 true);
                         ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(6,
                                 true);
-                        ((XincoMenuRepository) jMenuRepository).itemSetEnable(7,
+                        ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(7,
                                 true);
                         ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(7,
                                 true);
@@ -885,16 +887,16 @@ public class XincoExplorer extends JFrame {
                         if (temp_ace.isWrite_permission()) {
                             if (((XincoCoreNode) node.getUserObject()).getStatus_number() ==
                                     1) {
-                                ((XincoMenuRepository) jMenuRepository).itemSetEnable(4,
+                                ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(4,
                                         true);
                                 ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(4,
                                         true);
                             }
-                            ((XincoMenuRepository) jMenuRepository).itemSetEnable(1,
+                            ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(1,
                                     true);
-                            ((XincoMenuRepository) jMenuRepository).itemSetEnable(2,
+                            ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(2,
                                     true);
-                            ((XincoMenuRepository) jMenuRepository).itemSetEnable(3,
+                            ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(3,
                                     true);
                             ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(1,
                                     true);
@@ -904,7 +906,7 @@ public class XincoExplorer extends JFrame {
                                     true);
                             if (xincoClientSession.clipboardTreeNodeSelection.size() >
                                     0) {
-                                ((XincoMenuRepository) jMenuRepository).itemSetEnable(8,
+                                ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(8,
                                         true);
                                 ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(8,
                                         true);
@@ -916,16 +918,16 @@ public class XincoExplorer extends JFrame {
                         // file = 1
                         if (((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getId() ==
                                 1) {
-                            ((XincoMenuRepository) jMenuRepository).itemSetEnable(17,
+                            ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(17,
                                     true);
                             ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(17,
                                     true);
                             if (temp_ace.isRead_permission()) {
                                 if (((XincoCoreData) node.getUserObject()).getStatus_number() !=
                                         3) {
-                                    ((XincoMenuRepository) jMenuRepository).itemSetEnable(5,
+                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(5,
                                             true);
-                                    ((XincoMenuRepository) jMenuRepository).itemSetEnable(11,
+                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(11,
                                             true);
                                     ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(5,
                                             true);
@@ -936,11 +938,11 @@ public class XincoExplorer extends JFrame {
                             if (temp_ace.isWrite_permission()) {
                                 if (((XincoCoreData) node.getUserObject()).getStatus_number() ==
                                         1) {
-                                    ((XincoMenuRepository) jMenuRepository).itemSetEnable(12,
+                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(12,
                                             true);
-                                    ((XincoMenuRepository) jMenuRepository).itemSetEnable(13,
+                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(13,
                                             false);
-                                    ((XincoMenuRepository) jMenuRepository).itemSetEnable(14,
+                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(14,
                                             false);
                                     ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(12,
                                             true);
@@ -951,11 +953,11 @@ public class XincoExplorer extends JFrame {
                                 }
                                 if (((XincoCoreData) node.getUserObject()).getStatus_number() ==
                                         4) {
-                                    ((XincoMenuRepository) jMenuRepository).itemSetEnable(12,
+                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(12,
                                             false);
-                                    ((XincoMenuRepository) jMenuRepository).itemSetEnable(13,
+                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(13,
                                             true);
-                                    ((XincoMenuRepository) jMenuRepository).itemSetEnable(14,
+                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(14,
                                             true);
                                     ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(12,
                                             false);
@@ -970,7 +972,7 @@ public class XincoExplorer extends JFrame {
                         if (((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getId() ==
                                 3) {
                             if (temp_ace.isRead_permission()) {
-                                ((XincoMenuRepository) jMenuRepository).itemSetEnable(9,
+                                ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(9,
                                         true);
                                 ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(9,
                                         true);
@@ -980,26 +982,26 @@ public class XincoExplorer extends JFrame {
                         if (((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getId() ==
                                 4) {
                             if (temp_ace.isRead_permission()) {
-                                ((XincoMenuRepository) jMenuRepository).itemSetEnable(10,
+                                ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(10,
                                         true);
                                 ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(10,
                                         true);
                             }
                         }
                         if (temp_ace.isRead_permission()) {
-                            ((XincoMenuRepository) jMenuRepository).itemSetEnable(5,
+                            ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(5,
                                     true);
                             ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(5,
                                     true);
                         }
                         if (temp_ace.isWrite_permission()) {
-                            ((XincoMenuRepository) jMenuRepository).itemSetEnable(18,
+                            ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(18,
                                     true);
                             ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(18,
                                     true);
                             if (((XincoCoreData) node.getUserObject()).getStatus_number() ==
                                     1) {
-                                ((XincoMenuRepository) jMenuRepository).itemSetEnable(4,
+                                ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(4,
                                         true);
                                 ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(4,
                                         true);
@@ -1010,7 +1012,7 @@ public class XincoExplorer extends JFrame {
                                     3) &&
                                     (((XincoCoreData) node.getUserObject()).getStatus_number() !=
                                     4)) {
-                                ((XincoMenuRepository) jMenuRepository).itemSetEnable(15,
+                                ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(15,
                                         true);
                                 ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(15,
                                         true);
@@ -1019,7 +1021,7 @@ public class XincoExplorer extends JFrame {
                                     2) &&
                                     (((XincoCoreData) node.getUserObject()).getStatus_number() !=
                                     3)) {
-                                ((XincoMenuRepository) jMenuRepository).itemSetEnable(16,
+                                ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(16,
                                         true);
                                 ((XincoPopUpMenuRepository) jPopupMenuRepository).itemSetEnable(16,
                                         true);
@@ -3485,8 +3487,6 @@ public class XincoExplorer extends JFrame {
             os.close();
             fout.close();
         } catch (Exception ioe) {
-            //error handling
-            //System.out.println("Unable to write Profiles-File!");
         }
     }
     /**
@@ -3548,7 +3548,6 @@ public class XincoExplorer extends JFrame {
                 //delete old settings
                 (new File("xincoClientConnectionProfiles.dat")).delete();
             } else {
-                //TODO Compatibility issue: in order to work previous cinfig must be deleted! Maybe a compatibility code might help...
                 //insert connection profiles
                 ((Vector)xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
                 ((XincoClientConnectionProfile)((Vector)xincoClientConfig.elementAt(0)).elementAt(((Vector)xincoClientConfig.elementAt(0)).size()-1)).profile_name = "xinco Demo User";
@@ -3605,7 +3604,7 @@ public class XincoExplorer extends JFrame {
      *
      * @return javax.swing.JDialog
      */
-    private AuditDialog getJDialogAudit() {
+    public AuditDialog getJDialogAudit() {
         if(auditDialog == null) {
             auditDialog = new AuditDialog(null,true,this);
             auditDialog.setTitle(xerb.getString("window.audit"));
@@ -3631,5 +3630,11 @@ public class XincoExplorer extends JFrame {
     
     public XincoSetting[] getSettings() {
         return settings;
+    }
+
+    public XincoActionHandler getActionHandler() {
+        if(this.actionHandler==null)
+            this.actionHandler=new XincoActionHandler(this);
+        return actionHandler;
     }
 }

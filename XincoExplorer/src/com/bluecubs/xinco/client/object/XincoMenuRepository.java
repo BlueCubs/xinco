@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * 
+ *
  *
  *************************************************************
  * XincoMenuRepository.java
@@ -48,17 +48,14 @@ import com.bluecubs.xinco.core.XincoCoreLanguage;
 import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoException;
-import java.io.File;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListModel;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 /**
@@ -78,52 +75,56 @@ public class XincoMenuRepository extends JMenu{
             EditFolderDataACL=null,MoveFolderData=null,
             InsertFolderData=null,ViewData=null,
             CommentData=null;
-    private JMenuItem [] items = new JMenuItem[19];
+    private JMenuItem [] items = new JMenuItem[20];
     public ResourceBundle xerb;
+    private int counter=0;
+    private XincoActionHandler handler= null;
     
     /**
      * Creates a new instance of XincoMenuRepository
      */
-    public XincoMenuRepository(final XincoExplorer explorer) {
+    public XincoMenuRepository(final XincoExplorer explorer){
         this.explorer=explorer;
         xerb=this.explorer.getResourceBundle();
+        handler= new XincoActionHandler(this.explorer);
         //add item
-        this.items[0] = new JMenuItem();
-        this.items[0].setText(xerb.getString("menu.repository.refresh"));
-        this.items[0].setEnabled(true);
-        this.items[0].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
-        this.items[0].addActionListener(new java.awt.event.ActionListener() {
+//        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.repository.refresh"));
+        this.items[counter].setEnabled(true);
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
 
-                                            public void actionPerformed(java.awt.event.ActionEvent e) {
-                                                try {
-                                                    // get root
-                                                    XincoCoreNode xnode = new XincoCoreNode();
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                try {
+                    // get root
+                    XincoCoreNode xnode = new XincoCoreNode();
 
-                                                    xnode.setId(1);
-                                                    xnode = explorer.getSession().xinco.getXincoCoreNode(xnode,
-                                                                                                         explorer.getSession().user);
-                                                    explorer.getSession().xincoClientRepository.assignObject2TreeNode((XincoMutableTreeNode) (explorer.getSession().xincoClientRepository.treemodel).getRoot(),
-                                                                                                                      xnode,
-                                                                                                                      explorer.getSession().xinco,
-                                                                                                                      explorer.getSession().user,
-                                                                                                                      2);
-                                                    explorer.jTreeRepository.expandPath(new TreePath(explorer.getSession().xincoClientRepository.treemodel.getPathToRoot((XincoMutableTreeNode) (explorer.getSession().xincoClientRepository.treemodel).getRoot())));
-                                                    explorer.collapseAllNodes();
-                                                }
-                                                catch (Exception rmie) {
-                                                    rmie.printStackTrace();
-                                                }
-                                            }
-                                        });
-        add(this.items[0]);
+                    xnode.setId(1);
+                    xnode = explorer.getSession().xinco.getXincoCoreNode(xnode,
+                            explorer.getSession().user);
+                    explorer.getSession().xincoClientRepository.assignObject2TreeNode((XincoMutableTreeNode) (explorer.getSession().xincoClientRepository.treemodel).getRoot(),
+                            xnode,
+                            explorer.getSession().xinco,
+                            explorer.getSession().user,
+                            2);
+                    explorer.jTreeRepository.expandPath(new TreePath(explorer.getSession().xincoClientRepository.treemodel.getPathToRoot((XincoMutableTreeNode) (explorer.getSession().xincoClientRepository.treemodel).getRoot())));
+                    explorer.collapseAllNodes();
+                } catch (Exception rmie) {
+                    rmie.printStackTrace();
+                }
+            }
+        });
+        add(this.items[counter]);
         //add item
         addSeparator();
         //add item
-        this.items[1] = new JMenuItem();
-        this.items[1].setText(xerb.getString("menu.repository.addfolder"));
-        this.items[1].setEnabled(true);
-        this.items[1].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[1].addActionListener(new java.awt.event.ActionListener() {
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.repository.addfolder"));
+        this.items[counter].setEnabled(true);
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 XincoMutableTreeNode newnode;
                 
@@ -147,37 +148,40 @@ public class XincoMenuRepository extends JMenu{
                 }
             }
         });
-        add(this.items[1]);
+        add(this.items[counter]);
         //add item
-        this.items[2] = new JMenuItem();
-        this.items[2].setText(xerb.getString("menu.repository.adddata"));
-        this.items[2].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[2].addActionListener(new java.awt.event.ActionListener() {
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.repository.adddata"));
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 //data wizard -> add new data object
                 explorer.doDataWizard(1);
             }
         });
-        add(this.items[2]);
+        add(this.items[counter]);
+        increaseItemNumber();
         //add item
-        this.items[3] = new JMenuItem();
-        this.items[3].setText(xerb.getString("menu.repository.adddatastructure"));
-        this.items[3].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[3].addActionListener(new java.awt.event.ActionListener() {
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.repository.adddatastructure"));
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 XincoImportThread importT = new XincoImportThread();
                 importT.setXincoExplorer(explorer);
                 importT.start();
             }
         });
-        add(this.items[3]);
+        add(this.items[counter]);
         //add item
         addSeparator();
         //add item
-        this.items[4] = new JMenuItem();
-        this.items[4].setText(xerb.getString("menu.edit.folderdata"));
-        this.items[4].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[4].addActionListener(
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.edit.folderdata"));
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(
                 new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 if (explorer.getSession().currentTreeNodeSelection != null) {
@@ -192,23 +196,25 @@ public class XincoMenuRepository extends JMenu{
                 }
             }
         });
-        add(this.items[4]);
+        add(this.items[counter]);
         //add item
-        this.items[5] = new JMenuItem();
-        this.items[5].setText(xerb.getString("menu.repository.vieweditaddattributes"));
-        this.items[5].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[5].addActionListener(new java.awt.event.ActionListener() {
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.repository.vieweditaddattributes"));
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 //data wizard -> edit add attributes
                 explorer.doDataWizard(3);
             }
         });
-        add(this.items[5]);
+        add(this.items[counter]);
         //add item
-        this.items[6] = new JMenuItem();
-        this.items[6].setText(xerb.getString("menu.edit.acl"));
-        this.items[6].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[6].addActionListener(new java.awt.event.ActionListener() {
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.edit.acl"));
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 int i = 0, j = 0;
                 ListModel dlm;
@@ -228,14 +234,15 @@ public class XincoMenuRepository extends JMenu{
                 }
             }
         });
-        add(this.items[6]);
+        add(this.items[counter]);
         //add item
         addSeparator();
         //add item
-        this.items[7] = new JMenuItem();
-        this.items[7].setText(xerb.getString("menu.edit.movefolderdatatoclipboard"));
-        this.items[7].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[7].addActionListener(new java.awt.event.ActionListener() {
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.edit.movefolderdatatoclipboard"));
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 int i;
                 TreePath[] tps;
@@ -249,235 +256,256 @@ public class XincoMenuRepository extends JMenu{
                 explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movemessage"));
             }
         });
-        add(this.items[7]);
+        add(this.items[counter]);
         //add item
-        this.items[8] = new JMenuItem();
-        this.items[8].setText(xerb.getString("menu.edit.insertfolderdata"));
-        this.items[8].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[8].addActionListener(new java.awt.event.ActionListener() {
-
-                                            public void actionPerformed(java.awt.event.ActionEvent e) {
-                                                if ((explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() ==
-                                                     XincoCoreNode.class) &&
-                                                    (explorer.getSession().clipboardTreeNodeSelection !=
-                                                     null)) {
-                                                    int old_parent_node_id = 0;
-                                                    int i;
-                                                    int cb_size;
-                                                    XincoMutableTreeNode temp_node;
-
-                                                    cb_size = explorer.getSession().clipboardTreeNodeSelection.size();
-                                                    for (i = 0; i < cb_size; i++) {
-                                                        temp_node = (XincoMutableTreeNode) explorer.getSession().clipboardTreeNodeSelection.elementAt(0);
-                                                        if (explorer.getSession().currentTreeNodeSelection !=
-                                                            temp_node) {
-                                                            // paste node
-                                                            if (temp_node.getUserObject().getClass() ==
-                                                                XincoCoreNode.class) {
-                                                                // modify moved node
-                                                                old_parent_node_id = ((XincoCoreNode) temp_node.getUserObject()).getXinco_core_node_id();
-                                                                ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_node_id(((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject()).getId());
-                                                                try {
-                                                                    // modify treemodel
-                                                                    explorer.getSession().xincoClientRepository.treemodel.removeNodeFromParent(temp_node);
-                                                                    explorer.getSession().xincoClientRepository.treemodel.insertNodeInto(temp_node,
-                                                                                                                                         explorer.getSession().currentTreeNodeSelection,
-                                                                                                                                         explorer.getSession().currentTreeNodeSelection.getChildCount());
-                                                                    // optimize node size
-                                                                    ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_nodes(new Vector());
-                                                                    ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_data(new Vector());
-                                                                    if (explorer.getSession().xinco.setXincoCoreNode((XincoCoreNode) temp_node.getUserObject(),
-                                                                                                                     explorer.getSession().user) ==
-                                                                        null) {
-                                                                        throw new XincoException(xerb.getString("error.nowritepermission"));
-                                                                    }
-                                                                    // update transaction info
-                                                                    explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movefoldersuccess"));
-                                                                }
-                                                                catch (Exception rmie) {
-                                                                    // undo modification
-                                                                    ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_node_id(old_parent_node_id);
-                                                                    JOptionPane.showMessageDialog(explorer,
-                                                                                                  xerb.getString("error.movefolderfailed") +
-                                                                                                  " " +
-                                                                                                  xerb.getString("general.reason") +
-                                                                                                  ": " +
-                                                                                                  rmie.toString(),
-                                                                                                  xerb.getString("general.error"),
-                                                                                                  JOptionPane.WARNING_MESSAGE);
-                                                                    break;
-                                                                }
-                                                            }
-                                                            // paste data
-                                                            if (temp_node.getUserObject().getClass() ==
-                                                                XincoCoreData.class) {
-                                                                // modify moved data
-                                                                old_parent_node_id = ((XincoCoreData) temp_node.getUserObject()).getXinco_core_node_id();
-                                                                ((XincoCoreData) temp_node.getUserObject()).setXinco_core_node_id(((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject()).getId());
-                                                                try {
-                                                                    // modify treemodel
-                                                                    explorer.getSession().xincoClientRepository.treemodel.removeNodeFromParent(temp_node);
-                                                                    explorer.getSession().xincoClientRepository.treemodel.insertNodeInto(temp_node,
-                                                                                                                                         explorer.getSession().currentTreeNodeSelection,
-                                                                                                                                         explorer.getSession().currentTreeNodeSelection.getChildCount());
-                                                                    if (explorer.getSession().xinco.setXincoCoreData((XincoCoreData) temp_node.getUserObject(),
-                                                                                                                     explorer.getSession().user) ==
-                                                                        null) {
-                                                                        throw new XincoException(xerb.getString("error.nowritepermission"));
-                                                                    }
-                                                                    // insert log
-                                                                    try {
-                                                                        XincoCoreLog newlog = new XincoCoreLog();
-                                                                        Vector oldlogs = ((XincoCoreData) temp_node.getUserObject()).getXinco_core_logs();
-
-                                                                        newlog.setXinco_core_data_id(((XincoCoreData) temp_node.getUserObject()).getId());
-                                                                        newlog.setXinco_core_user_id(explorer.getSession().user.getId());
-                                                                        newlog.setOp_code(2);
-                                                                        newlog.setOp_description(xerb.getString("menu.edit.movedtofolder") +
-                                                                                                 " " +
-                                                                                                 ((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject()).getDesignation() +
-                                                                                                 " (" +
-                                                                                                 ((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject()).getId() +
-                                                                                                 ") " +
-                                                                                                 xerb.getString("general.by") +
-                                                                                                 " " +
-                                                                                                 explorer.getSession().user.getUsername());
-                                                                        newlog.setOp_datetime(null);
-                                                                        newlog.setVersion(((XincoCoreLog) oldlogs.elementAt(oldlogs.size() -
-                                                                                                                            1)).getVersion());
-                                                                        explorer.getSession().xinco.setXincoCoreLog(newlog,
-                                                                                                                    explorer.getSession().user);
-                                                                    }
-                                                                    catch (Exception loge) {
-                                                                    }
-                                                                    // update transaction info
-                                                                    explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movedatasuccess"));
-                                                                }
-                                                                catch (Exception rmie) {
-                                                                    // undo modification
-                                                                    ((XincoCoreData) temp_node.getUserObject()).setXinco_core_node_id(old_parent_node_id);
-                                                                    JOptionPane.showMessageDialog(explorer,
-                                                                                                  xerb.getString("error.movedatafailed") +
-                                                                                                  " " +
-                                                                                                  xerb.getString("general.reason") +
-                                                                                                  ": " +
-                                                                                                  rmie.toString(),
-                                                                                                  xerb.getString("general.error"),
-                                                                                                  JOptionPane.WARNING_MESSAGE);
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
-                                                        // remove moved element from clipboard
-                                                        explorer.getSession().clipboardTreeNodeSelection.removeElementAt(0);
-                                                    }
-                                                }
-                                            }
-                                        });
-        add(this.items[8]);
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.edit.insertfolderdata"));
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
+            
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                if ((explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() ==
+                        XincoCoreNode.class) &&
+                        (explorer.getSession().clipboardTreeNodeSelection !=
+                        null)) {
+                    int old_parent_node_id = 0;
+                    int i;
+                    int cb_size;
+                    XincoMutableTreeNode temp_node;
+                    
+                    cb_size = explorer.getSession().clipboardTreeNodeSelection.size();
+                    for (i = 0; i < cb_size; i++) {
+                        temp_node = (XincoMutableTreeNode) explorer.getSession().clipboardTreeNodeSelection.elementAt(0);
+                        if (explorer.getSession().currentTreeNodeSelection !=
+                                temp_node) {
+                            // paste node
+                            if (temp_node.getUserObject().getClass() ==
+                                    XincoCoreNode.class) {
+                                // modify moved node
+                                old_parent_node_id = ((XincoCoreNode) temp_node.getUserObject()).getXinco_core_node_id();
+                                ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_node_id(((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject()).getId());
+                                try {
+                                    // modify treemodel
+                                    explorer.getSession().xincoClientRepository.treemodel.removeNodeFromParent(temp_node);
+                                    explorer.getSession().xincoClientRepository.treemodel.insertNodeInto(temp_node,
+                                            explorer.getSession().currentTreeNodeSelection,
+                                            explorer.getSession().currentTreeNodeSelection.getChildCount());
+                                    // optimize node size
+                                    ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_nodes(new Vector());
+                                    ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_data(new Vector());
+                                    if (explorer.getSession().xinco.setXincoCoreNode((XincoCoreNode) temp_node.getUserObject(),
+                                            explorer.getSession().user) ==
+                                            null) {
+                                        throw new XincoException(xerb.getString("error.nowritepermission"));
+                                    }
+                                    // update transaction info
+                                    explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movefoldersuccess"));
+                                } catch (Exception rmie) {
+                                    // undo modification
+                                    ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_node_id(old_parent_node_id);
+                                    JOptionPane.showMessageDialog(explorer,
+                                            xerb.getString("error.movefolderfailed") +
+                                            " " +
+                                            xerb.getString("general.reason") +
+                                            ": " +
+                                            rmie.toString(),
+                                            xerb.getString("general.error"),
+                                            JOptionPane.WARNING_MESSAGE);
+                                    break;
+                                }
+                            }
+                            // paste data
+                            if (temp_node.getUserObject().getClass() ==
+                                    XincoCoreData.class) {
+                                // modify moved data
+                                old_parent_node_id = ((XincoCoreData) temp_node.getUserObject()).getXinco_core_node_id();
+                                ((XincoCoreData) temp_node.getUserObject()).setXinco_core_node_id(((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject()).getId());
+                                try {
+                                    // modify treemodel
+                                    explorer.getSession().xincoClientRepository.treemodel.removeNodeFromParent(temp_node);
+                                    explorer.getSession().xincoClientRepository.treemodel.insertNodeInto(temp_node,
+                                            explorer.getSession().currentTreeNodeSelection,
+                                            explorer.getSession().currentTreeNodeSelection.getChildCount());
+                                    if (explorer.getSession().xinco.setXincoCoreData((XincoCoreData) temp_node.getUserObject(),
+                                            explorer.getSession().user) ==
+                                            null) {
+                                        throw new XincoException(xerb.getString("error.nowritepermission"));
+                                    }
+                                    // insert log
+                                    try {
+                                        XincoCoreLog newlog = new XincoCoreLog();
+                                        Vector oldlogs = ((XincoCoreData) temp_node.getUserObject()).getXinco_core_logs();
+                                        
+                                        newlog.setXinco_core_data_id(((XincoCoreData) temp_node.getUserObject()).getId());
+                                        newlog.setXinco_core_user_id(explorer.getSession().user.getId());
+                                        newlog.setOp_code(2);
+                                        newlog.setOp_description(xerb.getString("menu.edit.movedtofolder") +
+                                                " " +
+                                                ((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject()).getDesignation() +
+                                                " (" +
+                                                ((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject()).getId() +
+                                                ") " +
+                                                xerb.getString("general.by") +
+                                                " " +
+                                                explorer.getSession().user.getUsername());
+                                        newlog.setOp_datetime(null);
+                                        newlog.setVersion(((XincoCoreLog) oldlogs.elementAt(oldlogs.size() -
+                                                1)).getVersion());
+                                        explorer.getSession().xinco.setXincoCoreLog(newlog,
+                                                explorer.getSession().user);
+                                    } catch (Exception loge) {
+                                    }
+                                    // update transaction info
+                                    explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movedatasuccess"));
+                                } catch (Exception rmie) {
+                                    // undo modification
+                                    ((XincoCoreData) temp_node.getUserObject()).setXinco_core_node_id(old_parent_node_id);
+                                    JOptionPane.showMessageDialog(explorer,
+                                            xerb.getString("error.movedatafailed") +
+                                            " " +
+                                            xerb.getString("general.reason") +
+                                            ": " +
+                                            rmie.toString(),
+                                            xerb.getString("general.error"),
+                                            JOptionPane.WARNING_MESSAGE);
+                                    break;
+                                }
+                            }
+                        }
+                        // remove moved element from clipboard
+                        explorer.getSession().clipboardTreeNodeSelection.removeElementAt(0);
+                    }
+                }
+            }
+        });
+        add(this.items[counter]);
         //add item
         addSeparator();
         //add item
-        this.items[9] = new JMenuItem();
-        this.items[9].setText(xerb.getString("menu.repository.viewurl"));
-        this.items[9].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[9].addActionListener(new java.awt.event.ActionListener() {
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.repository.viewurl"));
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 explorer.doDataWizard(8);
             }
         });
-        add(this.items[9]);
+        add(this.items[counter]);
         //add item
-        this.items[10] = new JMenuItem();
-        this.items[10].setText(xerb.getString("menu.repository.emailcontact"));
-        this.items[10].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[10].addActionListener(new java.awt.event.ActionListener() {
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.repository.emailcontact"));
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 explorer.doDataWizard(9);
             }
         });
-        add(this.items[10]);
+        add(this.items[counter]);
         //add item
-        this.items[11] = new JMenuItem();
-        this.items[11].setText(xerb.getString("menu.repository.downloadfile"));
-        this.items[11].setEnabled(false);
-        this.items[11].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[11].addActionListener(new java.awt.event.ActionListener() {
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.repository.downloadfile"));
+        this.items[counter].setEnabled(false);
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 explorer.doDataWizard(7);
             }
         });
-        add(this.items[11]);
+        add(this.items[counter]);
         //add item
-        this.items[12] = new JMenuItem();
-        this.items[12].setText(xerb.getString("menu.edit.checkoutfile"));
-        this.items[12].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_2, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[12].addActionListener(new java.awt.event.ActionListener() {
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.edit.checkoutfile"));
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_2, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 explorer.doDataWizard(4);
             }
         });
-        add(this.items[12]);
+        add(this.items[counter]);
         //add item
-        this.items[13] = new JMenuItem();
-        this.items[13].setText(xerb.getString("menu.edit.undocheckout"));
-        this.items[13].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[13].addActionListener(new java.awt.event.ActionListener() {
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.edit.undocheckout"));
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 explorer.doDataWizard(5);
             }
         });
-        add(this.items[13]);
+        add(this.items[counter]);
         //add item
-        this.items[14] = new JMenuItem();
-        this.items[14].setText(xerb.getString("menu.edit.checkinfile"));
-        this.items[14].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_4, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[14].addActionListener(new java.awt.event.ActionListener() {
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.edit.checkinfile"));
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_4, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 explorer.doDataWizard(6);
             }
         });
-        add(this.items[14]);
+        add(this.items[counter]);
         //add item
-        this.items[15] = new JMenuItem();
-        this.items[15].setText(xerb.getString("menu.edit.publishdata"));
-        this.items[15].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_5, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[15].addActionListener(new java.awt.event.ActionListener() {
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.edit.publishdata"));
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_5, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 explorer.doDataWizard(10);
             }
         });
-        add(this.items[15]);
+        add(this.items[counter]);
         //add item
-        this.items[16] = new JMenuItem();
-        this.items[16].setText(xerb.getString("menu.edit.lockdata"));
-        this.items[16].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_6, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[16].addActionListener(new java.awt.event.ActionListener() {
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.edit.lockdata"));
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_6, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 explorer.doDataWizard(12);
             }
         });
-        add(this.items[16]);
+        add(this.items[counter]);
         //add item
-        this.items[17] = new JMenuItem();
-        this.items[17].setText(xerb.getString("menu.edit.downloadrevision"));
-        this.items[17].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_7, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[17].addActionListener(new java.awt.event.ActionListener() {
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.edit.downloadrevision"));
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_7, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 explorer.doDataWizard(11);
             }
         });
-        add(this.items[17]);
+        add(this.items[counter]);
         //add item
-        this.items[18] = new JMenuItem();
-        this.items[18].setText(xerb.getString("menu.edit.commentdata"));
-        this.items[18].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_8, java.awt.event.KeyEvent.ALT_MASK));
-        this.items[18].addActionListener(new java.awt.event.ActionListener() {
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.edit.commentdata"));
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_8, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 explorer.doDataWizard(13);
             }
         });
-        add(this.items[18]);
+        add(this.items[counter]);
+        //add item
+        addSeparator();
+        //add item
+        increaseItemNumber();
+        this.items[counter] = new JMenuItem();
+        this.items[counter].setText(xerb.getString("menu.repository.audit"));
+        this.items[counter].setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.KeyEvent.ALT_MASK));
+        this.items[counter].addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                explorer.getJDialogAudit();
+            }
+        });
+        add(this.items[counter]);
     }
     public void resetItems(){
         for(int i=1;i<this.items.length;i++){
@@ -489,4 +517,12 @@ public class XincoMenuRepository extends JMenu{
         items[number].setEnabled(enable);
     }
     
+    private int increaseItemNumber(){
+        counter++;
+        return counter;
+    }
+    
+    public JMenuItem[] getItems(){
+        return this.items;
+    }
 }
