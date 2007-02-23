@@ -113,6 +113,7 @@ public class XincoSettingServer extends XincoSetting{
                         DBM,"audit.general.created",getChangerID());
             }
             DBM.con.commit();
+            DBM.con.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -134,6 +135,7 @@ public class XincoSettingServer extends XincoSetting{
                         rs.getString("description"),rs.getInt("int_value"),string_value,
                         rs.getBoolean("bool_value"),0));
             }
+            DBM.con.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
