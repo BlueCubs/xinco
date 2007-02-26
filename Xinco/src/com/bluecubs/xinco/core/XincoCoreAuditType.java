@@ -26,8 +26,6 @@ public class XincoCoreAuditType  implements java.io.Serializable {
 
     private boolean due_same_month;
 
-    private int changerID;
-
     public XincoCoreAuditType() {
     }
 
@@ -40,8 +38,7 @@ public class XincoCoreAuditType  implements java.io.Serializable {
            java.lang.String description,
            boolean due_same_day,
            boolean due_same_week,
-           boolean due_same_month,
-           int changerID) {
+           boolean due_same_month) {
            this.id = id;
            this.days = days;
            this.weeks = weeks;
@@ -51,7 +48,6 @@ public class XincoCoreAuditType  implements java.io.Serializable {
            this.due_same_day = due_same_day;
            this.due_same_week = due_same_week;
            this.due_same_month = due_same_month;
-           this.changerID = changerID;
     }
 
 
@@ -234,26 +230,6 @@ public class XincoCoreAuditType  implements java.io.Serializable {
         this.due_same_month = due_same_month;
     }
 
-
-    /**
-     * Gets the changerID value for this XincoCoreAuditType.
-     * 
-     * @return changerID
-     */
-    public int getChangerID() {
-        return changerID;
-    }
-
-
-    /**
-     * Sets the changerID value for this XincoCoreAuditType.
-     * 
-     * @param changerID
-     */
-    public void setChangerID(int changerID) {
-        this.changerID = changerID;
-    }
-
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof XincoCoreAuditType)) return false;
@@ -276,8 +252,7 @@ public class XincoCoreAuditType  implements java.io.Serializable {
               this.description.equals(other.getDescription()))) &&
             this.due_same_day == other.isDue_same_day() &&
             this.due_same_week == other.isDue_same_week() &&
-            this.due_same_month == other.isDue_same_month() &&
-            this.changerID == other.getChangerID();
+            this.due_same_month == other.isDue_same_month();
         __equalsCalc = null;
         return _equals;
     }
@@ -300,7 +275,6 @@ public class XincoCoreAuditType  implements java.io.Serializable {
         _hashCode += (isDue_same_day() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isDue_same_week() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isDue_same_month() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += getChangerID();
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -363,12 +337,6 @@ public class XincoCoreAuditType  implements java.io.Serializable {
         elemField.setFieldName("due_same_month");
         elemField.setXmlName(new javax.xml.namespace.QName("", "due_same_month"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("changerID");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "changerID"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
     }
