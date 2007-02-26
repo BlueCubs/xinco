@@ -129,7 +129,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
                     <element name="schedule_type_id" type="xsd:int"/>
                     <element name="scheduled_date" type="xsd:date"/>
                     <element name="completion_date" type="date"/>
-                    <element name="changerID" type="xsd:int"/>
                     <element name="completedBy" type="int"></element>
                 </sequence>
             </complexType>
@@ -154,7 +153,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
                     <element name="due_same_day" type="boolean"></element>
                     <element name="due_same_week" type="boolean"></element>
                     <element name="due_same_month" type="boolean"></element>
-                    <element name="changerID" type="int"></element>
                 </sequence>
             </complexType>
         </schema>
@@ -592,6 +590,15 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <wsdl:message name="getXincoCoreAuditTypeResponse">
         <wsdl:part name="in0" type="tns2:XincoCoreAuditType"/>
     </wsdl:message>
+    <wsdl:message name="getXincoCoreAuditTypesRequest">
+        <wsdl:part name="in0" type="tns2:XincoCoreUser"/>
+    </wsdl:message>
+    <wsdl:message name="getXincoCoreAuditTypesResponse">
+        <wsdl:part name="in0" type="apachesoap:Vector"/>
+    </wsdl:message>
+    <wsdl:message name="XincoOperationRequest">
+        <wsdl:part name="part1" type="xsd:string"/>
+    </wsdl:message>
     <wsdl:portType name="Xinco">
         
         <wsdl:operation name="getXincoServerVersion">
@@ -824,6 +831,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         <wsdl:operation name="getXincoCoreAuditType">
             <wsdl:input name="getXincoCoreAuditTypeRequest" message="impl:getXincoCoreAuditTypeRequest"/>
             <wsdl:output name="getXincoCoreAuditTypeResponse" message="impl:getXincoCoreAuditTypeResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getXincoCoreAuditTypes">
+            <wsdl:input name="getXincoCoreAuditTypesRequest" message="impl:getXincoCoreAuditTypesRequest"/>
+            <wsdl:output name="getXincoCoreAuditTypesResponse" message="impl:getXincoCoreAuditTypesResponse"/>
         </wsdl:operation>
     </wsdl:portType>
     
@@ -1316,6 +1327,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         <wsdl:operation name="getXincoCoreAuditType">
             <wsdl:input name="getXincoCoreAuditTypeRequest"/>
             <wsdl:output name="getXincoCoreAuditTypeResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getXincoCoreAuditTypes">
+            <wsdl:input name="getXincoCoreAuditTypesRequest"/>
+            <wsdl:output name="getXincoCoreAuditTypesResponse"/>
         </wsdl:operation>
     </wsdl:binding>
     <wsdl:service name="XincoService">

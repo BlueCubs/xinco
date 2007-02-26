@@ -37,20 +37,43 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoCoreAuditType;
+import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Vector;
 
 /**
  *
  * @author Javier A. Ortiz
  */
 public class XincoCoreAuditTypeServer extends XincoCoreAuditType{
-    XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
+    private int changerID;
+    private XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
     /**
      * Creates a new instance of XincoCoreAuditTypeServer
      */
-    public XincoCoreAuditTypeServer(int id, XincoDBManager DBM) {
-        
+    public XincoCoreAuditTypeServer() {
+    }
+    
+    public XincoCoreAuditTypeServer(int id, XincoCoreUser user,XincoDBManager DBM) {
+        ResultSet rs=null;
+        try {
+            rs=DBM.con.createStatement().executeQuery("select * from xinco_audit_type where id="+id);
+            while(rs.next()){
+                setId(id);
+                setDays(rs.getInt("days"));
+                setWeeks(rs.getInt("weeks"));
+                setMonths(rs.getInt("months"));
+                setYears(rs.getInt("years"));
+                setDescription(rs.getString("description"));
+                setDue_same_day(rs.getBoolean("due_same_day"));
+                setDue_same_week(rs.getBoolean("due_same_week"));
+                setDue_same_month(rs.getBoolean("due_same_month"));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
     
     public XincoCoreAuditTypeServer(
@@ -100,5 +123,38 @@ public class XincoCoreAuditTypeServer extends XincoCoreAuditType{
                 ex.printStackTrace();
             }
         }
+    }
+    
+    public Vector getAuditTypes(){
+        XincoDBManager DBM=null;
+        XincoCoreAuditType temp=null;
+        try {
+            DBM = new XincoDBManager();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        Vector types=new Vector();
+        ResultSet rs=null;
+        
+        try {
+            rs=DBM.con.createStatement().executeQuery("select distinct description from xinco_audit_type order by description");
+            while(rs.next()){
+                temp = new XincoCoreAuditType(rs.getInt("id"),rs.getInt("days"),rs.getInt("weeks"),
+                        rs.getInt("months"),rs.getInt("years"),rs.getString("description"),rs.getBoolean("due_same_day"),
+                        rs.getBoolean("due_same_week"),rs.getBoolean("due_same_month"));
+                types.addElement(temp);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return types;
+    }
+    
+    public int getChangerID() {
+        return changerID;
+    }
+    
+    public void setChangerID(int changerID) {
+        this.changerID = changerID;
     }
 }

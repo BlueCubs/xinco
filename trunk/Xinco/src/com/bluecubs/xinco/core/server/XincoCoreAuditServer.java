@@ -20,7 +20,7 @@ import java.sql.Timestamp;
  * @author javydreamercsw
  */
 public class XincoCoreAuditServer extends XincoCoreAudit{
-    
+    private int changerID;
     /**
      * Creates a new instance of XincoCoreAuditServer
      */
@@ -56,11 +56,18 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
         }
     }
     
-    public XincoCoreAuditServer(int s_id,int d_id,int s_type_id,Timestamp s_date) throws XincoException{
-        setSchedule_id(s_id);
-        setData_id(d_id);
-        setSchedule_type_id(s_type_id);
-        setScheduled_date(s_date);
+    public XincoCoreAuditServer(int schedule_id,
+           int data_id,
+           int schedule_type_id,
+           java.util.Date scheduled_date,
+           java.util.Date completion_date,
+           int completedBy) throws XincoException{
+        setSchedule_id(schedule_id);
+        setData_id(data_id);
+        setSchedule_type_id(schedule_type_id);
+        setScheduled_date(scheduled_date);
+        setCompletion_date(completion_date);
+        setCompletedBy(completedBy);
         try {
             write2DB(new XincoDBManager());
         } catch (Exception ex) {
@@ -105,5 +112,13 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
         
         return getSchedule_id();
         
+    }
+
+    public int getChangerID() {
+        return changerID;
+    }
+
+    public void setChangerID(int changerID) {
+        this.changerID = changerID;
     }
 }

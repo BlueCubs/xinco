@@ -426,6 +426,17 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
             _myOperations.put("getXincoCoreAuditType", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("getXincoCoreAuditType")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getXincoCoreAuditTypes", _params, new javax.xml.namespace.QName("", "in0"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
+        _oper.setElementQName(new javax.xml.namespace.QName("", "getXincoCoreAuditTypes"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getXincoCoreAuditTypes") == null) {
+            _myOperations.put("getXincoCoreAuditTypes", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getXincoCoreAuditTypes")).add(_oper);
     }
 
     public XincoSoapBindingSkeleton() {
@@ -618,6 +629,12 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
     public com.bluecubs.xinco.core.XincoCoreAuditType getXincoCoreAuditType(com.bluecubs.xinco.core.XincoCoreUser in0, int in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.core.XincoCoreAuditType ret = impl.getXincoCoreAuditType(in0, in1);
+        return ret;
+    }
+
+    public java.util.Vector getXincoCoreAuditTypes(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException
+    {
+        java.util.Vector ret = impl.getXincoCoreAuditTypes(in0);
         return ret;
     }
 
