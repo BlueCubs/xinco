@@ -73,6 +73,8 @@ public class ArchiveDialog extends javax.swing.JDialog {
         this.dayAmount.setText(xerb.getString("window.archive.archivedays") + ":");
         this.okButton.setText(xerb.getString("general.continue"));
         this.cancelButton.setText(xerb.getString("general.cancel"));
+        archiveDate.setVisible(false);
+        dateLabel.setVisible(false);
         //processing independent of creation
         if (((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(3)).getAttrib_unsignedint() == 0) {
             revisionModelCheckbox.setSelected(false);
@@ -92,7 +94,7 @@ public class ArchiveDialog extends javax.swing.JDialog {
         Calendar ngc = new GregorianCalendar();
         cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - realcal.get(Calendar.ZONE_OFFSET)) - (ngc.get(Calendar.DST_OFFSET) + realcal.get(Calendar.DST_OFFSET)) );
         archiveDate.setDate(cal.getTime());
-        dayAmountTextBox.setText("" + ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(6)).getAttrib_unsignedint());        
+        dayAmountTextBox.setText("" + ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(6)).getAttrib_unsignedint());
     }
     /** This method is called from within the constructor to
      * initialize the form.
@@ -206,7 +208,7 @@ public class ArchiveDialog extends javax.swing.JDialog {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-        
+    
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         setVisible(false);
     }//GEN-LAST:event_cancelButtonActionPerformed
@@ -250,17 +252,17 @@ public class ArchiveDialog extends javax.swing.JDialog {
     
     private void archiveModelDropDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveModelDropDownActionPerformed
         if (archiveModelDropDown.getSelectedIndex() == 1) {
+            archiveDate.setVisible(false);
+            dateLabel.setVisible(false);
+            dayAmountTextBox.setEnabled(false);
+        } else if (archiveModelDropDown.getSelectedIndex() == 2) {
             archiveDate.setVisible(true);
             dateLabel.setVisible(true);
-            dayAmountTextBox.setVisible(false);
-        } else if (archiveModelDropDown.getSelectedIndex() == 2) {
+            dayAmountTextBox.setEnabled(true);
+        } else if (archiveModelDropDown.getSelectedIndex() == 3){
             archiveDate.setVisible(false);
             dateLabel.setVisible(false);
-            dayAmountTextBox.setVisible(true);
-        } else {
-            archiveDate.setVisible(false);
-            dateLabel.setVisible(false);
-            dayAmountTextBox.setVisible(false);
+            dayAmountTextBox.setEnabled(false);
         }
     }//GEN-LAST:event_archiveModelDropDownActionPerformed
     
