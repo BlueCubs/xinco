@@ -332,7 +332,18 @@ public class XincoExplorer extends JFrame {
         //choose language
         getJDialogLocale().setVisible(true);
         //load language data
-        xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", (Locale)xincoClientConfig.elementAt(2));
+        Locale loc= null;
+        try {
+            if(((Locale)xincoClientConfig.elementAt(2)).toString().indexOf("_")==-1)
+                loc = new Locale(((Locale)xincoClientConfig.elementAt(2)).toString());
+            else
+                loc = new Locale(((Locale)xincoClientConfig.elementAt(2)).toString().substring(0,((Locale)xincoClientConfig.elementAt(2)).toString().indexOf("_")),
+                        ((Locale)xincoClientConfig.elementAt(2)).toString().substring(((Locale)xincoClientConfig.elementAt(2)).toString().indexOf("_")+1,
+                        ((Locale)xincoClientConfig.elementAt(2)).toString().length()));
+        } catch (Exception e) {
+            loc = Locale.getDefault();
+        }
+        xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
         xerb.getLocale();
         //get Xinco Explorer settings
         xesettings=ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");

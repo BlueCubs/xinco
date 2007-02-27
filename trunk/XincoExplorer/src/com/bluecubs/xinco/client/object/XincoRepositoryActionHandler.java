@@ -580,10 +580,9 @@ public class XincoRepositoryActionHandler {
         }
         public void actionPerformed(ActionEvent e){
             XincoMutableTreeNode temp_node;
-            temp_node = (XincoMutableTreeNode) explorer.getSession().clipboardTreeNodeSelection.elementAt(0);
-            explorer.getJDialogAudit();
+            temp_node = explorer.getSession().currentTreeNodeSelection;
+            explorer.getJDialogAudit().setVisible(true);
         }
-       
     }
     
     public Action[] getActions() {
