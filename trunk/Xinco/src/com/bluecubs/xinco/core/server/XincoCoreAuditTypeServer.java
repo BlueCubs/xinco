@@ -137,7 +137,7 @@ public class XincoCoreAuditTypeServer extends XincoCoreAuditType{
         ResultSet rs=null;
         
         try {
-            rs=DBM.con.createStatement().executeQuery("select distinct description from xinco_audit_type order by description");
+            rs=DBM.con.createStatement().executeQuery("select * from xinco_audit_type order by description");
             while(rs.next()){
                 temp = new XincoCoreAuditType(rs.getInt("id"),rs.getInt("days"),rs.getInt("weeks"),
                         rs.getInt("months"),rs.getInt("years"),rs.getString("description"),rs.getBoolean("due_same_day"),
