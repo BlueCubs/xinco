@@ -84,7 +84,7 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
                 Statement stmt = DBM.con.createStatement();
                 stmt.executeUpdate("UPDATE xinco_audit SET id=" + getSchedule_id() +
                         ", xinco_core_data_id=" + getData_id() + ", xinco_audit_type_id=" + getSchedule_type_id() +
-                        ", scheduled_date=" + getScheduled_date() + ", completion_date ="+null+
+                        ", scheduled_date=" + getScheduled_date() + ", completion_date ="+getCompletion_date()+
                         " WHERE schedule_id=" + getSchedule_id());
                 stmt.close();
                 DBM.con.commit();
@@ -96,7 +96,7 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
                 Statement stmt = DBM.con.createStatement();
                 stmt.executeUpdate("INSERT INTO xinco_audit VALUES (" + getSchedule_id() +
                         ", " + getSchedule_type_id() + ", " + getCompletedBy() + ", " + getData_id()+
-                        ", " +getScheduled_date() + ", " +null+")");
+                        ", " +getScheduled_date() + ", null)");
                 stmt.close();
                 DBM.con.commit();
                 audit.updateAuditTrail("xinco_audit",new String [] {"id ="+getSchedule_id()},

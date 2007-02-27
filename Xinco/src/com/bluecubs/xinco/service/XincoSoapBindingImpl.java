@@ -777,6 +777,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             audit= new XincoCoreAuditServer(in0.getSchedule_id(),
                     in0.getData_id(),in0.getSchedule_type_id(),in0.getScheduled_date(),
                     in0.getCompletion_date(),in0.getCompletedBy());
+            audit.setChangerID(in1.getId());
         } catch (XincoException ex) {
             ex.printStackTrace();
         }
