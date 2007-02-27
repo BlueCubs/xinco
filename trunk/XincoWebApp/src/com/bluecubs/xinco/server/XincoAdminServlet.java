@@ -86,7 +86,12 @@ public class XincoAdminServlet extends HttpServlet {
     throws ServletException, IOException {
         Locale loc = null;
         try {
-            loc = new Locale(request.getParameter("list"));
+            if(request.getParameter("list").indexOf("_")==-1)
+                loc = new Locale(request.getParameter("list"));
+            else
+                loc = new Locale(request.getParameter("list").substring(0,request.getParameter("list").indexOf("_")),
+                        request.getParameter("list").substring(request.getParameter("list").indexOf("_")+1,
+                        request.getParameter("list").length()));
         } catch (Exception e) {
             loc = Locale.getDefault();
         }

@@ -2,11 +2,25 @@
 <%@page pageEncoding="UTF-8"%>
 <%@page import="java.util.ResourceBundle"%>
 <%@page import="java.util.Locale"%>
+<%@page import="com.bluecubs.xinco.core.server.XincoSettingServer"%>
+<%@page import="com.bluecubs.xinco.core.XincoSetting"%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <%
-Locale loc=new Locale(request.getParameter("list"));
+XincoSettingServer xss= new XincoSettingServer();
+String setting = ((XincoSetting)(xss.getXinco_settings().elementAt(8))).getString_value();
+Locale loc = null;
+try {
+    if(request.getParameter("list").indexOf("_")==-1)
+        loc = new Locale(request.getParameter("list"));
+    else
+        loc = new Locale(request.getParameter("list").substring(0,request.getParameter("list").indexOf("_")),
+                request.getParameter("list").substring(request.getParameter("list").indexOf("_")+1,
+                request.getParameter("list").length()));
+} catch (Exception e) {
+    loc = Locale.getDefault();
+}
 ResourceBundle rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
 ResourceBundle settings=ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings",loc);
 rb.getLocale();
@@ -38,7 +52,7 @@ out.println("<td class='text'>"+rb.getString("message.admin.main.publisherdesc")
 out.println("</tr>");
 out.println("<tr>");
 out.println("<td class='text'><a href='http://java.sun.com' " +
-"target='_blank' class='link'  icon='xinco'>"+rb.getString("message.admin.main.java.label")+"</a></td>");
+        "target='_blank' class='link'  icon='xinco'>"+rb.getString("message.admin.main.java.label")+"</a></td>");
 out.println("<td class='text'>"+rb.getString("message.admin.main.javadesc")+"</td>");
 out.println("</tr>");
 out.println("<tr>");
@@ -63,7 +77,7 @@ out.println("<td class='text'>&nbsp;</td>");
 out.println("</tr>");
 out.println("<tr>");
 out.println("<td class='text'>&nbsp;</td>");
-out.println("<td class='text'>&copy; "+settings.getString("general.copyright.date")+", "+rb.getString("message.admin.main.footer")+"</a></td>");
+out.println("<td class='text'>&copy; "+setting+", "+rb.getString("message.admin.main.footer")+"</a></td>");
 out.println("</tr>");
 out.println("</table>");
 out.println("</span>");

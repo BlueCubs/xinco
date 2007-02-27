@@ -48,7 +48,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class XincoPublisherServlet extends HttpServlet {
-    ResourceBundle rb,settings;
+    ResourceBundle rb;
     /** Initializes the servlet.
      */
     public void init(ServletConfig config) throws ServletException {
@@ -68,12 +68,18 @@ public class XincoPublisherServlet extends HttpServlet {
     throws ServletException, IOException {
         Locale loc = null;
         try {
-            loc = new Locale(request.getParameter("list"));
+            if(request.getParameter("list").indexOf("_")==-1)
+                loc = new Locale(request.getParameter("list"));
+            else
+                loc = new Locale(request.getParameter("list").substring(0,request.getParameter("list").indexOf("_")),
+                        request.getParameter("list").substring(request.getParameter("list").indexOf("_")+1,
+                        request.getParameter("list").length()));
         } catch (Exception e) {
             loc = Locale.getDefault();
         }
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
-        settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings",loc);
+        XincoSettingServer xss= new XincoSettingServer();
+        String setting = ((XincoSetting)(xss.getXinco_settings().elementAt(8))).getString_value();
         int i = 0;
         int j = 0;
         String request_path;
@@ -296,7 +302,7 @@ public class XincoPublisherServlet extends HttpServlet {
                                         }
                                         out.println("<tr>");
                                         out.println("<td class=\"text\">&nbsp;</td>");
-                                        out.println("<td class=\"text\"><a href=\"" + "XincoPublisher?MainMenu=browse&FolderId=" + 
+                                        out.println("<td class=\"text\"><a href=\"" + "XincoPublisher?MainMenu=browse&FolderId=" +
                                                 xnode_temp2.getId() + temp_path2 + "&list="+request.getParameter("list")+"\">[" +
                                                 xnode_temp2.getDesignation() + " (" + xnode_temp2.getXinco_core_language().getSign() + ")" +
                                                 "]</a></td>");
@@ -414,7 +420,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
                 out.println("<tr>");
                 out.println("<td class=\"text\">&nbsp;</td>");
-                out.println("<td class=\"text\">&copy; "+settings.getString("general.copyright.date")+", "+rb.getString("message.admin.main.footer"));
+                out.println("<td class=\"text\">&copy; "+setting+", "+rb.getString("message.admin.main.footer"));
                 out.println("</tr>");
                 out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                         rb.getString("message.admin.main.backtomain")+"' />" +
