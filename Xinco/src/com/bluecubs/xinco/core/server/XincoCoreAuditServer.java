@@ -83,19 +83,20 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
             if (getSchedule_id() > 0) {
                 Statement stmt = DBM.con.createStatement();
                 stmt.executeUpdate("UPDATE xinco_audit SET id=" + getSchedule_id() +
-                        ", xinco_core_data_id=" + getData_id() + ", xinco_schedule_type_id=" + getSchedule_type_id() +
-                        ", xinco_scheduled_date=" + getScheduled_date() +
+                        ", xinco_core_data_id=" + getData_id() + ", xinco_audit_type_id=" + getSchedule_type_id() +
+                        ", scheduled_date=" + getScheduled_date() + ", completion_date ="+null+
                         " WHERE schedule_id=" + getSchedule_id());
                 stmt.close();
                 DBM.con.commit();
-                audit.updateAuditTrail("xinco_schedule_audit",new String [] {"schedule_id ="+getSchedule_id()},
+                audit.updateAuditTrail("xinco_audit",new String [] {"id ="+getSchedule_id()},
                         DBM,"audit.scheduledaudit.change",this.getChangerID());
             } else {
-                setSchedule_id(DBM.getNewID("xinco_schedule_audit"));
+                setSchedule_id(DBM.getNewID("xinco_audit"));
                 
                 Statement stmt = DBM.con.createStatement();
                 stmt.executeUpdate("INSERT INTO xinco_audit VALUES (" + getSchedule_id() +
-                        ", " + getData_id() + ", " + getSchedule_type_id() + ", " + getScheduled_date() +")");
+                        ", " + getSchedule_type_id() + ", " + getCompletedBy() + ", " + getData_id()+
+                        ", " +getScheduled_date() + ", " +null+")");
                 stmt.close();
                 DBM.con.commit();
                 audit.updateAuditTrail("xinco_audit",new String [] {"id ="+getSchedule_id()},
@@ -103,6 +104,7 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
             }
             
         } catch (Exception e) {
+            e.printStackTrace();
             try {
                 DBM.con.rollback();
             } catch (Exception erollback) {
