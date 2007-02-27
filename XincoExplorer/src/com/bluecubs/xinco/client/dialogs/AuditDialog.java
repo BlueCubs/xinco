@@ -12,6 +12,7 @@ import com.bluecubs.xinco.core.XincoCoreAudit;
 import com.bluecubs.xinco.core.XincoCoreAuditType;
 import com.bluecubs.xinco.core.XincoCoreData;
 import java.rmi.RemoteException;
+import java.sql.Date;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
@@ -60,7 +61,7 @@ public class AuditDialog extends javax.swing.JDialog {
             ex.printStackTrace();
         }
         for(int i=0;i<types.size();i++){
-            this.auditTypeList.addItem(((XincoCoreAuditType)types.get(i)).getDescription());
+            this.auditTypeList.addItem(this.explorer.getResourceBundle().getString(((XincoCoreAuditType)types.get(i)).getDescription()));
         }
         if(this.data!=null)
             this.getAuditData();
@@ -141,6 +142,7 @@ public class AuditDialog extends javax.swing.JDialog {
             }
         });
 
+        due_same_day.setSelected(true);
         due_same_day.setText("jRadioButton1");
         due_same_day.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         due_same_day.setEnabled(false);
@@ -163,18 +165,15 @@ public class AuditDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(auditFlexibilityLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(auditCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(129, 129, 129))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(auditTypeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(auditDateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(auditCheckbox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
+                                    .addComponent(auditTypeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(enableFileAudit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -192,16 +191,20 @@ public class AuditDialog extends javax.swing.JDialog {
                         .addComponent(ok)
                         .addGap(69, 69, 69)
                         .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(88, 88, 88)))
+                        .addGap(88, 88, 88))
+                    .addComponent(auditFlexibilityLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {auditCheckbox, auditDateLabel, auditFlexibilityLabel, auditTypeLabel});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(auditCheckbox)
-                    .addComponent(enableFileAudit, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(enableFileAudit, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(auditCheckbox))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(auditTypeLabel)
@@ -218,7 +221,7 @@ public class AuditDialog extends javax.swing.JDialog {
                         .addComponent(due_same_week)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(due_same_month))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(auditFlexibilityLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -236,7 +239,7 @@ public class AuditDialog extends javax.swing.JDialog {
     private void okActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okActionPerformed
         if(this.xca==null) {
             this.xca=new XincoCoreAudit(0,this.data.getId(),this.auditTypeList.getSelectedIndex()+1,
-                    this.auditDate.getDate(),null,-1);
+                    this.auditDate.getDate(),new Date(System.currentTimeMillis()),-1);
             try {
                 this.explorer.getSession().xinco.setXincoCoreAudit(this.xca,
                         this.explorer.getSession().user);
@@ -247,6 +250,7 @@ public class AuditDialog extends javax.swing.JDialog {
         }
         if(this.xca!=null)
             explorer.getSession().status = 1;
+        this.setVisible(false);
     }//GEN-LAST:event_okActionPerformed
     
     private void enableFileAuditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableFileAuditActionPerformed
