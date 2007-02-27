@@ -1013,7 +1013,7 @@
 </INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="1634" Tablename="xinco_audit_type" PrevTableName="Table_14" XPos="1440" YPos="420" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_audit_type (id, days, weeks, months, years, description) VALUES(1,0,0,1,0,\ascheduled.audit.monthly\a,0,0,1);\nINSERT INTO xinco_audit_type (id, days, weeks, months, years, description) VALUES(2,0,0,0,1,\ascheduled.audit.yearly\a,0,0,1);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="31" >
+<TABLE ID="1634" Tablename="xinco_audit_type" PrevTableName="Table_14" XPos="1440" YPos="420" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_audit_type (id, days, weeks, months, years, description,due_same_day,due_same_week,due_same_month) VALUES(1,0,0,1,0,\ascheduled.audit.monthly\a,0,0,1);\nINSERT INTO xinco_audit_type (id, days, weeks, months, years, description,due_same_day,due_same_week,due_same_month) VALUES(2,0,0,0,1,\ascheduled.audit.yearly\a,0,0,1);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="31" >
 <COLUMNS>
 <COLUMN ID="1637" ColName="id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
 <OPTIONSELECTED>
