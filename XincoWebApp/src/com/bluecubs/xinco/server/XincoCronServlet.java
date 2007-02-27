@@ -40,13 +40,15 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import com.bluecubs.xinco.archive.*;
+import com.bluecubs.xinco.core.XincoSetting;
 import com.bluecubs.xinco.index.*;
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.XincoSettingServer;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class XincoCronServlet extends HttpServlet {
-    ResourceBundle lrb,settings;
+    ResourceBundle lrb;
     //single instance of archiving thread
     XincoArchiveThread xat = null;
     
@@ -79,12 +81,18 @@ public class XincoCronServlet extends HttpServlet {
     throws ServletException, IOException {
         Locale loc = null;
         try {
-            loc = new Locale(request.getParameter("list"));
+            if(request.getParameter("list").indexOf("_")==-1)
+                loc = new Locale(request.getParameter("list"));
+            else
+                loc = new Locale(request.getParameter("list").substring(0,request.getParameter("list").indexOf("_")),
+                        request.getParameter("list").substring(request.getParameter("list").indexOf("_")+1,
+                        request.getParameter("list").length()));
         } catch (Exception e) {
             loc = Locale.getDefault();
         }
         lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
-        settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings",loc);
+        XincoSettingServer xss= new XincoSettingServer();
+        String setting = ((XincoSetting)(xss.getXinco_settings().elementAt(8))).getString_value();
         //start output
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
@@ -174,7 +182,7 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; "+settings.getString("general.copyright.date")+", "+lrb.getString("message.admin.main.footer"));
+        out.println("<td class=\"text\">&copy; "+setting+", "+lrb.getString("message.admin.main.footer"));
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                 lrb.getString("message.admin.main.backtomain")+"' />" +
