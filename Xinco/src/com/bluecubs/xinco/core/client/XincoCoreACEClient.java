@@ -21,13 +21,13 @@
  *
  * Name:            XincoCoreACEClient
  *
- * Description:     access control entry 
+ * Description:     access control entry
  *
  * Original Author: Alexander Manes
  * Date:            2004
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
@@ -41,57 +41,71 @@ import java.util.Vector;
 import com.bluecubs.xinco.core.*;
 
 public class XincoCoreACEClient extends XincoCoreACE {
-
-	public XincoCoreACEClient() throws XincoException {
-	}
     
-	//check access by comparing user / user groups to ACL and return permissions
-	public static XincoCoreACE checkAccess(XincoCoreUser attrU, Vector attrACL) {
+    public XincoCoreACEClient() throws XincoException {
+    }
+    
+    //check access by comparing user / user groups to ACL and return permissions
+    public static XincoCoreACE checkAccess(XincoCoreUser attrU, Vector attrACL) {
         
-		int i = 0;
-		int j = 0;
-		boolean match_ace = false;
-		XincoCoreACE core_ace = new XincoCoreACE();
-		
-		try {
-                    for (i=0;i<attrACL.size();i++) {
-                            //reset match_ace
-                            match_ace = false;
-                            //check if user is mentioned in ACE
-                            if (((XincoCoreACE)attrACL.elementAt(i)).getXinco_core_user_id() == attrU.getId()) { match_ace = true; } 
-                            //check if group of user is mentioned in ACE
-                            if (!match_ace) {
-                                    for (j=0;j<attrU.getXinco_core_groups().size();j++) {
-                                            if (((XincoCoreACE)attrACL.elementAt(i)).getXinco_core_group_id() == ((XincoCoreGroup)attrU.getXinco_core_groups().elementAt(j)).getId()) {
-                                                    match_ace = true;
-                                                    break;
-                                            } 
-                                    }
-                            }
-                            //add to rights
-                            if (match_ace) {
-                                    //modify read permission
-                                    if (!core_ace.isRead_permission()) {
-                                            core_ace.setRead_permission(((XincoCoreACE)attrACL.elementAt(i)).isRead_permission());				
-                                    }
-                                    //modify write permission
-                                    if (!core_ace.isWrite_permission()) {
-                                            core_ace.setWrite_permission(((XincoCoreACE)attrACL.elementAt(i)).isWrite_permission());				
-                                    }
-                                    //modify execute permission
-                                    if (!core_ace.isExecute_permission()) {
-                                            core_ace.setExecute_permission(((XincoCoreACE)attrACL.elementAt(i)).isExecute_permission());				
-                                    }
-                                    //modify admin permission
-                                    if (!core_ace.isAdmin_permission()) {
-                                            core_ace.setAdmin_permission(((XincoCoreACE)attrACL.elementAt(i)).isAdmin_permission());				
-                                    }
-                            }
-                    }
-                } catch (Exception e) {
+        int i = 0;
+        int j = 0;
+        boolean match_ace = false;
+        XincoCoreACE core_ace = new XincoCoreACE();
+        
+        try {
+            for (i=0;i<attrACL.size();i++) {
+                //reset match_ace
+                match_ace = false;
+                //check if user is mentioned in ACE
+                if (((XincoCoreACE)attrACL.elementAt(i)).getXinco_core_user_id() == attrU.getId() ||
+                        ((XincoCoreACE)attrACL.elementAt(i)).isOwner()) {
+                    match_ace = true;
                 }
+                //check if group of user is mentioned in ACE
+                if (!match_ace) {
+                    for (j=0;j<attrU.getXinco_core_groups().size();j++) {
+                        if (((XincoCoreACE)attrACL.elementAt(i)).getXinco_core_group_id() == 
+                                ((XincoCoreGroup)attrU.getXinco_core_groups().elementAt(j)).getId()) {
+                            match_ace = true;
+                            break;
+                        }
+                    }
+                }
+                //add to rights
+                if (match_ace) {
+                    //modify read permission
+                    if (!core_ace.isRead_permission()) {
+                        core_ace.setRead_permission(((XincoCoreACE)attrACL.elementAt(i)).isRead_permission());
+                        System.err.println("Can read");
+                    }
+                    //modify write permission
+                    if (!core_ace.isWrite_permission()) {
+                        core_ace.setWrite_permission(((XincoCoreACE)attrACL.elementAt(i)).isWrite_permission());
+                        System.err.println("Can write");
+                    }
+                    //modify execute permission
+                    if (!core_ace.isExecute_permission()) {
+                        core_ace.setExecute_permission(((XincoCoreACE)attrACL.elementAt(i)).isExecute_permission());
+                        System.err.println("Can execute");
+                    }
+                    //modify admin permission
+                    if (!core_ace.isAdmin_permission()) {
+                        core_ace.setAdmin_permission(((XincoCoreACE)attrACL.elementAt(i)).isAdmin_permission());
+                        System.err.println("Is Admin");
+                    }
+                    //modify aaudit permission
+                    if (!core_ace.isAudit_permission()) {
+                        core_ace.setAudit_permission(((XincoCoreACE)attrACL.elementAt(i)).isAudit_permission());
+                        System.err.println("Can audit");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         
-		return core_ace;
-	}
-
+        return core_ace;
+    }
+    
 }

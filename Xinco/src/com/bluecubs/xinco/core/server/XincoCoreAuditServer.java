@@ -68,11 +68,6 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
         setScheduled_date(scheduled_date);
         setCompletion_date(completion_date);
         setCompletedBy(completedBy);
-        try {
-            write2DB(new XincoDBManager());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
     
     public int write2DB(XincoDBManager DBM) throws XincoException {
@@ -84,8 +79,8 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
                 Statement stmt = DBM.con.createStatement();
                 stmt.executeUpdate("UPDATE xinco_audit SET id=" + getSchedule_id() +
                         ", xinco_core_data_id=" + getData_id() + ", xinco_audit_type_id=" + getSchedule_type_id() +
-                        ", scheduled_date=" + getScheduled_date() + ", completion_date ="+getCompletion_date()+
-                        " WHERE schedule_id=" + getSchedule_id());
+                        ", scheduled_date='" + getScheduled_date() + "', completion_date ='"+getCompletion_date()+
+                        "' WHERE schedule_id=" + getSchedule_id());
                 stmt.close();
                 DBM.con.commit();
                 audit.updateAuditTrail("xinco_audit",new String [] {"id ="+getSchedule_id()},
@@ -94,9 +89,10 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
                 setSchedule_id(DBM.getNewID("xinco_audit"));
                 
                 Statement stmt = DBM.con.createStatement();
+                java.sql.Date date= new java.sql.Date(getScheduled_date().getTime());
                 stmt.executeUpdate("INSERT INTO xinco_audit VALUES (" + getSchedule_id() +
-                        ", " + getSchedule_type_id() + ", " + getCompletedBy() + ", " + getData_id()+
-                        ", " +getScheduled_date() + ", null)");
+                        ", " + getSchedule_type_id() + ", null, " + getData_id()+
+                        ", '" +date + "', null)");
                 stmt.close();
                 DBM.con.commit();
                 audit.updateAuditTrail("xinco_audit",new String [] {"id ="+getSchedule_id()},

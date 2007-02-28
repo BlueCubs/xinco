@@ -79,7 +79,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
     
     //create single ace object for data structures
     public XincoCoreACEServer(int attrID, int attrUID, int attrGID, int attrNID,
-            int attrDID, boolean attrRP, boolean attrWP, boolean attrEP, 
+            int attrDID, boolean attrRP, boolean attrWP, boolean attrEP,
             boolean attrAP,boolean attrAD, boolean owner) throws XincoException {
         setId(attrID);
         setXinco_core_user_id(attrUID);
@@ -91,6 +91,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
         setExecute_permission(attrEP);
         setAdmin_permission(attrAP);
         setAudit_permission(attrAD);
+        setOwner(owner);
     }
     
     //write to db
@@ -229,7 +230,6 @@ public class XincoCoreACEServer extends XincoCoreACE {
             Statement stmt = DBM.con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_ace WHERE " + attrT +
                     "=" + attrID + " ORDER BY xinco_core_user_id, xinco_core_group_id, xinco_core_node_id, xinco_core_data_id");
-            
             while (rs.next()) {
                 core_acl.addElement(new XincoCoreACEServer(rs.getInt("id"),
                         rs.getInt("xinco_core_user_id"), rs.getInt("xinco_core_group_id"),
@@ -258,7 +258,8 @@ public class XincoCoreACEServer extends XincoCoreACE {
             //reset match_ace
             match_ace = false;
             //check if user is mentioned in ACE
-            if (((XincoCoreACE)attrACL.elementAt(i)).getXinco_core_user_id() == attrU.getId()) {
+            if (((XincoCoreACE)attrACL.elementAt(i)).getXinco_core_user_id() == attrU.getId()||
+                    ((XincoCoreACE)attrACL.elementAt(i)).isOwner()) {
                 match_ace = true;
             }
             //check if group of user is mentioned in ACE

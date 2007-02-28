@@ -139,11 +139,12 @@ public class XincoCoreDataServer extends XincoCoreData {
             }
             
             //write add attributes
-            stmt = DBM.con.createStatement();
-            stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_core_data_id=" + getId());
-            stmt.close();
+//            stmt = DBM.con.createStatement();
+//            stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_core_data_id=" + getId());
+//            stmt.close();
             XincoAddAttributeServer xaas;
             for (i=0;i<getXinco_add_attributes().size();i++) {
+                System.err.println("");
                 ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).setXinco_core_data_id(getId());
                 //copy fields from XincoAddAttribute to XincoAddAttributeServer
                 xaas = new XincoAddAttributeServer(((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getXinco_core_data_id(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttribute_id(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_int(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_double(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_varchar(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_text(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_datetime());

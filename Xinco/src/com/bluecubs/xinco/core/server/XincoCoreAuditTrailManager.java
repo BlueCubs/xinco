@@ -59,7 +59,6 @@ public class XincoCoreAuditTrailManager {
                 sql="insert into xinco_core_user_modified_record (id, record_id, mod_Time, " +
                         "mod_Reason) values ("+id+", "+record_ID+", '"+
                         new Timestamp(System.currentTimeMillis())+"', '"+reason+"')";
-                System.out.println(sql);
                 stmt.executeUpdate(sql);
             }
             DBM.con.commit();

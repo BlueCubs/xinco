@@ -47,6 +47,9 @@ import com.bluecubs.xinco.core.server.*;
 
 public class XincoAddAttributeServer extends XincoAddAttribute {
     //create add attribute object for data structures
+    public XincoAddAttributeServer(){
+        
+    }
     public XincoAddAttributeServer(int attrID1, int attrID2, XincoDBManager DBM) throws XincoException {
         Statement stmt=null;
         try {
@@ -94,11 +97,6 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
             setAttrib_datetime(cal);
         } else
             setAttrib_datetime(attrDT);
-        try {
-            write2DB(new XincoDBManager());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
     
     //write to db
@@ -178,6 +176,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
             stmt.close();
         } catch (Exception e) {
             addAttributes.removeAllElements();
+            e.printStackTrace();
         }
         
         return addAttributes;

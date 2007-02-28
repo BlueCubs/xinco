@@ -251,18 +251,18 @@ public class ArchiveDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_okButtonActionPerformed
     
     private void archiveModelDropDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveModelDropDownActionPerformed
-        if (archiveModelDropDown.getSelectedIndex() == 1) {
+        if (archiveModelDropDown.getSelectedIndex() == 0) {
             archiveDate.setVisible(false);
             dateLabel.setVisible(false);
             dayAmountTextBox.setEnabled(false);
-        } else if (archiveModelDropDown.getSelectedIndex() == 2) {
+        } else if (archiveModelDropDown.getSelectedIndex() == 1) {
             archiveDate.setVisible(true);
             dateLabel.setVisible(true);
-            dayAmountTextBox.setEnabled(true);
-        } else if (archiveModelDropDown.getSelectedIndex() == 3){
+            dayAmountTextBox.setEnabled(false);
+        } else if (archiveModelDropDown.getSelectedIndex() == 2){
             archiveDate.setVisible(false);
             dateLabel.setVisible(false);
-            dayAmountTextBox.setEnabled(false);
+            dayAmountTextBox.setEnabled(true);
         }
     }//GEN-LAST:event_archiveModelDropDownActionPerformed
     

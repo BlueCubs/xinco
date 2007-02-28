@@ -52,6 +52,7 @@ public class AuditDialog extends javax.swing.JDialog {
         this.auditSetting.add(this.due_same_month);
         this.auditDateLabel.setVisible(false);
         this.auditDate.setVisible(false);
+        this.auditDate.setDate(new Date(System.currentTimeMillis()));
         //Inititalize the audit type list
         this.auditTypeList.removeAllItems();
         this.auditTypeList.addItem("");
@@ -245,11 +246,10 @@ public class AuditDialog extends javax.swing.JDialog {
                         this.explorer.getSession().user);
             } catch (RemoteException ex) {
                 ex.printStackTrace();
-                explorer.getSession().status = 0;
+                explorer.set_global_dialog_return_value(0);
             }
         }
-        if(this.xca!=null)
-            explorer.getSession().status = 1;
+        explorer.set_global_dialog_return_value(1);
         this.setVisible(false);
     }//GEN-LAST:event_okActionPerformed
     
