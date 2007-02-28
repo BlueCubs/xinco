@@ -44,7 +44,7 @@
                     <file>${reference.Xinco.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
-                <library files="13">
+                <library files="14">
                     <file>${libs.XincoLibsClient.classpath}</file>
                     <path-in-war>client</path-in-war>
                 </library>

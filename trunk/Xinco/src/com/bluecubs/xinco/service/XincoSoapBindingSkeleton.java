@@ -437,6 +437,17 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
             _myOperations.put("getXincoCoreAuditTypes", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("getXincoCoreAuditTypes")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.INOUT, new javax.xml.namespace.QName("http://add.xinco.bluecubs.com", "XincoAddAttribute"), com.bluecubs.xinco.add.XincoAddAttribute.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("setXincoAddAttribute", _params, null);
+        _oper.setElementQName(new javax.xml.namespace.QName("", "setXincoAddAttribute"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("setXincoAddAttribute") == null) {
+            _myOperations.put("setXincoAddAttribute", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("setXincoAddAttribute")).add(_oper);
     }
 
     public XincoSoapBindingSkeleton() {
@@ -636,6 +647,11 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
     {
         java.util.Vector ret = impl.getXincoCoreAuditTypes(in0);
         return ret;
+    }
+
+    public void setXincoAddAttribute(com.bluecubs.xinco.add.holders.XincoAddAttributeHolder in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
+    {
+        impl.setXincoAddAttribute(in0, in1);
     }
 
 }

@@ -599,6 +599,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <wsdl:message name="XincoOperationRequest">
         <wsdl:part name="part1" type="xsd:string"/>
     </wsdl:message>
+    <wsdl:message name="setXincoAddAttributeRequest">
+        <wsdl:part name="in0" type="tns3:XincoAddAttribute"/>
+        <wsdl:part name="in1" type="tns2:XincoCoreUser"/>
+    </wsdl:message>
+    <wsdl:message name="setXincoAddAttributeResponse">
+        <wsdl:part name="in0" type="tns3:XincoAddAttribute"/>
+    </wsdl:message>
     <wsdl:portType name="Xinco">
         
         <wsdl:operation name="getXincoServerVersion">
@@ -835,6 +842,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         <wsdl:operation name="getXincoCoreAuditTypes">
             <wsdl:input name="getXincoCoreAuditTypesRequest" message="impl:getXincoCoreAuditTypesRequest"/>
             <wsdl:output name="getXincoCoreAuditTypesResponse" message="impl:getXincoCoreAuditTypesResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setXincoAddAttribute">
+            <wsdl:input name="setXincoAddAttributeRequest" message="impl:setXincoAddAttributeRequest"/>
+            <wsdl:output name="setXincoAddAttributeResponse" message="impl:setXincoAddAttributeResponse"/>
         </wsdl:operation>
     </wsdl:portType>
     
@@ -1331,6 +1342,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         <wsdl:operation name="getXincoCoreAuditTypes">
             <wsdl:input name="getXincoCoreAuditTypesRequest"/>
             <wsdl:output name="getXincoCoreAuditTypesResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setXincoAddAttribute">
+            <wsdl:input name="setXincoAddAttributeRequest"/>
+            <wsdl:output name="setXincoAddAttributeResponse"/>
         </wsdl:operation>
     </wsdl:binding>
     <wsdl:service name="XincoService">
