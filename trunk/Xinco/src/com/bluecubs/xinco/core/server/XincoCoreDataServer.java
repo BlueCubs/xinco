@@ -147,7 +147,15 @@ public class XincoCoreDataServer extends XincoCoreData {
                 System.err.println("");
                 ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).setXinco_core_data_id(getId());
                 //copy fields from XincoAddAttribute to XincoAddAttributeServer
-                xaas = new XincoAddAttributeServer(((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getXinco_core_data_id(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttribute_id(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_int(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_double(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_varchar(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_text(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_datetime());
+                xaas = new XincoAddAttributeServer(((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getXinco_core_data_id(),
+                        ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttribute_id(),
+                        ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_int(),
+                        ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint(),
+                        ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_double(),
+                        ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_varchar(),
+                        ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_text(),
+                        ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_datetime());
+                xaas.setChangerID(getChangerID());
                 xaas.write2DB(DBM);
                 //((XincoAddAttributeServer)getXinco_add_attributes().elementAt(i)).write2DB(DBM);
             }

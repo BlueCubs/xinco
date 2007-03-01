@@ -77,27 +77,22 @@ public class XincoCoreACEClient extends XincoCoreACE {
                     //modify read permission
                     if (!core_ace.isRead_permission()) {
                         core_ace.setRead_permission(((XincoCoreACE)attrACL.elementAt(i)).isRead_permission());
-                        System.err.println("Can read");
                     }
                     //modify write permission
                     if (!core_ace.isWrite_permission()) {
                         core_ace.setWrite_permission(((XincoCoreACE)attrACL.elementAt(i)).isWrite_permission());
-                        System.err.println("Can write");
                     }
                     //modify execute permission
                     if (!core_ace.isExecute_permission()) {
                         core_ace.setExecute_permission(((XincoCoreACE)attrACL.elementAt(i)).isExecute_permission());
-                        System.err.println("Can execute");
                     }
                     //modify admin permission
                     if (!core_ace.isAdmin_permission()) {
                         core_ace.setAdmin_permission(((XincoCoreACE)attrACL.elementAt(i)).isAdmin_permission());
-                        System.err.println("Is Admin");
                     }
                     //modify aaudit permission
                     if (!core_ace.isAudit_permission()) {
                         core_ace.setAudit_permission(((XincoCoreACE)attrACL.elementAt(i)).isAudit_permission());
-                        System.err.println("Can audit");
                     }
                 }
             }
