@@ -22,7 +22,6 @@ try {
     loc = Locale.getDefault();
 }
 ResourceBundle rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
-ResourceBundle settings=ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings",loc);
 rb.getLocale();
 out.println("<html>");
 out.println("<head>");

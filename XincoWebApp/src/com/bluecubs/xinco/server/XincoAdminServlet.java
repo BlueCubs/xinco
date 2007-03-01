@@ -224,7 +224,6 @@ public class XincoAdminServlet extends HttpServlet {
                 if(temp_user.getStatus_number()==3){
                     status =2;
                 }
-                //-----------------------------------------------------------------------------------
                 session.setAttribute("XincoAdminServlet.status", new Integer(status));
                 current_location = "MainMenu";
                 session.setAttribute("XincoAdminServlet.current_location", current_location);
@@ -564,6 +563,7 @@ public class XincoAdminServlet extends HttpServlet {
                 (new XincoDBManager()).resetDB(this.login_user);
             } catch (Exception e) {
             }
+            out.println(rb.getString("message.location.desc.resetDBDone"));
         }
         //do logout
         if (request.getParameter("MenuMainLogout") != null) {
@@ -722,8 +722,11 @@ public class XincoAdminServlet extends HttpServlet {
             out.println("<td></td><td class=\"text\">|</td>");
             out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainEmptyTrash=EmptyTrash&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("message.admin.trash")+"</a></td>");
             out.println("<td></td><td class=\"text\">|</td>");
-            out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainResetDB=Reset&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("message.admin.main.resetDB.label")+"</a></td>");
-            out.println("<td></td><td class=\"text\">|</td>");
+            //For now developer's only function. Too dangerous to use at the moment. Maybe add confirmation screens before executing if founf as an usefull tool.
+            if(settings[9].isBool_value()){
+                out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainResetDB=Reset&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("message.admin.main.resetDB.label")+"</a></td>");
+                out.println("<td></td><td class=\"text\">|</td>");
+            }
             out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainRebuildIndex=RebuildIndex&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("message.admin.index")+"</a></td>");
             out.println("<td></td><td class=\"text\">|</td>");
             out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuAudit=AuditMenu&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("general.audit.menu")+"</a></td>");
@@ -770,9 +773,11 @@ public class XincoAdminServlet extends HttpServlet {
                 out.println("<td class=\"text\">"+rb.getString("message.admin.index.message")+"</td>");
                 out.println("</tr>");
                 out.println("<tr>");
-                out.println("<td class=\"bigtext\">"+rb.getString("message.admin.main.resetDB.label")+"</td>");
-                out.println("<td class=\"text\">"+rb.getString("message.admin.main.resetdesc")+"</td>");
-                out.println("</tr>");
+                if(settings[9].isBool_value()){
+                    out.println("<td class=\"bigtext\">"+rb.getString("message.admin.main.resetDB.label")+"</td>");
+                    out.println("<td class=\"text\">"+rb.getString("message.admin.main.resetdesc")+"</td>");
+                    out.println("</tr>");
+                }
                 out.println("</table>");
                 
             }
