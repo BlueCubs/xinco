@@ -174,7 +174,6 @@ public class XincoCoreACEServer extends XincoCoreACE {
                         ", " + xcuid + ", " + xcgid + ", " + xcnid +
                         ", " + xcdid + ", " + rp + ", " + wp + ", " +
                         xp + ", " + ap +  ", " + ad +", " + ow +")";
-                System.out.println(sql);
                 stmt.executeUpdate(sql);
                 stmt.close();
                 DBM.con.commit();

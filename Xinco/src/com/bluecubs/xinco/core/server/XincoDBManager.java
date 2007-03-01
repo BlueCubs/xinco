@@ -263,17 +263,9 @@ public class XincoDBManager {
                 }
                 s.close();
                 s=con.createStatement();
-                rs=s.executeQuery("select * from xinco_id");
-                int value=0;
-                while(rs.next()){
-                    //Based on xinco_id standard inserts
-                    if(rs.getString("tablename").equals("xinco_core_user_modified_record")||
-                            rs.getString("tablename").equals("xinco_scheduled_audit"))
-                        value=0;
-                    else
-                        value=1000;
-                    s.executeUpdate("update "+rs.getString("tablename")+ " set last_id="+value);
-                }
+                s.executeUpdate("update xinco_id set last_id = 1000 where last_id >1000");
+                s.executeUpdate("update xinco_id set last_id = 0 where last_id < 1000");
+                s.executeUpdate("delete from xinco_core_user_modified_record");
                 con.commit();
                 s.close();
                 rs=null;

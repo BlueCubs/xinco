@@ -90,13 +90,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
         setAttrib_double(attrD);
         setAttrib_varchar(attrVC);
         setAttrib_text(attrT);
-        if(attrDT==null){
-            Timestamp ts = new Timestamp(System.currentTimeMillis());
-            Calendar cal = GregorianCalendar.getInstance();
-            cal.setTime(ts);
-            setAttrib_datetime(cal);
-        } else
-            setAttrib_datetime(attrDT);
+        setAttrib_datetime(attrDT);
     }
     
     //write to db
@@ -131,19 +125,38 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
             }
             
             stmt = DBM.con.createStatement();
-            if(getAttribute_id()>0){
-                stmt.executeUpdate("update xinco_add_attribute set xinco_core_data_id=" +
+            String sql="";
+            //get existing attributes for this data
+            ResultSet rs = stmt.executeQuery("select attribute_id from xinco_add_attribute" +
+                    " where xinco_core_data_id="+ getXinco_core_data_id() +
+                    " and attribute_id=" + getAttribute_id());
+            //Check if this attribute already exists to decide if it should be updated or inserted
+            boolean isNew=true;
+            while(rs.next()){
+                if(rs.getInt("attribute_id")==getAttribute_id())
+                    isNew=false;
+            }
+            if(!isNew){
+                sql="update xinco_add_attribute set xinco_core_data_id=" +
                         getXinco_core_data_id() + ", attribute_id=" + getAttribute_id() +
                         ",attrib_int= " + getAttrib_int() + ", attrib_unsignedint=" + getAttrib_unsignedint() +
                         ", attrib_double=" + getAttrib_double() + ", attrib_varchar='" + attrVC + "', " +
                         "attrib_text= '" + attrT + "', attrib_datetime ='" + attrDT + "' where xinco_core_data_id="+
-                        getXinco_core_data_id() + " and attribute_id=" + getAttribute_id());
+                        getXinco_core_data_id() + " and attribute_id=" + getAttribute_id();
+                stmt.executeUpdate(sql);
                 if(isChange())
-                    audit.updateAuditTrail("xinco_add_attribute",new String [] {"id ="+getAttribute_id()},
+                    audit.updateAuditTrail("xinco_add_attribute",new String [] {"attribute_id ="+getAttribute_id(),
+                    "xinco_core_data_id="+getXinco_core_data_id()},
                             DBM,"audit.addattribute.change",this.getChangerID());
             } else{
-                stmt.executeUpdate("INSERT INTO xinco_add_attribute VALUES (" + getXinco_core_data_id() + ", " + getAttribute_id() + ", " + getAttrib_int() + ", " + getAttrib_unsignedint() + ", " + getAttrib_double() + ", '" + attrVC + "', '" + attrT + "', '" + attrDT + "')");
-                audit.updateAuditTrail("xinco_add_attribute",new String [] {"id ="+getAttribute_id()},
+                //Attributes already comes with attribute id assigned
+                sql="INSERT INTO xinco_add_attribute VALUES (" + getXinco_core_data_id() +
+                        ", " + getAttribute_id() + ", " + getAttrib_int() + ", " +
+                        getAttrib_unsignedint() + ", " + getAttrib_double() + ", '" +
+                        attrVC + "', '" + attrT + "', '" + attrDT + "')";
+                stmt.executeUpdate(sql);
+                audit.updateAuditTrail("xinco_add_attribute",new String [] {"attribute_id ="+getAttribute_id(),
+                "xinco_core_data_id="+getXinco_core_data_id()},
                         DBM,"audit.general.create",this.getChangerID());
             }
             stmt.close();
@@ -168,8 +181,8 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                     cal.setTime(rs.getDate("attrib_datetime"));
                 }
                 addAttributes.addElement(new XincoAddAttributeServer(rs.getInt("xinco_core_data_id"),
-                        rs.getInt("attribute_id"), rs.getInt("attrib_int"), 
-                        rs.getLong("attrib_unsignedint"), rs.getDouble("attrib_double"), 
+                        rs.getInt("attribute_id"), rs.getInt("attrib_int"),
+                        rs.getLong("attrib_unsignedint"), rs.getDouble("attrib_double"),
                         rs.getString("attrib_varchar"), rs.getString("attrib_text"), cal));
             }
             
