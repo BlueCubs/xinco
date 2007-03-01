@@ -2,6 +2,8 @@
 <%@page pageEncoding="UTF-8"%>
 <%@page import="java.util.Locale"%>
 <%@page import="java.util.ResourceBundle"%>
+<%@page import="com.bluecubs.xinco.core.server.XincoSettingServer"%>
+<%@page import="com.bluecubs.xinco.core.XincoSetting"%>
 
 <html>
     <%int i = 0;
@@ -54,10 +56,13 @@
                 <span class="text" style="font-size: 10px;">
                     <%
                     //load settings
-                    ResourceBundle settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
-                    String version="[Version " + settings.getString("version.high") + "." + settings.getString("version.mid") + "." + settings.getString("version.low");
-                    if(!settings.getString("version.postfix").trim().equals(""))
-                    version+=" " + settings.getString("version.postfix");
+                    XincoSettingServer xss= new XincoSettingServer();
+                    String version="[Version " + ((XincoSetting)(xss.getXinco_settings().elementAt(0))).getInt_value() 
+                    + "." + ((XincoSetting)(xss.getXinco_settings().elementAt(1))).getInt_value() + "." + 
+                            ((XincoSetting)(xss.getXinco_settings().elementAt(2))).getInt_value();
+                    if(((XincoSetting)(xss.getXinco_settings().elementAt(3))).getString_value()!=null &&
+                            !((XincoSetting)(xss.getXinco_settings().elementAt(3))).getString_value().trim().equals(""))
+                        version+=" " + ((XincoSetting)(xss.getXinco_settings().elementAt(3))).getString_value();
                     version+="]";
                     out.println(version);
                     %>
