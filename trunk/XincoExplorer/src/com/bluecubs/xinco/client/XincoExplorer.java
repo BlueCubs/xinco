@@ -316,6 +316,7 @@ public class XincoExplorer extends JFrame {
     //Size of menu actions
     private int actionSize=20;
     private Vector settingsVector=null;
+    private XincoAddAttributeHolder [] xaah=null;
     
     /**
      * This is the default constructor
@@ -1296,7 +1297,6 @@ public class XincoExplorer extends JFrame {
                             rdata[1] = xerb.getString("general.status.published") +
                                     " (WWW)";
                         }
-                        // rdata[1] = rdata[1] + "(" + ((XincoCoreData)node.getUserObject()).getStatus_number() + ")";
                         dtm.addRow(rdata);
                         rdata[0] = "";
                         rdata[1] = "";
@@ -1304,7 +1304,7 @@ public class XincoExplorer extends JFrame {
                         rdata[0] = xerb.getString("general.typespecificattributes");
                         rdata[1] = "";
                         dtm.addRow(rdata);
-                        // get add. attributes of CoreData, if access granted
+                        // get add attributes of CoreData, if access granted
                         if (((XincoCoreData) node.getUserObject()).getXinco_add_attributes().size() >0) {
                             for (i = 0; i <
                                     ((XincoCoreData) node.getUserObject()).getXinco_add_attributes().size(); i++) {
@@ -2609,7 +2609,6 @@ public class XincoExplorer extends JFrame {
      *
      * @return void
      */
-    //TODO Have to update the add attributes with new AddAttribute server stuff
     public void doDataWizard(final int wizard_type) {
         this.wizard_type=wizard_type;
                 /*
@@ -2746,13 +2745,6 @@ public class XincoExplorer extends JFrame {
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                         }
-                        //Add the created attributes to the DB
-                        XincoAddAttributeHolder xaah=null;
-                        for(int j=0;j<((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().size();j++)
-                        {
-                            xaah= new XincoAddAttributeHolder((XincoAddAttribute)(((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().elementAt(j)));
-                            getSession().xinco.setXincoAddAttribute(xaah,getSession().user);
-                        }
                     }
                     
                     //edit logging
@@ -2874,17 +2866,6 @@ public class XincoExplorer extends JFrame {
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                         }
-//                        //step 4c: edit audit options of files
-//                        if (((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1) {
-//                            auditDialog = getJDialogAudit();
-//                            global_dialog_return_value = 0;
-//                            auditDialog.setVisible(true);
-//                            if (global_dialog_return_value == 0) {
-//                                this.progressBar.hide();
-//                                throw new XincoException(xerb.getString("datawizard.updatecancel"));
-//                            }
-//                        }
-                        
                     }
                     //set status = published
                     if (wizard_type == 10) {
@@ -2939,6 +2920,11 @@ public class XincoExplorer extends JFrame {
                             throw new XincoException(xerb.getString("datawizard.unabletoloadfile"));
                         }
                     }
+                    //Add the created attributes to the holder array
+                    xaah=new XincoAddAttributeHolder[((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().size()];
+                    for(int j=0;j<((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().size();j++) {
+                        xaah[j]= new XincoAddAttributeHolder((XincoAddAttribute)(((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().elementAt(j)));
+                    }
                     //save data to server
                     if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14)) {
                         if ((wizard_type >= 4) && (wizard_type <= 6)) {
@@ -2963,18 +2949,21 @@ public class XincoExplorer extends JFrame {
                         }
                         newnode.setUserObject(xdata);
                         //edit data details
-                            if ((wizard_type == 1) || (wizard_type == 2)) {
-                                //step 4c: edit audit options of files
-                                if (((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1) {
-                                    auditDialog = getJDialogAudit();
-                                    global_dialog_return_value = 0;
-                                    auditDialog.setVisible(true);
-                                    if (global_dialog_return_value == 0) {
-                                        this.progressBar.hide();
-                                        throw new XincoException(xerb.getString("datawizard.updatecancel"));
-                                    }
+                        if ((wizard_type == 1) || (wizard_type == 2)) {
+                            //step 4c: edit audit options of files
+                            if (((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1) {
+                                auditDialog = getJDialogAudit();
+                                global_dialog_return_value = 0;
+                                auditDialog.setVisible(true);
+                                if (global_dialog_return_value == 0) {
+                                    this.progressBar.hide();
+                                    throw new XincoException(xerb.getString("datawizard.updatecancel"));
                                 }
                             }
+                        }
+                        //Create add attributes in DB after getting its data id
+                        for(int x=0;x<xaah.length;x++)
+                            getSession().xinco.setXincoAddAttribute(xaah[x],getSession().user);
                     }
                     if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14)) {
                         //update id in log
