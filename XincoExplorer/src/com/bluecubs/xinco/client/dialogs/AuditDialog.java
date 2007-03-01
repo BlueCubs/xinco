@@ -6,6 +6,7 @@
 
 package com.bluecubs.xinco.client.dialogs;
 
+import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.XincoMutableTreeNode;
 import com.bluecubs.xinco.core.XincoCoreAudit;
@@ -13,6 +14,7 @@ import com.bluecubs.xinco.core.XincoCoreAuditType;
 import com.bluecubs.xinco.core.XincoCoreData;
 import java.rmi.RemoteException;
 import java.sql.Date;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
@@ -248,6 +250,28 @@ public class AuditDialog extends javax.swing.JDialog {
                 ex.printStackTrace();
                 explorer.set_global_dialog_return_value(0);
             }
+            //Add audit attributes
+            int start = ((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().size();
+            //Audit Type
+            Calendar cal = Calendar.getInstance();
+            Vector auditTypes=null;
+            try {
+                auditTypes = explorer.getSession().xinco.getXincoCoreAuditTypes(explorer.getSession().user);
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+            }
+            ((XincoCoreData)explorer.getSession().currentTreeNodeSelection.
+                    getUserObject()).getXinco_add_attributes().addElement(new XincoAddAttribute());
+            ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.
+                    getUserObject()).getXinco_add_attributes().elementAt(start++)).
+                    setAttrib_varchar(((XincoCoreAuditType)auditTypes.elementAt(this.auditTypeList.getSelectedIndex())).getDescription());
+            
+            //Audit Next Scheduled Date
+            ((XincoCoreData)explorer.getSession().currentTreeNodeSelection.
+                    getUserObject()).getXinco_add_attributes().addElement(new XincoAddAttribute());
+            cal.setTime(this.auditDate.getDate());
+            ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.
+                    getUserObject()).getXinco_add_attributes().elementAt(start++)).setAttrib_datetime(cal);
         }
         explorer.set_global_dialog_return_value(1);
         this.setVisible(false);

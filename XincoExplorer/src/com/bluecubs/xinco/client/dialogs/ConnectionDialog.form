@@ -43,10 +43,8 @@
                           <Component id="usernameLabel" min="-2" max="-2" attributes="0"/>
                           <Component id="endpointLabel" alignment="1" min="-2" max="-2" attributes="0"/>
                           <Component id="profileNameLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                          <Group type="103" alignment="1" groupAlignment="0" attributes="0">
-                              <Component id="savePasswordLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="passwordLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="passwordLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Component id="savePasswordLabel" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -103,16 +101,18 @@
                   <Component id="password" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="savePasswordLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="savePassword" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="savePassword" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" max="-2" attributes="0">
+                          <Component id="Cancel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="connect" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <Component id="savePasswordLabel" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" max="-2" attributes="0">
-                  <Component id="Cancel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="connect" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
