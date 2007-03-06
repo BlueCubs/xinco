@@ -1223,7 +1223,7 @@ public class XincoAdminServlet extends HttpServlet {
                     if(request.getParameter("table").equals("xinco_core_data_type_attribute"))
                         column="xinco_core_data_type_id";
                     rs=DBM.con.createStatement().executeQuery("select * from "+request.getParameter("table")+
-                            "_t a, (select a.firstname || ' ' || a.name as \""+
+                            "_t a, (select concat(concat(a.firstname , ' ' ), a.name) as \""+
                             rb.getString("general.user")+"\" , b.mod_time as \""+rb.getString("general.audit.modtime")+
                             "\" ,b.mod_reason as \""+rb.getString("general.reason")+"\" ,b.record_id " +
                             "from xinco_core_user a,xinco_core_user_modified_record b where a.id=b.id " +

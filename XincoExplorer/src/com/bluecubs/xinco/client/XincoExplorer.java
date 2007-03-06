@@ -1707,12 +1707,14 @@ public class XincoExplorer extends JFrame {
                             newuser.setUserpassword(temp.getUserpassword());
                             xincoClientSession.user = xincoClientSession.xinco.getCurrentXincoCoreUser(newuser.getUsername(), newuser.getUserpassword());
                             progressBar.run();
-                            
+                            xincoClientSession.server_datatypes = xincoClientSession.xinco.getAllXincoCoreDataTypes(xincoClientSession.user);
+                            xincoClientSession.server_groups = xincoClientSession.xinco.getAllXincoCoreGroups(xincoClientSession.user);
+                            xincoClientSession.server_languages = xincoClientSession.xinco.getAllXincoCoreLanguages(xincoClientSession.user);
                             for (i=0;i<xincoClientSession.user.getXinco_core_groups().size();i++) {
                                 status_string_1 = status_string_1 + "      + " + ((XincoCoreGroup)xincoClientSession.user.getXinco_core_groups().elementAt(i)).getDesignation() + "\n";
                             }
                             for (i=0;i<xincoClientSession.server_datatypes.size();i++) {
-                                status_string_2 = status_string_2 + "      + " + ((XincoCoreDataType)xincoClientSession.server_datatypes.elementAt(i)).getDesignation() + "\n";
+                                status_string_2 += "      + " + ((XincoCoreDataType)xincoClientSession.server_datatypes.elementAt(i)).getDesignation() + "\n";
                             }
                             loginT= new loginThread();
                             loginT.start();
@@ -1745,15 +1747,12 @@ public class XincoExplorer extends JFrame {
                 status_string += xincoClientSession.server_version.getVersion_low();
                 status_string += xincoClientSession.server_version.getVersion_postfix() + "\n";
                 status_string += "\n";
-                status_string = status_string + xerb.getString("general.user") + ": " + xincoClientSession.user.getFirstname() + " " + xincoClientSession.user.getName() + " <" + xincoClientSession.user.getEmail() + ">\n";
-                status_string = status_string + xerb.getString("general.memberof") + ":\n";
+                status_string += xerb.getString("general.user") + ": " + xincoClientSession.user.getFirstname() + " " + xincoClientSession.user.getName() + " <" + xincoClientSession.user.getEmail() + ">\n";
+                status_string += xerb.getString("general.memberof") + ":\n";
                 status_string += status_string_1 + "\n";
-                xincoClientSession.server_groups = xincoClientSession.xinco.getAllXincoCoreGroups(xincoClientSession.user);
-                status_string = status_string + xerb.getString("general.groupsonserver") + ": " + xincoClientSession.server_groups.size() + "\n";
-                xincoClientSession.server_languages = xincoClientSession.xinco.getAllXincoCoreLanguages(xincoClientSession.user);
-                status_string = status_string + xerb.getString("general.languagesonserver") + ": " + xincoClientSession.server_languages.size() + "\n";
-                xincoClientSession.server_datatypes = xincoClientSession.xinco.getAllXincoCoreDataTypes(xincoClientSession.user);
-                status_string = status_string + xerb.getString("general.datatypesonserver") + ": " + xincoClientSession.server_datatypes.size() + "\n";
+                status_string += xerb.getString("general.groupsonserver") + ": " + xincoClientSession.server_groups.size() + "\n";
+                status_string += xerb.getString("general.languagesonserver") + ": " + xincoClientSession.server_languages.size() + "\n";
+                status_string += xerb.getString("general.datatypesonserver") + ": " + xincoClientSession.server_datatypes.size() + "\n";
                 status_string += status_string_2 + "\n";
                 xincoClientSession.currentSearchResult = new Vector();
                 xincoClientSession.status = 2;
