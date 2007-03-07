@@ -68,14 +68,14 @@ public class XincoArchiver {
 			Vector xnode_temp_vector = null;
 			Calendar ngc = new GregorianCalendar();
 			String ArchiveName = ngc.get(Calendar.YEAR) + "-" + (ngc.get(Calendar.MONTH) + 1) + "-" + ngc.get(Calendar.DAY_OF_MONTH);
-			String ArchiveBaseDir = dbm.config.FileRepositoryPath + ArchiveName;
+			String ArchiveBaseDir = dbm.config.FileArchivePath + ArchiveName;
 			String ArchiveFileDir = null;
 			Vector OrgFileNames = new Vector();
 			Vector OrgFileIDs = new Vector();
 			String FileName = null;
 			int querycount = 0;
 			String[] query = new String[2];
-			
+                        
 			query[querycount] = new String("SELECT DISTINCT xcd.id FROM xinco_core_data xcd, xinco_add_attribute xaa1, xinco_add_attribute xaa2 " +
 								"WHERE xcd.xinco_core_data_type_id = 1 " +
 								"AND xcd.status_number <> 3 " +
@@ -88,7 +88,7 @@ public class XincoArchiver {
 								"ORDER BY xcd.id");
 			querycount++;
 
-			query[querycount] = new String("SELECT DISTINCT xcd.id FROM xinco_core_data xcd, xinco_add_attribute xaa1, xinco_add_attribute xaa2, xinco_core_log xcl " +
+                        query[querycount] = new String("SELECT DISTINCT xcd.id FROM xinco_core_data xcd, xinco_add_attribute xaa1, xinco_add_attribute xaa2, xinco_core_log xcl " +
 								"WHERE xcd.xinco_core_data_type_id = 1 " +
 								"AND xcd.status_number <> 3 " +
 								"AND xcd.id = xaa1.xinco_core_data_id " +
@@ -97,8 +97,9 @@ public class XincoArchiver {
 								"AND xaa1.attribute_id = 5 " +
 								"AND xaa1.attrib_unsignedint = 2 " +
 								"AND xaa2.attribute_id = 7 " +
-								"AND xcl.op_datetime < (now()-(xaa2.attrib_unsignedint*3600*24)) " +
+								"AND ADDDATE(DATE(xcl.op_datetime), xaa2.attrib_unsignedint) < now() " +
 								"ORDER BY xcd.id");
+								//"AND xcl.op_datetime < (now()-(xaa2.attrib_unsignedint*3600*24)) " +
 			querycount++;
 
 			for (j=0;j<querycount;j++) {
