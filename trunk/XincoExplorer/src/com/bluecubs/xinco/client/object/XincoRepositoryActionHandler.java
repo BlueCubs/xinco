@@ -51,7 +51,6 @@ import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
@@ -579,9 +578,7 @@ public class XincoRepositoryActionHandler {
             putValue(ACCELERATOR_KEY,key);
         }
         public void actionPerformed(ActionEvent e){
-            XincoMutableTreeNode temp_node;
-            temp_node = explorer.getSession().currentTreeNodeSelection;
-            explorer.getJDialogAudit().setVisible(true);
+            explorer.doDataWizard(15);
         }
     }
     

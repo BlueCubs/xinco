@@ -241,6 +241,7 @@ public class AuditDialog extends javax.swing.JDialog {
     
     private void okActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okActionPerformed
         if(this.xca==null) {
+            System.out.println("Creating XincoCoreAudit");
             this.xca=new XincoCoreAudit(0,this.data.getId(),this.auditTypeList.getSelectedIndex()+1,
                     this.auditDate.getDate(),new Date(System.currentTimeMillis()),-1);
             try {
@@ -248,7 +249,7 @@ public class AuditDialog extends javax.swing.JDialog {
                         this.explorer.getSession().user);
             } catch (RemoteException ex) {
                 ex.printStackTrace();
-                explorer.set_global_dialog_return_value(0);
+                explorer.set_global_dialog_return_value(2);
             }
             //Add audit attributes
             int start = ((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().size();
@@ -259,6 +260,7 @@ public class AuditDialog extends javax.swing.JDialog {
                 auditTypes = explorer.getSession().xinco.getXincoCoreAuditTypes(explorer.getSession().user);
             } catch (RemoteException ex) {
                 ex.printStackTrace();
+                explorer.set_global_dialog_return_value(2);
             }
             ((XincoCoreData)explorer.getSession().currentTreeNodeSelection.
                     getUserObject()).getXinco_add_attributes().addElement(new XincoAddAttribute());
@@ -270,9 +272,12 @@ public class AuditDialog extends javax.swing.JDialog {
             ((XincoCoreData)explorer.getSession().currentTreeNodeSelection.
                     getUserObject()).getXinco_add_attributes().addElement(new XincoAddAttribute());
             cal.setTime(this.auditDate.getDate());
+            System.out.println("Before: "+this.auditDate.getDate().toString()+", After: "+cal.getTime().toString());
             ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.
                     getUserObject()).getXinco_add_attributes().elementAt(start++)).setAttrib_datetime(cal);
         }
+        else
+            System.out.println("XincoCoreAudit not created");
         explorer.set_global_dialog_return_value(1);
         this.setVisible(false);
     }//GEN-LAST:event_okActionPerformed
