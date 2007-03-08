@@ -42,8 +42,6 @@ import java.io.*;
 import java.util.Vector;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
-import com.bluecubs.xinco.add.*;
 import com.bluecubs.xinco.core.server.*;
 
 /**
@@ -114,6 +112,7 @@ public class XincoArchiver {
                     for (i=xnode_temp_vector.size()-1;i>=0;i--) {
                         ArchiveFileDir = ArchiveFileDir + System.getProperty("file.separator") + ((XincoCoreNodeServer)xnode_temp_vector.elementAt(i)).getDesignation();
                     }
+                    ArchiveFileDir=ArchiveFileDir.replaceAll("\"","/");
                     (new File(ArchiveBaseDir + ArchiveFileDir)).mkdirs();
                     //copy file + revisions
                     //build file list
@@ -178,5 +177,4 @@ public class XincoArchiver {
     
     private XincoArchiver() {
     }
-    
 }
