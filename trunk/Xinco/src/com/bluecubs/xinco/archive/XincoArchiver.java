@@ -42,6 +42,8 @@ import java.io.*;
 import java.util.Vector;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import com.bluecubs.xinco.add.*;
 import com.bluecubs.xinco.core.server.*;
 
 /**
@@ -66,7 +68,7 @@ public class XincoArchiver {
             Vector xnode_temp_vector = null;
             Calendar ngc = new GregorianCalendar();
             String ArchiveName = ngc.get(Calendar.YEAR) + "-" + (ngc.get(Calendar.MONTH) + 1) + "-" + ngc.get(Calendar.DAY_OF_MONTH);
-            String ArchiveBaseDir = dbm.config.FileRepositoryPath + ArchiveName;
+            String ArchiveBaseDir = dbm.config.FileArchivePath + ArchiveName;
             String ArchiveFileDir = null;
             Vector OrgFileNames = new Vector();
             Vector OrgFileIDs = new Vector();
@@ -95,8 +97,9 @@ public class XincoArchiver {
                     "AND xaa1.attribute_id = 5 " +
                     "AND xaa1.attrib_unsignedint = 2 " +
                     "AND xaa2.attribute_id = 7 " +
-                    "AND xcl.op_datetime < (now()-(xaa2.attrib_unsignedint*3600*24)) " +
+                    "AND ADDDATE(DATE(xcl.op_datetime), xaa2.attrib_unsignedint) < now() " +
                     "ORDER BY xcd.id");
+            //"AND xcl.op_datetime < (now()-(xaa2.attrib_unsignedint*3600*24)) " +
             querycount++;
             
             for (j=0;j<querycount;j++) {
@@ -112,7 +115,6 @@ public class XincoArchiver {
                     for (i=xnode_temp_vector.size()-1;i>=0;i--) {
                         ArchiveFileDir = ArchiveFileDir + System.getProperty("file.separator") + ((XincoCoreNodeServer)xnode_temp_vector.elementAt(i)).getDesignation();
                     }
-                    ArchiveFileDir=ArchiveFileDir.replaceAll("\"","/");
                     (new File(ArchiveBaseDir + ArchiveFileDir)).mkdirs();
                     //copy file + revisions
                     //build file list
@@ -177,4 +179,5 @@ public class XincoArchiver {
     
     private XincoArchiver() {
     }
+    
 }
