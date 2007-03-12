@@ -68,6 +68,7 @@ public class SearchDialog extends javax.swing.JDialog {
         initComponents();
         getRootPane().setDefaultButton(this.searchButton);
         this.explorer=e;
+        addMouseListener(this.explorer);
         this.xerb=this.explorer.getResourceBundle();
         setTitle(xerb.getString("window.search"));
         this.queryLabel.setText(xerb.getString("window.search.query") + ":");

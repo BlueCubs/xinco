@@ -68,6 +68,7 @@ public class DataFolderDialog extends javax.swing.JDialog {
         initComponents();
         setLocationRelativeTo(null);
         this.explorer=explorer;
+        addMouseListener(this.explorer);
         setTitle(explorer.getResourceBundle().getString("window.folder"));
         this.save.setText(explorer.getResourceBundle().getString("general.save")+"!");
         this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));

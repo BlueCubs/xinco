@@ -59,6 +59,7 @@ public class ArchiveDialog extends javax.swing.JDialog {
     public ArchiveDialog(java.awt.Frame parent, boolean modal, final XincoExplorer explorer) {
         super(parent, modal);
         initComponents();
+        addMouseListener(this.explorer);
         setLocationRelativeTo(null);
         this.explorer=explorer;
         this.xerb=this.explorer.getResourceBundle();

@@ -70,6 +70,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu{
      */
     public XincoPopUpMenuRepository(final XincoExplorer explorer) {
         this.explorer=explorer;
+        addMouseListener(this.explorer);
         xerb=this.explorer.getResourceBundle();
         int count =0;
         items=new JMenuItem[this.explorer.getActionSize()];

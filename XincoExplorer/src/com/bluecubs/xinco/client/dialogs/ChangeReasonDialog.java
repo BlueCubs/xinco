@@ -65,12 +65,13 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
      * @param explorer Related XincoExplorer.
      * @throws com.bluecubs.xinco.core.XincoException XincoException thrown
      */
-    public ChangeReasonDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) throws XincoException{
+    public ChangeReasonDialog(java.awt.Frame parent, boolean modal, XincoExplorer e) throws XincoException{
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
+        this.explorer=e;
         this.user=explorer.getSession().user;
-        this.explorer=explorer;
+        addMouseListener(this.explorer);
         setTitle(explorer.getResourceBundle().getString("window.changereason.title"));
         this.reasonLabel.setText(explorer.getResourceBundle().getString("window.changereason.label"));
         this.save.setText(explorer.getResourceBundle().getString("general.save") + "!");
