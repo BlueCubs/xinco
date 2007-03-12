@@ -35,6 +35,7 @@ public class AuditDialog extends javax.swing.JDialog {
     public AuditDialog(java.awt.Frame parent, boolean modal,XincoExplorer e) {
         super(parent, modal);
         this.explorer=e;
+        addMouseListener(this.explorer);
         this.xerb=this.explorer.getResourceBundle();
         node =this.explorer.getSession().currentTreeNodeSelection;
         this.data=((XincoCoreData) node.getUserObject());

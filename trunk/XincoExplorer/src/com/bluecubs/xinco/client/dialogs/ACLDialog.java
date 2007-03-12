@@ -68,6 +68,7 @@ public class ACLDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.explorer=explorer;
+        addMouseListener(this.explorer);
         setTitle(explorer.getResourceBundle().getString("window.acl"));
         this.ACLWarning.setText(explorer.getResourceBundle().getString("window.acl.note"));
         this.AddACE.setText(explorer.getResourceBundle().getString("window.acl.addace"));

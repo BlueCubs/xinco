@@ -64,6 +64,7 @@ public class AddAttributeUniversalDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.explorer=explorer;
+        addMouseListener(this.explorer);
         setTitle(explorer.getResourceBundle().getString("window.addattributesuniversal"));
         setBounds(200, 200, 600, 540);
         setLocationRelativeTo(null);

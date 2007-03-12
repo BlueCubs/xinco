@@ -58,11 +58,12 @@ public class LogDialog extends javax.swing.JDialog {
      * @param modal Is modal?
      * @param explorer Related XincoExplorer
      */
-    public LogDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) {
+    public LogDialog(java.awt.Frame parent, boolean modal, XincoExplorer e) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
-        this.explorer=explorer;
+        this.explorer=e;
+        addMouseListener(this.explorer);
         setTitle(explorer.getResourceBundle().getString("window.loggingdetails"));
         this.actionLabel.setText(explorer.getResourceBundle().getString("window.loggingdetails.action") + ":");
         this.versionLabel.setText(explorer.getResourceBundle().getString("general.version") + ":");

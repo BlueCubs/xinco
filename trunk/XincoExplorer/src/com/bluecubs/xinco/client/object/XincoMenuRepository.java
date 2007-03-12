@@ -70,6 +70,7 @@ public class XincoMenuRepository extends JMenu{
      */
     public XincoMenuRepository(final XincoExplorer explorer){
         this.explorer=explorer;
+        addMouseListener(this.explorer);
         xerb=this.explorer.getResourceBundle();
         //add item
         this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
