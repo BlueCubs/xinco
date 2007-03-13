@@ -141,7 +141,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                         getXinco_core_data_id() + ", attribute_id=" + getAttribute_id() +
                         ",attrib_int= " + getAttrib_int() + ", attrib_unsignedint=" + getAttrib_unsignedint() +
                         ", attrib_double=" + getAttrib_double() + ", attrib_varchar='" + attrVC + "', " +
-                        "attrib_text= '" + attrT + "', attrib_datetime ='" + attrDT + "' where xinco_core_data_id="+
+                        "attrib_text= " + attrT + ", attrib_datetime =" + attrDT + " where xinco_core_data_id="+
                         getXinco_core_data_id() + " and attribute_id=" + getAttribute_id();
                 stmt.executeUpdate(sql);
                 if(isChange())
