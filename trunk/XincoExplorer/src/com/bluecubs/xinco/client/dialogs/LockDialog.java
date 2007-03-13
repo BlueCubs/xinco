@@ -27,6 +27,7 @@ public class LockDialog extends javax.swing.JDialog {
         initComponents();
         this.passwordLabel.setText(explorer.getResourceBundle().getString("general.password"));
         this.disconnect.setText(explorer.getResourceBundle().getString("menu.disconnect"));
+        this.password.setText("");
         this.connect.setText(explorer.getResourceBundle().getString("menu.connection.connect"));
         this.setTitle(explorer.getResourceBundle().getString("general.login"));
     }
@@ -49,9 +50,8 @@ public class LockDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         passwordLabel.setText("jLabel1");
 
-        password.setText("jPasswordField1");
-
         connect.setText("jButton1");
+        connect.setSelected(true);
         connect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 connectActionPerformed(evt);
@@ -72,24 +72,22 @@ public class LockDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(password, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(connect)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                         .addComponent(disconnect))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(passwordLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
-                        .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(passwordLabel))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(passwordLabel)
-                    .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addComponent(passwordLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(connect)
                     .addComponent(disconnect))
@@ -99,10 +97,12 @@ public class LockDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     
     private void connectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectActionPerformed
-        try {
-            XincoCoreUser temp=null;
-            if ((temp = this.explorer.getSession().xinco.getCurrentXincoCoreUser(this.explorer.getSession().user.getUsername(),
-                    new String(this.password.getPassword()))) == null){
+//        try {
+//            User might be locked by any user attempting to log in incorrectly
+//            XincoCoreUser temp=null;
+//            if ((temp = this.explorer.getSession().xinco.getCurrentXincoCoreUser(this.explorer.getSession().user.getUsername(),
+//                    new String(this.password.getPassword()))) == null){
+        if(!new String(this.password.getPassword()).equals(this.explorer.getSession().user.getUserpassword())){
                 JOptionPane.showMessageDialog(this.explorer,
                         explorer.getResourceBundle().getString("menu.connection.error.user"),
                         explorer.getResourceBundle().getString("password.login.fail"),
@@ -111,16 +111,19 @@ public class LockDialog extends javax.swing.JDialog {
                 this.explorer.setLock(false);
                 this.setVisible(false);
             }
-        } catch (RemoteException ex) {
-        }
+//        } catch (RemoteException ex) {
+//        }
+        this.password.setText("");
     }//GEN-LAST:event_connectActionPerformed
     
     private void disconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disconnectActionPerformed
         this.setVisible(false);
+        this.explorer.setLock(false);
         this.explorer.resetTimer();
         this.explorer.getSession().status=0;
         this.explorer.markConnectionStatus();
         this.explorer.collapseAllNodes();
+        this.password.setText("");
     }//GEN-LAST:event_disconnectActionPerformed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

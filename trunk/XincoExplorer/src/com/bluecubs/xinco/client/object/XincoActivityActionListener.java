@@ -46,7 +46,7 @@ import java.awt.event.ActionListener;
  */
 public class XincoActivityActionListener implements ActionListener{
     private XincoExplorer explorer=null;
-    public XincoActivityTimer xat=null;
+    private XincoActivityTimer xat=null;
     /** Creates a new instance of XincoActivityActionListener */
     public XincoActivityActionListener(XincoExplorer e, XincoActivityTimer xat) {
         this.explorer=e;
