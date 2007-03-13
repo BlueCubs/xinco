@@ -83,7 +83,7 @@ public class XincoClientSession {
     /**
      * Server settings
      */
-    public Vector server_settings = null;
+    private Vector server_settings = null;
     /**
      * Server languages
      */

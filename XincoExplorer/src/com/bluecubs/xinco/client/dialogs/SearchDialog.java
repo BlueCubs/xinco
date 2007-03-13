@@ -66,6 +66,7 @@ public class SearchDialog extends javax.swing.JDialog {
     public SearchDialog(java.awt.Frame parent, boolean modal,XincoExplorer e) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
         getRootPane().setDefaultButton(this.searchButton);
         this.explorer=e;
         addMouseListener(this.explorer);

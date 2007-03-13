@@ -31,7 +31,7 @@
  * Who?             When?             What?
  * Javier Ortiz     Aug-Dec 2006      1. Remove dialogs and windows from main code
  *                                    2. Incorporate 21 CFR regulatory features
- *
+ * Javier Ortiz     Jan-Dec 2007      1. Add new audit data feature
  *************************************************************
  */
 
@@ -788,7 +788,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      *
      * @return javax.swing.JScrollPane
      */
-    public javax.swing.JScrollPane getJScrollPaneRepositoryTree() {
+    protected javax.swing.JScrollPane getJScrollPaneRepositoryTree() {
         if(jScrollPaneRepositoryTree == null) {
             jScrollPaneRepositoryTree = new javax.swing.JScrollPane();
             jScrollPaneRepositoryTree.setViewportView(getJTreeRepository());
@@ -800,7 +800,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      *
      * @return javax.swing.JScrollPane
      */
-    public javax.swing.JScrollPane getJScrollPaneRepositoryTable() {
+    protected javax.swing.JScrollPane getJScrollPaneRepositoryTable() {
         if(jScrollPaneRepositoryTable == null) {
             jScrollPaneRepositoryTable = new javax.swing.JScrollPane();
             jScrollPaneRepositoryTable.setViewportView(getJTableRepository());
@@ -808,8 +808,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         return jScrollPaneRepositoryTable;
     }
-    
-    
     
     /**
      * This method initializes jTreeRepository
@@ -963,46 +961,28 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             if (temp_ace.isRead_permission()) {
                                 if (((XincoCoreData) node.getUserObject()).getStatus_number() !=
                                         3) {
-                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(5,
-                                            true);
-                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(11,
-                                            true);
-                                    ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(5,
-                                            true);
-                                    ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(11,
-                                            true);
+                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(5,true);
+                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(11,true);
+                                    ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(5,true);
+                                    ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(11,true);
                                 }
                             }
                             if (temp_ace.isWrite_permission()) {
-                                if (((XincoCoreData) node.getUserObject()).getStatus_number() ==
-                                        1) {
-                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(12,
-                                            true);
-                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(13,
-                                            false);
-                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(14,
-                                            false);
-                                    ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(12,
-                                            true);
-                                    ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(13,
-                                            false);
-                                    ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(14,
-                                            false);
+                                if (((XincoCoreData) node.getUserObject()).getStatus_number() ==1) {
+                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(12,true);
+                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(13,false);
+                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(14,false);
+                                    ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(12,true);
+                                    ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(13,false);
+                                    ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(14,false);
                                 }
-                                if (((XincoCoreData) node.getUserObject()).getStatus_number() ==
-                                        4) {
-                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(12,
-                                            false);
-                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(13,
-                                            true);
-                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(14,
-                                            true);
-                                    ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(12,
-                                            false);
-                                    ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(13,
-                                            true);
-                                    ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(14,
-                                            true);
+                                if (((XincoCoreData) node.getUserObject()).getStatus_number() ==4) {
+                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(12,false);
+                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(13,true);
+                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(14,true);
+                                    ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(12,false);
+                                    ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(13,true);
+                                    ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(14,true);
                                 }
                             }
                         }
@@ -1010,39 +990,28 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         if (((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getId() ==
                                 3) {
                             if (temp_ace.isRead_permission()) {
-                                ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(9,
-                                        true);
-                                ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(9,
-                                        true);
+                                ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(9,true);
+                                ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(9,true);
                             }
                         }
                         // contact = 4
                         if (((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getId() ==
                                 4) {
                             if (temp_ace.isRead_permission()) {
-                                ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(10,
-                                        true);
-                                ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(10,
-                                        true);
+                                ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(10,true);
+                                ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(10,true);
                             }
                         }
                         if (temp_ace.isRead_permission()) {
-                            ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(5,
-                                    true);
-                            ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(5,
-                                    true);
+                            ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(5,true);
+                            ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(5,true);
                         }
                         if (temp_ace.isWrite_permission()) {
-                            ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(18,
-                                    true);
-                            ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(18,
-                                    true);
-                            if (((XincoCoreData) node.getUserObject()).getStatus_number() ==
-                                    1) {
-                                ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(4,
-                                        true);
-                                ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(4,
-                                        true);
+                            ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(18,true);
+                            ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(18,true);
+                            if (((XincoCoreData) node.getUserObject()).getStatus_number() ==1) {
+                                ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(4,true);
+                                ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(4,true);
                             }
                         }
                         if (temp_ace.isAdmin_permission()) {
@@ -1050,34 +1019,26 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                     3) &&
                                     (((XincoCoreData) node.getUserObject()).getStatus_number() !=
                                     4)) {
-                                ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(15,
-                                        true);
-                                ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(15,
-                                        true);
+                                ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(15,true);
+                                ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(15,true);
                             }
-                            if ((((XincoCoreData) node.getUserObject()).getStatus_number() !=
-                                    2) &&
-                                    (((XincoCoreData) node.getUserObject()).getStatus_number() !=
-                                    3)) {
-                                ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(16,
-                                        true);
-                                ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(16,
-                                        true);
+                            if ((((XincoCoreData) node.getUserObject()).getStatus_number() !=2) &&
+                                    (((XincoCoreData) node.getUserObject()).getStatus_number() !=3)) {
+                                ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(16,true);
+                                ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(16,true);
                             }
-                            ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(19,
-                                    true);
-                            ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(19,
-                                    true);
+                            if (((XincoCoreData) node.getUserObject()).getStatus_number() !=8){
+                            ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(19,true);
+                            ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(19,true);
+                            }
                         }
                     }
                     // only nodes have children
                     if (node.getUserObject().getClass() ==
                             XincoCoreNode.class) {
                         // check for children only if none have been found yet
-                        if ((((XincoCoreNode) node.getUserObject()).getXinco_core_nodes().size() ==
-                                0) &&
-                                (((XincoCoreNode) node.getUserObject()).getXinco_core_data().size() ==
-                                0)) {
+                        if ((((XincoCoreNode) node.getUserObject()).getXinco_core_nodes().size() ==0) &&
+                                (((XincoCoreNode) node.getUserObject()).getXinco_core_data().size() ==0)) {
                             try {
                                 XincoCoreNode xnode = xincoClientSession.xinco.getXincoCoreNode((XincoCoreNode) node.getUserObject(),
                                         xincoClientSession.user);
@@ -1325,8 +1286,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         dtm.addRow(rdata);
                         // get add attributes of CoreData, if access granted
                         if (((XincoCoreData) node.getUserObject()).getXinco_add_attributes().size() >0) {
-                            for (i = 0; i <
-                                    ((XincoCoreData) node.getUserObject()).getXinco_add_attributes().size(); i++) {
+                            for (i = 0; i <((XincoCoreData) node.getUserObject()).getXinco_add_attributes().size(); i++) {
                                 rdata[0] = ((XincoCoreDataTypeAttribute) ((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation();
                                 if (((XincoCoreDataTypeAttribute) ((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equalsIgnoreCase("int")) {
                                     rdata[1] = "" +
@@ -2164,7 +2124,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      *
      * @return javax.swing.JInternalFrame
      */
-    public JInternalFrame getJInternalFrameInformation() {
+    protected JInternalFrame getJInternalFrameInformation() {
         if (jInternalFrameInformation == null) {
             jInternalFrameInformation = new JInternalFrame();
             jInternalFrameInformation.setContentPane(getJContentPaneInformation());
@@ -3652,7 +3612,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      *
      * @return javax.swing.JDialog
      */
-    public AuditDialog getJDialogAudit() {
+    protected AuditDialog getJDialogAudit() {
         if(auditDialog == null) {
             auditDialog = new AuditDialog(null,true,this);
             auditDialog.setTitle(xerb.getString("window.audit"));
@@ -3725,7 +3685,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         return new javax.swing.ImageIcon(XincoExplorer.class.getResource("blueCubsIcon16x16.GIF"));
     }
     
-    public boolean isLock() {
+    protected boolean isLock() {
         return lock;
     }
     
@@ -3739,7 +3699,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         return loginT;
     }
     
-    public LockDialog getLockDialog() {
+    protected LockDialog getLockDialog() {
         if(lockDialog == null){
             lockDialog = new LockDialog(null,true,this);
         }
@@ -3747,7 +3707,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         return lockDialog;
     }
     
-    public XincoActivityTimer getXat() {
+    protected XincoActivityTimer getXat() {
         return xat;
     }
     
@@ -3775,10 +3735,9 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     }
     
     public void resetTimer(){
-        System.out.println("Activity detected. Restarting timer...");
-        if(this.isLock())
+        if(this.isLock()){
             this.getLockDialog();
-        else
-            this.xat.getActivityTimer().restart();
+        } else if(getXat()!=null)
+            this.getXat().getActivityTimer().restart();
     }
 }
