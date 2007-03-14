@@ -179,7 +179,6 @@ public class XincoDBManager {
             }
             header +="</td>";
         } catch(SQLException e) {
-            System.err.println("Error getting names from result set. "+e);
         }
         return header;
     }
