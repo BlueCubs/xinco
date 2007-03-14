@@ -9,7 +9,7 @@
 "http://www.w3.org/TR/html4/loose.dtd">
 <%
 XincoSettingServer xss= new XincoSettingServer();
-String setting = ((XincoSetting)(xss.getXinco_settings().elementAt(8))).getString_value();
+String setting = ((XincoSetting)(xss.getXinco_settings().elementAt(7))).getString_value();
 Locale loc = null;
 try {
     if(request.getParameter("list").indexOf("_")==-1)
