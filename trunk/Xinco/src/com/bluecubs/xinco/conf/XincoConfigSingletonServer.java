@@ -86,7 +86,6 @@ public class XincoConfigSingletonServer {
             if (!(FileArchivePath.substring(FileArchivePath.length()-1).equals(System.getProperty("file.separator")))) {
                 FileArchivePath += System.getProperty("file.separator");
             }
-            System.err.println("FileArchivePath: "+FileArchivePath);
             FileArchivePeriod = ((Long)(new InitialContext()).lookup("java:comp/env/xinco/FileArchivePeriod")).longValue();
             
             FileIndexerCount = ((Integer)(new InitialContext()).lookup("java:comp/env/xinco/FileIndexerCount")).intValue();
