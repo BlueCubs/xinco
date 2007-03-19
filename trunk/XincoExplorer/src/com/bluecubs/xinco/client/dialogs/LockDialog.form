@@ -34,10 +34,10 @@
                       <EmptySpace pref="43" max="32767" attributes="0"/>
                       <Component id="disconnect" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="password" alignment="0" pref="189" max="32767" attributes="0"/>
+                  <Component id="password" alignment="0" pref="193" max="32767" attributes="0"/>
                   <Component id="passwordLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="usernameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="username" alignment="0" pref="189" max="32767" attributes="0"/>
+                  <Component id="username" alignment="0" pref="193" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>

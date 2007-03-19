@@ -29,7 +29,8 @@ public class LockDialog extends javax.swing.JDialog {
         this.disconnect.setText(explorer.getResourceBundle().getString("menu.disconnect"));
         this.connect.setText(explorer.getResourceBundle().getString("menu.connection.connect"));
         this.setTitle(explorer.getResourceBundle().getString("general.login"));
-        this.passwordLabel.setText(explorer.getResourceBundle().getString("general.username"));
+        this.passwordLabel.setText(explorer.getResourceBundle().getString("general.password"));
+        this.usernameLabel.setText(explorer.getResourceBundle().getString("general.username"));
     }
     
     /** This method is called from within the constructor to
@@ -108,7 +109,7 @@ public class LockDialog extends javax.swing.JDialog {
     
     private void connectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectActionPerformed
         try {
-//            User might be locked by any user attempting to log in incorrectly
+            //User might be locked by any user attempting to log in incorrectly
             XincoCoreUser temp=null;
             if ((temp = this.explorer.getSession().xinco.getCurrentXincoCoreUser(this.username.getText(),
                     new String(this.password.getPassword()))) == null){
@@ -124,13 +125,10 @@ public class LockDialog extends javax.swing.JDialog {
                             JOptionPane.INFORMATION_MESSAGE);
                     //disconnect
                     this.explorer.resetTimer();
-                    this.explorer.getSession().status=0;
-                    this.explorer.markConnectionStatus();
-                    this.explorer.collapseAllNodes();
                     //reconnect with new user info
-                    this.explorer.getSession().user=temp;
+                    this.explorer.getSession().user=this.explorer.getSession().xinco.getCurrentXincoCoreUser(temp.getUsername(), temp.getUserpassword());
                     this.explorer.getSession().status = 1;
-                    this.explorer.connect();
+                    this.explorer.collapseAllNodes();
                 }
                 this.explorer.setLock(false);
                 this.setVisible(false);
