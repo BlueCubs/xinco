@@ -7,6 +7,8 @@
 package com.bluecubs.xinco.client.dialogs;
 
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.XincoMutableTreeNode;
+import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoCoreUser;
 import java.rmi.RemoteException;
 import javax.swing.JOptionPane;
@@ -128,7 +130,16 @@ public class LockDialog extends javax.swing.JDialog {
                     //reconnect with new user info
                     this.explorer.getSession().user=this.explorer.getSession().xinco.getCurrentXincoCoreUser(temp.getUsername(), temp.getUserpassword());
                     this.explorer.getSession().status = 1;
+                    XincoCoreNode xnode = new XincoCoreNode();
+                    xnode.setId(1);
+                    xnode = this.explorer.getSession().xinco.getXincoCoreNode(xnode, this.explorer.getSession().user);
+                    this.explorer.getSession().xincoClientRepository.assignObject2TreeNode((XincoMutableTreeNode) (this.explorer.getSession().xincoClientRepository.treemodel).getRoot(),
+                            xnode,
+                            this.explorer.getSession().xinco,
+                            this.explorer.getSession().user,
+                            2);
                     this.explorer.collapseAllNodes();
+                    this.explorer.markConnectionStatus();
                 }
                 this.explorer.setLock(false);
                 this.setVisible(false);
