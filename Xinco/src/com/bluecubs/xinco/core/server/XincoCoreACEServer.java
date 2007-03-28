@@ -162,7 +162,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                         ", xinco_core_data_id=" + xcdid + ", read_permission=" + rp +
                         ", write_permission=" + wp + ", execute_permission=" + xp +
                         ", admin_permission=" + ap + " , audit_permission=" + ad +
-                        " , owner=" + ad +" WHERE id=" + getId());
+                        " , owner=" + ow +" WHERE id=" + getId());
                 stmt.close();
                 audit.updateAuditTrail("xinco_core_ace",new String [] {"xinco_core_user_id ="+getId()},
                         DBM,"window.acl",this.getChangerID());
