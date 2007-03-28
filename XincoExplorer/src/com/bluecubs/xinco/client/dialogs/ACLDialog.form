@@ -44,12 +44,12 @@
           </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="145" max="-2" attributes="0"/>
-              <Component id="Close" max="32767" attributes="0"/>
+              <Component id="Close" pref="75" max="32767" attributes="0"/>
               <EmptySpace min="-2" pref="155" max="-2" attributes="0"/>
           </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="146" max="-2" attributes="0"/>
-              <Component id="RemoveACE" max="32767" attributes="0"/>
+              <Component id="RemoveACE" pref="75" max="32767" attributes="0"/>
               <EmptySpace min="-2" pref="154" max="-2" attributes="0"/>
           </Group>
       </Group>

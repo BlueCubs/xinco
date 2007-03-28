@@ -168,7 +168,7 @@ public class ACLDialog extends javax.swing.JDialog {
                 temp_string = temp_string + "-";
             }
             if (temp_ace.isAudit_permission()) {
-                temp_string = temp_string + "Au";
+                temp_string = temp_string + "U";
             } else {
                 temp_string = temp_string + "-";
             }
