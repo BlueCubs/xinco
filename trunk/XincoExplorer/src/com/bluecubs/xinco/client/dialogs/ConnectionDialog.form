@@ -201,6 +201,9 @@
       </Events>
     </Component>
     <Component class="javax.swing.JPasswordField" name="password">
+      <Events>
+        <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="passwordFocusGained"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="savePasswordLabel">
       <Properties>

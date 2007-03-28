@@ -40,6 +40,7 @@
 package com.bluecubs.xinco.client.dialogs;
 
 import com.bluecubs.xinco.client.*;
+import com.bluecubs.xinco.client.XincoClientConnectionProfile;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
@@ -196,6 +197,12 @@ public class ConnectionDialog extends javax.swing.JDialog {
             }
         });
 
+        password.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                passwordFocusGained(evt);
+            }
+        });
+
         savePasswordLabel.setText("jLabel1");
 
         savePassword.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -279,6 +286,10 @@ public class ConnectionDialog extends javax.swing.JDialog {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
+    private void passwordFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_passwordFocusGained
+        this.password.selectAll();
+    }//GEN-LAST:event_passwordFocusGained
     
     private void profileListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_profileListValueChanged
         sel = profileList.getSelectedIndex();

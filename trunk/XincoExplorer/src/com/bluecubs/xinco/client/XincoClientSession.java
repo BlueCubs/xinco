@@ -36,6 +36,8 @@
 
 package com.bluecubs.xinco.client;
 
+import com.bluecubs.xinco.client.XincoClientRepository;
+import com.bluecubs.xinco.client.XincoMutableTreeNode;
 import java.util.Vector;
 
 import com.bluecubs.xinco.core.*;
