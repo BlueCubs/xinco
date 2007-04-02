@@ -86,15 +86,30 @@ public class XincoAdminServlet extends HttpServlet {
     throws ServletException, IOException {
         Locale loc = null;
         try {
-            if(request.getParameter("list").indexOf("_")==-1)
-                loc = new Locale(request.getParameter("list"));
-            else
-                loc = new Locale(request.getParameter("list").substring(0,request.getParameter("list").indexOf("_")),
-                        request.getParameter("list").substring(request.getParameter("list").indexOf("_")+1,
-                        request.getParameter("list").length()));
+            String list = request.getParameter("list");
+            String[] locales;
+            locales = list.split("_");
+            switch(locales.length){
+                case 1: loc = new Locale(locales[0]);break;
+                case 2: loc = new Locale(locales[0],locales[1]);break;
+                case 3: loc = new
+                        Locale(locales[0],locales[1],locales[2]);break;
+                default: loc = Locale.getDefault();
+            }
+            //loc = new Locale(request.getParameter("list"));
         } catch (Exception e) {
             loc = Locale.getDefault();
         }
+//        try {
+//            if(request.getParameter("list").indexOf("_")==-1)
+//                loc = new Locale(request.getParameter("list"));
+//            else
+//                loc = new Locale(request.getParameter("list").substring(0,request.getParameter("list").indexOf("_")),
+//                        request.getParameter("list").substring(request.getParameter("list").indexOf("_")+1,
+//                        request.getParameter("list").length()));
+//        } catch (Exception e) {
+//            loc = Locale.getDefault();
+//        }
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
         Vector settingsVector=null;
         settingsVector = new XincoSettingServer().getXinco_settings();
@@ -118,6 +133,7 @@ public class XincoAdminServlet extends HttpServlet {
         HttpSession session = request.getSession(true);
         //start output
         response.setContentType("text/html");
+        response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
         
         //connect to db
