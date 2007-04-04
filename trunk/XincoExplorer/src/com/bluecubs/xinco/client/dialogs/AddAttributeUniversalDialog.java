@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * 
+ *
  *
  *************************************************************
  * AddAttributeUniversalDialog.java
@@ -46,7 +46,7 @@ import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
 import java.text.DateFormat;
 import java.util.Date;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader; 
+import javax.swing.table.JTableHeader;
 
 /**
  * Add Attribute Universal Dialog
@@ -65,7 +65,8 @@ public class AddAttributeUniversalDialog extends javax.swing.JDialog {
         initComponents();
         this.explorer=explorer;
         addMouseListener(this.explorer);
-        setTitle(explorer.getResourceBundle().getString("window.addattributesuniversal"));
+        setTitle(explorer.getResourceBundle().getString("window.addattributesuniversal")+
+                ": "+ this.explorer.getSelectedNodeDesignation());
         setBounds(200, 200, 600, 540);
         setLocationRelativeTo(null);
         this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
@@ -139,6 +140,14 @@ public class AddAttributeUniversalDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setAlwaysOnTop(true);
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+            }
+        });
+
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {"Description", null},
@@ -193,6 +202,11 @@ public class AddAttributeUniversalDialog extends javax.swing.JDialog {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        setTitle(explorer.getResourceBundle().getString("window.addattributesuniversal")+
+                ": "+ this.explorer.getSelectedNodeDesignation());
+    }//GEN-LAST:event_formWindowGainedFocus
     
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         setVisible(false);
@@ -269,7 +283,7 @@ public class AddAttributeUniversalDialog extends javax.swing.JDialog {
         explorer.set_global_dialog_return_value(1);
         setVisible(false);
     }//GEN-LAST:event_saveActionPerformed
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;
     private javax.swing.JScrollPane jScrollPane1;
