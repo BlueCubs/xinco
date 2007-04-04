@@ -40,7 +40,8 @@
 package com.bluecubs.xinco.client.dialogs;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.core.XincoCoreACE; 
+import com.bluecubs.xinco.client.XincoMutableTreeNode;
+import com.bluecubs.xinco.core.XincoCoreACE;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreNode;
@@ -69,7 +70,8 @@ public class ACLDialog extends javax.swing.JDialog {
         initComponents();
         this.explorer=explorer;
         addMouseListener(this.explorer);
-        setTitle(explorer.getResourceBundle().getString("window.acl"));
+        setTitle(explorer.getResourceBundle().getString("window.acl") +
+                ": "+ this.explorer.getSelectedNodeDesignation());
         this.ACLWarning.setText(explorer.getResourceBundle().getString("window.acl.note"));
         this.AddACE.setText(explorer.getResourceBundle().getString("window.acl.addace"));
         this.Admin.setText(explorer.getResourceBundle().getString("general.acl.adminpermission"));
@@ -257,6 +259,14 @@ public class ACLDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+            }
+        });
+
         aclAddLabel.setText("jLabel1");
 
         groupList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -338,11 +348,11 @@ public class ACLDialog extends javax.swing.JDialog {
                 .addContainerGap())
             .add(layout.createSequentialGroup()
                 .add(145, 145, 145)
-                .add(Close, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(Close, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
                 .add(155, 155, 155))
             .add(layout.createSequentialGroup()
                 .add(146, 146, 146)
-                .add(RemoveACE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(RemoveACE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
                 .add(154, 154, 154))
         );
         layout.setVerticalGroup(
@@ -382,6 +392,11 @@ public class ACLDialog extends javax.swing.JDialog {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        setTitle(explorer.getResourceBundle().getString("window.acl") +
+                ": "+ this.explorer.getSelectedNodeDesignation());
+    }//GEN-LAST:event_formWindowGainedFocus
     
     private void CloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseActionPerformed
         this.setVisible(false);

@@ -61,6 +61,7 @@ public class ArchiveDialog extends javax.swing.JDialog {
         initComponents();
         addMouseListener(this.explorer);
         setLocationRelativeTo(null);
+        setTitle(this.explorer.getSelectedNodeDesignation());
         this.explorer=explorer;
         this.xerb=this.explorer.getResourceBundle();
         this.revisionModelLabel.setText(xerb.getString("window.archive.revisionmodel") + ":");
@@ -116,6 +117,14 @@ public class ArchiveDialog extends javax.swing.JDialog {
         archiveDate = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+            }
+        });
+
         revisionModelLabel.setText("jLabel1");
 
         revisionModelCheckbox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -209,6 +218,10 @@ public class ArchiveDialog extends javax.swing.JDialog {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        setTitle(this.explorer.getSelectedNodeDesignation());
+    }//GEN-LAST:event_formWindowGainedFocus
     
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         setVisible(false);
