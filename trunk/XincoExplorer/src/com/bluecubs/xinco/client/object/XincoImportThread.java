@@ -89,6 +89,7 @@ public class XincoImportThread extends Thread {
                         // update transaction info
                         explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.importsuccess"));
                     } catch (Exception ie) {
+                        ie.printStackTrace();
                         JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.importfailed") +
                                 " " + xerb.getString("general.reason") + ": " + ie.toString(), xerb.getString("general.error"),
                                 JOptionPane.WARNING_MESSAGE);
