@@ -53,8 +53,32 @@
       />
       <typeMapping
         xmlns:ns="http://core.xinco.bluecubs.com"
+        qname="ns:XincoCoreAudit"
+        type="java:com.bluecubs.xinco.core.XincoCoreAudit"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://core.xinco.bluecubs.com"
+        qname="ns:XincoSetting"
+        type="java:com.bluecubs.xinco.core.XincoSetting"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://core.xinco.bluecubs.com"
         qname="ns:XincoVersion"
         type="java:com.bluecubs.xinco.core.XincoVersion"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://core.xinco.bluecubs.com"
+        qname="ns:XincoCoreAuditType"
+        type="java:com.bluecubs.xinco.core.XincoCoreAuditType"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
@@ -119,14 +143,6 @@
         xmlns:ns="http://core.xinco.bluecubs.com"
         qname="ns:XincoCoreData"
         type="java:com.bluecubs.xinco.core.XincoCoreData"
-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-      />
-      <typeMapping
-        xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoCoreAudit"
-        type="java:com.bluecubs.xinco.core.XincoCoreAudit"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
