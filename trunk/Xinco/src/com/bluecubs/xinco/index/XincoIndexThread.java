@@ -21,13 +21,13 @@
  *
  * Name:            XincoIndexThread
  *
- * Description:     handle document indexing in thread 
+ * Description:     handle document indexing in thread
  *
  * Original Author: Alexander Manes
  * Date:            2004/12/18
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
@@ -38,30 +38,57 @@ package com.bluecubs.xinco.index;
 
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import java.util.Vector;
 
 /**
  * This class starts document indexing in a separate thread
  */
 public class XincoIndexThread extends Thread {
-	
-	private XincoCoreData d = null;
-	private boolean index_content = false;
-	private XincoDBManager dbm = null;
-
-	public void run() {
-		XincoIndexer.indexXincoCoreData(d, index_content, dbm);
-		try {
-			dbm.con.close();
-		} catch (Exception e)
-		{
-			//do nothing
-		}
-	}
-	
-	public XincoIndexThread(XincoCoreData d, boolean index_content, XincoDBManager dbm) {
-		this.d = d;
-		this.index_content = index_content;
-		this.dbm = dbm;
-	}
-	
+    private Vector nodes=null;
+    private boolean index_content = false;
+    private XincoDBManager dbm = null;
+    
+    /**
+     * Run method
+     */
+    public void run() {
+        while(nodes.size()>0){
+            XincoIndexer.indexXincoCoreData(((XincoCoreData)nodes.firstElement()), index_content, dbm);
+            nodes.remove(0);
+        }
+        try {
+            dbm.con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return;
+    }
+    
+    /**
+     * Constructor
+     * @param index_content Should index content?
+     * @param dbm XincoDatabaseManger
+     */
+    public XincoIndexThread(boolean index_content, XincoDBManager dbm) {
+        this.index_content = index_content;
+        this.dbm = dbm;
+    }
+    
+    /**
+     * Allows for adding a data element to the queue if there's a thread already running
+     * @param d XincoCoreData
+     */
+    public void addData(XincoCoreData d){
+        if(nodes==null)
+            nodes = new Vector();
+        nodes.add(d);
+    }
+    
+    /**
+     * Sets the nodes vector of files to be indexed
+     * @param n Vector containing de nodes to be indexed
+     */
+    public void setNodes(Vector n){
+        this.nodes=n;
+    }
 }
