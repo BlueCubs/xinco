@@ -141,8 +141,9 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                         getXinco_core_data_id() + ", attribute_id=" + getAttribute_id() +
                         ",attrib_int= " + getAttrib_int() + ", attrib_unsignedint=" + getAttrib_unsignedint() +
                         ", attrib_double=" + getAttrib_double() + ", attrib_varchar='" + attrVC + "', " +
-                        "attrib_text= " + attrT + ", attrib_datetime =" + attrDT + " where xinco_core_data_id="+
+                        "attrib_text= '" + attrT + "', attrib_datetime ='" + attrDT + "' where xinco_core_data_id="+
                         getXinco_core_data_id() + " and attribute_id=" + getAttribute_id();
+                System.out.println(sql);
                 stmt.executeUpdate(sql);
                 if(isChange())
                     audit.updateAuditTrail("xinco_add_attribute",new String [] {"attribute_id ="+getAttribute_id(),
@@ -154,7 +155,6 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                         ", " + getAttribute_id() + ", " + getAttrib_int() + ", " +
                         getAttrib_unsignedint() + ", " + getAttrib_double() + ", '" +
                         attrVC + "', '" + attrT + "', '" + attrDT + "')";
-                System.out.println(sql);
                 stmt.executeUpdate(sql);
                 audit.updateAuditTrail("xinco_add_attribute",new String [] {"attribute_id ="+getAttribute_id(),
                 "xinco_core_data_id="+getXinco_core_data_id()},

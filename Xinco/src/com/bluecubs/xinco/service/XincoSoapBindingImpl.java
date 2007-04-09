@@ -52,14 +52,15 @@ import org.apache.axis.MessageContext;
 import org.apache.axis.attachments.AttachmentPart;
 
 public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
+    private XincoIndexThread xit=null;
     public com.bluecubs.xinco.core.XincoVersion getXincoServerVersion() throws java.rmi.RemoteException {
-        //return current version of server
         XincoSetting [] settings=null;
         Vector settingsVector=null;
         settingsVector = new XincoSettingServer().getXinco_settings();
         settings= new XincoSetting[settingsVector.size()];
         for(int i=0;i<settingsVector.size();i++)
             settings[i]=(XincoSetting)settingsVector.elementAt(i);
+        //return current version of server
         XincoVersion version = new XincoVersion();
         version.setVersion_high(settings[0].getInt_value());
         version.setVersion_mid(settings[1].getInt_value());
@@ -333,8 +334,11 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 boolean index_success = false;
                 //index_success = XincoIndexer.indexXincoCoreData(data, true, dbm);
                 try {
-                    XincoIndexThread xit = new XincoIndexThread(data, true, dbm);
-                    xit.start();
+                    if(xit==null)
+                        xit = new XincoIndexThread(true, dbm);
+                    xit.addData(data);
+                    if(!xit.isAlive())
+                        xit.start();
                     index_success = true;
                 } catch (Exception xite) {
                     index_success = false;
@@ -828,8 +832,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             xaas.write2DB(new XincoDBManager());
         } catch (XincoException ex) {
             ex.printStackTrace();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
