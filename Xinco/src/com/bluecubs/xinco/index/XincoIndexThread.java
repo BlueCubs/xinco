@@ -47,7 +47,6 @@ public class XincoIndexThread extends Thread {
     private Vector nodes=null;
     private boolean index_content = false;
     private XincoDBManager dbm = null;
-    
     /**
      * Run method
      */

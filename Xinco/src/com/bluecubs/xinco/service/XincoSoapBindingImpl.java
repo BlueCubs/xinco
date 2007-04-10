@@ -281,7 +281,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             data = new XincoCoreDataServer(in0.getId(), dbm);
             ace = XincoCoreACEServer.checkAccess(user, data.getXinco_core_acl());
             if (ace.isWrite_permission()) {
-                
                 // decide whether to read from SOAP attachments or byte array
                 mc = MessageContext.getCurrentContext();
                 m = mc.getCurrentMessage();
@@ -306,7 +305,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 }
                 in.close();
                 out.close();
-                
                 //dupicate file to preserve current revision
                 if (((XincoAddAttribute)data.getXinco_add_attributes().elementAt(3)).getAttrib_unsignedint() == 1) {
                     //find id of latest log
