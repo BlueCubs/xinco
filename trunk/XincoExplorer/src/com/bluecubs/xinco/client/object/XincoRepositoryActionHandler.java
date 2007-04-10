@@ -185,23 +185,7 @@ public class XincoRepositoryActionHandler {
             putValue(ACCELERATOR_KEY,key);
         }
         public void actionPerformed(ActionEvent e) {
-            try {
-                // get root
-                XincoCoreNode xnode = new XincoCoreNode();
-                
-                xnode.setId(1);
-                xnode = explorer.getSession().xinco.getXincoCoreNode(xnode,
-                        explorer.getSession().user);
-                explorer.getSession().xincoClientRepository.assignObject2TreeNode((XincoMutableTreeNode) (explorer.getSession().xincoClientRepository.treemodel).getRoot(),
-                        xnode,
-                        explorer.getSession().xinco,
-                        explorer.getSession().user,
-                        2);
-                explorer.jTreeRepository.expandPath(new TreePath(explorer.getSession().xincoClientRepository.treemodel.getPathToRoot((XincoMutableTreeNode) (explorer.getSession().xincoClientRepository.treemodel).getRoot())));
-                explorer.collapseAllNodes();
-            } catch (Exception rmie) {
-                rmie.printStackTrace();
-            }
+            explorer.refreshJTree();
         }
     }
     public class AddFolder extends AbstractAction {
