@@ -305,9 +305,10 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     private String status_string_1="",status_string_2="";
     private XincoCoreUser temp;
     private final XincoCoreUser newuser= new XincoCoreUser();
-    private loginThread loginT;
+    private loginThread loginT=null;
+    private refreshThread rThread=null;
     private int wizard_type;
-    private XincoMutableTreeNode newnode;
+    private XincoMutableTreeNode newnode,previousnode;
     private byte[] byte_array;
     private XincoCoreData xdata;
     private XincoCoreLog newlog;
@@ -1948,6 +1949,37 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             status_string_2="";
         }
     }
+    
+    private class refreshThread extends Thread {
+        @Override
+        public void run() {
+            try {
+                progressBar.setTitle("message.progressbar.refresh");
+                progressBar.show();
+                // get root
+                XincoCoreNode xnode = new XincoCoreNode();
+                xnode.setId(1);
+                xnode = getSession().xinco.getXincoCoreNode(xnode,
+                        getSession().user);
+                getSession().xincoClientRepository.assignObject2TreeNode((XincoMutableTreeNode) (explorer.getSession().xincoClientRepository.treemodel).getRoot(),
+                        xnode,
+                        explorer.getSession().xinco,
+                        explorer.getSession().user,
+                        2);
+                jTreeRepository.expandPath(new TreePath(getSession().xincoClientRepository.treemodel.getPathToRoot((XincoMutableTreeNode) (getSession().xincoClientRepository.treemodel).getRoot())));
+                collapseAllNodes();
+                progressBar.hide();
+            } catch (Exception rmie) {
+                rmie.printStackTrace();
+            }
+        }
+    }
+    
+    public void refreshJTree(){
+        if(rThread==null)
+            rThread= new refreshThread();
+        rThread.start();
+    }
     /**
      * This method initializes jContentPaneDialogConnection
      *
@@ -2349,7 +2381,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         progressBar.show();
         for (i = 0; i < folder_list.length; i++) {
             if (folder_list[i].isFile()) {
-                System.out.println("Processing file: "+folder_list[i].getName());
+                System.out.println("Processing file: "+folder_list[i].getName()+"("+(i+1)+"/"+folder_list.length+")");
                 // set current node to new one
                 newnode = new XincoMutableTreeNode(new XincoCoreData());
                 // set data attributes
@@ -2484,7 +2516,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         //process directories
         for (i = 0; i < folder_list.length; i++) {
             if (folder_list[i].isDirectory()) {
-                System.err.println("Processing folder: "+folder_list[i].getName());
                 // set current node to new one
                 newnode = new XincoMutableTreeNode(new XincoCoreNode());
                 // set node attributes
@@ -2492,12 +2523,22 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 ((XincoCoreNode) newnode.getUserObject()).setDesignation(folder_list[i].getName());
                 ((XincoCoreNode) newnode.getUserObject()).setXinco_core_language(xcl1);
                 ((XincoCoreNode) newnode.getUserObject()).setStatus_number(1);
-                System.out.println("New node: "+newnode);
+                System.out.println("Node Info:");
+                System.out.println(((XincoCoreNode) newnode.getUserObject()).getXinco_core_node_id());
+                System.out.println(((XincoCoreNode) newnode.getUserObject()).getDesignation());
+                System.out.println(((XincoCoreNode) newnode.getUserObject()).getXinco_core_language().getChangerID());
+                System.out.println(((XincoCoreNode) newnode.getUserObject()).getStatus_number());
+                System.out.println("------------------------");
                 System.out.println("Node Selected: "+xincoClientSession.currentTreeNodeSelection);
+                if(xincoClientSession.currentTreeNodeSelection==null){
+                    xincoClientSession.currentTreeNodeSelection=previousnode;
+                }
                 System.out.println("Child Count: "+xincoClientSession.currentTreeNodeSelection.getChildCount());
+                System.out.println("New node: "+newnode);
                 xincoClientSession.xincoClientRepository.treemodel.insertNodeInto(newnode,
                         xincoClientSession.currentTreeNodeSelection,
                         xincoClientSession.currentTreeNodeSelection.getChildCount());
+                previousnode=xincoClientSession.currentTreeNodeSelection;
                 xincoClientSession.currentTreeNodeSelection = newnode;
                 // save node to server
                 xnode = xincoClientSession.xinco.setXincoCoreNode((XincoCoreNode) newnode.getUserObject(),
@@ -2510,9 +2551,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 xincoClientSession.xincoClientRepository.treemodel.reload(newnode);
                 xincoClientSession.xincoClientRepository.treemodel.nodeChanged(newnode);
                 // start recursion
-                if(xincoClientSession.currentTreeNodeSelection.getChildCount()>0)
-                    importContentOfFolder((XincoCoreNode) newnode.getUserObject(),
-                            folder_list[i]);
+                importContentOfFolder((XincoCoreNode) newnode.getUserObject(),
+                        folder_list[i]);
                 // select parent of new node
                 xincoClientSession.currentTreeNodeSelection = (XincoMutableTreeNode) newnode.getParent();
             }
