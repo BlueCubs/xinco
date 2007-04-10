@@ -139,6 +139,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
 //                stmt.close();
 //            }
         } catch (Exception e) {
+            e.printStackTrace();
             throw new XincoException();
         }
     }

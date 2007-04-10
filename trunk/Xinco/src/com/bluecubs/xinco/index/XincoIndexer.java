@@ -52,16 +52,13 @@ import com.bluecubs.xinco.core.server.*;
 public class XincoIndexer {
     
     public static synchronized boolean indexXincoCoreData(XincoCoreData d, boolean index_content, XincoDBManager dbm) {
-        
         IndexWriter writer = null;
-        
         try {
-            
             //check if document exists in index and delete
             XincoIndexer.removeXincoCoreData(d, dbm);
-            
             //add document to index
             try {
+                System.out.println("Indexing file: "+d.getDesignation());
                 writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), false);
             } catch (Exception ie) {
                 writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), true);
@@ -102,17 +99,13 @@ public class XincoIndexer {
         return true;
     }
     
-    public static synchronized boolean optimizeIndex(XincoDBManager dbm) {
-        
+    public static synchronized boolean optimizeIndex(XincoDBManager dbm) {  
         IndexWriter writer = null;
-        
         try {
-            
             //optimize index
             writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), false);
             writer.optimize();
             writer.close();
-            
         } catch (Exception e) {
             if (writer != null) {
                 try {
@@ -121,12 +114,10 @@ public class XincoIndexer {
             }
             return false;
         }
-        
         return true;
     }
     
     public static synchronized Vector findXincoCoreData(String s, int l, XincoDBManager dbm) {
-        
         int i = 0;
         Vector v = new Vector();
         Searcher searcher = null;
