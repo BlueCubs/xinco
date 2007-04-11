@@ -455,6 +455,16 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
             _myOperations.put("setXincoAddAttribute", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("setXincoAddAttribute")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+        };
+        _oper = new org.apache.axis.description.OperationDesc("rebuildIndex", _params, new javax.xml.namespace.QName("", "in0"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        _oper.setElementQName(new javax.xml.namespace.QName("", "rebuildIndex"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("rebuildIndex") == null) {
+            _myOperations.put("rebuildIndex", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("rebuildIndex")).add(_oper);
     }
 
     public XincoSoapBindingSkeleton() {
@@ -659,6 +669,12 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
     public void setXincoAddAttribute(com.bluecubs.xinco.add.holders.XincoAddAttributeHolder in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         impl.setXincoAddAttribute(in0, in1);
+    }
+
+    public boolean rebuildIndex() throws java.rmi.RemoteException
+    {
+        boolean ret = impl.rebuildIndex();
+        return ret;
     }
 
 }

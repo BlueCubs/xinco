@@ -16,7 +16,7 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
     static org.apache.axis.description.OperationDesc [] _operations;
 
     static {
-        _operations = new org.apache.axis.description.OperationDesc[33];
+        _operations = new org.apache.axis.description.OperationDesc[34];
         _initOperationDesc1();
         _initOperationDesc2();
         _initOperationDesc3();
@@ -461,6 +461,15 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
         oper.setStyle(org.apache.axis.constants.Style.RPC);
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
         _operations[32] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("rebuildIndex");
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        oper.setReturnClass(boolean.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "in0"));
+        oper.setStyle(org.apache.axis.constants.Style.RPC);
+        oper.setUse(org.apache.axis.constants.Use.ENCODED);
+        _operations[33] = oper;
 
     }
 
@@ -1676,6 +1685,37 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
                 in0.value = (com.bluecubs.xinco.add.XincoAddAttribute) _output.get(new javax.xml.namespace.QName("", "in0"));
             } catch (java.lang.Exception _exception) {
                 in0.value = (com.bluecubs.xinco.add.XincoAddAttribute) org.apache.axis.utils.JavaUtils.convert(_output.get(new javax.xml.namespace.QName("", "in0")), com.bluecubs.xinco.add.XincoAddAttribute.class);
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+  throw axisFaultException;
+}
+    }
+
+    public boolean rebuildIndex() throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[33]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("", "rebuildIndex"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return ((java.lang.Boolean) _resp).booleanValue();
+            } catch (java.lang.Exception _exception) {
+                return ((java.lang.Boolean) org.apache.axis.utils.JavaUtils.convert(_resp, boolean.class)).booleanValue();
             }
         }
   } catch (org.apache.axis.AxisFault axisFaultException) {

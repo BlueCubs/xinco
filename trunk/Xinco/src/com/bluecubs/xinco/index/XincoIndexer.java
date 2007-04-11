@@ -36,6 +36,7 @@
 
 package com.bluecubs.xinco.index;
 
+import java.sql.SQLException;
 import java.util.Vector;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.*;
@@ -44,13 +45,15 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.analysis.*;
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.server.*;
+import java.io.File;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 /**
  * This class handles document indexing for xinco.
  * Edit configuration values in context.xml
  */
 public class XincoIndexer {
-    
     public static synchronized boolean indexXincoCoreData(XincoCoreData d, boolean index_content, XincoDBManager dbm) {
         IndexWriter writer = null;
         try {
@@ -58,7 +61,6 @@ public class XincoIndexer {
             XincoIndexer.removeXincoCoreData(d, dbm);
             //add document to index
             try {
-                System.out.println("Indexing file: "+d.getDesignation());
                 writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), false);
             } catch (Exception ie) {
                 writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), true);
@@ -79,9 +81,7 @@ public class XincoIndexer {
     }
     
     public static synchronized boolean removeXincoCoreData(XincoCoreData d, XincoDBManager dbm) {
-        
         IndexReader reader = null;
-        
         //check if document exists in index and delete
         try {
             reader = IndexReader.open(dbm.config.FileIndexPath);
@@ -99,7 +99,7 @@ public class XincoIndexer {
         return true;
     }
     
-    public static synchronized boolean optimizeIndex(XincoDBManager dbm) {  
+    public static synchronized boolean optimizeIndex(XincoDBManager dbm) {
         IndexWriter writer = null;
         try {
             //optimize index
@@ -163,5 +163,4 @@ public class XincoIndexer {
     //private constructor to avoid instance generation with new-operator!
     private XincoIndexer() {
     }
-    
 }
