@@ -58,6 +58,7 @@ import javax.servlet.http.*;
 
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.server.*;
+import com.bluecubs.xinco.index.XincoIndexThread;
 import com.bluecubs.xinco.index.XincoIndexer;
 import java.util.Locale;
 import java.util.ResourceBundle;
