@@ -327,7 +327,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                         fcos.close();
                     }
                 }
-                
                 //index data and file content
                 boolean index_success = false;
                 //index_success = XincoIndexer.indexXincoCoreData(data, true, dbm);
@@ -341,7 +340,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 } catch (Exception xite) {
                     index_success = false;
                 }
-                
                 //close connection if indexing thread failed
                 if (!index_success) {
                     dbm.con.close();
@@ -833,5 +831,15 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+     public boolean rebuildIndex() throws RemoteException {
+        XincoIndexThread xit = new XincoIndexThread();
+        boolean success=false;
+        try {
+            success = xit.rebuildIndex(new XincoDBManager());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return success;
     }
 }

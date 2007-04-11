@@ -37,7 +37,13 @@
 package com.bluecubs.xinco.index;
 
 import com.bluecubs.xinco.core.XincoCoreData;
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import java.io.File;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Vector;
 
 /**
@@ -45,7 +51,7 @@ import java.util.Vector;
  */
 public class XincoIndexThread extends Thread {
     private Vector nodes=null;
-    private boolean index_content = false;
+    private boolean index_content = false, index_directory_deleted = false,index_result = false;
     private XincoDBManager dbm = null;
     /**
      * Run method
@@ -54,6 +60,16 @@ public class XincoIndexThread extends Thread {
         while(nodes.size()>0){
             XincoIndexer.indexXincoCoreData(((XincoCoreData)nodes.firstElement()), index_content, dbm);
             nodes.remove(0);
+            try {
+                sleep(3000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+                try {
+                    dbm.con.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
         try {
             dbm.con.close();
@@ -74,6 +90,12 @@ public class XincoIndexThread extends Thread {
     }
     
     /**
+     * Constructor
+     */
+    public XincoIndexThread() {
+    }
+    
+    /**
      * Allows for adding a data element to the queue if there's a thread already running
      * @param d XincoCoreData
      */
@@ -89,5 +111,62 @@ public class XincoIndexThread extends Thread {
      */
     public void setNodes(Vector n){
         this.nodes=n;
+    }
+    
+    public XincoDBManager getDbm() {
+        return dbm;
+    }
+    
+    public synchronized void deleteIndex(XincoDBManager dbm){
+        File indexDirectory = null;
+        File indexDirectoryFile = null;
+        String[] indexDirectoryFileList = null;
+        indexDirectory = new File(dbm.config.FileIndexPath);
+        if (indexDirectory.exists()) {
+            indexDirectoryFileList = indexDirectory.list();
+            for (int i=0;i<indexDirectoryFileList.length;i++) {
+                indexDirectoryFile = new File(dbm.config.FileIndexPath + indexDirectoryFileList[i]);
+                indexDirectoryFile.delete();
+            }
+            index_directory_deleted=indexDirectory.delete();
+        }
+    }
+    
+    public Vector getNodes() {
+        return nodes;
+    }
+    
+    public synchronized boolean buildIndex(XincoDBManager dbm){
+        //select all data
+        XincoCoreDataServer xdata_temp = null;
+        try {
+            Statement stmt = dbm.con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT id FROM xinco_core_data ORDER BY designation");
+            while (rs.next()) {
+                xdata_temp = new XincoCoreDataServer(rs.getInt("id"), dbm);
+                index_result = XincoIndexer.indexXincoCoreData(xdata_temp, true, dbm);
+            }
+            stmt.close();
+        } catch (XincoException ex) {
+            ex.printStackTrace();
+            return false;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
+    public synchronized boolean rebuildIndex(XincoDBManager dbm){
+        deleteIndex(dbm);
+        return buildIndex(dbm);
+    }
+    
+    public boolean isIndex_directory_deleted() {
+        return index_directory_deleted;
+    }
+    
+    public boolean isIndex_result() {
+        return index_result;
     }
 }
