@@ -34,7 +34,7 @@
  *************************************************************
  */
 
-package com.bluecubs.xinco.client;
+package com.bluecubs.xinco.client.object;
 
 import java.awt.event.*;
 

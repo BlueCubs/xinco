@@ -43,6 +43,7 @@ import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoException;
 import java.io.File;
+import java.rmi.RemoteException;
 import java.util.ResourceBundle;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -98,6 +99,17 @@ public class XincoImportThread extends Thread {
                         explorer.progressBar.hide();
                     }
                 }
+            }
+            try {
+                explorer.getSession().xinco.rebuildIndex();
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+                explorer.progressBar.hide();
+                JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.importfailed") +
+                        " " + xerb.getString("general.reason") + ": " + ex.toString(), xerb.getString("general.error"),
+                        JOptionPane.WARNING_MESSAGE);
+                explorer.jLabelInternalFrameInformationText.setText("");
+                explorer.progressBar.hide();
             }
             explorer.progressBar.hide();
         }

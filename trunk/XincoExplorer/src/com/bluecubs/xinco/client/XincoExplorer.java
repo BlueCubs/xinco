@@ -51,12 +51,11 @@ import com.bluecubs.xinco.client.dialogs.LogDialog;
 import com.bluecubs.xinco.client.dialogs.SearchDialog;
 import com.bluecubs.xinco.client.dialogs.UserDialog;
 import com.bluecubs.xinco.client.dialogs.LockDialog;
-import com.bluecubs.xinco.client.WindowClosingAdapter;
+import com.bluecubs.xinco.client.object.WindowClosingAdapter;
+import com.bluecubs.xinco.client.object.WindowClosingAdapter;
 import com.bluecubs.xinco.client.object.XincoActivityTimer;
 import com.bluecubs.xinco.client.object.XincoAutofitTableColumns;
-import com.bluecubs.xinco.client.XincoClientConnectionProfile;
 import com.bluecubs.xinco.client.object.XincoMenuRepository;
-import com.bluecubs.xinco.client.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.object.XincoPopUpMenuRepository;
 import com.bluecubs.xinco.client.object.XincoProgressBarThread;
 import com.bluecubs.xinco.client.object.XincoRepositoryActionHandler;
@@ -1954,7 +1953,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         @Override
         public void run() {
             try {
-                progressBar.setTitle("message.progressbar.refresh");
+                progressBar.setTitle(getResourceBundle().getString("message.progressbar.refresh"));
                 progressBar.show();
                 // get root
                 XincoCoreNode xnode = new XincoCoreNode();
@@ -2491,7 +2490,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 // attach file to SOAP message
                 if (useSAAJ) {
                     AttachmentPart ap = null;
-                    
                     ap = new AttachmentPart();
                     ap.setContent(in, "unknown/unknown");
                     ((XincoSoapBindingStub) xincoClientSession.xinco).addAttachment(ap);
@@ -2530,9 +2528,11 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 System.out.println(((XincoCoreNode) newnode.getUserObject()).getStatus_number());
                 System.out.println("------------------------");
                 System.out.println("Node Selected: "+xincoClientSession.currentTreeNodeSelection);
+                //Recovery code
                 if(xincoClientSession.currentTreeNodeSelection==null){
                     xincoClientSession.currentTreeNodeSelection=previousnode;
                 }
+                //-------
                 System.out.println("Child Count: "+xincoClientSession.currentTreeNodeSelection.getChildCount());
                 System.out.println("New node: "+newnode);
                 xincoClientSession.xincoClientRepository.treemodel.insertNodeInto(newnode,
