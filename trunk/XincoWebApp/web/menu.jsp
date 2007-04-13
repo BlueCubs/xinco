@@ -22,7 +22,6 @@ try {
                 Locale(locales[0],locales[1],locales[2]);break;
         default: loc = Locale.getDefault();
     }
-//loc = new Locale(request.getParameter("list"));
 } catch (Exception e) {
     loc = Locale.getDefault();
 }
