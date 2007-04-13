@@ -488,7 +488,7 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_user.setChange(true);
                 //Reason for change
                 temp_user.setReason("audit.user.account.modified");
-                temp_user.setHashPassword(false);
+                temp_user.setHashPassword(true);
                 temp_user.write2DB(dbm);
             } catch (Exception e) {
                 e.printStackTrace();
