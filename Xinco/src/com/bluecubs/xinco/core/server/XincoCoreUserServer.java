@@ -92,7 +92,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
         try {
             stmt = DBM.con.createStatement();
             rs=stmt.executeQuery("select * from xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + getId());
-            stmt.close();
             while(rs.next()){
                 stmt = DBM.con.createStatement();
                 for(int j =0;j<getXinco_core_groups().size();j++){
@@ -119,7 +118,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
                             ", " + ((XincoCoreGroupServer)getXinco_core_groups().elementAt(i)).getId() +
                             ", " + 1 + ")";
                     stmt.executeUpdate(sql);
-                    stmt.close();
                     audit.updateAuditTrail("xinco_core_user_has_xinco_core_group",new String [] {"xinco_core_user_id ="+getId(),
                     "xinco_core_group_id="+((XincoCoreGroupServer)getXinco_core_groups().elementAt(place)).getId()},
                             DBM,"audit.general.created",getChangerID());
@@ -127,6 +125,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 found = false;
                 place=0;
             }
+            stmt.close();
 //            stmt.executeUpdate("DELETE FROM xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + getId());
 //            stmt.close();
 //            for (i=0; i<getXinco_core_groups().size(); i++) {
@@ -375,6 +374,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 else
                     password="userpassword='" +
                             getUserpassword().replaceAll("'","\\\\'") + "'";
+                System.out.println(password);
                 stmt.executeUpdate("UPDATE xinco_core_user SET username='" +
                         getUsername().replaceAll("'","\\\\'") + "', "+password+", name='" +
                         getName().replaceAll("'","\\\\'") + "', firstname='" +
