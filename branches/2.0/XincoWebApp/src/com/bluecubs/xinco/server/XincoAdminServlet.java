@@ -88,7 +88,16 @@ public class XincoAdminServlet extends HttpServlet {
     throws ServletException, IOException {
         Locale loc = null;
         try {
-            loc = new Locale(request.getParameter("list"));
+            String list = request.getParameter("list");
+            String[] locales;
+            locales = list.split("_");
+            switch(locales.length){
+                case 1: loc = new Locale(locales[0]);break;
+                case 2: loc = new Locale(locales[0],locales[1]);break;
+                case 3: loc = new
+                        Locale(locales[0],locales[1],locales[2]);break;
+                default: loc = Locale.getDefault();
+            }
         } catch (Exception e) {
             loc = Locale.getDefault();
         }
@@ -111,6 +120,7 @@ public class XincoAdminServlet extends HttpServlet {
         HttpSession session = request.getSession(true);
         //start output
         response.setContentType("text/html");
+        response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
         
         //connect to db

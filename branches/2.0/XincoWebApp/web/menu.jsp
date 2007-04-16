@@ -6,7 +6,21 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <%
-Locale loc=new Locale(request.getParameter("list"));
+Locale loc = null;
+try {
+    String list = request.getParameter("list");
+    String[] locales;
+    locales = list.split("_");
+    switch(locales.length){
+        case 1: loc = new Locale(locales[0]);break;
+        case 2: loc = new Locale(locales[0],locales[1]);break;
+        case 3: loc = new
+                Locale(locales[0],locales[1],locales[2]);break;
+        default: loc = Locale.getDefault();
+    }
+} catch (Exception e) {
+    loc = Locale.getDefault();
+}
 ResourceBundle rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
 rb.getLocale();
 out.println("<html>");
