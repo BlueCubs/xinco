@@ -8,5 +8,4 @@ native2ascii.exe _XincoMessages_pl.properties XincoMessages_pl.properties
 native2ascii.exe _XincoMessages_pt.properties XincoMessages_pt.properties
 native2ascii.exe _XincoMessages_pt_BR.properties XincoMessages_pt_BR.properties
 native2ascii.exe _XincoMessagesLocale.properties XincoMessagesLocale.properties
-native2ascii.exe _XincoMessages_zh_CN.properties XincoMessages_zh_CN.properties
 
