@@ -84,7 +84,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.CheckedOutputStream;
 import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -110,7 +109,6 @@ import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.event.MouseInputListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -357,8 +355,22 @@ public class XincoExplorer extends JFrame {
         switchPLAF((String)xincoClientConfig.elementAt(1));
         //choose language
         getJDialogLocale().setVisible(true);
-        //load language data
-        xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", (Locale)xincoClientConfig.elementAt(2));
+        Locale loc = null;
+        try {
+            String list = ((Locale)xincoClientConfig.elementAt(2)).toString();
+            String[] locales;
+            locales = list.split("_");
+            switch(locales.length){
+                case 1: loc = new Locale(locales[0]);break;
+                case 2: loc = new Locale(locales[0],locales[1]);break;
+                case 3: loc = new
+                        Locale(locales[0],locales[1],locales[2]);break;
+                default: loc = Locale.getDefault();
+            }
+        } catch (Exception e) {
+            loc = Locale.getDefault();
+        }
+        xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
         xerb.getLocale();
         progressBar=new XincoProgressBarThread(this);
         initialize();
