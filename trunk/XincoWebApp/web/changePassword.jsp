@@ -1,5 +1,6 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
+<%@page import="java.util.Locale"%>
 <%@page import="java.util.ResourceBundle"%>
 <%@page import="com.bluecubs.xinco.core.server.XincoSettingServer"%>
 <%@page import="com.bluecubs.xinco.core.XincoSetting"%>
@@ -17,7 +18,22 @@
 <center>
     <br/><img src="blueCubs.gif" width="356" height="400" alt="blueCubs"/><br/>
     <%
-    ResourceBundle rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+    Locale loc = null;
+    try {
+        String list = request.getParameter("list");
+        String[] locales;
+        locales = list.split("_");
+        switch(locales.length){
+            case 1: loc = new Locale(locales[0]);break;
+            case 2: loc = new Locale(locales[0],locales[1]);break;
+            case 3: loc = new
+                    Locale(locales[0],locales[1],locales[2]);break;
+            default: loc = Locale.getDefault();
+        }
+    } catch (Exception e) {
+        loc = Locale.getDefault();
+    }
+    ResourceBundle rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
     XincoSettingServer xss= new XincoSettingServer();
     String setting = ((XincoSetting)(xss.getXinco_settings().elementAt(6))).getString_value();
     out.println("<span class='bigtext'>"+rb.getString("password.aged")+"</span><br/><br/>");
