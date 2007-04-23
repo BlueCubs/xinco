@@ -58,6 +58,7 @@ public class XincoImportThread extends Thread {
     @Override
     public void run() {
         if(this.explorer!=null){
+            explorer.setFilesToBeIndexed(null);
             ResourceBundle xerb = this.explorer.getResourceBundle();
             //import data structure
             if (explorer.getSession().currentTreeNodeSelection != null) {
@@ -101,7 +102,9 @@ public class XincoImportThread extends Thread {
                 }
             }
             try {
-                explorer.getSession().xinco.rebuildIndex();
+                explorer.getSession().xinco.indexFiles(explorer.getFilesToBeIndexed(),
+                        explorer.getSession().user);
+                System.err.println("Indexing complete!");
             } catch (RemoteException ex) {
                 ex.printStackTrace();
                 explorer.progressBar.hide();
