@@ -129,7 +129,6 @@ public class XincoDocument {
                     } catch (Exception ie) {
                     }
                 }
-                
             }
         }
         
@@ -154,7 +153,6 @@ public class XincoDocument {
                 doc.add(Field.Text(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), "" + ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_datetime()));
             }
         }
-        
         return doc;
     }
     

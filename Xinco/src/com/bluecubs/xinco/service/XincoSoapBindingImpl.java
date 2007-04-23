@@ -832,14 +832,13 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             ex.printStackTrace();
         }
     }
-     public boolean rebuildIndex() throws RemoteException {
+
+    public boolean indexFiles(java.util.Vector in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException{
         XincoIndexThread xit = new XincoIndexThread();
-        boolean success=false;
-        try {
-            success = xit.rebuildIndex(new XincoDBManager());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        for(int i=0; i < in0.size();i++){
+            xit.addData((XincoCoreData)in0.elementAt(i));
         }
-        return success;
+        xit.start();
+        return true;
     }
 }

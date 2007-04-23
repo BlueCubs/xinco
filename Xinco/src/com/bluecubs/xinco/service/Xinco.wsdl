@@ -834,8 +834,11 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
       </wsdl:part>
 
    </wsdl:message>
-    <wsdl:message name="rebuildIndexRequest"></wsdl:message>
-    <wsdl:message name="rebuildIndexResponse">
+    <wsdl:message name="indexFilesRequest">
+        <wsdl:part name="in0" type="apachesoap:Vector"/>
+        <wsdl:part name="in1" type="tns2:XincoCoreUser"/>
+    </wsdl:message>
+    <wsdl:message name="indexFilesResponse">
         <wsdl:part name="in0" type="xsd:boolean"/>
     </wsdl:message>
     <wsdl:portType name="Xinco">
@@ -1235,9 +1238,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
        </wsdl:output>
 
       </wsdl:operation>
-        <wsdl:operation name="rebuildIndex">
-            <wsdl:input name="rebuildIndexRequest" message="impl:rebuildIndexRequest"/>
-            <wsdl:output name="rebuildIndexResponse" message="impl:rebuildIndexResponse"/>
+        <wsdl:operation name="indexFiles">
+            <wsdl:input name="indexFilesRequest" message="impl:indexFilesRequest"/>
+            <wsdl:output name="indexFilesResponse" message="impl:indexFilesResponse"/>
         </wsdl:operation>
     </wsdl:portType>
     <wsdl:binding name="XincoSoapBinding" type="impl:Xinco">
@@ -1837,9 +1840,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          </wsdl:output>
 
       </wsdl:operation>
-        <wsdl:operation name="rebuildIndex">
-            <wsdl:input name="rebuildIndexRequest"/>
-            <wsdl:output name="rebuildIndexResponse"/>
+        <wsdl:operation name="indexFiles">
+            <wsdl:input name="indexFilesRequest"/>
+            <wsdl:output name="indexFilesResponse"/>
         </wsdl:operation>
     </wsdl:binding>
     <wsdl:service name="XincoService">
