@@ -105,7 +105,6 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -115,7 +114,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
@@ -182,33 +180,9 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     private int global_dialog_return_value = 0;
     private javax.swing.JMenuItem jMenuItemConnectionConnect = null;
     private javax.swing.JDialog jDialogConnection = null;
-    private javax.swing.JLabel jLabelDialogConnectionServerEndpoint = null;
-    private javax.swing.JTextField jTextFieldDialogConnectionUsername = null;
-    private javax.swing.JTextField jTextFieldDialogConnectionServerEndpoint = null;
-    private javax.swing.JPasswordField jPasswordFieldDialogConnectionPassword = null;
-    private javax.swing.JLabel jLabelDialogConnectionUsername = null;
-    private javax.swing.JLabel jLabelDialogConnectionPassword = null;
-    private javax.swing.JLabel jLabelDialogConnectionProfile = null;
-    private javax.swing.JList jListDialogConnectionProfile = null;
-    private javax.swing.JLabel jLabelDialogConnectionProfileName = null;
-    private javax.swing.JTextField jTextFieldDialogConnectionProfileName = null;
-    private javax.swing.JLabel jLabelDialogConnectionSavePassword = null;
-    private javax.swing.JScrollPane jScrollPaneDialogConnectionProfile = null;
     private javax.swing.JDialog jDialogFolder = null;
-    private javax.swing.JLabel jLabelDialogFolderID = null;
-    private javax.swing.JLabel jLabelDialogFolderDesignation = null;
-    private javax.swing.JLabel jLabelDialogFolderLanguage = null;
-    private javax.swing.JLabel jLabelDialogFolderStatus = null;
-    private javax.swing.JTextField jTextFieldDialogFolderID = null;
-    private javax.swing.JTextField jTextFieldDialogFolderDesignation = null;
-    private javax.swing.JTextField jTextFieldDialogFolderStatus = null;
-    private javax.swing.JScrollPane jScrollPaneDialogFolderLanguage = null;
-    private javax.swing.JList jListDialogFolderLanguage = null;
     private javax.swing.JDialog jDialogACL = null;
     private javax.swing.JDialog jDialogDataType = null;
-    private javax.swing.JLabel jLabelDialogDataType = null;
-    private javax.swing.JScrollPane jScrollPaneDialogDataType = null;
-    private javax.swing.JList jListDialogDataType = null;
     private javax.swing.JDialog jDialogRevision = null;
     private javax.swing.JPanel jContentPaneDialogRevision = null;
     private javax.swing.JLabel jLabelDialogRevision = null;
@@ -217,57 +191,13 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     private javax.swing.JButton jButtonDialogRevisionContinue = null;
     private javax.swing.JButton jButtonDialogRevisionCancel = null;
     private javax.swing.JDialog jDialogData = null;
-    private javax.swing.JLabel jLabelDialogDataID = null;
-    private javax.swing.JLabel jLabelDialogDataDesignation = null;
-    private javax.swing.JLabel jLabelDialogDataLanguage = null;
-    private javax.swing.JLabel jLabelDialogDataStatus = null;
-    private javax.swing.JTextField jTextFieldDialogDataID = null;
-    private javax.swing.JTextField jTextFieldDialogDataDesignation = null;
-    private javax.swing.JTextField jTextFieldDialogDataStatus = null;
-    private javax.swing.JScrollPane jScrollPaneDialogDataLanguage = null;
-    private javax.swing.JList jListDialogDataLanguage = null;
     private javax.swing.JDialog jDialogArchive = null;
-    private javax.swing.JLabel jLabelDialogArchiveRevisionModel = null;
-    private javax.swing.JLabel jLabelDialogArchiveDate = null;
-    private javax.swing.JTextField jTextFieldDialogArchiveDateYear = null;
-    private javax.swing.JTextField jTextFieldDialogArchiveDateMonth = null;
-    private javax.swing.JTextField jTextFieldDialogArchiveDateDay = null;
-    private javax.swing.JLabel jLabelDialogArchiveDays = null;
-    private javax.swing.JTextField jTextFieldDialogArchiveDays = null;
     private javax.swing.JDialog jDialogLog = null;
-    private javax.swing.JLabel jLabelDialogLogDescription = null;
-    private javax.swing.JLabel jLabelDialogLogVersion = null;
-    private javax.swing.JTextField jTextFieldDialogLogDescription = null;
-    private javax.swing.JTextField jTextFieldDialogLogVersionHigh = null;
-    private javax.swing.JTextField jTextFieldDialogLogVersionMid = null;
-    private javax.swing.JTextField jTextFieldDialogLogVersionLow = null;
-    private javax.swing.JTextField jTextFieldDialogLogVersionPostfix = null;
-    private javax.swing.JLabel jLabelDialogLogVersionPostfix = null;
-    private javax.swing.JLabel jLabelDialogLogVersionPostfixExplanation = null;
-    private javax.swing.JLabel jLabelDialogLogVersionDot1 = null;
-    private javax.swing.JLabel jLabelDialogLogVersionDot2 = null;
     private javax.swing.JDialog jDialogAddAttributesUniversal = null;
-    private javax.swing.JScrollPane jScrollPaneDialogAddAttributesUniversal = null;
-    private javax.swing.JTable jTableDialogAddAttributesUniversal = null;
     private javax.swing.JMenu jMenuPreferences = null;
     private javax.swing.JMenuItem jMenuItemPreferencesEditUser = null;
     private javax.swing.JDialog jDialogUser = null;
     private javax.swing.JPanel jContentPaneDialogUser = null;
-    private javax.swing.JLabel jLabelDialogUserID = null;
-    private javax.swing.JLabel jLabelDialogUserUsername = null;
-    private javax.swing.JLabel jLabelDialogUserPassword = null;
-    private javax.swing.JLabel jLabelDialogUserFirstname = null;
-    private javax.swing.JLabel jLabelDialogUserLastname = null;
-    private javax.swing.JLabel jLabelDialogUserEmail = null;
-    private javax.swing.JTextField jTextFieldDialogUserID = null;
-    private javax.swing.JTextField jTextFieldDialogUserUsername = null;
-    private javax.swing.JLabel jLabelDialogUserStatus = null;
-    private javax.swing.JPasswordField jPasswordFieldDialogUserPassword = null;
-    private javax.swing.JPasswordField jPasswordFieldDialogUserVerifyPassword = null;
-    private javax.swing.JTextField jTextFieldDialogUserFirstname = null;
-    private javax.swing.JTextField jTextFieldDialogUserLastname = null;
-    private javax.swing.JTextField jTextFieldDialogUserEmail = null;
-    private javax.swing.JTextField jTextFieldDialogUserStatus = null;
     private javax.swing.JDialog jDialogAddAttributesText = null;
     private javax.swing.JPanel jContentPaneDialogAddAttributesText = null;
     private javax.swing.JTextArea jTextAreaDialogAddAttributesText = null;
@@ -279,17 +209,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     private javax.swing.JLabel jLabelDialogTransactionInfoText = null;
     private javax.swing.JPanel jContentPaneInformation = null;
     public javax.swing.JTextArea jLabelInternalFrameInformationText = null;
-    private JTable jTableSearchResult = null;
-    private JScrollPane jScrollPaneSearchResult = null;
-    private JLabel jLabelSearchQuery = null;
-    private JLabel jLabelSearchLanguage = null;
-    private JLabel jLabelSearchQueryBuilder = null;
-    private JLabel jLabelSearchQueryBuilderHintsLabel = null;
-    private JLabel jLabelSearchQueryBuilderHints = null;
-    private JTextField jTextFieldSearchQuery = null;
-    private JScrollPane jScrollPaneSearchLanguage = null;
-    private JList jListSearchLanguage = null;
-    private JTextField jTextFieldSearchKeyword = null;
     private JPopupMenu jPopupMenuRepository = null;
     private JPanel jContentPaneDialogLocale = null;
     private JDialog jDialogLocale = null;
@@ -327,6 +246,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     private LockDialog lockDialog= null;
     private XincoActivityTimer xat = null;
     private JDialog [] dialogs=null;
+    //Vector of XincoCoreData to be indexed
+    private Vector filesToBeIndexed=null;
     
     /**
      * This is the default constructor
@@ -1646,15 +1567,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         return jTreeRepository;
     }
     
-    private void expandAllNodes() {
-        getJTreeRepository();
-        int row = 0;
-        while (row < jTreeRepository.getRowCount()) {
-            jTreeRepository.expandRow(row);
-            row++;
-        }
-    }
-    
     
     public void collapseAllNodes() {
         getJTreeRepository();
@@ -1978,17 +1890,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         if(rThread==null)
             rThread= new refreshThread();
         rThread.start();
-    }
-    /**
-     * This method initializes jContentPaneDialogConnection
-     *
-     * @return javax.swing.JPanel
-     */
-    private void getJContentPaneDialogConnection() {
-        if(this.dialogConnection == null) {
-            this.dialogConnection=new ConnectionDialog(new javax.swing.JFrame(),
-                    true,this);
-        }
     }
     /**
      * This method initializes jDialogConnection
@@ -2494,6 +2395,9 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     ap.setContent(in, "unknown/unknown");
                     ((XincoSoapBindingStub) xincoClientSession.xinco).addAttachment(ap);
                 }
+                if(this.getFilesToBeIndexed()==null)
+                    this.setFilesToBeIndexed(new Vector());
+                this.getFilesToBeIndexed().add((XincoCoreData) newnode.getUserObject());
                 // upload file
                 if (xincoClientSession.xinco.uploadXincoCoreData((XincoCoreData) newnode.getUserObject(),
                         byte_array,
@@ -3208,7 +3112,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      * @return void
      */
     private void setPreviousPathFilename(String s) {
-        int i=0,j=0;
+        int i=0;
         if(s != null) {
             try {
                 previous_fullpath = s;
@@ -3241,7 +3145,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      * @return void
      */
     private void setCurrentPathFilename(String s) {
-        int i=0,j=0;
+        int i=0;
         if(s != null) {
             try {
                 setPreviousPathFilename(current_fullpath);
@@ -3281,19 +3185,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         current_filename = "";
         current_path = s;
         current_fullpath = s;
-    }
-    /**
-     * This method initializes jContentPaneDialogUser
-     *
-     * @return javax.swing.JPanel
-     */
-    private javax.swing.JPanel getJContentPaneDialogUser() {
-        if(jContentPaneDialogUser == null) {
-            jContentPaneDialogUser = new javax.swing.JPanel();
-            jContentPaneDialogUser.setLayout(null);
-            getJDialogUser(false);
-        }
-        return jContentPaneDialogUser;
     }
     /**
      * This method initializes jDialogUser
@@ -3424,23 +3315,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jContentPaneDialogTransactionInfo.add(getJLabelDialogTransactionInfoText(), null);
         }
         return jContentPaneDialogTransactionInfo;
-    }
-    /**
-     * This method initializes jDialogTransactionInfo
-     *
-     * @return javax.swing.JDialog
-     */
-    private javax.swing.JDialog getJDialogTransactionInfo() {
-        if(jDialogTransactionInfo == null) {
-            jDialogTransactionInfo = new javax.swing.JDialog();
-            jDialogTransactionInfo.setContentPane(getJContentPaneDialogTransactionInfo());
-            jDialogTransactionInfo.setBounds(600, 200, 400, 150);
-            jDialogTransactionInfo.setTitle(xerb.getString("window.transactioninfo"));
-            jDialogTransactionInfo.setResizable(false);
-            jDialogTransactionInfo.setModal(false);
-            this.addDialog(jDialogTransactionInfo);
-        }
-        return jDialogTransactionInfo;
     }
     /**
      * This method initializes jLabelDialogTransactionInfoText
@@ -3604,29 +3478,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         this.global_dialog_return_value=v;
     }
     
-    private javax.swing.JTable getJTableAudit() {
-        if(jTableAudit == null) {
-            String[] cn = {xerb.getString("window.repository.table.attribute"),xerb.getString("window.repository.table.details")};
-            DefaultTableModel dtm = new DefaultTableModel(cn, 0) {
-                
-                @Override
-                public boolean isCellEditable(int row, int column) {
-                    return false;
-                }
-            };
-            jTableAudit = new javax.swing.JTable();
-            jTableAudit.setModel(dtm);
-            jTableAudit.setColumnSelectionAllowed(false);
-            jTableAudit.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            jTableAudit.setRowSelectionAllowed(false);
-            jTableAudit.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-            jTableAudit.setCellSelectionEnabled(false);
-            jTableAudit.setEnabled(true);
-            jTableAudit.addMouseListener(this.explorer);
-        }
-        return jTableAudit;
-    }
-    
     public void setJTableAudit(javax.swing.JTable jTableAudit) {
         this.jTableAudit = jTableAudit;
     }
@@ -3778,7 +3629,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 JOptionPane.showMessageDialog(XincoExplorer.this,
                         xerb.getString("menu.connection.failed") + " " +
                         xerb.getString("general.reason") + ": " +
-                        cone.toString() +" "+xerb.getString("error.Dbdriver.incorrect.deployment"),
+                        cone.toString() +" "+xerb.getString("error.connection.incorrect.deployment"),
                         xerb.getString("menu.connection.failed"),
                         JOptionPane.WARNING_MESSAGE);
             }catch (Exception cone) {
@@ -3787,7 +3638,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 markConnectionStatus();
                 String exception="";
                 if(cone.toString().equals("java.lang"))
-                    exception=xerb.getString("error.Dbdriver.incorrect.deployment");
+                    exception=xerb.getString("error.connection.incorrect.deployment");
                 else
                     exception=cone.toString();
                 JOptionPane.showMessageDialog(XincoExplorer.this,
@@ -3820,5 +3671,13 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         if(node.getUserObject().getClass() == XincoCoreData.class)
             nodeName= ((XincoCoreData) node.getUserObject()).getDesignation();
         return nodeName;
+    }
+
+    public Vector getFilesToBeIndexed() {
+        return filesToBeIndexed;
+    }
+
+    public void setFilesToBeIndexed(Vector filesToBeIndexed) {
+        this.filesToBeIndexed = filesToBeIndexed;
     }
 }
