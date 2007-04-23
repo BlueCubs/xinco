@@ -78,20 +78,9 @@ public class XincoPublisherServlet extends HttpServlet {
                         Locale(locales[0],locales[1],locales[2]);break;
                 default: loc = Locale.getDefault();
             }
-            //loc = new Locale(request.getParameter("list"));
         } catch (Exception e) {
             loc = Locale.getDefault();
         }
-//        try {
-//            if(request.getParameter("list").indexOf("_")==-1)
-//                loc = new Locale(request.getParameter("list"));
-//            else
-//                loc = new Locale(request.getParameter("list").substring(0,request.getParameter("list").indexOf("_")),
-//                        request.getParameter("list").substring(request.getParameter("list").indexOf("_")+1,
-//                        request.getParameter("list").length()));
-//        } catch (Exception e) {
-//            loc = Locale.getDefault();
-//        }
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
         XincoSettingServer xss= new XincoSettingServer();
         String setting = ((XincoSetting)(xss.getXinco_settings().elementAt(8))).getString_value();
