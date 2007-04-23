@@ -60,11 +60,16 @@ public class XincoDBManager {
     
     public XincoDBManager() throws Exception {
         lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
-        //load compiled configuartion
+        //load connection configuartion
         config = XincoConfigSingletonServer.getInstance();
         DataSource datasource = (DataSource)(new InitialContext()).lookup(config.JNDIDB);
         con = datasource.getConnection();
         con.setAutoCommit(false);
+        //load configuration from database
+        ResultSet rs = con.createStatement().executeQuery("select * from " +
+                "`xinco_setting` where description like 'xinco/%' " +
+                "order by description desc");
+        config.init(rs);
         count++;
     }
     

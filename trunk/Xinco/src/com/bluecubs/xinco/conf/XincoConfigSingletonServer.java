@@ -36,10 +36,10 @@
 
 package com.bluecubs.xinco.conf;
 
-import com.bluecubs.xinco.archive.XincoArchiver;
-import com.bluecubs.xinco.core.server.XincoDBManager;
-import javax.naming.InitialContext;
+import java.sql.ResultSet;
 import java.util.Vector;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 /**
  * This class handles the server configuration of xinco.
@@ -69,37 +69,61 @@ public class XincoConfigSingletonServer {
     //private constructor to avoid instance generation with new-operator!
     private XincoConfigSingletonServer() {
         try {
-            FileRepositoryPath = (String)(new InitialContext()).lookup("java:comp/env/xinco/FileRepositoryPath");
-            if (!(FileRepositoryPath.substring(FileRepositoryPath.length()-1).equals(System.getProperty("file.separator")))) {
-                FileRepositoryPath = FileRepositoryPath + System.getProperty("file.separator");
-            }
-            //optional: FileIndexPath
-            try {
-                FileIndexPath = (String)(new InitialContext()).lookup("java:comp/env/xinco/FileIndexPath");
-            } catch (Exception ce) {
-                FileIndexPath = FileRepositoryPath + "index";
-            }
-            if (!(FileIndexPath.substring(FileIndexPath.length()-1).equals(System.getProperty("file.separator")))) {
-                FileIndexPath += System.getProperty("file.separator");
-            }
-            FileArchivePath = (String)(new InitialContext()).lookup("java:comp/env/xinco/FileArchivePath");
-            if (!(FileArchivePath.substring(FileArchivePath.length()-1).equals(System.getProperty("file.separator")))) {
-                FileArchivePath += System.getProperty("file.separator");
-            }
-            FileArchivePeriod = ((Long)(new InitialContext()).lookup("java:comp/env/xinco/FileArchivePeriod")).longValue();
-            
-            FileIndexerCount = ((Integer)(new InitialContext()).lookup("java:comp/env/xinco/FileIndexerCount")).intValue();
-            IndexFileTypesClass = new Vector();
-            IndexFileTypesExt = new Vector();
-            for (int i=0;i<FileIndexerCount;i++) {
-                IndexFileTypesClass.add((String)(new InitialContext()).lookup("java:comp/env/xinco/FileIndexer_" + (i+1) + "_Class"));
-                IndexFileTypesExt.add(((String)(new InitialContext()).lookup("java:comp/env/xinco/FileIndexer_" + (i+1) + "_Ext")).split(";"));
-            }
-            IndexNoIndex = ((String)(new InitialContext()).lookup("java:comp/env/xinco/IndexNoIndex")).split(";");
-            
             JNDIDB = (String)(new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
-            MaxSearchResult = ((Integer)(new InitialContext()).lookup("java:comp/env/xinco/MaxSearchResult")).intValue();
-        } catch (Exception e) {
+        } catch (NamingException ex) {
+            JNDIDB = "java:comp/env/jdbc/XincoDB";
+        }
+    }
+    
+    public String getFileArchivePath() {
+        return FileArchivePath;
+    }
+    
+    public void init(ResultSet rs){
+        try {
+            while(rs.next()){
+                if(rs.getString("description").equals("xinco/FileRepositoryPath")){
+                    FileRepositoryPath=rs.getString("string_value");
+                    if (!(FileRepositoryPath.substring(FileRepositoryPath.length()-1).equals(System.getProperty("file.separator")))) {
+                        FileRepositoryPath = FileRepositoryPath + System.getProperty("file.separator");
+                    }
+                    if(rs.getString("description").equals("xinco/MaxSearchResult"))
+                        MaxSearchResult=rs.getInt("int_value");
+                    if(rs.getString("description").equals("xinco/FileIndexPath")){
+                        FileIndexPath=rs.getString("string_value");
+                        if(FileIndexPath=="")
+                            FileIndexPath = FileRepositoryPath + "index";
+                        if (!(FileIndexPath.substring(FileIndexPath.length()-1).equals(System.getProperty("file.separator")))) {
+                            FileIndexPath += System.getProperty("file.separator");
+                        }
+                    }
+                    if(rs.getString("description").equals("xinco/FileArchivePath")){
+                        FileArchivePath=rs.getString("string_value");
+                        if (!(FileArchivePath.substring(FileArchivePath.length()-1).equals(System.getProperty("file.separator")))) {
+                            FileArchivePath += System.getProperty("file.separator");
+                        }
+                    }
+                    if(rs.getString("description").equals("xinco/FileArchivePeriod"))
+                        FileArchivePeriod=rs.getLong("long_value");
+                    if(rs.getString("description").startsWith("xinco/FileIndexer") &&
+                            rs.getString("description").endsWith("Class") ){
+                        if(IndexFileTypesClass ==null)
+                            IndexFileTypesClass = new Vector();
+                        IndexFileTypesClass.add(rs.getString("string_value"));
+                    }
+                    if(rs.getString("description").startsWith("xinco/FileIndexer") &&
+                            rs.getString("description").endsWith("Ext") ){
+                        if(IndexFileTypesClass ==null)
+                            IndexFileTypesClass = new Vector();
+                        IndexFileTypesExt.add(rs.getString("string_value"));
+                    }
+                    if(rs.getString("description").equals("xinco/IndexNoIndex"))
+                        IndexFileTypesExt.add(rs.getString("string_value"));
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            //Default values
             FileRepositoryPath = "";
             FileIndexPath = "";
             FileArchivePath = "";
@@ -130,7 +154,6 @@ public class XincoConfigSingletonServer {
             IndexNoIndex[0] = "";
             IndexNoIndex[1] = "com";
             IndexNoIndex[2] = "exe";
-            
             JNDIDB = "java:comp/env/jdbc/XincoDB";
             MaxSearchResult = 30;
         }

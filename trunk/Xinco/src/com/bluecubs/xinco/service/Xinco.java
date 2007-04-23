@@ -41,5 +41,5 @@ public interface Xinco extends java.rmi.Remote {
     public com.bluecubs.xinco.core.XincoCoreAuditType getXincoCoreAuditType(com.bluecubs.xinco.core.XincoCoreUser in0, int in1) throws java.rmi.RemoteException;
     public java.util.Vector getXincoCoreAuditTypes(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException;
     public void setXincoAddAttribute(com.bluecubs.xinco.add.holders.XincoAddAttributeHolder in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
-    public boolean rebuildIndex() throws java.rmi.RemoteException;
+    public boolean indexFiles(java.util.Vector in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
 }

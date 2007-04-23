@@ -456,15 +456,17 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
         }
         ((java.util.List)_myOperations.get("setXincoAddAttribute")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"), java.util.Vector.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
         };
-        _oper = new org.apache.axis.description.OperationDesc("rebuildIndex", _params, new javax.xml.namespace.QName("", "in0"));
+        _oper = new org.apache.axis.description.OperationDesc("indexFiles", _params, new javax.xml.namespace.QName("", "in0"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        _oper.setElementQName(new javax.xml.namespace.QName("", "rebuildIndex"));
+        _oper.setElementQName(new javax.xml.namespace.QName("", "indexFiles"));
         _myOperationsList.add(_oper);
-        if (_myOperations.get("rebuildIndex") == null) {
-            _myOperations.put("rebuildIndex", new java.util.ArrayList());
+        if (_myOperations.get("indexFiles") == null) {
+            _myOperations.put("indexFiles", new java.util.ArrayList());
         }
-        ((java.util.List)_myOperations.get("rebuildIndex")).add(_oper);
+        ((java.util.List)_myOperations.get("indexFiles")).add(_oper);
     }
 
     public XincoSoapBindingSkeleton() {
@@ -671,9 +673,9 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
         impl.setXincoAddAttribute(in0, in1);
     }
 
-    public boolean rebuildIndex() throws java.rmi.RemoteException
+    public boolean indexFiles(java.util.Vector in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
-        boolean ret = impl.rebuildIndex();
+        boolean ret = impl.indexFiles(in0, in1);
         return ret;
     }
 
