@@ -72,101 +72,121 @@ public class XincoRepositoryActionHandler {
         this.xerb=e.getResourceBundle();
         //Same size as menu Items
         actions=new Action[e.getActionSize()];
+        //0
         actions[count]=new Refresh(xerb.getString("menu.repository.refresh"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.repository.refresh"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
         increaseCount();
+        //1        
         actions[count]=new AddFolder(xerb.getString("menu.repository.addfolder"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.repository.addfolder"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //2
         actions[count]=new AddData(xerb.getString("menu.repository.adddata"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.repository.adddata"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //3
         actions[count]=new AddDataStructure(xerb.getString("menu.repository.adddatastructure"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.repository.adddatastructure"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //4
         actions[count]=new EditFolderData(xerb.getString("menu.edit.folderdata"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.edit.folderdata"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //5
         actions[count]=new ViewEditDataAttributes(xerb.getString("menu.repository.vieweditaddattributes"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.repository.vieweditaddattributes"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //6
         actions[count]=new EditACL(xerb.getString("menu.edit.acl"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.edit.acl"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //7
         actions[count]=new MoveToClipboard(xerb.getString("menu.edit.movefolderdatatoclipboard"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.edit.movefolderdatatoclipboard"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //8
         actions[count]=new InsertFolderData(xerb.getString("menu.edit.insertfolderdata"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.edit.insertfolderdata"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //9
         actions[count]=new ViewURL(xerb.getString("menu.repository.viewurl"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.repository.viewurl"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //10
         actions[count]=new EmailContact(xerb.getString("menu.repository.emailcontact"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.repository.emailcontact"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //11
         actions[count]=new DownloadFile(xerb.getString("menu.repository.downloadfile"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.repository.downloadfile"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //12
         actions[count]=new CheckoutFile(xerb.getString("menu.edit.checkoutfile"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.edit.checkoutfile"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_2, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //13
         actions[count]=new UndoCheckoutFile(xerb.getString("menu.edit.undocheckout"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.edit.undocheckout"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //14
         actions[count]=new CheckinFile(xerb.getString("menu.edit.checkinfile"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.edit.checkinfile"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_4, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //15
         actions[count]=new PublishData(xerb.getString("menu.edit.publishdata"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.edit.publishdata"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_5, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //16
         actions[count]=new LockData(xerb.getString("menu.edit.lockdata"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.edit.lockdata"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_6, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //17
         actions[count]=new DownloadRevision(xerb.getString("menu.edit.downloadrevision"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.edit.downloadrevision"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_7, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //18
         actions[count]=new CommentData(xerb.getString("menu.edit.commentdata"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.edit.commentdata"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_8, java.awt.event.KeyEvent.ALT_MASK));
         increaseCount();
+        //19
         actions[count]=new AuditSettings(xerb.getString("menu.repository.audit"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.repository.audit"),
