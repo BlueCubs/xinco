@@ -127,6 +127,7 @@ public class LockDialog extends javax.swing.JDialog {
                             JOptionPane.INFORMATION_MESSAGE);
                     //disconnect
                     this.explorer.resetTimer();
+                    this.explorer.refreshJTree();
                     //reconnect with new user info
                     this.explorer.getSession().user=this.explorer.getSession().xinco.getCurrentXincoCoreUser(temp.getUsername(), temp.getUserpassword());
                     this.explorer.getSession().status = 1;

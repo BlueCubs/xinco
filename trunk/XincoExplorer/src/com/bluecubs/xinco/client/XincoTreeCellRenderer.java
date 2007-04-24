@@ -74,7 +74,7 @@ class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
 //            setIcon(xfim.getIcon16(getFileName(value)));
 //            setToolTipText("");
 //        } else {
-            setToolTipText(null); //no tool tip
+        setToolTipText(null); //no tool tip
 //        }
         
         return this;
@@ -82,9 +82,10 @@ class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
     
     protected boolean isFolder(Object value) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-        
-        if (node.getUserObject().getClass() == XincoCoreNode.class) {
-            return true;
+        if (node!=null){
+            if (node.getUserObject().getClass() == XincoCoreNode.class) {
+                return true;
+            }
         }
         return false;
     }
@@ -94,7 +95,7 @@ class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
         if (node.getUserObject().getClass() == XincoCoreData.class) {
             Vector attr = ((XincoCoreData) node.getUserObject()).getXinco_add_attributes();
-
+            
             if (attr.size() == 0)
                 return null;
             return ((XincoAddAttribute) (attr.get(0))).getAttrib_varchar();
