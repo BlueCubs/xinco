@@ -149,15 +149,22 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                     "xinco_core_data_id="+getXinco_core_data_id()},
                             DBM,"audit.addattribute.change",this.getChangerID());
             } else{
-                //Attributes already comes with attribute id assigned
+                //Attributes already comes with attribute id assigned. If not...
+                if(getAttribute_id()==0){
+                    rs = stmt.executeQuery("select count(attribute_id) from xinco_add_attribute" +
+                    " where xinco_core_data_id="+ getXinco_core_data_id() +
+                    " and attribute_id=" + getAttribute_id());
+                    setAttribute_id(rs.getInt(1));
+                }
                 sql="INSERT INTO xinco_add_attribute VALUES (" + getXinco_core_data_id() +
                         ", " + getAttribute_id() + ", " + getAttrib_int() + ", " +
                         getAttrib_unsignedint() + ", " + getAttrib_double() + ", '" +
                         attrVC + "', '" + attrT + "', '" + attrDT + "')";
+                System.out.println(sql);
                 stmt.executeUpdate(sql);
                 audit.updateAuditTrail("xinco_add_attribute",new String [] {"attribute_id ="+getAttribute_id(),
                 "xinco_core_data_id="+getXinco_core_data_id()},
-                        DBM,"audit.general.create",this.getChangerID());
+                        DBM,"audit.general.create",getChangerID());
             }
             stmt.close();
         } catch (Exception e) {

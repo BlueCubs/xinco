@@ -135,7 +135,6 @@ public class XincoCoreAuditTypeServer extends XincoCoreAuditType{
         }
         Vector types=new Vector();
         ResultSet rs=null;
-        
         try {
             rs=DBM.con.createStatement().executeQuery("select * from xinco_audit_type order by description");
             while(rs.next()){
