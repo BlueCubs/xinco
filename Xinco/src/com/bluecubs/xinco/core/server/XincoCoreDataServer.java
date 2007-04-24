@@ -62,13 +62,13 @@ public class XincoCoreDataServer extends XincoCoreData {
                 setXinco_core_language(new XincoCoreLanguageServer(rs.getInt("xinco_core_language_id"), DBM));
                 setXinco_core_data_type(new XincoCoreDataTypeServer(rs.getInt("xinco_core_data_type_id"), DBM));
                 //load logs
-                setXinco_core_logs(XincoCoreLogServer.getXincoCoreLogs(rs.getInt("id"), DBM));
+                setXinco_core_logs(XincoCoreLogServer.getXincoCoreLogs(getId(), DBM));
                 //load add attributes
-                setXinco_add_attributes(XincoAddAttributeServer.getXincoAddAttributes(rs.getInt("id"), DBM));
+                setXinco_add_attributes(XincoAddAttributeServer.getXincoAddAttributes(getId(), DBM));
                 setDesignation(rs.getString("designation"));
                 setStatus_number(rs.getInt("status_number"));
                 //load acl for this object
-                setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(rs.getInt("id"), "xinco_core_data_id", DBM));
+                setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(getId(), "xinco_core_data_id", DBM));
             }
             if (RowCount < 1) {
                 throw new XincoException();

@@ -825,6 +825,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                     in0.value.getAttribute_id(),in0.value.getAttrib_int(),in0.value.getAttrib_unsignedint(),
                     in0.value.getAttrib_double(),in0.value.getAttrib_varchar(),in0.value.getAttrib_text(),
                     in0.value.getAttrib_datetime());
+            xaas.setChangerID(in0.value.getChangerID());
             xaas.write2DB(new XincoDBManager());
         } catch (XincoException ex) {
             ex.printStackTrace();
