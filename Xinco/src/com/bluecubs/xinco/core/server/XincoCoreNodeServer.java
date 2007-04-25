@@ -121,7 +121,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 } else {
                     xcnid = "" + getXinco_core_node_id();
                 }
-                XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
+                XincoCoreAuditServer audit= new XincoCoreAuditServer();
                 audit.updateAuditTrail("xinco_core_node",new String [] {"id ="+getId()},
                         DBM,"audit.corenode.change",this.getChangerID());
                 stmt.executeUpdate("UPDATE xinco_core_node SET xinco_core_node_id=" + xcnid + ", xinco_core_language_id=" + getXinco_core_language().getId() + ", designation='" + getDesignation().replaceAll("'","\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
@@ -177,7 +177,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).deleteFromDB(DBM);
             }
             if (delete_this) {
-                XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
+                XincoCoreAuditServer audit= new XincoCoreAuditServer();
                 /*
                  * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
                 audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+getId()},

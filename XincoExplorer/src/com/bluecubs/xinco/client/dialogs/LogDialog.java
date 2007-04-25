@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- *
+ * 
  *
  *************************************************************
  * LogDialog.java
@@ -45,7 +45,7 @@ import com.bluecubs.xinco.core.XincoCoreLog;
 import javax.swing.JOptionPane;
 
 /**
- *
+ * 
  * Log Dialog
  * @author ortizbj
  */
@@ -58,14 +58,12 @@ public class LogDialog extends javax.swing.JDialog {
      * @param modal Is modal?
      * @param explorer Related XincoExplorer
      */
-    public LogDialog(java.awt.Frame parent, boolean modal, XincoExplorer e) {
+    public LogDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
-        this.explorer=e;
-        addMouseListener(this.explorer);
-        setTitle(explorer.getResourceBundle().getString("window.loggingdetails")+
-                ": "+this.explorer.getSelectedNodeDesignation());
+        this.explorer=explorer;
+        setTitle(explorer.getResourceBundle().getString("window.loggingdetails"));
         this.actionLabel.setText(explorer.getResourceBundle().getString("window.loggingdetails.action") + ":");
         this.versionLabel.setText(explorer.getResourceBundle().getString("general.version") + ":");
         this.continueButton.setText(explorer.getResourceBundle().getString("general.continue"));
@@ -75,9 +73,10 @@ public class LogDialog extends javax.swing.JDialog {
         this.reasonLabel.setText(explorer.getResourceBundle().getString("general.reason"));
         
         //processing independent of creation
+        int i = 0;
         String text = "";
         if (explorer.getSession().currentTreeNodeSelection.getUserObject() != null) {
-            //For some reason
+            //For some reason 
             log_index = ((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().size() - 1;
             if(((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code()==1)
                 this.reason.setEnabled(false);
@@ -89,8 +88,10 @@ public class LogDialog extends javax.swing.JDialog {
             if(((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code()==5){
                 text = "" + (((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_high()+1);
                 this.versionHigh.setEditable(false);
-            } else{
+            }
+            else{
                 text = "" + ((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_high();
+                this.versionHigh.setEditable(true);
             }
             this.versionHigh.setText(text);
             //TODO Increase based on workflow
@@ -103,8 +104,10 @@ public class LogDialog extends javax.swing.JDialog {
             if(((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code()==9){
                 text = "" + (((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_low()+1);
                 this.versionLow.setEditable(false);
-            } else{
+            }
+            else{
                 text = "" + ((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_low();
+                this.versionLow.setEditable(true);
             }
             this.versionLow.setText(text);
             //TODO set different postfixes for workflows: draft, review, etc...
@@ -141,14 +144,6 @@ public class LogDialog extends javax.swing.JDialog {
         reason = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
-            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
-                formWindowGainedFocus(evt);
-            }
-            public void windowLostFocus(java.awt.event.WindowEvent evt) {
-            }
-        });
-
         actionLabel.setText("jLabel1");
 
         action.setEditable(false);
@@ -206,17 +201,17 @@ public class LogDialog extends javax.swing.JDialog {
                     .add(layout.createSequentialGroup()
                         .add(actionLabel)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(action, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))
+                        .add(action, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
                         .add(reasonLabel)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
                         .add(versionLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(versionHigh, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                        .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 19, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(versionMid, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
                         .add(4, 4, 4)
@@ -228,10 +223,10 @@ public class LogDialog extends javax.swing.JDialog {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(versionPostfix, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 94, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(versionPostfixExplanation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE))
+                        .add(versionPostfixExplanation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
                         .add(continueButton)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 184, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 180, Short.MAX_VALUE)
                         .add(cancel)))
                 .addContainerGap())
         );
@@ -268,11 +263,6 @@ public class LogDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
-    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
-        setTitle(explorer.getResourceBundle().getString("window.loggingdetails")+
-                ": "+this.explorer.getSelectedNodeDesignation());
-    }//GEN-LAST:event_formWindowGainedFocus
-    
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         setVisible(false);
     }//GEN-LAST:event_cancelActionPerformed
@@ -289,7 +279,7 @@ public class LogDialog extends javax.swing.JDialog {
             log_index = ((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().size() - 1;
             text = this.action.getText()+" "+this.reason.getText();
             ((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).setOp_description(text);
-            text = this.versionHigh.getText();
+            text = this.versionHigh.getText(); 
             try {
                 ((XincoCoreLog)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().setVersion_high(Integer.parseInt(text));
             } catch (Exception nfe) {
@@ -313,7 +303,7 @@ public class LogDialog extends javax.swing.JDialog {
             setVisible(false);
         }
     }//GEN-LAST:event_continueButtonActionPerformed
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField action;
     private javax.swing.JLabel actionLabel;

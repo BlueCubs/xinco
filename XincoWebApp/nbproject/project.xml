@@ -11,11 +11,11 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library files="1">
-                    <file>${reference.Xinco.jar}</file>
+                    <file>${reference.XincoExplorer.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library files="1">
-                    <file>${reference.XincoExplorer.jar}</file>
+                    <file>${reference.Xinco.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
@@ -24,28 +24,20 @@
                     <file>${file.reference.XincoExplorer.jnlp-2}</file>
                     <path-in-war>client</path-in-war>
                 </library>
-                <library files="1">
-                    <file>${reference.XincoExplorer.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library files="1">
-                    <file>${file.reference.blueCubsIcon.gif-1}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library files="1">
-                    <file>${file.reference.jcalendar.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library files="1">
-                    <file>${file.reference.blueCubsIcon16x16.GIF}</file>
+                <library files="13">
+                    <file>${libs.XincoLibsClient.classpath}</file>
                     <path-in-war>client</path-in-war>
                 </library>
                 <library files="1">
                     <file>${reference.Xinco.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
-                <library files="14">
-                    <file>${libs.XincoLibsClient.classpath}</file>
+                <library files="1">
+                    <file>${reference.XincoExplorer.jar}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${file.reference.blueCubsIcon.gif-1}</file>
                     <path-in-war>client</path-in-war>
                 </library>
             </web-module-additional-libraries>

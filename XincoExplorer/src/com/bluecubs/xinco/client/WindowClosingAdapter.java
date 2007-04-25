@@ -1,5 +1,5 @@
 /**
- *Copyright 2007 blueCubs.com
+ *Copyright 2004 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -19,44 +19,44 @@
  * More information on: http://www.bluecubs.org
  *************************************************************
  *
- * Name:            XincoActivityActionListener
+ * Name:            WindowClosingAdapter
  *
- * Description:     XincoActivityActionListener
+ * Description:     exits the program correctly 
  *
- * Original Author: Javier A. Ortiz
- * Date:            March 12, 2007, 11:05 AM
+ * Original Author: Alexander Manes
+ * Date:            2004
  *
  * Modifications:
- *
+ * 
  * Who?             When?             What?
- *
+ * -                -                 -
  *
  *************************************************************
  */
 
-package com.bluecubs.xinco.client.object;
+package com.bluecubs.xinco.client;
 
-import com.bluecubs.xinco.client.XincoExplorer;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
-/**
- *
- * @author Javier A. Ortiz
- */
-public class XincoActivityActionListener implements ActionListener{
-    private XincoExplorer explorer=null;
-    private XincoActivityTimer xat=null;
-    /** Creates a new instance of XincoActivityActionListener */
-    public XincoActivityActionListener(XincoExplorer e, XincoActivityTimer xat) {
-        this.explorer=e;
-        this.xat=xat;
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        if(this.explorer.getSettings()[10].isBool_value()){
-            this.explorer.setLock(true);
-        }
-    }
-    
+public class WindowClosingAdapter
+extends WindowAdapter
+{
+ private boolean exitSystem;
+  public WindowClosingAdapter(boolean exitSystem)
+  {
+    this.exitSystem = exitSystem;
+  }
+ public WindowClosingAdapter()
+ {
+   this(false);
+ }
+ @Override
+ public void windowClosing(WindowEvent event)
+ {
+   event.getWindow().setVisible(false);
+   event.getWindow().dispose();
+   if (exitSystem) {
+     System.exit(0);
+   }
+ }
 }

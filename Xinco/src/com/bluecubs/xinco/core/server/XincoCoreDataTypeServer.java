@@ -87,7 +87,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
         
         try {
             Statement stmt = DBM.con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data_type ORDER BY id");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data_type ORDER BY designation");
 
             while (rs.next()) {
                 coreDataTypes.addElement(new XincoCoreDataTypeServer(rs.getInt("id"), rs.getString("designation"), rs.getString("description"), XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(rs.getInt("id"), DBM)));

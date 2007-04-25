@@ -40,10 +40,8 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import com.bluecubs.xinco.archive.*;
-import com.bluecubs.xinco.core.XincoSetting;
 import com.bluecubs.xinco.index.*;
 import com.bluecubs.xinco.core.server.XincoDBManager;
-import com.bluecubs.xinco.core.server.XincoSettingServer;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -95,11 +93,8 @@ public class XincoCronServlet extends HttpServlet {
             loc = Locale.getDefault();
         }
         lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
-        XincoSettingServer xss= new XincoSettingServer();
-        String setting = ((XincoSetting)(xss.getXinco_settings().elementAt(8))).getString_value();
         //start output
         response.setContentType("text/html");
-        response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
         
         //show header
@@ -187,7 +182,7 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; "+setting+", "+lrb.getString("message.admin.main.footer"));
+        out.println("<td class=\"text\">&copy; "+lrb.getString("general.copyright.date")+", "+lrb.getString("message.admin.main.footer"));
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                 lrb.getString("message.admin.main.backtomain")+"' />" +

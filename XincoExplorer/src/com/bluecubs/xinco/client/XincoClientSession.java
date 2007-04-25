@@ -29,15 +29,13 @@
  * Modifications:
  *
  * Who?             When?             What?
- * -Javier A. Ortiz 02/20/2007        Add XincoSetting vector to client session
+ * -                -                 -
  *
  *************************************************************
  */
 
 package com.bluecubs.xinco.client;
 
-import com.bluecubs.xinco.client.XincoClientRepository;
-import com.bluecubs.xinco.client.XincoMutableTreeNode;
 import java.util.Vector;
 
 import com.bluecubs.xinco.core.*;
@@ -79,14 +77,6 @@ public class XincoClientSession {
      */
     public Vector server_groups = null;
     /**
-     * Server users
-     */
-    public Vector server_users = null;
-    /**
-     * Server settings
-     */
-    private Vector server_settings = null;
-    /**
      * Server languages
      */
     public Vector server_languages = null;
@@ -124,12 +114,10 @@ public class XincoClientSession {
         xincoClientRepository = new XincoClientRepository();
         server_version = new XincoVersion();
         server_groups = new Vector();
-        server_users = new Vector();
         server_languages = new Vector();
         server_datatypes = new Vector();
         clipboardTreeNodeSelection = new Vector();
         currentSearchResult = new Vector();
-        server_settings = new Vector();
         status = 0;
     }
     

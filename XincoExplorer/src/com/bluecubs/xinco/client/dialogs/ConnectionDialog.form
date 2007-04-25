@@ -12,7 +12,6 @@
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
-    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="2"/>
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
@@ -31,39 +30,37 @@
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Group type="102" attributes="1">
                               <Component id="Create" min="-2" pref="91" max="-2" attributes="0"/>
-                              <EmptySpace pref="91" max="32767" attributes="0"/>
+                              <EmptySpace pref="83" max="32767" attributes="0"/>
                               <Component id="deleteProfile" min="-2" pref="86" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jScrollPane1" pref="268" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="260" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="usernameLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="savePWLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Component id="passwordLabel" alignment="1" min="-2" max="-2" attributes="0"/>
                           <Component id="endpointLabel" alignment="1" min="-2" max="-2" attributes="0"/>
                           <Component id="profileNameLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                          <Component id="passwordLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                          <Component id="savePasswordLabel" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="savePassword" min="-2" max="-2" attributes="0"/>
-                          <Group type="103" alignment="0" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="1" attributes="0">
-                                  <Component id="connect" min="-2" pref="87" max="-2" attributes="0"/>
-                                  <EmptySpace pref="79" max="32767" attributes="0"/>
-                                  <Component id="Cancel" min="-2" pref="90" max="-2" attributes="0"/>
-                              </Group>
-                              <Component id="password" alignment="0" pref="256" max="32767" attributes="1"/>
-                              <Component id="username" alignment="0" pref="256" max="32767" attributes="1"/>
-                              <Component id="endpoint" alignment="0" pref="256" max="32767" attributes="1"/>
-                              <Component id="profileName" alignment="0" pref="256" max="32767" attributes="1"/>
-                          </Group>
+                          <Component id="savePW" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="password" alignment="0" pref="248" max="32767" attributes="1"/>
+                          <Component id="username" alignment="0" pref="248" max="32767" attributes="1"/>
+                          <Component id="endpoint" alignment="0" pref="248" max="32767" attributes="1"/>
+                          <Component id="profileName" alignment="0" pref="248" max="32767" attributes="1"/>
                       </Group>
                   </Group>
+                  <Group type="102" alignment="0" max="-2" attributes="0">
+                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                      <Component id="connect" min="-2" pref="102" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="72" max="-2" attributes="0"/>
+                      <Component id="Cancel" min="-2" pref="90" max="-2" attributes="0"/>
+                  </Group>
               </Group>
-              <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -81,38 +78,36 @@
                   <Component id="Create" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" max="-2" attributes="0">
+              <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="profileNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="profileName" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="profileName" alignment="3" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" max="-2" attributes="0">
+              <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="endpointLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="endpoint" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="endpoint" alignment="3" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" max="-2" attributes="0">
+              <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="usernameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="username" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
+                  <Component id="username" alignment="3" pref="20" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" max="-2" attributes="0">
+              <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="passwordLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="password" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
+                  <Component id="password" alignment="3" pref="20" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Component id="savePassword" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" max="-2" attributes="0">
-                          <Component id="Cancel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="connect" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <Component id="savePasswordLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="savePW" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="savePWLabel" alignment="3" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="connect" alignment="3" max="32767" attributes="0"/>
+                  <Component id="Cancel" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -136,9 +131,6 @@
               <StringArray count="0"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="profileListValueChanged"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -184,6 +176,23 @@
         <Property name="text" type="java.lang.String" value="Password:"/>
       </Properties>
     </Component>
+    <Component class="javax.swing.JLabel" name="savePWLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Save Pasword?"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="savePW">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+            <EmptyBorder bottom="0" left="0" right="0" top="0"/>
+          </Border>
+        </Property>
+        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[0, 0, 0, 0]"/>
+        </Property>
+      </Properties>
+    </Component>
     <Component class="javax.swing.JButton" name="connect">
       <Properties>
         <Property name="text" type="java.lang.String" value="Connect"/>
@@ -201,26 +210,6 @@
       </Events>
     </Component>
     <Component class="javax.swing.JPasswordField" name="password">
-      <Events>
-        <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="passwordFocusGained"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JLabel" name="savePasswordLabel">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="jLabel1"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JCheckBox" name="savePassword">
-      <Properties>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
-            <EmptyBorder bottom="0" left="0" right="0" top="0"/>
-          </Border>
-        </Property>
-        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-          <Insets value="[0, 0, 0, 0]"/>
-        </Property>
-      </Properties>
     </Component>
   </SubComponents>
 </Form>

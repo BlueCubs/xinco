@@ -40,14 +40,11 @@ import java.sql.*;
 import javax.sql.DataSource;
 import javax.naming.InitialContext;
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
-import com.bluecubs.xinco.core.XincoCoreGroup;
-import com.bluecubs.xinco.core.XincoException;
 import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 public class XincoDBManager {
     
@@ -60,16 +57,11 @@ public class XincoDBManager {
     
     public XincoDBManager() throws Exception {
         lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
-        //load connection configuartion
+        //load compiled configuartion
         config = XincoConfigSingletonServer.getInstance();
         DataSource datasource = (DataSource)(new InitialContext()).lookup(config.JNDIDB);
         con = datasource.getConnection();
         con.setAutoCommit(false);
-        //load configuration from database
-        ResultSet rs = con.createStatement().executeQuery("select * from " +
-                "`xinco_setting` where description like 'xinco/%' " +
-                "order by description desc");
-        config.init(rs);
         count++;
     }
     
@@ -184,6 +176,7 @@ public class XincoDBManager {
             }
             header +="</td>";
         } catch(SQLException e) {
+            System.err.println("Error getting names from result set. "+e);
         }
         return header;
     }
@@ -212,76 +205,5 @@ public class XincoDBManager {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-    }
-    
-    /*
-     *Reset database tables keeping the standard inserts (assuming those inserts have id's greater than the ones specified in the xinco_id table
-     */
-    public void resetDB(XincoCoreUserServer user) throws XincoException{
-        Vector groups=user.getXinco_core_groups();
-        boolean isAdmin=false;
-        for(int i=0;i<groups.size();i++){
-            if(((XincoCoreGroup)groups.elementAt(i)).getId()==1)
-                isAdmin=true;
-        }
-        if(isAdmin){
-            ResultSet rs;
-            String[] types =  {"TABLE"};
-            Statement s=null;
-            String column="id",sql=null,condition=null;
-            int number;
-            DatabaseMetaData meta;
-            try {
-                meta = con.getMetaData();
-                //Get table names
-                rs = meta.getTables(null, null, null, types);
-                //Delete content of tables
-                s=con.createStatement();
-                while(rs.next()){
-                    if(!rs.getString("TABLE_NAME").equals("xinco_id")){
-                        number=1000;
-                        column="id";
-                        //Modify primary key name if needed
-                        if(rs.getString("TABLE_NAME").equals("xinco_add_attribute"))
-                            column="xinco_core_data_id";
-                        if(rs.getString("TABLE_NAME").equals("xinco_core_data_type_attribute"))
-                            column="xinco_core_data_type_id";
-                        if(rs.getString("TABLE_NAME").equals("xinco_scheduled_audit_has_xinco_core_group"))
-                            column="xinco_scheduled_audit_schedule_id";
-                        if(rs.getString("TABLE_NAME").equals("xinco_core_user_has_xinco_core_group"))
-                            column="xinco_core_user_id";
-                        if(rs.getString("TABLE_NAME").equals("xinco_scheduled_audit_type"))
-                            column="scheduled_type_id";
-                        if(rs.getString("TABLE_NAME").equals("xinco_scheduled_audit"))
-                            column="schedule_id";
-                        if(rs.getString("TABLE_NAME").endsWith("_t"))
-                            column="record_id";
-                        if(rs.getString("TABLE_NAME").equals("xinco_core_user_modified_record")||
-                                rs.getString("TABLE_NAME").equals("xinco_scheduled_audit"))
-                            number = -1;
-                        condition = column +" > "+number;
-                        sql="delete from "+rs.getString("TABLE_NAME")+" where "+condition;
-                        System.out.println(sql);
-                        s.executeUpdate(sql);
-                    }
-                }
-                s.close();
-                s=con.createStatement();
-                s.executeUpdate("update xinco_id set last_id = 1000 where last_id >1000");
-                s.executeUpdate("update xinco_id set last_id = 0 where last_id < 1000");
-                s.executeUpdate("delete from xinco_core_user_modified_record");
-                con.commit();
-                s.close();
-                rs=null;
-            } catch (SQLException ex) {
-                try {
-                    con.rollback();
-                } catch (SQLException e2) {
-                    e2.printStackTrace();
-                }
-                ex.printStackTrace();
-            }
-        } else
-            throw new XincoException(lrb.getString("error.noadminpermission"));
     }
 }

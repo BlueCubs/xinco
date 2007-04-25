@@ -79,6 +79,7 @@ public class XincoAutofitTableColumns
     protected static int autoResizeTable ( JTable aTable, boolean includeColumnHeaderWidth, int columnPadding )
     {
         int columnCount = aTable.getColumnCount();
+        int currentTableWidth = aTable.getWidth();
         int tableWidth = 0;
  
         Dimension cellSpacing = aTable.getIntercellSpacing();

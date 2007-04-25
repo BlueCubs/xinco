@@ -62,7 +62,6 @@ public class DataTypeDialog extends javax.swing.JDialog {
         initComponents();
         setLocationRelativeTo(null);
         this.explorer=explorer;
-        addMouseListener(this.explorer);
         setTitle(explorer.getResourceBundle().getString("window.datatype"));
         this.continueButton.setText(explorer.getResourceBundle().getString("general.continue"));
         this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));

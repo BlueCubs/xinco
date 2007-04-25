@@ -82,8 +82,6 @@ public class XincoPublisherServlet extends HttpServlet {
             loc = Locale.getDefault();
         }
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
-        XincoSettingServer xss= new XincoSettingServer();
-        String setting = ((XincoSetting)(xss.getXinco_settings().elementAt(8))).getString_value();
         int i = 0;
         int j = 0;
         String request_path;
@@ -106,7 +104,6 @@ public class XincoPublisherServlet extends HttpServlet {
         } catch (Exception e) {
             //start output
             response.setContentType("text/html");
-            response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
             out.println(e.toString());
             return;
@@ -188,7 +185,6 @@ public class XincoPublisherServlet extends HttpServlet {
             
             //start output
             response.setContentType("text/html");
-            response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
             
             //show header
@@ -308,7 +304,7 @@ public class XincoPublisherServlet extends HttpServlet {
                                         }
                                         out.println("<tr>");
                                         out.println("<td class=\"text\">&nbsp;</td>");
-                                        out.println("<td class=\"text\"><a href=\"" + "XincoPublisher?MainMenu=browse&FolderId=" +
+                                        out.println("<td class=\"text\"><a href=\"" + "XincoPublisher?MainMenu=browse&FolderId=" + 
                                                 xnode_temp2.getId() + temp_path2 + "&list="+request.getParameter("list")+"\">[" +
                                                 xnode_temp2.getDesignation() + " (" + xnode_temp2.getXinco_core_language().getSign() + ")" +
                                                 "]</a></td>");
@@ -364,10 +360,10 @@ public class XincoPublisherServlet extends HttpServlet {
                     }
                 } else {
                     out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=list&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("message.xincopublisher.list")+"</td>");
+                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=list&list="+request.getParameter("list")+"\" class=\"link\">"+rb.getString("message.xincopublisher.list")+"</td>");
                     out.println("</tr>");
                     out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path=" + (new sun.misc.BASE64Encoder().encode((new String("xincoRoot")).getBytes())) + "&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("message.xincopublisher.browse")+"</td>");
+                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path=" + (new sun.misc.BASE64Encoder().encode((new String("xincoRoot")).getBytes())) + "&list="+request.getParameter("list")+"\" class=\"link\">"+rb.getString("message.xincopublisher.browse")+"</td>");
                     out.println("</tr>");
                 }
                 out.println("<tr>");
@@ -383,6 +379,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 out.println("<br>");
                 out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
                 out.println("<tr>");
+                //out.println("<td class=\"text\">Designation:</td>");
                 out.println("<td class=\"bigtext\" colspan=\"2\">" + xcd.getDesignation() + "</td>");
                 out.println("</tr>");
                 out.println("<tr>");
@@ -426,7 +423,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
                 out.println("<tr>");
                 out.println("<td class=\"text\">&nbsp;</td>");
-                out.println("<td class=\"text\">&copy; "+setting+", "+rb.getString("message.admin.main.footer"));
+                out.println("<td class=\"text\">&copy; "+rb.getString("general.copyright.date")+", "+rb.getString("message.admin.main.footer"));
                 out.println("</tr>");
                 out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                         rb.getString("message.admin.main.backtomain")+"' />" +

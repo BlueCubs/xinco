@@ -36,18 +36,14 @@
 
 package com.bluecubs.xinco.client;
 
-import com.bluecubs.xinco.add.XincoAddAttribute;
 import java.awt.Component;
-import java.rmi.RemoteException;
 import javax.swing.*;
 import javax.swing.tree.*;
 
 import com.bluecubs.xinco.core.*;
-import com.bluecubs.xinco.tools.XincoFileIconManager;
-import java.util.Vector;
 
 class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
-    private XincoFileIconManager xfim= new XincoFileIconManager();
+    
     public XincoTreeCellRenderer() {
     }
     
@@ -60,6 +56,7 @@ class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
             boolean leaf,
             int row,
             boolean hasFocus) {
+        
         super.getTreeCellRendererComponent(
                 tree, value, sel,
                 expanded, leaf, row,
@@ -68,38 +65,19 @@ class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
         if (leaf && isFolder(value)) {
             setIcon(getClosedIcon());
             setToolTipText("");
+        } else {
+            setToolTipText(null); //no tool tip
         }
-//TODO: display icon based on file type
-//        if (leaf && !isFolder(value)) {
-//            setIcon(xfim.getIcon16(getFileName(value)));
-//            setToolTipText("");
-//        } else {
-        setToolTipText(null); //no tool tip
-//        }
         
         return this;
     }
     
     protected boolean isFolder(Object value) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-        if (node!=null){
-            if (node.getUserObject().getClass() == XincoCoreNode.class) {
-                return true;
-            }
+
+        if (node.getUserObject().getClass() == XincoCoreNode.class) {
+            return true;
         }
         return false;
-    }
-    //TODO: Still errors getting file name.
-    private String getFileName(Object value){
-        System.err.println(value.toString());
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-        if (node.getUserObject().getClass() == XincoCoreData.class) {
-            Vector attr = ((XincoCoreData) node.getUserObject()).getXinco_add_attributes();
-            
-            if (attr.size() == 0)
-                return null;
-            return ((XincoAddAttribute) (attr.get(0))).getAttrib_varchar();
-        }
-        return null;
     }
 }

@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- *
+ * 
  *
  *************************************************************
  * importThread.java
@@ -43,7 +43,6 @@ import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoException;
 import java.io.File;
-import java.rmi.RemoteException;
 import java.util.ResourceBundle;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -53,25 +52,24 @@ import javax.swing.tree.TreePath;
  *
  * @author ortizbj
  */
-public class XincoImportThread extends Thread {
+public class importThread extends Thread {
     private XincoExplorer explorer;
     @Override
     public void run() {
         if(this.explorer!=null){
-            explorer.setFilesToBeIndexed(null);
             ResourceBundle xerb = this.explorer.getResourceBundle();
             //import data structure
             if (explorer.getSession().currentTreeNodeSelection != null) {
                 if (explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
-                    JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.info"),
-                            xerb.getString("window.massiveimport"),
-                            JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.info"), xerb.getString("window.massiveimport"), JOptionPane.INFORMATION_MESSAGE);
                     try {
                         JFileChooser fc = new JFileChooser();
+
                         fc.setCurrentDirectory(new File(explorer.current_path));
                         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                         // show dialog
                         int result = fc.showOpenDialog(explorer);
+
                         if (result != JFileChooser.APPROVE_OPTION) {
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
                         }
@@ -80,19 +78,17 @@ public class XincoImportThread extends Thread {
                         explorer.progressBar.show();
                         // update transaction info
                         JOptionPane.showMessageDialog(explorer,
-                                xerb.getString("window.massiveimport.progress"),
-                                xerb.getString("window.massiveimport"),
-                                JOptionPane.INFORMATION_MESSAGE);
+                                                      xerb.getString("window.massiveimport.progress"),
+                                                      xerb.getString("window.massiveimport"),
+                                                      JOptionPane.INFORMATION_MESSAGE);
                         explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.progress"));
                         explorer.importContentOfFolder((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject(),
-                                new File(explorer.current_path));
-                        this.sleep(10000);
+                                                       new File(explorer.current_path));
                         // select current path
                         explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().currentTreeNodeSelection.getPath()));
                         // update transaction info
                         explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.importsuccess"));
                     } catch (Exception ie) {
-                        ie.printStackTrace();
                         JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.importfailed") +
                                 " " + xerb.getString("general.reason") + ": " + ie.toString(), xerb.getString("general.error"),
                                 JOptionPane.WARNING_MESSAGE);
@@ -100,19 +96,6 @@ public class XincoImportThread extends Thread {
                         explorer.progressBar.hide();
                     }
                 }
-            }
-            try {
-                explorer.getSession().xinco.indexFiles(explorer.getFilesToBeIndexed(),
-                        explorer.getSession().user);
-                System.err.println("Indexing complete!");
-            } catch (RemoteException ex) {
-                ex.printStackTrace();
-                explorer.progressBar.hide();
-                JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.importfailed") +
-                        " " + xerb.getString("general.reason") + ": " + ex.toString(), xerb.getString("general.error"),
-                        JOptionPane.WARNING_MESSAGE);
-                explorer.jLabelInternalFrameInformationText.setText("");
-                explorer.progressBar.hide();
             }
             explorer.progressBar.hide();
         }

@@ -66,10 +66,8 @@ public class SearchDialog extends javax.swing.JDialog {
     public SearchDialog(java.awt.Frame parent, boolean modal,XincoExplorer e) {
         super(parent, modal);
         initComponents();
-        setLocationRelativeTo(null);
         getRootPane().setDefaultButton(this.searchButton);
         this.explorer=e;
-        addMouseListener(this.explorer);
         this.xerb=this.explorer.getResourceBundle();
         setTitle(xerb.getString("window.search"));
         this.queryLabel.setText(xerb.getString("window.search.query") + ":");
@@ -83,6 +81,7 @@ public class SearchDialog extends javax.swing.JDialog {
         this.goToSelectionButton.setText(xerb.getString("window.search.gotoselection"));
         this.addToQueryButton.setText(xerb.getString("window.search.addtoquery"));
         this.resetButton.setText(xerb.getString("general.reset"));
+        String[] cn = {xerb.getString("window.search.table.designation"),xerb.getString("window.search.table.path")};
         resultTable.setModel(new DefaultTableModel(new Object[][]{},
                 new String[]{xerb.getString("window.search.table.designation"),
                 xerb.getString("window.search.table.path")}) {
@@ -100,7 +99,7 @@ public class SearchDialog extends javax.swing.JDialog {
         String text = "";
         int selection = -1;
         int alt_selection = 0;
-        ListModel dlm=null;
+        ListModel dlm;
         XincoCoreDataType xcdt = null;
         this.operatorComboBox.setSelectedIndex(0);
         //load fields
@@ -233,13 +232,20 @@ public class SearchDialog extends javax.swing.JDialog {
 
         jScrollPane2.setAutoscrolls(true);
         jScrollPane2.setDoubleBuffered(true);
-        resultTable.setModel(new DefaultTableModel(new Object[][]{},
-                              new String[]{"Title 1", "Title 2"}) {
-            boolean[] canEdit = new boolean[]{false, false};
+        resultTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
 
-            @Override
+            },
+            new String [] {
+                "Title 1", "Title 2"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
+                return canEdit [columnIndex];
             }
         });
         jScrollPane2.setViewportView(resultTable);

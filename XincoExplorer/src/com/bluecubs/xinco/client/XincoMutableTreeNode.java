@@ -50,7 +50,6 @@ public class XincoMutableTreeNode extends DefaultMutableTreeNode {
     public String toString() {
         String s = null;
         String status = null;
-        
         if (this.getUserObject() != null) {
             if (this.getUserObject().getClass() == XincoCoreNode.class) {
                 s = ((XincoCoreNode)this.getUserObject()).getDesignation();
@@ -80,8 +79,7 @@ public class XincoMutableTreeNode extends DefaultMutableTreeNode {
                 if (((XincoCoreData)this.getUserObject()).getStatus_number() == 5) {
                     status = new String(" | WWW");
                 }
-                return "" + s + " (" + ((XincoCoreData)this.getUserObject()).getXinco_core_data_type().getDesignation() +
-                        " | " + ((XincoCoreData)this.getUserObject()).getXinco_core_language().getSign() + status + ")";
+                return "" + s + " (" + ((XincoCoreData)this.getUserObject()).getXinco_core_data_type().getDesignation() + " | " + ((XincoCoreData)this.getUserObject()).getXinco_core_language().getSign() + status + ")";
             }
         }
         return super.toString();

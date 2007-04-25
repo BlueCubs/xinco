@@ -442,17 +442,11 @@
         <copy-ear-war file="${libs.XincoLibs.classpath.libfile.3}" propname="included.lib.libs.XincoLibs.classpath.3.X"/>
         <copy-ear-war file="${libs.XincoLibs.classpath.libfile.2}" propname="included.lib.libs.XincoLibs.classpath.2.X"/>
         <copy-ear-war file="${libs.XincoLibs.classpath.libfile.1}" propname="included.lib.libs.XincoLibs.classpath.1.X"/>
-        <basename property="included.lib.reference.Xinco.jar" file="${reference.Xinco.jar}"/>
-        <copy-ear-war file="${reference.Xinco.jar}" propname="included.lib.reference.Xinco.jar.X"/>
         <basename property="included.lib.reference.XincoExplorer.jar" file="${reference.XincoExplorer.jar}"/>
         <copy-ear-war file="${reference.XincoExplorer.jar}" propname="included.lib.reference.XincoExplorer.jar.X"/>
+        <basename property="included.lib.reference.Xinco.jar" file="${reference.Xinco.jar}"/>
+        <copy-ear-war file="${reference.Xinco.jar}" propname="included.lib.reference.Xinco.jar.X"/>
         <copy file="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir.real}/client"/>
-        <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir.real}/client"/>
-        <copy file="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir.real}/client"/>
-        <copy file="${file.reference.jcalendar.jar}" todir="${build.web.dir.real}/client"/>
-        <copy file="${file.reference.blueCubsIcon16x16.GIF}" todir="${build.web.dir.real}/client"/>
-        <copy file="${reference.Xinco.jar}" todir="${build.web.dir.real}/client"/>
-        <copy file="${libs.XincoLibsClient.classpath.libfile.14}" todir="${build.web.dir.real}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.13}" todir="${build.web.dir.real}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.12}" todir="${build.web.dir.real}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.11}" todir="${build.web.dir.real}/client"/>
@@ -466,9 +460,12 @@
         <copy file="${libs.XincoLibsClient.classpath.libfile.3}" todir="${build.web.dir.real}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.2}" todir="${build.web.dir.real}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.1}" todir="${build.web.dir.real}/client"/>
+        <copy file="${reference.Xinco.jar}" todir="${build.web.dir.real}/client"/>
+        <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir.real}/client"/>
+        <copy file="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir.real}/client"/>
         <mkdir dir="${build.web.dir.real}/META-INF"/>
         <manifest file="${build.web.dir.real}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.libs.XincoLibs.classpath.1.X} ${included.lib.libs.XincoLibs.classpath.2.X} ${included.lib.libs.XincoLibs.classpath.3.X} ${included.lib.libs.XincoLibs.classpath.4.X} ${included.lib.libs.XincoLibs.classpath.5.X} ${included.lib.libs.XincoLibs.classpath.6.X} ${included.lib.libs.XincoLibs.classpath.7.X} ${included.lib.libs.XincoLibs.classpath.8.X} ${included.lib.libs.XincoLibs.classpath.9.X} ${included.lib.libs.XincoLibs.classpath.10.X} ${included.lib.libs.XincoLibs.classpath.11.X} ${included.lib.libs.XincoLibs.classpath.12.X} ${included.lib.libs.XincoLibs.classpath.13.X} ${included.lib.libs.XincoLibs.classpath.14.X} ${included.lib.libs.XincoLibs.classpath.15.X} ${included.lib.libs.XincoLibs.classpath.16.X} ${included.lib.libs.XincoLibs.classpath.17.X} ${included.lib.libs.XincoLibs.classpath.18.X} ${included.lib.libs.XincoLibs.classpath.19.X} ${included.lib.libs.XincoLibs.classpath.20.X} ${included.lib.libs.XincoLibs.classpath.21.X} ${included.lib.reference.Xinco.jar} ${included.lib.reference.XincoExplorer.jar} "/>
+            <attribute name="Class-Path" value="${included.lib.libs.XincoLibs.classpath.1.X} ${included.lib.libs.XincoLibs.classpath.2.X} ${included.lib.libs.XincoLibs.classpath.3.X} ${included.lib.libs.XincoLibs.classpath.4.X} ${included.lib.libs.XincoLibs.classpath.5.X} ${included.lib.libs.XincoLibs.classpath.6.X} ${included.lib.libs.XincoLibs.classpath.7.X} ${included.lib.libs.XincoLibs.classpath.8.X} ${included.lib.libs.XincoLibs.classpath.9.X} ${included.lib.libs.XincoLibs.classpath.10.X} ${included.lib.libs.XincoLibs.classpath.11.X} ${included.lib.libs.XincoLibs.classpath.12.X} ${included.lib.libs.XincoLibs.classpath.13.X} ${included.lib.libs.XincoLibs.classpath.14.X} ${included.lib.libs.XincoLibs.classpath.15.X} ${included.lib.libs.XincoLibs.classpath.16.X} ${included.lib.libs.XincoLibs.classpath.17.X} ${included.lib.libs.XincoLibs.classpath.18.X} ${included.lib.libs.XincoLibs.classpath.19.X} ${included.lib.libs.XincoLibs.classpath.20.X} ${included.lib.libs.XincoLibs.classpath.21.X} ${included.lib.reference.XincoExplorer.jar} ${included.lib.reference.Xinco.jar} "/>
         </manifest>
         <delete dir="${dist.ear.dir}/temp"/>
     </target>
@@ -494,15 +491,9 @@
         <copy file="${libs.XincoLibs.classpath.libfile.3}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.XincoLibs.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.XincoLibs.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${reference.Xinco.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${reference.Xinco.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir.real}/client"/>
-        <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir.real}/client"/>
-        <copy file="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir.real}/client"/>
-        <copy file="${file.reference.jcalendar.jar}" todir="${build.web.dir.real}/client"/>
-        <copy file="${file.reference.blueCubsIcon16x16.GIF}" todir="${build.web.dir.real}/client"/>
-        <copy file="${reference.Xinco.jar}" todir="${build.web.dir.real}/client"/>
-        <copy file="${libs.XincoLibsClient.classpath.libfile.14}" todir="${build.web.dir.real}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.13}" todir="${build.web.dir.real}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.12}" todir="${build.web.dir.real}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.11}" todir="${build.web.dir.real}/client"/>
@@ -516,6 +507,9 @@
         <copy file="${libs.XincoLibsClient.classpath.libfile.3}" todir="${build.web.dir.real}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.2}" todir="${build.web.dir.real}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.1}" todir="${build.web.dir.real}/client"/>
+        <copy file="${reference.Xinco.jar}" todir="${build.web.dir.real}/client"/>
+        <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir.real}/client"/>
+        <copy file="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir.real}/client"/>
     </target>
     <target name="do-ear-dist" depends="init,compile,compile-jsps,-pre-dist,library-inclusion-in-manifest">
         <dirname property="dist.jar.dir" file="${dist.ear.war}"/>

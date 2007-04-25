@@ -62,7 +62,6 @@ public class UserDialog extends javax.swing.JDialog {
     public UserDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer,boolean aged) {
         super(parent, modal);
         this.explorer=explorer;
-        addMouseListener(this.explorer);
         this.isAged=aged;
         initComponents();
         initialize();

@@ -62,13 +62,13 @@ public class XincoCoreDataServer extends XincoCoreData {
                 setXinco_core_language(new XincoCoreLanguageServer(rs.getInt("xinco_core_language_id"), DBM));
                 setXinco_core_data_type(new XincoCoreDataTypeServer(rs.getInt("xinco_core_data_type_id"), DBM));
                 //load logs
-                setXinco_core_logs(XincoCoreLogServer.getXincoCoreLogs(getId(), DBM));
+                setXinco_core_logs(XincoCoreLogServer.getXincoCoreLogs(rs.getInt("id"), DBM));
                 //load add attributes
-                setXinco_add_attributes(XincoAddAttributeServer.getXincoAddAttributes(getId(), DBM));
+                setXinco_add_attributes(XincoAddAttributeServer.getXincoAddAttributes(rs.getInt("id"), DBM));
                 setDesignation(rs.getString("designation"));
                 setStatus_number(rs.getInt("status_number"));
                 //load acl for this object
-                setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(getId(), "xinco_core_data_id", DBM));
+                setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(rs.getInt("id"), "xinco_core_data_id", DBM));
             }
             if (RowCount < 1) {
                 throw new XincoException();
@@ -118,7 +118,7 @@ public class XincoCoreDataServer extends XincoCoreData {
             
             if (getId() > 0) {
                 stmt = DBM.con.createStatement();
-                XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
+                XincoCoreAuditServer audit= new XincoCoreAuditServer();
                 audit.updateAuditTrail("xinco_core_data",new String [] {"id ="+getId()},
                         DBM,"audit.data.change",this.getChangerID());
                 stmt.executeUpdate("UPDATE xinco_core_data SET xinco_core_node_id=" +
@@ -139,23 +139,14 @@ public class XincoCoreDataServer extends XincoCoreData {
             }
             
             //write add attributes
-//            stmt = DBM.con.createStatement();
-//            stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_core_data_id=" + getId());
-//            stmt.close();
+            stmt = DBM.con.createStatement();
+            stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_core_data_id=" + getId());
+            stmt.close();
             XincoAddAttributeServer xaas;
             for (i=0;i<getXinco_add_attributes().size();i++) {
-                System.err.println("");
                 ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).setXinco_core_data_id(getId());
                 //copy fields from XincoAddAttribute to XincoAddAttributeServer
-                xaas = new XincoAddAttributeServer(((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getXinco_core_data_id(),
-                        ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttribute_id(),
-                        ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_int(),
-                        ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint(),
-                        ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_double(),
-                        ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_varchar(),
-                        ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_text(),
-                        ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_datetime());
-                xaas.setChangerID(getChangerID());
+                xaas = new XincoAddAttributeServer(((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getXinco_core_data_id(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttribute_id(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_int(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_double(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_varchar(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_text(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_datetime());
                 xaas.write2DB(DBM);
                 //((XincoAddAttributeServer)getXinco_add_attributes().elementAt(i)).write2DB(DBM);
             }
@@ -177,7 +168,7 @@ public class XincoCoreDataServer extends XincoCoreData {
     public static void removeFromDB(XincoDBManager DBM,int userID,int id)throws XincoException{
         try{
         Statement stmt;
-        XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
+        XincoCoreAuditServer audit= new XincoCoreAuditServer();
         /*
          * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
         audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+id},
@@ -218,7 +209,7 @@ public class XincoCoreDataServer extends XincoCoreData {
         
         try {
             Statement stmt;
-            XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
+            XincoCoreAuditServer audit= new XincoCoreAuditServer();
             //delete file / file = 1
             if (getXinco_core_data_type().getId() == 1) {
                 try {
