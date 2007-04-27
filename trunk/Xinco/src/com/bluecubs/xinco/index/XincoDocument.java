@@ -43,7 +43,6 @@ import java.io.FileInputStream;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import com.bluecubs.xinco.core.*;
-import com.bluecubs.xinco.add.*;
 import com.bluecubs.xinco.core.server.*;
 import com.bluecubs.xinco.index.filetypes.*;
 

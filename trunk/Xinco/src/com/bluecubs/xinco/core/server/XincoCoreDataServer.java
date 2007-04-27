@@ -36,8 +36,8 @@
 
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
 import com.bluecubs.xinco.add.XincoAddAttribute;
+import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
 import java.sql.*;
 import java.util.Vector;
 import java.io.File;

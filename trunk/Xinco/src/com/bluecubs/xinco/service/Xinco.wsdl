@@ -265,10 +265,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:part>
 
-      <wsdl:part name="in2" type="xsd:int">
-
-      </wsdl:part>
-
    </wsdl:message>
 
    <wsdl:message name="getAllXincoUsersResponse">
@@ -701,7 +697,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:message name="getXincoCoreAuditResponse">
 
-      <wsdl:part name="getXincoCoreAuditReturn" type="tns2:XincoCoreAudit">
+      <wsdl:part name="getXincoCoreAuditReturn" type="apachesoap:Vector">
 
       </wsdl:part>
 

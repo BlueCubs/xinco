@@ -93,7 +93,7 @@ public class XincoDBManager {
         
     }
     
-    protected void finalize() throws Throwable {
+    public void finalize() throws Throwable {
         try {
             count--;
             con.close();

@@ -8,6 +8,7 @@
 package com.bluecubs.xinco.service;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
+import com.bluecubs.xinco.add.holders.XincoAddAttributeHolder;
 import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
 import com.bluecubs.xinco.core.XincoCoreACE;
 import com.bluecubs.xinco.core.XincoCoreAudit;
@@ -751,15 +752,17 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         }
     }
     
-    public XincoCoreAudit getXincoCoreAudit(XincoCoreData in0, XincoCoreUser in1, int in2) throws RemoteException {
+    public Vector getXincoCoreAudit(XincoCoreData in0, XincoCoreUser in1) throws RemoteException {
         XincoDBManager dbm=null;
         XincoCoreAuditServer audit=null;
         ResultSet rs=null;
+        Vector audits= new Vector();
         try {
             dbm = new XincoDBManager();
-            rs=dbm.con.createStatement().executeQuery("SELECT schedule_id FROM xinco_audit WHERE xinco_core_data_id=" + in0.getId());
-            rs.next();
-            audit = new XincoCoreAuditServer(rs.getInt(1), dbm);
+            rs=dbm.con.createStatement().executeQuery("SELECT schedule_id FROM xinco_audit " +
+                    "WHERE xinco_core_data_id=" + in0.getId()+ " order by scheduled_date");
+            while(rs.next())
+                audits.add((XincoCoreAudit) new XincoCoreAuditServer(rs.getInt(1), dbm));
         } catch (XincoException ex) {
             ex.printStackTrace();
         } catch (SQLException ex) {
@@ -767,17 +770,19 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return (XincoCoreAudit)audit;
+        return audits;
     }
     
     public XincoCoreAudit setXincoCoreAudit(XincoCoreAudit in0, XincoCoreUser in1) throws RemoteException {
-        XincoDBManager dbm=null;
         XincoCoreAuditServer audit=null;
         try {
             audit= new XincoCoreAuditServer(in0.getSchedule_id(),
                     in0.getData_id(),in0.getSchedule_type_id(),in0.getScheduled_date(),
                     in0.getCompletion_date(),in0.getCompletedBy());
+            audit.write2DB(new XincoDBManager());
         } catch (XincoException ex) {
+            ex.printStackTrace();
+        }catch (Exception ex) {
             ex.printStackTrace();
         }
         return null;
@@ -818,22 +823,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         return xcats.getAuditTypes();
     }
     
-    public void setXincoAddAttribute(com.bluecubs.xinco.add.holders.XincoAddAttributeHolder in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
-        XincoAddAttributeServer xaas=null;
-        try {
-            xaas= new XincoAddAttributeServer(in0.value.getXinco_core_data_id(),
-                    in0.value.getAttribute_id(),in0.value.getAttrib_int(),in0.value.getAttrib_unsignedint(),
-                    in0.value.getAttrib_double(),in0.value.getAttrib_varchar(),in0.value.getAttrib_text(),
-                    in0.value.getAttrib_datetime());
-            xaas.setChangerID(in0.value.getChangerID());
-            xaas.write2DB(new XincoDBManager());
-        } catch (XincoException ex) {
-            ex.printStackTrace();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
     public boolean indexFiles(java.util.Vector in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException{
         XincoIndexThread xit = new XincoIndexThread();
         for(int i=0; i < in0.size();i++){
@@ -841,5 +830,28 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         }
         xit.start();
         return true;
+    }
+    
+    public void setXincoAddAttribute(com.bluecubs.xinco.add.holders.XincoAddAttributeHolder in0, XincoCoreUser in1) throws RemoteException {
+        XincoAddAttributeServer xaas=null;
+        XincoDBManager dbm=null;
+        try {
+            dbm=new XincoDBManager();
+            xaas= new XincoAddAttributeServer(in0.value.getXinco_core_data_id(),
+                    in0.value.getAttribute_id(),in0.value.getAttrib_int(),in0.value.getAttrib_unsignedint(),
+                    in0.value.getAttrib_double(),in0.value.getAttrib_varchar(),in0.value.getAttrib_text(),
+                    in0.value.getAttrib_datetime());
+            xaas.setChangerID(in0.value.getChangerID());
+            xaas.write2DB(dbm);
+            try {
+                dbm.finalize();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
+        } catch (XincoException ex) {
+            ex.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

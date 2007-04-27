@@ -65,7 +65,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                 setAttrib_varchar(rs.getString("attrib_varchar"));
                 setAttrib_text(rs.getString("attrib_text"));
                 setAttrib_datetime(new GregorianCalendar());
-                getAttrib_datetime().setTime(rs.getDate("attrib_datetime"));
+                getAttrib_datetime().setTime(rs.getTimestamp("attrib_datetime"));
                 write2DB(new XincoDBManager());
             }
             stmt.close();
@@ -185,7 +185,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
             while (rs.next()) {
                 cal = new GregorianCalendar();
                 if (rs.getDate("attrib_datetime") != null) {
-                    cal.setTime(rs.getDate("attrib_datetime"));
+                    cal.setTime(rs.getTimestamp("attrib_datetime"));
                 }
                 addAttributes.addElement(new XincoAddAttributeServer(rs.getInt("xinco_core_data_id"),
                         rs.getInt("attribute_id"), rs.getInt("attrib_int"),

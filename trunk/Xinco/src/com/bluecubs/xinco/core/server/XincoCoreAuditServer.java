@@ -57,11 +57,11 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
     }
     
     public XincoCoreAuditServer(int schedule_id,
-           int data_id,
-           int schedule_type_id,
-           java.util.Date scheduled_date,
-           java.util.Date completion_date,
-           int completedBy) throws XincoException{
+            int data_id,
+            int schedule_type_id,
+            java.util.Date scheduled_date,
+            java.util.Date completion_date,
+            int completedBy) throws XincoException{
         setSchedule_id(schedule_id);
         setData_id(data_id);
         setSchedule_type_id(schedule_type_id);
@@ -71,11 +71,10 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
     }
     
     public int write2DB(XincoDBManager DBM) throws XincoException {
-        
         try {
             XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
-            
             if (getSchedule_id() > 0) {
+                System.out.println("Updating xinco audit");
                 Statement stmt = DBM.con.createStatement();
                 stmt.executeUpdate("UPDATE xinco_audit SET id=" + getSchedule_id() +
                         ", xinco_core_data_id=" + getData_id() + ", xinco_audit_type_id=" + getSchedule_type_id() +
@@ -85,20 +84,28 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
                 DBM.con.commit();
                 audit.updateAuditTrail("xinco_audit",new String [] {"id ="+getSchedule_id()},
                         DBM,"audit.scheduledaudit.change",this.getChangerID());
+                System.out.println("Done!");
             } else {
+                System.out.println("Creating xinco audit");
                 setSchedule_id(DBM.getNewID("xinco_audit"));
-                
                 Statement stmt = DBM.con.createStatement();
-                java.sql.Date date= new java.sql.Date(getScheduled_date().getTime());
-                stmt.executeUpdate("INSERT INTO xinco_audit VALUES (" + getSchedule_id() +
-                        ", " + getSchedule_type_id() + ", null, " + getData_id()+
-                        ", '" +date + "', null)");
+                if(getCompletedBy()>0){
+                    java.sql.Date date= new java.sql.Date(getScheduled_date().getTime());
+                    stmt.executeUpdate("INSERT INTO xinco_audit VALUES (" + getSchedule_id() +
+                            ", " + getSchedule_type_id() + ", "+getData_id()+", " + getData_id()+
+                            ", '" +date + "', "+getCompletedBy()+")");
+                }
+                else{
+                    stmt.executeUpdate("INSERT INTO xinco_audit VALUES (" + getSchedule_id() +
+                            ", " + getSchedule_type_id() + ", "+getData_id()+", " + getData_id()+
+                            ", '"+getScheduled_date()+"', null)");
+                }
                 stmt.close();
                 DBM.con.commit();
                 audit.updateAuditTrail("xinco_audit",new String [] {"id ="+getSchedule_id()},
                         DBM,"audit.general.create",this.getChangerID());
+                System.out.println("Done!");
             }
-            
         } catch (Exception e) {
             e.printStackTrace();
             try {
@@ -107,15 +114,13 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
             }
             throw new XincoException();
         }
-        
         return getSchedule_id();
-        
     }
-
+    
     public int getChangerID() {
         return changerID;
     }
-
+    
     public void setChangerID(int changerID) {
         this.changerID = changerID;
     }
