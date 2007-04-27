@@ -38,7 +38,6 @@ package com.bluecubs.xinco.client;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import java.awt.Component;
-import java.rmi.RemoteException;
 import javax.swing.*;
 import javax.swing.tree.*;
 

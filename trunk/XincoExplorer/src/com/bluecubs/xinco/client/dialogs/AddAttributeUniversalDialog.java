@@ -46,7 +46,6 @@ import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
 import java.text.DateFormat;
 import java.util.Date;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 
 /**
  * Add Attribute Universal Dialog

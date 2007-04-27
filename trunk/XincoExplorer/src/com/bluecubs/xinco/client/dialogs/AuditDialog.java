@@ -75,22 +75,24 @@ public class AuditDialog extends javax.swing.JDialog {
     
     private void getAuditData(){
         System.out.println("Get audit data...");
+        Vector audits = null;
         try {
-            xca=this.explorer.getSession().xinco.getXincoCoreAudit(this.data,
-                    this.explorer.getSession().user,0);
-            if(xca==null)
+            audits=this.explorer.getSession().xinco.getXincoCoreAudit(this.data,
+                    this.explorer.getSession().user);
+            if(audits==null)
                 return;
+            xca=(XincoCoreAudit) audits.get(1);
             xcat=this.explorer.getSession().xinco.getXincoCoreAuditType(this.explorer.getSession().user,
                     xca.getSchedule_type_id());
+            this.enableFileAudit.setSelected(true);
+            this.auditTypeList.setSelectedIndex(xca.getSchedule_type_id());
+            this.auditDate.setDate(xca.getScheduled_date());
+            this.due_same_day.setSelected(xcat.isDue_same_day());
+            this.due_same_week.setSelected(xcat.isDue_same_week());
+            this.due_same_month.setSelected(xcat.isDue_same_month());
         } catch (RemoteException ex) {
             ex.printStackTrace();
         }
-        this.enableFileAudit.setSelected(true);
-        this.auditTypeList.setSelectedIndex(xca.getSchedule_type_id());
-        this.auditDate.setDate(xca.getScheduled_date());
-        this.due_same_day.setSelected(xcat.isDue_same_day());
-        this.due_same_week.setSelected(xcat.isDue_same_week());
-        this.due_same_month.setSelected(xcat.isDue_same_month());
     }
     
     /** This method is called from within the constructor to
@@ -252,7 +254,7 @@ public class AuditDialog extends javax.swing.JDialog {
     
     private void okActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okActionPerformed
         if(this.xca==null) {
-            System.out.println("Creating XincoCoreAudit");
+            System.out.println("Getting Data...");
             XincoCoreData data=null;
             try {
                 data = this.explorer.getSession().xinco.getXincoCoreData((XincoCoreData) this.explorer.getSession().currentTreeNodeSelection.getUserObject(), this.explorer.getSession().user);
@@ -260,49 +262,51 @@ public class AuditDialog extends javax.swing.JDialog {
                 System.out.println("Error getting add attributes!");
                 ex.printStackTrace();
             }
-            this.xca=new XincoCoreAudit(0,this.data.getId(),this.auditTypeList.getSelectedIndex()-1,
+            System.out.println("Creating XincoCoreAudit...");
+            this.xca=new XincoCoreAudit(0,this.data.getId(),this.auditTypeList.getSelectedIndex(),
                     this.auditDate.getDate(),new Date(System.currentTimeMillis()),-1);
             //Audit Type
             Calendar cal = Calendar.getInstance();
             Vector auditTypes=null;
+            System.out.println("Getting Audit Types");
             try {
                 auditTypes = explorer.getSession().xinco.getXincoCoreAuditTypes(explorer.getSession().user);
             } catch (RemoteException ex) {
                 ex.printStackTrace();
                 explorer.set_global_dialog_return_value(2);
             }
+//            //Audit Next Scheduled Date
+//            XincoAddAttribute temp = new XincoAddAttribute();
+//            //Add XincoAudit type info
+//            temp.setAttrib_varchar((((XincoCoreAuditType)auditTypes.elementAt(this.auditTypeList.getSelectedIndex()-1)).getDescription()));
+//            temp.setAttribute_id(15);
+//            temp.setXinco_core_data_id(data.getId());
+//            temp.setChangerID(this.explorer.getSession().user.getId());
+//            cal.setTime(this.auditDate.getDate());
+//            temp.setAttrib_datetime(cal);
+//            data.getXinco_add_attributes().addElement(temp);
             //Set XincoCoreAudit
             try {
-                this.explorer.getSession().xinco.setXincoCoreAudit(this.xca,
-                        this.explorer.getSession().user);
-            } catch (RemoteException ex) {
-                ex.printStackTrace();
-                explorer.set_global_dialog_return_value(2);
-            }
-            //Audit Next Scheduled Date
-            XincoAddAttribute temp = new XincoAddAttribute();
-            temp.setAttrib_varchar(this.explorer.getResourceBundle().getString((((XincoCoreAuditType)auditTypes.elementAt(this.auditTypeList.getSelectedIndex()-1)).getDescription())));
-            temp.setAttribute_id(14);
-            temp.setXinco_core_data_id(data.getId());
-            temp.setChangerID(this.explorer.getSession().user.getId());
-            cal.setTime(this.auditDate.getDate());
-            temp.setAttrib_datetime(cal);
-            data.getXinco_add_attributes().addElement(temp);
-            //Add the created attributes to the holder array
-            XincoAddAttributeHolder [] xaah=new XincoAddAttributeHolder[data.getXinco_add_attributes().size()];
-            for(int j=0;j<data.getXinco_add_attributes().size();j++) {
-                xaah[j]= new XincoAddAttributeHolder((XincoAddAttribute)(data.getXinco_add_attributes().elementAt(j)));
-            }
-            try {
-                for(int i=0;i<xaah.length;i++)
-                    this.explorer.getSession().xinco.setXincoAddAttribute(xaah[i],
-                            this.explorer.getSession().user);
-                this.explorer.getSession().xinco.setXincoCoreAudit(this.xca,
+                this.xca=this.explorer.getSession().xinco.setXincoCoreAudit(this.xca,
                         this.explorer.getSession().user);
             } catch (RemoteException ex) {
                 explorer.set_global_dialog_return_value(2);
                 ex.printStackTrace();
             }
+//            //Add the created attributes to the attribute holder
+//            XincoAddAttributeHolder [] xaah=new XincoAddAttributeHolder [data.getXinco_add_attributes().size()];
+//            for(int j=0;j<data.getXinco_add_attributes().size();j++) {
+//                xaah[j]=new XincoAddAttributeHolder((XincoAddAttribute)(data.getXinco_add_attributes().elementAt(j)));
+//            }
+//            try {
+//                for (int i=0;i<xaah.length;i++)
+//                    this.explorer.getSession().xinco.setXincoAddAttribute(xaah[i],
+//                            this.explorer.getSession().user);
+//                System.out.println("Setting XincoCoreAudit");
+//            } catch (RemoteException ex) {
+//                explorer.set_global_dialog_return_value(2);
+//                ex.printStackTrace();
+//            }
         }
         explorer.set_global_dialog_return_value(1);
         this.setVisible(false);

@@ -62,8 +62,8 @@ public class XincoAuditPanel extends javax.swing.JPanel {
                 return false;
             }
         };
-        this.auditTable.setModel(dtm);
-        this.explorer.setJTableAudit(this.auditTable);
+        this.getAuditTable().setModel(dtm);
+        this.explorer.setJTableAudit(this.getAuditTable());
     }
     
     public JScrollPane getPane(){

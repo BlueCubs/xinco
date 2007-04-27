@@ -52,7 +52,6 @@ import com.bluecubs.xinco.client.dialogs.SearchDialog;
 import com.bluecubs.xinco.client.dialogs.UserDialog;
 import com.bluecubs.xinco.client.dialogs.LockDialog;
 import com.bluecubs.xinco.client.object.WindowClosingAdapter;
-import com.bluecubs.xinco.client.object.WindowClosingAdapter;
 import com.bluecubs.xinco.client.object.XincoActivityTimer;
 import com.bluecubs.xinco.client.object.XincoAutofitTableColumns;
 import com.bluecubs.xinco.client.object.XincoMenuRepository;
@@ -61,6 +60,7 @@ import com.bluecubs.xinco.client.object.XincoProgressBarThread;
 import com.bluecubs.xinco.client.object.XincoRepositoryActionHandler;
 import com.bluecubs.xinco.client.pane.XincoAuditPanel;
 import com.bluecubs.xinco.core.XincoCoreACE;
+import com.bluecubs.xinco.core.XincoCoreAudit;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataType;
 import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
@@ -87,7 +87,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -197,7 +196,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     private javax.swing.JMenu jMenuPreferences = null;
     private javax.swing.JMenuItem jMenuItemPreferencesEditUser = null;
     private javax.swing.JDialog jDialogUser = null;
-    private javax.swing.JPanel jContentPaneDialogUser = null;
     private javax.swing.JDialog jDialogAddAttributesText = null;
     private javax.swing.JPanel jContentPaneDialogAddAttributesText = null;
     private javax.swing.JTextArea jTextAreaDialogAddAttributesText = null;
@@ -969,7 +967,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                         xerb.getString("error.accessdenied"),
                                         JOptionPane.WARNING_MESSAGE);
                             }
-                            System.err.println("Number of attributes: "+xdata.getXinco_add_attributes().size());
                         } catch (Exception rmie) {
                         }
                     }
@@ -1217,10 +1214,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         Calendar cal;
                         Calendar realcal;
                         Calendar ngc = new GregorianCalendar();
-                        
-                        for (i = xdata.getXinco_core_logs().size() -
-                                1; i >=
-                                0; i--) {
+                        for (i = xdata.getXinco_core_logs().size() - 1; i >= 0; i--) {
                             if (((XincoCoreLog) xdata.getXinco_core_logs().elementAt(i)).getOp_datetime() !=
                                     null) {
                                 try {
@@ -1232,8 +1226,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                             realcal.get(Calendar.ZONE_OFFSET)) -
                                             (ngc.get(Calendar.DST_OFFSET) +
                                             realcal.get(Calendar.DST_OFFSET)));
-                                    Timestamp ts = new Timestamp(cal.getTimeInMillis());
-                                    
                                     rdata[0] = "" +
                                             (cal.get(Calendar.MONTH) +
                                             1) +
@@ -1283,18 +1275,113 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     }
                     
                     //-----Update Audit Table-------------
-//                    if (node.getUserObject().getClass() == XincoCoreData.class) {
-//                        DefaultTableModel dtm = (DefaultTableModel) xincoAuditPanel.getAuditTable().getModel();
-//
-//                        j = dtm.getRowCount();
-//                        for (i = 0; i <j; i++) {
-//                            dtm.removeRow(0);
-//                        }
-//                        String[] rdata = {"",""};
-//
-//                        rdata[0] = xerb.getString("general.id");
-//                        rdata[1] = "" +((XincoCoreData) node.getUserObject()).getId();
-//                        dtm.addRow(rdata);
+                    if (node.getUserObject().getClass() == XincoCoreData.class) {
+                        Vector audits = null;
+                        Calendar ngc = new GregorianCalendar();
+                        Calendar cal;
+                        Calendar realcal;
+                        DefaultTableModel dtm = (DefaultTableModel) xincoAuditPanel.getAuditTable().getModel();
+                        j = dtm.getRowCount();
+                        for (i = 0; i <j; i++) {
+                            dtm.removeRow(0);
+                        }
+                        String[] rdata = {"",""};
+                        try {
+                            audits = getSession().xinco.getXincoCoreAudit(xdata,getSession().user);
+                            if(audits!=null){
+                                for(int k=0;k<audits.size();k++){
+                                    rdata[0] = xerb.getString("window.audit.type");
+                                    rdata[1] = xerb.getString(getSession().xinco.getXincoCoreAuditType(getSession().user,((XincoCoreAudit)audits.get(k)).getSchedule_type_id()).getDescription());
+                                    dtm.addRow(rdata);
+                                    rdata[0] = xerb.getString("window.audit.scheduleddate");
+                                    try {
+                                        // convert clone from remote time to local time
+                                        cal = (Calendar) ((XincoCoreAudit)audits.get(k)).getScheduled_date().clone();
+                                        realcal = ((XincoCoreLog) xdata.getXinco_core_logs().elementAt(i)).getOp_datetime();
+                                        cal.add(Calendar.MILLISECOND,
+                                                (ngc.get(Calendar.ZONE_OFFSET) -
+                                                realcal.get(Calendar.ZONE_OFFSET)) -
+                                                (ngc.get(Calendar.DST_OFFSET) +
+                                                realcal.get(Calendar.DST_OFFSET)));
+                                        rdata[1] = "" +
+                                                (cal.get(Calendar.MONTH) +
+                                                1) +
+                                                " / " +
+                                                cal.get(Calendar.DAY_OF_MONTH) +
+                                                " / " +
+                                                cal.get(Calendar.YEAR)+
+                                                " " ;
+                                        if(cal.get(Calendar.HOUR_OF_DAY)<10)
+                                            rdata[1]+="0"+cal.get(Calendar.HOUR_OF_DAY)+":";
+                                        else
+                                            rdata[1]+=cal.get(Calendar.HOUR_OF_DAY)+":";
+                                        if(cal.get(Calendar.MINUTE)<10)
+                                            rdata[1]+="0"+cal.get(Calendar.MINUTE)+":";
+                                        else
+                                            rdata[1]+=cal.get(Calendar.MINUTE)+":";
+                                        if(cal.get(Calendar.SECOND)<10)
+                                            rdata[1]+="0"+cal.get(Calendar.SECOND);
+                                        else
+                                            rdata[1]+=cal.get(Calendar.SECOND);
+                                    } catch (Exception ce) {
+                                    }
+                                    dtm.addRow(rdata);
+                                    rdata[0] = xerb.getString("window.audit.completiondate");
+                                    try {
+                                        if(((XincoCoreAudit)audits.get(k)).getCompletion_date()!=null){
+                                            // convert clone from remote time to local time
+                                            cal = (Calendar) ((XincoCoreAudit)audits.get(k)).getCompletion_date().clone();
+                                            realcal = ((XincoCoreLog) xdata.getXinco_core_logs().elementAt(i)).getOp_datetime();
+                                            cal.add(Calendar.MILLISECOND,
+                                                    (ngc.get(Calendar.ZONE_OFFSET) -
+                                                    realcal.get(Calendar.ZONE_OFFSET)) -
+                                                    (ngc.get(Calendar.DST_OFFSET) +
+                                                    realcal.get(Calendar.DST_OFFSET)));
+                                            rdata[1] = "" +
+                                                    (cal.get(Calendar.MONTH) +
+                                                    1) +
+                                                    " / " +
+                                                    cal.get(Calendar.DAY_OF_MONTH) +
+                                                    " / " +
+                                                    cal.get(Calendar.YEAR)+
+                                                    " " ;
+                                            if(cal.get(Calendar.HOUR_OF_DAY)<10)
+                                                rdata[1]+="0"+cal.get(Calendar.HOUR_OF_DAY)+":";
+                                            else
+                                                rdata[1]+=cal.get(Calendar.HOUR_OF_DAY)+":";
+                                            if(cal.get(Calendar.MINUTE)<10)
+                                                rdata[1]+="0"+cal.get(Calendar.MINUTE)+":";
+                                            else
+                                                rdata[1]+=cal.get(Calendar.MINUTE)+":";
+                                            if(cal.get(Calendar.SECOND)<10)
+                                                rdata[1]+="0"+cal.get(Calendar.SECOND);
+                                            else
+                                                rdata[1]+=cal.get(Calendar.SECOND);
+                                        } else
+                                            rdata[1]=xerb.getString("general.open");
+                                    } catch (Exception ce) {
+                                    }
+                                    dtm.addRow(rdata);
+                                    if(((XincoCoreAudit)audits.get(k)).getCompletion_date()!=null){
+                                        rdata[0] = xerb.getString("window.audit.completedby");
+                                        Vector users=getSession().xinco.getAllXincoUsers(getSession().user);
+                                        for(int x=0;x<users.size();x++) {
+                                            if(((XincoCoreUser)users.get(x)).getId()==((XincoCoreAudit)audits.get(k)).getCompletedBy()){
+                                                rdata[1] = ((XincoCoreUser)users.get(x)).getName()+" "+
+                                                        ((XincoCoreUser)users.get(x)).getFirstname();
+                                                break;
+                                            }
+                                        }
+                                        dtm.addRow(rdata);
+                                    }
+                                }
+                            }
+                        } catch (RemoteException ex) {
+                            rdata[0] = xerb.getString("general.error");
+                            rdata[1] = xerb.getString("general.error");
+                            dtm.addRow(rdata);
+                            ex.printStackTrace();
+                        }
 //                        rdata[0] = xerb.getString("general.designation");
 //                        rdata[1] = ((XincoCoreData) node.getUserObject()).getDesignation();
 //                        dtm.addRow(rdata);
@@ -1380,36 +1467,37 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
 //                        rdata[1] = "";
 //                        dtm.addRow(rdata);
 //                        // get add. attributes of CoreData, if access granted
-//                        if (((XincoCoreData) node.getUserObject()).getXinco_add_attributes().size() >
-//                                0) {
-//                            for (i = 0; i <
-//                                    ((XincoCoreData) node.getUserObject()).getXinco_add_attributes().size(); i++) {
-//                                rdata[0] = ((XincoCoreDataTypeAttribute) ((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation();
-//                                if (((XincoCoreDataTypeAttribute) ((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equalsIgnoreCase("int")) {
-//                                    rdata[1] = "" +
-//                                            ((XincoAddAttribute) ((XincoCoreData) node.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_int();
+//                        if (((XincoCoreData) node.getUserObject()).getXinco_add_attributes().size() > 0) {
+//                            if(i< xdata.getXinco_core_data_type().getXinco_core_data_type_attributes().size()){
+//                                for (i = 0; i <
+//                                        ((XincoCoreData) node.getUserObject()).getXinco_add_attributes().size(); i++) {
+//                                    rdata[0] = ((XincoCoreDataTypeAttribute) ((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation();
+//                                    if (((XincoCoreDataTypeAttribute) ((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equalsIgnoreCase("int")) {
+//                                        rdata[1] = "" +
+//                                                ((XincoAddAttribute) ((XincoCoreData) node.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_int();
+//                                    }
+//                                    if (((XincoCoreDataTypeAttribute) ((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equalsIgnoreCase("unsignedint")) {
+//                                        rdata[1] = "" +
+//                                                ((XincoAddAttribute) ((XincoCoreData) node.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint();
+//                                    }
+//                                    if (((XincoCoreDataTypeAttribute) ((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equalsIgnoreCase("double")) {
+//                                        rdata[1] = "" +
+//                                                ((XincoAddAttribute) ((XincoCoreData) node.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_double();
+//                                    }
+//                                    if (((XincoCoreDataTypeAttribute) ((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equalsIgnoreCase("varchar")) {
+//                                        rdata[1] = "" +
+//                                                ((XincoAddAttribute) ((XincoCoreData) node.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_varchar();
+//                                    }
+//                                    if (((XincoCoreDataTypeAttribute) ((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equalsIgnoreCase("text")) {
+//                                        rdata[1] = "" +
+//                                                ((XincoAddAttribute) ((XincoCoreData) node.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_text();
+//                                    }
+//                                    if (((XincoCoreDataTypeAttribute) ((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equalsIgnoreCase("datetime")) {
+//                                        rdata[1] = "" +
+//                                                ((XincoAddAttribute) ((XincoCoreData) node.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_datetime().getTime();
+//                                    }
+//                                    dtm.addRow(rdata);
 //                                }
-//                                if (((XincoCoreDataTypeAttribute) ((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equalsIgnoreCase("unsignedint")) {
-//                                    rdata[1] = "" +
-//                                            ((XincoAddAttribute) ((XincoCoreData) node.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint();
-//                                }
-//                                if (((XincoCoreDataTypeAttribute) ((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equalsIgnoreCase("double")) {
-//                                    rdata[1] = "" +
-//                                            ((XincoAddAttribute) ((XincoCoreData) node.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_double();
-//                                }
-//                                if (((XincoCoreDataTypeAttribute) ((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equalsIgnoreCase("varchar")) {
-//                                    rdata[1] = "" +
-//                                            ((XincoAddAttribute) ((XincoCoreData) node.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_varchar();
-//                                }
-//                                if (((XincoCoreDataTypeAttribute) ((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equalsIgnoreCase("text")) {
-//                                    rdata[1] = "" +
-//                                            ((XincoAddAttribute) ((XincoCoreData) node.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_text();
-//                                }
-//                                if (((XincoCoreDataTypeAttribute) ((XincoCoreData) node.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equalsIgnoreCase("datetime")) {
-//                                    rdata[1] = "" +
-//                                            ((XincoAddAttribute) ((XincoCoreData) node.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_datetime().getTime();
-//                                }
-//                                dtm.addRow(rdata);
 //                            }
 //                        } else {
 //                            rdata[0] = xerb.getString("error.accessdenied");
@@ -1445,13 +1533,9 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
 //                                            realcal.get(Calendar.DST_OFFSET)));
 //                                    Timestamp ts = new Timestamp(cal.getTimeInMillis());
 //
-//                                    rdata[0] = "" +
-//                                            (cal.get(Calendar.MONTH) +
-//                                            1) +
-//                                            " / " +
-//                                            cal.get(Calendar.DAY_OF_MONTH) +
-//                                            " / " +
-//                                            cal.get(Calendar.YEAR)+
+//                                    rdata[0] = "" +(cal.get(Calendar.MONTH) + 1) +
+//                                            " / " +cal.get(Calendar.DAY_OF_MONTH) +
+//                                            " / " +cal.get(Calendar.YEAR)+
 //                                            " " ;
 //                                    if(cal.get(Calendar.HOUR_OF_DAY)<10)
 //                                        rdata[0]+="0"+cal.get(Calendar.HOUR_OF_DAY)+":";
@@ -1491,10 +1575,10 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
 //                            }
 //                            dtm.addRow(rdata);
 //                        }
-//                    }
+                    }
                     //-----------------------
                     XincoAutofitTableColumns autofit = new XincoAutofitTableColumns();
-                    
+                    autofit.autoResizeTable(xincoAuditPanel.getAuditTable(),true);
                     autofit.autoResizeTable(jTableRepository,true);
                 }
             });
@@ -1548,9 +1632,9 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      */
     protected javax.swing.JTable getJTableRepository() {
         if(jTableRepository == null) {
-            String[] cn = {xerb.getString("window.repository.table.attribute"),xerb.getString("window.repository.table.details")};
+            String[] cn = {xerb.getString("window.repository.table.attribute"),
+            xerb.getString("window.repository.table.details")};
             DefaultTableModel dtm = new DefaultTableModel(cn, 0) {
-                
                 @Override
                 public boolean isCellEditable(int row, int column) {
                     return false;
@@ -3268,19 +3352,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jScrollPaneDialogAddAttributesText.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         }
         return jScrollPaneDialogAddAttributesText;
-    }
-    /**
-     * This method initializes jContentPaneDialogTransactionInfo
-     *
-     * @return javax.swing.JPanel
-     */
-    private javax.swing.JPanel getJContentPaneDialogTransactionInfo() {
-        if(jContentPaneDialogTransactionInfo == null) {
-            jContentPaneDialogTransactionInfo = new javax.swing.JPanel();
-            jContentPaneDialogTransactionInfo.setLayout(null);
-            jContentPaneDialogTransactionInfo.add(getJLabelDialogTransactionInfoText(), null);
-        }
-        return jContentPaneDialogTransactionInfo;
     }
     /**
      * This method initializes jLabelDialogTransactionInfoText
