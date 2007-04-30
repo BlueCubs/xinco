@@ -92,7 +92,12 @@ public class XincoSettingServer extends XincoSetting{
     }
     
     public Vector getXinco_settings() {
-        
+        if(xinco_settings==null)
+            try {
+                fillSettings(new XincoDBManager());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         return xinco_settings;
     }
     
@@ -133,11 +138,23 @@ public class XincoSettingServer extends XincoSetting{
                     string_value=rs.getString("string_value");
                 this.getXinco_settings().addElement(new XincoSetting(rs.getInt("id"),
                         rs.getString("description"),rs.getInt("int_value"),string_value,
-                        rs.getBoolean("bool_value"),0));
+                        rs.getBoolean("bool_value"),0,null));
             }
             DBM.con.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+    
+    public XincoSetting getSetting(int i){
+        return (XincoSetting)xinco_settings.get(i);
+    }
+    
+    public XincoSetting getSetting(String s){
+        for(int i=0;i<xinco_settings.size();i++){
+            if(((XincoSetting)xinco_settings.get(i)).getDescription().equals(s))
+                return (XincoSetting)xinco_settings.get(i);
+        }
+        return null;
     }
 }

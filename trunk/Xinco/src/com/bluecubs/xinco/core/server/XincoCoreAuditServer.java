@@ -12,6 +12,7 @@ package com.bluecubs.xinco.core.server;
 import com.bluecubs.xinco.core.XincoCoreAudit;
 import com.bluecubs.xinco.core.XincoException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
@@ -21,6 +22,7 @@ import java.sql.Timestamp;
  */
 public class XincoCoreAuditServer extends XincoCoreAudit{
     private int changerID;
+    private XincoCoreAuditTrailManager audit=null;
     /**
      * Creates a new instance of XincoCoreAuditServer
      */
@@ -72,7 +74,8 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
     
     public int write2DB(XincoDBManager DBM) throws XincoException {
         try {
-            XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
+            if(audit==null)
+                audit= new XincoCoreAuditTrailManager();
             if (getSchedule_id() > 0) {
                 System.out.println("Updating xinco audit");
                 Statement stmt = DBM.con.createStatement();
@@ -94,11 +97,12 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
                     stmt.executeUpdate("INSERT INTO xinco_audit VALUES (" + getSchedule_id() +
                             ", " + getSchedule_type_id() + ", "+getData_id()+", " + getData_id()+
                             ", '" +date + "', "+getCompletedBy()+")");
-                }
-                else{
-                    stmt.executeUpdate("INSERT INTO xinco_audit VALUES (" + getSchedule_id() +
+                } else{
+                    String sql="INSERT INTO xinco_audit VALUES (" + getSchedule_id() +
                             ", " + getSchedule_type_id() + ", "+getData_id()+", " + getData_id()+
-                            ", '"+getScheduled_date()+"', null)");
+                            ", '"+new Timestamp(getScheduled_date().getTime())+"', null)";
+                    System.out.println(sql);
+                    stmt.executeUpdate(sql);
                 }
                 stmt.close();
                 DBM.con.commit();
@@ -123,5 +127,25 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
     
     public void setChangerID(int changerID) {
         this.changerID = changerID;
+    }
+    
+    public void deleteFromDB(XincoDBManager DBM) throws XincoException{
+        try {
+            if(audit==null)
+                audit= new XincoCoreAuditTrailManager();
+            audit.updateAuditTrail("xinco_audit",new String [] {"id ="+getSchedule_id()},
+                    DBM,"audit.general.delete",this.getChangerID());
+            Statement stmt = DBM.con.createStatement();
+            stmt.executeUpdate("delete from xinco_audit where id ="+getSchedule_id());
+            stmt.close();
+            DBM.con.commit();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            try {
+                DBM.con.rollback();
+            } catch (Exception erollback) {
+            }
+            throw new XincoException();
+        }
     }
 }

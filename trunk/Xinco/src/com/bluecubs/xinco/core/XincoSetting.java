@@ -20,6 +20,8 @@ public class XincoSetting  implements java.io.Serializable {
 
     private int changerID;
 
+    private java.util.Vector xinco_settings;
+
     public XincoSetting() {
     }
 
@@ -29,13 +31,15 @@ public class XincoSetting  implements java.io.Serializable {
            int int_value,
            java.lang.String string_value,
            boolean bool_value,
-           int changerID) {
+           int changerID,
+           java.util.Vector xinco_settings) {
            this.id = id;
            this.description = description;
            this.int_value = int_value;
            this.string_value = string_value;
            this.bool_value = bool_value;
            this.changerID = changerID;
+           this.xinco_settings = xinco_settings;
     }
 
 
@@ -158,6 +162,26 @@ public class XincoSetting  implements java.io.Serializable {
         this.changerID = changerID;
     }
 
+
+    /**
+     * Gets the xinco_settings value for this XincoSetting.
+     * 
+     * @return xinco_settings
+     */
+    public java.util.Vector getXinco_settings() {
+        return xinco_settings;
+    }
+
+
+    /**
+     * Sets the xinco_settings value for this XincoSetting.
+     * 
+     * @param xinco_settings
+     */
+    public void setXinco_settings(java.util.Vector xinco_settings) {
+        this.xinco_settings = xinco_settings;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof XincoSetting)) return false;
@@ -179,7 +203,10 @@ public class XincoSetting  implements java.io.Serializable {
              (this.string_value!=null &&
               this.string_value.equals(other.getString_value()))) &&
             this.bool_value == other.isBool_value() &&
-            this.changerID == other.getChangerID();
+            this.changerID == other.getChangerID() &&
+            ((this.xinco_settings==null && other.getXinco_settings()==null) || 
+             (this.xinco_settings!=null &&
+              this.xinco_settings.equals(other.getXinco_settings())));
         __equalsCalc = null;
         return _equals;
     }
@@ -201,6 +228,9 @@ public class XincoSetting  implements java.io.Serializable {
         }
         _hashCode += (isBool_value() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += getChangerID();
+        if (getXinco_settings() != null) {
+            _hashCode += getXinco_settings().hashCode();
+        }
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -246,6 +276,12 @@ public class XincoSetting  implements java.io.Serializable {
         elemField.setXmlName(new javax.xml.namespace.QName("", "changerID"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("xinco_settings");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_settings"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
+        elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }
 

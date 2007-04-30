@@ -34,6 +34,18 @@
  *************************************************************
  */
 
+/**
+ *  Op Codes 
+ *  2. Modification
+ *  3. Checkout
+ *  4. Checkout undone
+ *  5. Checkin
+ *  6. Publish
+ *  7. Lock
+ *  9. Comment
+ *  10.Add audit data 
+ *  11.Edit audit data
+ */
 package com.bluecubs.xinco.core.server;
 
 import java.util.Vector;
@@ -48,9 +60,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
     private XincoCoreUser user;
     //create single log object for data structures
     public XincoCoreLogServer(int attrID, XincoDBManager DBM) throws XincoException {
-        
         try {
-            
             Statement stmt = DBM.con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_log WHERE id=" + attrID);
             
@@ -74,9 +84,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
             if (RowCount < 1) {
                 throw new XincoException();
             }
-            
             stmt.close();
-            
         } catch (Exception e) {
             throw new XincoException();
         }
@@ -89,7 +97,6 @@ public class XincoCoreLogServer extends XincoCoreLog {
     
     //create single log object for data structures
     public XincoCoreLogServer(int attrID, int attrCDID, int attrUID, int attrOC, Calendar attrODT,  String attrOD, int attrVH, int attrVM, int attrVL, String attrVP) throws XincoException {
-        
         setId(attrID);
         setXinco_core_data_id(attrCDID);
         setXinco_core_user_id(attrUID);
@@ -101,14 +108,11 @@ public class XincoCoreLogServer extends XincoCoreLog {
         getVersion().setVersion_mid(attrVM);
         getVersion().setVersion_low(attrVL);
         getVersion().setVersion_postfix(attrVP);
-        
     }
     
     //write to db
     public int write2DB(XincoDBManager DBM) throws XincoException {
-        
         try {
-            
             if (getId() > 0) {
                 Statement stmt = DBM.con.createStatement();
                 XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
@@ -119,14 +123,11 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 stmt.close();
             } else {
                 setId(DBM.getNewID("xinco_core_log"));
-                
                 Statement stmt = DBM.con.createStatement();
                 stmt.executeUpdate("INSERT INTO xinco_core_log VALUES (" + getId() + ", " + getXinco_core_data_id() + ", " + getXinco_core_user_id() + ", " + getOp_code() + ", now(), '" + getOp_description().replaceAll("'","\\\\'") + "', " + getVersion().getVersion_high() + ", " + getVersion().getVersion_mid() + ", " + getVersion().getVersion_low() + ", '" + getVersion().getVersion_postfix().replaceAll("'","\\\\'") + "')");
                 stmt.close();
             }
-            
             DBM.con.commit();
-            
         } catch (Exception e) {
             try {
                 DBM.con.rollback();
@@ -134,33 +135,25 @@ public class XincoCoreLogServer extends XincoCoreLog {
             }
             throw new XincoException();
         }
-        
         return getId();
-        
     }
     
     //create complete log list for data
     public static Vector getXincoCoreLogs(int attrID, XincoDBManager DBM) {
-        
         Vector core_log = new Vector();
         GregorianCalendar cal = new GregorianCalendar();
-        
         try {
             Statement stmt = DBM.con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_log WHERE xinco_core_data_id=" + attrID);
-            
             while (rs.next()) {
                 cal = new GregorianCalendar();
                 cal.setTime( rs.getTimestamp("op_datetime"));
                 core_log.addElement(new XincoCoreLogServer(rs.getInt("id"), rs.getInt("xinco_core_data_id"), rs.getInt("xinco_core_user_id"), rs.getInt("op_code"), cal, rs.getString("op_description"), rs.getInt("version_high"), rs.getInt("version_mid"), rs.getInt("version_low"), rs.getString("version_postfix")));
             }
-            
             stmt.close();
         } catch (Exception e) {
             core_log.removeAllElements();
         }
-        
         return core_log;
     }
-    
 }

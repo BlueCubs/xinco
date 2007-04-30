@@ -140,6 +140,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      <element name="string_value" type="xsd:string"/>
      <element name="bool_value" type="xsd:boolean"/>
      <element name="changerID" type="xsd:int"/>
+     <element name="xinco_settings" nillable="true" type="apachesoap:Vector"/>
     </sequence>
    </complexType>
    <complexType name="XincoCoreAuditType">
@@ -186,8 +187,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    </complexType>
   </schema>
  </wsdl:types>
-
-   <wsdl:message name="setXincoCoreACERequest">
+    <wsdl:message name="setXincoCoreACERequest">
 
       <wsdl:part name="in0" type="tns2:XincoCoreACE">
 
@@ -1139,7 +1139,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="getXincoCoreAudit" parameterOrder="in0 in1 in2">
+      <wsdl:operation name="getXincoCoreAudit" parameterOrder="in0 in1">
 
          <wsdl:input message="impl:getXincoCoreAuditRequest" name="getXincoCoreAuditRequest">
 

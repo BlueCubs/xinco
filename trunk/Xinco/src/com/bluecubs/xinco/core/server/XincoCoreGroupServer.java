@@ -122,7 +122,21 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
         return coreGroups;
     }
     
-    public static void removeFromDB(XincoDBManager DBM){
-        
+    public void deleteFromDB(XincoDBManager DBM) throws XincoException{
+        try {
+            audit.updateAuditTrail("xinco_core_group",new String [] {"id ="+getId()},
+                    DBM,"audit.coregroup.change",this.getChangerID());
+            Statement stmt = DBM.con.createStatement();
+            stmt.executeUpdate("delete from xinco_core_group where id ="+getId());
+            stmt.close();
+            DBM.con.commit();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            try {
+                DBM.con.rollback();
+            } catch (Exception erollback) {
+            }
+            throw new XincoException();
+        }
     }
 }
