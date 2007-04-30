@@ -36,7 +36,7 @@
 
 package com.bluecubs.xinco.server;
 
-import com.bluecubs.xinco.core.add.XincoAddAttribute;
+import com.bluecubs.xinco.add.XincoAddAttribute;
 import java.io.*;
 import java.sql.ResultSet;
 import java.sql.Statement;
