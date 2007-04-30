@@ -102,7 +102,7 @@ public class ConnectionDialog extends javax.swing.JDialog {
             ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(finalSelection)).profile_name = this.profileName.getText();
             ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(finalSelection)).service_endpoint = this.endpoint.getText();
             ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(finalSelection)).username = this.username.getText();
-            if(!this.explorer.getSettings()[8].isBool_value()){
+            if(!this.explorer.getSettings().getSetting("general.setting.enable.savepassword").isBool_value()){
                 ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(finalSelection)).password = "";
                 ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(finalSelection)).save_password=false;
             }else {

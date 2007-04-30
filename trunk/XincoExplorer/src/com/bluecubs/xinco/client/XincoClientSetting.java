@@ -19,12 +19,12 @@
  * More information on: http://www.bluecubs.org
  *************************************************************
  *
- * Name:            XincoActivityActionListener
+ * Name:            XincoClientSetting
  *
- * Description:     XincoActivityActionListener
+ * Description:     XincoClientSetting
  *
  * Original Author: Javier A. Ortiz
- * Date:            March 12, 2007, 11:05 AM
+ * Date:            April 30, 2007, 5:07 PM
  *
  * Modifications:
  *
@@ -34,29 +34,29 @@
  *************************************************************
  */
 
-package com.bluecubs.xinco.client.object;
+package com.bluecubs.xinco.client;
 
-import com.bluecubs.xinco.client.XincoExplorer;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import com.bluecubs.xinco.core.XincoSetting;
 
 /**
  *
- * @author Javier A. Ortiz
+ * @author ortizbj
  */
-public class XincoActivityActionListener implements ActionListener{
-    private XincoExplorer explorer=null;
-    private XincoActivityTimer xat=null;
-    /** Creates a new instance of XincoActivityActionListener */
-    public XincoActivityActionListener(XincoExplorer e, XincoActivityTimer xat) {
-        this.explorer=e;
-        this.xat=xat;
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        if(this.explorer.getSettings().getSetting("general.setting.enable.lockidle").isBool_value()){
-            this.explorer.setLock(true);
-        }
+public class XincoClientSetting extends XincoSetting{
+    
+    /** Creates a new instance of XincoClientSetting */
+    public XincoClientSetting() {
     }
     
+    public XincoSetting getSetting(int i){
+        return (XincoSetting)getXinco_settings().get(i);
+    }
+    
+    public XincoSetting getSetting(String s){
+        for(int i=0;i<getXinco_settings().size();i++){
+            if(((XincoSetting)getXinco_settings().get(i)).getDescription().equals(s))
+                return (XincoSetting)getXinco_settings().get(i);
+        }
+        return null;
+    }
 }

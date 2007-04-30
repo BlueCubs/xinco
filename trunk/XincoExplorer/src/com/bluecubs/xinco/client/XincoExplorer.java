@@ -136,7 +136,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     
     //language resources, XincoExplorerResourceBundle
     private ResourceBundle xerb = null,xesettings=null;
-    private XincoSetting [] settings=null;
+    private XincoClientSetting settings=null;
     private javax.swing.JMenuBar jJMenuBar = null;
     private javax.swing.JMenu jMenuConnection = null;
     private javax.swing.JMenu jMenuAbout = null;
@@ -203,7 +203,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     private javax.swing.JButton jButtonDialogAddAttributesTextCancel = null;
     private javax.swing.JScrollPane jScrollPaneDialogAddAttributesText = null;
     private javax.swing.JDialog jDialogTransactionInfo = null;
-    private javax.swing.JPanel jContentPaneDialogTransactionInfo = null;
     private javax.swing.JLabel jLabelDialogTransactionInfoText = null;
     private javax.swing.JPanel jContentPaneInformation = null;
     public javax.swing.JTextArea jLabelInternalFrameInformationText = null;
@@ -2535,7 +2534,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                         = 12 = lock data
                                         = 13 = comment data
                                         = 14 = preview data
-                                        = 15 = Edit Audit Data
+                                        = 15 = Add/Edit Audit Data
                  */
         int i=0;
         XincoMutableTreeNode newnode = new XincoMutableTreeNode(new XincoCoreData());
@@ -2592,11 +2591,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         ((XincoAddAttribute)((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().elementAt(4)).setAttrib_unsignedint(0); //archiving model
                     }
                 }
-                
                 if (xincoClientSession.currentTreeNodeSelection.getUserObject().getClass() == XincoCoreData.class) {
-                    
                     newnode = xincoClientSession.currentTreeNodeSelection;
-                    
                     //Add/Edit audit data
                     if(wizard_type == 15){
                         this.set_global_dialog_return_value(0);
@@ -2606,7 +2602,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         if(this.get_global_dialog_return_value()==2)
                             throw new XincoException(xerb.getString("datawizard.auditcreationerror"));
                     }
-                    
                     //check file attribute count
                     //file = 1
                     if ((wizard_type == 3) &&
@@ -2615,22 +2610,18 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         this.progressBar.hide();
                         throw new XincoException(xerb.getString("datawizard.noaddattributes"));
                     }
-                    
                     //edit add attributes
                     if ((wizard_type == 1) || (wizard_type == 3)) {
-                        
                         //step 2: edit add attributes
                         //for files -> show filechooser
                         //file = 1
                         if ((wizard_type == 1) &&
                                 (((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1)) {
                             JFileChooser fc = new JFileChooser();
-                            
                             fc.setCurrentDirectory(new File(current_path));
                             fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
                             // show dialog
                             int result = fc.showOpenDialog(XincoExplorer.this);
-                            
                             if (result != JFileChooser.APPROVE_OPTION) {
                                 this.progressBar.hide();
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
@@ -2665,7 +2656,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             }
                         }
                     }
-                    
                     //edit logging
                     //step 3: edit logging (creation!)
                     if (wizard_type == 1) {
@@ -2723,6 +2713,12 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             if (wizard_type == 15) {
                                 newlog.setOp_code(10);
                                 newlog.setOp_description(xerb.getString("datawizard.logging.addauditdata"));
+                                //update transaction info
+                                jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.auditupdated"));
+                            }
+                            if (wizard_type == 16) {
+                                newlog.setOp_code(11);
+                                newlog.setOp_description(xerb.getString("datawizard.logging.editauditdata"));
                                 //update transaction info
                                 jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.auditupdated"));
                             }
@@ -2851,7 +2847,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         xaah[j]= new XincoAddAttributeHolder((XincoAddAttribute)(((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().elementAt(j)));
                     }
                     //save data to server
-                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14)) {
+                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && 
+                            (wizard_type != 14) && (wizard_type != 15) && (wizard_type != 16)) {
                         if ((wizard_type >= 4) && (wizard_type <= 6)) {
                             if (wizard_type == 4) {
                                 xdata = xincoClientSession.xinco.doXincoCoreDataCheckout((XincoCoreData) newnode.getUserObject(),
@@ -2887,7 +2884,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             }
                         }
                     }
-                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14) && (wizard_type != 15)) {
+                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14)) {
                         //update id in log
                         newlog.setXinco_core_data_id(((XincoCoreData)newnode.getUserObject()).getId());
                         //save log to server
@@ -3354,20 +3351,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         return jScrollPaneDialogAddAttributesText;
     }
     /**
-     * This method initializes jLabelDialogTransactionInfoText
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogTransactionInfoText() {
-        if(jLabelDialogTransactionInfoText == null) {
-            jLabelDialogTransactionInfoText = new javax.swing.JLabel();
-            jLabelDialogTransactionInfoText.setBounds(10, 10, 370, 80);
-        }
-        //independent of creation
-        jLabelDialogTransactionInfoText.setText("");
-        return jLabelDialogTransactionInfoText;
-    }
-    /**
      * This method saves the configuration
      *
      */
@@ -3519,7 +3502,9 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         this.jTableAudit = jTableAudit;
     }
     
-    public XincoSetting[] getSettings() {
+    public XincoClientSetting getSettings() {
+        if(settings==null)
+            updateSettings();
         return settings;
     }
     
@@ -3536,9 +3521,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         } catch (RemoteException ex) {
             ex.printStackTrace();
         }
-        settings= new XincoSetting[settingsVector.size()];
-        for(int j=0;j<settingsVector.size();j++)
-            settings[j]=(XincoSetting)settingsVector.elementAt(j);
+        settings= new XincoClientSetting();
+        settings.setXinco_settings(settingsVector);
     }
     
     public int getActionSize() {
@@ -3635,8 +3619,9 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     throw new XincoException(xerb.getString("menu.connection.error.user"));
                 }
                 updateSettings();
-                if(getSettings()[10].isBool_value())
-                    xat=new XincoActivityTimer(XincoExplorer.this,getSettings()[10].getInt_value());
+                if(getSettings().getSetting("general.setting.enable.lockidle").isBool_value())
+                    xat=new XincoActivityTimer(XincoExplorer.this,
+                            getSettings().getSetting("general.setting.enable.lockidle").getInt_value());
                 getJDialogConnection().updateProfile();
                 temp.setUserpassword(xincoClientSession.user.getUserpassword());
                 newuser.setEmail(temp.getEmail());
