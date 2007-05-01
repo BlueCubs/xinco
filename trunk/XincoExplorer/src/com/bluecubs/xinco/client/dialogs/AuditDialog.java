@@ -79,9 +79,9 @@ public class AuditDialog extends javax.swing.JDialog {
         try {
             audits=this.explorer.getSession().xinco.getXincoCoreAudit(this.data,
                     this.explorer.getSession().user);
-            if(audits==null)
+            if(audits==null || audits.size()==0)
                 return;
-            xca=(XincoCoreAudit) audits.get(1);
+            setXca((XincoCoreAudit) audits.get(0));
             xcat=this.explorer.getSession().xinco.getXincoCoreAuditType(this.explorer.getSession().user,
                     xca.getSchedule_type_id());
             this.enableFileAudit.setSelected(true);
@@ -95,6 +95,23 @@ public class AuditDialog extends javax.swing.JDialog {
         }
     }
     
+    public void setXincoAudit(){
+        if(this.xca!=null){
+            //Set XincoCoreAudit
+            try {
+                this.setXca(this.explorer.getSession().xinco.setXincoCoreAudit(this.xca,
+                        this.explorer.getSession().user));
+            } catch (RemoteException ex) {
+                explorer.set_global_dialog_return_value(2);
+                ex.printStackTrace();
+            }
+            this.setXca(null);
+        }
+    }
+
+    public void setXca(XincoCoreAudit xca) {
+        this.xca = xca;
+    }
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -255,34 +272,21 @@ public class AuditDialog extends javax.swing.JDialog {
     
     private void okActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okActionPerformed
         if(this.xca==null) {
-            System.out.println("Getting Data...");
             XincoCoreData data=null;
             try {
                 data = this.explorer.getSession().xinco.getXincoCoreData((XincoCoreData) this.explorer.getSession().currentTreeNodeSelection.getUserObject(), this.explorer.getSession().user);
             } catch (RemoteException ex) {
-                System.out.println("Error getting add attributes!");
                 ex.printStackTrace();
             }
-            System.out.println("Creating XincoCoreAudit...");
-            this.xca=new XincoCoreAudit(0,this.data.getId(),this.auditTypeList.getSelectedIndex(),
-                    this.auditDate.getDate(),new Date(System.currentTimeMillis()),-1);
+            this.setXca(new XincoCoreAudit(0, this.data.getId(), this.auditTypeList.getSelectedIndex(), this.auditDate.getDate(), new Date(System.currentTimeMillis()), -1));
             //Audit Type
             Calendar cal = Calendar.getInstance();
             Vector auditTypes=null;
-            System.out.println("Getting Audit Types");
             try {
                 auditTypes = explorer.getSession().xinco.getXincoCoreAuditTypes(explorer.getSession().user);
             } catch (RemoteException ex) {
                 ex.printStackTrace();
                 explorer.set_global_dialog_return_value(2);
-            }
-            //Set XincoCoreAudit
-            try {
-                this.xca=this.explorer.getSession().xinco.setXincoCoreAudit(this.xca,
-                        this.explorer.getSession().user);
-            } catch (RemoteException ex) {
-                explorer.set_global_dialog_return_value(2);
-                ex.printStackTrace();
             }
         }
         explorer.set_global_dialog_return_value(1);

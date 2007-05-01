@@ -148,6 +148,7 @@ public class LockDialog extends javax.swing.JDialog {
         } catch (RemoteException ex) {
         }
         this.password.setText("");
+        this.username.setText("");
     }//GEN-LAST:event_connectActionPerformed
     
     private void disconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disconnectActionPerformed

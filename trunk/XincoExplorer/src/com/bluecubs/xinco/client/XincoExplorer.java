@@ -245,6 +245,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     private JDialog [] dialogs=null;
     //Vector of XincoCoreData to be indexed
     private Vector filesToBeIndexed=null;
+    private Vector audits = null;
     
     /**
      * This is the default constructor
@@ -522,7 +523,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jMenuItemConnectionExit.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     xincoClientSession.status = 0;
-                    markConnectionStatus();
                     dispose();
                     System.exit(0);
                 }
@@ -811,7 +811,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         temp_ace = XincoCoreACEClient.checkAccess(xincoClientSession.user,
                                 ((XincoCoreData) node.getUserObject()).getXinco_core_acl());
                     }
-                    // intelligent menu
+                    // Intelligent menu
                     // reset menus
                     ((XincoPopUpMenuRepository) getJPopupMenuRepository()).resetItems();
                     ((XincoMenuRepository) getJMenuRepository()).resetItems();
@@ -917,14 +917,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                 ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(16,true);
                                 ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(16,true);
                             }
-                            //Only files or text can be audited
-                            if (((XincoCoreData) node.getUserObject()).getStatus_number() !=8){
-                                if(((XincoCoreData)node.getUserObject()).getXinco_core_data_type().getId()==1 ||
-                                        ((XincoCoreData)node.getUserObject()).getXinco_core_data_type().getId()==2){
-                                    ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(19,true);
-                                    ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(19,true);
-                                }
-                            }
                         }
                     }
                     // only nodes have children
@@ -965,6 +957,27 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                         xerb.getString("error.data.sufficientrights"),
                                         xerb.getString("error.accessdenied"),
                                         JOptionPane.WARNING_MESSAGE);
+                            }
+                            //Only files or text can be audited
+                            if (((XincoCoreData) node.getUserObject()).getStatus_number() !=8 ){
+                                if(((XincoCoreData)node.getUserObject()).getXinco_core_data_type().getId()==1 ||
+                                        ((XincoCoreData)node.getUserObject()).getXinco_core_data_type().getId()==2){
+                                    try {
+                                        audits = getSession().xinco.getXincoCoreAudit(xdata,getSession().user);
+                                    } catch (RemoteException ex) {
+                                        ex.printStackTrace();
+                                    }
+                                    if(audits!=null){
+                                        if(audits.size()==0){
+                                            ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(19,true);
+                                            ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(19,true);
+                                        }
+                                        else if(((XincoCoreAudit)audits.get(0)).getCompletion_date()!=null){
+                                            ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(19,true);
+                                            ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(19,true);
+                                        }
+                                    }
+                                }
                             }
                         } catch (Exception rmie) {
                         }
@@ -1275,7 +1288,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     
                     //-----Update Audit Table-------------
                     if (node.getUserObject().getClass() == XincoCoreData.class) {
-                        Vector audits = null;
                         Calendar ngc = new GregorianCalendar();
                         Calendar cal;
                         Calendar realcal;
@@ -1295,7 +1307,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                     rdata[0] = xerb.getString("window.audit.scheduleddate");
                                     try {
                                         // convert clone from remote time to local time
-                                        cal = (Calendar) ((XincoCoreAudit)audits.get(k)).getScheduled_date().clone();
+                                        cal = new GregorianCalendar().getInstance();
+                                        cal.setTime(((XincoCoreAudit)audits.get(k)).getScheduled_date());
                                         realcal = ((XincoCoreLog) xdata.getXinco_core_logs().elementAt(i)).getOp_datetime();
                                         cal.add(Calendar.MILLISECOND,
                                                 (ngc.get(Calendar.ZONE_OFFSET) -
@@ -1323,13 +1336,16 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                         else
                                             rdata[1]+=cal.get(Calendar.SECOND);
                                     } catch (Exception ce) {
+                                        rdata[1] = xerb.getString("general.error");
+                                        ce.printStackTrace();
                                     }
                                     dtm.addRow(rdata);
                                     rdata[0] = xerb.getString("window.audit.completiondate");
                                     try {
                                         if(((XincoCoreAudit)audits.get(k)).getCompletion_date()!=null){
                                             // convert clone from remote time to local time
-                                            cal = (Calendar) ((XincoCoreAudit)audits.get(k)).getCompletion_date().clone();
+                                            cal = new GregorianCalendar().getInstance();
+                                            cal.setTime(((XincoCoreAudit)audits.get(k)).getScheduled_date());
                                             realcal = ((XincoCoreLog) xdata.getXinco_core_logs().elementAt(i)).getOp_datetime();
                                             cal.add(Calendar.MILLISECOND,
                                                     (ngc.get(Calendar.ZONE_OFFSET) -
@@ -1357,8 +1373,10 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                             else
                                                 rdata[1]+=cal.get(Calendar.SECOND);
                                         } else
-                                            rdata[1]=xerb.getString("general.open");
+                                            rdata[1]=xerb.getString("general.status.open");
                                     } catch (Exception ce) {
+                                        rdata[1] = xerb.getString("general.error");
+                                        ce.printStackTrace();
                                     }
                                     dtm.addRow(rdata);
                                     if(((XincoCoreAudit)audits.get(k)).getCompletion_date()!=null){
@@ -1374,7 +1392,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                         dtm.addRow(rdata);
                                     }
                                 }
-                            }
+                            } else
+                                System.err.println("No audit data found!");
                         } catch (RemoteException ex) {
                             rdata[0] = xerb.getString("general.error");
                             rdata[1] = xerb.getString("general.error");
@@ -2597,10 +2616,13 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     if(wizard_type == 15){
                         this.set_global_dialog_return_value(0);
                         getJDialogAudit().setVisible(true);
-                        if(this.get_global_dialog_return_value()==0)
+                        //Make sure that the XincoCoreAudit object is set to null when cancelled
+                        switch(this.get_global_dialog_return_value()){
+                            case 0: getJDialogAudit().setXca(null);
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
-                        if(this.get_global_dialog_return_value()==2)
+                            case 2: getJDialogAudit().setXca(null);
                             throw new XincoException(xerb.getString("datawizard.auditcreationerror"));
+                        }
                     }
                     //check file attribute count
                     //file = 1
@@ -2731,11 +2753,19 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             jDialogLog.setVisible(true);
                             if (global_dialog_return_value == 0) {
                                 this.progressBar.hide();
+                                //Make sure that the XincoCoreAudit object is set to null when cancelled
+                                if(wizard_type == 15 && auditDialog!=null){
+                                    getJDialogAudit().setXca(null);
+                                }
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                             newlog.setOp_description(newlog.getOp_description() +
                                     " (" + xerb.getString("general.user") + ": " +
                                     xincoClientSession.user.getUsername() + ")");
+                            //Process the XincoAudit creation/edit after the log entry have been successfully made
+                            if(wizard_type == 15){
+                                getJDialogAudit().setXincoAudit();
+                            }
                         }
                     }
                     
@@ -2847,7 +2877,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         xaah[j]= new XincoAddAttributeHolder((XincoAddAttribute)(((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().elementAt(j)));
                     }
                     //save data to server
-                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && 
+                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) &&
                             (wizard_type != 14) && (wizard_type != 15) && (wizard_type != 16)) {
                         if ((wizard_type >= 4) && (wizard_type <= 6)) {
                             if (wizard_type == 4) {

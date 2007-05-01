@@ -122,6 +122,15 @@ public class ConnectionDialog extends javax.swing.JDialog {
         return this.profileList;
     }
     
+    private void connect(){
+        //save session info
+        explorer.getSession().service_endpoint = this.endpoint.getText();
+        explorer.getSession().user.setUsername(this.username.getText());
+        explorer.getSession().user.setUserpassword(new String(this.password.getPassword()));
+        explorer.getSession().status = 1;
+        setVisible(false);
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -189,6 +198,11 @@ public class ConnectionDialog extends javax.swing.JDialog {
                 connectActionPerformed(evt);
             }
         });
+        connect.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                connectKeyPressed(evt);
+            }
+        });
 
         deleteProfile.setText("Delete");
         deleteProfile.addActionListener(new java.awt.event.ActionListener() {
@@ -198,8 +212,6 @@ public class ConnectionDialog extends javax.swing.JDialog {
         });
 
         password.addFocusListener(new java.awt.event.FocusAdapter() {
-
-            @Override
             public void focusGained(java.awt.event.FocusEvent evt) {
                 passwordFocusGained(evt);
             }
@@ -289,6 +301,11 @@ public class ConnectionDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
+    private void connectKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_connectKeyPressed
+        if(evt.getKeyCode()==evt.VK_ENTER)
+            connect();
+    }//GEN-LAST:event_connectKeyPressed
+    
     private void passwordFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_passwordFocusGained
         this.password.selectAll();
     }//GEN-LAST:event_passwordFocusGained
@@ -311,12 +328,7 @@ public class ConnectionDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_CancelActionPerformed
     
     private void connectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectActionPerformed
-        //save session info
-        explorer.getSession().service_endpoint = this.endpoint.getText();
-        explorer.getSession().user.setUsername(this.username.getText());
-        explorer.getSession().user.setUserpassword(new String(this.password.getPassword()));
-        explorer.getSession().status = 1;
-        setVisible(false);
+        connect();
     }//GEN-LAST:event_connectActionPerformed
     
     private void deleteProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteProfileActionPerformed
