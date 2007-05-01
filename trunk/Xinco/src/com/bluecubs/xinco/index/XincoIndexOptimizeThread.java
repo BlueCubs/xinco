@@ -61,7 +61,7 @@ public class XincoIndexOptimizeThread extends Thread {
                 dbm = new XincoDBManager();
                 XincoIndexer.optimizeIndex(dbm);
                 lastRun = new GregorianCalendar();
-                dbm.con.close();
+                dbm.getCon().close();
                 dbm = null;
             } catch (Exception e){
                 //continue, wait and try again...

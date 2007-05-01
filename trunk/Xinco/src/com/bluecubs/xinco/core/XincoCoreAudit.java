@@ -239,7 +239,7 @@ public class XincoCoreAudit  implements java.io.Serializable {
         elemField.setFieldName("completion_date");
         elemField.setXmlName(new javax.xml.namespace.QName("", "completion_date"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "date"));
-        elemField.setNillable(false);
+        elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("completedBy");

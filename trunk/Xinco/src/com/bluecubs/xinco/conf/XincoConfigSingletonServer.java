@@ -36,7 +36,8 @@
 
 package com.bluecubs.xinco.conf;
 
-import java.sql.ResultSet;
+import com.bluecubs.xinco.core.XincoSetting;
+import com.bluecubs.xinco.core.server.XincoSettingServer;
 import java.util.Vector;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -79,48 +80,40 @@ public class XincoConfigSingletonServer {
         return FileArchivePath;
     }
     
-    public void init(ResultSet rs){
-        try {
-            while(rs.next()){
-                if(rs.getString("description").equals("xinco/FileRepositoryPath")){
-                    FileRepositoryPath=rs.getString("string_value");
-                    if (!(FileRepositoryPath.substring(FileRepositoryPath.length()-1).equals(System.getProperty("file.separator")))) {
-                        FileRepositoryPath = FileRepositoryPath + System.getProperty("file.separator");
-                    }
-                    if(rs.getString("description").equals("xinco/MaxSearchResult"))
-                        MaxSearchResult=rs.getInt("int_value");
-                    if(rs.getString("description").equals("xinco/FileIndexPath")){
-                        FileIndexPath=rs.getString("string_value");
-                        if(FileIndexPath=="")
-                            FileIndexPath = FileRepositoryPath + "index";
-                        if (!(FileIndexPath.substring(FileIndexPath.length()-1).equals(System.getProperty("file.separator")))) {
-                            FileIndexPath += System.getProperty("file.separator");
-                        }
-                    }
-                    if(rs.getString("description").equals("xinco/FileArchivePath")){
-                        FileArchivePath=rs.getString("string_value");
-                        if (!(FileArchivePath.substring(FileArchivePath.length()-1).equals(System.getProperty("file.separator")))) {
-                            FileArchivePath += System.getProperty("file.separator");
-                        }
-                    }
-                    if(rs.getString("description").equals("xinco/FileArchivePeriod"))
-                        FileArchivePeriod=rs.getLong("long_value");
-                    if(rs.getString("description").startsWith("xinco/FileIndexer") &&
-                            rs.getString("description").endsWith("Class") ){
-                        if(IndexFileTypesClass ==null)
-                            IndexFileTypesClass = new Vector();
-                        IndexFileTypesClass.add(rs.getString("string_value"));
-                    }
-                    if(rs.getString("description").startsWith("xinco/FileIndexer") &&
-                            rs.getString("description").endsWith("Ext") ){
-                        if(IndexFileTypesClass ==null)
-                            IndexFileTypesClass = new Vector();
-                        IndexFileTypesExt.add(rs.getString("string_value"));
-                    }
-                    if(rs.getString("description").equals("xinco/IndexNoIndex"))
-                        IndexFileTypesExt.add(rs.getString("string_value"));
+    public void init(XincoSettingServer xss){
+        try{
+            FileRepositoryPath=xss.getSetting("xinco/FileRepositoryPath").getString_value();
+            if (!(FileRepositoryPath.substring(FileRepositoryPath.length()-1).equals(System.getProperty("file.separator")))) {
+                FileRepositoryPath = FileRepositoryPath + System.getProperty("file.separator");
+            }
+            MaxSearchResult=xss.getSetting("xinco/MaxSearchResult").getInt_value();
+            FileIndexPath=xss.getSetting("xinco/FileIndexPath").getString_value();
+            if(FileIndexPath=="")
+                FileIndexPath = FileRepositoryPath + "index";
+            if (!(FileIndexPath.substring(FileIndexPath.length()-1).equals(System.getProperty("file.separator")))) {
+                FileIndexPath += System.getProperty("file.separator");
+            }
+            FileArchivePath=xss.getSetting("xinco/FileArchivePath").getString_value();
+            if (!(FileArchivePath.substring(FileArchivePath.length()-1).equals(System.getProperty("file.separator")))) {
+                FileArchivePath += System.getProperty("file.separator");
+            }
+            FileArchivePeriod=xss.getSetting("xinco/FileArchivePeriod").getLong_value();
+            Vector s=xss.getXinco_settings();
+            for(int i=0;i<s.size();i++){
+                if(((XincoSetting)s.get(i)).getDescription().startsWith("xinco/FileIndexer") &&
+                        ((XincoSetting)s.get(i)).getDescription().endsWith("Class") ){
+                    if(IndexFileTypesClass ==null)
+                        IndexFileTypesClass = new Vector();
+                    IndexFileTypesClass.add(((XincoSetting)s.get(i)).getString_value());
+                }
+                if(((XincoSetting)s.get(i)).getDescription().startsWith("xinco/FileIndexer") &&
+                        ((XincoSetting)s.get(i)).getDescription().endsWith("Ext") ){
+                    if(IndexFileTypesExt ==null)
+                        IndexFileTypesExt = new Vector();
+                    IndexFileTypesExt.add(((XincoSetting)s.get(i)).getString_value());
                 }
             }
+            IndexFileTypesExt.add(xss.getSetting("xinco/IndexNoIndex").getString_value());
         } catch (Exception ex) {
             ex.printStackTrace();
             //Default values

@@ -20,6 +20,8 @@ public class XincoSetting  implements java.io.Serializable {
 
     private int changerID;
 
+    private long long_value;
+
     private java.util.Vector xinco_settings;
 
     public XincoSetting() {
@@ -32,6 +34,7 @@ public class XincoSetting  implements java.io.Serializable {
            java.lang.String string_value,
            boolean bool_value,
            int changerID,
+           long long_value,
            java.util.Vector xinco_settings) {
            this.id = id;
            this.description = description;
@@ -39,6 +42,7 @@ public class XincoSetting  implements java.io.Serializable {
            this.string_value = string_value;
            this.bool_value = bool_value;
            this.changerID = changerID;
+           this.long_value = long_value;
            this.xinco_settings = xinco_settings;
     }
 
@@ -164,6 +168,26 @@ public class XincoSetting  implements java.io.Serializable {
 
 
     /**
+     * Gets the long_value value for this XincoSetting.
+     * 
+     * @return long_value
+     */
+    public long getLong_value() {
+        return long_value;
+    }
+
+
+    /**
+     * Sets the long_value value for this XincoSetting.
+     * 
+     * @param long_value
+     */
+    public void setLong_value(long long_value) {
+        this.long_value = long_value;
+    }
+
+
+    /**
      * Gets the xinco_settings value for this XincoSetting.
      * 
      * @return xinco_settings
@@ -204,6 +228,7 @@ public class XincoSetting  implements java.io.Serializable {
               this.string_value.equals(other.getString_value()))) &&
             this.bool_value == other.isBool_value() &&
             this.changerID == other.getChangerID() &&
+            this.long_value == other.getLong_value() &&
             ((this.xinco_settings==null && other.getXinco_settings()==null) || 
              (this.xinco_settings!=null &&
               this.xinco_settings.equals(other.getXinco_settings())));
@@ -228,6 +253,7 @@ public class XincoSetting  implements java.io.Serializable {
         }
         _hashCode += (isBool_value() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += getChangerID();
+        _hashCode += new Long(getLong_value()).hashCode();
         if (getXinco_settings() != null) {
             _hashCode += getXinco_settings().hashCode();
         }
@@ -275,6 +301,12 @@ public class XincoSetting  implements java.io.Serializable {
         elemField.setFieldName("changerID");
         elemField.setXmlName(new javax.xml.namespace.QName("", "changerID"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("long_value");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "long_value"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();

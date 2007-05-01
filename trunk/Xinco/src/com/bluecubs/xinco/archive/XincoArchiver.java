@@ -102,7 +102,7 @@ public class XincoArchiver {
             
             for (j=0;j<querycount;j++) {
                 
-                Statement stmt = dbm.con.createStatement();
+                Statement stmt = dbm.getCon().createStatement();
                 //select data with expired archiving date
                 ResultSet rs = stmt.executeQuery(query[j]);
                 while (rs.next()) {

@@ -42,6 +42,7 @@ import javax.naming.InitialContext;
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.XincoSetting;
 import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -51,54 +52,71 @@ import java.util.Vector;
 
 public class XincoDBManager {
     
-    public Connection con;
+    private Connection con;
     public XincoConfigSingletonServer config;
     public static int count = 0;
     private int EmailLink=1,DataLink=2;
     private ResourceBundle lrb = null;
     private Locale loc=null;
+    private XincoSettingServer xss=null;
+    private DataSource datasource=null;
     
     public XincoDBManager() throws Exception {
         lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
         //load connection configuartion
         config = XincoConfigSingletonServer.getInstance();
-        DataSource datasource = (DataSource)(new InitialContext()).lookup(config.JNDIDB);
-        con = datasource.getConnection();
-        con.setAutoCommit(false);
+        setDatasource((DataSource)(new InitialContext()).lookup(config.JNDIDB));
+        setCon(getDatasource().getConnection());
+        getCon().setAutoCommit(false);
         //load configuration from database
-        ResultSet rs = con.createStatement().executeQuery("select * from " +
-                "`xinco_setting` where description like 'xinco/%' " +
-                "order by description desc");
-        config.init(rs);
+        fillSettings();
+        config.init(getXss());
         count++;
     }
     
+    private void fillSettings(){
+        ResultSet rs=null;
+        getXss().setXinco_settings(new Vector());
+        String string_value="";
+        try {
+            Statement stm=getCon().createStatement();
+            rs=stm.executeQuery("select * from xinco_setting order by id");
+            while(rs.next()){
+                if(rs.getString("string_value")==null)
+                    string_value="";
+                else
+                    string_value=rs.getString("string_value");
+                getXss().getXinco_settings().addElement(new XincoSetting(rs.getInt("id"),
+                        rs.getString("description"),rs.getInt("int_value"),string_value,
+                        rs.getBoolean("bool_value"),0,rs.getLong("long_value"),null));
+            }
+            stm.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
     public int getNewID(String attrTN) throws Exception {
-        
         int newID = 0;
         Statement stmt;
-        
-        stmt = con.createStatement();
+        stmt = getCon().createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_id WHERE tablename='" + attrTN + "'");
         while (rs.next()) {
             newID = rs.getInt("last_id") + 1;
         }
         stmt.close();
-        
-        stmt = con.createStatement();
+        stmt = getCon().createStatement();
         stmt.executeUpdate("UPDATE xinco_id SET last_id=last_id+1 WHERE tablename='" + attrTN + "'");
         stmt.close();
-        
         return newID;
-        
     }
     
     public void finalize() throws Throwable {
         try {
             count--;
-            con.close();
+            getCon().close();
         } finally {
-            if (!con.isClosed()) {
+            if (!getCon().isClosed()) {
                 count++;
             }
             super.finalize();
@@ -177,13 +195,13 @@ public class XincoDBManager {
         try{
             ResultSetMetaData rsmd = rs.getMetaData();
             int numColumns = rsmd.getColumnCount();
-            
             // Get the column names; column indices start from 1
             for (int i=1; i<numColumns+1; i++) {
                 header += "<td><b>"+rsmd.getColumnName(i)+"</b>";
             }
             header +="</td>";
         } catch(SQLException e) {
+            e.printStackTrace();
         }
         return header;
     }
@@ -232,11 +250,11 @@ public class XincoDBManager {
             int number;
             DatabaseMetaData meta;
             try {
-                meta = con.getMetaData();
+                meta = getCon().getMetaData();
                 //Get table names
                 rs = meta.getTables(null, null, null, types);
                 //Delete content of tables
-                s=con.createStatement();
+                s=getCon().createStatement();
                 while(rs.next()){
                     if(!rs.getString("TABLE_NAME").equals("xinco_id")){
                         number=1000;
@@ -266,16 +284,16 @@ public class XincoDBManager {
                     }
                 }
                 s.close();
-                s=con.createStatement();
+                s=getCon().createStatement();
                 s.executeUpdate("update xinco_id set last_id = 1000 where last_id >1000");
                 s.executeUpdate("update xinco_id set last_id = 0 where last_id < 1000");
                 s.executeUpdate("delete from xinco_core_user_modified_record");
-                con.commit();
+                getCon().commit();
                 s.close();
                 rs=null;
             } catch (SQLException ex) {
                 try {
-                    con.rollback();
+                    getCon().rollback();
                 } catch (SQLException e2) {
                     e2.printStackTrace();
                 }
@@ -283,5 +301,36 @@ public class XincoDBManager {
             }
         } else
             throw new XincoException(lrb.getString("error.noadminpermission"));
+    }
+    
+    public XincoSettingServer getXss() {
+        if(xss==null)
+            xss=new XincoSettingServer();
+        return xss;
+    }
+    
+    public Connection getCon() {
+        if(con==null){
+            try {
+                con = getDatasource().getConnection();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return con;
+    }
+    
+    public DataSource getDatasource() {
+        return datasource;
+    }
+    
+    public void setDatasource(DataSource datasource) {
+        this.datasource = datasource;
+    }
+
+    public void setCon(Connection con) {
+        if(con==null)
+            getCon();
+        this.con = con;
     }
 }

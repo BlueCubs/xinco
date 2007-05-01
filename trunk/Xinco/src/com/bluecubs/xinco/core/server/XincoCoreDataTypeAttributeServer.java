@@ -47,7 +47,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     public XincoCoreDataTypeAttributeServer(int attrID1, int attrID2, XincoDBManager DBM) throws XincoException {
         
         try {
-            Statement stmt = DBM.con.createStatement();
+            Statement stmt = DBM.getCon().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data_type_attribute WHERE xinco_core_data_type_id=" + attrID1 + " AND attribute_id=" + attrID2);
             
             //throw exception if no result found
@@ -89,7 +89,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             
             Statement stmt = null;
             
-            stmt = DBM.con.createStatement();
+            stmt = DBM.getCon().createStatement();
             stmt.executeUpdate("INSERT INTO xinco_core_data_type_attribute VALUES (" + getXinco_core_data_type_id() + ", " + getAttribute_id() + ", '" + getDesignation() + "', '" + getData_type() + "', " + getSize() + ")");
             stmt.close();
             
@@ -102,15 +102,15 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
                     DBM,"audit.datatype.attribute.change",this.getChangerID());
              */
             
-            stmt = DBM.con.createStatement();
+            stmt = DBM.getCon().createStatement();
             stmt.executeUpdate("INSERT INTO xinco_add_attribute SELECT id, " + getAttribute_id() + ", 0, 0, 0, '', '', now() FROM xinco_core_data WHERE xinco_core_data_type_id = " + getXinco_core_data_type_id());
             stmt.close();
             
-            DBM.con.commit();
+            DBM.getCon().commit();
             
         } catch (Exception e) {
             try {
-                DBM.con.rollback();
+                DBM.getCon().rollback();
             } catch (Exception erollback) {
             }
             throw new XincoException();
@@ -127,7 +127,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             
             Statement stmt = null;
             
-            stmt = DBM.con.createStatement();
+            stmt = DBM.getCon().createStatement();
             XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
             /*
              * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
@@ -141,17 +141,17 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
                     attrCDTA.getXinco_core_data_type_id() + ")");
             stmt.close();
             
-            stmt = DBM.con.createStatement();
+            stmt = DBM.getCon().createStatement();
             audit.updateAuditTrail("xinco_core_data_type_attribute",new String [] {"xinco_core_data_type_id=" + attrCDTA.getXinco_core_data_type_id(), "attribute_id=" + attrCDTA.getAttribute_id()},
                         DBM,"audit.general.delete",userID);
             stmt.executeUpdate("DELETE FROM xinco_core_data_type_attribute WHERE xinco_core_data_type_id=" + attrCDTA.getXinco_core_data_type_id() + " AND attribute_id=" + attrCDTA.getAttribute_id());
             stmt.close();
             
-            DBM.con.commit();
+            DBM.getCon().commit();
             
         } catch (Exception e) {
             try {
-                DBM.con.rollback();
+                DBM.getCon().rollback();
             } catch (Exception erollback) {
             }
             throw new XincoException();
@@ -167,7 +167,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
         Vector coreDataTypeAttributes = new Vector();
         
         try {
-            Statement stmt = DBM.con.createStatement();
+            Statement stmt = DBM.getCon().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data_type_attribute WHERE xinco_core_data_type_id =" + attrID + " ORDER BY attribute_id");
             
             while (rs.next()) {

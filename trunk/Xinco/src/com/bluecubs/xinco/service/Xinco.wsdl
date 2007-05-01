@@ -128,7 +128,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      <element name="data_id" type="xsd:int"/>
      <element name="schedule_type_id" type="xsd:int"/>
      <element name="scheduled_date" type="xsd:date"/>
-     <element name="completion_date" type="xsd:date"/>
+     <element name="completion_date" type="xsd:date" nillable="true"/>
      <element name="completedBy" type="xsd:int"/>
     </sequence>
    </complexType>
@@ -140,6 +140,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      <element name="string_value" type="xsd:string"/>
      <element name="bool_value" type="xsd:boolean"/>
      <element name="changerID" type="xsd:int"/>
+     <element name="long_value" type="xsd:long"></element>
      <element name="xinco_settings" nillable="true" type="apachesoap:Vector"/>
     </sequence>
    </complexType>
