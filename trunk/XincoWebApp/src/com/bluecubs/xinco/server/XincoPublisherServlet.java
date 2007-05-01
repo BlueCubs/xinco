@@ -223,7 +223,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 if (printList) {
                     try {
                         XincoCoreDataServer xdata_temp = null;
-                        Statement stmt = dbm.con.createStatement();
+                        Statement stmt = dbm.getCon().createStatement();
                         ResultSet rs = stmt.executeQuery("SELECT DISTINCT xcd.id, xcd.designation FROM xinco_core_data xcd, xinco_core_ace xca WHERE xcd.id=xca.xinco_core_data_id AND (xcd.status_number=5 OR (xca.xinco_core_group_id=3 AND xca.read_permission=1)) ORDER BY xcd.designation");
                         while (rs.next()) {
                             xdata_temp = new XincoCoreDataServer(rs.getInt("id"), dbm);
@@ -447,7 +447,7 @@ public class XincoPublisherServlet extends HttpServlet {
         
         //close db connection
         try {
-            dbm.con.close();
+            dbm.getCon().close();
         } catch (Exception e) {
         }
         
