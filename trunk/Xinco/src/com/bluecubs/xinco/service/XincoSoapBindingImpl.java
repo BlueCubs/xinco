@@ -35,6 +35,11 @@ import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
 import com.bluecubs.xinco.index.XincoIndexThread;
 import com.bluecubs.xinco.index.XincoIndexer;
+import com.bluecubs.xinco.workflow.XincoWorkflow;
+import com.bluecubs.xinco.workflow.holders.XincoWorkflowHolder;
+import com.bluecubs.xinco.workflow.holders.XincoWorkflowInstanceHolder;
+import com.bluecubs.xinco.workflow.holders.XincoWorkflowStepHolder;
+import com.bluecubs.xinco.workflow.holders.XincoWorkflowStepInstanceHolder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -852,5 +857,29 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+    
+    public void setWorkflow(XincoWorkflowHolder workflow, XincoCoreUser user) throws RemoteException {
+    }
+    
+    public XincoWorkflow getWorkflow(int workflow_id, XincoCoreUser user) throws RemoteException {
+        return null;
+    }
+    
+    public XincoWorkflow getWorkflowInstance(int id, int workflow_id, int data_id, XincoCoreUser user) throws RemoteException {
+        return null;
+    }
+    
+    public Vector getWorkflowAttributes(int workflow_id, XincoCoreUser user) throws RemoteException {
+        return null;
+    }
+    
+    public void setXincoWorkflowInstance(XincoWorkflowInstanceHolder workflow_instance, XincoCoreUser user) throws RemoteException {
+    }
+    
+    public void setXincoWorkflowStep(XincoWorkflowStepHolder step, XincoCoreUser user) throws RemoteException {
+    }
+    
+    public void setWorkflowInstanceStep(XincoWorkflowStepInstanceHolder step_instance, XincoCoreUser user) throws RemoteException {
     }
 }

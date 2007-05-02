@@ -15,7 +15,7 @@
   <service name="Xinco" provider="java:RPC" style="rpc" use="encoded">
       <parameter name="wsdlTargetNamespace" value="urn:Xinco"/>
       <parameter name="wsdlServiceElement" value="XincoService"/>
-      <parameter name="schemaUnqualified" value="http://core.xinco.bluecubs.com,http://xml.apache.org/xml-soap,http://add.xinco.bluecubs.com"/>
+      <parameter name="schemaUnqualified" value="http://workflow.xinco.bluecubs.com,http://core.xinco.bluecubs.com,http://xml.apache.org/xml-soap,http://add.xinco.bluecubs.com"/>
       <parameter name="wsdlServicePort" value="Xinco"/>
       <parameter name="className" value="com.bluecubs.xinco.service.XincoSoapBindingSkeleton"/>
       <parameter name="wsdlPortType" value="Xinco"/>
@@ -35,6 +35,14 @@
         xmlns:ns="http://core.xinco.bluecubs.com"
         qname="ns:XincoCoreDataTypeAttribute"
         type="java:com.bluecubs.xinco.core.XincoCoreDataTypeAttribute"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://workflow.xinco.bluecubs.com"
+        qname="ns:XincoWorkflowInstance"
+        type="java:com.bluecubs.xinco.workflow.XincoWorkflowInstance"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
@@ -72,6 +80,14 @@
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
       />
       <typeMapping
+        xmlns:ns="http://workflow.xinco.bluecubs.com"
+        qname="ns:XincoWorkflowStepInstance"
+        type="java:com.bluecubs.xinco.workflow.XincoWorkflowStepInstance"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
         xmlns:ns="http://core.xinco.bluecubs.com"
         qname="ns:XincoCoreLog"
         type="java:com.bluecubs.xinco.core.XincoCoreLog"
@@ -96,6 +112,14 @@
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
       />
       <typeMapping
+        xmlns:ns="http://workflow.xinco.bluecubs.com"
+        qname="ns:XincoWorkflowStep"
+        type="java:com.bluecubs.xinco.workflow.XincoWorkflowStep"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
         xmlns:ns="http://core.xinco.bluecubs.com"
         qname="ns:XincoCoreDataType"
         type="java:com.bluecubs.xinco.core.XincoCoreDataType"
@@ -107,6 +131,14 @@
         xmlns:ns="http://core.xinco.bluecubs.com"
         qname="ns:XincoCoreNode"
         type="java:com.bluecubs.xinco.core.XincoCoreNode"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://workflow.xinco.bluecubs.com"
+        qname="ns:XincoWorkflow"
+        type="java:com.bluecubs.xinco.workflow.XincoWorkflow"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"

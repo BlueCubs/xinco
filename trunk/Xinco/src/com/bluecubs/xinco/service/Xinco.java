@@ -42,4 +42,11 @@ public interface Xinco extends java.rmi.Remote {
     public java.util.Vector getXincoCoreAuditTypes(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException;
     public void setXincoAddAttribute(com.bluecubs.xinco.add.holders.XincoAddAttributeHolder in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
     public boolean indexFiles(java.util.Vector in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
+    public void setWorkflow(com.bluecubs.xinco.workflow.holders.XincoWorkflowHolder workflow, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException;
+    public com.bluecubs.xinco.workflow.XincoWorkflow getWorkflow(int workflow_id, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException;
+    public com.bluecubs.xinco.workflow.XincoWorkflow getWorkflowInstance(int id, int workflow_id, int data_id, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException;
+    public java.util.Vector getWorkflowAttributes(int workflow_id, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException;
+    public void setXincoWorkflowInstance(com.bluecubs.xinco.workflow.holders.XincoWorkflowInstanceHolder workflow_instance, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException;
+    public void setXincoWorkflowStep(com.bluecubs.xinco.workflow.holders.XincoWorkflowStepHolder step, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException;
+    public void setWorkflowInstanceStep(com.bluecubs.xinco.workflow.holders.XincoWorkflowStepInstanceHolder step_instance, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException;
 }

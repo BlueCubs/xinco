@@ -466,6 +466,88 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
             _myOperations.put("indexFiles", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("indexFiles")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "workflow"), org.apache.axis.description.ParameterDesc.INOUT, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "XincoWorkflow"), com.bluecubs.xinco.workflow.XincoWorkflow.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "user"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("setWorkflow", _params, null);
+        _oper.setElementQName(new javax.xml.namespace.QName("", "setWorkflow"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("setWorkflow") == null) {
+            _myOperations.put("setWorkflow", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("setWorkflow")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "workflow_id"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "user"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getWorkflow", _params, new javax.xml.namespace.QName("", "workflow"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "XincoWorkflow"));
+        _oper.setElementQName(new javax.xml.namespace.QName("", "getWorkflow"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getWorkflow") == null) {
+            _myOperations.put("getWorkflow", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getWorkflow")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "id"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "workflow_id"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "data_id"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "user"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getWorkflowInstance", _params, new javax.xml.namespace.QName("", "workflow"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "XincoWorkflow"));
+        _oper.setElementQName(new javax.xml.namespace.QName("", "getWorkflowInstance"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getWorkflowInstance") == null) {
+            _myOperations.put("getWorkflowInstance", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getWorkflowInstance")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "workflow_id"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "user"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getWorkflowAttributes", _params, new javax.xml.namespace.QName("", "workflowattributes"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
+        _oper.setElementQName(new javax.xml.namespace.QName("", "getWorkflowAttributes"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getWorkflowAttributes") == null) {
+            _myOperations.put("getWorkflowAttributes", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getWorkflowAttributes")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "workflow_instance"), org.apache.axis.description.ParameterDesc.INOUT, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "XincoWorkflowInstance"), com.bluecubs.xinco.workflow.XincoWorkflowInstance.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "user"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("setXincoWorkflowInstance", _params, null);
+        _oper.setElementQName(new javax.xml.namespace.QName("", "setXincoWorkflowInstance"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("setXincoWorkflowInstance") == null) {
+            _myOperations.put("setXincoWorkflowInstance", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("setXincoWorkflowInstance")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "step"), org.apache.axis.description.ParameterDesc.INOUT, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "XincoWorkflowStep"), com.bluecubs.xinco.workflow.XincoWorkflowStep.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "user"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("setXincoWorkflowStep", _params, null);
+        _oper.setElementQName(new javax.xml.namespace.QName("", "setXincoWorkflowStep"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("setXincoWorkflowStep") == null) {
+            _myOperations.put("setXincoWorkflowStep", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("setXincoWorkflowStep")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "step_instance"), org.apache.axis.description.ParameterDesc.INOUT, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "XincoWorkflowStepInstance"), com.bluecubs.xinco.workflow.XincoWorkflowStepInstance.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "user"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("setWorkflowInstanceStep", _params, null);
+        _oper.setElementQName(new javax.xml.namespace.QName("", "setWorkflowInstanceStep"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("setWorkflowInstanceStep") == null) {
+            _myOperations.put("setWorkflowInstanceStep", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("setWorkflowInstanceStep")).add(_oper);
     }
 
     public XincoSoapBindingSkeleton() {
@@ -676,6 +758,44 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
     {
         boolean ret = impl.indexFiles(in0, in1);
         return ret;
+    }
+
+    public void setWorkflow(com.bluecubs.xinco.workflow.holders.XincoWorkflowHolder workflow, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException
+    {
+        impl.setWorkflow(workflow, user);
+    }
+
+    public com.bluecubs.xinco.workflow.XincoWorkflow getWorkflow(int workflow_id, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException
+    {
+        com.bluecubs.xinco.workflow.XincoWorkflow ret = impl.getWorkflow(workflow_id, user);
+        return ret;
+    }
+
+    public com.bluecubs.xinco.workflow.XincoWorkflow getWorkflowInstance(int id, int workflow_id, int data_id, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException
+    {
+        com.bluecubs.xinco.workflow.XincoWorkflow ret = impl.getWorkflowInstance(id, workflow_id, data_id, user);
+        return ret;
+    }
+
+    public java.util.Vector getWorkflowAttributes(int workflow_id, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException
+    {
+        java.util.Vector ret = impl.getWorkflowAttributes(workflow_id, user);
+        return ret;
+    }
+
+    public void setXincoWorkflowInstance(com.bluecubs.xinco.workflow.holders.XincoWorkflowInstanceHolder workflow_instance, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException
+    {
+        impl.setXincoWorkflowInstance(workflow_instance, user);
+    }
+
+    public void setXincoWorkflowStep(com.bluecubs.xinco.workflow.holders.XincoWorkflowStepHolder step, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException
+    {
+        impl.setXincoWorkflowStep(step, user);
+    }
+
+    public void setWorkflowInstanceStep(com.bluecubs.xinco.workflow.holders.XincoWorkflowStepInstanceHolder step_instance, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException
+    {
+        impl.setWorkflowInstanceStep(step_instance, user);
     }
 
 }
