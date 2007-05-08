@@ -29,20 +29,159 @@
  * Modifications:
  *
  * Who?             When?             What?
- * 
+ *
  *************************************************************
  */
 
 package com.bluecubs.xinco.workflow.server;
 
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.XincoCoreAuditTrail;
+import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.workflow.XincoWorkflow;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
+
 /**
  *
  * @author ortizbj
  */
-public class XincoWorkflowServer {
-    
+public class XincoWorkflowServer extends XincoWorkflow{
+    private boolean change=false;
+    private int changerID;
     /** Creates a new instance of XincoWorkflowServer */
-    public XincoWorkflowServer() {
+    public XincoWorkflowServer(int id, XincoDBManager dbm) {
+        Statement stmt=null;
+        ResultSet rs =null;
+        try {
+            stmt = dbm.getCon().createStatement();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        if(id>0){
+            //Workflow exists
+            try {
+                rs = stmt.executeQuery("select * from xinco_workflow where id="+id);
+                rs.next();
+                setDescription(rs.getString("designation"));
+                setId(rs.getInt("id"));
+                try {
+                    //Load steps
+                    setXinco_workflow_steps(new XincoWorkflowStepServer().getSteps(getId(),new XincoDBManager()));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                stmt.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
     
+    public XincoWorkflowServer(String description,
+            Vector xinco_workflow_steps, XincoDBManager dbm) {
+        try {
+            setId(dbm.getNewID("xinco_workflow"));
+            setXinco_workflow_steps(xinco_workflow_steps);
+            setDescription(description);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public void write2DB(XincoDBManager dbm) throws XincoException{
+        Statement stmt=null;
+        ResultSet rs =null,rs2=null;
+        try {
+            dbm = new XincoDBManager();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        if(getId()>0){
+            //Workflow already exists
+            try {
+                stmt = dbm.getCon().createStatement();
+                stmt.executeUpdate("update xinco_workflow set id="+getId()+
+                        ", designation='"+getDescription()+"'");
+                if(isChange()){
+                    XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
+                    audit.updateAuditTrail("xinco_workflow",
+                            new String [] {"id ="+getId()},
+                            dbm,"audit.workflow.change",this.getChangerID());
+                    //Update steps
+                    for(int i=0;i<getXinco_workflow_steps().size();i++){
+                        //Mark as changed
+                        ((XincoWorkflowStepServer)getXinco_workflow_steps().get(i)).setChange(true);
+                        //Set user making the change
+                        ((XincoWorkflowStepServer)getXinco_workflow_steps().get(i)).setChangerID(getChangerID());
+                        //Write changes to the Database
+                        ((XincoWorkflowStepServer)getXinco_workflow_steps().get(i)).write2DB(dbm);
+                    }
+                }
+                dbm.getCon().commit();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                try {
+                    dbm.getCon().rollback();
+                } catch (Exception erollback) {
+                }
+                throw new XincoException();
+            }
+        } else{
+            XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
+            try {
+                setId(dbm.getNewID("xinco_workflow"));
+                stmt.execute("insert into xinco_workflow values("+
+                        getId()+",'"+getDescription()+"')");
+                audit.updateAuditTrail("xinco_workflow",new String [] {"id ="+getId()},
+                        dbm,"audit.general.create",this.getChangerID());
+                stmt.close();
+                dbm.getCon().commit();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+    
+    public boolean isChange() {
+        return change;
+    }
+    
+    public void setChange(boolean change) {
+        this.change = change;
+    }
+    
+    public int getChangerID() {
+        return changerID;
+    }
+    
+    public void setChangerID(int changerID) {
+        this.changerID = changerID;
+    }
+    
+    public String toString() {
+        String s= null;
+        try {
+            s="";
+            XincoWorkflowServer ws= new XincoWorkflowServer(1,new XincoDBManager());
+            s+="ID: "+ws.getId()+"\n";
+            s+="Description: "+ws.getDescription()+"\n";
+            s+="----------------------------"+"\n";
+            s+="Steps: "+"\n";
+            s+="----------------------------"+"\n";
+            for(int i=0;i<ws.getXinco_workflow_steps().size();i++){
+                s+="ID: "+((XincoWorkflowStepServer)ws.getXinco_workflow_steps().get(i)).getId()+"\n";
+                s+="Description: "+((XincoWorkflowStepServer)ws.getXinco_workflow_steps().get(i)).getDescription()+"\n";
+                s+="----------------------------";
+            }
+            System.out.println(s);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return s;
+    }
 }

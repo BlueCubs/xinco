@@ -971,8 +971,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                         if(audits.size()==0){
                                             ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(19,true);
                                             ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(19,true);
-                                        }
-                                        else if(((XincoCoreAudit)audits.get(0)).getCompletion_date()!=null){
+                                        } else if(((XincoCoreAudit)audits.get(0)).getCompletion_date()!=null){
                                             ((XincoMenuRepository) getJMenuRepository()).itemSetEnable(19,true);
                                             ((XincoPopUpMenuRepository) getJPopupMenuRepository()).itemSetEnable(19,true);
                                         }
@@ -3674,6 +3673,11 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 }
                 loginT= new loginThread();
                 getLoginT().start();
+                try {
+                    explorer.getSession().xinco.getWorkflow(1,explorer.getSession().user).toString();
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
             }catch (java.rmi.RemoteException cone) {
                 xincoClientSession.status = 0;
                 cone.printStackTrace();

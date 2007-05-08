@@ -42,7 +42,7 @@ import java.sql.*;
 import com.bluecubs.xinco.core.*;
 
 public class XincoCoreGroupServer extends XincoCoreGroup {
-    private XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
+    private XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
     //create group object for data structures
     public XincoCoreGroupServer(int attrID, XincoDBManager DBM) throws XincoException {
         try {

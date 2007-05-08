@@ -22,7 +22,7 @@ import java.sql.Timestamp;
  */
 public class XincoCoreAuditServer extends XincoCoreAudit{
     private int changerID;
-    private XincoCoreAuditTrailManager audit=null;
+    private XincoCoreAuditTrail audit=null;
     /**
      * Creates a new instance of XincoCoreAuditServer
      */
@@ -66,7 +66,7 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
     public int write2DB(XincoDBManager DBM) throws XincoException {
         try {
             if(audit==null)
-                audit= new XincoCoreAuditTrailManager();
+                audit= new XincoCoreAuditTrail();
             if (getSchedule_id() > 0) {
                 System.out.println("Updating xinco audit");
                 Statement stmt = DBM.getCon().createStatement();
@@ -123,7 +123,7 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
     public void deleteFromDB(XincoDBManager DBM) throws XincoException{
         try {
             if(audit==null)
-                audit= new XincoCoreAuditTrailManager();
+                audit= new XincoCoreAuditTrail();
             audit.updateAuditTrail("xinco_audit",new String [] {"id ="+getSchedule_id()},
                     DBM,"audit.general.delete",this.getChangerID());
             Statement stmt = DBM.getCon().createStatement();

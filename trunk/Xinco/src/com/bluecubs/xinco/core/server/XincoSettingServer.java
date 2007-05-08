@@ -49,7 +49,7 @@ import java.util.Vector;
  */
 public class XincoSettingServer extends XincoSetting{
     private Vector xinco_settings=null;
-    private XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
+    private XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
     
     /** Creates a new instance of XincoSettingServer */
     public XincoSettingServer(int id,java.lang.String description,int int_value,

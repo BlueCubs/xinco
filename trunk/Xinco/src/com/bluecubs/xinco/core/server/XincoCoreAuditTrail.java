@@ -1,5 +1,5 @@
 /*
- * XincoCoreAuditTrailManager.java
+ * XincoCoreAuditTrail.java
  *
  * Created on November 28, 2006, 9:40 AM
  *
@@ -18,11 +18,11 @@ import java.sql.Timestamp;
  *
  * @author ortizbj
  */
-public class XincoCoreAuditTrailManager {
+public class XincoCoreAuditTrail {
     /**
-     * Creates a new instance of XincoCoreAuditTrailManager
+     * Creates a new instance of XincoCoreAuditTrail
      */
-    public XincoCoreAuditTrailManager() {
+    public XincoCoreAuditTrail() {
     }
     
     public void updateAuditTrail(String table,String [] keys, XincoDBManager DBM,String reason,int id){

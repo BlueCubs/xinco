@@ -97,7 +97,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
     public int write2DB(XincoDBManager DBM) throws XincoException {
         
         try {
-            XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
+            XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
             Statement stmt;
             String attrT = "";
             String attrVC = "";
@@ -167,6 +167,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                         DBM,"audit.general.create",getChangerID());
             }
             stmt.close();
+            DBM.getCon().commit();
         } catch (Exception e) {
             //no commit or rollback -> CoreData manages exceptions!
             e.printStackTrace();
@@ -204,7 +205,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
     
     public static int deleteFromDB(int xinco_core_data_id, int attribute_id, XincoDBManager DBM, int userID) throws XincoException {
         Statement stmt = null;
-        XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
+        XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
         try {
             stmt = DBM.getCon().createStatement();
             stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_add_attribute.attribute_id=" +

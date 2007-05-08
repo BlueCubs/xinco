@@ -41,10 +41,12 @@ import com.bluecubs.xinco.core.server.XincoDBManager;
  *
  * @author ortizbj
  */
-public class XincoWorkflowManagerServer {
+public class XincoWorkflowManager {
     private XincoDBManager DBM= null;
-    /** Creates a new instance of XincoWorkflowManagerServer */
-    public XincoWorkflowManagerServer() {
+    /**
+     * Creates a new instance of XincoWorkflowManager
+     */
+    public XincoWorkflowManager() {
         try {
             DBM=new XincoDBManager();
         } catch (Exception ex) {

@@ -52,7 +52,7 @@ import java.util.Vector;
 
 public class XincoDBManager {
     
-    private Connection con;
+    private Connection con=null;
     public XincoConfigSingletonServer config;
     public static int count = 0;
     private int EmailLink=1,DataLink=2;
@@ -66,8 +66,11 @@ public class XincoDBManager {
         //load connection configuartion
         config = XincoConfigSingletonServer.getInstance();
         setDatasource((DataSource)(new InitialContext()).lookup(config.JNDIDB));
-        setCon(getDatasource().getConnection());
-        getCon().setAutoCommit(false);
+        getCon();
+        if(getCon()!=null && !getCon().isClosed())
+            getCon().setAutoCommit(false);
+        else
+            throw new XincoException();
         //load configuration from database
         fillSettings();
         config.init(getXss());
@@ -327,7 +330,7 @@ public class XincoDBManager {
     public void setDatasource(DataSource datasource) {
         this.datasource = datasource;
     }
-
+    
     public void setCon(Connection con) {
         if(con==null)
             getCon();

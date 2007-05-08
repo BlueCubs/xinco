@@ -8,7 +8,6 @@
 package com.bluecubs.xinco.service;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
-import com.bluecubs.xinco.add.holders.XincoAddAttributeHolder;
 import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
 import com.bluecubs.xinco.core.XincoCoreACE;
 import com.bluecubs.xinco.core.XincoCoreAudit;
@@ -19,7 +18,6 @@ import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.XincoSetting;
 import com.bluecubs.xinco.core.XincoVersion;
 import com.bluecubs.xinco.core.server.XincoCoreACEServer;
 import com.bluecubs.xinco.core.server.XincoCoreAuditServer;
@@ -40,6 +38,7 @@ import com.bluecubs.xinco.workflow.holders.XincoWorkflowHolder;
 import com.bluecubs.xinco.workflow.holders.XincoWorkflowInstanceHolder;
 import com.bluecubs.xinco.workflow.holders.XincoWorkflowStepHolder;
 import com.bluecubs.xinco.workflow.holders.XincoWorkflowStepInstanceHolder;
+import com.bluecubs.xinco.workflow.server.XincoWorkflowServer;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -863,7 +862,13 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     }
     
     public XincoWorkflow getWorkflow(int workflow_id, XincoCoreUser user) throws RemoteException {
-        return null;
+        XincoWorkflowServer xws=null;
+        try {
+             xws=new XincoWorkflowServer(workflow_id,new XincoDBManager());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return xws;
     }
     
     public XincoWorkflow getWorkflowInstance(int id, int workflow_id, int data_id, XincoCoreUser user) throws RemoteException {

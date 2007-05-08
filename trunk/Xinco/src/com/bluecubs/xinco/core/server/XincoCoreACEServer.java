@@ -153,7 +153,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 ow = 1;
             }
             
-            XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
+            XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
             
             if (getId() > 0) {
                 Statement stmt = DBM.getCon().createStatement();
@@ -199,7 +199,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
         
         try {
             Statement stmt = DBM.getCon().createStatement();
-            XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
+            XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
             audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+attrCACE.getId()},
                     DBM,"audit.general.delete",userID);
             stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE id=" + attrCACE.getId());

@@ -41,6 +41,7 @@ package com.bluecubs.xinco.client.dialogs;
 
 import com.bluecubs.xinco.client.*;
 import com.bluecubs.xinco.client.XincoClientConnectionProfile;
+import java.rmi.RemoteException;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import javax.swing.DefaultListModel;

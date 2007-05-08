@@ -49,7 +49,7 @@ import java.util.Vector;
  */
 public class XincoCoreAuditTypeServer extends XincoCoreAuditType{
     private int changerID;
-    private XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
+    private XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
     /**
      * Creates a new instance of XincoCoreAuditTypeServer
      */

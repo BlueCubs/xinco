@@ -115,7 +115,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
         try {
             if (getId() > 0) {
                 Statement stmt = DBM.getCon().createStatement();
-                XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
+                XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
                 ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+getId()},
                         DBM,xerb.getString("audit.log.change"),this.getChangerID());

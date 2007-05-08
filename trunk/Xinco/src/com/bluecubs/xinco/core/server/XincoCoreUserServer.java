@@ -64,7 +64,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
     private XincoSettingServer settings=null;
     private java.sql.Timestamp lastModified;
     private int attempts;
-    private XincoCoreAuditTrailManager audit= new XincoCoreAuditTrailManager();
+    private XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
     private ResultSet rs=null;
     
     private void fillXincoCoreGroups(XincoDBManager DBM) throws XincoException {
@@ -175,7 +175,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     long age = getSettings().getSetting("password.aging").getInt_value();
                     if(diffDays >= age){
                         status=3;
-                        //System.out.println("Password must be changed!");
                     } else{
                         status=1;
                     }
