@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="yes" ?>
 <DBMODEL Version="4.0">
 <SETTINGS>
-<GLOBALSETTINGS ModelName="xinco_main_DBD4" IDModel="0" IDVersion="0" VersionStr="1.0.0.0" Comments="" UseVersionHistroy="1" AutoIncVersion="1" DatabaseType="MySQL" ZoomFac="88.49" XPos="0" YPos="408" DefaultDataType="5" DefaultTablePrefix="0" DefSaveDBConn="" DefSyncDBConn="Xinco 2.1" DefQueryDBConn="" Printer="PDF-Datei" HPageCount="4.059464816650148" PageAspectRatio="1.436398386069229" PageOrientation="1" PageFormat="A4 (210x297 mm, 8.26x11.7 inches)" SelectedPages="0;1;5" UsePositionGrid="1" PositionGridX="20" PositionGridY="20" TableNameInRefs="1" DefaultTableType="1" ActivateRefDefForNewRelations="1" FKPrefix="" FKPostfix="" CreateFKRefDefIndex="1" DBQuoteCharacter="`" CreateSQLforLinkedObjects="0" DefModelFont="Tahoma" CanvasWidth="4096" CanvasHeight="2842" />
+<GLOBALSETTINGS ModelName="xinco_main_DBD4" IDModel="0" IDVersion="0" VersionStr="1.0.0.0" Comments="" UseVersionHistroy="1" AutoIncVersion="1" DatabaseType="MySQL" ZoomFac="88.49" XPos="10" YPos="1054" DefaultDataType="5" DefaultTablePrefix="0" DefSaveDBConn="" DefSyncDBConn="Xinco 2.1" DefQueryDBConn="" Printer="PDF-Datei" HPageCount="4.059464816650148" PageAspectRatio="1.436398386069229" PageOrientation="1" PageFormat="A4 (210x297 mm, 8.26x11.7 inches)" SelectedPages="0;1;5" UsePositionGrid="1" PositionGridX="20" PositionGridY="20" TableNameInRefs="1" DefaultTableType="1" ActivateRefDefForNewRelations="1" FKPrefix="" FKPostfix="" CreateFKRefDefIndex="1" DBQuoteCharacter="`" CreateSQLforLinkedObjects="0" DefModelFont="Tahoma" CanvasWidth="4096" CanvasHeight="2842" />
 <DATATYPEGROUPS>
 <DATATYPEGROUP Name="Numeric Types" Icon="1" />
 <DATATYPEGROUP Name="Date and Time Types" Icon="2" />
@@ -1121,7 +1121,7 @@
 </INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="4287" Tablename="xinco_workflow" PrevTableName="Table_18" XPos="100" YPos="1480" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_workflow (id, designation) VALUES(1,\aworkflow.audit.description\a);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="42" >
+<TABLE ID="4287" Tablename="xinco_workflow" PrevTableName="Table_18" XPos="100" YPos="1460" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_workflow (id, designation) VALUES(1, \aworkflow.audit.description\a);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="42" >
 <COLUMNS>
 <COLUMN ID="4289" ColName="id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="1" IsForeignKey="0" DefaultValue="" Comments="">
 <OPTIONSELECTED>
@@ -1139,6 +1139,7 @@
 <RELATION_START ID="4299" />
 <RELATION_START ID="4310" />
 <RELATION_START ID="4416" />
+<RELATION_START ID="4460" />
 </RELATIONS_START>
 <INDICES>
 <INDEX ID="4290" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
@@ -1148,9 +1149,15 @@
 </INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="4293" Tablename="xinco_workflow_step" PrevTableName="Table_19" XPos="120" YPos="1780" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_workflow_step (id, designation) VALUES(1,\aworkflow.step.audit\a);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="43" >
+<TABLE ID="4293" Tablename="xinco_workflow_step" PrevTableName="Table_19" XPos="280" YPos="1720" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_workflow_step (id, xinco_workflow_id,designation) VALUES(1,null,\aworkflow.step.audit\a);\nINSERT INTO xinco_workflow_step (id, xinco_workflow_id,designation) VALUES(2,null,\aworkflow.step.notify\a);\nINSERT INTO xinco_workflow_step (id, xinco_workflow_id,designation) VALUES(3,null,\aworkflow.step.claim\a);\nINSERT INTO xinco_workflow_step (id, xinco_workflow_id,designation) VALUES(4,null,\aworkflow.step.evaluate\a);\nINSERT INTO xinco_workflow_step (id, xinco_workflow_id,designation) VALUES(5,null,\aworkflow.step.checkout\a);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="43" >
 <COLUMNS>
 <COLUMN ID="4351" ColName="id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="4461" ColName="xinco_workflow_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
 <OPTIONSELECTED>
 <OPTIONSELECT Value="1" />
 <OPTIONSELECT Value="0" />
@@ -1166,15 +1173,23 @@
 <RELATION_START ID="4300" />
 <RELATION_START ID="4356" />
 </RELATIONS_START>
+<RELATIONS_END>
+<RELATION_END ID="4460" />
+</RELATIONS_END>
 <INDICES>
 <INDEX ID="4352" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
 <INDEXCOLUMNS>
 <INDEXCOLUMN idColumn="4351" LengthParam="0" />
 </INDEXCOLUMNS>
 </INDEX>
+<INDEX ID="4462" IndexName="xinco_workflow_step_FKIndex1" IndexKind="1" FKRefDef_Obj_id="4460">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="4461" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="4298" Tablename="xinco_workflow_has_xinco_workflow_step" PrevTableName="" XPos="60" YPos="1620" TableType="1" TablePrefix="0" nmTable="1" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_workflow_has_xinco_workflow_step (xinco_workflow_id, id) VALUES(1,1);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="44" >
+<TABLE ID="4298" Tablename="xinco_workflow_has_xinco_workflow_step" PrevTableName="" XPos="40" YPos="1560" TableType="1" TablePrefix="0" nmTable="1" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_workflow_has_xinco_workflow_step (xinco_workflow_id, id) VALUES(1,1);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="44" >
 <COLUMNS>
 <COLUMN ID="4301" ColName="xinco_workflow_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
 <OPTIONSELECTED>
@@ -1274,7 +1289,7 @@
 </INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="4317" Tablename="xinco_workflow_step_instance" PrevTableName="Table_22" XPos="520" YPos="1540" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="50" >
+<TABLE ID="4317" Tablename="xinco_workflow_step_instance" PrevTableName="Table_22" XPos="560" YPos="1540" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="50" >
 <COLUMNS>
 <COLUMN ID="4339" ColName="xinco_core_data_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
 <OPTIONSELECTED>
@@ -1463,14 +1478,15 @@
 <RELATION ID="4216" RelationName="completed_by" Kind="2" SrcTable="1040" DestTable="1627" FKFields="id=xinco_core_user_id\n" FKFieldsComments="\n" relDirection="4" MidOffset="-45" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="4221" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="40" />
 <RELATION ID="4245" RelationName="has_audit_related_data" Kind="2" SrcTable="1008" DestTable="1627" FKFields="id=xinco_core_data_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=3\nOnUpdate=3\n" Comments="" FKRefDefIndex_Obj_id="4246" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="41" />
 <RELATION ID="4299" RelationName="Rel_24" Kind="1" SrcTable="4287" DestTable="4298" FKFields="id=xinco_workflow_id\n" FKFieldsComments="\n" relDirection="3" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=3\nOnUpdate=3\n" Comments="" FKRefDefIndex_Obj_id="4302" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="45" />
-<RELATION ID="4300" RelationName="Rel_25" Kind="1" SrcTable="4293" DestTable="4298" FKFields="id=id\n" FKFieldsComments="\n" relDirection="1" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=3\nOnUpdate=3\n" Comments="" FKRefDefIndex_Obj_id="4451" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="46" />
+<RELATION ID="4300" RelationName="Rel_25" Kind="1" SrcTable="4293" DestTable="4298" FKFields="id=id\n" FKFieldsComments="\n" relDirection="4" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=3\nOnUpdate=3\n" Comments="" FKRefDefIndex_Obj_id="4451" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="46" />
 <RELATION ID="4310" RelationName="is_instance_of" Kind="1" SrcTable="4287" DestTable="4306" FKFields="id=xinco_workflow_id\n" FKFieldsComments="\n" relDirection="1" MidOffset="9" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=3\nOnUpdate=3\n" Comments="" FKRefDefIndex_Obj_id="4312" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="48" />
 <RELATION ID="4313" RelationName="has_instance" Kind="1" SrcTable="1008" DestTable="4306" FKFields="id=xinco_core_data_id\n" FKFieldsComments="\n" relDirection="4" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=3\nOnUpdate=3\n" Comments="" FKRefDefIndex_Obj_id="4315" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="49" />
 <RELATION ID="4326" RelationName="has_step_instance" Kind="1" SrcTable="4306" DestTable="4317" FKFields="id=id\nxinco_workflow_id=xinco_workflow_id\nxinco_core_data_id=xinco_core_data_id\n" FKFieldsComments="\n\n\n" relDirection="2" MidOffset="38" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="24" CaptionOffsetY="-92" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=3\nOnUpdate=3\n" Comments="" FKRefDefIndex_Obj_id="4340" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="51" />
-<RELATION ID="4356" RelationName="xinco_workflow_step_instance" Kind="5" SrcTable="4293" DestTable="4317" FKFields="id=xinco_workflow_step_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="88" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="62" CaptionOffsetY="-84" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=3\nOnUpdate=3\n" Comments="" FKRefDefIndex_Obj_id="4358" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="52" />
+<RELATION ID="4356" RelationName="xinco_workflow_step_instance" Kind="5" SrcTable="4293" DestTable="4317" FKFields="id=xinco_workflow_step_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="12" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="-67" CaptionOffsetY="-111" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=3\nOnUpdate=3\n" Comments="" FKRefDefIndex_Obj_id="4358" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="52" />
 <RELATION ID="4363" RelationName="has_assigned_step" Kind="1" SrcTable="1040" DestTable="4317" FKFields="id=xinco_core_user_id\n" FKFieldsComments="\n" relDirection="4" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=3\nOnUpdate=3\n" Comments="" FKRefDefIndex_Obj_id="4365" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="48" />
 <RELATION ID="4416" RelationName="has_attribute" Kind="1" SrcTable="4287" DestTable="4412" FKFields="id=xinco_workflow_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=3\nOnUpdate=3\n" Comments="" FKRefDefIndex_Obj_id="4418" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="50" />
 <RELATION ID="4446" RelationName="is_attribute_of_attribute" Kind="2" SrcTable="4412" DestTable="4412" FKFields="id=xinco_workflow_attribute_id\nxinco_workflow_id=xinco_workflow_attribute_xinco_workflow_id\n" FKFieldsComments="\n\n" relDirection="2" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="-81" CaptionOffsetY="-63" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=3\nOnUpdate=3\n" Comments="" FKRefDefIndex_Obj_id="4449" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="51" />
+<RELATION ID="4460" RelationName="Rel_30" Kind="5" SrcTable="4287" DestTable="4293" FKFields="id=xinco_workflow_id\n" FKFieldsComments="\n" relDirection="3" MidOffset="-78" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=3\nOnUpdate=3\n" Comments="" FKRefDefIndex_Obj_id="4462" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="52" />
 </RELATIONS>
 <NOTES>
 </NOTES>

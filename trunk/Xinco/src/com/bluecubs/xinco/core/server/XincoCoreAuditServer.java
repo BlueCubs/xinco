@@ -28,8 +28,7 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
      */
     public XincoCoreAuditServer(int attrID, XincoDBManager DBM) throws XincoException {
         try {
-            Statement stmt = DBM.getCon().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_audit WHERE id=" + attrID);
+            ResultSet rs = DBM.Query("SELECT * FROM xinco_audit WHERE id=" + attrID);
             //throw exception if no result found
             while (rs.next()) {
                 setSchedule_id(rs.getInt("id"));
@@ -42,7 +41,11 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
                     setCompletion_date(new Timestamp(rs.getDate("completion_date").getTime()));
                 setCompletedBy(rs.getInt("xinco_core_user_id"));
             }
-            stmt.close();
+            try {
+                DBM.finalize();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new XincoException();
@@ -69,37 +72,35 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
                 audit= new XincoCoreAuditTrail();
             if (getSchedule_id() > 0) {
                 System.out.println("Updating xinco audit");
-                Statement stmt = DBM.getCon().createStatement();
-                stmt.executeUpdate("UPDATE xinco_audit SET id=" + getSchedule_id() +
+                DBM.execute("UPDATE xinco_audit SET id=" + getSchedule_id() +
                         ", xinco_core_data_id=" + getData_id() + ", xinco_audit_type_id=" + getSchedule_type_id() +
                         ", scheduled_date='" + getScheduled_date() + "', completion_date ='"+getCompletion_date()+
                         "' WHERE schedule_id=" + getSchedule_id());
-                stmt.close();
                 DBM.getCon().commit();
                 audit.updateAuditTrail("xinco_audit",new String [] {"id ="+getSchedule_id()},
                         DBM,"audit.scheduledaudit.change",this.getChangerID());
-                System.out.println("Done!");
             } else {
                 System.out.println("Creating xinco audit");
                 setSchedule_id(DBM.getNewID("xinco_audit"));
-                Statement stmt = DBM.getCon().createStatement();
                 if(getCompletedBy()>0){
                     java.sql.Date date= new java.sql.Date(getScheduled_date().getTime());
-                    stmt.executeUpdate("INSERT INTO xinco_audit VALUES (" + getSchedule_id() +
+                    DBM.execute("INSERT INTO xinco_audit VALUES (" + getSchedule_id() +
                             ", " + getSchedule_type_id() + ", "+getData_id()+", " + getData_id()+
                             ", '" +date + "', "+getCompletedBy()+")");
                 } else{
-                    String sql="INSERT INTO xinco_audit VALUES (" + getSchedule_id() +
+                    DBM.execute("INSERT INTO xinco_audit VALUES (" + getSchedule_id() +
                             ", " + getSchedule_type_id() + ", "+getData_id()+", " + getData_id()+
-                            ", '"+new Timestamp(getScheduled_date().getTime())+"', null)";
-                    System.out.println(sql);
-                    stmt.executeUpdate(sql);
+                            ", '"+new Timestamp(getScheduled_date().getTime())+"', null)");
                 }
-                stmt.close();
                 DBM.getCon().commit();
                 audit.updateAuditTrail("xinco_audit",new String [] {"id ="+getSchedule_id()},
                         DBM,"audit.general.create",this.getChangerID());
                 System.out.println("Done!");
+                try {
+                    DBM.finalize();
+                } catch (Throwable ex) {
+                    ex.printStackTrace();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,10 +127,13 @@ public class XincoCoreAuditServer extends XincoCoreAudit{
                 audit= new XincoCoreAuditTrail();
             audit.updateAuditTrail("xinco_audit",new String [] {"id ="+getSchedule_id()},
                     DBM,"audit.general.delete",this.getChangerID());
-            Statement stmt = DBM.getCon().createStatement();
-            stmt.executeUpdate("delete from xinco_audit where id ="+getSchedule_id());
-            stmt.close();
+            DBM.execute("delete from xinco_audit where id ="+getSchedule_id());
             DBM.getCon().commit();
+            try {
+                DBM.finalize();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
             try {

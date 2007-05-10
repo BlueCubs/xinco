@@ -65,7 +65,7 @@ public class XincoSettingServer extends XincoSetting{
         try {
             DBM =new XincoDBManager();
             write2DB(DBM);
-            setXinco_settings(DBM.getXss().getXinco_settings());
+            setXinco_settings(DBM.getXincoServerSetting().getXinco_settings());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -93,7 +93,7 @@ public class XincoSettingServer extends XincoSetting{
     public Vector getXinco_settings() {
         if(xinco_settings==null)
             try {
-                setXinco_settings(new XincoDBManager().getXss().getXinco_settings());
+                setXinco_settings(new XincoDBManager().getXincoServerSetting().getXinco_settings());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

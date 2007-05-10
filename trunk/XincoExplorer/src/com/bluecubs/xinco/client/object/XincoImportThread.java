@@ -86,7 +86,6 @@ public class XincoImportThread extends Thread {
                         explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.progress"));
                         explorer.importContentOfFolder((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject(),
                                 new File(explorer.current_path));
-                        this.sleep(10000);
                         // select current path
                         explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().currentTreeNodeSelection.getPath()));
                         // update transaction info

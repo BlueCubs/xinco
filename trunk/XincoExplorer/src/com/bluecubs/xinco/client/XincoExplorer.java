@@ -70,11 +70,12 @@ import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.XincoSetting;
 import com.bluecubs.xinco.core.XincoVersion;
 import com.bluecubs.xinco.core.client.XincoCoreACEClient;
 import com.bluecubs.xinco.service.XincoServiceLocator;
 import com.bluecubs.xinco.service.XincoSoapBindingStub;
+import com.bluecubs.xinco.workflow.XincoWorkflow;
+import com.bluecubs.xinco.workflow.XincoWorkflowStep;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -2431,8 +2432,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     // update attributes
                     ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(0)).setAttrib_varchar(folder_list[i].getName());
                     ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(1)).setAttrib_unsignedint(total_len);
-                    ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(2)).setAttrib_varchar("" +
-                            in.getChecksum().getValue());
+                    ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(2)).setAttrib_varchar("" + in.getChecksum().getValue());
                     ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(1);
                     ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(4)).setAttrib_unsignedint(0);
                     if (!useSAAJ) {
@@ -3673,11 +3673,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 }
                 loginT= new loginThread();
                 getLoginT().start();
-                try {
-                    explorer.getSession().xinco.getWorkflow(1,explorer.getSession().user).toString();
-                } catch (RemoteException ex) {
-                    ex.printStackTrace();
-                }
             }catch (java.rmi.RemoteException cone) {
                 xincoClientSession.status = 0;
                 cone.printStackTrace();

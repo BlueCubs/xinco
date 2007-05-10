@@ -207,6 +207,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
                 <sequence>
                     <element name="id" type="xsd:int"></element>
                     <element name="description" type="xsd:string"></element>
+                    <element name="workflow" type="xsd:int"></element>
                 </sequence>
             </complexType>
             <complexType name="XincoWorkflowInstance">

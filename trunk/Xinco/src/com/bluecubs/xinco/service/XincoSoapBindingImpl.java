@@ -67,10 +67,10 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         }
         //return current version of server
         XincoVersion version = new XincoVersion();
-        version.setVersion_high(DBM.getXss().getSetting("version.high").getInt_value());
-        version.setVersion_mid(DBM.getXss().getSetting("version.med").getInt_value());
-        version.setVersion_low(DBM.getXss().getSetting("version.low").getInt_value());
-        version.setVersion_postfix(DBM.getXss().getSetting("version.postfix").getString_value());
+        version.setVersion_high(DBM.getXincoServerSetting().getSetting("version.high").getInt_value());
+        version.setVersion_mid(DBM.getXincoServerSetting().getSetting("version.med").getInt_value());
+        version.setVersion_low(DBM.getXincoServerSetting().getSetting("version.low").getInt_value());
+        version.setVersion_postfix(DBM.getXincoServerSetting().getSetting("version.postfix").getString_value());
         return version;
     }
     
@@ -96,6 +96,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             dbm.getCon().close();
             return v;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -537,12 +538,10 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 data.setStatus_number(in0.getStatus_number());
                 data.setUser(user);
                 data.write2DB(dbm);
-                
                 //index data (not on checkout, only when status = open = 1)
                 if (data.getStatus_number() == 1) {
                     boolean index_success = XincoIndexer.indexXincoCoreData(data, false, dbm);
                 }
-                
                 //insert default ACL when inserting new node
                 if (insertnewdata) {
                     XincoCoreACEServer newace;

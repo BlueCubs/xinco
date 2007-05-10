@@ -102,9 +102,8 @@ public class XincoArchiver {
             
             for (j=0;j<querycount;j++) {
                 
-                Statement stmt = dbm.getCon().createStatement();
                 //select data with expired archiving date
-                ResultSet rs = stmt.executeQuery(query[j]);
+                ResultSet rs = dbm.Query(query[j]);
                 while (rs.next()) {
                     xdata_temp = new XincoCoreDataServer(rs.getInt("xcd.id"), dbm);
                     xnode_temp_vector = XincoCoreNodeServer.getXincoCoreNodeParents(xdata_temp.getXinco_core_node_id(), dbm);
@@ -157,8 +156,11 @@ public class XincoArchiver {
                         }
                     }
                 }
-                stmt.close();
-                
+                try {
+                    dbm.finalize();
+                } catch (Throwable ex) {
+                    ex.printStackTrace();
+                }
             }
             return true;
         } catch (Exception e) {

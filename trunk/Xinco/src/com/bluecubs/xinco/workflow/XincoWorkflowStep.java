@@ -12,14 +12,18 @@ public class XincoWorkflowStep  implements java.io.Serializable {
 
     private java.lang.String description;
 
+    private int workflow;
+
     public XincoWorkflowStep() {
     }
 
     public XincoWorkflowStep(
            int id,
-           java.lang.String description) {
+           java.lang.String description,
+           int workflow) {
            this.id = id;
            this.description = description;
+           this.workflow = workflow;
     }
 
 
@@ -62,6 +66,26 @@ public class XincoWorkflowStep  implements java.io.Serializable {
         this.description = description;
     }
 
+
+    /**
+     * Gets the workflow value for this XincoWorkflowStep.
+     * 
+     * @return workflow
+     */
+    public int getWorkflow() {
+        return workflow;
+    }
+
+
+    /**
+     * Sets the workflow value for this XincoWorkflowStep.
+     * 
+     * @param workflow
+     */
+    public void setWorkflow(int workflow) {
+        this.workflow = workflow;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof XincoWorkflowStep)) return false;
@@ -77,7 +101,8 @@ public class XincoWorkflowStep  implements java.io.Serializable {
             this.id == other.getId() &&
             ((this.description==null && other.getDescription()==null) || 
              (this.description!=null &&
-              this.description.equals(other.getDescription())));
+              this.description.equals(other.getDescription()))) &&
+            this.workflow == other.getWorkflow();
         __equalsCalc = null;
         return _equals;
     }
@@ -93,6 +118,7 @@ public class XincoWorkflowStep  implements java.io.Serializable {
         if (getDescription() != null) {
             _hashCode += getDescription().hashCode();
         }
+        _hashCode += getWorkflow();
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -113,6 +139,12 @@ public class XincoWorkflowStep  implements java.io.Serializable {
         elemField.setFieldName("description");
         elemField.setXmlName(new javax.xml.namespace.QName("", "description"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("workflow");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "workflow"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
     }

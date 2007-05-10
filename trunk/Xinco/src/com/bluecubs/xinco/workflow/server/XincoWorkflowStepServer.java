@@ -66,7 +66,7 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
      * @param workflow_id
      * @param designation
      */
-    public XincoWorkflowStepServer(int step_id,int workflow_id, String designation) {
+    public XincoWorkflowStepServer(int step_id, String designation,int workflow_id) {
         setId(step_id);
         setWorkflow_id(workflow_id);
         setDescription(designation);
@@ -83,24 +83,34 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
     public Vector getSteps(int id, XincoDBManager dbm){
         Statement stmt=null,stmt2=null;
         ResultSet rs =null,rs2=null;
-        Vector steps=null;
+        Vector steps=null,substeps=null;
+        XincoWorkflowServer subWorkflow=null;
         if(id>0){
             //Workflow exists
             steps = new Vector();
             try {
-                String sql="select id from xinco_workflow_has_xinco_workflow_step where xinco_workflow_id ="+id;
-                System.out.println(sql);
                 stmt = dbm.getCon().createStatement();
-                rs = stmt.executeQuery(sql);
-                int c=0;
+                rs = stmt.executeQuery("select id from xinco_workflow_has_xinco_workflow_step where xinco_workflow_id ="+id);
                 while(rs.next()){
                     stmt2 = dbm.getCon().createStatement();
-                    System.out.println("Loop #: "+(++c));
-                    sql="select * from xinco_workflow_step where id ="+rs.getInt("id");
-                    System.out.println(sql);
-                    rs2=stmt.executeQuery(sql);
+                    rs2=stmt2.executeQuery("select * from xinco_workflow_step where id ="+rs.getInt("id"));
                     rs2.next();
-                    steps.add(new XincoWorkflowStep(rs2.getInt("id"),rs2.getString("designation")));
+                    steps.add(new XincoWorkflowStepServer(rs2.getInt("id"),rs2.getString("designation"),getWorkflow_id()));
+                    //A step has a workflow as sub steps
+                    if(getWorkflow_id()>0){
+                        try {
+                            //Get new sub workflow
+                            subWorkflow = new XincoWorkflowServer(getWorkflow_id(),new XincoDBManager());
+                            //Extract workflow steps
+                            substeps = subWorkflow.getXinco_workflow_steps();
+                            //Add steps to main workflow
+                            //This also will get any changes in the sub workflow
+                            for(int i=0;i<substeps.size();i++)
+                                steps.add(substeps.get(i));
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
                     stmt2.close();
                 }
                 stmt.close();
@@ -124,7 +134,8 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
             try {
                 stmt = dbm.getCon().createStatement();
                 stmt.executeUpdate("update xinco_workflow_step set id="+getId()+
-                        ", designation='"+getDescription()+"'");
+                        ", designation='"+getDescription()+"', xinco_workflow_id="+
+                        (getWorkflow_id()<1 ? 0:getWorkflow_id())+" where id="+getId());
                 if(isChange()){
                     XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
                     audit.updateAuditTrail("xinco_workflow_step",new String [] {"id ="+getId()},
@@ -149,7 +160,7 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
                 rs.next();
                 setId(rs.getInt(1)+1);
                 stmt.execute("insert into xinco_workflow_step values("+
-                        getId()+",'"+getDescription()+"')");
+                        getId()+",'"+getDescription()+"', "+getWorkflow_id()+")");
                 stmt.execute("insert into xinco_workflow_has_xinco_workflow_step values("+
                         getWorkflow_id()+", "+getId()+")");
                 audit.updateAuditTrail("xinco_workflow_step",new String [] {"id ="+getId()},
@@ -184,5 +195,12 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
     
     public void setWorkflow_id(int workflow_id) {
         this.workflow_id = workflow_id;
+    }
+    
+    public String toString(){
+        String s="";
+        s+="ID: "+getId()+"\n";
+        s+="Description: "+getDescription()+"\n";
+        return s;
     }
 }

@@ -35,7 +35,7 @@
  */
 
 /**
- *  Op Codes 
+ *  Op Codes
  *  2. Modification
  *  3. Checkout
  *  4. Checkout undone
@@ -43,7 +43,7 @@
  *  6. Publish
  *  7. Lock
  *  9. Comment
- *  10.Add audit data 
+ *  10.Add audit data
  *  11.Edit audit data
  */
 package com.bluecubs.xinco.core.server;
@@ -58,6 +58,9 @@ import java.util.ResourceBundle;
 
 public class XincoCoreLogServer extends XincoCoreLog {
     private XincoCoreUser user;
+    
+    public XincoCoreLogServer(){}
+    
     //create single log object for data structures
     public XincoCoreLogServer(int attrID, XincoDBManager DBM) throws XincoException {
         try {
@@ -155,5 +158,48 @@ public class XincoCoreLogServer extends XincoCoreLog {
             core_log.removeAllElements();
         }
         return core_log;
+    }
+    
+    /*Removes all logs for specified data
+     */
+    public static void removeAllFromDB(int data_id,int user_id,XincoDBManager dbm){
+        XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
+        ResultSet rs=dbm.Query("select id from xinco_core_log where xinco_core_data_id ="+data_id);
+        try {
+            while(rs.next()){
+                audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+rs.getInt("id")},
+                        dbm,"audit.general.delete",user_id);
+                dbm.execute("DELETE FROM xinco_core_log WHERE id=" + rs.getInt("id"));
+            }
+            dbm.getCon().commit();
+            try {
+                dbm.finalize();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public static void removeFromDB(int id,int user_id,XincoDBManager dbm){
+        XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
+        audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+id},
+                dbm,"audit.general.delete",user_id);
+        dbm.execute("DELETE FROM xinco_core_log WHERE id=" + id);
+        try {
+            dbm.getCon().commit();
+        } catch (SQLException ex) {
+            try {
+                dbm.getCon().rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            dbm.finalize();
+        } catch (Throwable ex) {
+            ex.printStackTrace();
+        }
     }
 }

@@ -181,13 +181,12 @@ public class XincoAdminServlet extends HttpServlet {
                     login_user=temp_user;
                 } catch (Exception loginex) {
                     //Wrong password or username
-                    Statement stmt=dbm.getCon().createStatement();
-                    ResultSet rs= stmt.executeQuery("SELECT id FROM xinco_core_user WHERE username='" +
+                    ResultSet rs= dbm.Query("SELECT id FROM xinco_core_user WHERE username='" +
                             request.getParameter("DialogLoginUsername") + "' AND status_number<>2");
                     //Check if the username is correct if not just throw the wrong login message
                     if(!rs.next())
                         throw new XincoException("Login "+rb.getString("general.fail")+" Username and/or Password may be incorrect!");
-                    rs= stmt.executeQuery("SELECT id FROM xinco_core_user WHERE username='" +
+                    rs= dbm.Query("SELECT id FROM xinco_core_user WHERE username='" +
                             request.getParameter("DialogLoginUsername") + "'");
                     if(rs.next()){
                         temp_user = new XincoCoreUserServer(rs.getInt("id"), dbm);
@@ -212,6 +211,11 @@ public class XincoAdminServlet extends HttpServlet {
                             throw new XincoException(rb.getString("password.attempt.limitReached"));
                         }
                         throw new XincoException(rb.getString("password.login.fail"));
+                    }
+                    try {
+                        dbm.finalize();
+                    } catch (Throwable ex) {
+                        ex.printStackTrace();
                     }
                 }
                 //check for admin group
@@ -469,10 +473,13 @@ public class XincoAdminServlet extends HttpServlet {
             //main admin always is admin and everyone is a regular user
             if (!(((current_group_selection == 1) && (Integer.parseInt(request.getParameter("DialogEditGroupRemoveUser")) == 1)) || (current_group_selection == 2))) {
                 try {
-                    Statement stmt = dbm.getCon().createStatement();
-                    stmt.executeUpdate("DELETE FROM xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + Integer.parseInt(request.getParameter("DialogEditGroupRemoveUser")) + " AND xinco_core_group_id=" + current_group_selection);
-                    stmt.close();
+                    dbm.execute("DELETE FROM xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + Integer.parseInt(request.getParameter("DialogEditGroupRemoveUser")) + " AND xinco_core_group_id=" + current_group_selection);
                     dbm.getCon().commit();
+                    try {
+                        dbm.finalize();
+                    } catch (Throwable ex) {
+                        ex.printStackTrace();
+                    }
                 } catch (Exception e) {
                     try {
                         dbm.getCon().rollback();
@@ -486,10 +493,13 @@ public class XincoAdminServlet extends HttpServlet {
         //add user to group
         if (request.getParameter("DialogEditGroupAddUser") != null) {
             try {
-                Statement stmt = dbm.getCon().createStatement();
-                stmt.executeUpdate("INSERT INTO xinco_core_user_has_xinco_core_group VALUES (" + Integer.parseInt(request.getParameter("DialogEditGroupAddUser")) + ", " + current_group_selection + ", " + "1)");
-                stmt.close();
+                dbm.execute("INSERT INTO xinco_core_user_has_xinco_core_group VALUES (" + Integer.parseInt(request.getParameter("DialogEditGroupAddUser")) + ", " + current_group_selection + ", " + "1)");
                 dbm.getCon().commit();
+                try {
+                    dbm.finalize();
+                } catch (Throwable ex) {
+                    ex.printStackTrace();
+                }
             } catch (Exception e) {
                 try {
                     dbm.getCon().rollback();
@@ -563,7 +573,7 @@ public class XincoAdminServlet extends HttpServlet {
         if (request.getParameter("DialogEditAttributesRemoveAttributeId") != null) {
             try {
                 temp_attribute = new XincoCoreDataTypeAttributeServer(current_datatype_selection, Integer.parseInt(request.getParameter("DialogEditAttributesRemoveAttributeId")), dbm);
-                XincoCoreDataTypeAttributeServer.deleteFromDB(temp_attribute, dbm,login_user.getId());
+                XincoCoreDataTypeAttributeServer.removeFromDB(temp_attribute, dbm,login_user.getId());
             } catch (Exception e) {
             }
         }
@@ -605,12 +615,15 @@ public class XincoAdminServlet extends HttpServlet {
                 ex.printStackTrace();
             }
             try {
-                Statement stmt=DBM.getCon().createStatement();
-                sql="select id from xinco_core_user where username='"+request.getParameter("user").substring(0,request.getParameter("user").length()-1)+"'";
-                rs=stmt.executeQuery(sql);
+                rs=DBM.Query("select id from xinco_core_user where username='"+request.getParameter("user").substring(0,request.getParameter("user").length()-1)+"'");
                 rs.next();
                 id = rs.getInt(1);
                 temp_user = new XincoCoreUserServer(id,dbm);
+                try {
+                    DBM.finalize();
+                } catch (Throwable ex) {
+                    ex.printStackTrace();
+                }
             } catch (XincoException ex) {
                 ex.printStackTrace();
             } catch (Exception ex) {
@@ -1306,13 +1319,13 @@ public class XincoAdminServlet extends HttpServlet {
                     
                     ResultSet rs;
                     XincoDBManager DBM = new XincoDBManager();
-                    DBM.setLoc(loc);
+                    DBM.setLocale(loc);
                     String column="id";
                     if(request.getParameter("table").equals("xinco_add_attribute"))
                         column="xinco_core_data_id";
                     if(request.getParameter("table").equals("xinco_core_data_type_attribute"))
                         column="xinco_core_data_type_id";
-                    rs=DBM.getCon().createStatement().executeQuery("select * from "+request.getParameter("table")+
+                    rs=DBM.Query("select * from "+request.getParameter("table")+
                             "_t a, (select a.firstname || ' ' || a.name as \""+
                             rb.getString("general.user")+"\" , b.mod_time as \""+rb.getString("general.audit.modtime")+
                             "\" ,b.mod_reason as \""+rb.getString("general.reason")+"\" ,b.record_id " +
@@ -1364,12 +1377,12 @@ public class XincoAdminServlet extends HttpServlet {
                         column="xinco_core_data_id";
                     if(request.getParameter("table").equals("xinco_core_data_type_attribute"))
                         column="xinco_core_data_type_id";
-                    rs=DBM.getCon().createStatement().executeQuery("select distinct * from "+request.getParameter("table")+
+                    rs=DBM.Query("select distinct * from "+request.getParameter("table")+
                             " where "+column+" in (select distinct "+column+" from "+request.getParameter("table")+"_t)");
                     DBM.drawTable(rs,response.getWriter(),DBM.getColumnNames(rs),"",-1,false,-1);
-                    rs=DBM.getCon().createStatement().executeQuery("select distinct "+column+" from "+request.getParameter("table")+"_t");
+                    rs=DBM.Query("select distinct "+column+" from "+request.getParameter("table")+"_t");
                     out.println("<form action='XincoAdmin?MenuAudit=AuditTable' method='POST'>");
-                    rs=DBM.getCon().createStatement().executeQuery("select distinct "+column+" from "+
+                    rs=DBM.Query("select distinct "+column+" from "+
                             request.getParameter("table")+"_t");
                     out.println("Select record id: ");
                     out.println("<select name='id'>");
@@ -1494,8 +1507,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("</tr>");
                     XincoCoreDataServer xdata_temp = null;
                     boolean index_result = false;
-                    Statement stmt = dbm.getCon().createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT id FROM xinco_core_data ORDER BY designation");
+                    ResultSet rs = dbm.Query("SELECT id FROM xinco_core_data ORDER BY designation");
                     while (rs.next()) {
                         xdata_temp = new XincoCoreDataServer(rs.getInt("id"), dbm);
                         index_result = XincoIndexer.indexXincoCoreData(xdata_temp, true, dbm);
@@ -1509,8 +1521,11 @@ public class XincoAdminServlet extends HttpServlet {
                         out.println("</tr>");
                         out.flush();
                     }
-                    stmt.close();
-                    
+                    try {
+                        dbm.finalize();
+                    } catch (Throwable ex) {
+                        ex.printStackTrace();
+                    }
                     //optimize index
                     index_result = XincoIndexer.optimizeIndex(dbm);
                     out.println("<tr>");

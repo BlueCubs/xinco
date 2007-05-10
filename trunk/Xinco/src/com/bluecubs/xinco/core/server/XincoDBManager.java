@@ -53,48 +53,61 @@ import java.util.Vector;
 public class XincoDBManager {
     
     private Connection con=null;
-    public XincoConfigSingletonServer config;
+    public XincoConfigSingletonServer config=null;
     public static int count = 0;
     private int EmailLink=1,DataLink=2;
     private ResourceBundle lrb = null;
     private Locale loc=null;
     private XincoSettingServer xss=null;
     private DataSource datasource=null;
+    private Statement stmt=null;
     
     public XincoDBManager() throws Exception {
         lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
         //load connection configuartion
         config = XincoConfigSingletonServer.getInstance();
         setDatasource((DataSource)(new InitialContext()).lookup(config.JNDIDB));
-        getCon();
-        if(getCon()!=null && !getCon().isClosed())
-            getCon().setAutoCommit(false);
-        else
-            throw new XincoException();
         //load configuration from database
         fillSettings();
-        config.init(getXss());
+        config.init(getXincoServerSetting());
         count++;
+    }
+    
+    public void clear(){
+       /*
+        * close any jdbc instances here that weren't
+        * explicitly closed during normal code path, so
+        * that we don't 'leak' resources...
+        */
+        if (con != null) {
+            try {
+                con.close();
+            } catch (SQLException sqlex) {
+                // ignore -- as we can't do anything about it here
+            }
+            con = null;
+        }
     }
     
     private void fillSettings(){
         ResultSet rs=null;
-        getXss().setXinco_settings(new Vector());
+        getXincoServerSetting().setXinco_settings(new Vector());
         String string_value="";
         try {
-            Statement stm=getCon().createStatement();
-            rs=stm.executeQuery("select * from xinco_setting order by id");
+            rs=Query("select * from xinco_setting order by id");
             while(rs.next()){
                 if(rs.getString("string_value")==null)
                     string_value="";
                 else
                     string_value=rs.getString("string_value");
-                getXss().getXinco_settings().addElement(new XincoSetting(rs.getInt("id"),
+                getXincoServerSetting().getXinco_settings().addElement(new XincoSetting(rs.getInt("id"),
                         rs.getString("description"),rs.getInt("int_value"),string_value,
                         rs.getBoolean("bool_value"),0,rs.getLong("long_value"),null));
             }
-            stm.close();
+            finalize();
         } catch (SQLException ex) {
+            ex.printStackTrace();
+        }catch (Throwable ex) {
             ex.printStackTrace();
         }
     }
@@ -115,14 +128,27 @@ public class XincoDBManager {
     }
     
     public void finalize() throws Throwable {
-        try {
-            count--;
-            getCon().close();
-        } finally {
-            if (!getCon().isClosed()) {
-                count++;
+//        try {
+//            count--;
+//            getCon().close();
+//        } finally {
+//            if (!getCon().isClosed()) {
+//                count++;
+//            }
+//            super.finalize();
+//        }
+        if (getCon() != null) {
+            try {
+                count--;
+                getCon().close();
+            } catch (SQLException sqlex) {
+                // ignore -- as we can't do anything about it here
+            }finally {
+                if (!getCon().isClosed()) {
+                    count++;
+                }
+                super.finalize();
             }
-            super.finalize();
         }
     }
     
@@ -223,7 +249,7 @@ public class XincoDBManager {
         return lrb.getString(s);
     }
     
-    public void setLoc(Locale loc) {
+    public void setLocale(Locale loc) {
         this.loc = loc;
         if (loc==null)
             loc = Locale.getDefault();
@@ -306,7 +332,7 @@ public class XincoDBManager {
             throw new XincoException(lrb.getString("error.noadminpermission"));
     }
     
-    public XincoSettingServer getXss() {
+    public XincoSettingServer getXincoServerSetting() {
         if(xss==null)
             xss=new XincoSettingServer();
         return xss;
@@ -316,6 +342,7 @@ public class XincoDBManager {
         if(con==null){
             try {
                 con = getDatasource().getConnection();
+                con.setAutoCommit(false);
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -331,9 +358,42 @@ public class XincoDBManager {
         this.datasource = datasource;
     }
     
-    public void setCon(Connection con) {
-        if(con==null)
-            getCon();
-        this.con = con;
+    /**Processes a sql query and returns the ResultSet.
+     */
+    public ResultSet Query(String sql) {
+        System.out.println(sql);
+        Connection con = null;
+        ResultSet rs= null;
+        Statement stmt=null;
+        try {
+            con=getDatasource().getConnection();
+            stmt=con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            if(!con.isClosed()) {
+                rs=stmt.executeQuery(sql);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return rs;
+    }
+    
+    public void execute(String sql){
+        System.out.println("Executing data manipulating query: "+sql);
+        try {
+            getStatement().execute(sql);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        System.out.println("Done!");
+    }
+    
+    private Statement getStatement() {
+        if(this.stmt==null)
+            try {
+                this.stmt= con.createStatement();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        return this.stmt;
     }
 }

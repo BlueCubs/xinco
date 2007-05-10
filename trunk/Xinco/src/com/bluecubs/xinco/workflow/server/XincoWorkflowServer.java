@@ -174,8 +174,7 @@ public class XincoWorkflowServer extends XincoWorkflow{
             s+="Steps: "+"\n";
             s+="----------------------------"+"\n";
             for(int i=0;i<ws.getXinco_workflow_steps().size();i++){
-                s+="ID: "+((XincoWorkflowStepServer)ws.getXinco_workflow_steps().get(i)).getId()+"\n";
-                s+="Description: "+((XincoWorkflowStepServer)ws.getXinco_workflow_steps().get(i)).getDescription()+"\n";
+                s+=((XincoWorkflowStepServer)ws.getXinco_workflow_steps().get(i)).toString();
                 s+="----------------------------";
             }
             System.out.println(s);
