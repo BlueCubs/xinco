@@ -53,7 +53,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
     public XincoAddAttributeServer(int attrID1, int attrID2, XincoDBManager DBM) throws XincoException {
         Statement stmt=null;
         try {
-            ResultSet rs = DBM.Query("SELECT * FROM xinco_add_attribute " +
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_add_attribute " +
                     "WHERE xinco_core_data_id=" + attrID1 + " AND attribute_id=" + attrID2);
             if(rs.next()) {
                 setXinco_core_data_id(rs.getInt("xinco_core_data_id"));
@@ -128,7 +128,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
             }
             String sql="";
             //get existing attributes for this data
-            ResultSet rs = DBM.Query("select attribute_id from xinco_add_attribute" +
+            ResultSet rs = DBM.executeQuery("select attribute_id from xinco_add_attribute" +
                     " where xinco_core_data_id="+ getXinco_core_data_id() +
                     " and attribute_id=" + getAttribute_id());
             //Check if this attribute already exists to decide if it should be updated or inserted
@@ -144,7 +144,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                         ", attrib_double=" + getAttrib_double() + ", attrib_varchar='" + attrVC + "', " +
                         "attrib_text= '" + attrT + "', attrib_datetime ='" + attrDT + "' where xinco_core_data_id="+
                         getXinco_core_data_id() + " and attribute_id=" + getAttribute_id();
-                DBM.execute(sql);
+                DBM.executeUpdate(sql);
                 if(isChange())
                     audit.updateAuditTrail("xinco_add_attribute",new String [] {"attribute_id ="+getAttribute_id(),
                     "xinco_core_data_id="+getXinco_core_data_id()},
@@ -152,7 +152,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
             } else{
                 //Attributes already comes with attribute id assigned. If not...
                 if(getAttribute_id()==0){
-                    rs = DBM.Query("select count(attribute_id) from xinco_add_attribute" +
+                    rs = DBM.executeQuery("select count(attribute_id) from xinco_add_attribute" +
                             " where xinco_core_data_id="+ getXinco_core_data_id() +
                             " and attribute_id=" + getAttribute_id());
                     setAttribute_id(rs.getInt(1));
@@ -161,7 +161,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                         ", " + getAttribute_id() + ", " + getAttrib_int() + ", " +
                         getAttrib_unsignedint() + ", " + getAttrib_double() + ", '" +
                         attrVC + "', '" + attrT + "', '" + attrDT + "')";
-                DBM.execute(sql);
+                DBM.executeUpdate(sql);
                 audit.updateAuditTrail("xinco_add_attribute",new String [] {"attribute_id ="+getAttribute_id(),
                 "xinco_core_data_id="+getXinco_core_data_id()},
                         DBM,"audit.general.create",getChangerID());
@@ -183,7 +183,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
     public static Vector getXincoAddAttributes(int attrID, XincoDBManager DBM) {
         Vector addAttributes = new Vector();
         try {
-            ResultSet rs = DBM.Query("SELECT * FROM xinco_add_attribute WHERE xinco_core_data_id =" + attrID + " ORDER BY attribute_id");
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_add_attribute WHERE xinco_core_data_id =" + attrID + " ORDER BY attribute_id");
             
             GregorianCalendar cal;
             while (rs.next()) {
@@ -213,7 +213,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
         Statement stmt = null;
         XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
         try {
-            DBM.execute("DELETE FROM xinco_add_attribute WHERE xinco_add_attribute.attribute_id=" +
+            DBM.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_add_attribute.attribute_id=" +
                     attribute_id + " AND xinco_add_attribute.xinco_core_data_id = "+xinco_core_data_id);
             audit.updateAuditTrail("xinco_add_attribute",new String [] {"xinco_add_attribute.attribute_id=" + attribute_id,
             "xinco_add_attribute.xinco_core_data_id ="+xinco_core_data_id},
@@ -238,7 +238,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
      */
     public static void removeAllFromDBForData(int data_id,int user_id,XincoDBManager dbm){
         XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
-        ResultSet rs=dbm.Query("select attribute_id from xinco_core_ace where xinco_core_data_id ="+data_id);
+        ResultSet rs=dbm.executeQuery("select attribute_id from xinco_core_ace where xinco_core_data_id ="+data_id);
         try {
             while(rs.next()){
                removeFromDB(data_id,rs.getInt("attribute_id"),dbm,user_id);
@@ -260,10 +260,9 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
      */
     public static void removeAllFromDBForDataType(int data_type_id,int attr_id,int user_id,XincoDBManager dbm){
         XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
-        ResultSet rs=dbm.Query("select xinco_add_attribute.attribute_id, " +
-                "xinco_core_data.id FROM xinco_add_attribute, xinco_core_data " +
-                "WHERE xinco_add_attribute.attribute_id= " +attr_id+
-                "AND xinco_core_data.xinco_core_data_type_id="+data_type_id);
+        ResultSet rs=dbm.executeQuery("select xinco_core_data.id FROM xinco_add_attribute," +
+                " xinco_core_data WHERE xinco_add_attribute.attribute_id= " +
+                attr_id+"AND xinco_core_data.xinco_core_data_type_id="+data_type_id);
         try {
             while(rs.next()){
                removeFromDB(rs.getInt("id"),attr_id,dbm,user_id);

@@ -46,12 +46,8 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     
     //create language object for data structures
     public XincoCoreLanguageServer(int attrID, XincoDBManager DBM) throws XincoException {
-        
-        try {
-            
-            Statement stmt = DBM.getCon().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_language WHERE id=" + attrID);
-            
+        try {    
+            ResultSet rs=DBM.executeQuery("SELECT * FROM xinco_core_language WHERE id=" + attrID);
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {
@@ -63,9 +59,11 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             if (RowCount < 1) {
                 throw new XincoException();
             }
-            
-            stmt.close();
-            
+            try {
+                DBM.finalize();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
         } catch (Exception e) {
             throw new XincoException();
         }
@@ -89,23 +87,24 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             Statement stmt;
             
             if (getId() > 0) {
-                stmt = DBM.getCon().createStatement();
                 XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
                 ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 audit.updateAuditTrail("xinco_core_language",new String [] {"id ="+getId()},
                         DBM,xerb.getString("audit.language.change"),this.getChangerID());
-                stmt.executeUpdate("UPDATE xinco_core_language SET sign='" + getSign().replaceAll("'","\\\\'") + "', designation='" + getDesignation().replaceAll("'","\\\\'") + "' WHERE id=" + getId());
-                stmt.close();
+                DBM.executeUpdate("UPDATE xinco_core_language SET sign='" + 
+                        getSign().replaceAll("'","\\\\'") + "', designation='" + 
+                        getDesignation().replaceAll("'","\\\\'") + "' WHERE id=" + 
+                        getId());
             } else {
                 setId(DBM.getNewID("xinco_core_language"));
-                
-                stmt = DBM.getCon().createStatement();
-                stmt.executeUpdate("INSERT INTO xinco_core_language VALUES (" + getId() + ", '" + getSign().replaceAll("'","\\\\'") + "', '" + getDesignation().replaceAll("'","\\\\'") + "')");
-                stmt.close();
+                DBM.executeUpdate("INSERT INTO xinco_core_language VALUES (" + getId() + ", '" + getSign().replaceAll("'","\\\\'") + "', '" + getDesignation().replaceAll("'","\\\\'") + "')");
             }
-            
             DBM.getCon().commit();
-            
+            try {
+                DBM.finalize();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
         } catch (Exception e) {
             try {
                 DBM.getCon().rollback();
@@ -119,21 +118,18 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     }
     
     //delete from db
-    public static int deleteFromDB(XincoCoreLanguage attrCL, XincoDBManager DBM,int userID) throws XincoException {
-        
+    public static int removeFromDB(XincoCoreLanguage attrCL, XincoDBManager DBM,int userID) throws XincoException {
         try {
-            
-            Statement stmt = null;
-            
-            stmt = DBM.getCon().createStatement();
             XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
             audit.updateAuditTrail("xinco_core_language",new String [] {"id ="+attrCL.getId()},
                     DBM,"audit.general.delete",userID);
-            stmt.executeUpdate("DELETE FROM xinco_core_language WHERE id=" + attrCL.getId());
-            stmt.close();
-            
+            DBM.executeUpdate("DELETE FROM xinco_core_language WHERE id=" + attrCL.getId());
             DBM.getCon().commit();
-            
+            try {
+                DBM.finalize();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
         } catch (Exception e) {
             try {
                 DBM.getCon().rollback();
@@ -147,59 +143,47 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     }
     
     //create complete list of languages
-    public static Vector getXincoCoreLanguages(XincoDBManager DBM) {
-        
+    public static Vector getXincoCoreLanguages(XincoDBManager DBM) {   
         Vector coreLanguages = new Vector();
-        
         try {
-            
-            Statement stmt = DBM.getCon().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_language ORDER BY designation");
-            
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_language ORDER BY designation");
             while (rs.next()) {
                 coreLanguages.addElement(new XincoCoreLanguageServer(rs.getInt("id"), rs.getString("sign"), rs.getString("designation")));
             }
-            
-            stmt.close();
-            
+            try {
+                DBM.finalize();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
         } catch (Exception e) {
             coreLanguages.removeAllElements();
         }
-        
         return coreLanguages;
     }
     
     //check if language is in use by other objects
     public static boolean isLanguageUsed(XincoCoreLanguage xcl, XincoDBManager DBM) {
-        
         boolean is_used = false;
-        
         try {
-            
-            Statement stmt = null;
             ResultSet rs = null;
-            
-            stmt = DBM.getCon().createStatement();
-            rs = stmt.executeQuery("SELECT 1 FROM xinco_core_node WHERE xinco_core_language_id = " + xcl.getId());
+            rs = DBM.executeQuery("SELECT 1 FROM xinco_core_node WHERE xinco_core_language_id = " + xcl.getId());
             while (rs.next()) {
                 is_used = true;
             }
-            stmt.close();
-            
             if (!is_used) {
-                stmt = DBM.getCon().createStatement();
-                rs = stmt.executeQuery("SELECT 1 FROM xinco_core_data WHERE xinco_core_language_id = " + xcl.getId());
+                rs = DBM.executeQuery("SELECT 1 FROM xinco_core_data WHERE xinco_core_language_id = " + xcl.getId());
                 while (rs.next()) {
                     is_used = true;
                 }
-                stmt.close();
             }
-            
+            try {
+                DBM.finalize();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
         } catch (Exception e) {
             is_used = true; // rather lock language in case of error!
         }
-        
         return is_used;
     }
-    
 }

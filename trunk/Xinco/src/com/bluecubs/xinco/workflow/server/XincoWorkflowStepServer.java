@@ -81,7 +81,6 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
     }
     
     public Vector getSteps(int id, XincoDBManager dbm){
-        Statement stmt=null,stmt2=null;
         ResultSet rs =null,rs2=null;
         Vector steps=null,substeps=null;
         XincoWorkflowServer subWorkflow=null;
@@ -89,11 +88,9 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
             //Workflow exists
             steps = new Vector();
             try {
-                stmt = dbm.getCon().createStatement();
-                rs = stmt.executeQuery("select id from xinco_workflow_has_xinco_workflow_step where xinco_workflow_id ="+id);
+                rs = dbm.executeQuery("select id from xinco_workflow_has_xinco_workflow_step where xinco_workflow_id ="+id);
                 while(rs.next()){
-                    stmt2 = dbm.getCon().createStatement();
-                    rs2=stmt2.executeQuery("select * from xinco_workflow_step where id ="+rs.getInt("id"));
+                    rs2=dbm.executeQuery("select * from xinco_workflow_step where id ="+rs.getInt("id"));
                     rs2.next();
                     steps.add(new XincoWorkflowStepServer(rs2.getInt("id"),rs2.getString("designation"),getWorkflow_id()));
                     //A step has a workflow as sub steps
@@ -111,9 +108,8 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
                             ex.printStackTrace();
                         }
                     }
-                    stmt2.close();
                 }
-                stmt.close();
+                dbm.finalize();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -122,7 +118,6 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
     }
     
     public void write2DB(XincoDBManager dbm) throws XincoException{
-        Statement stmt=null;
         ResultSet rs =null,rs2=null;
         try {
             dbm = new XincoDBManager();
@@ -132,8 +127,7 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
         if(getId()>0){
             //Step already exists
             try {
-                stmt = dbm.getCon().createStatement();
-                stmt.executeUpdate("update xinco_workflow_step set id="+getId()+
+                dbm.executeUpdate("update xinco_workflow_step set id="+getId()+
                         ", designation='"+getDescription()+"', xinco_workflow_id="+
                         (getWorkflow_id()<1 ? 0:getWorkflow_id())+" where id="+getId());
                 if(isChange()){
@@ -153,20 +147,19 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
         } else{
             XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
             try {
-                stmt = dbm.getCon().createStatement();
-                rs=stmt.executeQuery("select count(*) from " +
+                rs=dbm.executeQuery("select count(*) from " +
                         "xinco_workflow_has_xinco_workflow_step where " +
                         "xinco_workflow_id="+getWorkflow_id());
                 rs.next();
                 setId(rs.getInt(1)+1);
-                stmt.execute("insert into xinco_workflow_step values("+
+                dbm.executeUpdate("insert into xinco_workflow_step values("+
                         getId()+",'"+getDescription()+"', "+getWorkflow_id()+")");
-                stmt.execute("insert into xinco_workflow_has_xinco_workflow_step values("+
+                dbm.executeUpdate("insert into xinco_workflow_has_xinco_workflow_step values("+
                         getWorkflow_id()+", "+getId()+")");
                 audit.updateAuditTrail("xinco_workflow_step",new String [] {"id ="+getId()},
                         dbm,"audit.general.create",this.getChangerID());
-                stmt.close();
                 dbm.getCon().commit();
+                dbm.finalize();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

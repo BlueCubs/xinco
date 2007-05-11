@@ -761,10 +761,11 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         Vector audits= new Vector();
         try {
             dbm = new XincoDBManager();
-            rs=dbm.getCon().createStatement().executeQuery("SELECT id FROM xinco_audit " +
+            rs=dbm.executeQuery("SELECT id FROM xinco_audit " +
                     "WHERE xinco_core_data_id=" + in0.getId()+ " order by scheduled_date");
             while(rs.next())
                 audits.add((XincoCoreAudit)new XincoCoreAuditServer(rs.getInt("id"),new XincoDBManager()));
+            dbm.finalize();
         } catch (XincoException ex) {
             ex.printStackTrace();
         } catch (SQLException ex) {
@@ -863,7 +864,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     public XincoWorkflow getWorkflow(int workflow_id, XincoCoreUser user) throws RemoteException {
         XincoWorkflowServer xws=null;
         try {
-             xws=new XincoWorkflowServer(workflow_id,new XincoDBManager());
+            xws=new XincoWorkflowServer(workflow_id,new XincoDBManager());
         } catch (Exception ex) {
             ex.printStackTrace();
         }

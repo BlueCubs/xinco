@@ -50,7 +50,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     public XincoCoreDataTypeAttributeServer(int attrID1, int attrID2, XincoDBManager DBM) throws XincoException {
         
         try {
-            ResultSet rs = DBM.Query("SELECT * FROM xinco_core_data_type_attribute WHERE xinco_core_data_type_id=" + attrID1 + " AND attribute_id=" + attrID2);
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_data_type_attribute WHERE xinco_core_data_type_id=" + attrID1 + " AND attribute_id=" + attrID2);
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {
@@ -89,7 +89,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
         try {
             XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
             if(getAttribute_id()==0){
-                DBM.execute("INSERT INTO xinco_core_data_type_attribute VALUES (" +
+                DBM.executeUpdate("INSERT INTO xinco_core_data_type_attribute VALUES (" +
                         getXinco_core_data_type_id() + ", " + getAttribute_id() + ", '" +
                         getDesignation() + "', '" + getData_type() + "', " + getSize() +
                         ")");
@@ -107,7 +107,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
                     ex.printStackTrace();
                 }
             }else{
-                DBM.execute("Update xinco_core_data_type_attribute set xinco_core_data_type_id=" +
+                DBM.executeUpdate("Update xinco_core_data_type_attribute set xinco_core_data_type_id=" +
                         getXinco_core_data_type_id() + ", attribute_id=" + getAttribute_id() + ", designation='" +
                         getDesignation() + "', data_type='" + getData_type() + "', size=" + getSize() +
                         " where xinco_core_data_type_id=" +getXinco_core_data_type_id() +
@@ -116,14 +116,6 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
                 "attribute_id =" +getAttribute_id()},
                         DBM,"audit.general.modified",this.getChangerID());
             }
-//            audit.updateAuditTrail("xinco_add_attribute",new String [] {"xinco_add_attribute.attribute_id=" + getAttribute_id(),
-//            "xinco_add_attribute.xinco_core_data_id IN (SELECT id FROM xinco_core_data WHERE xinco_core_data.xinco_core_data_type_id=" +
-//                    getXinco_core_data_type_id()+ ")"},
-//                    DBM,"audit.datatype.attribute.change",this.getChangerID());
-//
-//            stmt = DBM.getCon().createStatement();
-//            stmt.executeUpdate("INSERT INTO xinco_add_attribute SELECT id, " + getAttribute_id() + ", 0, 0, 0, '', '', now() FROM xinco_core_data WHERE xinco_core_data_type_id = " + getXinco_core_data_type_id());
-//            stmt.close();
             DBM.getCon().commit();
             
         } catch (Exception e) {
@@ -142,23 +134,24 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     public static int removeFromDB(XincoCoreDataTypeAttribute attrCDTA, XincoDBManager DBM, int userID) throws XincoException { 
         try {
             XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
-            /*
-             * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
-            audit.updateAuditTrail("xinco_add_attribute",new String [] {"xinco_add_attribute.attribute_id=" + attrCDTA.getAttribute_id(),
-            "xinco_add_attribute.xinco_core_data_id IN (SELECT id FROM xinco_core_data WHERE xinco_core_data.xinco_core_data_type_id=" +
-                    attrCDTA.getXinco_core_data_type_id()+ ")"},
-                    DBM,"audit.general.delete",userID);
-             */
+            //Remove all related add attributes from all related data
             XincoAddAttributeServer xaas = new XincoAddAttributeServer();
-            xaas.removeAllFromDBForDataType();
-            DBM.execute("DELETE FROM xinco_add_attribute WHERE xinco_add_attribute.attribute_id=" +
-                    attrCDTA.getAttribute_id() + " AND xinco_add_attribute.xinco_core_data_id IN (SELECT id FROM xinco_core_data WHERE xinco_core_data.xinco_core_data_type_id=" +
-                    attrCDTA.getXinco_core_data_type_id() + ")");
-            DBM.getCon().commit();
+            xaas.removeAllFromDBForDataType(attrCDTA.getXinco_core_data_type_id(),
+                    attrCDTA.getAttribute_id(),userID,DBM);
+//            DBM.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_add_attribute.attribute_id=" +
+//                     + " AND xinco_add_attribute.xinco_core_data_id IN (SELECT id FROM xinco_core_data WHERE xinco_core_data.xinco_core_data_type_id=" +
+//                    attrCDTA.getXinco_core_data_type_id() + ")");
+//            DBM.getCon().commit();
             
-            audit.updateAuditTrail("xinco_core_data_type_attribute",new String [] {"xinco_core_data_type_id=" + attrCDTA.getXinco_core_data_type_id(), "attribute_id=" + attrCDTA.getAttribute_id()},
+            audit.updateAuditTrail("xinco_core_data_type_attribute",
+                    new String [] {"xinco_core_data_type_id=" + 
+                            attrCDTA.getXinco_core_data_type_id(),
+                    "attribute_id=" + attrCDTA.getAttribute_id()},
                     DBM,"audit.general.delete",userID);
-            DBM.execute("DELETE FROM xinco_core_data_type_attribute WHERE xinco_core_data_type_id=" + attrCDTA.getXinco_core_data_type_id() + " AND attribute_id=" + attrCDTA.getAttribute_id());
+            DBM.getCon().commit();
+            DBM.executeUpdate("DELETE FROM xinco_core_data_type_attribute WHERE " +
+                    "xinco_core_data_type_id=" + attrCDTA.getXinco_core_data_type_id() +
+                    " AND attribute_id=" + attrCDTA.getAttribute_id());
             DBM.getCon().commit();
             try {
                 DBM.finalize();
@@ -179,18 +172,17 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     
     //create complete list of data type attributes
     public static Vector getXincoCoreDataTypeAttributes(int attrID, XincoDBManager DBM) {
-        
         Vector coreDataTypeAttributes = new Vector();
-        
         try {
-            Statement stmt = DBM.getCon().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data_type_attribute WHERE xinco_core_data_type_id =" + attrID + " ORDER BY attribute_id");
-            
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_data_type_attribute WHERE xinco_core_data_type_id =" + attrID + " ORDER BY attribute_id");
             while (rs.next()) {
                 coreDataTypeAttributes.addElement(new XincoCoreDataTypeAttributeServer(rs.getInt("xinco_core_data_type_id"), rs.getInt("attribute_id"), rs.getString("designation"), rs.getString("data_type"), rs.getInt("size")));
             }
-            
-            stmt.close();
+            try {
+                DBM.finalize();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
         } catch (Exception e) {
             coreDataTypeAttributes.removeAllElements();
         }

@@ -59,7 +59,7 @@ public class XincoCoreAuditTypeServer extends XincoCoreAuditType{
     public XincoCoreAuditTypeServer(int id, XincoCoreUser user,XincoDBManager DBM) {
         ResultSet rs=null;
         try {
-            rs=DBM.Query("select * from xinco_audit_type where id="+id);
+            rs=DBM.executeQuery("select * from xinco_audit_type where id="+id);
             while(rs.next()){
                 setId(id);
                 setDays(rs.getInt("days"));
@@ -106,7 +106,7 @@ public class XincoCoreAuditTypeServer extends XincoCoreAuditType{
     private void write2DB(XincoDBManager DBM) throws XincoException{
         if(getId()>0){
             try {
-                DBM.execute("update xinco_audit_type set id="+
+                DBM.executeUpdate("update xinco_audit_type set id="+
                         getId()+", days="+getDays()+", weeks="+getWeeks()+", months="+getMonths()+
                         ", years="+getYears()+", description='"+getDescription()+"', due_same_day="+isDue_same_day()+
                         ", due_same_week="+isDue_same_week()+", due_same_month="+isDue_same_month());
@@ -119,7 +119,7 @@ public class XincoCoreAuditTypeServer extends XincoCoreAuditType{
         }else{
             try {
                 setId(DBM.getNewID("xinco_audit_type"));
-                DBM.execute("insert into xinco_audit_type values("+getId()+", "+
+                DBM.executeUpdate("insert into xinco_audit_type values("+getId()+", "+
                         getDays()+", "+getWeeks()+", "+getMonths()+", "+getYears()+", "+
                         getDescription()+", "+isDue_same_day()+", "+isDue_same_week()
                         +", "+isDue_same_month()+")");
@@ -143,7 +143,7 @@ public class XincoCoreAuditTypeServer extends XincoCoreAuditType{
         Vector types=new Vector();
         ResultSet rs=null;
         try {
-            rs=DBM.Query("select * from xinco_audit_type order by description");
+            rs=DBM.executeQuery("select * from xinco_audit_type order by description");
             while(rs.next()){
                 temp = new XincoCoreAuditType(rs.getInt("id"),rs.getInt("days"),rs.getInt("weeks"),
                         rs.getInt("months"),rs.getInt("years"),rs.getString("description"),rs.getBoolean("due_same_day"),

@@ -36,7 +36,7 @@ public class XincoCoreAuditTrail {
             }
             String sql="";
             int record_ID=0;
-            ResultSet rs = DBM.Query("select * from "+table+" where "+where);
+            ResultSet rs = DBM.executeQuery("select * from "+table+" where "+where);
             try {
                 record_ID=DBM.getNewID("xinco_core_user_modified_record");
                 sql="insert into "+table+"_t values('"+record_ID+"', ";
@@ -54,11 +54,11 @@ public class XincoCoreAuditTrail {
                     else
                         sql+=")";
                 }
-                DBM.execute(sql);
+                DBM.executeUpdate(sql);
                 sql="insert into xinco_core_user_modified_record (id, record_id, mod_Time, " +
                         "mod_Reason) values ("+id+", "+record_ID+", '"+
                         new Timestamp(System.currentTimeMillis())+"', '"+reason+"')";
-                DBM.execute(sql);
+                DBM.executeUpdate(sql);
             }
             DBM.getCon().commit();
             try {

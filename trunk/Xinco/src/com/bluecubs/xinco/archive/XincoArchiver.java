@@ -103,7 +103,7 @@ public class XincoArchiver {
             for (j=0;j<querycount;j++) {
                 
                 //select data with expired archiving date
-                ResultSet rs = dbm.Query(query[j]);
+                ResultSet rs = dbm.executeQuery(query[j]);
                 while (rs.next()) {
                     xdata_temp = new XincoCoreDataServer(rs.getInt("xcd.id"), dbm);
                     xnode_temp_vector = XincoCoreNodeServer.getXincoCoreNodeParents(xdata_temp.getXinco_core_node_id(), dbm);

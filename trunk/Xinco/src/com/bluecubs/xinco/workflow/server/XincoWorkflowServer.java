@@ -53,17 +53,11 @@ public class XincoWorkflowServer extends XincoWorkflow{
     private int changerID;
     /** Creates a new instance of XincoWorkflowServer */
     public XincoWorkflowServer(int id, XincoDBManager dbm) {
-        Statement stmt=null;
         ResultSet rs =null;
-        try {
-            stmt = dbm.getCon().createStatement();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
         if(id>0){
             //Workflow exists
             try {
-                rs = stmt.executeQuery("select * from xinco_workflow where id="+id);
+                rs = dbm.executeQuery("select * from xinco_workflow where id="+id);
                 rs.next();
                 setDescription(rs.getString("designation"));
                 setId(rs.getInt("id"));
@@ -73,7 +67,7 @@ public class XincoWorkflowServer extends XincoWorkflow{
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-                stmt.close();
+                dbm.finalize();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -102,8 +96,7 @@ public class XincoWorkflowServer extends XincoWorkflow{
         if(getId()>0){
             //Workflow already exists
             try {
-                stmt = dbm.getCon().createStatement();
-                stmt.executeUpdate("update xinco_workflow set id="+getId()+
+                dbm.executeUpdate("update xinco_workflow set id="+getId()+
                         ", designation='"+getDescription()+"'");
                 if(isChange()){
                     XincoCoreAuditTrail audit = new XincoCoreAuditTrail();

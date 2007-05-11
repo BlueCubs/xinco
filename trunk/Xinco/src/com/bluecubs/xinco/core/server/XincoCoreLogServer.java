@@ -64,8 +64,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
     //create single log object for data structures
     public XincoCoreLogServer(int attrID, XincoDBManager DBM) throws XincoException {
         try {
-            Statement stmt = DBM.getCon().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_log WHERE id=" + attrID);
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_log WHERE id=" + attrID);
             
             //throw exception if no result found
             int RowCount = 0;
@@ -87,7 +86,11 @@ public class XincoCoreLogServer extends XincoCoreLog {
             if (RowCount < 1) {
                 throw new XincoException();
             }
-            stmt.close();
+            try {
+                DBM.finalize();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
         } catch (Exception e) {
             throw new XincoException();
         }
@@ -117,20 +120,37 @@ public class XincoCoreLogServer extends XincoCoreLog {
     public int write2DB(XincoDBManager DBM) throws XincoException {
         try {
             if (getId() > 0) {
-                Statement stmt = DBM.getCon().createStatement();
                 XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
                 ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+getId()},
                         DBM,xerb.getString("audit.log.change"),this.getChangerID());
-                stmt.executeUpdate("UPDATE xinco_core_log SET xinco_core_data_id=" + getXinco_core_data_id() + ", xinco_core_user_id=" + getXinco_core_user_id() + ", op_code=" + getOp_code() + ", op_datetime=now(), op_description='" + getOp_description().replaceAll("'","\\\\'") + "', version_high=" + getVersion().getVersion_high() + ", version_mid=" + getVersion().getVersion_mid() + ", version_low=" + getVersion().getVersion_low() + ", version_postfix='" + getVersion().getVersion_postfix().replaceAll("'","\\\\'") + "' WHERE id=" + getId());
-                stmt.close();
+                DBM.executeUpdate("UPDATE xinco_core_log SET xinco_core_data_id=" + 
+                        getXinco_core_data_id() + ", xinco_core_user_id=" + 
+                        getXinco_core_user_id() + ", op_code=" + getOp_code() + 
+                        ", op_datetime=now(), op_description='" + 
+                        getOp_description().replaceAll("'","\\\\'") + 
+                        "', version_high=" + getVersion().getVersion_high() +
+                        ", version_mid=" + getVersion().getVersion_mid() + 
+                        ", version_low=" + getVersion().getVersion_low() + 
+                        ", version_postfix='" + getVersion().getVersion_postfix().replaceAll("'","\\\\'") +
+                        "' WHERE id=" + getId());
             } else {
                 setId(DBM.getNewID("xinco_core_log"));
-                Statement stmt = DBM.getCon().createStatement();
-                stmt.executeUpdate("INSERT INTO xinco_core_log VALUES (" + getId() + ", " + getXinco_core_data_id() + ", " + getXinco_core_user_id() + ", " + getOp_code() + ", now(), '" + getOp_description().replaceAll("'","\\\\'") + "', " + getVersion().getVersion_high() + ", " + getVersion().getVersion_mid() + ", " + getVersion().getVersion_low() + ", '" + getVersion().getVersion_postfix().replaceAll("'","\\\\'") + "')");
-                stmt.close();
+                DBM.executeUpdate("INSERT INTO xinco_core_log VALUES (" + getId() + 
+                        ", " + getXinco_core_data_id() + ", " + 
+                        getXinco_core_user_id() + ", " + getOp_code() + ", now(), '" +
+                        getOp_description().replaceAll("'","\\\\'") + "', " + 
+                        getVersion().getVersion_high() + ", " + 
+                        getVersion().getVersion_mid() + ", " + 
+                        getVersion().getVersion_low() + ", '" + 
+                        getVersion().getVersion_postfix().replaceAll("'","\\\\'") + "')");
             }
             DBM.getCon().commit();
+            try {
+                DBM.finalize();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
         } catch (Exception e) {
             try {
                 DBM.getCon().rollback();
@@ -146,14 +166,13 @@ public class XincoCoreLogServer extends XincoCoreLog {
         Vector core_log = new Vector();
         GregorianCalendar cal = new GregorianCalendar();
         try {
-            Statement stmt = DBM.getCon().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_log WHERE xinco_core_data_id=" + attrID);
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_log WHERE xinco_core_data_id=" + attrID);
             while (rs.next()) {
                 cal = new GregorianCalendar();
                 cal.setTime( rs.getTimestamp("op_datetime"));
                 core_log.addElement(new XincoCoreLogServer(rs.getInt("id"), rs.getInt("xinco_core_data_id"), rs.getInt("xinco_core_user_id"), rs.getInt("op_code"), cal, rs.getString("op_description"), rs.getInt("version_high"), rs.getInt("version_mid"), rs.getInt("version_low"), rs.getString("version_postfix")));
             }
-            stmt.close();
+            DBM.finalize();
         } catch (Exception e) {
             core_log.removeAllElements();
         }
@@ -164,12 +183,12 @@ public class XincoCoreLogServer extends XincoCoreLog {
      */
     public static void removeAllFromDB(int data_id,int user_id,XincoDBManager dbm){
         XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
-        ResultSet rs=dbm.Query("select id from xinco_core_log where xinco_core_data_id ="+data_id);
+        ResultSet rs=dbm.executeQuery("select id from xinco_core_log where xinco_core_data_id ="+data_id);
         try {
             while(rs.next()){
                 audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+rs.getInt("id")},
                         dbm,"audit.general.delete",user_id);
-                dbm.execute("DELETE FROM xinco_core_log WHERE id=" + rs.getInt("id"));
+                dbm.executeUpdate("DELETE FROM xinco_core_log WHERE id=" + rs.getInt("id"));
             }
             dbm.getCon().commit();
             try {
@@ -186,7 +205,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
         XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
         audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+id},
                 dbm,"audit.general.delete",user_id);
-        dbm.execute("DELETE FROM xinco_core_log WHERE id=" + id);
+        dbm.executeUpdate("DELETE FROM xinco_core_log WHERE id=" + id);
         try {
             dbm.getCon().commit();
         } catch (SQLException ex) {

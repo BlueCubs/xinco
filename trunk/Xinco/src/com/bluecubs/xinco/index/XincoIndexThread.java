@@ -140,13 +140,12 @@ public class XincoIndexThread extends Thread {
         //select all data
         XincoCoreDataServer xdata_temp = null;
         try {
-            Statement stmt = dbm.getCon().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT id FROM xinco_core_data ORDER BY designation");
+            ResultSet rs = dbm.executeQuery("SELECT id FROM xinco_core_data ORDER BY designation");
             while (rs.next()) {
                 xdata_temp = new XincoCoreDataServer(rs.getInt("id"), dbm);
                 index_result = XincoIndexer.indexXincoCoreData(xdata_temp, true, dbm);
             }
-            stmt.close();
+            dbm.finalize();
         } catch (XincoException ex) {
             ex.printStackTrace();
             return false;

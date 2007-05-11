@@ -46,8 +46,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
     //create group object for data structures
     public XincoCoreGroupServer(int attrID, XincoDBManager DBM) throws XincoException {
         try {
-            Statement stmt = DBM.getCon().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_group WHERE id=" + attrID);
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_group WHERE id=" + attrID);
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {
@@ -59,7 +58,11 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
             if (RowCount < 1) {
                 throw new XincoException();
             }
-            stmt.close();
+            try {
+                DBM.finalize();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
         } catch (Exception e) {
             throw new XincoException(e.getMessage());
         }
@@ -75,19 +78,19 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
     //write to db
     public int write2DB(XincoDBManager DBM) throws XincoException{
         try {
-            Statement stmt;
             boolean isNew=false;
             if (getId() > 0) {
                 audit.updateAuditTrail("xinco_core_group",new String [] {"id ="+getId()},
                         DBM,"audit.coregroup.change",this.getChangerID());
-                stmt = DBM.getCon().createStatement();
-                stmt.executeUpdate("UPDATE xinco_core_group SET designation='" + getDesignation().replaceAll("'","\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
-                stmt.close();
+                DBM.executeUpdate("UPDATE xinco_core_group SET designation='" + 
+                        getDesignation().replaceAll("'","\\\\'") + "', " +
+                        "status_number=" + getStatus_number() + " WHERE id=" + 
+                        getId());
             } else {
                 setId(DBM.getNewID("xinco_core_group"));
-                stmt = DBM.getCon().createStatement();
-                stmt.executeUpdate("INSERT INTO xinco_core_group VALUES (" + getId() + ", '" + getDesignation().replaceAll("'","\\\\'") + "', " + getStatus_number() + ")");
-                stmt.close();
+                DBM.executeUpdate("INSERT INTO xinco_core_group VALUES (" + getId() + 
+                        ", '" + getDesignation().replaceAll("'","\\\\'") + "', " + 
+                        getStatus_number() + ")");
                 isNew=true;
             }
             DBM.getCon().commit();
@@ -95,6 +98,11 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
                 isNew=false;
                 audit.updateAuditTrail("xinco_core_group",new String [] {"id ="+getId()},
                         DBM,"audit.general.created",this.getChangerID());
+            }
+            try {
+                DBM.finalize();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
             }
         } catch (Exception e) {
             try {
@@ -110,26 +118,32 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
     public static Vector getXincoCoreGroups(XincoDBManager DBM) {
         Vector coreGroups = new Vector();
         try {
-            Statement stmt = DBM.getCon().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_group ORDER BY designation");
+            ResultSet rs=DBM.executeQuery("SELECT * FROM xinco_core_group ORDER BY designation");
             while (rs.next()) {
                 coreGroups.addElement(new XincoCoreGroupServer(rs.getInt("id"), rs.getString("designation"), rs.getInt("status_number")));
             }
-            stmt.close();
+            try {
+                DBM.finalize();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
         } catch (Exception e) {
             coreGroups.removeAllElements();
         }
         return coreGroups;
     }
     
-    public void deleteFromDB(XincoDBManager DBM) throws XincoException{
+    public void removeFromDB(XincoDBManager DBM) throws XincoException{
         try {
             audit.updateAuditTrail("xinco_core_group",new String [] {"id ="+getId()},
                     DBM,"audit.coregroup.change",this.getChangerID());
-            Statement stmt = DBM.getCon().createStatement();
-            stmt.executeUpdate("delete from xinco_core_group where id ="+getId());
-            stmt.close();
+            DBM.executeUpdate("delete from xinco_core_group where id ="+getId());
             DBM.getCon().commit();
+            try {
+                DBM.finalize();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
             try {

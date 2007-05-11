@@ -94,7 +94,7 @@ public class XincoDBManager {
         getXincoServerSetting().setXinco_settings(new Vector());
         String string_value="";
         try {
-            rs=Query("select * from xinco_setting order by id");
+            rs=executeQuery("select * from xinco_setting order by id");
             while(rs.next()){
                 if(rs.getString("string_value")==null)
                     string_value="";
@@ -127,7 +127,7 @@ public class XincoDBManager {
         return newID;
     }
     
-    public void finalize() throws Throwable {
+    public void finalize(){
 //        try {
 //            count--;
 //            getCon().close();
@@ -144,10 +144,16 @@ public class XincoDBManager {
             } catch (SQLException sqlex) {
                 // ignore -- as we can't do anything about it here
             }finally {
-                if (!getCon().isClosed()) {
-                    count++;
+                try {
+                    if (!getCon().isClosed()) {
+                        count++;
+                    }
+                    super.finalize();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                } catch (Throwable ex) {
+                    ex.printStackTrace();
                 }
-                super.finalize();
             }
         }
     }
@@ -360,7 +366,7 @@ public class XincoDBManager {
     
     /**Processes a sql query and returns the ResultSet.
      */
-    public ResultSet Query(String sql) {
+    public ResultSet executeQuery(String sql) {
         System.out.println(sql);
         Connection con = null;
         ResultSet rs= null;
@@ -377,7 +383,7 @@ public class XincoDBManager {
         return rs;
     }
     
-    public void execute(String sql){
+    public void executeUpdate(String sql){
         System.out.println("Executing data manipulating query: "+sql);
         try {
             getStatement().execute(sql);
@@ -390,7 +396,7 @@ public class XincoDBManager {
     private Statement getStatement() {
         if(this.stmt==null)
             try {
-                this.stmt= con.createStatement();
+                this.stmt= getCon().createStatement();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
