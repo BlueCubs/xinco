@@ -3,64 +3,37 @@
 <!-- #################### xinco DMS Configuration for Tomcat >=5.5 ####################-->
 
 <Context docBase="xinco" path="/xinco" reloadable="true">
+    
+    <!-- #################### PLEASE CONFIGURE #############################-->
+    <!-- ### Params: username, password, url, driverClassName            ###-->
+    <!-- ###################################################################-->
+    <!-- ### MySQL:                                                      ###-->
+    <!-- ### url: jdbc:mysql://localhost:3306/xinco?autoReconnect=true   ###-->
+    <!-- ### driverClassName: com.mysql.jdbc.Driver                      ###-->
+    <!-- ###################################################################-->
+    <!-- ### PostgreSQL:                                                 ###-->
+    <!-- ### url: jdbc:postgresql://localhost:5432/xinco                 ###-->
+    <!-- ### driverClassName: org.postgresql.Driver                      ###-->
+    <!-- ###################################################################-->
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" 
+              factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="100" 
+              maxIdle="30" maxWait="10000" name="jdbc/XincoDB" 
+              type="javax.sql.DataSource" 
+              url="jdbc:mysql://localhost:3306/xinco2?useServerPrepStmts=true" username="root" password="lyjx100pre"/>
+    <!-- #################### ################ ####################-->
 
-  <!-- #################### PLEASE CONFIGURE #############################-->
-  <!-- ### Params: username, password, url, driverClassName            ###-->
-  <!-- ###################################################################-->
-  <!-- ### MySQL:                                                      ###-->
-  <!-- ### url: jdbc:mysql://localhost:3306/xinco?autoReconnect=true   ###-->
-  <!-- ### driverClassName: com.mysql.jdbc.Driver                      ###-->
-  <!-- ###################################################################-->
-  <!-- ### PostgreSQL:                                                 ###-->
-  <!-- ### url: jdbc:postgresql://localhost:5432/xinco                 ###-->
-  <!-- ### driverClassName: org.postgresql.Driver                      ###-->
-  <!-- ###################################################################-->
-  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" 
-  factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="100" 
-  maxIdle="30" maxWait="10000" name="jdbc/XincoDB" 
-  type="javax.sql.DataSource" 
-  url="jdbc:mysql://localhost:3306/xinco2?autoReconnect=true" username="root" password="lyjx100pre"/>
-  <!-- #################### ################ ####################-->
-
-  <ResourceParams name="jdbc/XincoDB">
-    <parameter>
-      <name>factory</name>
-      <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
-    </parameter>
-  </ResourceParams>
-
-  <!-- #################### PLEASE CONFIGURE ####################-->
-  <!-- Full Path where xinco saves files:                        -->
-  <!--<Environment name="xinco/FileRepositoryPath" override="false" type="java.lang.String" value="C:\Temp\xinco\file_repository\"/>-->
-  <!-- Full Path where xinco saves its search index:             -->
-  <!--<Environment name="xinco/FileIndexPath" override="false" type="java.lang.String" value="C:\Temp\xinco\file_repository\index\"/>-->
-  <!-- Full Path where xinco saves archives:                     -->
-  <!--<Environment name="xinco/FileArchivePath" override="false" type="java.lang.String" value="C:\Temp\xinco\file_repository\archive\"/>-->
-  <!-- Time frame for repeatingly running the archiver (milliseconds): -->
-  <!--<Environment name="xinco/FileArchivePeriod" override="false" type="java.lang.Long" value="14400000"/>-->
-  <!-- #################### ################ ####################-->
-
-  <!-- ################# Optional Configuration #################-->
-  <!-- File Extensions of Documents to be indexed with a special Indexer: (seperate with ;) 
-  <Environment name="xinco/FileIndexerCount" override="false" type="java.lang.Integer" value="5"/>
-  <Environment name="xinco/FileIndexer_1_Class" override="false" type="java.lang.String" value="com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF"/>
-  <Environment name="xinco/FileIndexer_1_Ext" override="false" type="java.lang.String" value="pdf"/>
-  <Environment name="xinco/FileIndexer_2_Class" override="false" type="java.lang.String" value="com.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftWord"/>
-  <Environment name="xinco/FileIndexer_2_Ext" override="false" type="java.lang.String" value="doc"/>
-  <Environment name="xinco/FileIndexer_3_Class" override="false" type="java.lang.String" value="com.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftExcel"/>
-  <Environment name="xinco/FileIndexer_3_Ext" override="false" type="java.lang.String" value="xls"/>
-  <Environment name="xinco/FileIndexer_4_Class" override="false" type="java.lang.String" value="com.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftPowerpoint"/>
-  <Environment name="xinco/FileIndexer_4_Ext" override="false" type="java.lang.String" value="ppt"/>
-  <Environment name="xinco/FileIndexer_5_Class" override="false" type="java.lang.String" value="com.bluecubs.xinco.index.filetypes.XincoIndexHTML"/>
-  <Environment name="xinco/FileIndexer_5_Ext" override="false" type="java.lang.String" value="asp;htm;html;jsf;jsp;php;php3;php4"/>-->
-  <!-- Files with different extensions will be indexed as text, excluding the ones below: (seperate with ;) -->
-  <!--<Environment name="xinco/IndexNoIndex" override="false" type="java.lang.String" value=";aac;ac3;ace;ade;adp;aif;aifc;aiff;amf;arc;arj;asx;au;avi;b64;bh;bmp;bz;bz2;cab;cda;chm;class;com;div;divx;ear;exe;far;fla;gif;gz;hlp;ico;;iso;jar;jpe;jpeg;jpg;lha;lzh;mda;mdb;mde;mdn;mdt;mdw;mid;midi;mim;mod;mov;mp1;mp2;mp2v;mp3;mp4;mpa;mpe;mpeg;mpg;mpg4;mpv2;msi;ntx;ocx;ogg;ogm;okt;pae;pcx;pk3;png;pot;ppa;pps;ppt;pwz;qwk;ra;ram;rar;raw;rep;rm;rmi;snd;swf;swt;tar;taz;tbz;tbz2;tgz;tif;tiff;uu;uue;vxd;war;wav;wbm;wbmp;wma;wmd;wmf;wmv;xpi;xxe;z;zip;zoo;;;"/>-->
-  <!-- ################# ###################### #################-->
-
-  <!-- ################# Optional Configuration #################-->
-  <!-- Database JNDI Name -->
-  <!--<Environment name="xinco/JNDIDB" override="false" type="java.lang.String" value="java:comp/env/jdbc/XincoDB"/>-->
-  <!-- Max. number of returned search results -->
-  <!--<Environment name="xinco/MaxSearchResult" override="false" type="java.lang.Integer" value="100"/>-->
-  <!-- ################# ###################### #################-->
+    <ResourceParams name="jdbc/XincoDB">
+        <parameter>
+            <name>factory</name>
+            <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
+        </parameter>
+        <parameter>
+            <name>removeAbandoned</name>
+            <value>true</value>
+        </parameter>
+        <parameter>
+            <name>logAbandoned</name>
+            <value>true</value>
+        </parameter>
+    </ResourceParams>
 </Context>
