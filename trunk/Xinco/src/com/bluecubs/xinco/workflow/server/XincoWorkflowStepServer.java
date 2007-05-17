@@ -52,7 +52,6 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
     private boolean change=false;
     private int changerID;
     private int workflow_id;
-    private XincoWorkflowStepServer xwss;
     /**
      * Creates a new instance of XincoWorkflowStepServer
      * @param step_id
@@ -60,11 +59,11 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
      * @param designation
      */
     public XincoWorkflowStepServer(int step_id, String designation,int workflow_id,
-            XincoWorkflowStepServer xwss) {
+            XincoWorkflowStepForkServer xwsf) {
         setId(step_id);
         setWorkflow_id(workflow_id);
         setDescription(designation);
-        setStepFork(xwss);
+        setFork(xwsf);
         try {
             write2DB(new XincoDBManager());
         } catch (Exception ex) {
@@ -107,7 +106,7 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
                             ex.printStackTrace();
                         }
                     }
-                    steps.add(new XincoWorkflowStepServer(rs2.getInt("id"),rs2.getString("designation"),getWorkflow_id(),getStepFork()));
+                    steps.add(new XincoWorkflowStepServer(wfID,desc,getWorkflow_id(),(XincoWorkflowStepForkServer)getFork()));
                     //A step has a workflow as sub steps
                     if(getWorkflow_id()>0){
                         try {
@@ -203,18 +202,10 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
         String s="";
         s+="ID: "+getId()+"\n";
         s+="Description: "+getDescription()+"\n";
-        if(getStepFork()!=null){
+        if(getFork()!=null){
             s+="Forks: \n";
-            s+=getStepFork().toString();
+            s+=getFork().toString();
         }
         return s;
-    }
-    
-    public XincoWorkflowStepServer getStepFork() {
-        return xwss;
-    }
-    
-    public void setStepFork(XincoWorkflowStepServer xwss) {
-        this.xwss = xwss;
     }
 }

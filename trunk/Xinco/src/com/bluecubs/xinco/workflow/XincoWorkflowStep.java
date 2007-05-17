@@ -149,7 +149,7 @@ public class XincoWorkflowStep  implements java.io.Serializable {
         elemField.setFieldName("fork");
         elemField.setXmlName(new javax.xml.namespace.QName("", "fork"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "XincoWorkflowStepFork"));
-        elemField.setNillable(false);
+        elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }
 

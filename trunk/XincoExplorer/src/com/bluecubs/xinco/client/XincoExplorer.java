@@ -767,6 +767,11 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 }
                 public void mousePressed(MouseEvent event) {
                     resetTimer();
+                    //Change selection even with right click
+                    TreePath path = jTreeRepository.getPathForLocation(event.getX(), event.getY());
+                    if (path != null) {
+                        jTreeRepository.setSelectionPath(path);
+                    }
                     if (event.isPopupTrigger()) {
                         getJPopupMenuRepository();
                         jPopupMenuRepository.show(event.getComponent(), event.getX(), event.getY());

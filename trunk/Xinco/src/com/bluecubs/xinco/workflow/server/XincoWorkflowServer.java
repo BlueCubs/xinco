@@ -160,7 +160,7 @@ public class XincoWorkflowServer extends XincoWorkflow{
     public String toString() {
         String s= null;
         try {
-            s="";
+            s="\n";
             XincoWorkflowServer ws= new XincoWorkflowServer(1,new XincoDBManager());
             s+="ID: "+ws.getId()+"\n";
             s+="Description: "+ws.getDescription()+"\n";
@@ -168,8 +168,8 @@ public class XincoWorkflowServer extends XincoWorkflow{
             s+="Steps: "+"\n";
             s+="----------------------------"+"\n";
             for(int i=0;i<ws.getXinco_workflow_steps().size();i++){
-                s+=i+". "+((XincoWorkflowStepServer)ws.getXinco_workflow_steps().get(i)).toString();
-                s+="----------------------------";
+                s+=(i+1)+". "+((XincoWorkflowStepServer)ws.getXinco_workflow_steps().get(i)).toString();
+                s+="----------------------------\n";
             }
             System.out.println(s);
         } catch (Exception ex) {

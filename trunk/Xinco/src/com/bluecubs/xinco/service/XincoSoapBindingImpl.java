@@ -34,7 +34,6 @@ import com.bluecubs.xinco.core.server.XincoSettingServer;
 import com.bluecubs.xinco.index.XincoIndexThread;
 import com.bluecubs.xinco.index.XincoIndexer;
 import com.bluecubs.xinco.workflow.XincoWorkflow;
-import com.bluecubs.xinco.workflow.XincoWorkflowStepFork;
 import com.bluecubs.xinco.workflow.holders.XincoWorkflowHolder;
 import com.bluecubs.xinco.workflow.holders.XincoWorkflowInstanceHolder;
 import com.bluecubs.xinco.workflow.holders.XincoWorkflowStepHolder;
@@ -889,7 +888,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     
     public void setWorkflowInstanceStep(XincoWorkflowStepInstanceHolder step_instance, XincoCoreUser user) throws RemoteException {
     }
-
+    
     public com.bluecubs.xinco.workflow.XincoWorkflowStepFork setXincoWorkflowStepFork(int id, int yesStep, int noStep, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException {
         return null;
     }

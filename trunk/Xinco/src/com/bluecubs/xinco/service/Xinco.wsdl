@@ -217,7 +217,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <sequence>
      <element name="id" type="xsd:int"/>
      <element name="description" type="xsd:string"/>
-        <element name="fork" type="tns4:XincoWorkflowStepFork"></element>
+        <element name="fork" type="tns4:XincoWorkflowStepFork" nillable="true"></element>
     </sequence>
    </complexType>
    <complexType name="XincoWorkflowStepInstance">

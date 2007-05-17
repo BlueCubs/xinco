@@ -61,6 +61,7 @@ public class XincoWorkflowStepForkServer extends XincoWorkflowStepFork{
                 setYesStep(rs.getInt("yesStep"));
                 setNoStep(rs.getInt("noStep"));
                 setId(rs.getInt("id"));
+                System.err.println(toString());
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -95,7 +96,7 @@ public class XincoWorkflowStepForkServer extends XincoWorkflowStepFork{
     }
     
     public String toString(){
-        String s="";
+        String s="\n";
         s+="ID: "+getId()+"\n";
         s+="Yes: "+getYesStep()+"\n";
         s+="No: "+getNoStep()+"\n";
