@@ -78,7 +78,7 @@ public class XincoRepositoryActionHandler {
                 xerb.getString("menu.repository.refresh"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
         increaseCount();
-        //1        
+        //1
         actions[count]=new AddFolder(xerb.getString("menu.repository.addfolder"),
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.repository.addfolder"),
@@ -330,14 +330,7 @@ public class XincoRepositoryActionHandler {
             putValue(ACCELERATOR_KEY,key);
         }
         public void actionPerformed(ActionEvent e) {
-            int i;
-            TreePath[] tps;
-            //cut node
-            tps =explorer.jTreeRepository.getSelectionPaths();
-            explorer.getSession().clipboardTreeNodeSelection.removeAllElements();
-            for (i=0;i<explorer.jTreeRepository.getSelectionCount();i++) {
-                explorer.getSession().clipboardTreeNodeSelection.addElement(tps[i].getLastPathComponent());
-            }
+            moveToClipboard();
             //update transaction info
             explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movemessage"));
         }
@@ -350,118 +343,7 @@ public class XincoRepositoryActionHandler {
             putValue(ACCELERATOR_KEY,key);
         }
         public void actionPerformed(ActionEvent e) {
-            if ((explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() ==
-                    XincoCoreNode.class) &&
-                    (explorer.getSession().clipboardTreeNodeSelection !=
-                    null)) {
-                int old_parent_node_id = 0;
-                int i;
-                int cb_size;
-                XincoMutableTreeNode temp_node;
-                
-                cb_size = explorer.getSession().clipboardTreeNodeSelection.size();
-                for (i = 0; i < cb_size; i++) {
-                    temp_node = (XincoMutableTreeNode) explorer.getSession().clipboardTreeNodeSelection.elementAt(0);
-                    if (explorer.getSession().currentTreeNodeSelection !=
-                            temp_node) {
-                        // paste node
-                        if (temp_node.getUserObject().getClass() ==
-                                XincoCoreNode.class) {
-                            // modify moved node
-                            old_parent_node_id = ((XincoCoreNode) temp_node.getUserObject()).getXinco_core_node_id();
-                            ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_node_id(((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject()).getId());
-                            try {
-                                // modify treemodel
-                                explorer.getSession().xincoClientRepository.treemodel.removeNodeFromParent(temp_node);
-                                explorer.getSession().xincoClientRepository.treemodel.insertNodeInto(temp_node,
-                                        explorer.getSession().currentTreeNodeSelection,
-                                        explorer.getSession().currentTreeNodeSelection.getChildCount());
-                                // optimize node size
-                                ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_nodes(new Vector());
-                                ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_data(new Vector());
-                                if (explorer.getSession().xinco.setXincoCoreNode((XincoCoreNode) temp_node.getUserObject(),
-                                        explorer.getSession().user) ==
-                                        null) {
-                                    throw new XincoException(xerb.getString("error.nowritepermission"));
-                                }
-                                // update transaction info
-                                explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movefoldersuccess"));
-                            } catch (Exception rmie) {
-                                // undo modification
-                                ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_node_id(old_parent_node_id);
-                                JOptionPane.showMessageDialog(explorer,
-                                        xerb.getString("error.movefolderfailed") +
-                                        " " +
-                                        xerb.getString("general.reason") +
-                                        ": " +
-                                        rmie.toString(),
-                                        xerb.getString("general.error"),
-                                        JOptionPane.WARNING_MESSAGE);
-                                break;
-                            }
-                        }
-                        // paste data
-                        if (temp_node.getUserObject().getClass() ==
-                                XincoCoreData.class) {
-                            // modify moved data
-                            old_parent_node_id = ((XincoCoreData) temp_node.getUserObject()).getXinco_core_node_id();
-                            ((XincoCoreData) temp_node.getUserObject()).setXinco_core_node_id(((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject()).getId());
-                            try {
-                                // modify treemodel
-                                explorer.getSession().xincoClientRepository.treemodel.removeNodeFromParent(temp_node);
-                                explorer.getSession().xincoClientRepository.treemodel.insertNodeInto(temp_node,
-                                        explorer.getSession().currentTreeNodeSelection,
-                                        explorer.getSession().currentTreeNodeSelection.getChildCount());
-                                if (explorer.getSession().xinco.setXincoCoreData((XincoCoreData) temp_node.getUserObject(),
-                                        explorer.getSession().user) ==
-                                        null) {
-                                    throw new XincoException(xerb.getString("error.nowritepermission"));
-                                }
-                                // insert log
-                                try {
-                                    XincoCoreLog newlog = new XincoCoreLog();
-                                    Vector oldlogs = ((XincoCoreData) temp_node.getUserObject()).getXinco_core_logs();
-                                    
-                                    newlog.setXinco_core_data_id(((XincoCoreData) temp_node.getUserObject()).getId());
-                                    newlog.setXinco_core_user_id(explorer.getSession().user.getId());
-                                    newlog.setOp_code(2);
-                                    newlog.setOp_description(xerb.getString("menu.edit.movedtofolder") +
-                                            " " +
-                                            ((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject()).getDesignation() +
-                                            " (" +
-                                            ((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject()).getId() +
-                                            ") " +
-                                            xerb.getString("general.by") +
-                                            " " +
-                                            explorer.getSession().user.getUsername());
-                                    newlog.setOp_datetime(null);
-                                    newlog.setVersion(((XincoCoreLog) oldlogs.elementAt(oldlogs.size() -
-                                            1)).getVersion());
-                                    explorer.getSession().xinco.setXincoCoreLog(newlog,
-                                            explorer.getSession().user);
-                                } catch (Exception loge) {
-                                }
-                                // update transaction info
-                                explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movedatasuccess"));
-                            } catch (Exception rmie) {
-                                // undo modification
-                                ((XincoCoreData) temp_node.getUserObject()).setXinco_core_node_id(old_parent_node_id);
-                                JOptionPane.showMessageDialog(explorer,
-                                        xerb.getString("error.movedatafailed") +
-                                        " " +
-                                        xerb.getString("general.reason") +
-                                        ": " +
-                                        rmie.toString(),
-                                        xerb.getString("general.error"),
-                                        JOptionPane.WARNING_MESSAGE);
-                                break;
-                            }
-                        }
-                    }
-                    // remove moved element from clipboard
-                    explorer.getSession().clipboardTreeNodeSelection.removeElementAt(0);
-                }
-            }
+            insertNode(false);
         }
     }
     public class ViewURL extends AbstractAction {
@@ -588,5 +470,147 @@ public class XincoRepositoryActionHandler {
     
     public Action[] getActions() {
         return actions;
+    }
+    
+    public void moveToClipboard(){
+        int i;
+        TreePath[] tps;
+        //cut node
+        tps =explorer.jTreeRepository.getSelectionPaths();
+        explorer.getSession().clipboardTreeNodeSelection.removeAllElements();
+        System.out.println("Selected nodes: "+explorer.jTreeRepository.getSelectionCount());
+        for (i=0;i<explorer.jTreeRepository.getSelectionCount();i++) {
+            explorer.getSession().clipboardTreeNodeSelection.addElement(tps[i].getLastPathComponent());
+        }
+        System.out.println("Moved to clipboard");
+    }
+    
+    public void insertNode(boolean dragNdrop){
+        if ((explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) &&
+                (explorer.getSession().clipboardTreeNodeSelection != null)) {
+            int old_parent_node_id = 0;
+            int i;
+            int cb_size;
+            XincoMutableTreeNode temp_node;
+            
+            cb_size = explorer.getSession().clipboardTreeNodeSelection.size();
+            for (i = 0; i < cb_size; i++) {
+                temp_node = (XincoMutableTreeNode) explorer.getSession().clipboardTreeNodeSelection.elementAt(0);
+                if (explorer.getSession().currentTreeNodeSelection != temp_node) {
+                    // paste node
+                    if (temp_node.getUserObject().getClass() ==
+                            XincoCoreNode.class) {
+                        // modify moved node
+                        old_parent_node_id = ((XincoCoreNode) temp_node.getUserObject()).getXinco_core_node_id();
+                        ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_node_id(((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject()).getId());
+                        try {
+                            // modify treemodel
+                            explorer.getSession().xincoClientRepository.treemodel.removeNodeFromParent(temp_node);
+                            if(!dragNdrop){
+                                explorer.getSession().xincoClientRepository.treemodel.insertNodeInto(temp_node,
+                                        explorer.getSession().currentTreeNodeSelection,
+                                        explorer.getSession().currentTreeNodeSelection.getChildCount());
+                            }else{
+                                explorer.getSession().xincoClientRepository.treemodel.insertNodeInto(explorer.getJTreeRepository().getPreviousTreeNodeSelection(),
+                                        explorer.getSession().currentTreeNodeSelection,
+                                        explorer.getJTreeRepository().getPreviousTreeNodeSelection().getChildCount());
+                            }
+                            // optimize node size
+                            ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_nodes(new Vector());
+                            ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_data(new Vector());
+                            if (explorer.getSession().xinco.setXincoCoreNode((XincoCoreNode) temp_node.getUserObject(),
+                                    explorer.getSession().user) ==
+                                    null) {
+                                throw new XincoException(xerb.getString("error.nowritepermission"));
+                            }
+                            // update transaction info
+                            explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movefoldersuccess"));
+                        } catch (Exception rmie) {
+                            rmie.printStackTrace();
+                            // undo modification
+                            ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_node_id(old_parent_node_id);
+                            JOptionPane.showMessageDialog(explorer,
+                                    xerb.getString("error.movefolderfailed") +
+                                    " " +
+                                    xerb.getString("general.reason") +
+                                    ": " +
+                                    rmie.toString(),
+                                    xerb.getString("general.error"),
+                                    JOptionPane.WARNING_MESSAGE);
+                            break;
+                        }
+                    }
+                    // paste data
+                    if (temp_node.getUserObject().getClass() == XincoCoreData.class) {
+                        // modify moved data
+                        old_parent_node_id = ((XincoCoreData) temp_node.getUserObject()).getXinco_core_node_id();
+                        ((XincoCoreData) temp_node.getUserObject()).setXinco_core_node_id(((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject()).getId());
+                        try {
+                            // modify treemodel
+                            explorer.getSession().xincoClientRepository.treemodel.removeNodeFromParent(temp_node);
+                            if(!dragNdrop){
+                                explorer.getSession().xincoClientRepository.treemodel.insertNodeInto(temp_node,
+                                        explorer.getSession().currentTreeNodeSelection,
+                                        explorer.getSession().currentTreeNodeSelection.getChildCount());
+                            }else{
+                                explorer.getSession().xincoClientRepository.treemodel.insertNodeInto(explorer.getJTreeRepository().getPreviousTreeNodeSelection(),
+                                        explorer.getSession().currentTreeNodeSelection,
+                                        explorer.getJTreeRepository().getPreviousTreeNodeSelection().getChildCount());
+                            }
+                            if (explorer.getSession().xinco.setXincoCoreData((XincoCoreData) temp_node.getUserObject(),
+                                    explorer.getSession().user) == null) {
+                                throw new XincoException(xerb.getString("error.nowritepermission"));
+                            }
+                            // insert log
+                            try {
+                                XincoCoreLog newlog = new XincoCoreLog();
+                                Vector oldlogs = ((XincoCoreData) temp_node.getUserObject()).getXinco_core_logs();
+                                
+                                newlog.setXinco_core_data_id(((XincoCoreData) temp_node.getUserObject()).getId());
+                                newlog.setXinco_core_user_id(explorer.getSession().user.getId());
+                                newlog.setOp_code(2);
+                                newlog.setOp_description(xerb.getString("menu.edit.movedtofolder") +
+                                        " " +
+                                        ((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject()).getDesignation() +
+                                        " (" +
+                                        ((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject()).getId() +
+                                        ") " +
+                                        xerb.getString("general.by") +
+                                        " " +
+                                        explorer.getSession().user.getUsername());
+                                newlog.setOp_datetime(null);
+                                newlog.setVersion(((XincoCoreLog) oldlogs.elementAt(oldlogs.size() -
+                                        1)).getVersion());
+                                explorer.getSession().xinco.setXincoCoreLog(newlog,
+                                        explorer.getSession().user);
+                            } catch (Exception loge) {
+                            }
+                            // update transaction info
+                            explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movedatasuccess"));
+                        } catch (Exception rmie) {
+                            rmie.printStackTrace();
+                            // undo modification
+                            ((XincoCoreData) temp_node.getUserObject()).setXinco_core_node_id(old_parent_node_id);
+                            JOptionPane.showMessageDialog(explorer,
+                                    xerb.getString("error.movedatafailed") +
+                                    " " +
+                                    xerb.getString("general.reason") +
+                                    ": " +
+                                    rmie.toString(),
+                                    xerb.getString("general.error"),
+                                    JOptionPane.WARNING_MESSAGE);
+                            break;
+                        }
+                    }
+                }
+                // remove moved element from clipboard
+                explorer.getSession().clipboardTreeNodeSelection.removeElementAt(0);
+            }
+            System.out.println("Inserted!");
+        }else{
+            System.out.println("Not inserted!");
+            System.out.println("Is node?: "+(explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class));
+            System.out.println("Clipboard is not empty?: "+(explorer.getSession().clipboardTreeNodeSelection != null));
+        }
     }
 }

@@ -49,6 +49,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import org.apache.commons.dbcp.BasicDataSource;
 
 public class XincoDBManager {
     
@@ -65,6 +66,7 @@ public class XincoDBManager {
         lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
         //load connection configuartion
         config = XincoConfigSingletonServer.getInstance();
+        while((DataSource)(new InitialContext()).lookup(config.JNDIDB)==null);
         setDatasource((DataSource)(new InitialContext()).lookup(config.JNDIDB));
         getCon().setAutoCommit(false);
         //load configuration from database
@@ -92,6 +94,7 @@ public class XincoDBManager {
             stm.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
+            printStats();
         }
     }
     
@@ -201,6 +204,7 @@ public class XincoDBManager {
             header +="</td>";
         } catch(SQLException e) {
             e.printStackTrace();
+            printStats();
         }
         return header;
     }
@@ -228,6 +232,7 @@ public class XincoDBManager {
                 lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
             } catch (Exception e) {
                 e.printStackTrace();
+                printStats();
             }
     }
     
@@ -297,6 +302,7 @@ public class XincoDBManager {
                     e2.printStackTrace();
                 }
                 ex.printStackTrace();
+                printStats();
             }
         } else
             throw new XincoException(lrb.getString("error.noadminpermission"));
@@ -314,6 +320,7 @@ public class XincoDBManager {
                 con = getDatasource().getConnection();
         } catch (SQLException ex) {
             ex.printStackTrace();
+            printStats();
         }
         return con;
     }
@@ -330,5 +337,10 @@ public class XincoDBManager {
         if(con==null)
             getCon();
         this.con = con;
+    }
+    
+    public void printStats(){
+        System.out.println("Number Active: "+((BasicDataSource)getDatasource()).getNumActive());
+        System.out.println("Number Idle: "+((BasicDataSource)getDatasource()).getNumIdle());
     }
 }

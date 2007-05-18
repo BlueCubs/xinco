@@ -60,6 +60,7 @@ public class XincoImportThread extends Thread {
         if(this.explorer!=null){
             explorer.setFilesToBeIndexed(null);
             ResourceBundle xerb = this.explorer.getResourceBundle();
+            this.explorer.getJTreeRepository().setEnabled(false);
             //import data structure
             if (explorer.getSession().currentTreeNodeSelection != null) {
                 if (explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
@@ -116,6 +117,7 @@ public class XincoImportThread extends Thread {
             }
             explorer.progressBar.hide();
         }
+        this.explorer.getJTreeRepository().setEnabled(true);
     }
     
     public void setXincoExplorer(XincoExplorer e){
