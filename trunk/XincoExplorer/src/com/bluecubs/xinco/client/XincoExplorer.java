@@ -51,7 +51,7 @@ import com.bluecubs.xinco.client.dialogs.LogDialog;
 import com.bluecubs.xinco.client.dialogs.SearchDialog;
 import com.bluecubs.xinco.client.dialogs.UserDialog;
 import com.bluecubs.xinco.client.dialogs.LockDialog;
-import com.bluecubs.xinco.client.object.WindowClosingAdapter;
+import com.bluecubs.xinco.client.object.XincoWindowClosingAdapter;
 import com.bluecubs.xinco.client.object.XincoActivityTimer;
 import com.bluecubs.xinco.client.object.XincoJTree;
 import com.bluecubs.xinco.client.object.XincoMenuRepository;
@@ -207,7 +207,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     private JScrollPane jScrollPaneDialogLocale = null;
     private JList jListDialogLocale = null;
     private JButton jButtonDialogLocaleOk = null;
-    public XincoProgressBarThread progressBar;
+    private XincoProgressBarThread progressBar;
     private ConnectionDialog dialogConnection=null;
     private UserDialog userDialog=null;
     private JInternalFrame jInternalFrameInformation=null;
@@ -276,7 +276,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         progressBar=new XincoProgressBarThread(this);
         initialize();
         //Windows-Listener
-        addWindowListener(new WindowClosingAdapter(true));
+        addWindowListener(new XincoWindowClosingAdapter(true));
     }
     
     /**
@@ -1024,14 +1024,15 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     jLabelInternalFrameInformationText.setText(xerb.getString("password.aged"));
                     getJDialogUser(true);
                 }
-                progressBar.hide();
+                getProgressBar().hide();
                 resetStrings();
             } catch (Exception cone) {
                 xincoClientSession.status = 0;
                 cone.printStackTrace();
                 markConnectionStatus();
                 JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("menu.connection.failed") + " " + xerb.getString("general.reason") + ": " + cone.toString(), xerb.getString("menu.connection.failed"), JOptionPane.WARNING_MESSAGE);
-                progressBar.hide();
+                getProgressBar().hide();
+                resetStrings();
                 return;
             }
         }
@@ -1040,14 +1041,14 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             status_string_2="";
         }
     }
-
+    
     private class refreshThread extends Thread {
         @Override
         public void run() {
             try {
                 getJTreeRepository().setEnabled(false);
-                progressBar.setTitle(getResourceBundle().getString("message.progressbar.refresh"));
-                progressBar.show();
+                getProgressBar().setTitle(getResourceBundle().getString("message.progressbar.refresh"));
+                getProgressBar().show();
                 // get root
                 XincoCoreNode xnode = new XincoCoreNode();
                 xnode.setId(1);
@@ -1060,21 +1061,19 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         2);
                 jTreeRepository.expandPath(new TreePath(getSession().xincoClientRepository.treemodel.getPathToRoot((XincoMutableTreeNode) (getSession().xincoClientRepository.treemodel).getRoot())));
                 collapseAllNodes();
-                progressBar.hide();
+                getProgressBar().hide();
                 getJTreeRepository().setEnabled(true);
             } catch (Exception rmie) {
                 rmie.printStackTrace();
+                getProgressBar().hide();
             }
         }
     }
     
     public void refreshJTree(){
-        if(rThread==null)
-            rThread= new refreshThread();
-        else{
-            while(rThread.isAlive());
-            rThread.start();
-        }
+        rThread=null;
+        rThread= new refreshThread();
+        rThread.start();
     }
     /**
      * This method initializes jDialogConnection
@@ -1462,8 +1461,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         xcl1 = (XincoCoreLanguage)xincoClientSession.server_languages.elementAt(selection);
         //process files
-        progressBar.setTitle(xerb.getString("datawizard.fileuploadinfo"));
-        progressBar.show();
+        getProgressBar().setTitle(xerb.getString("datawizard.fileuploadinfo"));
+        getProgressBar().show();
         for (i = 0; i < folder_list.length; i++) {
             if (folder_list[i].isFile()) {
                 System.out.println("Processing file: "+folder_list[i].getName()+"("+(i+1)+"/"+folder_list.length+")");
@@ -1646,7 +1645,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 xincoClientSession.currentTreeNodeSelection = (XincoMutableTreeNode) newnode.getParent();
             }
         }
-        progressBar.hide();
+        getProgressBar().hide();
     }
     /**
      * This method leads through data adding/editing
@@ -1705,7 +1704,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     global_dialog_return_value = 0;
                     jDialogDataType.setVisible(true);
                     if (global_dialog_return_value == 0) {
-                        this.progressBar.hide();
+                        this.getProgressBar().hide();
                         throw new XincoException(xerb.getString("datawizard.updatecancel"));
                     }
                     
@@ -1746,7 +1745,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     if ((wizard_type == 3) &&
                             ((((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1) &&
                             (((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().size() <= 3))) {
-                        this.progressBar.hide();
+                        this.getProgressBar().hide();
                         throw new XincoException(xerb.getString("datawizard.noaddattributes"));
                     }
                     //edit add attributes
@@ -1762,7 +1761,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             // show dialog
                             int result = fc.showOpenDialog(XincoExplorer.this);
                             if (result != JFileChooser.APPROVE_OPTION) {
-                                this.progressBar.hide();
+                                this.getProgressBar().hide();
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                             setCurrentPathFilename(fc.getSelectedFile().getPath());
@@ -1775,7 +1774,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             global_dialog_return_value = 0;
                             jDialogAddAttributesText.setVisible(true);
                             if (global_dialog_return_value == 0) {
-                                this.progressBar.hide();
+                                this.getProgressBar().hide();
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                         }
@@ -1790,7 +1789,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             global_dialog_return_value = 0;
                             jDialogAddAttributesUniversal.setVisible(true);
                             if (global_dialog_return_value == 0) {
-                                this.progressBar.hide();
+                                this.getProgressBar().hide();
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                         }
@@ -1814,7 +1813,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         global_dialog_return_value = 0;
                         jDialogLog.setVisible(true);
                         if (global_dialog_return_value == 0) {
-                            this.progressBar.hide();
+                            this.getProgressBar().hide();
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
                         }
                         newlog.setOp_description(newlog.getOp_description() + " (" + xerb.getString("general.user") + ": " + xincoClientSession.user.getUsername() + ")");
@@ -1869,7 +1868,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             global_dialog_return_value = 0;
                             jDialogLog.setVisible(true);
                             if (global_dialog_return_value == 0) {
-                                this.progressBar.hide();
+                                this.getProgressBar().hide();
                                 //Make sure that the XincoCoreAudit object is set to null when cancelled
                                 if(wizard_type == 15 && auditDialog!=null){
                                     getJDialogAudit().setXca(null);
@@ -1903,7 +1902,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             result = fc.showOpenDialog(XincoExplorer.this);
                         }
                         if (result != JFileChooser.APPROVE_OPTION) {
-                            this.progressBar.hide();
+                            this.getProgressBar().hide();
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
                         }
                         setCurrentPathFilename(fc.getSelectedFile().getPath());
@@ -1920,7 +1919,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         global_dialog_return_value = 0;
                         jDialogData.setVisible(true);
                         if (global_dialog_return_value == 0) {
-                            this.progressBar.hide();
+                            this.getProgressBar().hide();
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
                         }
                         
@@ -1930,7 +1929,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             global_dialog_return_value = 0;
                             jDialogArchive.setVisible(true);
                             if (global_dialog_return_value == 0) {
-                                this.progressBar.hide();
+                                this.getProgressBar().hide();
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                         }
@@ -1958,8 +1957,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     if (((wizard_type == 1) || (wizard_type == 6)) && (((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1)) {
                         try {
                             //update transaction info
-                            progressBar.setTitle(xerb.getString("datawizard.fileuploadinfo"));
-                            progressBar.show();
+                            getProgressBar().setTitle(xerb.getString("datawizard.fileuploadinfo"));
+                            getProgressBar().show();
                             jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.fileuploadinfo"));
                             in = new CheckedInputStream(new FileInputStream(current_fullpath), new CRC32());
                             if (useSAAJ) {
@@ -1984,7 +1983,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                 in.close();
                             }
                         } catch (Exception fe) {
-                            progressBar.hide();
+                            getProgressBar().hide();
                             throw new XincoException(xerb.getString("datawizard.unabletoloadfile"));
                         }
                     }
@@ -2025,7 +2024,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                 global_dialog_return_value = 0;
                                 auditDialog.setVisible(true);
                                 if (global_dialog_return_value == 0) {
-                                    this.progressBar.hide();
+                                    this.getProgressBar().hide();
                                     throw new XincoException(xerb.getString("datawizard.updatecancel"));
                                 }
                             }
@@ -2061,7 +2060,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         in.close();
                         //update transaction info
                         jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.fileuploadsuccess"));
-                        progressBar.hide();
+                        getProgressBar().hide();
                     }
                     //download file
                     //file = 1
@@ -2069,8 +2068,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             (wizard_type == 14)) &&
                             (((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 1)) {
                         //determine requested revision and set log vector
-                        progressBar.setTitle(xerb.getString("datawizard.filedownloadinfo"));
-                        progressBar.show();
+                        getProgressBar().setTitle(xerb.getString("datawizard.filedownloadinfo"));
+                        getProgressBar().show();
                         Vector DataLogVector = null;
                         if (wizard_type == 11) {
                             jDialogRevision = getJDialogRevision();
@@ -2127,7 +2126,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                 ((XincoCoreData)newnode.getUserObject()).setXinco_core_logs(DataLogVector);
                             }
                             JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("datawizard.filedownloadfailed"), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
-                            this.progressBar.hide();
+                            this.getProgressBar().hide();
                             throw(ce);
                         }
                         
@@ -2191,7 +2190,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                 } catch(Throwable t) {}
                             }
                         }
-                        progressBar.hide();
+                        getProgressBar().hide();
                     }
                     //Open in Browser
                     //URL = 3
@@ -2264,7 +2263,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             " " + xerb.getString("general.reason") + ": " +
                             we.toString(), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
                 }
-                this.progressBar.hide();
+                this.getProgressBar().hide();
                 we.printStackTrace();
             }
         }
@@ -2779,7 +2778,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 newuser.setUsername(temp.getUsername());
                 newuser.setUserpassword(temp.getUserpassword());
                 xincoClientSession.user = xincoClientSession.xinco.getCurrentXincoCoreUser(newuser.getUsername(), newuser.getUserpassword());
-                progressBar.run();
+                getProgressBar().run();
                 xincoClientSession.server_datatypes = xincoClientSession.xinco.getAllXincoCoreDataTypes(xincoClientSession.user);
                 xincoClientSession.server_groups = xincoClientSession.xinco.getAllXincoCoreGroups(xincoClientSession.user);
                 xincoClientSession.server_languages = xincoClientSession.xinco.getAllXincoCoreLanguages(xincoClientSession.user);
@@ -2791,12 +2790,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 }
                 loginT= new loginThread();
                 getLoginT().start();
-                try {
-                    explorer.getSession().xinco.getWorkflow(1,explorer.getSession().user).toString();
-                } catch (RemoteException ex) {
-                    ex.printStackTrace();
-                }
             }catch (java.rmi.RemoteException cone) {
+                this.getProgressBar().hide();
                 xincoClientSession.status = 0;
                 cone.printStackTrace();
                 markConnectionStatus();
@@ -2807,6 +2802,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         xerb.getString("menu.connection.failed"),
                         JOptionPane.WARNING_MESSAGE);
             }catch (Exception cone) {
+                this.getProgressBar().hide();
                 xincoClientSession.status = 0;
                 cone.printStackTrace();
                 markConnectionStatus();
@@ -2822,11 +2818,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         xerb.getString("menu.connection.failed"),
                         JOptionPane.WARNING_MESSAGE);
             }
-        }
-        try {
-            getSession().xinco.getWorkflow(1,getSession().user);
-        } catch (RemoteException ex) {
-            ex.printStackTrace();
         }
     }
     
@@ -2878,5 +2869,9 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     
     public XincoAuditPanel getXincoAuditPanel() {
         return xincoAuditPanel;
+    }
+    
+    public XincoProgressBarThread getProgressBar() {
+        return progressBar;
     }
 }

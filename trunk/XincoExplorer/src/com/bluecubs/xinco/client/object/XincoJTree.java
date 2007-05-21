@@ -44,7 +44,6 @@ import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoCoreNode;
-import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.client.XincoCoreACEClient;
 import java.awt.Insets;
 import java.awt.Point;
@@ -55,12 +54,12 @@ import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
-import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.event.MouseInputListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 
 /**
@@ -69,13 +68,13 @@ import javax.swing.tree.TreePath;
  */
 public class XincoJTree extends JTree{
     private XincoExplorer explorer=null;
-    private XincoMutableTreeNode previousTreeNodeSelection=null;
+    private XincoMutableTreeNode previousTreeNodeSelection=null,targetTreeNode=null;
     //Drag and Drop variables
     private Insets autoscrollInsets = new Insets(20, 20, 20, 20); // insets
     /** Creates a new instance of XincoJTree */
     public XincoJTree(XincoExplorer explorer) {
         setExplorer(explorer);
-        new DefaultTreeTransferHandler(this, DnDConstants.ACTION_COPY_OR_MOVE);
+        new XincoDefaultTreeTransferHandler(this, DnDConstants.ACTION_COPY_OR_MOVE);
         this.addMouseListener(new MouseInputListener() {
             public void mouseMoved(MouseEvent event) {
                 getExplorer().resetTimer();
@@ -1012,4 +1011,13 @@ public class XincoJTree extends JTree{
     protected void setPreviousTreeNodeSelection(XincoMutableTreeNode previousTreeNodeSelection) {
         this.previousTreeNodeSelection = previousTreeNodeSelection;
     }
+
+    public XincoMutableTreeNode getTargetTreeNode() {
+        return targetTreeNode;
+    }
+
+    public void setTargetTreeNode(XincoMutableTreeNode targetTreeNode) {
+        this.targetTreeNode = targetTreeNode;
+    }
+    
 }

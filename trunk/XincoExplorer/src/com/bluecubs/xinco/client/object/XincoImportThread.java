@@ -77,8 +77,8 @@ public class XincoImportThread extends Thread {
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
                         }
                         explorer.setCurrentPath(fc.getSelectedFile().toString());
-                        explorer.progressBar.setTitle(xerb.getString("window.massiveimport.progress"));
-                        explorer.progressBar.show();
+                        explorer.getProgressBar().setTitle(xerb.getString("window.massiveimport.progress"));
+                        explorer.getProgressBar().show();
                         // update transaction info
                         JOptionPane.showMessageDialog(explorer,
                                 xerb.getString("window.massiveimport.progress"),
@@ -98,7 +98,7 @@ public class XincoImportThread extends Thread {
                                 " " + xerb.getString("general.reason") + ": " + ie.toString(), xerb.getString("general.error"),
                                 JOptionPane.WARNING_MESSAGE);
                         explorer.jLabelInternalFrameInformationText.setText("");
-                        explorer.progressBar.hide();
+                        explorer.getProgressBar().hide();
                     }
                 }
             }
@@ -108,14 +108,14 @@ public class XincoImportThread extends Thread {
                 System.err.println("Indexing complete!");
             } catch (RemoteException ex) {
                 ex.printStackTrace();
-                explorer.progressBar.hide();
+                explorer.getProgressBar().hide();
                 JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.importfailed") +
                         " " + xerb.getString("general.reason") + ": " + ex.toString(), xerb.getString("general.error"),
                         JOptionPane.WARNING_MESSAGE);
                 explorer.jLabelInternalFrameInformationText.setText("");
-                explorer.progressBar.hide();
+                explorer.getProgressBar().hide();
             }
-            explorer.progressBar.hide();
+            explorer.getProgressBar().hide();
         }
         this.explorer.getJTreeRepository().setEnabled(true);
     }
