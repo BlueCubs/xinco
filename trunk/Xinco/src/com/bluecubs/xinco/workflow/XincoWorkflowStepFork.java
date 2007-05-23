@@ -10,20 +10,16 @@ package com.bluecubs.xinco.workflow;
 public class XincoWorkflowStepFork  implements java.io.Serializable {
     private int id;
 
-    private int yesStep;
-
-    private int noStep;
+    private java.util.Vector forks;
 
     public XincoWorkflowStepFork() {
     }
 
     public XincoWorkflowStepFork(
            int id,
-           int yesStep,
-           int noStep) {
+           java.util.Vector forks) {
            this.id = id;
-           this.yesStep = yesStep;
-           this.noStep = noStep;
+           this.forks = forks;
     }
 
 
@@ -48,42 +44,22 @@ public class XincoWorkflowStepFork  implements java.io.Serializable {
 
 
     /**
-     * Gets the yesStep value for this XincoWorkflowStepFork.
+     * Gets the forks value for this XincoWorkflowStepFork.
      * 
-     * @return yesStep
+     * @return forks
      */
-    public int getYesStep() {
-        return yesStep;
+    public java.util.Vector getForks() {
+        return forks;
     }
 
 
     /**
-     * Sets the yesStep value for this XincoWorkflowStepFork.
+     * Sets the forks value for this XincoWorkflowStepFork.
      * 
-     * @param yesStep
+     * @param forks
      */
-    public void setYesStep(int yesStep) {
-        this.yesStep = yesStep;
-    }
-
-
-    /**
-     * Gets the noStep value for this XincoWorkflowStepFork.
-     * 
-     * @return noStep
-     */
-    public int getNoStep() {
-        return noStep;
-    }
-
-
-    /**
-     * Sets the noStep value for this XincoWorkflowStepFork.
-     * 
-     * @param noStep
-     */
-    public void setNoStep(int noStep) {
-        this.noStep = noStep;
+    public void setForks(java.util.Vector forks) {
+        this.forks = forks;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -99,8 +75,9 @@ public class XincoWorkflowStepFork  implements java.io.Serializable {
         boolean _equals;
         _equals = true && 
             this.id == other.getId() &&
-            this.yesStep == other.getYesStep() &&
-            this.noStep == other.getNoStep();
+            ((this.forks==null && other.getForks()==null) || 
+             (this.forks!=null &&
+              this.forks.equals(other.getForks())));
         __equalsCalc = null;
         return _equals;
     }
@@ -113,8 +90,9 @@ public class XincoWorkflowStepFork  implements java.io.Serializable {
         __hashCodeCalc = true;
         int _hashCode = 1;
         _hashCode += getId();
-        _hashCode += getYesStep();
-        _hashCode += getNoStep();
+        if (getForks() != null) {
+            _hashCode += getForks().hashCode();
+        }
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -132,15 +110,9 @@ public class XincoWorkflowStepFork  implements java.io.Serializable {
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("yesStep");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "yesStep"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("noStep");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "noStep"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setFieldName("forks");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "forks"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
     }

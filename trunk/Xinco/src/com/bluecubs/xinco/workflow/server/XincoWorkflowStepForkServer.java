@@ -40,6 +40,7 @@ import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.workflow.XincoWorkflowStepFork;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Vector;
 
 /**
  *
@@ -51,29 +52,32 @@ public class XincoWorkflowStepForkServer extends XincoWorkflowStepFork{
     public XincoWorkflowStepForkServer() {
     }
     
-    public XincoWorkflowStepForkServer(int id, XincoDBManager dbm) {
+    public XincoWorkflowStepForkServer(int step_id,int workflow_id, XincoDBManager dbm) {
         ResultSet rs =null;
-        if(id>0){
-            //Fork exists
-            try {
-                rs = dbm.getCon().createStatement().executeQuery("select * from xinco_step_fork where id="+id);
-                rs.next();
-                setYesStep(rs.getInt("yesStep"));
-                setNoStep(rs.getInt("noStep"));
-                setId(rs.getInt("id"));
-                System.err.println(toString());
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+        //Fork exists
+        try {
+            rs = dbm.getCon().createStatement().executeQuery("select * from " +
+                    "xinco_workflow_step_has_xinco_workflow_fork where xinco_workflow_id="+workflow_id+
+                    " and xinco_workflow_step_id="+step_id);
+            Vector forks= new Vector();
+            while(rs.next()){
+                try {
+                    forks.add(new XincoWorkflowServer(workflow_id,new XincoDBManager()));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
-        }else{
-            throw new UnsupportedOperationException("Not implemented yet");
+            setId(rs.getInt("id"));
+            setForks(forks);
+            System.err.println(toString());
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
     
-    public XincoWorkflowStepForkServer(int id,int yesStep,int noStep) {
+    public XincoWorkflowStepForkServer(int id,Vector forks) {
         setId(id);
-        setYesStep(yesStep);
-        setNoStep(noStep);
+        setForks(forks);
         try {
             write2DB(new XincoDBManager());
         } catch (XincoException ex) {
@@ -98,8 +102,13 @@ public class XincoWorkflowStepForkServer extends XincoWorkflowStepFork{
     public String toString(){
         String s="\n";
         s+="ID: "+getId()+"\n";
-        s+="Yes: "+getYesStep()+"\n";
-        s+="No: "+getNoStep()+"\n";
+        if(getForks()!=null){
+            s+="Forks";
+            for(int i=0;i<getForks().size();i++){
+                s+="Fork # "+(i+1)+"------------------------------------\n";
+                s+=((XincoWorkflowServer)getForks().get(i)).toString();
+            }
+        }
         return s;
     }
 }

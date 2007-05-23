@@ -343,4 +343,8 @@ public class XincoDBManager {
         System.out.println("Number Active: "+((BasicDataSource)getDatasource()).getNumActive());
         System.out.println("Number Idle: "+((BasicDataSource)getDatasource()).getNumIdle());
     }
+    
+    public XincoSetting getSetting(String name){
+        return getXss().getSetting(name);
+    }
 }

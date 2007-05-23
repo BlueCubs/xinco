@@ -234,8 +234,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
       <complexType name="XincoWorkflowStepFork">
           <sequence>
               <element name="id" type="xsd:int"></element>
-              <element name="yesStep" type="xsd:int"></element>
-              <element name="noStep" type="xsd:int"></element>
+              <element name="forks" nillable="false" type="apachesoap:Vector"></element>
           </sequence>
       </complexType>
   </schema>

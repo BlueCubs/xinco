@@ -39,6 +39,7 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.XincoCoreAuditTrail;
 import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.workflow.XincoWorkflow;
+import com.bluecubs.xinco.workflow.XincoWorkflowStep;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -51,6 +52,7 @@ import java.util.Vector;
 public class XincoWorkflowServer extends XincoWorkflow{
     private boolean change=false;
     private int changerID;
+    private XincoWorkflowStep currentStep=null;
     /** Creates a new instance of XincoWorkflowServer */
     public XincoWorkflowServer(int id, XincoDBManager dbm) {
         ResultSet rs =null;
@@ -70,8 +72,6 @@ public class XincoWorkflowServer extends XincoWorkflow{
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-        }else{
-            throw new UnsupportedOperationException("Not implemented yet");
         }
     }
     
@@ -177,4 +177,5 @@ public class XincoWorkflowServer extends XincoWorkflow{
         }
         return s;
     }
+    
 }

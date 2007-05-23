@@ -21,34 +21,23 @@ import java.io.*;
 
 public class XincoMailer {
     private XincoDBManager DBM;
-    private String SMTP_HOST_NAME = "smtp.bluecubs.com";
-    private String SMTP_AUTH_USER = "myuser@bluecubs.com";
-    private String SMTP_AUTH_PWD  = "mypsswd";
+    private String host_name = "";
+    private String User = "";
+    private String Password  = "";
     
-    private static final String emailMsgTxt      = "Online Order Confirmation Message. Also include the Tracking Number.";
-    private static final String emailSubjectTxt  = "Order Confirmation Subject";
-    private static final String emailFromAddress = "sudhir@javacommerce.com";
-    private static final String port = "25";
-    
+    private String emailMsgTxt      = "";
+    private String emailSubjectTxt  = "";
+    private String emailFromAddress = "";
+    private String port = "";
+   
     // Add List of Email address to who email needs to be sent to
-    private static final String[] emailList = {"javier_ortiz@baxter.com"};
+    private String[] emailList = {""};
     
-    public static void main(String args[]) throws Exception {
-        XincoMailer Xmailer = new XincoMailer();
-        Xmailer.postMail( emailList, emailSubjectTxt, emailMsgTxt, emailFromAddress);
-        //System.out.println("Sucessfully Sent mail to All Users");
-    }
-    
-    public void setHost(String host){
-        this.SMTP_HOST_NAME=host;
-    }
-    
-    public void setAuthenticationUser(String user){
-        this.SMTP_AUTH_USER=user;
-    }
-    
-    public void setAuthenticationPassword(String pass){
-        this.SMTP_AUTH_PWD=pass;
+    public XincoMailer(){
+        setHostName(DBM.getSetting("general.setting.email.host").getString_value());
+        setUsername(DBM.getSetting("general.setting.email.user").getString_value());
+        setPassword(DBM.getSetting("general.setting.email.password").getString_value());
+        setPort(DBM.getSetting("general.setting.email.port").getString_value());
     }
     
     public void postMail( String recipients[ ], String subject,
@@ -57,11 +46,16 @@ public class XincoMailer {
         
         //Set the host smtp address and related properties
         Properties props = new Properties();
-        props.put("mail.smtp.host", SMTP_HOST_NAME);
+        props.put("mail.smtp.host", host_name);
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.port", this.port);
         props.put("mail.smtp.starttls.enable","true");
         props.put("mail.smtp.auth ", "true ");
+        
+        props.put("mail.smtp.debug", "true"); // if the user wants
+        props.put("mail.smtp.socketFactory.port", this.port);
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.socketFactory.fallback", "false");
         
         Authenticator auth = new SMTPAuthenticator();
         Session session = Session.getDefaultInstance(props, auth);
@@ -86,6 +80,7 @@ public class XincoMailer {
         msg.setSubject(subject);
         msg.setContent(message, "text/plain");
         Transport.send(msg);
+        System.exit(0);
     }
     
     
@@ -96,10 +91,46 @@ public class XincoMailer {
     private class SMTPAuthenticator extends javax.mail.Authenticator {
         
         public PasswordAuthentication getPasswordAuthentication() {
-            String username = SMTP_AUTH_USER;
-            String password = SMTP_AUTH_PWD;
+            String username = User;
+            String password = Password;
             return new PasswordAuthentication(username, password);
         }
+    }
+
+    public void setDBM(XincoDBManager DBM) {
+        this.DBM = DBM;
+    }
+
+    public void setHostName(String SMTP_HOST_NAME) {
+        this.host_name = SMTP_HOST_NAME;
+    }
+
+    public void setUsername(String SMTP_AUTH_USER) {
+        this.User = SMTP_AUTH_USER;
+    }
+
+    public void setPassword(String SMTP_AUTH_PWD) {
+        this.Password = SMTP_AUTH_PWD;
+    }
+
+    public void setEmailMsgTxt(String emailMsgTxt) {
+        this.emailMsgTxt = emailMsgTxt;
+    }
+
+    public void setEmailSubjectTxt(String emailSubjectTxt) {
+        this.emailSubjectTxt = emailSubjectTxt;
+    }
+
+    public void setEmailFromAddress(String emailFromAddress) {
+        this.emailFromAddress = emailFromAddress;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
+    }
+
+    public void setEmailList(String[] emailList) {
+        this.emailList = emailList;
     }
     
 }

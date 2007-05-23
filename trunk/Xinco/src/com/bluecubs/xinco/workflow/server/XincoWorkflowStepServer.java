@@ -92,19 +92,13 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
                     rs2.next();
                     wfID=rs2.getInt("id");
                     desc=rs2.getString("designation");
-                    //Check if step has fork options
-                    rs2=stmt2.executeQuery("select distinct a.id,yesStep,noStep " +
-                            "from xinco_step_fork a, xinco_workflow_has_xinco_workflow_step b " +
-                            "where b.xinco_workflow_id = a.id and b.xinco_step_fork_id is not null " +
-                            "and b.id = "+rs2.getInt("id"));
-                    if(rs2.next()){
-                        try {
-                            setFork(new XincoWorkflowStepForkServer(rs2.getInt("id"),new XincoDBManager()));
-                        } catch (SQLException ex) {
-                            ex.printStackTrace();
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
+                    try {
+                        //Check if step has fork options
+                        setFork(new XincoWorkflowStepForkServer(getId(),rs2.getInt("id"),new XincoDBManager()));
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                     steps.add(new XincoWorkflowStepServer(wfID,desc,getWorkflow_id(),(XincoWorkflowStepForkServer)getFork()));
                     //A step has a workflow as sub steps
