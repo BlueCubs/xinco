@@ -8,7 +8,13 @@
 package com.bluecubs.xinco.workflow;
 
 public class XincoWorkflowStepFork  implements java.io.Serializable {
-    private int id;
+    private int step_id;
+
+    private int workflow_id;
+
+    private int optionNumber;
+
+    private java.lang.String description;
 
     private java.util.Vector forks;
 
@@ -16,30 +22,96 @@ public class XincoWorkflowStepFork  implements java.io.Serializable {
     }
 
     public XincoWorkflowStepFork(
-           int id,
+           int step_id,
+           int workflow_id,
+           int optionNumber,
+           java.lang.String description,
            java.util.Vector forks) {
-           this.id = id;
+           this.step_id = step_id;
+           this.workflow_id = workflow_id;
+           this.optionNumber = optionNumber;
+           this.description = description;
            this.forks = forks;
     }
 
 
     /**
-     * Gets the id value for this XincoWorkflowStepFork.
+     * Gets the step_id value for this XincoWorkflowStepFork.
      * 
-     * @return id
+     * @return step_id
      */
-    public int getId() {
-        return id;
+    public int getStep_id() {
+        return step_id;
     }
 
 
     /**
-     * Sets the id value for this XincoWorkflowStepFork.
+     * Sets the step_id value for this XincoWorkflowStepFork.
      * 
-     * @param id
+     * @param step_id
      */
-    public void setId(int id) {
-        this.id = id;
+    public void setStep_id(int step_id) {
+        this.step_id = step_id;
+    }
+
+
+    /**
+     * Gets the workflow_id value for this XincoWorkflowStepFork.
+     * 
+     * @return workflow_id
+     */
+    public int getWorkflow_id() {
+        return workflow_id;
+    }
+
+
+    /**
+     * Sets the workflow_id value for this XincoWorkflowStepFork.
+     * 
+     * @param workflow_id
+     */
+    public void setWorkflow_id(int workflow_id) {
+        this.workflow_id = workflow_id;
+    }
+
+
+    /**
+     * Gets the optionNumber value for this XincoWorkflowStepFork.
+     * 
+     * @return optionNumber
+     */
+    public int getOptionNumber() {
+        return optionNumber;
+    }
+
+
+    /**
+     * Sets the optionNumber value for this XincoWorkflowStepFork.
+     * 
+     * @param optionNumber
+     */
+    public void setOptionNumber(int optionNumber) {
+        this.optionNumber = optionNumber;
+    }
+
+
+    /**
+     * Gets the description value for this XincoWorkflowStepFork.
+     * 
+     * @return description
+     */
+    public java.lang.String getDescription() {
+        return description;
+    }
+
+
+    /**
+     * Sets the description value for this XincoWorkflowStepFork.
+     * 
+     * @param description
+     */
+    public void setDescription(java.lang.String description) {
+        this.description = description;
     }
 
 
@@ -74,7 +146,12 @@ public class XincoWorkflowStepFork  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
-            this.id == other.getId() &&
+            this.step_id == other.getStep_id() &&
+            this.workflow_id == other.getWorkflow_id() &&
+            this.optionNumber == other.getOptionNumber() &&
+            ((this.description==null && other.getDescription()==null) || 
+             (this.description!=null &&
+              this.description.equals(other.getDescription()))) &&
             ((this.forks==null && other.getForks()==null) || 
              (this.forks!=null &&
               this.forks.equals(other.getForks())));
@@ -89,7 +166,12 @@ public class XincoWorkflowStepFork  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
-        _hashCode += getId();
+        _hashCode += getStep_id();
+        _hashCode += getWorkflow_id();
+        _hashCode += getOptionNumber();
+        if (getDescription() != null) {
+            _hashCode += getDescription().hashCode();
+        }
         if (getForks() != null) {
             _hashCode += getForks().hashCode();
         }
@@ -104,9 +186,27 @@ public class XincoWorkflowStepFork  implements java.io.Serializable {
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "XincoWorkflowStepFork"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("id");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "id"));
+        elemField.setFieldName("step_id");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "step_id"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("workflow_id");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "workflow_id"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("optionNumber");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "optionNumber"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("description");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "description"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();

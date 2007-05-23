@@ -67,7 +67,8 @@ public class XincoWorkflowStepForkServer extends XincoWorkflowStepFork{
                     ex.printStackTrace();
                 }
             }
-            setId(rs.getInt("id"));
+            setWorkflow_id(workflow_id);
+            setStep_id(step_id);
             setForks(forks);
             System.err.println(toString());
         } catch (SQLException ex) {
@@ -75,8 +76,9 @@ public class XincoWorkflowStepForkServer extends XincoWorkflowStepFork{
         }
     }
     
-    public XincoWorkflowStepForkServer(int id,Vector forks) {
-        setId(id);
+    public XincoWorkflowStepForkServer(int xinco_workflow_id,int xinco_workflow_step_id,Vector forks) {
+        setWorkflow_id(xinco_workflow_id);
+        setStep_id(xinco_workflow_step_id);
         setForks(forks);
         try {
             write2DB(new XincoDBManager());
@@ -101,7 +103,8 @@ public class XincoWorkflowStepForkServer extends XincoWorkflowStepFork{
     
     public String toString(){
         String s="\n";
-        s+="ID: "+getId()+"\n";
+        s+="Step ID: "+getStep_id()+"\n";
+        s+="Workflow ID: "+getWorkflow_id()+"\n";
         if(getForks()!=null){
             s+="Forks";
             for(int i=0;i<getForks().size();i++){

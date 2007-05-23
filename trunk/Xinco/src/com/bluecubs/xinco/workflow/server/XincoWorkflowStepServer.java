@@ -52,18 +52,17 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
     private boolean change=false;
     private int changerID;
     private int workflow_id;
+    private XincoWorkflowStepForkServer forks;
     /**
      * Creates a new instance of XincoWorkflowStepServer
      * @param step_id
      * @param workflow_id
      * @param designation
      */
-    public XincoWorkflowStepServer(int step_id, String designation,int workflow_id,
-            XincoWorkflowStepForkServer xwsf) {
+    public XincoWorkflowStepServer(int step_id, String designation,int workflow_id) {
         setId(step_id);
         setWorkflow_id(workflow_id);
-        setDescription(designation);
-        setFork(xwsf);
+        setDesignation(designation);
         try {
             write2DB(new XincoDBManager());
         } catch (Exception ex) {
@@ -85,22 +84,14 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
             try {
                 rs = dbm.getCon().createStatement().executeQuery("select id from xinco_workflow_has_xinco_workflow_step where xinco_workflow_id ="+id);
                 while(rs.next()){
-                    int wfID=0;
-                    String desc="";
-                    stmt2 = dbm.getCon().createStatement();
-                    rs2=stmt2.executeQuery("select * from xinco_workflow_step where id ="+rs.getInt("id"));
-                    rs2.next();
-                    wfID=rs2.getInt("id");
-                    desc=rs2.getString("designation");
                     try {
                         //Check if step has fork options
-                        setFork(new XincoWorkflowStepForkServer(getId(),rs2.getInt("id"),new XincoDBManager()));
+                        setFork(new XincoWorkflowStepForkServer(getId(),getWorkflow_id(),new XincoDBManager()));
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
-                    steps.add(new XincoWorkflowStepServer(wfID,desc,getWorkflow_id(),(XincoWorkflowStepForkServer)getFork()));
                     //A step has a workflow as sub steps
                     if(getWorkflow_id()>0){
                         try {
@@ -116,7 +107,6 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
                             ex.printStackTrace();
                         }
                     }
-                    stmt2.close();
                 }
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -131,7 +121,7 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
             //Step already exists
             try {
                 dbm.getCon().createStatement().executeUpdate("update xinco_workflow_step set id="+getId()+
-                        ", designation='"+getDescription()+"', xinco_workflow_id="+
+                        ", designation='"+getDesignation()+"', xinco_workflow_id="+
                         (getWorkflow_id()<1 ? 0:getWorkflow_id())+" where id="+getId());
                 if(isChange()){
                     XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
@@ -156,7 +146,7 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
                 rs.next();
                 setId(rs.getInt(1)+1);
                 dbm.getCon().createStatement().executeUpdate("insert into xinco_workflow_step values("+
-                        getId()+",'"+getDescription()+"', "+getWorkflow_id()+")");
+                        getId()+",'"+getDesignation()+"', "+getWorkflow_id()+")");
                 dbm.getCon().createStatement().executeUpdate("insert into xinco_workflow_has_xinco_workflow_step values("+
                         getWorkflow_id()+", "+getId()+")");
                 audit.updateAuditTrail("xinco_workflow_step",new String [] {"id ="+getId()},
@@ -195,11 +185,19 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
     public String toString(){
         String s="";
         s+="ID: "+getId()+"\n";
-        s+="Description: "+getDescription()+"\n";
+        s+="Description: "+getDesignation()+"\n";
         if(getFork()!=null){
             s+="Forks: \n";
             s+=getFork().toString();
         }
         return s;
+    }
+
+    private void setFork(XincoWorkflowStepForkServer xincoWorkflowStepForkServer) {
+        this.forks=xincoWorkflowStepForkServer;
+    }
+
+    public XincoWorkflowStepForkServer getFork() {
+        return forks;
     }
 }

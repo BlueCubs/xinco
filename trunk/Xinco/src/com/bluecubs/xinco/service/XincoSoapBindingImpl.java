@@ -31,6 +31,7 @@ import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
+import com.bluecubs.xinco.core.server.email.XincoMailer;
 import com.bluecubs.xinco.index.XincoIndexThread;
 import com.bluecubs.xinco.index.XincoIndexer;
 import com.bluecubs.xinco.workflow.XincoWorkflow;
@@ -52,6 +53,7 @@ import java.util.Vector;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.CheckedOutputStream;
+import javax.mail.MessagingException;
 import org.apache.axis.Message;
 import org.apache.axis.MessageContext;
 import org.apache.axis.attachments.AttachmentPart;
@@ -890,6 +892,26 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     }
     
     public com.bluecubs.xinco.workflow.XincoWorkflowStepFork setXincoWorkflowStepFork(int id, int yesStep, int noStep, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException {
+        return null;
+    }
+    
+     public boolean sendEmail(com.bluecubs.xinco.core.XincoEmail email, com.bluecubs.xinco.core.XincoCoreUser from) throws java.rmi.RemoteException
+    {
+         XincoMailer mailer = new XincoMailer();
+         String [] rec=new String[email.getRecipients().size()];
+         for(int i=0;i<email.getRecipients().size();i++)
+             rec[i]=((XincoCoreUserServer)email.getRecipients().get(i)).getEmail();
+        try {
+            mailer.postMail(rec,email.getSubject(),email.getMessage(),from.getEmail());
+        } catch (MessagingException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+         return true;
+    }
+
+    public com.bluecubs.xinco.core.XincoEmail getEmail(int id, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException
+    {
         return null;
     }
 }

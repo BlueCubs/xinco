@@ -13,13 +13,13 @@ Author : Sudhir Ancha
  */
 package com.bluecubs.xinco.core.server.email;
 
+import com.bluecubs.xinco.core.XincoEmail;
 import com.bluecubs.xinco.core.server.XincoDBManager;
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.util.*;
-import java.io.*;
 
-public class XincoMailer {
+public class XincoMailer extends XincoEmail{
     private XincoDBManager DBM;
     private String host_name = "";
     private String User = "";
@@ -34,6 +34,11 @@ public class XincoMailer {
     private String[] emailList = {""};
     
     public XincoMailer(){
+        try {
+            DBM=new XincoDBManager();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         setHostName(DBM.getSetting("general.setting.email.host").getString_value());
         setUsername(DBM.getSetting("general.setting.email.user").getString_value());
         setPassword(DBM.getSetting("general.setting.email.password").getString_value());

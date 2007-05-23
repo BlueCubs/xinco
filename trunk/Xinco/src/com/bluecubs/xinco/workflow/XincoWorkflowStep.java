@@ -10,20 +10,16 @@ package com.bluecubs.xinco.workflow;
 public class XincoWorkflowStep  implements java.io.Serializable {
     private int id;
 
-    private java.lang.String description;
-
-    private com.bluecubs.xinco.workflow.XincoWorkflowStepFork fork;
+    private java.lang.String designation;
 
     public XincoWorkflowStep() {
     }
 
     public XincoWorkflowStep(
            int id,
-           java.lang.String description,
-           com.bluecubs.xinco.workflow.XincoWorkflowStepFork fork) {
+           java.lang.String designation) {
            this.id = id;
-           this.description = description;
-           this.fork = fork;
+           this.designation = designation;
     }
 
 
@@ -48,42 +44,22 @@ public class XincoWorkflowStep  implements java.io.Serializable {
 
 
     /**
-     * Gets the description value for this XincoWorkflowStep.
+     * Gets the designation value for this XincoWorkflowStep.
      * 
-     * @return description
+     * @return designation
      */
-    public java.lang.String getDescription() {
-        return description;
+    public java.lang.String getDesignation() {
+        return designation;
     }
 
 
     /**
-     * Sets the description value for this XincoWorkflowStep.
+     * Sets the designation value for this XincoWorkflowStep.
      * 
-     * @param description
+     * @param designation
      */
-    public void setDescription(java.lang.String description) {
-        this.description = description;
-    }
-
-
-    /**
-     * Gets the fork value for this XincoWorkflowStep.
-     * 
-     * @return fork
-     */
-    public com.bluecubs.xinco.workflow.XincoWorkflowStepFork getFork() {
-        return fork;
-    }
-
-
-    /**
-     * Sets the fork value for this XincoWorkflowStep.
-     * 
-     * @param fork
-     */
-    public void setFork(com.bluecubs.xinco.workflow.XincoWorkflowStepFork fork) {
-        this.fork = fork;
+    public void setDesignation(java.lang.String designation) {
+        this.designation = designation;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -99,12 +75,9 @@ public class XincoWorkflowStep  implements java.io.Serializable {
         boolean _equals;
         _equals = true && 
             this.id == other.getId() &&
-            ((this.description==null && other.getDescription()==null) || 
-             (this.description!=null &&
-              this.description.equals(other.getDescription()))) &&
-            ((this.fork==null && other.getFork()==null) || 
-             (this.fork!=null &&
-              this.fork.equals(other.getFork())));
+            ((this.designation==null && other.getDesignation()==null) || 
+             (this.designation!=null &&
+              this.designation.equals(other.getDesignation())));
         __equalsCalc = null;
         return _equals;
     }
@@ -117,11 +90,8 @@ public class XincoWorkflowStep  implements java.io.Serializable {
         __hashCodeCalc = true;
         int _hashCode = 1;
         _hashCode += getId();
-        if (getDescription() != null) {
-            _hashCode += getDescription().hashCode();
-        }
-        if (getFork() != null) {
-            _hashCode += getFork().hashCode();
+        if (getDesignation() != null) {
+            _hashCode += getDesignation().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -140,16 +110,10 @@ public class XincoWorkflowStep  implements java.io.Serializable {
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("description");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "description"));
+        elemField.setFieldName("designation");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "designation"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("fork");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "fork"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "XincoWorkflowStepFork"));
-        elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }
 

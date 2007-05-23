@@ -1,0 +1,7 @@
+This package is to hold SR 170: Content Repository for JavaTM technology API compliance.
+See http://jcp.org/en/jsr/detail?id=170 for further detail.
+
+If this compliance is attained it'll open lots of interaction between Xinco and other 
+applications like Magnolia (http://www.magnolia.info/en/magnolia.html) to be used as Content Management
+ tool and many other from tons of possibilities. Also it'll allow moving from other compliant 
+repositories to Xinco and Viceversa!

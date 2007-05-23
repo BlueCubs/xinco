@@ -129,6 +129,14 @@
       />
       <typeMapping
         xmlns:ns="http://core.xinco.bluecubs.com"
+        qname="ns:XincoEmail"
+        type="java:com.bluecubs.xinco.core.XincoEmail"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://core.xinco.bluecubs.com"
         qname="ns:XincoCoreDataType"
         type="java:com.bluecubs.xinco.core.XincoCoreDataType"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
@@ -144,17 +152,17 @@
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
       />
       <typeMapping
-        xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoCoreACE"
-        type="java:com.bluecubs.xinco.core.XincoCoreACE"
+        xmlns:ns="http://workflow.xinco.bluecubs.com"
+        qname="ns:XincoWorkflow"
+        type="java:com.bluecubs.xinco.workflow.XincoWorkflow"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
       />
       <typeMapping
-        xmlns:ns="http://workflow.xinco.bluecubs.com"
-        qname="ns:XincoWorkflow"
-        type="java:com.bluecubs.xinco.workflow.XincoWorkflow"
+        xmlns:ns="http://core.xinco.bluecubs.com"
+        qname="ns:XincoCoreACE"
+        type="java:com.bluecubs.xinco.core.XincoCoreACE"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"

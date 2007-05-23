@@ -43,12 +43,14 @@ import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoSetting;
+import com.bluecubs.xinco.core.server.email.XincoMailer;
 import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import javax.mail.MessagingException;
 import org.apache.commons.dbcp.BasicDataSource;
 
 public class XincoDBManager {

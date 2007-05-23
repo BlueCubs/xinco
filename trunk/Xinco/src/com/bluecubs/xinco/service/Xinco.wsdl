@@ -158,6 +158,15 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      <element name="due_same_month" type="xsd:boolean"/>
     </sequence>
    </complexType>
+   <complexType name="XincoEmail">
+    <sequence>
+     <element name="id" type="xsd:int"></element>
+     <element name="from" type="xsd:int"></element>
+     <element name="subject" type="xsd:string"></element>
+     <element name="message" type="xsd:string"></element>
+     <element name="recipients" nillable="true" type="apachesoap:Vector"/>
+    </sequence>
+   </complexType>
   </schema>
   <schema targetNamespace="http://xml.apache.org/xml-soap" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://add.xinco.bluecubs.com"/>
@@ -215,9 +224,8 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    </complexType>
    <complexType name="XincoWorkflowStep">
     <sequence>
-     <element name="id" type="xsd:int"/>
-     <element name="description" type="xsd:string"/>
-        <element name="fork" type="tns4:XincoWorkflowStepFork" nillable="true"></element>
+     <element name="id" type="xsd:int"></element>
+     <element name="designation" type="xsd:string"></element>
     </sequence>
    </complexType>
    <complexType name="XincoWorkflowStepInstance">
@@ -233,8 +241,11 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    </complexType>
       <complexType name="XincoWorkflowStepFork">
           <sequence>
-              <element name="id" type="xsd:int"></element>
-              <element name="forks" nillable="false" type="apachesoap:Vector"></element>
+           <element name="step_id" type="xsd:int"></element>
+           <element name="workflow_id" type="xsd:int"></element>
+           <element name="optionNumber" type="xsd:int"></element>
+           <element name="description" type="xsd:string"></element>
+           <element name="forks" nillable="false" type="apachesoap:Vector"></element>
           </sequence>
       </complexType>
   </schema>
@@ -1060,7 +1071,21 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <wsdl:message name="setXincoWorkflowStepForkResponse">
         <wsdl:part name="xwsf" type="tns4:XincoWorkflowStepFork"/>
     </wsdl:message>
-    <wsdl:portType name="Xinco">
+ <wsdl:message name="sendEmailRequest">
+  <wsdl:part name="email" type="tns2:XincoEmail"/>
+  <wsdl:part name="from" type="tns2:XincoCoreUser"/>
+ </wsdl:message>
+ <wsdl:message name="sendEmailResponse">
+  <wsdl:part name="success" type="xsd:boolean"/>
+ </wsdl:message>
+ <wsdl:message name="getEmailRequest">
+  <wsdl:part name="id" type="xsd:int"/>
+  <wsdl:part name="user" type="tns2:XincoCoreUser"/>
+ </wsdl:message>
+ <wsdl:message name="getEmailResponse">
+  <wsdl:part name="email" type="tns2:XincoEmail"/>
+ </wsdl:message>
+ <wsdl:portType name="Xinco">
 
       <wsdl:operation name="getXincoServerVersion">
 
@@ -1557,7 +1582,15 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
             <wsdl:input name="setXincoWorkflowStepForkRequest" message="impl:setXincoWorkflowStepForkRequest"/>
             <wsdl:output name="setXincoWorkflowStepForkResponse" message="impl:setXincoWorkflowStepForkResponse"/>
         </wsdl:operation>
-    </wsdl:portType>
+  <wsdl:operation name="sendEmail">
+   <wsdl:input name="sendEmailRequest" message="impl:sendEmailRequest"/>
+   <wsdl:output name="sendEmailResponse" message="impl:sendEmailResponse"/>
+  </wsdl:operation>
+  <wsdl:operation name="getEmail">
+   <wsdl:input name="getEmailRequest" message="impl:getEmailRequest"/>
+   <wsdl:output name="getEmailResponse" message="impl:getEmailResponse"/>
+  </wsdl:operation>
+ </wsdl:portType>
 
    <wsdl:binding name="XincoSoapBinding" type="impl:Xinco">
 
@@ -2304,6 +2337,14 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
            <wsdl:input name="setXincoWorkflowStepForkRequest"/>
            <wsdl:output name="setXincoWorkflowStepForkResponse"/>
        </wsdl:operation>
+    <wsdl:operation name="sendEmail">
+     <wsdl:input name="sendEmailRequest"/>
+     <wsdl:output name="sendEmailResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getEmail">
+     <wsdl:input name="getEmailRequest"/>
+     <wsdl:output name="getEmailResponse"/>
+    </wsdl:operation>
    </wsdl:binding>
 
    <wsdl:service name="XincoService">

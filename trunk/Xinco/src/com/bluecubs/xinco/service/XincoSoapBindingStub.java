@@ -16,7 +16,7 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
     static org.apache.axis.description.OperationDesc [] _operations;
 
     static {
-        _operations = new org.apache.axis.description.OperationDesc[42];
+        _operations = new org.apache.axis.description.OperationDesc[44];
         _initOperationDesc1();
         _initOperationDesc2();
         _initOperationDesc3();
@@ -583,6 +583,32 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
         _operations[41] = oper;
 
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("sendEmail");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "email"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoEmail"), com.bluecubs.xinco.core.XincoEmail.class, false, false);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "from"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        oper.setReturnClass(boolean.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "success"));
+        oper.setStyle(org.apache.axis.constants.Style.RPC);
+        oper.setUse(org.apache.axis.constants.Use.ENCODED);
+        _operations[42] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("getEmail");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "id"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, false, false);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "user"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoEmail"));
+        oper.setReturnClass(com.bluecubs.xinco.core.XincoEmail.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "email"));
+        oper.setStyle(org.apache.axis.constants.Style.RPC);
+        oper.setUse(org.apache.axis.constants.Use.ENCODED);
+        _operations[43] = oper;
+
     }
 
     public XincoSoapBindingStub() throws org.apache.axis.AxisFault {
@@ -694,6 +720,13 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
             qName = new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser");
             cachedSerQNames.add(qName);
             cls = com.bluecubs.xinco.core.XincoCoreUser.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoEmail");
+            cachedSerQNames.add(qName);
+            cls = com.bluecubs.xinco.core.XincoEmail.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -2119,6 +2152,68 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
                 return (com.bluecubs.xinco.workflow.XincoWorkflowStepFork) _resp;
             } catch (java.lang.Exception _exception) {
                 return (com.bluecubs.xinco.workflow.XincoWorkflowStepFork) org.apache.axis.utils.JavaUtils.convert(_resp, com.bluecubs.xinco.workflow.XincoWorkflowStepFork.class);
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+  throw axisFaultException;
+}
+    }
+
+    public boolean sendEmail(com.bluecubs.xinco.core.XincoEmail email, com.bluecubs.xinco.core.XincoCoreUser from) throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[42]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("", "sendEmail"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {email, from});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return ((java.lang.Boolean) _resp).booleanValue();
+            } catch (java.lang.Exception _exception) {
+                return ((java.lang.Boolean) org.apache.axis.utils.JavaUtils.convert(_resp, boolean.class)).booleanValue();
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+  throw axisFaultException;
+}
+    }
+
+    public com.bluecubs.xinco.core.XincoEmail getEmail(int id, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[43]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("", "getEmail"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {new java.lang.Integer(id), user});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (com.bluecubs.xinco.core.XincoEmail) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (com.bluecubs.xinco.core.XincoEmail) org.apache.axis.utils.JavaUtils.convert(_resp, com.bluecubs.xinco.core.XincoEmail.class);
             }
         }
   } catch (org.apache.axis.AxisFault axisFaultException) {
