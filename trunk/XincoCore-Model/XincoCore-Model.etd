@@ -4803,6 +4803,8 @@ Temporary statuses
 
 
 
+
+
 </UML:Element.presentation><UML:Element.ownedElement>
 <UML:TaggedValue xmi.id="DCE.ACD27AFE-3672-9E85-0677-CA2950CDCA1C" owner="DCE.1C130A94-65A0-DCA7-BD56-B28B4F4C8335" name="documentation">
 <UML:TaggedValue.dataValue>&lt;font face=""&gt;Audit Start&lt;/font&gt;
@@ -4813,6 +4815,7 @@ Temporary statuses
 <UML:Region xmi.id="DCE.66ABDFB4-F4E9-D0E8-8259-826988F3E7C0" name="Unnamed" owner="DCE.98CB34DD-2F64-DAEA-3CF1-1DDFB10A5F5E"/>
 <UML:TaggedValue xmi.id="DCE.AE5E591D-0AC2-958D-9140-EFCF248144E9" owner="DCE.98CB34DD-2F64-DAEA-3CF1-1DDFB10A5F5E" name="documentation">
 <UML:TaggedValue.dataValue>Send notification to responsible persons of audit where audit period starts</UML:TaggedValue.dataValue></UML:TaggedValue></UML:Element.ownedElement><UML:Element.presentation>
+
 
 
 
@@ -4850,6 +4853,7 @@ Temporary statuses
 
 
 
+
 </UML:Element.presentation></UML:State>
 <UML:State xmi.id="DCE.F6204AFD-0147-1FDC-6C87-7DAC09750F22" name="Unnamed" owner="DCE.2E69913E-7074-3FB0-143C-876E06A23A10" isSimple="true"><UML:Element.ownedElement>
 <UML:Region xmi.id="DCE.E0A030DE-B685-9F35-C7C4-DB2169291EE5" name="Unnamed" owner="DCE.F6204AFD-0147-1FDC-6C87-7DAC09750F22"/></UML:Element.ownedElement><UML:Element.presentation>
@@ -4861,6 +4865,7 @@ Temporary statuses
 <UML:Region xmi.id="DCE.E1FA32AA-A0E4-AB8D-B3CB-6E1A7308271B" name="Unnamed" owner="DCE.78F5B941-0C00-0FF9-7812-CBA6E065CF8E"/>
 <UML:TaggedValue xmi.id="DCE.6B60DDE4-BD73-6C0A-5309-87D99A7345E0" owner="DCE.78F5B941-0C00-0FF9-7812-CBA6E065CF8E" name="documentation">
 <UML:TaggedValue.dataValue>Create/Edit audit settings</UML:TaggedValue.dataValue></UML:TaggedValue></UML:Element.ownedElement><UML:Element.presentation>
+
 
 
 
@@ -4888,6 +4893,7 @@ Temporary statuses
 
 
 
+
 </UML:Element.presentation><UML:Transition.preCondition>
 <UML:Constraint xmi.id="DCE.FA38E0A6-DBEA-20EE-25D2-50A24561D90A"/></UML:Transition.preCondition><UML:Transition.postCondition>
 <UML:Constraint xmi.id="DCE.68FBFCD0-56C0-C9CF-17D6-6D6415AF2232"/></UML:Transition.postCondition></UML:Transition>
@@ -4903,10 +4909,12 @@ Temporary statuses
 
 
 
+
 </UML:Element.presentation><UML:Transition.preCondition>
 <UML:Constraint xmi.id="DCE.2DD8CE54-8C80-6DB8-A9D2-856BC909D549"/></UML:Transition.preCondition><UML:Transition.postCondition>
 <UML:Constraint xmi.id="DCE.3E9889B6-3109-A598-9601-29B6A709E651"/></UML:Transition.postCondition></UML:Transition>
 <UML:Transition xmi.id="DCE.6873D83D-BDA5-B007-B4BC-E56880E63F9B" source="DCE.98CB34DD-2F64-DAEA-3CF1-1DDFB10A5F5E" owner="DCE.2E69913E-7074-3FB0-143C-876E06A23A10" target="DCE.1CE4B912-6896-CA48-C31B-0C9B86EC6F18"><UML:Element.presentation>
+
 
 
 
@@ -4936,8 +4944,10 @@ Temporary statuses
 
 
 
+
 </UML:Element.presentation></UML:State>
 <UML:Transition xmi.id="DCE.1BDCEDA1-D826-CB7E-F482-26C04C316B84" source="DCE.1CE4B912-6896-CA48-C31B-0C9B86EC6F18" owner="DCE.2E69913E-7074-3FB0-143C-876E06A23A10" target="DCE.379B4362-3B25-29B9-79C2-5B7E0B98EFC0"><UML:Element.presentation>
+
 
 
 
@@ -4976,8 +4986,11 @@ Temporary statuses
 
 
 
+
+
 </UML:Element.presentation></UML:PseudoState>
 <UML:Transition xmi.id="DCE.C8FB3A9C-0BAE-2A75-B1C9-F9B3FA85A396" source="DCE.379B4362-3B25-29B9-79C2-5B7E0B98EFC0" owner="DCE.2E69913E-7074-3FB0-143C-876E06A23A10" target="DCE.3087E711-42DB-8C4D-EF0D-759CBCB9E1F5"><UML:Element.presentation>
+
 
 
 
@@ -5016,6 +5029,7 @@ Temporary statuses
 <UML:Constraint xmi.id="DCE.42648938-BF4B-0821-20FB-9B5BBC168B02"/></UML:Transition.preCondition><UML:Transition.postCondition>
 <UML:Constraint xmi.id="DCE.E4115D11-DF3A-2778-C9E5-E7F195A848D2"/></UML:Transition.postCondition></UML:Transition>
 <UML:Comment xmi.id="DCE.205DE796-4833-9E14-B8F4-3B70C3218D7B" owner="DCE.2E69913E-7074-3FB0-143C-876E06A23A10" annotatedElement="DCE.787B339A-BF63-7DFC-9DF6-0749082C759D"><UML:Element.presentation>
+
 
 
 
@@ -5081,21 +5095,7 @@ Temporary statuses
 
 
 
-<UML:State xmi.id="DCE.96821B25-6ACB-8C6E-5205-67ED3FA61884" name="Notify Originator" owner="DCE.2E69913E-7074-3FB0-143C-876E06A23A10" isSimple="true" incoming="DCE.C7CAC6EB-BC4D-DA23-99B6-492720BAC9CC" outgoing="DCE.5911B23E-F5AE-A995-9164-9DC81825AA65 DCE.3731660F-C9BF-0D26-5ED3-BBDC3AA1A7FA"><UML:Element.ownedElement>
-<UML:Region xmi.id="DCE.4B61D31B-4C98-527C-DAE1-89271F125E67" name="Unnamed" owner="DCE.96821B25-6ACB-8C6E-5205-67ED3FA61884"/>
-<UML:TaggedValue xmi.id="DCE.CD00C34A-C5DB-D242-331B-19A20FC8E3EA" owner="DCE.96821B25-6ACB-8C6E-5205-67ED3FA61884" name="documentation">
-<UML:TaggedValue.dataValue>Send notice with reason comments</UML:TaggedValue.dataValue></UML:TaggedValue></UML:Element.ownedElement><UML:Element.presentation>
 
-
-
-
-
-
-
-
-
-
-</UML:Element.presentation></UML:State>
 <UML:Transition xmi.id="DCE.5911B23E-F5AE-A995-9164-9DC81825AA65" source="DCE.96821B25-6ACB-8C6E-5205-67ED3FA61884" owner="DCE.2E69913E-7074-3FB0-143C-876E06A23A10" target="DCE.F84AA791-AE6C-643B-B174-6ACB36006AE9"><UML:Element.presentation>
 
 
@@ -5114,6 +5114,7 @@ Temporary statuses
 <UML:TaggedValue xmi.id="DCE.9B6E97E7-C8CB-C431-D02D-D5F5A83BF98A" owner="DCE.53EFFC3C-EC06-A395-B2F9-021070428B7D" name="documentation">
 <UML:TaggedValue.dataValue>This might include other documents related to the audit (i.e. evaluation 
     forms)</UML:TaggedValue.dataValue></UML:TaggedValue></UML:Element.ownedElement><UML:Element.presentation>
+
 
 
 
@@ -5152,8 +5153,10 @@ Temporary statuses
 
 
 
+
 </UML:Element.presentation></UML:State>
 <UML:Transition xmi.id="DCE.A25FC0B5-A3C8-B10B-4295-5FDADE49173A" source="DCE.53EFFC3C-EC06-A395-B2F9-021070428B7D" owner="DCE.2E69913E-7074-3FB0-143C-876E06A23A10" target="DCE.D01B78DD-3FB5-92E5-1EA8-DDC35DB7AEB6"><UML:Element.presentation>
+
 
 
 
@@ -5178,10 +5181,13 @@ Temporary statuses
 
 
 
+
 </UML:Element.presentation><UML:Transition.preCondition>
 <UML:Constraint xmi.id="DCE.83FC5DD2-576E-B3AF-BAFC-CC35AB498ADF"/></UML:Transition.preCondition><UML:Transition.postCondition>
 <UML:Constraint xmi.id="DCE.D859DCB6-8631-F842-5DB2-5A13C8FA4279"/></UML:Transition.postCondition></UML:Transition>
 <UML:Transition xmi.id="DCE.B98FB5F2-F2F2-8498-68B9-6E6EF06D15C5" source="DCE.3087E711-42DB-8C4D-EF0D-759CBCB9E1F5" owner="DCE.2E69913E-7074-3FB0-143C-876E06A23A10" target="DCE.53EFFC3C-EC06-A395-B2F9-021070428B7D" name="No"><UML:Element.presentation>
+
+
 
 
 
@@ -5230,13 +5236,17 @@ Temporary statuses
 <UML:Region xmi.id="DCE.9266FB60-D4C5-7416-FC04-1344AB8DBB72" name="Unnamed" owner="DCE.C9CB557A-24BC-1A11-5A91-A458A9675475"/>
 <UML:TaggedValue xmi.id="DCE.06BDC248-1E11-282F-857A-154025855AC9" owner="DCE.C9CB557A-24BC-1A11-5A91-A458A9675475" name="documentation">
 <UML:TaggedValue.dataValue>See Modify Data Workflow</UML:TaggedValue.dataValue></UML:TaggedValue></UML:Element.ownedElement><UML:Element.presentation>
+
 </UML:Element.presentation></UML:State>
 <UML:Transition xmi.id="DCE.C6F5A60B-E4E2-B31A-7B34-BC3702E533FC" source="DCE.3087E711-42DB-8C4D-EF0D-759CBCB9E1F5" owner="DCE.2E69913E-7074-3FB0-143C-876E06A23A10" target="DCE.C9CB557A-24BC-1A11-5A91-A458A9675475" name="Yes"><UML:Element.presentation>
+
+
 
 </UML:Element.presentation><UML:Transition.preCondition>
 <UML:Constraint xmi.id="DCE.DAAA5F67-4C8D-1E29-A167-1E249339B5B5"/></UML:Transition.preCondition><UML:Transition.postCondition>
 <UML:Constraint xmi.id="DCE.95911282-DDB8-AD71-8B36-3EE4C651D1F9"/></UML:Transition.postCondition></UML:Transition>
 <UML:Transition xmi.id="DCE.C5A06AB7-184D-2D83-50D5-E0FC9A2FE1A6" source="DCE.C9CB557A-24BC-1A11-5A91-A458A9675475" owner="DCE.2E69913E-7074-3FB0-143C-876E06A23A10" target="DCE.53EFFC3C-EC06-A395-B2F9-021070428B7D"><UML:Element.presentation>
+
 </UML:Element.presentation><UML:Transition.preCondition>
 <UML:Constraint xmi.id="DCE.718736F7-AF82-207A-2AE1-5A71907B83B9"/></UML:Transition.preCondition><UML:Transition.postCondition>
 <UML:Constraint xmi.id="DCE.4783AC39-4240-2620-7967-9EB7B9614A48"/></UML:Transition.postCondition></UML:Transition></UML:Element.ownedElement></UML:Region></UML:Element.ownedElement></UML:StateMachine>
