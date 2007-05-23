@@ -69,6 +69,7 @@ import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoVersion;
+import com.bluecubs.xinco.core.server.email.XincoMailer;
 import com.bluecubs.xinco.service.XincoServiceLocator;
 import com.bluecubs.xinco.service.XincoSoapBindingStub;
 import java.awt.event.ActionEvent;
@@ -91,6 +92,7 @@ import java.util.Vector;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.CheckedOutputStream;
+import javax.mail.MessagingException;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -2791,7 +2793,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 loginT= new loginThread();
                 getLoginT().start();
             }catch (java.rmi.RemoteException cone) {
-                this.getProgressBar().hide();
+                if(getProgressBar()!=null)
+                    getProgressBar().hide();
                 xincoClientSession.status = 0;
                 cone.printStackTrace();
                 markConnectionStatus();
@@ -2817,6 +2820,20 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         cone.toString(),
                         xerb.getString("menu.connection.failed"),
                         JOptionPane.WARNING_MESSAGE);
+            }
+            //Test workflow
+            try {
+                System.err.println(getSession().xinco.getWorkflow(1,getSession().user).toString());
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+            }
+            //Test XincoMailer
+            try {
+                XincoMailer xm= new XincoMailer();
+                xm.postMail(new String []{"javier_ortiz@baxter.com"},"Greetings from Xinco!","This is just a test...",
+                        "javier.ortiz.78@gmail.com");
+            } catch (MessagingException ex) {
+                ex.printStackTrace();
             }
         }
     }

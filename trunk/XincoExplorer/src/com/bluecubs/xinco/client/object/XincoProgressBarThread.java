@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * 
+ *
  *
  *************************************************************
  * XincoProgressBarThread.java
@@ -58,14 +58,21 @@ public class XincoProgressBarThread extends Thread{
     public XincoProgressBarThread(XincoExplorer e) {
         this.explorer=e;
     }
+    
     public void hide() {
-        progressBar.setVisible(false);
+        if(progressBar!=null)
+            progressBar.setVisible(false);
     }
+    
     public void show() {
-        progressBar.setVisible(true);
-        progressBar.repaint();
+        if(progressBar!=null){
+            progressBar.setVisible(true);
+            progressBar.repaint();
+        }
     }
+    
     public void setTitle(String t){
-        progressBar.setTitle(t);
+        if(progressBar!=null)
+            progressBar.setTitle(t);
     }
 }
