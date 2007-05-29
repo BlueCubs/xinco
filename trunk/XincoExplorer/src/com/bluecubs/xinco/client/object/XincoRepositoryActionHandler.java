@@ -545,7 +545,10 @@ public class XincoRepositoryActionHandler {
                     // paste data
                     if (temp_node.getUserObject().getClass() == XincoCoreData.class) {
                         // modify moved data
-                        old_parent_node_id = ((XincoCoreNode) explorer.getJTreeRepository().getPreviousTreeNodeSelection().getUserObject()).getXinco_core_node_id();
+                        if(explorer.getJTreeRepository().getPreviousTreeNodeSelection().getUserObject().getClass()== XincoCoreData.class)
+                            old_parent_node_id = ((XincoCoreData) explorer.getJTreeRepository().getPreviousTreeNodeSelection().getUserObject()).getXinco_core_node_id();
+                        if(explorer.getJTreeRepository().getPreviousTreeNodeSelection().getUserObject().getClass()== XincoCoreNode.class)
+                            old_parent_node_id = ((XincoCoreNode) explorer.getJTreeRepository().getPreviousTreeNodeSelection().getUserObject()).getXinco_core_node_id();
                         try {
                             // modify treemodel
                             explorer.getSession().xincoClientRepository.treemodel.removeNodeFromParent(temp_node);
@@ -609,6 +612,16 @@ public class XincoRepositoryActionHandler {
                 }
                 // remove moved element from clipboard
                 explorer.getSession().clipboardTreeNodeSelection.removeElementAt(0);
+            }
+        }else{
+            //Display only if in developer mode!
+            if(explorer.getSettings().getSetting("general.setting.enable.developermode").isBool_value()){
+                System.err.println("Don't execute change in DB!");
+                System.err.println(((explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) &&
+                        dragNdrop));
+                System.err.println(((explorer.getJTreeRepository().getPreviousTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) &&
+                        dragNdrop));
+                System.err.println((explorer.getSession().clipboardTreeNodeSelection != null));
             }
         }
     }

@@ -20,7 +20,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * @author ortizbj
  */
 public class XincoTransferableNode implements Transferable {
-	public static final DataFlavor NODE_FLAVOR = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType, "Node");
+	static final DataFlavor NODE_FLAVOR = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType, "Node");
 	private DefaultMutableTreeNode node;
 	private DataFlavor[] flavors = { NODE_FLAVOR };
  

@@ -48,7 +48,7 @@ public class XincoClientSetting extends XincoSetting{
     public XincoClientSetting() {
     }
     
-    public XincoSetting getSetting(int i){
+    private XincoSetting getSetting(int i){
         return (XincoSetting)getXinco_settings().get(i);
     }
     

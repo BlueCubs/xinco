@@ -59,7 +59,6 @@ import javax.swing.JTree;
 import javax.swing.event.MouseInputListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 
 /**
@@ -74,6 +73,7 @@ public class XincoJTree extends JTree{
     /** Creates a new instance of XincoJTree */
     public XincoJTree(XincoExplorer explorer) {
         setExplorer(explorer);
+        setCellRenderer(new XincoTreeCellRenderer());
         new XincoDefaultTreeTransferHandler(this, DnDConstants.ACTION_COPY_OR_MOVE);
         this.addMouseListener(new MouseInputListener() {
             public void mouseMoved(MouseEvent event) {
@@ -960,7 +960,7 @@ public class XincoJTree extends JTree{
         return explorer;
     }
     
-    public void setExplorer(XincoExplorer explorer) {
+    protected void setExplorer(XincoExplorer explorer) {
         this.explorer = explorer;
     }
     
@@ -972,7 +972,7 @@ public class XincoJTree extends JTree{
         }
         expandRow(0);
     }
-    public boolean isLeaf() {
+    private boolean isLeaf() {
         return getExplorer().getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreData.class;
     }
     
@@ -987,7 +987,7 @@ public class XincoJTree extends JTree{
         }
     }
     
-    public Insets getAutoscrollInsets()  {
+    protected Insets getAutoscrollInsets()  {
         return (autoscrollInsets);
     }
     

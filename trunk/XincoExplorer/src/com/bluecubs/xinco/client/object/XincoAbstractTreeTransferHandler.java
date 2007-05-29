@@ -232,11 +232,11 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
         getTree().paintImmediately(rect2D.getBounds());
     }
     
-    public abstract boolean canPerformAction(XincoJTree target, DefaultMutableTreeNode draggedNode, int action, Point location);
+    protected abstract boolean canPerformAction(XincoJTree target, DefaultMutableTreeNode draggedNode, int action, Point location);
     
-    public abstract boolean executeDrop(XincoJTree tree, DefaultMutableTreeNode draggedNode, DefaultMutableTreeNode newParentNode, int action);
+    protected abstract boolean executeDrop(XincoJTree tree, DefaultMutableTreeNode draggedNode, DefaultMutableTreeNode newParentNode, int action);
     
-    public XincoJTree getTree() {
+    protected XincoJTree getTree() {
         return tree;
     }
 }

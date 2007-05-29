@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="yes" ?>
 <DBMODEL Version="4.0">
 <SETTINGS>
-<GLOBALSETTINGS ModelName="xinco_main_DBD4" IDModel="0" IDVersion="0" VersionStr="1.0.0.0" Comments="" UseVersionHistroy="1" AutoIncVersion="1" DatabaseType="MySQL" ZoomFac="88.49" XPos="0" YPos="0" DefaultDataType="5" DefaultTablePrefix="0" DefSaveDBConn="" DefSyncDBConn="Xinco 2.1" DefQueryDBConn="" Printer="PDF-Datei" HPageCount="4.059464816650148" PageAspectRatio="1.436398386069229" PageOrientation="1" PageFormat="A4 (210x297 mm, 8.26x11.7 inches)" SelectedPages="0;1;5" UsePositionGrid="1" PositionGridX="20" PositionGridY="20" TableNameInRefs="1" DefaultTableType="1" ActivateRefDefForNewRelations="1" FKPrefix="" FKPostfix="" CreateFKRefDefIndex="1" DBQuoteCharacter="`" CreateSQLforLinkedObjects="0" DefModelFont="Tahoma" CanvasWidth="4096" CanvasHeight="2842" />
+<GLOBALSETTINGS ModelName="xinco_main_DBD4" IDModel="0" IDVersion="0" VersionStr="1.0.0.0" Comments="" UseVersionHistroy="1" AutoIncVersion="1" DatabaseType="MySQL" ZoomFac="88.49" XPos="898" YPos="192" DefaultDataType="5" DefaultTablePrefix="0" DefSaveDBConn="" DefSyncDBConn="Xinco 2.1" DefQueryDBConn="" Printer="PDF-Datei" HPageCount="4.059464816650148" PageAspectRatio="1.436398386069229" PageOrientation="1" PageFormat="A4 (210x297 mm, 8.26x11.7 inches)" SelectedPages="0;1;5" UsePositionGrid="1" PositionGridX="20" PositionGridY="20" TableNameInRefs="1" DefaultTableType="1" ActivateRefDefForNewRelations="1" FKPrefix="" FKPostfix="" CreateFKRefDefIndex="1" DBQuoteCharacter="`" CreateSQLforLinkedObjects="0" DefModelFont="Tahoma" CanvasWidth="4096" CanvasHeight="2842" />
 <DATATYPEGROUPS>
 <DATATYPEGROUP Name="Numeric Types" Icon="1" />
 <DATATYPEGROUP Name="Date and Time Types" Icon="2" />
@@ -1018,7 +1018,7 @@
 </INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="1634" Tablename="xinco_audit_type" PrevTableName="Table_14" XPos="1460" YPos="640" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_audit_type (id, days, weeks, months, years, description,due_same_day,due_same_week,due_same_month) VALUES(1,0,0,1,0,\ascheduled.audit.monthly\a,0,0,1);\nINSERT INTO xinco_audit_type (id, days, weeks, months, years, description,due_same_day,due_same_week,due_same_month) VALUES(2,0,0,0,1,\ascheduled.audit.yearly\a,0,0,1);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="31" >
+<TABLE ID="1634" Tablename="xinco_audit_type" PrevTableName="Table_14" XPos="1460" YPos="640" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_audit_type (id, days, weeks, months, years, description,due_same_day,due_same_week,due_same_month) VALUES(1,0,0,1,0,\aworkflow.audit.monthly\a,0,0,1);\nINSERT INTO xinco_audit_type (id, days, weeks, months, years, description,due_same_day,due_same_week,due_same_month) VALUES(2,0,0,0,1,\aworkflow.audit.yearly\a,0,0,1);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="31" >
 <COLUMNS>
 <COLUMN ID="1637" ColName="id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
 <OPTIONSELECTED>

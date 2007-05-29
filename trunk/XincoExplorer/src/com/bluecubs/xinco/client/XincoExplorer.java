@@ -2822,16 +2822,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             }
             //Test workflow
             try {
-                System.err.println(getSession().xinco.getWorkflow(1,getSession().user).toString());
-            } catch (RemoteException ex) {
-                ex.printStackTrace();
-            }
-            //Test XincoEmail
-            try {
-                Vector r= new Vector();
-                r.add(getSession().user);
-                XincoEmail email = new XincoEmail(1,getSession().user.getId(),"test","Test Message!",r);
-                System.err.println("Sent? "+getSession().xinco.sendEmail(email,getSession().user));
+                getSession().xinco.getWorkflow(2,getSession().user).toString();
             } catch (RemoteException ex) {
                 ex.printStackTrace();
             }

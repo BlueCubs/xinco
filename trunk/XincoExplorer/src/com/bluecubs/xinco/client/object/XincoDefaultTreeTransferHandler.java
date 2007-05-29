@@ -38,7 +38,7 @@ public class XincoDefaultTreeTransferHandler extends XincoAbstractTreeTransferHa
         } else
             if(action == DnDConstants.ACTION_MOVE) {
             DefaultMutableTreeNode parentNode =(DefaultMutableTreeNode)pathTarget.getLastPathComponent();
-            if (draggedNode.isRoot() || //parentNode == draggedNode.getParent() || 
+            if (draggedNode.isRoot() || parentNode == draggedNode.getParent() || 
                     draggedNode.isNodeDescendant(parentNode) || 
                     parentNode.getUserObject().getClass() == XincoCoreData.class) {
                 return(false);

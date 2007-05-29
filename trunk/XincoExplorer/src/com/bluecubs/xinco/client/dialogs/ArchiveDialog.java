@@ -56,14 +56,17 @@ public class ArchiveDialog extends javax.swing.JDialog {
     private XincoExplorer explorer;
     private ResourceBundle xerb;
     /** Creates new form ArchiveDialog */
-    public ArchiveDialog(java.awt.Frame parent, boolean modal, final XincoExplorer explorer) {
+    public ArchiveDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) {
         super(parent, modal);
+        this.explorer=explorer;
+        this.xerb=this.explorer.getResourceBundle();
         initComponents();
         addMouseListener(this.explorer);
         setLocationRelativeTo(null);
-        setTitle(this.explorer.getSelectedNodeDesignation());
-        this.explorer=explorer;
-        this.xerb=this.explorer.getResourceBundle();
+//        if(this.explorer.getSelectedNodeDesignation()!=null)
+            setTitle(xerb.getString("window.archive")+": "+this.explorer.getSelectedNodeDesignation());
+//        else
+//            setTitle(xerb.getString("window.archive"));
         this.revisionModelLabel.setText(xerb.getString("window.archive.revisionmodel") + ":");
         this.revisionModelCheckbox.setSelected(true);
         this.archiveModelLabel.setText(xerb.getString("window.archive.archivingmodel") + ":");
