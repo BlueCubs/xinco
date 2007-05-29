@@ -336,7 +336,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 }
                 //index data and file content
                 boolean index_success = false;
-                //index_success = XincoIndexer.indexXincoCoreData(data, true, dbm);
                 try {
                     if(xit==null)
                         xit = new XincoIndexThread(true, dbm);
@@ -895,23 +894,26 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         return null;
     }
     
-     public boolean sendEmail(com.bluecubs.xinco.core.XincoEmail email, com.bluecubs.xinco.core.XincoCoreUser from) throws java.rmi.RemoteException
-    {
-         XincoMailer mailer = new XincoMailer();
-         String [] rec=new String[email.getRecipients().size()];
-         for(int i=0;i<email.getRecipients().size();i++)
-             rec[i]=((XincoCoreUserServer)email.getRecipients().get(i)).getEmail();
+    public boolean sendEmail(com.bluecubs.xinco.core.XincoEmail email, com.bluecubs.xinco.core.XincoCoreUser from) throws java.rmi.RemoteException {
+        XincoMailer mailer=null;
+        try {
+            mailer = new XincoMailer(new XincoDBManager());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        String [] rec=new String[email.getRecipients().size()];
+        for(int i=0;i<email.getRecipients().size();i++)
+            rec[i]=((XincoCoreUser)email.getRecipients().get(i)).getEmail();
         try {
             mailer.postMail(rec,email.getSubject(),email.getMessage(),from.getEmail());
         } catch (MessagingException ex) {
             ex.printStackTrace();
             return false;
         }
-         return true;
+        return true;
     }
-
-    public com.bluecubs.xinco.core.XincoEmail getEmail(int id, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException
-    {
+    
+    public com.bluecubs.xinco.core.XincoEmail getEmail(int id, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException {
         return null;
     }
 }

@@ -62,7 +62,7 @@ public class XincoWorkflowStepForkServer extends XincoWorkflowStepFork{
             Vector forks= new Vector();
             while(rs.next()){
                 try {
-                    forks.add(new XincoWorkflowServer(workflow_id,new XincoDBManager()));
+                    forks.add(new XincoWorkflowServer(rs.getInt("workflow_id"),new XincoDBManager()));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

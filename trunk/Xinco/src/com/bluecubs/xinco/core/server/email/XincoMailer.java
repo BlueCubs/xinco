@@ -1,15 +1,35 @@
-/*
-Some SMTP servers require a username and password authentication before you
-can use their Server for Sending mail. This is most common with couple
-of ISP's who provide SMTP Address to Send Mail.
- 
-This Program gives any example on how to do SMTP Authentication
-(User and Password verification)
- 
-This is a free source code and is provided as it is without any warranties and
-it can be used in any your code for free.
- 
-Author : Sudhir Ancha
+/**
+ *Copyright 2007 blueCubs.com
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License");
+ *you may not use this file except in compliance with the License.
+ *You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *Unless required by applicable law or agreed to in writing, software
+ *distributed under the License is distributed on an "AS IS" BASIS,
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *See the License for the specific language governing permissions and
+ *limitations under the License.
+ *
+ *************************************************************
+ * This project supports the blueCubs vision of giving back
+ * to the community in exchange for free software!
+ * More information on: http://www.bluecubs.org
+ *************************************************************
+ *
+ * Name:            XincoMailer
+ *
+ * Description:     XincoMailer
+ *
+ * Original Author: Javier Ortiz
+ * Date:            2007
+ *
+ * Modifications:
+ *
+ * Who?             When?             What?
+ *************************************************************
  */
 package com.bluecubs.xinco.core.server.email;
 
@@ -20,7 +40,6 @@ import javax.mail.internet.*;
 import java.util.*;
 
 public class XincoMailer extends XincoEmail{
-    private XincoDBManager DBM;
     private String host_name = "";
     private String User = "";
     private String Password  = "";
@@ -29,16 +48,11 @@ public class XincoMailer extends XincoEmail{
     private String emailSubjectTxt  = "";
     private String emailFromAddress = "";
     private String port = "";
-   
+    
     // Add List of Email address to who email needs to be sent to
     private String[] emailList = {""};
     
-    public XincoMailer(){
-        try {
-            DBM=new XincoDBManager();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    public XincoMailer(XincoDBManager DBM){
         setHostName(DBM.getSetting("general.setting.email.host").getString_value());
         setUsername(DBM.getSetting("general.setting.email.user").getString_value());
         setPassword(DBM.getSetting("general.setting.email.password").getString_value());
@@ -57,7 +71,7 @@ public class XincoMailer extends XincoEmail{
         props.put("mail.smtp.starttls.enable","true");
         props.put("mail.smtp.auth ", "true ");
         
-        props.put("mail.smtp.debug", "true"); // if the user wants
+        props.put("mail.smtp.debug", "true");
         props.put("mail.smtp.socketFactory.port", this.port);
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.socketFactory.fallback", "false");
@@ -80,12 +94,11 @@ public class XincoMailer extends XincoEmail{
         }
         msg.setRecipients(Message.RecipientType.TO, addressTo);
         
-        
         // Setting the Subject and Content Type
         msg.setSubject(subject);
         msg.setContent(message, "text/plain");
         Transport.send(msg);
-        System.exit(0);
+        return;
     }
     
     
@@ -101,43 +114,38 @@ public class XincoMailer extends XincoEmail{
             return new PasswordAuthentication(username, password);
         }
     }
-
-    public void setDBM(XincoDBManager DBM) {
-        this.DBM = DBM;
-    }
-
+    
     public void setHostName(String SMTP_HOST_NAME) {
         this.host_name = SMTP_HOST_NAME;
     }
-
+    
     public void setUsername(String SMTP_AUTH_USER) {
         this.User = SMTP_AUTH_USER;
     }
-
+    
     public void setPassword(String SMTP_AUTH_PWD) {
         this.Password = SMTP_AUTH_PWD;
     }
-
+    
     public void setEmailMsgTxt(String emailMsgTxt) {
         this.emailMsgTxt = emailMsgTxt;
     }
-
+    
     public void setEmailSubjectTxt(String emailSubjectTxt) {
         this.emailSubjectTxt = emailSubjectTxt;
     }
-
+    
     public void setEmailFromAddress(String emailFromAddress) {
         this.emailFromAddress = emailFromAddress;
     }
-
+    
     public void setPort(String port) {
         this.port = port;
     }
-
+    
     public void setEmailList(String[] emailList) {
         this.emailList = emailList;
     }
-    
 }
 
 

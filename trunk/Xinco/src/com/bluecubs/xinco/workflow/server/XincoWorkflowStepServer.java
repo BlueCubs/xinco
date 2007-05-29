@@ -86,7 +86,7 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
                 while(rs.next()){
                     try {
                         //Check if step has fork options
-                        setFork(new XincoWorkflowStepForkServer(getId(),getWorkflow_id(),new XincoDBManager()));
+                        setFork(new XincoWorkflowStepForkServer(rs.getInt("id"),getWorkflow_id(),new XincoDBManager()));
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     } catch (Exception ex) {
