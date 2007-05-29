@@ -337,8 +337,8 @@ public class XincoAdminServlet extends HttpServlet {
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         
-        out.print("Current location: "+current_location);
-        out.print("Current location desc: "+current_location_desc);
+        out.println("Current location: "+current_location);
+        out.println("Current location desc: "+current_location_desc);
         //lock user
         if (request.getParameter("DialogAdminUsersLock") != null) {
             //main admin cannot be locked
