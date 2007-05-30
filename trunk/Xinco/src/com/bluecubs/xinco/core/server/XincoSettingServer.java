@@ -101,7 +101,7 @@ public class XincoSettingServer extends XincoSetting{
     }
     
     //write to db
-    private int write2DB(XincoDBManager DBM) throws XincoException {
+    public int write2DB(XincoDBManager DBM) throws XincoException {
         try {
             if(getId()>0){
                 DBM.getCon().createStatement().executeUpdate("update xinco_setting set id="+getId()+

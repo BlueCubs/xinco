@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * 
+ *
  *
  *************************************************************
  * SearchDialog.java
@@ -51,6 +51,8 @@ import com.bluecubs.xinco.core.XincoException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Vector;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.TreePath;
@@ -124,7 +126,8 @@ public class SearchDialog extends javax.swing.JDialog {
         alt_selection = 0;
         text = "";
         for (i=0;i<explorer.getSession().server_languages.size();i++) {
-            text = ((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getSign() + ")";
+            text = ((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getDesignation() + 
+                    " (" + ((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getSign() + ")";
             list.add(text);
             if (((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
                 selection = i;
@@ -145,10 +148,33 @@ public class SearchDialog extends javax.swing.JDialog {
         this.languageList.ensureIndexIsVisible(this.languageList.getSelectedIndex());
         this.setBounds(0, 0, (new Double(getToolkit().getScreenSize().getWidth())).intValue()-100,
                 (new Double(getToolkit().getScreenSize().getHeight())).intValue()-75);
+        //Disable if DB is locked (i.e. Index Rebuild)
+        setLockStatus(this.explorer.getSettings().getSetting("general.setting.index.lock").isBool_value());
     }
     
     public void clearResults(){
         this.resultTable.removeAll();
+    }
+    
+    private void setLockStatus(boolean status){
+        this.queryLabel.setEnabled(!status);
+        this.languageLabel.setEnabled(!status);
+        this.builderLabel.setEnabled(!status);
+        this.systemOptionsValueLabel.setEnabled(!status);
+        this.systemOptionsLabel.setEnabled(!status);
+        this.searchButton.setEnabled(!status);
+        this.allLanguagesCheckBox.setEnabled(!status);
+        this.searchButton.setEnabled(!status);
+        this.goToSelectionButton.setEnabled(!status);
+        this.addToQueryButton.setEnabled(!status);
+        this.resetButton.setEnabled(!status);
+        this.optionsComboBox.setEnabled(!status);
+        this.languageList.setEnabled(!status);
+        if(status){
+            JOptionPane optionPane = new JOptionPane(
+                    this.explorer.getResourceBundle().getString("general.setting.index.lock"),
+                    JOptionPane.WARNING_MESSAGE);
+        }
     }
     
     /** This method is called from within the constructor to
@@ -444,6 +470,7 @@ public class SearchDialog extends javax.swing.JDialog {
                 }
             } catch (Exception rme) {
                 explorer.getSession().currentSearchResult = new Vector();
+                progressBar.hide();
             }
             //update search result
             String[] rdata = {"", ""};

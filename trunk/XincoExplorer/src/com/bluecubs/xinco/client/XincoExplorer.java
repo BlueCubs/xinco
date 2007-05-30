@@ -47,17 +47,18 @@ import com.bluecubs.xinco.client.dialogs.ConnectionDialog;
 import com.bluecubs.xinco.client.dialogs.DataDialog;
 import com.bluecubs.xinco.client.dialogs.DataFolderDialog;
 import com.bluecubs.xinco.client.dialogs.DataTypeDialog;
+import com.bluecubs.xinco.client.dialogs.LockDialog;
 import com.bluecubs.xinco.client.dialogs.LogDialog;
 import com.bluecubs.xinco.client.dialogs.SearchDialog;
 import com.bluecubs.xinco.client.dialogs.UserDialog;
-import com.bluecubs.xinco.client.dialogs.LockDialog;
-import com.bluecubs.xinco.client.object.XincoWindowClosingAdapter;
 import com.bluecubs.xinco.client.object.XincoActivityTimer;
 import com.bluecubs.xinco.client.object.XincoJTree;
 import com.bluecubs.xinco.client.object.XincoMenuRepository;
 import com.bluecubs.xinco.client.object.XincoPopUpMenuRepository;
 import com.bluecubs.xinco.client.object.XincoProgressBarThread;
 import com.bluecubs.xinco.client.object.XincoRepositoryActionHandler;
+import com.bluecubs.xinco.client.object.XincoTreeCellRenderer;
+import com.bluecubs.xinco.client.object.XincoWindowClosingAdapter;
 import com.bluecubs.xinco.client.pane.XincoAuditPanel;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataType;
@@ -67,7 +68,6 @@ import com.bluecubs.xinco.core.XincoCoreLanguage;
 import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoCoreUser;
-import com.bluecubs.xinco.core.XincoEmail;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoVersion;
 import com.bluecubs.xinco.service.XincoServiceLocator;
@@ -739,10 +739,9 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         if(jTreeRepository == null) {
             jTreeRepository = new XincoJTree(this);
             jTreeRepository.setModel(xincoClientSession.xincoClientRepository.treemodel);
-            //enable tool tips.
+            //enable tool tips
             ToolTipManager.sharedInstance().registerComponent(jTreeRepository);
-            //set custom cell tree renderer
-            jTreeRepository.setCellRenderer(new XincoTreeCellRenderer());
+            jTreeRepository.setCellRenderer(new XincoTreeCellRenderer(this));
             jTreeRepository.setRootVisible(true);
             jTreeRepository.setEditable(false);
             DefaultTreeSelectionModel dtsm = new DefaultTreeSelectionModel();
@@ -988,6 +987,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         @Override
         public void run() {
             try {
+                getProgressBar().run();
                 String status_string = "";
                 temp=xincoClientSession.xinco.getCurrentXincoCoreUser(xincoClientSession.user.getUsername(), xincoClientSession.user.getUserpassword());
                 status_string += xerb.getString("menu.connection.connectedto") + ": " + xincoClientSession.service_endpoint + "\n";
@@ -2650,8 +2650,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     }
     
     public XincoClientSetting getSettings() {
-        if(settings==null)
-            updateSettings();
+        //Catch any recent setting change in the DB
+        updateSettings();
         return settings;
     }
     
@@ -2779,7 +2779,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 newuser.setUsername(temp.getUsername());
                 newuser.setUserpassword(temp.getUserpassword());
                 xincoClientSession.user = xincoClientSession.xinco.getCurrentXincoCoreUser(newuser.getUsername(), newuser.getUserpassword());
-                getProgressBar().run();
                 xincoClientSession.server_datatypes = xincoClientSession.xinco.getAllXincoCoreDataTypes(xincoClientSession.user);
                 xincoClientSession.server_groups = xincoClientSession.xinco.getAllXincoCoreGroups(xincoClientSession.user);
                 xincoClientSession.server_languages = xincoClientSession.xinco.getAllXincoCoreLanguages(xincoClientSession.user);

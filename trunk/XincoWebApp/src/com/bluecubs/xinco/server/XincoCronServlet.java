@@ -95,8 +95,12 @@ public class XincoCronServlet extends HttpServlet {
             loc = Locale.getDefault();
         }
         lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
-        XincoSettingServer xss= new XincoSettingServer();
-        String setting = ((XincoSetting)(xss.getXinco_settings().elementAt(8))).getString_value();
+        String setting="";
+        try {
+            setting = new XincoDBManager().getXss().getSetting("general.copyright.date").getString_value();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         //start output
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");

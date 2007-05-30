@@ -141,9 +141,9 @@ public class LockDialog extends javax.swing.JDialog {
     private void connectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectActionPerformed
         try {
             //User might be locked by any user attempting to log in incorrectly
-            XincoCoreUser temp=null;
-            if ((temp = this.explorer.getSession().xinco.getCurrentXincoCoreUser(this.username.getText(),
-                    new String(this.password.getPassword()))) == null){
+            XincoCoreUser temp=temp = this.explorer.getSession().xinco.getCurrentXincoCoreUser(this.username.getText(),
+                    new String(this.password.getPassword()));
+            if (temp == null){
                 JOptionPane.showMessageDialog(this.explorer,
                         explorer.getResourceBundle().getString("menu.connection.error.user"),
                         explorer.getResourceBundle().getString("password.login.fail"),
@@ -154,11 +154,13 @@ public class LockDialog extends javax.swing.JDialog {
                             explorer.getResourceBundle().getString("password.unlock.differentuser"),
                             explorer.getResourceBundle().getString("password.unlock.differentuser.detail"),
                             JOptionPane.INFORMATION_MESSAGE);
-                    //disconnect
                     this.explorer.resetTimer();
                     this.explorer.refreshJTree();
                     //reconnect with new user info
-                    this.explorer.getSession().user=this.explorer.getSession().xinco.getCurrentXincoCoreUser(temp.getUsername(), temp.getUserpassword());
+                    this.explorer.getSession().user=temp;
+                    this.explorer.getSession().status = 1;
+                    this.explorer.getSession().user.setUsername(this.username.getText());
+                    this.explorer.getSession().user.setUserpassword(new String(this.password.getPassword()));
                     this.explorer.getSession().status = 1;
                     XincoCoreNode xnode = new XincoCoreNode();
                     xnode.setId(1);
@@ -168,7 +170,7 @@ public class LockDialog extends javax.swing.JDialog {
                             this.explorer.getSession().xinco,
                             this.explorer.getSession().user,
                             2);
-                    this.explorer.collapseAllNodes();
+                    this.explorer.refreshJTree();
                     this.explorer.markConnectionStatus();
                 }
                 this.explorer.setLock(false);

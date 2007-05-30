@@ -82,8 +82,12 @@ public class XincoPublisherServlet extends HttpServlet {
             loc = Locale.getDefault();
         }
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
-        XincoSettingServer xss= new XincoSettingServer();
-        String setting = ((XincoSetting)(xss.getXinco_settings().elementAt(8))).getString_value();
+        String setting="";
+        try {
+            setting = new XincoDBManager().getXss().getSetting("general.copyright.date").getString_value();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         int i = 0;
         int j = 0;
         String request_path;

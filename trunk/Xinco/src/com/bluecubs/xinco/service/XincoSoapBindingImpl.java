@@ -379,17 +379,14 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         boolean rp = false;
         java.util.Vector v = new java.util.Vector();
         java.util.Vector v2 = new java.util.Vector();
-        
         //check size of keyword string
         if (in0.length() < 1) {
             return null;
         }
-        
         //truncate % from start and end of search query
         if (in0.startsWith("%") && in0.endsWith("%")) {
             in0 = in0.substring(1, in0.length()-1);
         }
-        
         try {
             dbm = new XincoDBManager();
             XincoCoreUserServer user = new XincoCoreUserServer(in2.getUsername(), in2.getUserpassword(), dbm);

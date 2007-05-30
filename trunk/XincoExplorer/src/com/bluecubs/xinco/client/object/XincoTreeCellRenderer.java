@@ -36,12 +36,16 @@
 package com.bluecubs.xinco.client.object;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
-import com.bluecubs.xinco.client.XincoMutableTreeNode;
+import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.core.XincoCoreData;
+import com.bluecubs.xinco.core.XincoCoreLanguage;
+import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.tools.XincoFileIconManager;
 import java.awt.Component;
+import java.rmi.RemoteException;
 import java.util.Vector;
 import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 /**
@@ -50,8 +54,10 @@ import javax.swing.tree.DefaultTreeCellRenderer;
  */
 public class XincoTreeCellRenderer extends DefaultTreeCellRenderer{
     private XincoFileIconManager xfm=null;
+    private XincoExplorer explorer;
     /** Creates a new instance of XincoTreeCellRenderer */
-    public XincoTreeCellRenderer() {
+    public XincoTreeCellRenderer(XincoExplorer explorer) {
+        this.explorer=explorer;
         xfm = new XincoFileIconManager();
     }
     
@@ -63,20 +69,31 @@ public class XincoTreeCellRenderer extends DefaultTreeCellRenderer{
                 expanded, leaf, row,
                 hasFocus);
         if (leaf) {
-            System.out.println("Leaf: "+value.toString());
-//            XincoMutableTreeNode node=(XincoMutableTreeNode)value;
-//            Vector attributes=((XincoCoreData)node.getUserObject()).getXinco_add_attributes();
-//            String fileName="";
-//            for(int i=0;i<attributes.size();i++){
-//                if(((XincoAddAttribute)attributes.get(i)).getAttribute_id()==1){
-//                    fileName=((XincoAddAttribute)attributes.get(i)).getAttrib_varchar();
-//                    break;
-//                }
-//            }
-//            setIcon(xfm.getIcon16(fileName.substring(fileName.indexOf("."))));
+            //Only attempt if connected!
+            if(explorer.getSession().xinco!=null){
+                if(!isFolder(value)){
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+                    if(((XincoCoreData)(node.getUserObject())).getXinco_core_data_type().getId()==1){
+                        setIcon(xfm.getIcon16(value.toString().substring(0,value.toString().indexOf("(")-1)));
+                        System.err.println(xfm.getIcon16(value.toString().substring(0,value.toString().indexOf("(")-1))==null);
+                    }else
+                    setIcon(getLeafIcon());
+                }
+            }
         } else {
             setToolTipText(null); //no tool tip
+            setIcon(this.getLeafIcon());
         }
         return this;
+    }
+    
+    protected boolean isFolder(Object value) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+        if (node!=null){
+            if (node.getUserObject().getClass() == XincoCoreNode.class) {
+                return true;
+            }
+        }
+        return false;
     }
 }

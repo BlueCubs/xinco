@@ -31,15 +31,16 @@
     <jar href="commons-discovery-0.4.jar"/>
     <jar href="commons-logging-1.1.jar"/>
     <jar href="jaxrpc.jar"/>
+    <jar href="jcalendar-1.3.2.jar"/>
     <jar href="mail.jar"/>
+    <jar href="napkinlaf.jar"/>
     <jar href="saaj.jar"/>
+    <jar href="substance.jar"/>
     <jar href="swing-layout-1.0.jar"/>
     <jar href="wsdl4j.jar"/>
     <jar href="xercesImpl.jar"/>
     <jar href="Xinco.jar"/>
     <jar href="xmlParserAPIs-2.6.2.jar"/>
-    <jar href="napkinlaf.jar"/>
-    <jar href="substance.jar"/>
   </resources>
   <security>
     <!-- all permissions required on Client-Computer -->

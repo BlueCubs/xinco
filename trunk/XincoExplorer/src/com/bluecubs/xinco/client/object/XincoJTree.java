@@ -73,7 +73,6 @@ public class XincoJTree extends JTree{
     /** Creates a new instance of XincoJTree */
     public XincoJTree(XincoExplorer explorer) {
         setExplorer(explorer);
-        setCellRenderer(new XincoTreeCellRenderer());
         new XincoDefaultTreeTransferHandler(this, DnDConstants.ACTION_COPY_OR_MOVE);
         this.addMouseListener(new MouseInputListener() {
             public void mouseMoved(MouseEvent event) {
@@ -112,12 +111,10 @@ public class XincoJTree extends JTree{
         );
         addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
             public void treeExpanded(javax.swing.event.TreeExpansionEvent e) {
-                //node expanded
             }
             public void treeCollapsed(javax.swing.event.TreeExpansionEvent e) {}
         });
         addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
-            
             public void valueChanged(javax.swing.event.TreeSelectionEvent e) {
                 getExplorer().resetTimer();
                 int i = 0;
@@ -998,7 +995,7 @@ public class XincoJTree extends JTree{
         }
         return(copy);
     }
-
+    
     public XincoMutableTreeNode getPreviousTreeNodeSelection() {
         return previousTreeNodeSelection;
     }
@@ -1007,15 +1004,15 @@ public class XincoJTree extends JTree{
         setPreviousTreeNodeSelection(getExplorer().getSession().currentTreeNodeSelection);
         getExplorer().getSession().currentTreeNodeSelection=current;
     }
-
+    
     protected void setPreviousTreeNodeSelection(XincoMutableTreeNode previousTreeNodeSelection) {
         this.previousTreeNodeSelection = previousTreeNodeSelection;
     }
-
+    
     public XincoMutableTreeNode getTargetTreeNode() {
         return targetTreeNode;
     }
-
+    
     public void setTargetTreeNode(XincoMutableTreeNode targetTreeNode) {
         this.targetTreeNode = targetTreeNode;
     }

@@ -65,9 +65,9 @@ import java.util.ResourceBundle;
 
 public class XincoAdminServlet extends HttpServlet {
     private ResourceBundle rb;
-    private XincoSetting [] settings;
     private String credentialID="";
     private XincoCoreUserServer login_user=null;
+    private XincoDBManager dbm=null;
     /** Initializes the servlet.
      */
     public void init(ServletConfig config) throws ServletException {
@@ -101,12 +101,6 @@ public class XincoAdminServlet extends HttpServlet {
             loc = Locale.getDefault();
         }
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
-        Vector settingsVector=null;
-        settingsVector = new XincoSettingServer().getXinco_settings();
-        settings= new XincoSetting[settingsVector.size()];
-        for(int i=0;i<settingsVector.size();i++)
-            settings[i]=(XincoSetting)settingsVector.elementAt(i);
-        XincoDBManager dbm;
         String global_error_message = "";
         int i = 0, j = 0;
         XincoCoreUserServer temp_user=null;
@@ -191,7 +185,7 @@ public class XincoAdminServlet extends HttpServlet {
                             request.getParameter("DialogLoginUsername") + "'");
                     if(rs.next()){
                         temp_user = new XincoCoreUserServer(rs.getInt("id"), dbm);
-                        long attempts = settings[7].getInt_value();
+                        long attempts = dbm.getXss().getSetting("password.attempts").getInt_value();
                         //If user exists increase the atempt tries in the db. If limit reached lock account
                         if(temp_user.getAttempts()>=attempts &&  rs.getInt("id") != 1){
                             //The logged in admin does the locking
@@ -740,7 +734,7 @@ public class XincoAdminServlet extends HttpServlet {
             out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainEmptyTrash=EmptyTrash&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("message.admin.trash")+"</a></td>");
             out.println("<td></td><td class=\"text\">|</td>");
             //For now developer's only function. Too dangerous to use at the moment. Maybe add confirmation screens before executing if founf as an usefull tool.
-            if(settings[9].isBool_value()){
+            if(dbm.getXss().getSetting("general.setting.enable.developermode").isBool_value()){
                 out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainResetDB=Reset&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("message.admin.main.resetDB.label")+"</a></td>");
                 out.println("<td></td><td class=\"text\">|</td>");
             }
@@ -790,7 +784,7 @@ public class XincoAdminServlet extends HttpServlet {
                 out.println("<td class=\"text\">"+rb.getString("message.admin.index.message")+"</td>");
                 out.println("</tr>");
                 out.println("<tr>");
-                if(settings[9].isBool_value()){
+                if(dbm.getXss().getSetting("general.setting.enable.developermode").isBool_value()){
                     out.println("<td class=\"bigtext\">"+rb.getString("message.admin.main.resetDB.label")+"</td>");
                     out.println("<td class=\"text\">"+rb.getString("message.admin.main.resetdesc")+"</td>");
                     out.println("</tr>");
@@ -1446,7 +1440,10 @@ public class XincoAdminServlet extends HttpServlet {
             }
             if (current_location.compareTo("RebuildIndex") == 0) {
                 //rebuild index and list status
+                XincoSetting s=dbm.getSetting("general.setting.index.lock");
+                XincoSettingServer s2=null;
                 try {
+                    s2= new XincoSettingServer(s.getChangerID(),dbm);
                     out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
                     out.println("<tr>");
                     out.println("<td class=\"bigtext\" colspan=\"2\">"+rb.getString("message.index.rebuild")+":</td>");
@@ -1457,7 +1454,9 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<tr>");
                     out.println("<td class=\"text\" colspan=\"2\">&nbsp;</td>");
                     out.println("</tr>");
-                    
+                    s2.setBool_value(true);
+                    s2.setChangerID(login_user.getId());
+                    s2.write2DB(dbm);
                     //delete existing index
                     File indexDirectory = null;
                     File indexDirectoryFile = null;
@@ -1524,9 +1523,20 @@ public class XincoAdminServlet extends HttpServlet {
                     out.flush();
                     
                     out.println("</table>");
-                    
+                    s2.setBool_value(false);
+                    s2.setChangerID(login_user.getId());
+                    s2.write2DB(dbm);
                 } catch (Exception e) {
                     out.println("</table>");
+                    if(s2!=null){
+                        s2.setBool_value(false);
+                        s2.setChangerID(login_user.getId());
+                            try {
+                                s2.write2DB(dbm);
+                            } catch (XincoException ex) {
+                                ex.printStackTrace();
+                            }
+                    }
                 }
             }
         }
@@ -1536,7 +1546,7 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; "+settings[7].getString_value()+", "+rb.getString("message.admin.main.footer"));
+        out.println("<td class=\"text\">&copy; "+dbm.getXss().getSetting("general.copyright.date").getString_value()+", "+rb.getString("message.admin.main.footer"));
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                 rb.getString("message.admin.main.backtomain")+"' />" +
