@@ -64,6 +64,8 @@ public class XincoWorkflowStepForkServer extends XincoWorkflowStepFork{
                     step_id);
             Vector forks= new Vector();
             while(rs.next()){
+                System.err.println("Found fork for step: "+rs.getInt("xinco_workflow_step_id")+", Subworkflow: "+
+                        rs.getInt("xinco_workflow_id"));
                 try {
                     forks.add(new XincoWorkflowServer(rs.getInt("xinco_workflow_id"),new XincoDBManager()));
                 } catch (Exception ex) {
