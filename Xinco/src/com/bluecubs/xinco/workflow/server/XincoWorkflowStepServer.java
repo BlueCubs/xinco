@@ -100,9 +100,7 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
             //Workflow exists
             steps = new Vector();
             try {
-                System.out.println("select id from " +
-                        "xinco_workflow_has_xinco_workflow_step where xinco_workflow_id ="+id);
-                rs = dbm.getCon().createStatement().executeQuery("select id from " +
+                rs = dbm.getCon().createStatement().executeQuery("select * from " +
                         "xinco_workflow_has_xinco_workflow_step where xinco_workflow_id ="+id);
                 while(rs.next()){
                     //Add step
@@ -115,12 +113,15 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
                     }
                     try {
                         //Check if step has fork options
-                        System.out.println("Step: "+rs.getInt("id"));
-                        setFork(new XincoWorkflowStepForkServer(rs.getInt("id"),id,new XincoDBManager()));
+                        if(rs.getInt("xinco_workflow_id")>0 && rs.getInt("id")>0){
+                            System.out.println("Step: "+rs.getInt("id"));
+                            setFork(new XincoWorkflowStepForkServer(rs.getInt("id"),
+                                    rs.getInt("xinco_workflow_id"),new XincoDBManager()));
+                        }
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     } catch (Exception ex) {
-                        //No fork
+                        ex.printStackTrace();
                     }
                     //A step has a workflow as sub steps
                     if(getWorkflow_id()>0){
@@ -139,7 +140,7 @@ public class XincoWorkflowStepServer extends XincoWorkflowStep{
                     }
                 }
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                //No fork
             }
         }
         return steps;

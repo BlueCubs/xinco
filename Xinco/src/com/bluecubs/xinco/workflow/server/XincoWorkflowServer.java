@@ -162,14 +162,13 @@ public class XincoWorkflowServer extends XincoWorkflow{
         String s= null;
         try {
             s="Workflow:\n";
-            XincoWorkflowServer ws= new XincoWorkflowServer(1,new XincoDBManager());
-            s+="ID: "+ws.getId()+"\n";
-            s+="Description: "+ws.getDescription()+"\n";
+            s+="ID: "+getId()+"\n";
+            s+="Description: "+getDescription()+"\n";
             s+="----------------------------"+"\n";
             s+="Steps: "+"\n";
             s+="----------------------------"+"\n";
-            for(int i=0;i<ws.getXinco_workflow_steps().size();i++){
-                s+=(i+1)+". "+((XincoWorkflowStepServer)ws.getXinco_workflow_steps().get(i)).toString();
+            for(int i=0;i<getXinco_workflow_steps().size();i++){
+                s+=(i+1)+". "+((XincoWorkflowStepServer)getXinco_workflow_steps().get(i)).toString();
                 s+="----------------------------\n";
             }
         } catch (Exception ex) {
