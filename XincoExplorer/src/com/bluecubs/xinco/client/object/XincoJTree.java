@@ -38,6 +38,7 @@ package com.bluecubs.xinco.client.object;
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.XincoMutableTreeNode;
+import com.bluecubs.xinco.client.dialogs.AddAttributeText;
 import com.bluecubs.xinco.client.object.dragNdrop.XincoDefaultTreeTransferHandler;
 import com.bluecubs.xinco.client.object.menu.XincoMenuRepository;
 import com.bluecubs.xinco.client.object.menu.XincoPopUpMenuRepository;
@@ -943,10 +944,14 @@ public class XincoJTree extends JTree{
                         if (getExplorer().getSession().currentTreeNodeSelection.getUserObject().getClass() ==
                                 XincoCoreData.class) {
                             // file = 1
-                            if (((XincoCoreData) getExplorer().getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getId() ==
-                                    1) {
+                            if (((XincoCoreData) getExplorer().getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getId() == 1) {
                                 getExplorer().doDataWizard(14);
                                 getExplorer().setCurrentPathFilename(getExplorer().previous_fullpath);
+                            }
+                            // text = 2
+                            if (((XincoCoreData) getExplorer().getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getId() == 2) {
+                                getExplorer().getJDialogAddAttributesText().setViewOnly(true);
+                                getExplorer().getJDialogAddAttributesText().showMe();
                             }
                         }
                     }

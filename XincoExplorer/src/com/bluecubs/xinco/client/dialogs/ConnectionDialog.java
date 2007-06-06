@@ -32,9 +32,6 @@
  *
  *
  *************************************************************
- * ConnectionDialog.java
- *
- * Created on September 25, 2006, 3:59 PM
  */
 
 package com.bluecubs.xinco.client.dialogs;
@@ -319,6 +316,8 @@ public class ConnectionDialog extends javax.swing.JDialog {
             username.setText(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).username);
             if(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).save_password)
                 password.setText(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).password);
+            else
+                password.setText("");
             savePassword.setSelected(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(sel)).save_password);
             finalSelection =sel;
         }

@@ -40,6 +40,7 @@ package com.bluecubs.xinco.client;
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.add.holders.XincoAddAttributeHolder;
 import com.bluecubs.xinco.client.dialogs.ACLDialog;
+import com.bluecubs.xinco.client.dialogs.AddAttributeText;
 import com.bluecubs.xinco.client.dialogs.AddAttributeUniversalDialog;
 import com.bluecubs.xinco.client.dialogs.ArchiveDialog;
 import com.bluecubs.xinco.client.dialogs.AuditDialog;
@@ -192,7 +193,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     private javax.swing.JMenu jMenuPreferences = null;
     private javax.swing.JMenuItem jMenuItemPreferencesEditUser = null;
     private javax.swing.JDialog jDialogUser = null;
-    private javax.swing.JDialog jDialogAddAttributesText = null;
+    private AddAttributeText jDialogAddAttributesText = null;
     private javax.swing.JPanel jContentPaneDialogAddAttributesText = null;
     private javax.swing.JTextArea jTextAreaDialogAddAttributesText = null;
     private javax.swing.JButton jButtonDialogAddAttributesTextSave = null;
@@ -214,7 +215,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     private JInternalFrame jInternalFrameInformation=null;
     private JMenuItem jMenuItemConnectionExit=null;
     private String status_string_1="",status_string_2="";
-    private XincoCoreUser temp;
+    public XincoCoreUser temp;
     private final XincoCoreUser newuser= new XincoCoreUser();
     private loginThread loginT=null;
     private refreshThread rThread=null;
@@ -567,10 +568,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jMenuItemConnectionDisconnect.setEnabled(false);
             jMenuItemConnectionDisconnect.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent e) {
-                    xincoClientSession.status = 0;
-                    markConnectionStatus();
-                    getLoginT().resetStrings();
-                    collapseAllNodes();
+                    disconnect();
                 }
             });
         }
@@ -988,6 +986,71 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         public void run() {
             try {
                 getProgressBar().run();
+                int i=0;
+                try {
+                    xincoClientSession.xinco_service = new XincoServiceLocator();
+                    xincoClientSession.xinco = xincoClientSession.xinco_service.getXinco(new java.net.URL(xincoClientSession.service_endpoint));
+                    xincoClientSession.server_version = xincoClientSession.xinco.getXincoServerVersion();
+                    //check if client and server versions match (high AND mid must match!)
+                    if ((xincoClientVersion.getVersion_high() != xincoClientSession.server_version.getVersion_high()) || (xincoClientVersion.getVersion_mid() != xincoClientSession.server_version.getVersion_mid())) {
+                        throw new XincoException(xerb.getString("menu.connection.error.serverversion") + " " + xincoClientSession.server_version.getVersion_high() + "." + xincoClientSession.server_version.getVersion_mid() + ".x");
+                    }
+                    if ((temp = xincoClientSession.xinco.getCurrentXincoCoreUser(xincoClientSession.user.getUsername(), xincoClientSession.user.getUserpassword())) == null) {
+                        throw new XincoException(xerb.getString("menu.connection.error.user"));
+                    }
+                    updateSettings();
+                    if(getSettings().getSetting("general.setting.enable.lockidle").isBool_value())
+                        xat=new XincoActivityTimer(XincoExplorer.this,
+                                getSettings().getSetting("general.setting.enable.lockidle").getInt_value());
+                    getJDialogConnection().updateProfile();
+                    temp.setUserpassword(xincoClientSession.user.getUserpassword());
+                    newuser.setEmail(temp.getEmail());
+                    newuser.setFirstname(temp.getFirstname());
+                    newuser.setId(temp.getId());
+                    newuser.setName(temp.getName());
+                    newuser.setStatus_number(temp.getStatus_number());
+                    newuser.setUsername(temp.getUsername());
+                    newuser.setUserpassword(temp.getUserpassword());
+                    xincoClientSession.user = xincoClientSession.xinco.getCurrentXincoCoreUser(newuser.getUsername(), newuser.getUserpassword());
+                    xincoClientSession.server_datatypes = xincoClientSession.xinco.getAllXincoCoreDataTypes(xincoClientSession.user);
+                    xincoClientSession.server_groups = xincoClientSession.xinco.getAllXincoCoreGroups(xincoClientSession.user);
+                    xincoClientSession.server_languages = xincoClientSession.xinco.getAllXincoCoreLanguages(xincoClientSession.user);
+                    xincoClientSession.server_users=xincoClientSession.xinco.getAllXincoUsers(xincoClientSession.user);
+                    for (i=0;i<xincoClientSession.user.getXinco_core_groups().size();i++) {
+                        status_string_1 += "      + " + ((XincoCoreGroup)xincoClientSession.user.getXinco_core_groups().elementAt(i)).getDesignation() + "\n";
+                    }
+                    for (i=0;i<xincoClientSession.server_datatypes.size();i++) {
+                        status_string_2 += "      + " + ((XincoCoreDataType)xincoClientSession.server_datatypes.elementAt(i)).getDesignation() + "\n";
+                    }
+                }catch (java.rmi.RemoteException cone) {
+                    if(getProgressBar()!=null)
+                        getProgressBar().hide();
+                    xincoClientSession.status = 0;
+                    cone.printStackTrace();
+                    markConnectionStatus();
+                    JOptionPane.showMessageDialog(XincoExplorer.this,
+                            xerb.getString("menu.connection.failed") + " " +
+                            xerb.getString("general.reason") + ": " +
+                            cone.toString() +" "+xerb.getString("error.connection.incorrect.deployment"),
+                            xerb.getString("menu.connection.failed"),
+                            JOptionPane.WARNING_MESSAGE);
+                }catch (Exception cone) {
+                    getProgressBar().hide();
+                    xincoClientSession.status = 0;
+                    cone.printStackTrace();
+                    markConnectionStatus();
+                    String exception="";
+                    if(cone.toString().equals("java.lang"))
+                        exception=xerb.getString("error.connection.incorrect.deployment");
+                    else
+                        exception=cone.toString();
+                    JOptionPane.showMessageDialog(XincoExplorer.this,
+                            xerb.getString("menu.connection.failed") + " " +
+                            xerb.getString("general.reason") + ": " +
+                            cone.toString(),
+                            xerb.getString("menu.connection.failed"),
+                            JOptionPane.WARNING_MESSAGE);
+                }
                 String status_string = "";
                 temp=xincoClientSession.xinco.getCurrentXincoCoreUser(xincoClientSession.user.getUsername(), xincoClientSession.user.getUserpassword());
                 status_string += xerb.getString("menu.connection.connectedto") + ": " + xincoClientSession.service_endpoint + "\n";
@@ -1037,6 +1100,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 return;
             }
         }
+        
         public void resetStrings(){
             status_string_1="";
             status_string_2="";
@@ -1773,7 +1837,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         if (((XincoCoreData)newnode.getUserObject()).getXinco_core_data_type().getId() == 2) {
                             jDialogAddAttributesText = getJDialogAddAttributesText();
                             global_dialog_return_value = 0;
-                            jDialogAddAttributesText.setVisible(true);
+                            jDialogAddAttributesText.showMe();
                             if (global_dialog_return_value == 0) {
                                 this.getProgressBar().hide();
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
@@ -2394,43 +2458,16 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     }
     
     /**
-     * This method initializes jContentPaneDialogAddAttributesText
-     *
-     * @return javax.swing.JPanel
-     */
-    private javax.swing.JPanel getJContentPaneDialogAddAttributesText() {
-        if(jContentPaneDialogAddAttributesText == null) {
-            jContentPaneDialogAddAttributesText = new javax.swing.JPanel();
-            jContentPaneDialogAddAttributesText.setLayout(null);
-            jContentPaneDialogAddAttributesText.add(getJScrollPaneDialogAddAttributesText(), null);
-            jContentPaneDialogAddAttributesText.add(getJButtonDialogAddAttributesTextSave(), null);
-            jContentPaneDialogAddAttributesText.add(getJButtonDialogAddAttributesTextCancel(), null);
-        }
-        return jContentPaneDialogAddAttributesText;
-    }
-    /**
      * This method initializes jDialogAddAttributesText
      *
      * @return javax.swing.JDialog
      */
-    private javax.swing.JDialog getJDialogAddAttributesText() {
+    public AddAttributeText getJDialogAddAttributesText() {
         if(jDialogAddAttributesText == null) {
-            jDialogAddAttributesText = new javax.swing.JDialog();
-            jDialogAddAttributesText.setContentPane(getJContentPaneDialogAddAttributesText());
-            jDialogAddAttributesText.setBounds(200, 200, 600, 540);
-            jDialogAddAttributesText.setResizable(false);
-            jDialogAddAttributesText.setModal(true);
-            jDialogAddAttributesText.setTitle(xerb.getString("window.addattributestext"));
-            jDialogAddAttributesText.getRootPane().setDefaultButton(getJButtonDialogAddAttributesTextSave());
+            jDialogAddAttributesText= new AddAttributeText(null,true, false,this);
+            jDialogAddAttributesText.setViewOnly(false);
             this.addDialog(jDialogAddAttributesText);
         }
-        //processing independent of creation
-        if (((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getStatus_number() == 1) {
-            jButtonDialogAddAttributesTextSave.setEnabled(true);
-        } else {
-            jButtonDialogAddAttributesTextSave.setEnabled(false);
-        }
-        jTextAreaDialogAddAttributesText.setText(((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(0)).getAttrib_text());
         return jDialogAddAttributesText;
     }
     /**
@@ -2444,44 +2481,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         return jTextAreaDialogAddAttributesText;
     }
-    /**
-     * This method initializes jButtonDialogAddAttributesTextSave
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogAddAttributesTextSave() {
-        if(jButtonDialogAddAttributesTextSave == null) {
-            jButtonDialogAddAttributesTextSave = new javax.swing.JButton();
-            jButtonDialogAddAttributesTextSave.setBounds(350, 450, 100, 30);
-            jButtonDialogAddAttributesTextSave.setText(xerb.getString("general.save") + "!");
-            jButtonDialogAddAttributesTextSave.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    ((XincoAddAttribute)((XincoCoreData)xincoClientSession.currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(0)).setAttrib_text(jTextAreaDialogAddAttributesText.getText());
-                    global_dialog_return_value = 1;
-                    jDialogAddAttributesText.setVisible(false);
-                }
-            });
-        }
-        return jButtonDialogAddAttributesTextSave;
-    }
-    /**
-     * This method initializes jButtonDialogAddAttributesTextCancel
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogAddAttributesTextCancel() {
-        if(jButtonDialogAddAttributesTextCancel == null) {
-            jButtonDialogAddAttributesTextCancel = new javax.swing.JButton();
-            jButtonDialogAddAttributesTextCancel.setBounds(470, 450, 100, 30);
-            jButtonDialogAddAttributesTextCancel.setText(xerb.getString("general.cancel"));
-            jButtonDialogAddAttributesTextCancel.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    jDialogAddAttributesText.setVisible(false);
-                }
-            });
-        }
-        return jButtonDialogAddAttributesTextCancel;
-    }
+    
     /**
      * This method initializes jScrollPaneDialogAddAttributesText
      *
@@ -2737,6 +2737,13 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             this.getXat().getActivityTimer().restart();
     }
     
+    public void disconnect(){
+        xincoClientSession.status = 0;
+        markConnectionStatus();
+        getLoginT().resetStrings();
+        collapseAllNodes();
+    }
+    
     public void connect(boolean prompt){
         int i = 0;
         if(prompt){
@@ -2754,78 +2761,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         //establish connection and login
         if (xincoClientSession.status == 1) {
-            try {
-                xincoClientSession.xinco_service = new XincoServiceLocator();
-                xincoClientSession.xinco = xincoClientSession.xinco_service.getXinco(new java.net.URL(xincoClientSession.service_endpoint));
-                xincoClientSession.server_version = xincoClientSession.xinco.getXincoServerVersion();
-                //check if client and server versions match (high AND mid must match!)
-                if ((xincoClientVersion.getVersion_high() != xincoClientSession.server_version.getVersion_high()) || (xincoClientVersion.getVersion_mid() != xincoClientSession.server_version.getVersion_mid())) {
-                    throw new XincoException(xerb.getString("menu.connection.error.serverversion") + " " + xincoClientSession.server_version.getVersion_high() + "." + xincoClientSession.server_version.getVersion_mid() + ".x");
-                }
-                if ((temp = xincoClientSession.xinco.getCurrentXincoCoreUser(xincoClientSession.user.getUsername(), xincoClientSession.user.getUserpassword())) == null) {
-                    throw new XincoException(xerb.getString("menu.connection.error.user"));
-                }
-                updateSettings();
-                if(getSettings().getSetting("general.setting.enable.lockidle").isBool_value())
-                    xat=new XincoActivityTimer(XincoExplorer.this,
-                            getSettings().getSetting("general.setting.enable.lockidle").getInt_value());
-                getJDialogConnection().updateProfile();
-                temp.setUserpassword(xincoClientSession.user.getUserpassword());
-                newuser.setEmail(temp.getEmail());
-                newuser.setFirstname(temp.getFirstname());
-                newuser.setId(temp.getId());
-                newuser.setName(temp.getName());
-                newuser.setStatus_number(temp.getStatus_number());
-                newuser.setUsername(temp.getUsername());
-                newuser.setUserpassword(temp.getUserpassword());
-                xincoClientSession.user = xincoClientSession.xinco.getCurrentXincoCoreUser(newuser.getUsername(), newuser.getUserpassword());
-                xincoClientSession.server_datatypes = xincoClientSession.xinco.getAllXincoCoreDataTypes(xincoClientSession.user);
-                xincoClientSession.server_groups = xincoClientSession.xinco.getAllXincoCoreGroups(xincoClientSession.user);
-                xincoClientSession.server_languages = xincoClientSession.xinco.getAllXincoCoreLanguages(xincoClientSession.user);
-                for (i=0;i<xincoClientSession.user.getXinco_core_groups().size();i++) {
-                    status_string_1 += "      + " + ((XincoCoreGroup)xincoClientSession.user.getXinco_core_groups().elementAt(i)).getDesignation() + "\n";
-                }
-                for (i=0;i<xincoClientSession.server_datatypes.size();i++) {
-                    status_string_2 += "      + " + ((XincoCoreDataType)xincoClientSession.server_datatypes.elementAt(i)).getDesignation() + "\n";
-                }
-                loginT= new loginThread();
-                getLoginT().start();
-            }catch (java.rmi.RemoteException cone) {
-                if(getProgressBar()!=null)
-                    getProgressBar().hide();
-                xincoClientSession.status = 0;
-                cone.printStackTrace();
-                markConnectionStatus();
-                JOptionPane.showMessageDialog(XincoExplorer.this,
-                        xerb.getString("menu.connection.failed") + " " +
-                        xerb.getString("general.reason") + ": " +
-                        cone.toString() +" "+xerb.getString("error.connection.incorrect.deployment"),
-                        xerb.getString("menu.connection.failed"),
-                        JOptionPane.WARNING_MESSAGE);
-            }catch (Exception cone) {
-                this.getProgressBar().hide();
-                xincoClientSession.status = 0;
-                cone.printStackTrace();
-                markConnectionStatus();
-                String exception="";
-                if(cone.toString().equals("java.lang"))
-                    exception=xerb.getString("error.connection.incorrect.deployment");
-                else
-                    exception=cone.toString();
-                JOptionPane.showMessageDialog(XincoExplorer.this,
-                        xerb.getString("menu.connection.failed") + " " +
-                        xerb.getString("general.reason") + ": " +
-                        cone.toString(),
-                        xerb.getString("menu.connection.failed"),
-                        JOptionPane.WARNING_MESSAGE);
-            }
-            //Test workflow
-            try {
-                getSession().xinco.getWorkflow(1,getSession().user);
-            } catch (RemoteException ex) {
-                ex.printStackTrace();
-                System.err.println(ex.getCause());
-            }
+            loginT= new loginThread();
+            getLoginT().start();
         }
     }
     
