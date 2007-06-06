@@ -155,13 +155,12 @@ public class LockDialog extends javax.swing.JDialog {
                             explorer.getResourceBundle().getString("password.unlock.differentuser.detail"),
                             JOptionPane.INFORMATION_MESSAGE);
                     this.explorer.resetTimer();
-                    this.explorer.refreshJTree();
                     //reconnect with new user info
+                    this.explorer.getSession().status = 1;
+                    temp.setUsername(this.username.getText());
+                    temp.setUserpassword(new String(this.password.getPassword()));
                     this.explorer.getSession().user=temp;
-                    this.explorer.getSession().status = 1;
-                    this.explorer.getSession().user.setUsername(this.username.getText());
-                    this.explorer.getSession().user.setUserpassword(new String(this.password.getPassword()));
-                    this.explorer.getSession().status = 1;
+                    this.explorer.temp=temp;
                     XincoCoreNode xnode = new XincoCoreNode();
                     xnode.setId(1);
                     xnode = this.explorer.getSession().xinco.getXincoCoreNode(xnode, this.explorer.getSession().user);
@@ -172,9 +171,10 @@ public class LockDialog extends javax.swing.JDialog {
                             2);
                     this.explorer.refreshJTree();
                     this.explorer.markConnectionStatus();
+                    this.setVisible(false);
+//                    this.explorer.disconnect();
                 }
                 this.explorer.setLock(false);
-                this.setVisible(false);
             }
         } catch (RemoteException ex) {
         }

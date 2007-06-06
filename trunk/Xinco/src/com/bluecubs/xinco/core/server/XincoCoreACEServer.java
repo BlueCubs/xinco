@@ -96,9 +96,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
     
     //write to db
     public int write2DB(XincoDBManager DBM) throws XincoException {
-        
         try {
-            
             String xcuid = "";
             String xcgid = "";
             String xcnid = "";
@@ -154,7 +152,6 @@ public class XincoCoreACEServer extends XincoCoreACE {
             }
             
             XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
-            
             if (getId() > 0) {
                 Statement stmt = DBM.getCon().createStatement();
                 stmt.executeUpdate("UPDATE xinco_core_ace SET xinco_core_user_id=" + xcuid +
@@ -164,7 +161,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                         ", admin_permission=" + ap + " , audit_permission=" + ad +
                         " , owner=" + ow +" WHERE id=" + getId());
                 stmt.close();
-                audit.updateAuditTrail("xinco_core_ace",new String [] {"xinco_core_user_id ="+getId()},
+                audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+getId()},
                         DBM,"window.acl",this.getChangerID());
             } else {
                 setId(DBM.getNewID("xinco_core_ace"));
@@ -177,7 +174,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 stmt.executeUpdate(sql);
                 stmt.close();
                 DBM.getCon().commit();
-                audit.updateAuditTrail("xinco_core_ace",new String [] {"xinco_core_user_id ="+getId()},
+                audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+getId()},
                         DBM,"audit.general.create",this.getChangerID());
             }
             DBM.getCon().commit();
@@ -189,14 +186,11 @@ public class XincoCoreACEServer extends XincoCoreACE {
             }
             throw new XincoException();
         }
-        
         return getId();
-        
     }
     
     //remove from db
     public static int removeFromDB(XincoCoreACE attrCACE, XincoDBManager DBM, int userID) throws XincoException {
-        
         try {
             Statement stmt = DBM.getCon().createStatement();
             XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
@@ -204,9 +198,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                     DBM,"audit.general.delete",userID);
             stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE id=" + attrCACE.getId());
             stmt.close();
-            
             DBM.getCon().commit();
-            
         } catch (Exception e) {
             try {
                 DBM.getCon().rollback();
@@ -215,9 +207,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
             e.printStackTrace();
             throw new XincoException();
         }
-        
-        return 0;
-        
+        return 0; 
     }
     
     //create complete ACL for node or data
