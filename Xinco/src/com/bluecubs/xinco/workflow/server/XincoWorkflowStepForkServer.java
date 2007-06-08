@@ -59,7 +59,7 @@ public class XincoWorkflowStepForkServer extends XincoWorkflowStepFork{
             System.out.println("select * from " +
                     "xinco_workflow_step_has_xinco_workflow_fork where xinco_workflow_step_id="+
                     step_id);
-            rs = dbm.getCon().createStatement().executeQuery("select * from " +
+            rs = dbm.getConnection().createStatement().executeQuery("select * from " +
                     "xinco_workflow_step_has_xinco_workflow_fork where xinco_workflow_step_id="+
                     step_id);
             Vector forks= new Vector();

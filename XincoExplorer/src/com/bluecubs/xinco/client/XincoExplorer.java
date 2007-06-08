@@ -1090,6 +1090,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 }
                 getProgressBar().hide();
                 resetStrings();
+                //Test Workflow
+                getSession().xinco.getWorkflow(1,getSession().user).toString();
             } catch (Exception cone) {
                 xincoClientSession.status = 0;
                 cone.printStackTrace();

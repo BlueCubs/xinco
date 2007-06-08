@@ -70,26 +70,26 @@ public class XincoDBManager {
         config = XincoConfigSingletonServer.getInstance();
         while((DataSource)(new InitialContext()).lookup(config.JNDIDB)==null);
         setDatasource((DataSource)(new InitialContext()).lookup(config.JNDIDB));
-        getCon().setAutoCommit(false);
+        getConnection().setAutoCommit(false);
         //load configuration from database
         fillSettings();
-        config.init(getXss());
+        config.init(getXincoSettingServer());
         count++;
     }
     
     private void fillSettings(){
         ResultSet rs=null;
-        getXss().setXinco_settings(new Vector());
+        getXincoSettingServer().setXinco_settings(new Vector());
         String string_value="";
         try {
-            Statement stm=getCon().createStatement();
+            Statement stm=getConnection().createStatement();
             rs=stm.executeQuery("select * from xinco_setting order by id");
             while(rs.next()){
                 if(rs.getString("string_value")==null)
                     string_value="";
                 else
                     string_value=rs.getString("string_value");
-                getXss().getXinco_settings().addElement(new XincoSetting(rs.getInt("id"),
+                getXincoSettingServer().getXinco_settings().addElement(new XincoSetting(rs.getInt("id"),
                         rs.getString("description"),rs.getInt("int_value"),string_value,
                         rs.getBoolean("bool_value"),0,rs.getLong("long_value"),null));
             }
@@ -103,13 +103,13 @@ public class XincoDBManager {
     public int getNewID(String attrTN) throws Exception {
         int newID = 0;
         Statement stmt;
-        stmt = getCon().createStatement();
+        stmt = getConnection().createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_id WHERE tablename='" + attrTN + "'");
         while (rs.next()) {
             newID = rs.getInt("last_id") + 1;
         }
         stmt.close();
-        stmt = getCon().createStatement();
+        stmt = getConnection().createStatement();
         stmt.executeUpdate("UPDATE xinco_id SET last_id=last_id+1 WHERE tablename='" + attrTN + "'");
         stmt.close();
         return newID;
@@ -118,9 +118,9 @@ public class XincoDBManager {
     public void finalize() throws Throwable {
         try {
             count--;
-            getCon().close();
+            getConnection().close();
         } finally {
-            if (!getCon().isClosed()) {
+            if (!getConnection().isClosed()) {
                 count++;
             }
             super.finalize();
@@ -225,7 +225,7 @@ public class XincoDBManager {
         return lrb.getString(s);
     }
     
-    public void setLoc(Locale loc) {
+    public void setLocale(Locale loc) {
         this.loc = loc;
         if (loc==null)
             loc = Locale.getDefault();
@@ -256,11 +256,11 @@ public class XincoDBManager {
             int number;
             DatabaseMetaData meta;
             try {
-                meta = getCon().getMetaData();
+                meta = getConnection().getMetaData();
                 //Get table names
                 rs = meta.getTables(null, null, null, types);
                 //Delete content of tables
-                s=getCon().createStatement();
+                s=getConnection().createStatement();
                 while(rs.next()){
                     if(!rs.getString("TABLE_NAME").equals("xinco_id")){
                         number=1000;
@@ -290,16 +290,16 @@ public class XincoDBManager {
                     }
                 }
                 s.close();
-                s=getCon().createStatement();
+                s=getConnection().createStatement();
                 s.executeUpdate("update xinco_id set last_id = 1000 where last_id >1000");
                 s.executeUpdate("update xinco_id set last_id = 0 where last_id < 1000");
                 s.executeUpdate("delete from xinco_core_user_modified_record");
-                getCon().commit();
+                getConnection().commit();
                 s.close();
                 rs=null;
             } catch (SQLException ex) {
                 try {
-                    getCon().rollback();
+                    getConnection().rollback();
                 } catch (SQLException e2) {
                     e2.printStackTrace();
                 }
@@ -310,13 +310,13 @@ public class XincoDBManager {
             throw new XincoException(lrb.getString("error.noadminpermission"));
     }
     
-    public XincoSettingServer getXss() {
+    public XincoSettingServer getXincoSettingServer() {
         if(xss==null)
             xss=new XincoSettingServer();
         return xss;
     }
     
-    public Connection getCon() {
+    public Connection getConnection() {
         try {
             if(con==null || con.isClosed())
                 con = getDatasource().getConnection();
@@ -335,9 +335,9 @@ public class XincoDBManager {
         this.datasource = datasource;
     }
     
-    public void setCon(Connection con) {
+    public void setConnection(Connection con) {
         if(con==null)
-            getCon();
+            getConnection();
         this.con = con;
     }
     
@@ -347,6 +347,6 @@ public class XincoDBManager {
     }
     
     public XincoSetting getSetting(String name){
-        return getXss().getSetting(name);
+        return getXincoSettingServer().getSetting(name);
     }
 }
