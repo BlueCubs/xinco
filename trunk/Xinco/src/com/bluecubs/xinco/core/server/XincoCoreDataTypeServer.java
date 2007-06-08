@@ -47,7 +47,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
     public XincoCoreDataTypeServer(int attrID, XincoDBManager DBM) throws XincoException {
         
         try {
-            Statement stmt = DBM.getCon().createStatement();
+            Statement stmt = DBM.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data_type WHERE id=" + attrID);
 
 			//throw exception if no result found
@@ -86,7 +86,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
         Vector coreDataTypes = new Vector();
         
         try {
-            Statement stmt = DBM.getCon().createStatement();
+            Statement stmt = DBM.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data_type ORDER BY id");
 
             while (rs.next()) {

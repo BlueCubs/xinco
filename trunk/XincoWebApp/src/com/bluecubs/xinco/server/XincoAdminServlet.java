@@ -175,7 +175,7 @@ public class XincoAdminServlet extends HttpServlet {
                     login_user=temp_user;
                 } catch (Exception loginex) {
                     //Wrong password or username
-                    Statement stmt=dbm.getCon().createStatement();
+                    Statement stmt=dbm.getConnection().createStatement();
                     ResultSet rs= stmt.executeQuery("SELECT id FROM xinco_core_user WHERE username='" +
                             request.getParameter("DialogLoginUsername") + "' AND status_number<>2");
                     //Check if the username is correct if not just throw the wrong login message
@@ -185,7 +185,7 @@ public class XincoAdminServlet extends HttpServlet {
                             request.getParameter("DialogLoginUsername") + "'");
                     if(rs.next()){
                         temp_user = new XincoCoreUserServer(rs.getInt("id"), dbm);
-                        long attempts = dbm.getXss().getSetting("password.attempts").getInt_value();
+                        long attempts = dbm.getXincoSettingServer().getSetting("password.attempts").getInt_value();
                         //If user exists increase the atempt tries in the db. If limit reached lock account
                         if(temp_user.getAttempts()>=attempts &&  rs.getInt("id") != 1){
                             //The logged in admin does the locking
@@ -463,13 +463,13 @@ public class XincoAdminServlet extends HttpServlet {
             //main admin always is admin and everyone is a regular user
             if (!(((current_group_selection == 1) && (Integer.parseInt(request.getParameter("DialogEditGroupRemoveUser")) == 1)) || (current_group_selection == 2))) {
                 try {
-                    Statement stmt = dbm.getCon().createStatement();
+                    Statement stmt = dbm.getConnection().createStatement();
                     stmt.executeUpdate("DELETE FROM xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + Integer.parseInt(request.getParameter("DialogEditGroupRemoveUser")) + " AND xinco_core_group_id=" + current_group_selection);
                     stmt.close();
-                    dbm.getCon().commit();
+                    dbm.getConnection().commit();
                 } catch (Exception e) {
                     try {
-                        dbm.getCon().rollback();
+                        dbm.getConnection().rollback();
                     } catch (Exception rbe) {
                     }
                 }
@@ -480,13 +480,13 @@ public class XincoAdminServlet extends HttpServlet {
         //add user to group
         if (request.getParameter("DialogEditGroupAddUser") != null) {
             try {
-                Statement stmt = dbm.getCon().createStatement();
+                Statement stmt = dbm.getConnection().createStatement();
                 stmt.executeUpdate("INSERT INTO xinco_core_user_has_xinco_core_group VALUES (" + Integer.parseInt(request.getParameter("DialogEditGroupAddUser")) + ", " + current_group_selection + ", " + "1)");
                 stmt.close();
-                dbm.getCon().commit();
+                dbm.getConnection().commit();
             } catch (Exception e) {
                 try {
-                    dbm.getCon().rollback();
+                    dbm.getConnection().rollback();
                     e.printStackTrace();
                 } catch (Exception rbe) {
                 }
@@ -599,7 +599,7 @@ public class XincoAdminServlet extends HttpServlet {
                 ex.printStackTrace();
             }
             try {
-                Statement stmt=DBM.getCon().createStatement();
+                Statement stmt=DBM.getConnection().createStatement();
                 sql="select id from xinco_core_user where username='"+request.getParameter("user").substring(0,request.getParameter("user").length()-1)+"'";
                 rs=stmt.executeQuery(sql);
                 rs.next();
@@ -734,7 +734,7 @@ public class XincoAdminServlet extends HttpServlet {
             out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainEmptyTrash=EmptyTrash&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("message.admin.trash")+"</a></td>");
             out.println("<td></td><td class=\"text\">|</td>");
             //For now developer's only function. Too dangerous to use at the moment. Maybe add confirmation screens before executing if founf as an usefull tool.
-            if(dbm.getXss().getSetting("general.setting.enable.developermode").isBool_value()){
+            if(dbm.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
                 out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainResetDB=Reset&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("message.admin.main.resetDB.label")+"</a></td>");
                 out.println("<td></td><td class=\"text\">|</td>");
             }
@@ -784,7 +784,7 @@ public class XincoAdminServlet extends HttpServlet {
                 out.println("<td class=\"text\">"+rb.getString("message.admin.index.message")+"</td>");
                 out.println("</tr>");
                 out.println("<tr>");
-                if(dbm.getXss().getSetting("general.setting.enable.developermode").isBool_value()){
+                if(dbm.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
                     out.println("<td class=\"bigtext\">"+rb.getString("message.admin.main.resetDB.label")+"</td>");
                     out.println("<td class=\"text\">"+rb.getString("message.admin.main.resetdesc")+"</td>");
                     out.println("</tr>");
@@ -1300,13 +1300,13 @@ public class XincoAdminServlet extends HttpServlet {
                     
                     ResultSet rs;
                     XincoDBManager DBM = new XincoDBManager();
-                    DBM.setLoc(loc);
+                    DBM.setLocale(loc);
                     String column="id";
                     if(request.getParameter("table").equals("xinco_add_attribute"))
                         column="xinco_core_data_id";
                     if(request.getParameter("table").equals("xinco_core_data_type_attribute"))
                         column="xinco_core_data_type_id";
-                    rs=DBM.getCon().createStatement().executeQuery("select * from "+request.getParameter("table")+
+                    rs=DBM.getConnection().createStatement().executeQuery("select * from "+request.getParameter("table")+
                             "_t a, (select a.firstname || ' ' || a.name as \""+
                             rb.getString("general.user")+"\" , b.mod_time as \""+rb.getString("general.audit.modtime")+
                             "\" ,b.mod_reason as \""+rb.getString("general.reason")+"\" ,b.record_id " +
@@ -1358,12 +1358,12 @@ public class XincoAdminServlet extends HttpServlet {
                         column="xinco_core_data_id";
                     if(request.getParameter("table").equals("xinco_core_data_type_attribute"))
                         column="xinco_core_data_type_id";
-                    rs=DBM.getCon().createStatement().executeQuery("select distinct * from "+request.getParameter("table")+
+                    rs=DBM.getConnection().createStatement().executeQuery("select distinct * from "+request.getParameter("table")+
                             " where "+column+" in (select distinct "+column+" from "+request.getParameter("table")+"_t)");
                     DBM.drawTable(rs,response.getWriter(),DBM.getColumnNames(rs),"",-1,false,-1);
-                    rs=DBM.getCon().createStatement().executeQuery("select distinct "+column+" from "+request.getParameter("table")+"_t");
+                    rs=DBM.getConnection().createStatement().executeQuery("select distinct "+column+" from "+request.getParameter("table")+"_t");
                     out.println("<form action='XincoAdmin?MenuAudit=AuditTable' method='POST'>");
-                    rs=DBM.getCon().createStatement().executeQuery("select distinct "+column+" from "+
+                    rs=DBM.getConnection().createStatement().executeQuery("select distinct "+column+" from "+
                             request.getParameter("table")+"_t");
                     out.println("Select record id: ");
                     out.println("<select name='id'>");
@@ -1407,7 +1407,7 @@ public class XincoAdminServlet extends HttpServlet {
                     
                     ResultSet rs;
                     XincoDBManager DBM = new XincoDBManager();
-                    DatabaseMetaData meta = DBM.getCon().getMetaData();
+                    DatabaseMetaData meta = DBM.getConnection().getMetaData();
                     String[] types =  {
                         "TABLE"
                     };
@@ -1493,7 +1493,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("</tr>");
                     XincoCoreDataServer xdata_temp = null;
                     boolean index_result = false;
-                    Statement stmt = dbm.getCon().createStatement();
+                    Statement stmt = dbm.getConnection().createStatement();
                     ResultSet rs = stmt.executeQuery("SELECT id FROM xinco_core_data ORDER BY designation");
                     while (rs.next()) {
                         xdata_temp = new XincoCoreDataServer(rs.getInt("id"), dbm);
@@ -1546,7 +1546,7 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; "+dbm.getXss().getSetting("general.copyright.date").getString_value()+", "+rb.getString("message.admin.main.footer"));
+        out.println("<td class=\"text\">&copy; "+dbm.getXincoSettingServer().getSetting("general.copyright.date").getString_value()+", "+rb.getString("message.admin.main.footer"));
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                 rb.getString("message.admin.main.backtomain")+"' />" +
@@ -1563,7 +1563,7 @@ public class XincoAdminServlet extends HttpServlet {
         
         //close db connection
         try {
-            dbm.getCon().close();
+            dbm.getConnection().close();
         } catch (Exception e) {
             global_error_message = global_error_message + e.toString();
         }

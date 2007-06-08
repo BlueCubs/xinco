@@ -59,7 +59,7 @@ public class XincoWorkflowServer extends XincoWorkflow{
         if(id>0){
             //Workflow exists
             try {
-                rs = dbm.getCon().createStatement().executeQuery("select * from " +
+                rs = dbm.getConnection().createStatement().executeQuery("select * from " +
                         "xinco_workflow where id="+id);
                 rs.next();
                 setDescription(rs.getString("designation"));
@@ -98,7 +98,7 @@ public class XincoWorkflowServer extends XincoWorkflow{
         if(getId()>0){
             //Workflow already exists
             try {
-                dbm.getCon().createStatement().executeUpdate("update xinco_workflow set id="+getId()+
+                dbm.getConnection().createStatement().executeUpdate("update xinco_workflow set id="+getId()+
                         ", designation='"+getDescription()+"'");
                 if(isChange()){
                     XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
@@ -115,11 +115,11 @@ public class XincoWorkflowServer extends XincoWorkflow{
                         ((XincoWorkflowStepServer)getXinco_workflow_steps().get(i)).write2DB(dbm);
                     }
                 }
-                dbm.getCon().commit();
+                dbm.getConnection().commit();
             } catch (SQLException ex) {
                 ex.printStackTrace();
                 try {
-                    dbm.getCon().rollback();
+                    dbm.getConnection().rollback();
                 } catch (Exception erollback) {
                 }
                 throw new XincoException();
@@ -133,7 +133,7 @@ public class XincoWorkflowServer extends XincoWorkflow{
                 audit.updateAuditTrail("xinco_workflow",new String [] {"id ="+getId()},
                         dbm,"audit.general.create",this.getChangerID());
                 stmt.close();
-                dbm.getCon().commit();
+                dbm.getConnection().commit();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             } catch (Exception ex) {

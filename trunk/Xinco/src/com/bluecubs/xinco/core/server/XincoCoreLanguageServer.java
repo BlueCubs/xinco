@@ -49,7 +49,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
         
         try {
             
-            Statement stmt = DBM.getCon().createStatement();
+            Statement stmt = DBM.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_language WHERE id=" + attrID);
             
             //throw exception if no result found
@@ -89,7 +89,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             Statement stmt;
             
             if (getId() > 0) {
-                stmt = DBM.getCon().createStatement();
+                stmt = DBM.getConnection().createStatement();
                 XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
                 ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 audit.updateAuditTrail("xinco_core_language",new String [] {"id ="+getId()},
@@ -99,16 +99,16 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             } else {
                 setId(DBM.getNewID("xinco_core_language"));
                 
-                stmt = DBM.getCon().createStatement();
+                stmt = DBM.getConnection().createStatement();
                 stmt.executeUpdate("INSERT INTO xinco_core_language VALUES (" + getId() + ", '" + getSign().replaceAll("'","\\\\'") + "', '" + getDesignation().replaceAll("'","\\\\'") + "')");
                 stmt.close();
             }
             
-            DBM.getCon().commit();
+            DBM.getConnection().commit();
             
         } catch (Exception e) {
             try {
-                DBM.getCon().rollback();
+                DBM.getConnection().rollback();
             } catch (Exception erollback) {
             }
             throw new XincoException();
@@ -125,18 +125,18 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             
             Statement stmt = null;
             
-            stmt = DBM.getCon().createStatement();
+            stmt = DBM.getConnection().createStatement();
             XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
             audit.updateAuditTrail("xinco_core_language",new String [] {"id ="+attrCL.getId()},
                     DBM,"audit.general.delete",userID);
             stmt.executeUpdate("DELETE FROM xinco_core_language WHERE id=" + attrCL.getId());
             stmt.close();
             
-            DBM.getCon().commit();
+            DBM.getConnection().commit();
             
         } catch (Exception e) {
             try {
-                DBM.getCon().rollback();
+                DBM.getConnection().rollback();
             } catch (Exception erollback) {
             }
             throw new XincoException();
@@ -153,7 +153,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
         
         try {
             
-            Statement stmt = DBM.getCon().createStatement();
+            Statement stmt = DBM.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_language ORDER BY designation");
             
             while (rs.next()) {
@@ -179,7 +179,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             Statement stmt = null;
             ResultSet rs = null;
             
-            stmt = DBM.getCon().createStatement();
+            stmt = DBM.getConnection().createStatement();
             rs = stmt.executeQuery("SELECT 1 FROM xinco_core_node WHERE xinco_core_language_id = " + xcl.getId());
             while (rs.next()) {
                 is_used = true;
@@ -187,7 +187,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             stmt.close();
             
             if (!is_used) {
-                stmt = DBM.getCon().createStatement();
+                stmt = DBM.getConnection().createStatement();
                 rs = stmt.executeQuery("SELECT 1 FROM xinco_core_data WHERE xinco_core_language_id = " + xcl.getId());
                 while (rs.next()) {
                     is_used = true;

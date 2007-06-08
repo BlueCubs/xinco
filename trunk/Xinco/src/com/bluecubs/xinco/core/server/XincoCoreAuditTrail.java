@@ -34,7 +34,7 @@ public class XincoCoreAuditTrail {
                 if(i<keys.length-1)
                     where+=" and ";
             }
-            Statement stmt = DBM.getCon().createStatement();
+            Statement stmt = DBM.getConnection().createStatement();
             int record_ID=0;
             String sql="select * from "+table+" where "+where;
             ResultSet rs = stmt.executeQuery(sql);
@@ -62,11 +62,11 @@ public class XincoCoreAuditTrail {
                 System.out.println(sql);
                 stmt.executeUpdate(sql);
             }
-            DBM.getCon().commit();
+            DBM.getConnection().commit();
         } catch (SQLException ex) {
             ex.printStackTrace();
             try {
-                DBM.getCon().rollback();
+                DBM.getConnection().rollback();
             } catch (SQLException ex2) {
                 ex2.printStackTrace();
             }

@@ -65,14 +65,14 @@ public class XincoIndexThread extends Thread {
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
                 try {
-                    dbm.getCon().close();
+                    dbm.getConnection().close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
         try {
-            dbm.getCon().close();
+            dbm.getConnection().close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -140,7 +140,7 @@ public class XincoIndexThread extends Thread {
         //select all data
         XincoCoreDataServer xdata_temp = null;
         try {
-            Statement stmt = dbm.getCon().createStatement();
+            Statement stmt = dbm.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT id FROM xinco_core_data ORDER BY designation");
             while (rs.next()) {
                 xdata_temp = new XincoCoreDataServer(rs.getInt("id"), dbm);

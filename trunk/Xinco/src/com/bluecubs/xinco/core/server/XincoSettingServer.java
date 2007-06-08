@@ -65,7 +65,7 @@ public class XincoSettingServer extends XincoSetting{
         try {
             DBM =new XincoDBManager();
             write2DB(DBM);
-            setXinco_settings(DBM.getXss().getXinco_settings());
+            setXinco_settings(DBM.getXincoSettingServer().getXinco_settings());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -74,7 +74,7 @@ public class XincoSettingServer extends XincoSetting{
     
     public XincoSettingServer(int id,XincoDBManager DBM)throws XincoException{
         try {
-            ResultSet rs= DBM.getCon().createStatement().executeQuery("select * from xinco_setting where id="+getId());
+            ResultSet rs= DBM.getConnection().createStatement().executeQuery("select * from xinco_setting where id="+getId());
             rs.next();
             this.setId(id);
             this.setDescription(rs.getString("description"));
@@ -93,7 +93,7 @@ public class XincoSettingServer extends XincoSetting{
     public Vector getXinco_settings() {
         if(xinco_settings==null)
             try {
-                setXinco_settings(new XincoDBManager().getXss().getXinco_settings());
+                setXinco_settings(new XincoDBManager().getXincoSettingServer().getXinco_settings());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -104,20 +104,20 @@ public class XincoSettingServer extends XincoSetting{
     public int write2DB(XincoDBManager DBM) throws XincoException {
         try {
             if(getId()>0){
-                DBM.getCon().createStatement().executeUpdate("update xinco_setting set id="+getId()+
+                DBM.getConnection().createStatement().executeUpdate("update xinco_setting set id="+getId()+
                         ", description='"+getDescription()+"', int_value="+getInt_value()+
                         ", string_value='"+getString_value()+"', bool_val="+isBool_value());
                 audit.updateAuditTrail("xinco_setting",new String [] {"id ="+getId()},
                         DBM,"audit.general.modified",getChangerID());
             } else{
-                DBM.getCon().createStatement().executeUpdate("insert into xinco_setting values("+getId()+
+                DBM.getConnection().createStatement().executeUpdate("insert into xinco_setting values("+getId()+
                         ", '"+getDescription()+"',"+getInt_value()+
                         ", '"+getString_value()+"',"+isBool_value()+")");
                 audit.updateAuditTrail("xinco_setting",new String [] {"id ="+getId()},
                         DBM,"audit.general.created",getChangerID());
             }
-            DBM.getCon().commit();
-            DBM.getCon().close();
+            DBM.getConnection().commit();
+            DBM.getConnection().close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

@@ -53,7 +53,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
     public XincoAddAttributeServer(int attrID1, int attrID2, XincoDBManager DBM) throws XincoException {
         Statement stmt=null;
         try {
-            stmt = DBM.getCon().createStatement();
+            stmt = DBM.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_add_attribute " +
                     "WHERE xinco_core_data_id=" + attrID1 + " AND attribute_id=" + attrID2);
             if(rs.next()) {
@@ -124,7 +124,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                 attrDT = "NULL";
             }
             
-            stmt = DBM.getCon().createStatement();
+            stmt = DBM.getConnection().createStatement();
             String sql="";
             //get existing attributes for this data
             ResultSet rs = stmt.executeQuery("select attribute_id from xinco_add_attribute" +
@@ -167,7 +167,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                         DBM,"audit.general.create",getChangerID());
             }
             stmt.close();
-            DBM.getCon().commit();
+            DBM.getConnection().commit();
         } catch (Exception e) {
             //no commit or rollback -> CoreData manages exceptions!
             e.printStackTrace();
@@ -179,7 +179,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
     public static Vector getXincoAddAttributes(int attrID, XincoDBManager DBM) {
         Vector addAttributes = new Vector();
         try {
-            Statement stmt = DBM.getCon().createStatement();
+            Statement stmt = DBM.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_add_attribute WHERE xinco_core_data_id =" + attrID + " ORDER BY attribute_id");
             
             GregorianCalendar cal;
@@ -207,7 +207,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
         Statement stmt = null;
         XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
         try {
-            stmt = DBM.getCon().createStatement();
+            stmt = DBM.getConnection().createStatement();
             stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_add_attribute.attribute_id=" +
                     attribute_id + " AND xinco_add_attribute.xinco_core_data_id = "+xinco_core_data_id);
             audit.updateAuditTrail("xinco_add_attribute",new String [] {"xinco_add_attribute.attribute_id=" + attribute_id,
@@ -215,10 +215,10 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                     DBM,"audit.general.delete",userID);
             stmt.close();
             
-            DBM.getCon().commit();
+            DBM.getConnection().commit();
         } catch (SQLException ex) {
             try {
-                DBM.getCon().rollback();
+                DBM.getConnection().rollback();
             } catch (Exception erollback) {
             }
             throw new XincoException();

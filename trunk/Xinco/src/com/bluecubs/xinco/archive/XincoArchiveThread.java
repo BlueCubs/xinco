@@ -66,7 +66,7 @@ public class XincoArchiveThread extends Thread {
 				}
 				XincoArchiver.archiveData(dbm);
 				lastRun = new GregorianCalendar();
-				dbm.getCon().close();
+				dbm.getConnection().close();
 				dbm = null;
 			} catch (Exception e){
 				//continue, wait and try again...

@@ -84,7 +84,7 @@ public class XincoPublisherServlet extends HttpServlet {
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
         String setting="";
         try {
-            setting = new XincoDBManager().getXss().getSetting("general.copyright.date").getString_value();
+            setting = new XincoDBManager().getXincoSettingServer().getSetting("general.copyright.date").getString_value();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -227,7 +227,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 if (printList) {
                     try {
                         XincoCoreDataServer xdata_temp = null;
-                        Statement stmt = dbm.getCon().createStatement();
+                        Statement stmt = dbm.getConnection().createStatement();
                         ResultSet rs = stmt.executeQuery("SELECT DISTINCT xcd.id, xcd.designation FROM xinco_core_data xcd, xinco_core_ace xca WHERE xcd.id=xca.xinco_core_data_id AND (xcd.status_number=5 OR (xca.xinco_core_group_id=3 AND xca.read_permission=1)) ORDER BY xcd.designation");
                         while (rs.next()) {
                             xdata_temp = new XincoCoreDataServer(rs.getInt("id"), dbm);
@@ -451,7 +451,7 @@ public class XincoPublisherServlet extends HttpServlet {
         
         //close db connection
         try {
-            dbm.getCon().close();
+            dbm.getConnection().close();
         } catch (Exception e) {
         }
         
