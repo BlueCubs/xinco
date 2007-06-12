@@ -42,14 +42,6 @@ public interface Xinco extends java.rmi.Remote {
     public java.util.Vector getXincoCoreAuditTypes(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException;
     public void setXincoAddAttribute(com.bluecubs.xinco.add.holders.XincoAddAttributeHolder in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
     public boolean indexFiles(java.util.Vector in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
-    public void setWorkflow(com.bluecubs.xinco.workflow.holders.XincoWorkflowHolder in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
-    public com.bluecubs.xinco.workflow.XincoWorkflow getWorkflow(int in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
-    public com.bluecubs.xinco.workflow.XincoWorkflow getWorkflowInstance(int in0, int in1, int in2, com.bluecubs.xinco.core.XincoCoreUser in3) throws java.rmi.RemoteException;
-    public java.util.Vector getWorkflowAttributes(int in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
-    public void setXincoWorkflowInstance(com.bluecubs.xinco.workflow.holders.XincoWorkflowInstanceHolder in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
-    public void setXincoWorkflowStep(com.bluecubs.xinco.workflow.holders.XincoWorkflowStepHolder in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
-    public void setWorkflowInstanceStep(com.bluecubs.xinco.workflow.holders.XincoWorkflowStepInstanceHolder in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
-    public com.bluecubs.xinco.workflow.XincoWorkflowStepFork setXincoWorkflowStepFork(int id, int yesStep, int noStep, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException;
     public boolean sendEmail(com.bluecubs.xinco.core.XincoEmail email, com.bluecubs.xinco.core.XincoCoreUser from) throws java.rmi.RemoteException;
     public com.bluecubs.xinco.core.XincoEmail getEmail(int id, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException;
 }
