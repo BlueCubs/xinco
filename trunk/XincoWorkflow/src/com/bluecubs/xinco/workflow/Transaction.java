@@ -1,127 +1,329 @@
+/**
+ * Transaction.java
+ *
+ * This file was auto-generated from WSDL
+ * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
+ */
+
 package com.bluecubs.xinco.workflow;
 
-import java.util.ArrayList;
-
-/**
- * Represents a transition between nodes.
- */
-public class Transaction {
-    /**
-     * Transaction id
-     */
+public class Transaction  implements java.io.Serializable {
     private int id;
 
-    /**
-     * Transaction description
-     */
-    private String description = null;
+    private java.lang.String description;
 
-    /**
-     * Node from which the transaction starts.
-     */
-    private Node from = null;
+    private com.bluecubs.xinco.workflow.Node from;
 
-    /**
-     * Node to which the transaction connects.
-     */
-    private Node to = null;
+    private com.bluecubs.xinco.workflow.Node to;
 
-    /**
-     * Activities needed to be completed for this transaction to be completed.
-     */
-    private ArrayList<Activity> activities = null;
+    private com.bluecubs.xinco.workflow.Activity[] activities;
 
-    /**
-     * Transaction properties
-     */
-    private ArrayList<Property> properties = null;
+    private com.bluecubs.xinco.workflow.Property[] properties;
 
     public Transaction() {
     }
 
+    public Transaction(
+           int id,
+           java.lang.String description,
+           com.bluecubs.xinco.workflow.Node from,
+           com.bluecubs.xinco.workflow.Node to,
+           com.bluecubs.xinco.workflow.Activity[] activities,
+           com.bluecubs.xinco.workflow.Property[] properties) {
+           this.id = id;
+           this.description = description;
+           this.from = from;
+           this.to = to;
+           this.activities = activities;
+           this.properties = properties;
+    }
+
+
     /**
-     * Get transaction id
+     * Gets the id value for this Transaction.
+     * 
+     * @return id
      */
     public int getId() {
         return id;
     }
 
-    /**
-     * Set transaction id
-     */
-    public void setId(int val) {
-        this.id = val;
-    }
 
     /**
-     * Get transaction description
+     * Sets the id value for this Transaction.
+     * 
+     * @param id
      */
-    public String getDescription() {
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+    /**
+     * Gets the description value for this Transaction.
+     * 
+     * @return description
+     */
+    public java.lang.String getDescription() {
         return description;
     }
 
-    /**
-     * Set transaction description
-     */
-    public void setDescription(String val) {
-        this.description = val;
-    }
 
     /**
-     * Get node from whihc the transaction is started
+     * Sets the description value for this Transaction.
+     * 
+     * @param description
      */
-    public Node getFrom() {
+    public void setDescription(java.lang.String description) {
+        this.description = description;
+    }
+
+
+    /**
+     * Gets the from value for this Transaction.
+     * 
+     * @return from
+     */
+    public com.bluecubs.xinco.workflow.Node getFrom() {
         return from;
     }
 
-    /**
-     * Set node from which transaction is started.
-     */
-    public void setFrom(Node val) {
-        this.from = val;
-    }
 
     /**
-     * Get node to which the transaction connects after completing it's actions 
-     *    if any.
+     * Sets the from value for this Transaction.
+     * 
+     * @param from
      */
-    public Node getTo() {
+    public void setFrom(com.bluecubs.xinco.workflow.Node from) {
+        this.from = from;
+    }
+
+
+    /**
+     * Gets the to value for this Transaction.
+     * 
+     * @return to
+     */
+    public com.bluecubs.xinco.workflow.Node getTo() {
         return to;
     }
 
-    /**
-     * Set node to which the transaction connects after completing it's actions 
-     *    if any.
-     */
-    public void setTo(Node val) {
-        this.to = val;
-    }
 
     /**
-     * Get activities to be performed.
+     * Sets the to value for this Transaction.
+     * 
+     * @param to
      */
-    public ArrayList<Activity> getActivities() {
+    public void setTo(com.bluecubs.xinco.workflow.Node to) {
+        this.to = to;
+    }
+
+
+    /**
+     * Gets the activities value for this Transaction.
+     * 
+     * @return activities
+     */
+    public com.bluecubs.xinco.workflow.Activity[] getActivities() {
         return activities;
     }
 
-    /**
-     * Set activities to be performed.
-     */
-    public void setActivities(ArrayList<Activity> val) {
-        this.activities = val;
-    }
 
     /**
-     * Get transaction properties
+     * Sets the activities value for this Transaction.
+     * 
+     * @param activities
      */
-    public ArrayList<Property> getProperties() {
+    public void setActivities(com.bluecubs.xinco.workflow.Activity[] activities) {
+        this.activities = activities;
+    }
+
+    public com.bluecubs.xinco.workflow.Activity getActivities(int i) {
+        return this.activities[i];
+    }
+
+    public void setActivities(int i, com.bluecubs.xinco.workflow.Activity _value) {
+        this.activities[i] = _value;
+    }
+
+
+    /**
+     * Gets the properties value for this Transaction.
+     * 
+     * @return properties
+     */
+    public com.bluecubs.xinco.workflow.Property[] getProperties() {
         return properties;
     }
 
+
     /**
-     * Set transaction properties.
+     * Sets the properties value for this Transaction.
+     * 
+     * @param properties
      */
-    public void setProperties(ArrayList<Property> val) {
-        this.properties = val;
+    public void setProperties(com.bluecubs.xinco.workflow.Property[] properties) {
+        this.properties = properties;
     }
+
+    public com.bluecubs.xinco.workflow.Property getProperties(int i) {
+        return this.properties[i];
+    }
+
+    public void setProperties(int i, com.bluecubs.xinco.workflow.Property _value) {
+        this.properties[i] = _value;
+    }
+
+    private java.lang.Object __equalsCalc = null;
+    public synchronized boolean equals(java.lang.Object obj) {
+        if (!(obj instanceof Transaction)) return false;
+        Transaction other = (Transaction) obj;
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (__equalsCalc != null) {
+            return (__equalsCalc == obj);
+        }
+        __equalsCalc = obj;
+        boolean _equals;
+        _equals = true && 
+            this.id == other.getId() &&
+            ((this.description==null && other.getDescription()==null) || 
+             (this.description!=null &&
+              this.description.equals(other.getDescription()))) &&
+            ((this.from==null && other.getFrom()==null) || 
+             (this.from!=null &&
+              this.from.equals(other.getFrom()))) &&
+            ((this.to==null && other.getTo()==null) || 
+             (this.to!=null &&
+              this.to.equals(other.getTo()))) &&
+            ((this.activities==null && other.getActivities()==null) || 
+             (this.activities!=null &&
+              java.util.Arrays.equals(this.activities, other.getActivities()))) &&
+            ((this.properties==null && other.getProperties()==null) || 
+             (this.properties!=null &&
+              java.util.Arrays.equals(this.properties, other.getProperties())));
+        __equalsCalc = null;
+        return _equals;
+    }
+
+    private boolean __hashCodeCalc = false;
+    public synchronized int hashCode() {
+        if (__hashCodeCalc) {
+            return 0;
+        }
+        __hashCodeCalc = true;
+        int _hashCode = 1;
+        _hashCode += getId();
+        if (getDescription() != null) {
+            _hashCode += getDescription().hashCode();
+        }
+        if (getFrom() != null) {
+            _hashCode += getFrom().hashCode();
+        }
+        if (getTo() != null) {
+            _hashCode += getTo().hashCode();
+        }
+        if (getActivities() != null) {
+            for (int i=0;
+                 i<java.lang.reflect.Array.getLength(getActivities());
+                 i++) {
+                java.lang.Object obj = java.lang.reflect.Array.get(getActivities(), i);
+                if (obj != null &&
+                    !obj.getClass().isArray()) {
+                    _hashCode += obj.hashCode();
+                }
+            }
+        }
+        if (getProperties() != null) {
+            for (int i=0;
+                 i<java.lang.reflect.Array.getLength(getProperties());
+                 i++) {
+                java.lang.Object obj = java.lang.reflect.Array.get(getProperties(), i);
+                if (obj != null &&
+                    !obj.getClass().isArray()) {
+                    _hashCode += obj.hashCode();
+                }
+            }
+        }
+        __hashCodeCalc = false;
+        return _hashCode;
+    }
+
+    // Type metadata
+    private static org.apache.axis.description.TypeDesc typeDesc =
+        new org.apache.axis.description.TypeDesc(Transaction.class, true);
+
+    static {
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Transaction"));
+        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("id");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "id"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("description");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "description"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("from");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "from"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Node"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("to");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "to"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Node"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("activities");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "activities"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Activity"));
+        elemField.setNillable(false);
+        elemField.setMaxOccursUnbounded(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("properties");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "properties"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Property"));
+        elemField.setNillable(false);
+        elemField.setMaxOccursUnbounded(true);
+        typeDesc.addFieldDesc(elemField);
+    }
+
+    /**
+     * Return type metadata object
+     */
+    public static org.apache.axis.description.TypeDesc getTypeDesc() {
+        return typeDesc;
+    }
+
+    /**
+     * Get Custom Serializer
+     */
+    public static org.apache.axis.encoding.Serializer getSerializer(
+           java.lang.String mechType, 
+           java.lang.Class _javaType,  
+           javax.xml.namespace.QName _xmlType) {
+        return 
+          new  org.apache.axis.encoding.ser.BeanSerializer(
+            _javaType, _xmlType, typeDesc);
+    }
+
+    /**
+     * Get Custom Deserializer
+     */
+    public static org.apache.axis.encoding.Deserializer getDeserializer(
+           java.lang.String mechType, 
+           java.lang.Class _javaType,  
+           javax.xml.namespace.QName _xmlType) {
+        return 
+          new  org.apache.axis.encoding.ser.BeanDeserializer(
+            _javaType, _xmlType, typeDesc);
+    }
+
 }

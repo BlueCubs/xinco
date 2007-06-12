@@ -60,18 +60,23 @@ public class TransactionServer extends Transaction{
     }
     
     private void loadActivities(XincoDBManager DBM) throws SQLException{
-        getActivities().clear();
+        setActivities(null);
         rs=DBM.getConnection().createStatement().executeQuery("select activity_id from " +
                 "Transaction_has_Activity where transaction_id="+getId());
-        while(rs.next())
-            getActivities().add(new ActivityServer(rs.getInt("activity_id"),DBM));
+        int counter=0;
+        while(rs.next()){
+            setActivities(counter,new ActivityServer(rs.getInt("activity_id"),DBM));
+            counter++;
+        }
     }
     
     private void loadProperties(XincoDBManager DBM) throws SQLException{
-        getProperties().clear();
+        setProperties(null);
         Vector temp=new PropertyServer().getPropertiesForTransaction(getId(),DBM);
+        int counter=0;
         for(int i=0;i<temp.size();i++){
-            getProperties().add((PropertyServer)temp.get(i));
+            setProperties(counter,(PropertyServer)temp.get(i));
+            counter++;
         }
     }
 }

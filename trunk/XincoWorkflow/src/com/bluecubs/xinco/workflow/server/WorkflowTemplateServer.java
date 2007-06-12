@@ -39,6 +39,7 @@ import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.workflow.Node;
 import com.bluecubs.xinco.workflow.Transaction;
 import com.bluecubs.xinco.workflow.WorkflowTemplate;
+import com.bluecubs.xinco.workflow.server.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -63,22 +64,26 @@ public class WorkflowTemplateServer extends WorkflowTemplate{
         }
     }
     
-    private ArrayList<Node> loadNodes(XincoDBManager DBM) throws SQLException{
+    private Node [] loadNodes(XincoDBManager DBM) throws SQLException{
         rs=DBM.getConnection().createStatement().executeQuery("select node_id from " +
                 "Workflow_Template_has_Node where id="+getId());
-        getNodes().clear();
+        setNodes(null);
+        int counter=0;
         while(rs.next()){
-            getNodes().add(new NodeServer(rs.getInt("node_id"),DBM));
+            setNodes(counter,new NodeServer(rs.getInt("node_id"),DBM));
+            counter++;
         }
         return getNodes();
     }
     
-    private ArrayList<Transaction> loadTransactions(XincoDBManager DBM) throws SQLException{
+    private Transaction [] loadTransactions(XincoDBManager DBM) throws SQLException{
         rs=DBM.getConnection().createStatement().executeQuery("select transaction_id from " +
                 "Workflow_Template_has_Transaction where id="+getId());
-        getTransactions().clear();
+        setTransactions(null);
+        int counter=0;
         while(rs.next()){
-            getTransactions().add(new TransactionServer(rs.getInt("transaction_id"),DBM));
+            setTransactions(counter,new TransactionServer(rs.getInt("transaction_id"),DBM));
+            counter ++;
         }
         return getTransactions();
     }

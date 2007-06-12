@@ -39,6 +39,8 @@ import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.workflow.WorkflowInstance;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class WorkflowInstanceServer extends WorkflowInstance{
     private ResultSet rs;
@@ -53,9 +55,11 @@ public class WorkflowInstanceServer extends WorkflowInstance{
                         "workflow_instance where id ="+id);
                 rs.next();
                 setId(rs.getInt("id"));
-                setWorkflowTemplateId(rs.getInt("workflow_template_id"));
-                setCreationTime(rs.getTimestamp("creationtime"));
-                template =new WorkflowTemplateServer(getWorkflowTemplateId(),DBM);
+                setTemplateId(rs.getInt("workflow_template_id"));
+                GregorianCalendar cal = new GregorianCalendar();
+                cal.setTimeInMillis(rs.getTimestamp("creationtime").getTime());
+                setCreationTime(cal);
+                template =new WorkflowTemplateServer(getTemplateId(),DBM);
                 setNodes(template.getNodes());
                 setTransactions(template.getTransactions());
             } catch (SQLException ex) {

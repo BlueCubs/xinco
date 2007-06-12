@@ -35,12 +35,29 @@
 
 package com.bluecubs.xinco.workflow.server;
 
+import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.workflow.Resource;
+import com.bluecubs.xinco.workflow.XincoWorkflowException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ResourceServer extends Resource{
-    
+    private ResultSet rs;
     /** Creates a new instance of ResourceServer */
-    public ResourceServer() {
+    public ResourceServer(String username,String password,XincoDBManager DBM) throws XincoWorkflowException {
+        try {
+            rs= DBM.getConnection().createStatement().executeQuery("select * from " +
+                    "resource where username='"+username+"' AND password=MD5('" + password + "')");
+            rs.next();
+            this.setEmail(rs.getString("email"));
+            this.setId(rs.getInt("id"));
+            this.setName(rs.getString("name"));
+            this.setPassword(rs.getString("password"));
+            this.setUsername(rs.getString("username"));
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new XincoWorkflowException();
+        }
     }
     
 }

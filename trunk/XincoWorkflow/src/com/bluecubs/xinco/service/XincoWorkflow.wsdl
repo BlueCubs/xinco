@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions targetNamespace="urn:XincoWorkflow"
+             xmlns:apachesoap="http://xml.apache.org/xml-soap" 
+             xmlns:impl="urn:XincoWorkflow" 
+             xmlns:intf="urn:XincoWorkflow" 
+             xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:tns="http://workflow.xinco.bluecubs.com">
+    <types>
+        <schema targetNamespace="http://workflow.xinco.bluecubs.com" 
+                xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xml.apache.org/xml-soap"/>
+            <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+            <import schemaLocation="Xinco.xsd" namespace="http://core.xinco.bluecubs.com"/>
+            <complexType name="Activity">
+                <sequence>
+                    <element name="id" type="xsd:int"/>
+                    <element name="description" type="xsd:string"/>
+                    <element name="assignedTo" type="tns:Resource"/>
+                    <element name="assignedOn" type="xsd:dateTime"/>
+                    <element name="completedOn" type="xsd:dateTime"/>
+                    <element name="properties" type="tns:Property" maxOccurs="unbounded"/>
+                </sequence>
+            </complexType>
+            <complexType name="Resource">
+                <sequence>
+                    <element name="change" type="xsd:boolean"/>
+                    <element name="changerID" type="xsd:int"/>
+                    <element name="email" nillable="true" type="xsd:string"/>
+                    <element name="firstname" nillable="true" type="xsd:string"/>
+                    <element name="id" type="xsd:int"/>
+                    <element name="name" nillable="true" type="xsd:string"/>
+                    <element name="reason" nillable="true" type="xsd:string"/>
+                    <element name="status_number" type="xsd:int"/>
+                    <element name="username" nillable="true" type="xsd:string"/>
+                    <element name="userpassword" nillable="true" type="xsd:string"/>
+                    <element name="writeGroups" type="xsd:boolean"/>
+                    <element name="xinco_core_groups" nillable="true" type="apachesoap:Vector"/>
+                </sequence>
+            </complexType>
+            <complexType name="Property">
+                <sequence>
+                    <element name="id" type="xsd:int"/>
+                    <element name="transactionId" type="xsd:int" nillable="true"/>
+                    <element name="nodeId" type="xsd:int" nillable="true"/>
+                    <element name="activityId" type="xsd:int" nillable="true"/>
+                    <element name="description" type="xsd:string"/>
+                    <element name="stringProperty" type="xsd:string" nillable="true"/>
+                    <element name="intProperty" type="xsd:int"/>
+                    <element name="longProperty" type="xsd:long"/>
+                    <element name="boolProperty" type="xsd:boolean"/>
+                </sequence>
+            </complexType>
+            <complexType name="Node">
+                <sequence>
+                    <element name="id" type="xsd:int"/>
+                    <element name="description" type="xsd:string"/>
+                    <element name="properties" type="tns:Property" maxOccurs="unbounded"/>
+                    <element name="activities" type="tns:Activity" maxOccurs="unbounded"/>
+                </sequence>
+            </complexType>
+            <complexType name="Transaction">
+                <sequence>
+                    <element name="id" type="xsd:int"/>
+                    <element name="description" type="xsd:string"/>
+                    <element name="from" type="tns:Node"/>
+                    <element name="to" type="tns:Node"/>
+                    <element name="activities" type="tns:Activity" maxOccurs="unbounded"/>
+                    <element name="properties" type="tns:Property" maxOccurs="unbounded"/>
+                </sequence>
+            </complexType>
+            <complexType name="WorkflowTemplate">
+                <sequence>
+                    <element name="id" type="xsd:int"/>
+                    <element name="description" type="xsd:string"/>
+                    <element name="creationTime" type="xsd:dateTime"/>
+                    <element name="nodes" type="tns:Node" maxOccurs="unbounded"/>
+                    <element name="transactions" type="tns:Transaction" maxOccurs="unbounded"/>
+                </sequence>
+            </complexType>
+            <complexType name="WorkflowInstance">
+                <sequence>
+                    <element name="id" type="xsd:int"/>
+                    <element name="templateId" type="xsd:int"/>
+                    <element name="creationTime" type="xsd:dateTime"/>
+                    <element name="nodes" type="tns:Node" maxOccurs="unbounded"/>
+                    <element name="transactions" type="tns:Transaction" maxOccurs="unbounded"/>
+                </sequence>
+            </complexType>
+        </schema>
+        <schema targetNamespace="http://xml.apache.org/xml-soap" 
+                xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://workflow.xinco.bluecubs.com"/>
+            <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+            <complexType name="Vector">
+                <sequence>
+                    <element maxOccurs="unbounded" minOccurs="0" name="item" type="xsd:anyType"/>
+                </sequence>
+            </complexType>
+        </schema>
+        <schema targetNamespace="http://core.xinco.bluecubs.com" 
+                xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://add.xinco.bluecubs.com"/>
+            <import namespace="http://xml.apache.org/xml-soap"/>
+            <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+            <complexType name="XincoVersion">
+                <sequence>
+                    <element name="version_high" type="xsd:int"/>
+                    <element name="version_low" type="xsd:int"/>
+                    <element name="version_mid" type="xsd:int"/>
+                    <element name="version_postfix" nillable="true" type="xsd:string"/>
+                </sequence>
+            </complexType>
+            <complexType name="XincoSetting">
+                <sequence>
+                    <element name="id" type="xsd:int"/>
+                    <element name="description" type="xsd:string"/>
+                    <element name="int_value" type="xsd:int"/>
+                    <element name="string_value" type="xsd:string"/>
+                    <element name="bool_value" type="xsd:boolean"/>
+                    <element name="changerID" type="xsd:int"/>
+                    <element name="long_value" type="xsd:long"/>
+                    <element name="xinco_settings" nillable="true" type="apachesoap:Vector"/>
+                </sequence>
+            </complexType>
+            </schema>
+    </types>
+    <wsdl:message name="getActivityRequest">
+        <wsdl:part name="in" type="tns:Activity"/>
+        <wsdl:part name="Resource" type="tns:Resource"/>
+    </wsdl:message>
+    <wsdl:message name="getActivityResponse">
+        <wsdl:part name="activity" type="tns:Activity"/>
+    </wsdl:message>
+    <wsdl:message name="setActivityRequest">
+        <wsdl:part name="activity" type="tns:Activity"/>
+        <wsdl:part name="resource" type="tns:Resource"/>
+    </wsdl:message>
+    <wsdl:message name="setActivityResponse">
+        <wsdl:part name="activity" type="tns:Activity"/>
+    </wsdl:message>
+    <wsdl:message name="getNodeRequest">
+        <wsdl:part name="in" type="tns:Node"/>
+        <wsdl:part name="resource" type="tns:Resource"/>
+    </wsdl:message>
+    <wsdl:message name="getNodeResponse">
+        <wsdl:part name="node" type="tns:Node"/>
+    </wsdl:message>
+    <wsdl:message name="getPropertyRequest">
+        <wsdl:part name="in" type="tns:Property"/>
+        <wsdl:part name="resource" type="tns:Resource"/>
+    </wsdl:message>
+    <wsdl:message name="getPropertyResponse">
+        <wsdl:part name="property" type="tns:Property"/>
+    </wsdl:message>
+    <wsdl:message name="setPropertyRequest">
+        <wsdl:part name="property" type="tns:Property"/>
+        <wsdl:part name="resource" type="tns:Resource"/>
+    </wsdl:message>
+    <wsdl:message name="setPropertyResponse">
+        <wsdl:part name="property" type="tns:Property"/>
+    </wsdl:message>
+    <wsdl:message name="getResourceRequest">
+        <wsdl:part name="resourceReqested" type="tns:Resource"/>
+        <wsdl:part name="resourceRequesting" type="tns:Resource"/>
+    </wsdl:message>
+    <wsdl:message name="getResourceResponse">
+        <wsdl:part name="resource" type="tns:Resource"/>
+    </wsdl:message>
+    <wsdl:message name="setResourceRequest">
+        <wsdl:part name="resource" type="tns:Resource"/>
+        <wsdl:part name="resourceRequesting" type="tns:Resource"/>
+    </wsdl:message>
+    <wsdl:message name="setResourceResponse">
+        <wsdl:part name="resource" type="tns:Resource"/>
+    </wsdl:message>
+    <wsdl:message name="getTransactionRequest">
+        <wsdl:part name="in" type="tns:Transaction"/>
+        <wsdl:part name="resource" type="tns:Resource"/>
+    </wsdl:message>
+    <wsdl:message name="getTransactionResponse">
+        <wsdl:part name="transaction" type="tns:Transaction"/>
+    </wsdl:message>
+    <wsdl:message name="setTransactionRequest">
+        <wsdl:part name="transaction" type="tns:Transaction"/>
+        <wsdl:part name="resource" type="tns:Resource"/>
+    </wsdl:message>
+    <wsdl:message name="setTransactionResponse">
+        <wsdl:part name="transaction" type="tns:Transaction"/>
+    </wsdl:message>
+    <wsdl:message name="getWorkflowInstanceRequest">
+        <wsdl:part name="in" type="tns:WorkflowInstance"/>
+        <wsdl:part name="resource" type="tns:Resource"/>
+    </wsdl:message>
+    <wsdl:message name="getWorkflowInstanceResponse">
+        <wsdl:part name="workflow_instance" type="tns:WorkflowInstance"/>
+    </wsdl:message>
+    <wsdl:message name="setWorkflowInstanceRequest">
+        <wsdl:part name="instance" type="tns:WorkflowInstance"/>
+        <wsdl:part name="resource" type="tns:Resource"/>
+    </wsdl:message>
+    <wsdl:message name="setWorkflowInstanceResponse">
+        <wsdl:part name="instance" type="tns:WorkflowInstance"/>
+    </wsdl:message>
+    <wsdl:message name="getWorkflowTemplateRequest">
+        <wsdl:part name="in" type="tns:WorkflowTemplate"/>
+        <wsdl:part name="resource" type="tns:Resource"/>
+    </wsdl:message>
+    <wsdl:message name="getWorkflowTemplateResponse">
+        <wsdl:part name="template" type="tns:WorkflowTemplate"/>
+    </wsdl:message>
+    <wsdl:message name="setNodeRequest">
+        <wsdl:part name="in" type="tns:Node"/>
+        <wsdl:part name="resource" type="tns:Resource"/>
+    </wsdl:message>
+    <wsdl:message name="setNodeResponse">
+        <wsdl:part name="node" type="tns:Node"/>
+    </wsdl:message>
+    <portType name="XincoWorkflow">
+        <wsdl:operation name="getActivity">
+            <wsdl:input name="getActivityRequest" message="impl:getActivityRequest"/>
+            <wsdl:output name="getActivityResponse" message="impl:getActivityResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setActivity">
+            <wsdl:input name="setActivityRequest" message="impl:setActivityRequest"/>
+            <wsdl:output name="setActivityResponse" message="impl:setActivityResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getNode">
+            <wsdl:input name="getNodeResquest" message="impl:getNodeRequest"/>
+            <wsdl:output name="getNodeResponse" message="impl:getNodeResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getProperty">
+            <wsdl:input name="getPropertyRequest" message="impl:getPropertyRequest"/>
+            <wsdl:output name="getPropertyResponse" message="impl:getPropertyResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setProperty">
+            <wsdl:input name="setPropertyRequest" message="impl:setPropertyRequest"/>
+            <wsdl:output name="setPropertyResponse" message="impl:setPropertyResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getResource">
+            <wsdl:input name="getResourceRequest" message="impl:getResourceRequest"/>
+            <wsdl:output name="getResourceResponse" message="impl:getResourceResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setResource">
+            <wsdl:input name="setResourceRequest" message="impl:setResourceRequest"/>
+            <wsdl:output name="setResourceResponse" message="impl:setResourceResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getTransaction">
+            <wsdl:input name="getTransactionRequest" message="impl:getTransactionRequest"/>
+            <wsdl:output name="getTransactionResponse" message="impl:getTransactionResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setTransaction">
+            <wsdl:input name="setTransactionRequest" message="impl:setTransactionRequest"/>
+            <wsdl:output name="setTransactionResponse" message="impl:setTransactionResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getWorkflowInstance">
+            <wsdl:input name="getWorkflowInstanceRequest" message="impl:getWorkflowInstanceRequest"/>
+            <wsdl:output name="getWorkflowInstanceResponse" message="impl:getWorkflowInstanceResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setWorkflowInstance">
+            <wsdl:input name="setWorkflowInstanceRequest" message="impl:setWorkflowInstanceRequest"/>
+            <wsdl:output name="setWorkflowInstanceResponse" message="impl:setWorkflowInstanceResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getWorkflowTemplate">
+            <wsdl:input name="getWorkflowTemplateRequest" message="impl:getWorkflowTemplateRequest"/>
+            <wsdl:output name="getWorkflowTemplateResponse" message="impl:getWorkflowTemplateResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setNode">
+            <wsdl:input name="setNodeRequest" message="impl:setNodeRequest"/>
+            <wsdl:output name="setNodeResponse" message="impl:setNodeResponse"/>
+        </wsdl:operation>
+    </portType>
+    <wsdl:binding name="XincoWorkflowSoapBinding" type="impl:XincoWorkflow">
+        <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getActivity">
+            <wsdl:input name="getActivityRequest"/>
+            <wsdl:output name="getActivityResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setActivity">
+            <wsdl:input name="setActivityRequest"/>
+            <wsdl:output name="setActivityResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getNode">
+            <wsdl:input name="getNodeResquest"/>
+            <wsdl:output name="getNodeResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getProperty">
+            <wsdl:input name="getPropertyRequest"/>
+            <wsdl:output name="getPropertyResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setProperty">
+            <wsdl:input name="setPropertyRequest"/>
+            <wsdl:output name="setPropertyResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getResource">
+            <wsdl:input name="getResourceRequest"/>
+            <wsdl:output name="getResourceResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setResource">
+            <wsdl:input name="setResourceRequest"/>
+            <wsdl:output name="setResourceResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getTransaction">
+            <wsdl:input name="getTransactionRequest"/>
+            <wsdl:output name="getTransactionResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setTransaction">
+            <wsdl:input name="setTransactionRequest"/>
+            <wsdl:output name="setTransactionResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getWorkflowInstance">
+            <wsdl:input name="getWorkflowInstanceRequest"/>
+            <wsdl:output name="getWorkflowInstanceResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setWorkflowInstance">
+            <wsdl:input name="setWorkflowInstanceRequest"/>
+            <wsdl:output name="setWorkflowInstanceResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getWorkflowTemplate">
+            <wsdl:input name="getWorkflowTemplateRequest"/>
+            <wsdl:output name="getWorkflowTemplateResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setNode">
+            <wsdl:input name="setNodeRequest"/>
+            <wsdl:output name="setNodeResponse"/>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="WorkflowService">
+        <wsdl:port name="Workflow" binding="impl:XincoWorkflowSoapBinding">
+            <wsdlsoap:address location="http://localhost:8084/xinco/services/XincoWorkflow"/>
+        </wsdl:port>
+    </wsdl:service>
+</definitions>
