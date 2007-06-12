@@ -109,6 +109,14 @@
       />
       <typeMapping
         xmlns:ns="http://core.xinco.bluecubs.com"
+        qname="ns:XincoEmail"
+        type="java:com.bluecubs.xinco.core.XincoEmail"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://core.xinco.bluecubs.com"
         qname="ns:XincoCoreDataType"
         type="java:com.bluecubs.xinco.core.XincoCoreDataType"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
