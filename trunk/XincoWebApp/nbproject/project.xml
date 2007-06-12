@@ -18,6 +18,10 @@
                     <file>${reference.XincoExplorer.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
+                <library files="1">
+                    <file>${reference.XincoWorkflow.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
             </web-module-libraries>
             <web-module-additional-libraries>
                 <library files="1">
@@ -63,6 +67,14 @@
             </reference>
             <reference>
                 <foreign-project>XincoExplorer</foreign-project>
+                <artifact-type>jar</artifact-type>
+                <script>build.xml</script>
+                <target>jar</target>
+                <clean-target>clean</clean-target>
+                <id>jar</id>
+            </reference>
+            <reference>
+                <foreign-project>XincoWorkflow</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
                 <target>jar</target>
