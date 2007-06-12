@@ -1462,11 +1462,11 @@ public class XincoAdminServlet extends HttpServlet {
                     File indexDirectoryFile = null;
                     String[] indexDirectoryFileList = null;
                     boolean index_directory_deleted = false;
-                    indexDirectory = new File(dbm.config.FileIndexPath);
+                    indexDirectory = new File(dbm.config.getFileIndexPath());
                     if (indexDirectory.exists()) {
                         indexDirectoryFileList = indexDirectory.list();
                         for (i=0;i<indexDirectoryFileList.length;i++) {
-                            indexDirectoryFile = new File(dbm.config.FileIndexPath + indexDirectoryFileList[i]);
+                            indexDirectoryFile = new File(dbm.config.getFileIndexPath() + indexDirectoryFileList[i]);
                             indexDirectoryFile.delete();
                         }
                         index_directory_deleted = indexDirectory.delete();

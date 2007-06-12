@@ -35,7 +35,9 @@
 
 package com.bluecubs.xinco.workflow.server;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.WorkflowDBManager;
+import com.bluecubs.xinco.workflow.Activity;
+import com.bluecubs.xinco.workflow.Property;
 import com.bluecubs.xinco.workflow.Transaction;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,10 +46,11 @@ import java.util.Vector;
 public class TransactionServer extends Transaction{
     private ResultSet rs;
     /** Creates a new instance of TransactionServer */
-    public TransactionServer(int id, XincoDBManager DBM) {
+    public TransactionServer(int id, WorkflowDBManager DBM) {
         if(id>0){
+            System.out.println("Creating transaction with id: "+id);
             try {
-                rs=DBM.getConnection().createStatement().executeQuery("select * from transaction where id="+id);
+                rs=DBM.getStatement().executeQuery("select * from transaction where id="+id);
                 rs.next();
                 setId(rs.getInt("id"));
                 setDescription(rs.getString("description"));
@@ -56,27 +59,24 @@ public class TransactionServer extends Transaction{
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
+            System.out.println("Done!");
         }
     }
     
-    private void loadActivities(XincoDBManager DBM) throws SQLException{
-        setActivities(null);
-        rs=DBM.getConnection().createStatement().executeQuery("select activity_id from " +
+    private void loadActivities(WorkflowDBManager DBM) throws SQLException{
+        Vector values = new Vector();
+        rs=DBM.getStatement().executeQuery("select activity_id from " +
                 "Transaction_has_Activity where transaction_id="+getId());
-        int counter=0;
+        values.clear();
         while(rs.next()){
-            setActivities(counter,new ActivityServer(rs.getInt("activity_id"),DBM));
-            counter++;
+            values.addElement(new ActivityServer(rs.getInt("activity_id"),DBM));
         }
+        setActivities(values);
     }
     
-    private void loadProperties(XincoDBManager DBM) throws SQLException{
-        setProperties(null);
-        Vector temp=new PropertyServer().getPropertiesForTransaction(getId(),DBM);
-        int counter=0;
-        for(int i=0;i<temp.size();i++){
-            setProperties(counter,(PropertyServer)temp.get(i));
-            counter++;
-        }
+    private void loadProperties(WorkflowDBManager DBM) throws SQLException{
+        Vector values = new Vector();
+        values=new PropertyServer().getPropertiesForTransaction(getId(),DBM);
+        setProperties(values);
     }
 }

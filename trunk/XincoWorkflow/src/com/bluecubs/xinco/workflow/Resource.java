@@ -8,30 +8,138 @@
 package com.bluecubs.xinco.workflow;
 
 public class Resource  implements java.io.Serializable {
+    private boolean change;
+
+    private int changerID;
+
+    private java.lang.String email;
+
+    private java.lang.String firstname;
+
     private int id;
 
     private java.lang.String name;
 
-    private java.lang.String email;
+    private java.lang.String reason;
+
+    private int status_number;
 
     private java.lang.String username;
 
-    private java.lang.String password;
+    private java.lang.String userpassword;
+
+    private boolean writeGroups;
+
+    private java.util.Vector xinco_core_groups;
 
     public Resource() {
     }
 
     public Resource(
+           boolean change,
+           int changerID,
+           java.lang.String email,
+           java.lang.String firstname,
            int id,
            java.lang.String name,
-           java.lang.String email,
+           java.lang.String reason,
+           int status_number,
            java.lang.String username,
-           java.lang.String password) {
+           java.lang.String userpassword,
+           boolean writeGroups,
+           java.util.Vector xinco_core_groups) {
+           this.change = change;
+           this.changerID = changerID;
+           this.email = email;
+           this.firstname = firstname;
            this.id = id;
            this.name = name;
-           this.email = email;
+           this.reason = reason;
+           this.status_number = status_number;
            this.username = username;
-           this.password = password;
+           this.userpassword = userpassword;
+           this.writeGroups = writeGroups;
+           this.xinco_core_groups = xinco_core_groups;
+    }
+
+
+    /**
+     * Gets the change value for this Resource.
+     * 
+     * @return change
+     */
+    public boolean isChange() {
+        return change;
+    }
+
+
+    /**
+     * Sets the change value for this Resource.
+     * 
+     * @param change
+     */
+    public void setChange(boolean change) {
+        this.change = change;
+    }
+
+
+    /**
+     * Gets the changerID value for this Resource.
+     * 
+     * @return changerID
+     */
+    public int getChangerID() {
+        return changerID;
+    }
+
+
+    /**
+     * Sets the changerID value for this Resource.
+     * 
+     * @param changerID
+     */
+    public void setChangerID(int changerID) {
+        this.changerID = changerID;
+    }
+
+
+    /**
+     * Gets the email value for this Resource.
+     * 
+     * @return email
+     */
+    public java.lang.String getEmail() {
+        return email;
+    }
+
+
+    /**
+     * Sets the email value for this Resource.
+     * 
+     * @param email
+     */
+    public void setEmail(java.lang.String email) {
+        this.email = email;
+    }
+
+
+    /**
+     * Gets the firstname value for this Resource.
+     * 
+     * @return firstname
+     */
+    public java.lang.String getFirstname() {
+        return firstname;
+    }
+
+
+    /**
+     * Sets the firstname value for this Resource.
+     * 
+     * @param firstname
+     */
+    public void setFirstname(java.lang.String firstname) {
+        this.firstname = firstname;
     }
 
 
@@ -76,22 +184,42 @@ public class Resource  implements java.io.Serializable {
 
 
     /**
-     * Gets the email value for this Resource.
+     * Gets the reason value for this Resource.
      * 
-     * @return email
+     * @return reason
      */
-    public java.lang.String getEmail() {
-        return email;
+    public java.lang.String getReason() {
+        return reason;
     }
 
 
     /**
-     * Sets the email value for this Resource.
+     * Sets the reason value for this Resource.
      * 
-     * @param email
+     * @param reason
      */
-    public void setEmail(java.lang.String email) {
-        this.email = email;
+    public void setReason(java.lang.String reason) {
+        this.reason = reason;
+    }
+
+
+    /**
+     * Gets the status_number value for this Resource.
+     * 
+     * @return status_number
+     */
+    public int getStatus_number() {
+        return status_number;
+    }
+
+
+    /**
+     * Sets the status_number value for this Resource.
+     * 
+     * @param status_number
+     */
+    public void setStatus_number(int status_number) {
+        this.status_number = status_number;
     }
 
 
@@ -116,22 +244,62 @@ public class Resource  implements java.io.Serializable {
 
 
     /**
-     * Gets the password value for this Resource.
+     * Gets the userpassword value for this Resource.
      * 
-     * @return password
+     * @return userpassword
      */
-    public java.lang.String getPassword() {
-        return password;
+    public java.lang.String getUserpassword() {
+        return userpassword;
     }
 
 
     /**
-     * Sets the password value for this Resource.
+     * Sets the userpassword value for this Resource.
      * 
-     * @param password
+     * @param userpassword
      */
-    public void setPassword(java.lang.String password) {
-        this.password = password;
+    public void setUserpassword(java.lang.String userpassword) {
+        this.userpassword = userpassword;
+    }
+
+
+    /**
+     * Gets the writeGroups value for this Resource.
+     * 
+     * @return writeGroups
+     */
+    public boolean isWriteGroups() {
+        return writeGroups;
+    }
+
+
+    /**
+     * Sets the writeGroups value for this Resource.
+     * 
+     * @param writeGroups
+     */
+    public void setWriteGroups(boolean writeGroups) {
+        this.writeGroups = writeGroups;
+    }
+
+
+    /**
+     * Gets the xinco_core_groups value for this Resource.
+     * 
+     * @return xinco_core_groups
+     */
+    public java.util.Vector getXinco_core_groups() {
+        return xinco_core_groups;
+    }
+
+
+    /**
+     * Sets the xinco_core_groups value for this Resource.
+     * 
+     * @param xinco_core_groups
+     */
+    public void setXinco_core_groups(java.util.Vector xinco_core_groups) {
+        this.xinco_core_groups = xinco_core_groups;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -146,19 +314,32 @@ public class Resource  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
+            this.change == other.isChange() &&
+            this.changerID == other.getChangerID() &&
+            ((this.email==null && other.getEmail()==null) || 
+             (this.email!=null &&
+              this.email.equals(other.getEmail()))) &&
+            ((this.firstname==null && other.getFirstname()==null) || 
+             (this.firstname!=null &&
+              this.firstname.equals(other.getFirstname()))) &&
             this.id == other.getId() &&
             ((this.name==null && other.getName()==null) || 
              (this.name!=null &&
               this.name.equals(other.getName()))) &&
-            ((this.email==null && other.getEmail()==null) || 
-             (this.email!=null &&
-              this.email.equals(other.getEmail()))) &&
+            ((this.reason==null && other.getReason()==null) || 
+             (this.reason!=null &&
+              this.reason.equals(other.getReason()))) &&
+            this.status_number == other.getStatus_number() &&
             ((this.username==null && other.getUsername()==null) || 
              (this.username!=null &&
               this.username.equals(other.getUsername()))) &&
-            ((this.password==null && other.getPassword()==null) || 
-             (this.password!=null &&
-              this.password.equals(other.getPassword())));
+            ((this.userpassword==null && other.getUserpassword()==null) || 
+             (this.userpassword!=null &&
+              this.userpassword.equals(other.getUserpassword()))) &&
+            this.writeGroups == other.isWriteGroups() &&
+            ((this.xinco_core_groups==null && other.getXinco_core_groups()==null) || 
+             (this.xinco_core_groups!=null &&
+              this.xinco_core_groups.equals(other.getXinco_core_groups())));
         __equalsCalc = null;
         return _equals;
     }
@@ -170,18 +351,31 @@ public class Resource  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
+        _hashCode += (isChange() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += getChangerID();
+        if (getEmail() != null) {
+            _hashCode += getEmail().hashCode();
+        }
+        if (getFirstname() != null) {
+            _hashCode += getFirstname().hashCode();
+        }
         _hashCode += getId();
         if (getName() != null) {
             _hashCode += getName().hashCode();
         }
-        if (getEmail() != null) {
-            _hashCode += getEmail().hashCode();
+        if (getReason() != null) {
+            _hashCode += getReason().hashCode();
         }
+        _hashCode += getStatus_number();
         if (getUsername() != null) {
             _hashCode += getUsername().hashCode();
         }
-        if (getPassword() != null) {
-            _hashCode += getPassword().hashCode();
+        if (getUserpassword() != null) {
+            _hashCode += getUserpassword().hashCode();
+        }
+        _hashCode += (isWriteGroups() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        if (getXinco_core_groups() != null) {
+            _hashCode += getXinco_core_groups().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -194,6 +388,30 @@ public class Resource  implements java.io.Serializable {
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Resource"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("change");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "change"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("changerID");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "changerID"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("email");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "email"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("firstname");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "firstname"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("id");
         elemField.setXmlName(new javax.xml.namespace.QName("", "id"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
@@ -203,25 +421,43 @@ public class Resource  implements java.io.Serializable {
         elemField.setFieldName("name");
         elemField.setXmlName(new javax.xml.namespace.QName("", "name"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setNillable(false);
+        elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("email");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "email"));
+        elemField.setFieldName("reason");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "reason"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("status_number");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "status_number"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("username");
         elemField.setXmlName(new javax.xml.namespace.QName("", "username"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("userpassword");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "userpassword"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("writeGroups");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "writeGroups"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("password");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "password"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setNillable(false);
+        elemField.setFieldName("xinco_core_groups");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_groups"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
+        elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }
 

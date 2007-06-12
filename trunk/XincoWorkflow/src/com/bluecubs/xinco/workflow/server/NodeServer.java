@@ -35,20 +35,21 @@
 
 package com.bluecubs.xinco.workflow.server;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.WorkflowDBManager;
 import com.bluecubs.xinco.workflow.Node;
-import com.bluecubs.xinco.workflow.server.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Vector;
 
 public class NodeServer extends Node{
     private ResultSet rs=null;
     /** Creates a new instance of NodeServer */
-    public NodeServer(int id, XincoDBManager DBM) {
+    public NodeServer(int id, WorkflowDBManager DBM) {
         if(id > 0){
+            System.out.println("Creating node with id: "+id);
             try {
                 //Node exists
-                rs =DBM.getConnection().createStatement().executeQuery("select * from node where id="+id);
+                rs =DBM.getStatement().executeQuery("select * from node where id="+id);
                 rs.next();
                 setId(rs.getInt("id"));
                 setDescription(rs.getString("description"));
@@ -57,18 +58,19 @@ public class NodeServer extends Node{
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
+            System.out.println("Done!");
         }
     }
     
-    private void loadActivities(XincoDBManager DBM){
-        setActivities(null);
+    private void loadActivities(WorkflowDBManager DBM){
+        Vector values = new Vector();
         try {
-            rs=DBM.getConnection().createStatement().executeQuery("select activity_id from node_has_activity where node_id="+getId());
-            int counter=0;
+            rs=DBM.getStatement().executeQuery("select activity_id from node_has_activity where node_id="+getId());
+            values.removeAllElements();
             while(rs.next()){
-                setActivities(counter,new ActivityServer(rs.getInt("activity_id"),DBM));
-                counter++;
+                values.addElement(new ActivityServer(rs.getInt("activity_id"),DBM));
             }
+            setActivities(values);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

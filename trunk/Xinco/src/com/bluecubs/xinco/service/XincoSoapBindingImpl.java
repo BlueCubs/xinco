@@ -233,7 +233,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 } else {
                     useSAAJ = false;
                 }
-                in = new CheckedInputStream(new FileInputStream(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, data.getId(), data.getId() + revision)), new CRC32());
+                in = new CheckedInputStream(new FileInputStream(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.getFileRepositoryPath(), data.getId(), data.getId() + revision)), new CRC32());
                 if (useSAAJ) {
                     //attach file to SOAP message
                     m = mc.getResponseMessage();
@@ -296,7 +296,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 } else {
                     in = new ByteArrayInputStream(in1);
                 }
-                CheckedOutputStream out = new CheckedOutputStream(new FileOutputStream(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, data.getId(), "" + data.getId())), new CRC32());
+                CheckedOutputStream out = new CheckedOutputStream(new FileOutputStream(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.getFileRepositoryPath(), data.getId(), "" + data.getId())), new CRC32());
                 byte[] buf = new byte[4096];
                 len = 0;
                 total_len = 0;
@@ -317,8 +317,8 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                     }
                     if (MaxLogId > 0) {
                         //copy file
-                        FileInputStream fcis  = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, data.getId(), "" + data.getId())));
-                        FileOutputStream fcos = new FileOutputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, data.getId(), data.getId() + "-" + MaxLogId)));
+                        FileInputStream fcis  = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.getFileRepositoryPath(), data.getId(), "" + data.getId())));
+                        FileOutputStream fcos = new FileOutputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.getFileRepositoryPath(), data.getId(), data.getId() + "-" + MaxLogId)));
                         byte[] fcbuf = new byte[4096];
                         len = 0;
                         while((len=fcis.read(fcbuf))!=-1) {

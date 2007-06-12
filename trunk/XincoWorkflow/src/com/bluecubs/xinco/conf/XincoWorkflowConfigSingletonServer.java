@@ -35,14 +35,15 @@
 
 package com.bluecubs.xinco.conf;
 
+import com.bluecubs.xinco.workflow.server.WorkflowSettingServer;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-public class XincoWorkflowConfigSingletonServer {
+public class XincoWorkflowConfigSingletonServer{
     private static XincoWorkflowConfigSingletonServer  instance = null;
     private String JNDIDB = null;
     /** Creates a new instance of XincoWorkflowConfigSingletonServer */
-    public XincoWorkflowConfigSingletonServer() {
+    protected XincoWorkflowConfigSingletonServer() {
         try {
             JNDIDB = (String)(new InitialContext()).lookup("java:comp/env/xincoWorkflow/JNDIDB");
         } catch (NamingException ex) {
@@ -55,5 +56,15 @@ public class XincoWorkflowConfigSingletonServer {
             instance = new XincoWorkflowConfigSingletonServer();
         }
         return instance;
+    }
+    
+    public void init(WorkflowSettingServer xss){
+//        try{
+//            
+//        }
+    }
+    
+     public String getJNDIDB() {
+        return JNDIDB;
     }
 }

@@ -12,9 +12,9 @@ public class Node  implements java.io.Serializable {
 
     private java.lang.String description;
 
-    private com.bluecubs.xinco.workflow.Property[] properties;
+    private java.util.Vector properties;
 
-    private com.bluecubs.xinco.workflow.Activity[] activities;
+    private java.util.Vector activities;
 
     public Node() {
     }
@@ -22,8 +22,8 @@ public class Node  implements java.io.Serializable {
     public Node(
            int id,
            java.lang.String description,
-           com.bluecubs.xinco.workflow.Property[] properties,
-           com.bluecubs.xinco.workflow.Activity[] activities) {
+           java.util.Vector properties,
+           java.util.Vector activities) {
            this.id = id;
            this.description = description;
            this.properties = properties;
@@ -76,7 +76,7 @@ public class Node  implements java.io.Serializable {
      * 
      * @return properties
      */
-    public com.bluecubs.xinco.workflow.Property[] getProperties() {
+    public java.util.Vector getProperties() {
         return properties;
     }
 
@@ -86,16 +86,8 @@ public class Node  implements java.io.Serializable {
      * 
      * @param properties
      */
-    public void setProperties(com.bluecubs.xinco.workflow.Property[] properties) {
+    public void setProperties(java.util.Vector properties) {
         this.properties = properties;
-    }
-
-    public com.bluecubs.xinco.workflow.Property getProperties(int i) {
-        return this.properties[i];
-    }
-
-    public void setProperties(int i, com.bluecubs.xinco.workflow.Property _value) {
-        this.properties[i] = _value;
     }
 
 
@@ -104,7 +96,7 @@ public class Node  implements java.io.Serializable {
      * 
      * @return activities
      */
-    public com.bluecubs.xinco.workflow.Activity[] getActivities() {
+    public java.util.Vector getActivities() {
         return activities;
     }
 
@@ -114,16 +106,8 @@ public class Node  implements java.io.Serializable {
      * 
      * @param activities
      */
-    public void setActivities(com.bluecubs.xinco.workflow.Activity[] activities) {
+    public void setActivities(java.util.Vector activities) {
         this.activities = activities;
-    }
-
-    public com.bluecubs.xinco.workflow.Activity getActivities(int i) {
-        return this.activities[i];
-    }
-
-    public void setActivities(int i, com.bluecubs.xinco.workflow.Activity _value) {
-        this.activities[i] = _value;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -144,10 +128,10 @@ public class Node  implements java.io.Serializable {
               this.description.equals(other.getDescription()))) &&
             ((this.properties==null && other.getProperties()==null) || 
              (this.properties!=null &&
-              java.util.Arrays.equals(this.properties, other.getProperties()))) &&
+              this.properties.equals(other.getProperties()))) &&
             ((this.activities==null && other.getActivities()==null) || 
              (this.activities!=null &&
-              java.util.Arrays.equals(this.activities, other.getActivities())));
+              this.activities.equals(other.getActivities())));
         __equalsCalc = null;
         return _equals;
     }
@@ -164,26 +148,10 @@ public class Node  implements java.io.Serializable {
             _hashCode += getDescription().hashCode();
         }
         if (getProperties() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getProperties());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getProperties(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
+            _hashCode += getProperties().hashCode();
         }
         if (getActivities() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getActivities());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getActivities(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
+            _hashCode += getActivities().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -210,16 +178,14 @@ public class Node  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("properties");
         elemField.setXmlName(new javax.xml.namespace.QName("", "properties"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Property"));
-        elemField.setNillable(false);
-        elemField.setMaxOccursUnbounded(true);
+        elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
+        elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("activities");
         elemField.setXmlName(new javax.xml.namespace.QName("", "activities"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Activity"));
-        elemField.setNillable(false);
-        elemField.setMaxOccursUnbounded(true);
+        elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
+        elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }
 

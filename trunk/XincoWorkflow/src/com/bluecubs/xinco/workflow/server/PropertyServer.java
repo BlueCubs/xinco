@@ -35,7 +35,7 @@
 
 package com.bluecubs.xinco.workflow.server;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.WorkflowDBManager;
 import com.bluecubs.xinco.workflow.Property;
 import com.bluecubs.xinco.workflow.server.*;
 import java.sql.ResultSet;
@@ -46,10 +46,10 @@ public class PropertyServer extends Property{
     private ResultSet rs;
     private final int NODE=1,TRANSACTION=2,ACTIVITY=3;
     /** Creates a new instance of PropertyServer */
-    public PropertyServer(int id, XincoDBManager DBM) {
+    public PropertyServer(int id, WorkflowDBManager DBM) {
         if(id>0){
             try {
-                rs=DBM.getConnection().createStatement().executeQuery("select * from " +
+                rs=DBM.getStatement().executeQuery("select * from " +
                         "property where id="+id);
                 rs.next();
                 setId(rs.getInt("id"));
@@ -71,19 +71,19 @@ public class PropertyServer extends Property{
         
     }
     
-    public Vector getPropertiesForNode(int id, XincoDBManager DBM){
+    public Vector getPropertiesForNode(int id, WorkflowDBManager DBM){
         return getProperties(id,this.NODE,DBM);
     }
     
-    public Vector getPropertiesForTransaction(int id, XincoDBManager DBM){
+    public Vector getPropertiesForTransaction(int id, WorkflowDBManager DBM){
         return getProperties(id,this.TRANSACTION,DBM);
     }
     
-    public Vector getPropertiesForActivity(int id, XincoDBManager DBM){
+    public Vector getPropertiesForActivity(int id, WorkflowDBManager DBM){
         return getProperties(id,this.ACTIVITY,DBM);
     }
     
-    private Vector getProperties(int id,int type, XincoDBManager DBM){
+    private Vector getProperties(int id,int type, WorkflowDBManager DBM){
         Vector properties = new Vector();
         String sql = "select id from property where ";
         switch(type){
@@ -96,7 +96,7 @@ public class PropertyServer extends Property{
         }
         sql+=id;
         try {
-            rs=DBM.getConnection().createStatement().executeQuery(sql);
+            rs=DBM.getStatement().executeQuery(sql);
             while(rs.next()){
                 properties.add(new PropertyServer(rs.getInt("id"),DBM));
             }

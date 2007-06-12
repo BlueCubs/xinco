@@ -251,7 +251,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             while (rs.next()) {
                 nodes.addElement(new XincoCoreNodeServer(rs.getInt("id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_language_id"), rs.getString("designation"), rs.getInt("status_number"), DBM));
                 i++;
-                if (i >= DBM.config.MaxSearchResult) {
+                if (i >= DBM.config.getMaxSearchResult()) {
                     break;
                 }
             }

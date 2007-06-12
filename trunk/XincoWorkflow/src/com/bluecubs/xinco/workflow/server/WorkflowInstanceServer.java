@@ -35,7 +35,7 @@
 
 package com.bluecubs.xinco.workflow.server;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.WorkflowDBManager;
 import com.bluecubs.xinco.workflow.WorkflowInstance;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,10 +48,10 @@ public class WorkflowInstanceServer extends WorkflowInstance{
     /**
      * Creates a new instance of WorkflowInstanceServer
      */
-    public WorkflowInstanceServer(int id, XincoDBManager DBM) {
+    public WorkflowInstanceServer(int id, WorkflowDBManager DBM) {
         if(id>0){
             try {
-                rs=DBM.getConnection().createStatement().executeQuery("select * from " +
+                rs=DBM.getStatement().executeQuery("select * from " +
                         "workflow_instance where id ="+id);
                 rs.next();
                 setId(rs.getInt("id"));

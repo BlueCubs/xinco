@@ -8,13 +8,13 @@
              xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
              xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
              xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-             xmlns:tns="http://workflow.xinco.bluecubs.com">
+             xmlns:tns="http://workflow.xinco.bluecubs.com"
+             xmlns:tns1="http://core.xinco.bluecubs.com">
     <types>
         <schema targetNamespace="http://workflow.xinco.bluecubs.com" 
                 xmlns="http://www.w3.org/2001/XMLSchema">
             <import namespace="http://xml.apache.org/xml-soap"/>
             <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
-            <import schemaLocation="Xinco.xsd" namespace="http://core.xinco.bluecubs.com"/>
             <complexType name="Activity">
                 <sequence>
                     <element name="id" type="xsd:int"/>
@@ -22,7 +22,7 @@
                     <element name="assignedTo" type="tns:Resource"/>
                     <element name="assignedOn" type="xsd:dateTime"/>
                     <element name="completedOn" type="xsd:dateTime"/>
-                    <element name="properties" type="tns:Property" maxOccurs="unbounded"/>
+                    <element name="properties" nillable="true" type="apachesoap:Vector"/>
                 </sequence>
             </complexType>
             <complexType name="Resource">
@@ -58,8 +58,8 @@
                 <sequence>
                     <element name="id" type="xsd:int"/>
                     <element name="description" type="xsd:string"/>
-                    <element name="properties" type="tns:Property" maxOccurs="unbounded"/>
-                    <element name="activities" type="tns:Activity" maxOccurs="unbounded"/>
+                    <element name="properties" nillable="true" type="apachesoap:Vector"/>
+                    <element name="activities" nillable="true" type="apachesoap:Vector"/>
                 </sequence>
             </complexType>
             <complexType name="Transaction">
@@ -68,8 +68,8 @@
                     <element name="description" type="xsd:string"/>
                     <element name="from" type="tns:Node"/>
                     <element name="to" type="tns:Node"/>
-                    <element name="activities" type="tns:Activity" maxOccurs="unbounded"/>
-                    <element name="properties" type="tns:Property" maxOccurs="unbounded"/>
+                    <element name="activities" nillable="true" type="apachesoap:Vector"/>
+                    <element name="properties" nillable="true" type="apachesoap:Vector"/>
                 </sequence>
             </complexType>
             <complexType name="WorkflowTemplate">
@@ -77,8 +77,8 @@
                     <element name="id" type="xsd:int"/>
                     <element name="description" type="xsd:string"/>
                     <element name="creationTime" type="xsd:dateTime"/>
-                    <element name="nodes" type="tns:Node" maxOccurs="unbounded"/>
-                    <element name="transactions" type="tns:Transaction" maxOccurs="unbounded"/>
+                    <element name="nodes" nillable="true" type="apachesoap:Vector"/>
+                    <element name="transactions" nillable="true" type="apachesoap:Vector"/>
                 </sequence>
             </complexType>
             <complexType name="WorkflowInstance">
@@ -86,8 +86,28 @@
                     <element name="id" type="xsd:int"/>
                     <element name="templateId" type="xsd:int"/>
                     <element name="creationTime" type="xsd:dateTime"/>
-                    <element name="nodes" type="tns:Node" maxOccurs="unbounded"/>
-                    <element name="transactions" type="tns:Transaction" maxOccurs="unbounded"/>
+                    <element name="nodes" nillable="true" type="apachesoap:Vector"/>
+                    <element name="transactions" nillable="true" type="apachesoap:Vector"/>
+                </sequence>
+            </complexType>
+            <complexType name="WorkflowVersion">
+                <sequence>
+                    <element name="version_high" type="xsd:int"/>
+                    <element name="version_low" type="xsd:int"/>
+                    <element name="version_mid" type="xsd:int"/>
+                    <element name="version_postfix" nillable="true" type="xsd:string"/>
+                </sequence>
+            </complexType>
+            <complexType name="WorkflowSetting">
+                <sequence>
+                    <element name="id" type="xsd:int"/>
+                    <element name="description" type="xsd:string"/>
+                    <element name="int_value" type="xsd:int"/>
+                    <element name="string_value" type="xsd:string"/>
+                    <element name="bool_value" type="xsd:boolean"/>
+                    <element name="changerID" type="xsd:int"/>
+                    <element name="long_value" type="xsd:long"/>
+                    <element name="workflow_settings" nillable="true" type="apachesoap:Vector"/>
                 </sequence>
             </complexType>
         </schema>
@@ -99,34 +119,8 @@
                 <sequence>
                     <element maxOccurs="unbounded" minOccurs="0" name="item" type="xsd:anyType"/>
                 </sequence>
-            </complexType>
+            </complexType>X
         </schema>
-        <schema targetNamespace="http://core.xinco.bluecubs.com" 
-                xmlns="http://www.w3.org/2001/XMLSchema">
-            <import namespace="http://add.xinco.bluecubs.com"/>
-            <import namespace="http://xml.apache.org/xml-soap"/>
-            <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
-            <complexType name="XincoVersion">
-                <sequence>
-                    <element name="version_high" type="xsd:int"/>
-                    <element name="version_low" type="xsd:int"/>
-                    <element name="version_mid" type="xsd:int"/>
-                    <element name="version_postfix" nillable="true" type="xsd:string"/>
-                </sequence>
-            </complexType>
-            <complexType name="XincoSetting">
-                <sequence>
-                    <element name="id" type="xsd:int"/>
-                    <element name="description" type="xsd:string"/>
-                    <element name="int_value" type="xsd:int"/>
-                    <element name="string_value" type="xsd:string"/>
-                    <element name="bool_value" type="xsd:boolean"/>
-                    <element name="changerID" type="xsd:int"/>
-                    <element name="long_value" type="xsd:long"/>
-                    <element name="xinco_settings" nillable="true" type="apachesoap:Vector"/>
-                </sequence>
-            </complexType>
-            </schema>
     </types>
     <wsdl:message name="getActivityRequest">
         <wsdl:part name="in" type="tns:Activity"/>
@@ -219,6 +213,30 @@
     <wsdl:message name="setNodeResponse">
         <wsdl:part name="node" type="tns:Node"/>
     </wsdl:message>
+        <wsdl:message name="setWorkflowSettingRequest">
+        <wsdl:part name="in0" type="tns:WorkflowSetting">
+        </wsdl:part>
+        <wsdl:part name="in1" type="tns:Resource">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="setWorkflowSettingResponse">
+        <wsdl:part name="setXincoSettingReturn" type="tns:WorkflowSetting">   
+        </wsdl:part>
+    </wsdl:message>
+        <wsdl:message name="getWorkflowSettingRequest">
+        <wsdl:part name="in0" type="tns:Resource">   
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getWorkflowSettingResponse">
+        <wsdl:part name="getXincoSettingReturn" type="apachesoap:Vector">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getWorkflowServerVersionRequest">
+    </wsdl:message>
+    <wsdl:message name="getWorkflowServerVersionResponse">        
+        <wsdl:part name="getWorkflowServerVersionReturn" type="tns:WorkflowVersion">            
+        </wsdl:part>
+    </wsdl:message>
     <portType name="XincoWorkflow">
         <wsdl:operation name="getActivity">
             <wsdl:input name="getActivityRequest" message="impl:getActivityRequest"/>
@@ -271,6 +289,18 @@
         <wsdl:operation name="setNode">
             <wsdl:input name="setNodeRequest" message="impl:setNodeRequest"/>
             <wsdl:output name="setNodeResponse" message="impl:setNodeResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setWorkflowSetting">
+            <wsdl:input name="setWorkflowSettingRequest" message="impl:setWorkflowSettingRequest"/>
+            <wsdl:output name="setWorkflowSettingResponse" message="impl:setWorkflowSettingResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getWorkflowSetting">
+            <wsdl:input name="getWorkflowSettingRequest" message="impl:getWorkflowSettingRequest"/>
+            <wsdl:output name="getWorkflowSettingResponse" message="impl:getWorkflowSettingResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getWorkflowServerVersion">
+            <wsdl:input name="getWorkflowServerVersionRequest" message="impl:getWorkflowServerVersionRequest"/>
+            <wsdl:output name="getWorkflowServerVersionResponse" message="impl:getWorkflowServerVersionResponse"/>
         </wsdl:operation>
     </portType>
     <wsdl:binding name="XincoWorkflowSoapBinding" type="impl:XincoWorkflow">
@@ -326,6 +356,18 @@
         <wsdl:operation name="setNode">
             <wsdl:input name="setNodeRequest"/>
             <wsdl:output name="setNodeResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setWorkflowSetting">
+            <wsdl:input name="setWorkflowSettingRequest"/>
+            <wsdl:output name="setWorkflowSettingResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getWorkflowSetting">
+            <wsdl:input name="getWorkflowSettingRequest"/>
+            <wsdl:output name="getWorkflowSettingResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getWorkflowServerVersion">
+            <wsdl:input name="getWorkflowServerVersionRequest"/>
+            <wsdl:output name="getWorkflowServerVersionResponse"/>
         </wsdl:operation>
     </wsdl:binding>
     <wsdl:service name="WorkflowService">

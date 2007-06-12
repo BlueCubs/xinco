@@ -18,7 +18,7 @@ public class Activity  implements java.io.Serializable {
 
     private java.util.Calendar completedOn;
 
-    private com.bluecubs.xinco.workflow.Property[] properties;
+    private java.util.Vector properties;
 
     public Activity() {
     }
@@ -29,7 +29,7 @@ public class Activity  implements java.io.Serializable {
            com.bluecubs.xinco.workflow.Resource assignedTo,
            java.util.Calendar assignedOn,
            java.util.Calendar completedOn,
-           com.bluecubs.xinco.workflow.Property[] properties) {
+           java.util.Vector properties) {
            this.id = id;
            this.description = description;
            this.assignedTo = assignedTo;
@@ -144,7 +144,7 @@ public class Activity  implements java.io.Serializable {
      * 
      * @return properties
      */
-    public com.bluecubs.xinco.workflow.Property[] getProperties() {
+    public java.util.Vector getProperties() {
         return properties;
     }
 
@@ -154,16 +154,8 @@ public class Activity  implements java.io.Serializable {
      * 
      * @param properties
      */
-    public void setProperties(com.bluecubs.xinco.workflow.Property[] properties) {
+    public void setProperties(java.util.Vector properties) {
         this.properties = properties;
-    }
-
-    public com.bluecubs.xinco.workflow.Property getProperties(int i) {
-        return this.properties[i];
-    }
-
-    public void setProperties(int i, com.bluecubs.xinco.workflow.Property _value) {
-        this.properties[i] = _value;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -193,7 +185,7 @@ public class Activity  implements java.io.Serializable {
               this.completedOn.equals(other.getCompletedOn()))) &&
             ((this.properties==null && other.getProperties()==null) || 
              (this.properties!=null &&
-              java.util.Arrays.equals(this.properties, other.getProperties())));
+              this.properties.equals(other.getProperties())));
         __equalsCalc = null;
         return _equals;
     }
@@ -219,15 +211,7 @@ public class Activity  implements java.io.Serializable {
             _hashCode += getCompletedOn().hashCode();
         }
         if (getProperties() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getProperties());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getProperties(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
+            _hashCode += getProperties().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -272,9 +256,8 @@ public class Activity  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("properties");
         elemField.setXmlName(new javax.xml.namespace.QName("", "properties"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Property"));
-        elemField.setNillable(false);
-        elemField.setMaxOccursUnbounded(true);
+        elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
+        elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }
 

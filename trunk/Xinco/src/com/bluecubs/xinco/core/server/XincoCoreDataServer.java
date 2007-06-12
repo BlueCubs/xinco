@@ -222,7 +222,7 @@ public class XincoCoreDataServer extends XincoCoreData {
             //delete file / file = 1
             if (getXinco_core_data_type().getId() == 1) {
                 try {
-                    (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.FileRepositoryPath, getId(), "" + getId()))).delete();
+                    (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), getId(), "" + getId()))).delete();
                 } catch (Exception dfe) {
                     // continue, file might not exists
                 }
@@ -230,7 +230,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                 for (i=0;i<this.getXinco_core_logs().size();i++) {
                     if ((((XincoCoreLog)getXinco_core_logs().elementAt(i)).getOp_code() == 1) || (((XincoCoreLog)getXinco_core_logs().elementAt(i)).getOp_code() == 5))
                         try {
-                            (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.FileRepositoryPath, getId(), getId() + "-" + ((XincoCoreLog)getXinco_core_logs().elementAt(i)).getId()))).delete();
+                            (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), getId(), getId() + "-" + ((XincoCoreLog)getXinco_core_logs().elementAt(i)).getId()))).delete();
                         } catch (Exception drfe) {
                             // continue, delete next revision
                         }
@@ -289,7 +289,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                 //data.addElement(new XincoCoreDataServer(rs.getInt("id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_language_id"), rs.getInt("xinco_core_data_type_id"), rs.getString("designation"), rs.getInt("status_number"), DBM));
                 data.addElement(new XincoCoreDataServer(rs.getInt("id"), DBM));
                 i++;
-                if (i >= DBM.config.MaxSearchResult) {
+                if (i >= DBM.config.getMaxSearchResult()) {
                     break;
                 }
             }

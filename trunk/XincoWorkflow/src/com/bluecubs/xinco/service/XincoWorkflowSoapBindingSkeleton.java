@@ -181,6 +181,39 @@ public class XincoWorkflowSoapBindingSkeleton implements com.bluecubs.xinco.serv
             _myOperations.put("setNode", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("setNode")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "WorkflowSetting"), com.bluecubs.xinco.workflow.WorkflowSetting.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Resource"), com.bluecubs.xinco.workflow.Resource.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("setWorkflowSetting", _params, new javax.xml.namespace.QName("", "setXincoSettingReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "WorkflowSetting"));
+        _oper.setElementQName(new javax.xml.namespace.QName("", "setWorkflowSetting"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("setWorkflowSetting") == null) {
+            _myOperations.put("setWorkflowSetting", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("setWorkflowSetting")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Resource"), com.bluecubs.xinco.workflow.Resource.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getWorkflowSetting", _params, new javax.xml.namespace.QName("", "getXincoSettingReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
+        _oper.setElementQName(new javax.xml.namespace.QName("", "getWorkflowSetting"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getWorkflowSetting") == null) {
+            _myOperations.put("getWorkflowSetting", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getWorkflowSetting")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getWorkflowServerVersion", _params, new javax.xml.namespace.QName("", "getWorkflowServerVersionReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "WorkflowVersion"));
+        _oper.setElementQName(new javax.xml.namespace.QName("", "getWorkflowServerVersion"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getWorkflowServerVersion") == null) {
+            _myOperations.put("getWorkflowServerVersion", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getWorkflowServerVersion")).add(_oper);
     }
 
     public XincoWorkflowSoapBindingSkeleton() {
@@ -260,6 +293,24 @@ public class XincoWorkflowSoapBindingSkeleton implements com.bluecubs.xinco.serv
     public com.bluecubs.xinco.workflow.Node setNode(com.bluecubs.xinco.workflow.Node in, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.workflow.Node ret = impl.setNode(in, resource);
+        return ret;
+    }
+
+    public com.bluecubs.xinco.workflow.WorkflowSetting setWorkflowSetting(com.bluecubs.xinco.workflow.WorkflowSetting in0, com.bluecubs.xinco.workflow.Resource in1) throws java.rmi.RemoteException
+    {
+        com.bluecubs.xinco.workflow.WorkflowSetting ret = impl.setWorkflowSetting(in0, in1);
+        return ret;
+    }
+
+    public java.util.Vector getWorkflowSetting(com.bluecubs.xinco.workflow.Resource in0) throws java.rmi.RemoteException
+    {
+        java.util.Vector ret = impl.getWorkflowSetting(in0);
+        return ret;
+    }
+
+    public com.bluecubs.xinco.workflow.WorkflowVersion getWorkflowServerVersion() throws java.rmi.RemoteException
+    {
+        com.bluecubs.xinco.workflow.WorkflowVersion ret = impl.getWorkflowServerVersion();
         return ret;
     }
 
