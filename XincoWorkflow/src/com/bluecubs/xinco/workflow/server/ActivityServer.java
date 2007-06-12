@@ -37,6 +37,7 @@ package com.bluecubs.xinco.workflow.server;
 
 import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.workflow.Activity;
+import com.bluecubs.xinco.workflow.server.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -48,12 +49,7 @@ import java.util.Properties;
 public class ActivityServer extends Activity{
     private int nodeID;
     private ResultSet rs;
-    /** Creates a new instance of ActivityServer */
-    public ActivityServer(int id,Properties props) {
-        this.setId(id);
-        this.setProperties(props);
-    }
-    
+    /** Creates a new instance of ActivityServer */    
     public ActivityServer(int id,XincoDBManager DBM) {
         try {
             rs=DBM.getConnection().createStatement().executeQuery("select * from activity where id="+id);

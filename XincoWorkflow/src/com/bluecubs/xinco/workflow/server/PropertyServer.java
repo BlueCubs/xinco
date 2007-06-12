@@ -37,6 +37,7 @@ package com.bluecubs.xinco.workflow.server;
 
 import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.workflow.Property;
+import com.bluecubs.xinco.workflow.server.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
@@ -56,9 +57,10 @@ public class PropertyServer extends Property{
                 setNodeId(rs.getInt("node_id"));
                 setTransactionId(rs.getInt("transaction_id"));
                 setDescription(rs.getString("description"));
-                setPropertyString(rs.getString("propertyString"));
-                setPropertyBool(rs.getBoolean("propertyBool"));
-                setPropertyInt(rs.getInt("propertyInt"));
+                setStringProperty(rs.getString("propertyString"));
+                setBoolProperty(rs.getBoolean("propertyBool"));
+                setIntProperty(rs.getInt("propertyInt"));
+                setLongProperty(rs.getLong("'propertyLong"));
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
