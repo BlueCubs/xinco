@@ -7,17 +7,24 @@
 
 package com.bluecubs.xinco.service;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.WorkflowDBManager;
+import com.bluecubs.xinco.workflow.Resource;
+import com.bluecubs.xinco.workflow.WorkflowSetting;
+import com.bluecubs.xinco.workflow.WorkflowVersion;
 import com.bluecubs.xinco.workflow.XincoWorkflowException;
 import com.bluecubs.xinco.workflow.server.ActivityServer;
 import com.bluecubs.xinco.workflow.server.NodeServer;
 import com.bluecubs.xinco.workflow.server.PropertyServer;
 import com.bluecubs.xinco.workflow.server.ResourceServer;
+import com.bluecubs.xinco.workflow.server.WorkflowSettingServer;
+import java.rmi.RemoteException;
+import java.util.Vector;
 
 public class XincoWorkflowSoapBindingImpl implements com.bluecubs.xinco.service.XincoWorkflow{
+    private WorkflowDBManager DBM;
     public com.bluecubs.xinco.workflow.Activity getActivity(com.bluecubs.xinco.workflow.Activity in, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException {
         try {
-            ResourceServer r = new ResourceServer(resource.getUsername(),resource.getPassword(),new XincoDBManager());
+            ResourceServer r = new ResourceServer(resource.getUsername(),resource.getUserpassword(),new WorkflowDBManager());
         } catch (XincoWorkflowException ex) {
             ex.printStackTrace();
             return null;
@@ -27,7 +34,7 @@ public class XincoWorkflowSoapBindingImpl implements com.bluecubs.xinco.service.
         }
         ActivityServer a=null;
         try {
-            a = new ActivityServer(in.getId(), new XincoDBManager());
+            a = new ActivityServer(in.getId(), new WorkflowDBManager());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -39,7 +46,7 @@ public class XincoWorkflowSoapBindingImpl implements com.bluecubs.xinco.service.
     
     public com.bluecubs.xinco.workflow.Node getNode(com.bluecubs.xinco.workflow.Node in, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException {
         try {
-            ResourceServer r = new ResourceServer(resource.getUsername(),resource.getPassword(),new XincoDBManager());
+            ResourceServer r = new ResourceServer(resource.getUsername(),resource.getUserpassword(),new WorkflowDBManager());
         } catch (XincoWorkflowException ex) {
             ex.printStackTrace();
             return null;
@@ -49,7 +56,7 @@ public class XincoWorkflowSoapBindingImpl implements com.bluecubs.xinco.service.
         }
         NodeServer n=null;
         try {
-            n = new NodeServer(in.getId(), new XincoDBManager());
+            n = new NodeServer(in.getId(), new WorkflowDBManager());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -58,7 +65,7 @@ public class XincoWorkflowSoapBindingImpl implements com.bluecubs.xinco.service.
     
     public com.bluecubs.xinco.workflow.Property getProperty(com.bluecubs.xinco.workflow.Property in, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException {
         try {
-            ResourceServer r = new ResourceServer(resource.getUsername(),resource.getPassword(),new XincoDBManager());
+            ResourceServer r = new ResourceServer(resource.getUsername(),resource.getUserpassword(),new WorkflowDBManager());
         } catch (XincoWorkflowException ex) {
             ex.printStackTrace();
             return null;
@@ -68,7 +75,7 @@ public class XincoWorkflowSoapBindingImpl implements com.bluecubs.xinco.service.
         }
         PropertyServer p=null;
         try {
-            p = new PropertyServer(in.getId(), new XincoDBManager());
+            p = new PropertyServer(in.getId(), new WorkflowDBManager());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -105,6 +112,35 @@ public class XincoWorkflowSoapBindingImpl implements com.bluecubs.xinco.service.
     
     public com.bluecubs.xinco.workflow.Node setNode(com.bluecubs.xinco.workflow.Node in, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException {
         return null;
+    }
+    
+    public WorkflowSetting setWorkflowSetting(WorkflowSetting in0, Resource in1) throws RemoteException {
+        return null;
+    }
+    
+    public Vector getWorkflowSetting(Resource in0) throws RemoteException {
+        Vector setting=null;
+        try {
+            setting = new WorkflowDBManager().getWorkflowSettingServer().getWorkflow_settings();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return setting;
+    }
+
+    public WorkflowVersion getWorkflowServerVersion() throws RemoteException {
+        try {
+            DBM=new WorkflowDBManager();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        //return current version of server
+        WorkflowVersion version = new WorkflowVersion();
+        version.setVersion_high(DBM.getWorkflowSettingServer().getSetting("version.high").getInt_value());
+        version.setVersion_mid(DBM.getWorkflowSettingServer().getSetting("version.med").getInt_value());
+        version.setVersion_low(DBM.getWorkflowSettingServer().getSetting("version.low").getInt_value());
+        version.setVersion_postfix(DBM.getWorkflowSettingServer().getSetting("version.postfix").getString_value());
+        return version;
     }
     
 }

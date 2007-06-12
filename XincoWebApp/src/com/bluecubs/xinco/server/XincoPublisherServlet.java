@@ -175,7 +175,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 response.setContentType("unknown/unknown");
                 OutputStream out = response.getOutputStream();
                 
-                FileInputStream in = new FileInputStream(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, core_data_id, "" + core_data_id));
+                FileInputStream in = new FileInputStream(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.getFileRepositoryPath(), core_data_id, "" + core_data_id));
                 byte[] buf = new byte[4096];
                 int len;
                 while ((len = in.read(buf)) > 0) {

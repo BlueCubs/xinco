@@ -85,9 +85,9 @@ public class XincoDocument {
                 }
                 //check which indexer to use for file extension
                 file_type = 0; // default: index as TEXT
-                for (l=0;l<dbm.config.FileIndexerCount;l++) {
-                    for (i=0;i<((String[])dbm.config.IndexFileTypesExt.elementAt(l)).length;i++) {
-                        if (((String[])dbm.config.IndexFileTypesExt.elementAt(l))[i].compareTo(file_ext) == 0) {
+                for (l=0;l<dbm.config.getFileIndexerCount();l++) {
+                    for (i=0;i<((String[]) dbm.config.getIndexFileTypesExt().elementAt(l)).length;i++) {
+                        if (((String[])dbm.config.getIndexFileTypesExt().elementAt(l))[i].compareTo(file_ext) == 0) {
                             file_type = l+1; // file-type specific indexing
                             break;
                         }
@@ -97,8 +97,8 @@ public class XincoDocument {
                     }
                 }
                 if (file_type == 0) {
-                    for (i=0;i<dbm.config.IndexNoIndex.length;i++) {
-                        if (dbm.config.IndexNoIndex[i].compareTo(file_ext) == 0) {
+                    for (i=0;i<dbm.config.getIndexNoIndex().length;i++) {
+                        if (dbm.config.getIndexNoIndex()[i].compareTo(file_ext) == 0) {
                             file_type = -1; // NO indexing
                             break;
                         }
@@ -111,16 +111,16 @@ public class XincoDocument {
                 if (file_type == 0) {
                     // index as TEXT
                     xift = new XincoIndexText();
-                    doc.add(Field.Text("file", xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, d.getId(), "" + d.getId())))));
+                    doc.add(Field.Text("file", xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.getFileRepositoryPath(), d.getId(), "" + d.getId())))));
                 } else if (file_type > 0) {
                     // file-type specific indexing
                     try {
-                        xift = (XincoIndexFileType)Class.forName((String)dbm.config.IndexFileTypesClass.elementAt(file_type-1)).newInstance();
-                        ContentReader = xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, d.getId(), "" + d.getId())));
+                        xift = (XincoIndexFileType)Class.forName((String)dbm.config.getIndexFileTypesClass().elementAt(file_type-1)).newInstance();
+                        ContentReader = xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.getFileRepositoryPath(), d.getId(), "" + d.getId())));
                         if (ContentReader != null) {
                             doc.add(Field.Text("file", ContentReader));
                         } else {
-                            ContentString = xift.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, d.getId(), "" + d.getId())));
+                            ContentString = xift.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.getFileRepositoryPath(), d.getId(), "" + d.getId())));
                             if (ContentString != null) {
                                 doc.add(Field.Text("file", ContentString));
                             }

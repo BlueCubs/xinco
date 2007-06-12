@@ -65,11 +65,11 @@ public class XincoDBManager {
     private DataSource datasource=null;
     
     public XincoDBManager() throws Exception {
-        lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+        setResourceBundle(ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages"));
         //load connection configuartion
         config = XincoConfigSingletonServer.getInstance();
-        while((DataSource)(new InitialContext()).lookup(config.JNDIDB)==null);
-        setDatasource((DataSource)(new InitialContext()).lookup(config.JNDIDB));
+        while((DataSource)(new InitialContext()).lookup(config.getJNDIDB())==null);
+        setDatasource((DataSource)(new InitialContext()).lookup(config.getJNDIDB()));
         getConnection().setAutoCommit(false);
         //load configuration from database
         fillSettings();
@@ -77,7 +77,7 @@ public class XincoDBManager {
         count++;
     }
     
-    private void fillSettings(){
+    protected void fillSettings(){
         ResultSet rs=null;
         getXincoSettingServer().setXinco_settings(new Vector());
         String string_value="";
@@ -157,7 +157,7 @@ public class XincoDBManager {
                                         value+"'><input type='hidden' name='Page' value='Codes.jsp'></form></td>");
                         } else {
                             if(value==null)
-                                out.println("<td>"+lrb.getString("general.nodata")+"</td>");
+                                out.println("<td>"+getResourceBundle().getString("general.nodata")+"</td>");
                             else
                                 out.println("<td>"+value+"</td>");
                         }
@@ -167,7 +167,7 @@ public class XincoDBManager {
             }
             out.println("</tr></table></center>");
         } catch(Exception e) {
-            out.println(lrb.getString("general.nodata"));
+            out.println(getResourceBundle().getString("general.nodata"));
             System.out.println("Exception drawing table: " + e.getMessage());
         }
     }
@@ -218,11 +218,11 @@ public class XincoDBManager {
         if(s==null)
             return null;
         try{
-            lrb.getString(s);
+            getResourceBundle().getString(s);
         }catch (MissingResourceException e){
             return s;
         }
-        return lrb.getString(s);
+        return getResourceBundle().getString(s);
     }
     
     public void setLocale(Locale loc) {
@@ -231,7 +231,7 @@ public class XincoDBManager {
             loc = Locale.getDefault();
         else
             try {
-                lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
+                setResourceBundle(ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc));
             } catch (Exception e) {
                 e.printStackTrace();
                 printStats();
@@ -307,7 +307,7 @@ public class XincoDBManager {
                 printStats();
             }
         } else
-            throw new XincoException(lrb.getString("error.noadminpermission"));
+            throw new XincoException(getResourceBundle().getString("error.noadminpermission"));
     }
     
     public XincoSettingServer getXincoSettingServer() {
@@ -348,5 +348,13 @@ public class XincoDBManager {
     
     public XincoSetting getSetting(String name){
         return getXincoSettingServer().getSetting(name);
+    }
+
+    public ResourceBundle getResourceBundle() {
+        return lrb;
+    }
+
+    public void setResourceBundle(ResourceBundle lrb) {
+        this.lrb = lrb;
     }
 }

@@ -35,56 +35,74 @@
 
 package com.bluecubs.xinco.workflow.server;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.WorkflowDBManager;
 import com.bluecubs.xinco.workflow.Node;
 import com.bluecubs.xinco.workflow.Transaction;
 import com.bluecubs.xinco.workflow.WorkflowTemplate;
-import com.bluecubs.xinco.workflow.server.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Vector;
 
 public class WorkflowTemplateServer extends WorkflowTemplate{
-    ResultSet rs;
+    private ResultSet rs=null;
     /** Creates a new instance of WorkflowTemplateServer */
-    public WorkflowTemplateServer(int id, XincoDBManager DBM){
+    public WorkflowTemplateServer(int id, WorkflowDBManager DBM){
         if(id>0){
             try {
-                rs=DBM.getConnection().createStatement().executeQuery("select * from " +
+                rs=DBM.getStatement().executeQuery("select * from " +
                         "workflow_template where id ="+id);
                 rs.next();
                 setId(rs.getInt("id"));
                 setDescription(rs.getString("description"));
-                rs.close();
+                System.out.println("Loading Nodes...");
                 loadNodes(DBM);
+                System.out.println("Done!");
+                System.out.println("Loading Transactions...");
                 loadTransactions(DBM);
+                System.out.println("Done!");
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
         }
     }
     
-    private Node [] loadNodes(XincoDBManager DBM) throws SQLException{
-        rs=DBM.getConnection().createStatement().executeQuery("select node_id from " +
-                "Workflow_Template_has_Node where id="+getId());
-        setNodes(null);
-        int counter=0;
-        while(rs.next()){
-            setNodes(counter,new NodeServer(rs.getInt("node_id"),DBM));
-            counter++;
+    private Vector loadNodes(WorkflowDBManager DBM){
+        Vector temp = new Vector();
+        try {
+            String sql="select node_id from " +
+                    "Workflow_Template_has_Node where id="+getId();
+            System.out.println(sql);
+            rs=DBM.getStatement().executeQuery(sql);
+            temp.removeAllElements();
+            while(rs.next()){
+                temp.addElement(new NodeServer(rs.getInt("node_id"),DBM));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            temp.removeAllElements();
         }
+        System.out.println("Vector size: "+temp.size());
+        setNodes(temp);
         return getNodes();
     }
     
-    private Transaction [] loadTransactions(XincoDBManager DBM) throws SQLException{
-        rs=DBM.getConnection().createStatement().executeQuery("select transaction_id from " +
-                "Workflow_Template_has_Transaction where id="+getId());
-        setTransactions(null);
-        int counter=0;
-        while(rs.next()){
-            setTransactions(counter,new TransactionServer(rs.getInt("transaction_id"),DBM));
-            counter ++;
+    private Vector loadTransactions(WorkflowDBManager DBM){
+        Vector values = new Vector();
+        try{
+            String sql="select transaction_id from " +
+                    "Workflow_Template_has_Transaction where id="+getId();
+            System.out.println(sql);
+            rs=DBM.getStatement().executeQuery(sql);
+            values.removeAllElements();
+            while(rs.next()){
+                values.addElement(new TransactionServer(rs.getInt("transaction_id"),DBM));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            values.removeAllElements();
         }
+        System.out.println("Vector size: "+values.size());
+        setTransactions(values);
         return getTransactions();
     }
 }

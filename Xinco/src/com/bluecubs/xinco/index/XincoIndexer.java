@@ -61,9 +61,9 @@ public class XincoIndexer {
             XincoIndexer.removeXincoCoreData(d, dbm);
             //add document to index
             try {
-                writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), false);
+                writer = new IndexWriter(dbm.config.getFileIndexPath(), new StandardAnalyzer(), false);
             } catch (Exception ie) {
-                writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), true);
+                writer = new IndexWriter(dbm.config.getFileIndexPath(), new StandardAnalyzer(), true);
             }
             writer.addDocument(XincoDocument.getXincoDocument(d, index_content, dbm));
             writer.close();
@@ -84,7 +84,7 @@ public class XincoIndexer {
         IndexReader reader = null;
         //check if document exists in index and delete
         try {
-            reader = IndexReader.open(dbm.config.FileIndexPath);
+            reader = IndexReader.open(dbm.config.getFileIndexPath());
             reader.delete(new Term("id", "" + d.getId()));
             reader.close();
         } catch (Exception re) {
@@ -103,7 +103,7 @@ public class XincoIndexer {
         IndexWriter writer = null;
         try {
             //optimize index
-            writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), false);
+            writer = new IndexWriter(dbm.config.getFileIndexPath(), new StandardAnalyzer(), false);
             writer.optimize();
             writer.close();
         } catch (Exception e) {
@@ -124,7 +124,7 @@ public class XincoIndexer {
         
         try {
             
-            searcher = new IndexSearcher(dbm.config.FileIndexPath);
+            searcher = new IndexSearcher(dbm.config.getFileIndexPath());
             Analyzer analyzer = new StandardAnalyzer();
             
             //add language to query
@@ -141,7 +141,7 @@ public class XincoIndexer {
                 } catch (Exception xcde) {
                     // don't add non-existing data
                 }
-                if (i >= dbm.config.MaxSearchResult) {
+                if (i >= dbm.config.getMaxSearchResult()) {
                     break;
                 }
             }

@@ -14,9 +14,9 @@ public class WorkflowInstance  implements java.io.Serializable {
 
     private java.util.Calendar creationTime;
 
-    private com.bluecubs.xinco.workflow.Node[] nodes;
+    private java.util.Vector nodes;
 
-    private com.bluecubs.xinco.workflow.Transaction[] transactions;
+    private java.util.Vector transactions;
 
     public WorkflowInstance() {
     }
@@ -25,8 +25,8 @@ public class WorkflowInstance  implements java.io.Serializable {
            int id,
            int templateId,
            java.util.Calendar creationTime,
-           com.bluecubs.xinco.workflow.Node[] nodes,
-           com.bluecubs.xinco.workflow.Transaction[] transactions) {
+           java.util.Vector nodes,
+           java.util.Vector transactions) {
            this.id = id;
            this.templateId = templateId;
            this.creationTime = creationTime;
@@ -100,7 +100,7 @@ public class WorkflowInstance  implements java.io.Serializable {
      * 
      * @return nodes
      */
-    public com.bluecubs.xinco.workflow.Node[] getNodes() {
+    public java.util.Vector getNodes() {
         return nodes;
     }
 
@@ -110,16 +110,8 @@ public class WorkflowInstance  implements java.io.Serializable {
      * 
      * @param nodes
      */
-    public void setNodes(com.bluecubs.xinco.workflow.Node[] nodes) {
+    public void setNodes(java.util.Vector nodes) {
         this.nodes = nodes;
-    }
-
-    public com.bluecubs.xinco.workflow.Node getNodes(int i) {
-        return this.nodes[i];
-    }
-
-    public void setNodes(int i, com.bluecubs.xinco.workflow.Node _value) {
-        this.nodes[i] = _value;
     }
 
 
@@ -128,7 +120,7 @@ public class WorkflowInstance  implements java.io.Serializable {
      * 
      * @return transactions
      */
-    public com.bluecubs.xinco.workflow.Transaction[] getTransactions() {
+    public java.util.Vector getTransactions() {
         return transactions;
     }
 
@@ -138,16 +130,8 @@ public class WorkflowInstance  implements java.io.Serializable {
      * 
      * @param transactions
      */
-    public void setTransactions(com.bluecubs.xinco.workflow.Transaction[] transactions) {
+    public void setTransactions(java.util.Vector transactions) {
         this.transactions = transactions;
-    }
-
-    public com.bluecubs.xinco.workflow.Transaction getTransactions(int i) {
-        return this.transactions[i];
-    }
-
-    public void setTransactions(int i, com.bluecubs.xinco.workflow.Transaction _value) {
-        this.transactions[i] = _value;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -169,10 +153,10 @@ public class WorkflowInstance  implements java.io.Serializable {
               this.creationTime.equals(other.getCreationTime()))) &&
             ((this.nodes==null && other.getNodes()==null) || 
              (this.nodes!=null &&
-              java.util.Arrays.equals(this.nodes, other.getNodes()))) &&
+              this.nodes.equals(other.getNodes()))) &&
             ((this.transactions==null && other.getTransactions()==null) || 
              (this.transactions!=null &&
-              java.util.Arrays.equals(this.transactions, other.getTransactions())));
+              this.transactions.equals(other.getTransactions())));
         __equalsCalc = null;
         return _equals;
     }
@@ -190,26 +174,10 @@ public class WorkflowInstance  implements java.io.Serializable {
             _hashCode += getCreationTime().hashCode();
         }
         if (getNodes() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getNodes());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getNodes(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
+            _hashCode += getNodes().hashCode();
         }
         if (getTransactions() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getTransactions());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getTransactions(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
+            _hashCode += getTransactions().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -242,16 +210,14 @@ public class WorkflowInstance  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("nodes");
         elemField.setXmlName(new javax.xml.namespace.QName("", "nodes"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Node"));
-        elemField.setNillable(false);
-        elemField.setMaxOccursUnbounded(true);
+        elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
+        elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("transactions");
         elemField.setXmlName(new javax.xml.namespace.QName("", "transactions"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Transaction"));
-        elemField.setNillable(false);
-        elemField.setMaxOccursUnbounded(true);
+        elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
+        elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }
 

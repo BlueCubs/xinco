@@ -121,11 +121,11 @@ public class XincoIndexThread extends Thread {
         File indexDirectory = null;
         File indexDirectoryFile = null;
         String[] indexDirectoryFileList = null;
-        indexDirectory = new File(dbm.config.FileIndexPath);
+        indexDirectory = new File(dbm.config.getFileIndexPath());
         if (indexDirectory.exists()) {
             indexDirectoryFileList = indexDirectory.list();
             for (int i=0;i<indexDirectoryFileList.length;i++) {
-                indexDirectoryFile = new File(dbm.config.FileIndexPath + indexDirectoryFileList[i]);
+                indexDirectoryFile = new File(dbm.config.getFileIndexPath() + indexDirectoryFileList[i]);
                 indexDirectoryFile.delete();
             }
             index_directory_deleted=indexDirectory.delete();
