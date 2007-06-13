@@ -1,0 +1,145 @@
+/**
+ *Copyright June 13, 2007 blueCubs.com
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License");
+ *you may not use this file except in compliance with the License.
+ *You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *Unless required by applicable law or agreed to in writing, software
+ *distributed under the License is distributed on an "AS IS" BASIS,
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *See the License for the specific language governing permissions and
+ *limitations under the License.
+ *
+ *************************************************************
+ * This project supports the blueCubs vision of giving back
+ * to the community in exchange for free software!
+ * More information on: http://www.bluecubs.org
+ *************************************************************
+ *
+ * Name:            WorkflowInstanceManager.java
+ *
+ * Description:     WorkflowInstanceManager
+ *
+ * Original Author: Javier A. Ortiz
+ * Date:            June 13, 2007, 2:26 PM
+ *
+ * Modifications:
+ *
+ * Who?             When?             What?
+ *
+ *************************************************************
+ */
+
+package com.bluecubs.xinco.workflow.server;
+
+import com.bluecubs.xinco.workflow.Node;
+import com.bluecubs.xinco.workflow.Transaction;
+import com.bluecubs.xinco.workflow.WorkflowInstance;
+
+public class WorkflowInstanceManager {
+    private WorkflowInstanceServer currentInstance=null;
+    SimpleWorkflow sw=null;
+    /**
+     * Creates a new instance of WorkflowInstanceManager
+     */
+    public WorkflowInstanceManager() {
+    }
+    
+    public WorkflowInstanceManager(WorkflowInstanceServer instance) {
+        setCurrentInstance(instance);
+    }
+    
+    public WorkflowInstance getCurrentInstance() {
+        return currentInstance;
+    }
+    
+    public void setCurrentInstance(WorkflowInstanceServer currentInstance) {
+        this.currentInstance = currentInstance;
+    }
+    
+    public void manage(){
+        buildWorkflow();
+    }
+    
+    private void buildWorkflow(){
+        //Find the root node
+        sw=new SimpleWorkflow();
+        sw.nodes=new SimpleNode[this.currentInstance.getNodes().size()];
+        boolean isRoot=false;
+        for(int i=0;i<this.currentInstance.getNodes().size();i++){
+            for(int j=0;j<this.currentInstance.getTransactions().size();j++){
+                if(((Transaction)this.currentInstance.getTransactions().get(j)).getTo().getId()!=
+                        ((Node)this.currentInstance.getNodes().get(i)).getId())
+                    isRoot=true;
+                else
+                    isRoot=false;
+            }
+            if(isRoot){
+                //We found the root node!
+                sw.nodes[0].id=((Node)this.currentInstance.getNodes().get(i)).getId();
+                System.out.println("Root id= "+sw.nodes[0].id);
+                break;
+            }
+        }
+        int actual_id=sw.nodes[0].id;
+        //Now build the rest of the workflow
+        for(int j=0;j<this.currentInstance.getTransactions().size();j++){
+            if(((Transaction)this.currentInstance.getTransactions().get(j)).getFrom().getId()==actual_id){
+                sw.nodes[j].addConnection(new Connection());
+                sw.nodes[j].connections[sw.nodes[j].connections.length-1].id=((Transaction)this.currentInstance.getTransactions().get(j)).getId();
+                sw.nodes[j].connections[sw.nodes[j].connections.length-1].previous=sw.nodes[j];
+                SimpleNode temp= new SimpleNode();
+                temp.id=((Transaction)this.currentInstance.getTransactions().get(j)).getTo().getId();
+                sw.nodes[j].connections[sw.nodes[j].connections.length-1].next=sw.nodes[sw.addNode(temp)];
+                System.out.println("("+sw.nodes[j]+")--->("+sw.nodes[j].connections[sw.nodes[j].connections.length-1].next.id+")");
+            }
+        }
+    }
+    
+    private class SimpleWorkflow{
+        SimpleNode [] nodes;
+        int i;
+        public int next(){
+            
+            return 0;
+        }
+         public int addNode(SimpleNode node){
+            if(nodes==null)
+                nodes= new SimpleNode[1];
+            else {
+                SimpleNode[] temp= new SimpleNode[nodes.length+1];
+                for(i=0;i<nodes.length;i++)
+                    temp[i]=nodes[i];
+                if(node.id==temp[i].id)
+                    return node.id;
+                nodes=temp;
+            }
+            nodes[i]=node;
+            return i;
+        }
+    }
+    private class SimpleNode{
+        int id,i;
+        Connection[] connections=null;
+        public void addConnection(Connection con){
+            if(connections==null)
+                connections= new Connection[1];
+            else {
+                Connection[] temp= new Connection[connections.length+1];
+                for(i=0;i<connections.length;i++)
+                    temp[i]=connections[i];
+                connections=temp;
+            }
+            connections[i]=con;
+        }
+    }
+    
+    private class Connection{
+        int id;
+        SimpleNode next=null;
+        SimpleNode previous=null;
+    }
+}
