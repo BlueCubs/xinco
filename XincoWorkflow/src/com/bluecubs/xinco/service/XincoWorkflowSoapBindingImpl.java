@@ -8,15 +8,16 @@
 package com.bluecubs.xinco.service;
 
 import com.bluecubs.xinco.core.server.WorkflowDBManager;
+import com.bluecubs.xinco.workflow.InstanceProperty;
 import com.bluecubs.xinco.workflow.Resource;
 import com.bluecubs.xinco.workflow.WorkflowSetting;
 import com.bluecubs.xinco.workflow.WorkflowVersion;
-import com.bluecubs.xinco.workflow.XincoWorkflowException;
+import com.bluecubs.xinco.workflow.WorkflowException;
+import com.bluecubs.xinco.workflow.holders.InstancePropertyHolder;
 import com.bluecubs.xinco.workflow.server.ActivityServer;
 import com.bluecubs.xinco.workflow.server.NodeServer;
 import com.bluecubs.xinco.workflow.server.PropertyServer;
 import com.bluecubs.xinco.workflow.server.ResourceServer;
-import com.bluecubs.xinco.workflow.server.WorkflowSettingServer;
 import java.rmi.RemoteException;
 import java.util.Vector;
 
@@ -25,7 +26,7 @@ public class XincoWorkflowSoapBindingImpl implements com.bluecubs.xinco.service.
     public com.bluecubs.xinco.workflow.Activity getActivity(com.bluecubs.xinco.workflow.Activity in, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException {
         try {
             ResourceServer r = new ResourceServer(resource.getUsername(),resource.getUserpassword(),new WorkflowDBManager());
-        } catch (XincoWorkflowException ex) {
+        } catch (WorkflowException ex) {
             ex.printStackTrace();
             return null;
         } catch (Exception ex) {
@@ -47,7 +48,7 @@ public class XincoWorkflowSoapBindingImpl implements com.bluecubs.xinco.service.
     public com.bluecubs.xinco.workflow.Node getNode(com.bluecubs.xinco.workflow.Node in, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException {
         try {
             ResourceServer r = new ResourceServer(resource.getUsername(),resource.getUserpassword(),new WorkflowDBManager());
-        } catch (XincoWorkflowException ex) {
+        } catch (WorkflowException ex) {
             ex.printStackTrace();
             return null;
         } catch (Exception ex) {
@@ -66,7 +67,7 @@ public class XincoWorkflowSoapBindingImpl implements com.bluecubs.xinco.service.
     public com.bluecubs.xinco.workflow.Property getProperty(com.bluecubs.xinco.workflow.Property in, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException {
         try {
             ResourceServer r = new ResourceServer(resource.getUsername(),resource.getUserpassword(),new WorkflowDBManager());
-        } catch (XincoWorkflowException ex) {
+        } catch (WorkflowException ex) {
             ex.printStackTrace();
             return null;
         } catch (Exception ex) {
@@ -143,4 +144,17 @@ public class XincoWorkflowSoapBindingImpl implements com.bluecubs.xinco.service.
         return version;
     }
     
+    public void getWorkflowLog(com.bluecubs.xinco.workflow.holders.WorkflowLogHolder workflow_log, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException{
+        
+    }
+    public void setWorkflowLog(com.bluecubs.xinco.workflow.holders.WorkflowLogHolder workflow_log, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException{
+        
+    }
+
+    public InstanceProperty getWorkflowInstanceProperty(InstanceProperty instanceProperty, Resource resource) throws RemoteException {
+        return null;
+    }
+
+    public void setWorkflowInstanceProperty(InstancePropertyHolder property, Resource resource) throws RemoteException {
+    }
 }

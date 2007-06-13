@@ -18,6 +18,8 @@ public class WorkflowTemplate  implements java.io.Serializable {
 
     private java.util.Vector transactions;
 
+    private java.lang.Integer changerID;
+
     public WorkflowTemplate() {
     }
 
@@ -26,12 +28,14 @@ public class WorkflowTemplate  implements java.io.Serializable {
            java.lang.String description,
            java.util.Calendar creationTime,
            java.util.Vector nodes,
-           java.util.Vector transactions) {
+           java.util.Vector transactions,
+           java.lang.Integer changerID) {
            this.id = id;
            this.description = description;
            this.creationTime = creationTime;
            this.nodes = nodes;
            this.transactions = transactions;
+           this.changerID = changerID;
     }
 
 
@@ -134,6 +138,26 @@ public class WorkflowTemplate  implements java.io.Serializable {
         this.transactions = transactions;
     }
 
+
+    /**
+     * Gets the changerID value for this WorkflowTemplate.
+     * 
+     * @return changerID
+     */
+    public java.lang.Integer getChangerID() {
+        return changerID;
+    }
+
+
+    /**
+     * Sets the changerID value for this WorkflowTemplate.
+     * 
+     * @param changerID
+     */
+    public void setChangerID(java.lang.Integer changerID) {
+        this.changerID = changerID;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof WorkflowTemplate)) return false;
@@ -158,7 +182,10 @@ public class WorkflowTemplate  implements java.io.Serializable {
               this.nodes.equals(other.getNodes()))) &&
             ((this.transactions==null && other.getTransactions()==null) || 
              (this.transactions!=null &&
-              this.transactions.equals(other.getTransactions())));
+              this.transactions.equals(other.getTransactions()))) &&
+            ((this.changerID==null && other.getChangerID()==null) || 
+             (this.changerID!=null &&
+              this.changerID.equals(other.getChangerID())));
         __equalsCalc = null;
         return _equals;
     }
@@ -182,6 +209,9 @@ public class WorkflowTemplate  implements java.io.Serializable {
         }
         if (getTransactions() != null) {
             _hashCode += getTransactions().hashCode();
+        }
+        if (getChangerID() != null) {
+            _hashCode += getChangerID().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -221,6 +251,12 @@ public class WorkflowTemplate  implements java.io.Serializable {
         elemField.setFieldName("transactions");
         elemField.setXmlName(new javax.xml.namespace.QName("", "transactions"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("changerID");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "changerID"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }

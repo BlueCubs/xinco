@@ -49,6 +49,7 @@ public class WorkflowTemplateServer extends WorkflowTemplate{
     public WorkflowTemplateServer(int id, WorkflowDBManager DBM){
         if(id>0){
             try {
+                System.out.println("Loading template..."+id);
                 rs=DBM.getStatement().executeQuery("select * from " +
                         "workflow_template where id ="+id);
                 rs.next();

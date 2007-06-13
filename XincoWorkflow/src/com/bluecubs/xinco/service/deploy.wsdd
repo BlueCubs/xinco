@@ -57,6 +57,14 @@
       />
       <typeMapping
         xmlns:ns="http://workflow.xinco.bluecubs.com"
+        qname="ns:WorkflowLog"
+        type="java:com.bluecubs.xinco.workflow.WorkflowLog"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://workflow.xinco.bluecubs.com"
         qname="ns:Property"
         type="java:com.bluecubs.xinco.workflow.Property"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
@@ -83,6 +91,14 @@
         xmlns:ns="http://workflow.xinco.bluecubs.com"
         qname="ns:WorkflowSetting"
         type="java:com.bluecubs.xinco.workflow.WorkflowSetting"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://workflow.xinco.bluecubs.com"
+        qname="ns:InstanceProperty"
+        type="java:com.bluecubs.xinco.workflow.InstanceProperty"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"

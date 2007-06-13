@@ -18,6 +18,10 @@ public class WorkflowInstance  implements java.io.Serializable {
 
     private java.util.Vector transactions;
 
+    private java.lang.Integer changerID;
+
+    private int currentNode;
+
     public WorkflowInstance() {
     }
 
@@ -26,12 +30,16 @@ public class WorkflowInstance  implements java.io.Serializable {
            int templateId,
            java.util.Calendar creationTime,
            java.util.Vector nodes,
-           java.util.Vector transactions) {
+           java.util.Vector transactions,
+           java.lang.Integer changerID,
+           int currentNode) {
            this.id = id;
            this.templateId = templateId;
            this.creationTime = creationTime;
            this.nodes = nodes;
            this.transactions = transactions;
+           this.changerID = changerID;
+           this.currentNode = currentNode;
     }
 
 
@@ -134,6 +142,46 @@ public class WorkflowInstance  implements java.io.Serializable {
         this.transactions = transactions;
     }
 
+
+    /**
+     * Gets the changerID value for this WorkflowInstance.
+     * 
+     * @return changerID
+     */
+    public java.lang.Integer getChangerID() {
+        return changerID;
+    }
+
+
+    /**
+     * Sets the changerID value for this WorkflowInstance.
+     * 
+     * @param changerID
+     */
+    public void setChangerID(java.lang.Integer changerID) {
+        this.changerID = changerID;
+    }
+
+
+    /**
+     * Gets the currentNode value for this WorkflowInstance.
+     * 
+     * @return currentNode
+     */
+    public int getCurrentNode() {
+        return currentNode;
+    }
+
+
+    /**
+     * Sets the currentNode value for this WorkflowInstance.
+     * 
+     * @param currentNode
+     */
+    public void setCurrentNode(int currentNode) {
+        this.currentNode = currentNode;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof WorkflowInstance)) return false;
@@ -156,7 +204,11 @@ public class WorkflowInstance  implements java.io.Serializable {
               this.nodes.equals(other.getNodes()))) &&
             ((this.transactions==null && other.getTransactions()==null) || 
              (this.transactions!=null &&
-              this.transactions.equals(other.getTransactions())));
+              this.transactions.equals(other.getTransactions()))) &&
+            ((this.changerID==null && other.getChangerID()==null) || 
+             (this.changerID!=null &&
+              this.changerID.equals(other.getChangerID()))) &&
+            this.currentNode == other.getCurrentNode();
         __equalsCalc = null;
         return _equals;
     }
@@ -179,6 +231,10 @@ public class WorkflowInstance  implements java.io.Serializable {
         if (getTransactions() != null) {
             _hashCode += getTransactions().hashCode();
         }
+        if (getChangerID() != null) {
+            _hashCode += getChangerID().hashCode();
+        }
+        _hashCode += getCurrentNode();
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -218,6 +274,18 @@ public class WorkflowInstance  implements java.io.Serializable {
         elemField.setXmlName(new javax.xml.namespace.QName("", "transactions"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
         elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("changerID");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "changerID"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("currentNode");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "currentNode"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
     }
 

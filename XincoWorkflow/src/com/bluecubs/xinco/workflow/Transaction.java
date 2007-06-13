@@ -20,6 +20,8 @@ public class Transaction  implements java.io.Serializable {
 
     private java.util.Vector properties;
 
+    private java.lang.Integer changerID;
+
     public Transaction() {
     }
 
@@ -29,13 +31,15 @@ public class Transaction  implements java.io.Serializable {
            com.bluecubs.xinco.workflow.Node from,
            com.bluecubs.xinco.workflow.Node to,
            java.util.Vector activities,
-           java.util.Vector properties) {
+           java.util.Vector properties,
+           java.lang.Integer changerID) {
            this.id = id;
            this.description = description;
            this.from = from;
            this.to = to;
            this.activities = activities;
            this.properties = properties;
+           this.changerID = changerID;
     }
 
 
@@ -158,6 +162,26 @@ public class Transaction  implements java.io.Serializable {
         this.properties = properties;
     }
 
+
+    /**
+     * Gets the changerID value for this Transaction.
+     * 
+     * @return changerID
+     */
+    public java.lang.Integer getChangerID() {
+        return changerID;
+    }
+
+
+    /**
+     * Sets the changerID value for this Transaction.
+     * 
+     * @param changerID
+     */
+    public void setChangerID(java.lang.Integer changerID) {
+        this.changerID = changerID;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof Transaction)) return false;
@@ -185,7 +209,10 @@ public class Transaction  implements java.io.Serializable {
               this.activities.equals(other.getActivities()))) &&
             ((this.properties==null && other.getProperties()==null) || 
              (this.properties!=null &&
-              this.properties.equals(other.getProperties())));
+              this.properties.equals(other.getProperties()))) &&
+            ((this.changerID==null && other.getChangerID()==null) || 
+             (this.changerID!=null &&
+              this.changerID.equals(other.getChangerID())));
         __equalsCalc = null;
         return _equals;
     }
@@ -212,6 +239,9 @@ public class Transaction  implements java.io.Serializable {
         }
         if (getProperties() != null) {
             _hashCode += getProperties().hashCode();
+        }
+        if (getChangerID() != null) {
+            _hashCode += getChangerID().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -257,6 +287,12 @@ public class Transaction  implements java.io.Serializable {
         elemField.setFieldName("properties");
         elemField.setXmlName(new javax.xml.namespace.QName("", "properties"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("changerID");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "changerID"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }

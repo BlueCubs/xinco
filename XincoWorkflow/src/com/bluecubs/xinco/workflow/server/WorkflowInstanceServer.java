@@ -36,21 +36,24 @@
 package com.bluecubs.xinco.workflow.server;
 
 import com.bluecubs.xinco.core.server.WorkflowDBManager;
+import com.bluecubs.xinco.workflow.WorkflowException;
 import com.bluecubs.xinco.workflow.WorkflowInstance;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Vector;
 
 public class WorkflowInstanceServer extends WorkflowInstance{
     private ResultSet rs;
     private WorkflowTemplateServer template;
+    private Vector properties;
     /**
      * Creates a new instance of WorkflowInstanceServer
      */
-    public WorkflowInstanceServer(int id, WorkflowDBManager DBM) {
+    public WorkflowInstanceServer(int id, WorkflowDBManager DBM) throws WorkflowException {
         if(id>0){
             try {
+                System.out.println("Loading instance...");
                 rs=DBM.getStatement().executeQuery("select * from " +
                         "workflow_instance where id ="+id);
                 rs.next();
@@ -62,9 +65,22 @@ public class WorkflowInstanceServer extends WorkflowInstance{
                 template =new WorkflowTemplateServer(getTemplateId(),DBM);
                 setNodes(template.getNodes());
                 setTransactions(template.getTransactions());
+                setCurrentNode(rs.getInt("node_id"));
+                loadProperties();
+                System.out.println("Loading instance...Done!");
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new WorkflowException();
             }
+        }
+    }
+    
+    private void loadProperties() throws WorkflowException{
+        try {
+            properties=new InstancePropertyServer().getProperties(getId(),getTemplateId(),new WorkflowDBManager());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new WorkflowException();
         }
     }
 }

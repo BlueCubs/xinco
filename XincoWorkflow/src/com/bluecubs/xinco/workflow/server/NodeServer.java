@@ -53,6 +53,8 @@ public class NodeServer extends Node{
                 rs.next();
                 setId(rs.getInt("id"));
                 setDescription(rs.getString("description"));
+                setEndNode(rs.getBoolean("isEndNode"));
+                setStartNode(rs.getBoolean("isStartNode"));
                 //Load adtivities related to this node
                 loadActivities(DBM);
             } catch (SQLException ex) {

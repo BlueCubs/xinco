@@ -17,7 +17,7 @@ import com.sun.rave.web.ui.component.ImageComponent;
 import com.sun.rave.web.ui.component.Label;
 import com.sun.rave.web.ui.component.Link;
 import com.sun.rave.web.ui.component.Page;
-import com.sun.rave.web.ui.model.SingleSelectOptionsList;
+import com.sun.rave.web.ui.component.TextArea;
 import javax.faces.FacesException;
 import javax.faces.event.ValueChangeEvent;
 
@@ -138,6 +138,26 @@ public class index extends AbstractPageBean {
     public void setButton1(Button b) {
         this.button1 = b;
     }
+
+    private Label label2 = new Label();
+
+    public Label getLabel2() {
+        return label2;
+    }
+
+    public void setLabel2(Label l) {
+        this.label2 = l;
+    }
+
+    private TextArea textArea1 = new TextArea();
+
+    public TextArea getTextArea1() {
+        return textArea1;
+    }
+
+    public void setTextArea1(TextArea ta) {
+        this.textArea1 = ta;
+    }
             
             // </editor-fold>
             
@@ -239,5 +259,9 @@ public class index extends AbstractPageBean {
                 // TODO: Replace with your code
                 
             }
+
+    public String button1_action() {
+        return null;
+    }
 }
 

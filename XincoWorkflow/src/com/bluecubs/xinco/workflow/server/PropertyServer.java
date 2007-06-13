@@ -85,16 +85,15 @@ public class PropertyServer extends Property{
     
     private Vector getProperties(int id,int type, WorkflowDBManager DBM){
         Vector properties = new Vector();
-        String sql = "select id from property where ";
+        String sql = "select property_id from ";
         switch(type){
-            case NODE:sql+="node_id=";
+            case NODE:sql+="node_has_property where node_id="+id;
             break;
-            case TRANSACTION:sql+="transaction_id=";
+            case TRANSACTION:sql+="transaction_has_property where transaction_id="+id;
             break;
-            case ACTIVITY:sql+="activity_id=";
+            case ACTIVITY:sql+="activity_has_property where activity_id="+id;
             break;
         }
-        sql+=id;
         try {
             rs=DBM.getStatement().executeQuery(sql);
             while(rs.next()){

@@ -6,7 +6,10 @@
  */
 package xincoworkflow;
 
-import com.bluecubs.xinco.workflow.WorkflowSetting;
+import com.bluecubs.xinco.core.server.WorkflowDBManager;
+import com.bluecubs.xinco.workflow.WorkflowException;
+import com.bluecubs.xinco.workflow.server.WorkflowInstanceManager;
+import com.bluecubs.xinco.workflow.server.WorkflowInstanceServer;
 import com.bluecubs.xinco.workflow.server.WorkflowSettingServer;
 import com.sun.rave.web.ui.appbase.AbstractSessionBean;
 import com.sun.rave.web.ui.model.Option;
@@ -94,6 +97,21 @@ public class SessionBean1 extends AbstractSessionBean {
             version+=" " + xss.getSetting("workflow.version.postfix").getString_value();
         version+="]";
         setFooterText(version);
+        String message="Button pressed...\n";
+        WorkflowInstanceServer instance=null;
+        try {
+            instance = new WorkflowInstanceServer(1, new WorkflowDBManager());
+        } catch (WorkflowException ex) {
+            ex.printStackTrace();
+            message+="Error!"+ex.toString()+"\n";
+        } catch (Exception ex) {
+            ex.printStackTrace();
+           message+="Error!"+ex.toString()+"\n";
+        }
+        message+="Instance created..."+"\n";
+        WorkflowInstanceManager manager = new WorkflowInstanceManager(instance);
+        manager.manage();
+        setStatus(message);
     }
     
     /**
@@ -181,5 +199,27 @@ public class SessionBean1 extends AbstractSessionBean {
      * @param footerText New value of property footerText.
      */
     public void setFooterText(String footerText) {
+        this.footerText=footerText;
+    }
+
+    /**
+     * Holds value of property status.
+     */
+    private String status;
+
+    /**
+     * Getter for property status.
+     * @return Value of property status.
+     */
+    public String getStatus() {
+        return this.status;
+    }
+
+    /**
+     * Setter for property status.
+     * @param status New value of property status.
+     */
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
