@@ -214,6 +214,51 @@ public class XincoWorkflowSoapBindingSkeleton implements com.bluecubs.xinco.serv
             _myOperations.put("getWorkflowServerVersion", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("getWorkflowServerVersion")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "workflow_log"), org.apache.axis.description.ParameterDesc.INOUT, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "WorkflowLog"), com.bluecubs.xinco.workflow.WorkflowLog.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "resource"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Resource"), com.bluecubs.xinco.workflow.Resource.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getWorkflowLog", _params, null);
+        _oper.setElementQName(new javax.xml.namespace.QName("", "getWorkflowLog"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getWorkflowLog") == null) {
+            _myOperations.put("getWorkflowLog", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getWorkflowLog")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "workflow_log"), org.apache.axis.description.ParameterDesc.INOUT, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "WorkflowLog"), com.bluecubs.xinco.workflow.WorkflowLog.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "resource"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Resource"), com.bluecubs.xinco.workflow.Resource.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("setWorkflowLog", _params, null);
+        _oper.setElementQName(new javax.xml.namespace.QName("", "setWorkflowLog"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("setWorkflowLog") == null) {
+            _myOperations.put("setWorkflowLog", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("setWorkflowLog")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "InstanceProperty"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "InstanceProperty"), com.bluecubs.xinco.workflow.InstanceProperty.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "resource"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Resource"), com.bluecubs.xinco.workflow.Resource.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getWorkflowInstanceProperty", _params, new javax.xml.namespace.QName("", "WorkflowInstanceProperty"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "InstanceProperty"));
+        _oper.setElementQName(new javax.xml.namespace.QName("", "getWorkflowInstanceProperty"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getWorkflowInstanceProperty") == null) {
+            _myOperations.put("getWorkflowInstanceProperty", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getWorkflowInstanceProperty")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "property"), org.apache.axis.description.ParameterDesc.INOUT, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "InstanceProperty"), com.bluecubs.xinco.workflow.InstanceProperty.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "resource"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Resource"), com.bluecubs.xinco.workflow.Resource.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("setWorkflowInstanceProperty", _params, null);
+        _oper.setElementQName(new javax.xml.namespace.QName("", "setWorkflowInstanceProperty"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("setWorkflowInstanceProperty") == null) {
+            _myOperations.put("setWorkflowInstanceProperty", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("setWorkflowInstanceProperty")).add(_oper);
     }
 
     public XincoWorkflowSoapBindingSkeleton() {
@@ -312,6 +357,27 @@ public class XincoWorkflowSoapBindingSkeleton implements com.bluecubs.xinco.serv
     {
         com.bluecubs.xinco.workflow.WorkflowVersion ret = impl.getWorkflowServerVersion();
         return ret;
+    }
+
+    public void getWorkflowLog(com.bluecubs.xinco.workflow.holders.WorkflowLogHolder workflow_log, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException
+    {
+        impl.getWorkflowLog(workflow_log, resource);
+    }
+
+    public void setWorkflowLog(com.bluecubs.xinco.workflow.holders.WorkflowLogHolder workflow_log, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException
+    {
+        impl.setWorkflowLog(workflow_log, resource);
+    }
+
+    public com.bluecubs.xinco.workflow.InstanceProperty getWorkflowInstanceProperty(com.bluecubs.xinco.workflow.InstanceProperty instanceProperty, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException
+    {
+        com.bluecubs.xinco.workflow.InstanceProperty ret = impl.getWorkflowInstanceProperty(instanceProperty, resource);
+        return ret;
+    }
+
+    public void setWorkflowInstanceProperty(com.bluecubs.xinco.workflow.holders.InstancePropertyHolder property, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException
+    {
+        impl.setWorkflowInstanceProperty(property, resource);
     }
 
 }

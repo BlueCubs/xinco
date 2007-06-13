@@ -23,6 +23,7 @@
                     <element name="assignedOn" type="xsd:dateTime"/>
                     <element name="completedOn" type="xsd:dateTime"/>
                     <element name="properties" nillable="true" type="apachesoap:Vector"/>
+                    <element name="changerID" type="xsd:int" nillable="true"></element>
                 </sequence>
             </complexType>
             <complexType name="Resource">
@@ -39,6 +40,7 @@
                     <element name="userpassword" nillable="true" type="xsd:string"/>
                     <element name="writeGroups" type="xsd:boolean"/>
                     <element name="xinco_core_groups" nillable="true" type="apachesoap:Vector"/>
+                    <element name="changerID" type="xsd:int" nillable="true"></element>
                 </sequence>
             </complexType>
             <complexType name="Property">
@@ -52,6 +54,7 @@
                     <element name="intProperty" type="xsd:int"/>
                     <element name="longProperty" type="xsd:long"/>
                     <element name="boolProperty" type="xsd:boolean"/>
+                    <element name="changerID" type="xsd:int" nillable="true"></element>
                 </sequence>
             </complexType>
             <complexType name="Node">
@@ -60,6 +63,9 @@
                     <element name="description" type="xsd:string"/>
                     <element name="properties" nillable="true" type="apachesoap:Vector"/>
                     <element name="activities" nillable="true" type="apachesoap:Vector"/>
+                    <element name="startNode" type="xsd:boolean"></element>
+                    <element name="endNode" type="xsd:boolean"></element>
+                    <element name="changerID" type="xsd:int" nillable="true"></element>
                 </sequence>
             </complexType>
             <complexType name="Transaction">
@@ -70,6 +76,7 @@
                     <element name="to" type="tns:Node"/>
                     <element name="activities" nillable="true" type="apachesoap:Vector"/>
                     <element name="properties" nillable="true" type="apachesoap:Vector"/>
+                    <element name="changerID" type="xsd:int" nillable="true"></element>
                 </sequence>
             </complexType>
             <complexType name="WorkflowTemplate">
@@ -79,6 +86,7 @@
                     <element name="creationTime" type="xsd:dateTime"/>
                     <element name="nodes" nillable="true" type="apachesoap:Vector"/>
                     <element name="transactions" nillable="true" type="apachesoap:Vector"/>
+                    <element name="changerID" type="xsd:int" nillable="true"></element>
                 </sequence>
             </complexType>
             <complexType name="WorkflowInstance">
@@ -88,6 +96,8 @@
                     <element name="creationTime" type="xsd:dateTime"/>
                     <element name="nodes" nillable="true" type="apachesoap:Vector"/>
                     <element name="transactions" nillable="true" type="apachesoap:Vector"/>
+                    <element name="changerID" type="xsd:int" nillable="true"></element>
+                    <element name="currentNode" type="xsd:int"></element>
                 </sequence>
             </complexType>
             <complexType name="WorkflowVersion">
@@ -96,6 +106,7 @@
                     <element name="version_low" type="xsd:int"/>
                     <element name="version_mid" type="xsd:int"/>
                     <element name="version_postfix" nillable="true" type="xsd:string"/>
+                    <element name="changerID" type="xsd:int" nillable="true"></element>
                 </sequence>
             </complexType>
             <complexType name="WorkflowSetting">
@@ -108,7 +119,30 @@
                     <element name="changerID" type="xsd:int"/>
                     <element name="long_value" type="xsd:long"/>
                     <element name="workflow_settings" nillable="true" type="apachesoap:Vector"/>
+                    <element name="changerID" type="xsd:int" nillable="true"></element>
                 </sequence>
+            </complexType>
+            <complexType name="WorkflowLog">
+                <sequence>
+                    <element name="id" type="xsd:int"></element>
+                    <element name="resource_id" type="xsd:int"></element>
+                    <element name="workflow_template_id" type="xsd:int"></element>
+                    <element name="workflow_instance_id" type="xsd:int"></element>
+                    <element name="op_code" type="xsd:int"></element>
+                    <element name="op_datetime" type="xsd:dateTime"></element>
+                    <element name="op_description" type="xsd:string"></element>
+                    <element name="xinco_core_user_id" type="xsd:int"></element>
+                </sequence>
+            </complexType>
+            <complexType name="InstanceProperty">
+                <complexContent>
+                    <extension base="tns:Property">
+                        <sequence>
+                            <element name="workflow_template_id" type="xsd:int"></element>
+                            <element name="workflow_instance_id" type="xsd:int"></element>
+                        </sequence>
+                    </extension>
+                </complexContent>
             </complexType>
         </schema>
         <schema targetNamespace="http://xml.apache.org/xml-soap" 
@@ -237,6 +271,34 @@
         <wsdl:part name="getWorkflowServerVersionReturn" type="tns:WorkflowVersion">            
         </wsdl:part>
     </wsdl:message>
+    <message name="getWorkflowLogRequest">
+        <wsdl:part name="workflow_log" type="tns:WorkflowLog"/>
+        <wsdl:part name="resource" type="tns:Resource"/>
+    </message>
+    <message name="getWorkflowLogResponse">
+        <wsdl:part name="workflow_log" type="tns:WorkflowLog"/>
+    </message>
+    <message name="setWorkflowLogRequest">
+        <wsdl:part name="workflow_log" type="tns:WorkflowLog"/>
+        <wsdl:part name="resource" type="tns:Resource"/>
+    </message>
+    <message name="setWorkflowLogResponse">
+        <wsdl:part name="workflow_log" type="tns:WorkflowLog"/>
+    </message>
+    <message name="getWorkflowInstancePropertyRequest">
+        <wsdl:part name="InstanceProperty" type="tns:InstanceProperty"/>
+        <wsdl:part name="resource" type="tns:Resource"/>
+    </message>
+    <message name="getWorkflowInstancePropertyResponse">
+        <wsdl:part name="WorkflowInstanceProperty" type="tns:InstanceProperty"/>
+    </message>
+    <message name="setWorkflowInstancePropertyRequest">
+        <wsdl:part name="property" type="tns:InstanceProperty"/>
+        <wsdl:part name="resource" type="tns:Resource"/>
+    </message>
+    <message name="setWorkflowInstancePropertyResponse">
+        <wsdl:part name="property" type="tns:InstanceProperty"/>
+    </message>
     <portType name="XincoWorkflow">
         <wsdl:operation name="getActivity">
             <wsdl:input name="getActivityRequest" message="impl:getActivityRequest"/>
@@ -301,6 +363,22 @@
         <wsdl:operation name="getWorkflowServerVersion">
             <wsdl:input name="getWorkflowServerVersionRequest" message="impl:getWorkflowServerVersionRequest"/>
             <wsdl:output name="getWorkflowServerVersionResponse" message="impl:getWorkflowServerVersionResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getWorkflowLog">
+            <wsdl:input name="getWorkflowLogRequest" message="impl:getWorkflowLogRequest"/>
+            <wsdl:output name="getWorkflowLogResponse" message="impl:getWorkflowLogResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setWorkflowLog">
+            <wsdl:input name="setWorkflowLogRequest" message="impl:setWorkflowLogRequest"/>
+            <wsdl:output name="setWorkflowLogResponse" message="impl:setWorkflowLogResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getWorkflowInstanceProperty">
+            <wsdl:input name="getWorkflowInstancePropertyRequest" message="impl:getWorkflowInstancePropertyRequest"/>
+            <wsdl:output name="getWorkflowInstancePropertyResponse" message="impl:getWorkflowInstancePropertyResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setWorkflowInstanceProperty">
+            <wsdl:input name="setWorkflowInstancePropertyRequest" message="impl:setWorkflowInstancePropertyRequest"/>
+            <wsdl:output name="setWorkflowInstancePropertyResponse" message="impl:setWorkflowInstancePropertyResponse"/>
         </wsdl:operation>
     </portType>
     <wsdl:binding name="XincoWorkflowSoapBinding" type="impl:XincoWorkflow">
@@ -368,6 +446,22 @@
         <wsdl:operation name="getWorkflowServerVersion">
             <wsdl:input name="getWorkflowServerVersionRequest"/>
             <wsdl:output name="getWorkflowServerVersionResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getWorkflowLog">
+            <wsdl:input name="getWorkflowLogRequest"/>
+            <wsdl:output name="getWorkflowLogResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setWorkflowLog">
+            <wsdl:input name="setWorkflowLogRequest"/>
+            <wsdl:output name="setWorkflowLogResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getWorkflowInstanceProperty">
+            <wsdl:input name="getWorkflowInstancePropertyRequest"/>
+            <wsdl:output name="getWorkflowInstancePropertyResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="setWorkflowInstanceProperty">
+            <wsdl:input name="setWorkflowInstancePropertyRequest"/>
+            <wsdl:output name="setWorkflowInstancePropertyResponse"/>
         </wsdl:operation>
     </wsdl:binding>
     <wsdl:service name="WorkflowService">

@@ -16,6 +16,12 @@ public class Node  implements java.io.Serializable {
 
     private java.util.Vector activities;
 
+    private boolean startNode;
+
+    private boolean endNode;
+
+    private java.lang.Integer changerID;
+
     public Node() {
     }
 
@@ -23,11 +29,17 @@ public class Node  implements java.io.Serializable {
            int id,
            java.lang.String description,
            java.util.Vector properties,
-           java.util.Vector activities) {
+           java.util.Vector activities,
+           boolean startNode,
+           boolean endNode,
+           java.lang.Integer changerID) {
            this.id = id;
            this.description = description;
            this.properties = properties;
            this.activities = activities;
+           this.startNode = startNode;
+           this.endNode = endNode;
+           this.changerID = changerID;
     }
 
 
@@ -110,6 +122,66 @@ public class Node  implements java.io.Serializable {
         this.activities = activities;
     }
 
+
+    /**
+     * Gets the startNode value for this Node.
+     * 
+     * @return startNode
+     */
+    public boolean isStartNode() {
+        return startNode;
+    }
+
+
+    /**
+     * Sets the startNode value for this Node.
+     * 
+     * @param startNode
+     */
+    public void setStartNode(boolean startNode) {
+        this.startNode = startNode;
+    }
+
+
+    /**
+     * Gets the endNode value for this Node.
+     * 
+     * @return endNode
+     */
+    public boolean isEndNode() {
+        return endNode;
+    }
+
+
+    /**
+     * Sets the endNode value for this Node.
+     * 
+     * @param endNode
+     */
+    public void setEndNode(boolean endNode) {
+        this.endNode = endNode;
+    }
+
+
+    /**
+     * Gets the changerID value for this Node.
+     * 
+     * @return changerID
+     */
+    public java.lang.Integer getChangerID() {
+        return changerID;
+    }
+
+
+    /**
+     * Sets the changerID value for this Node.
+     * 
+     * @param changerID
+     */
+    public void setChangerID(java.lang.Integer changerID) {
+        this.changerID = changerID;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof Node)) return false;
@@ -131,7 +203,12 @@ public class Node  implements java.io.Serializable {
               this.properties.equals(other.getProperties()))) &&
             ((this.activities==null && other.getActivities()==null) || 
              (this.activities!=null &&
-              this.activities.equals(other.getActivities())));
+              this.activities.equals(other.getActivities()))) &&
+            this.startNode == other.isStartNode() &&
+            this.endNode == other.isEndNode() &&
+            ((this.changerID==null && other.getChangerID()==null) || 
+             (this.changerID!=null &&
+              this.changerID.equals(other.getChangerID())));
         __equalsCalc = null;
         return _equals;
     }
@@ -152,6 +229,11 @@ public class Node  implements java.io.Serializable {
         }
         if (getActivities() != null) {
             _hashCode += getActivities().hashCode();
+        }
+        _hashCode += (isStartNode() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += (isEndNode() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        if (getChangerID() != null) {
+            _hashCode += getChangerID().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -185,6 +267,24 @@ public class Node  implements java.io.Serializable {
         elemField.setFieldName("activities");
         elemField.setXmlName(new javax.xml.namespace.QName("", "activities"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("startNode");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "startNode"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("endNode");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "endNode"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("changerID");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "changerID"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }

@@ -32,6 +32,8 @@ public class Resource  implements java.io.Serializable {
 
     private java.util.Vector xinco_core_groups;
 
+    private java.lang.Integer changerID2;
+
     public Resource() {
     }
 
@@ -47,7 +49,8 @@ public class Resource  implements java.io.Serializable {
            java.lang.String username,
            java.lang.String userpassword,
            boolean writeGroups,
-           java.util.Vector xinco_core_groups) {
+           java.util.Vector xinco_core_groups,
+           java.lang.Integer changerID2) {
            this.change = change;
            this.changerID = changerID;
            this.email = email;
@@ -60,6 +63,7 @@ public class Resource  implements java.io.Serializable {
            this.userpassword = userpassword;
            this.writeGroups = writeGroups;
            this.xinco_core_groups = xinco_core_groups;
+           this.changerID2 = changerID2;
     }
 
 
@@ -302,6 +306,26 @@ public class Resource  implements java.io.Serializable {
         this.xinco_core_groups = xinco_core_groups;
     }
 
+
+    /**
+     * Gets the changerID2 value for this Resource.
+     * 
+     * @return changerID2
+     */
+    public java.lang.Integer getChangerID2() {
+        return changerID2;
+    }
+
+
+    /**
+     * Sets the changerID2 value for this Resource.
+     * 
+     * @param changerID2
+     */
+    public void setChangerID2(java.lang.Integer changerID2) {
+        this.changerID2 = changerID2;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof Resource)) return false;
@@ -339,7 +363,10 @@ public class Resource  implements java.io.Serializable {
             this.writeGroups == other.isWriteGroups() &&
             ((this.xinco_core_groups==null && other.getXinco_core_groups()==null) || 
              (this.xinco_core_groups!=null &&
-              this.xinco_core_groups.equals(other.getXinco_core_groups())));
+              this.xinco_core_groups.equals(other.getXinco_core_groups()))) &&
+            ((this.changerID2==null && other.getChangerID2()==null) || 
+             (this.changerID2!=null &&
+              this.changerID2.equals(other.getChangerID2())));
         __equalsCalc = null;
         return _equals;
     }
@@ -376,6 +403,9 @@ public class Resource  implements java.io.Serializable {
         _hashCode += (isWriteGroups() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         if (getXinco_core_groups() != null) {
             _hashCode += getXinco_core_groups().hashCode();
+        }
+        if (getChangerID2() != null) {
+            _hashCode += getChangerID2().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -457,6 +487,12 @@ public class Resource  implements java.io.Serializable {
         elemField.setFieldName("xinco_core_groups");
         elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_groups"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("changerID");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "changerID"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }
