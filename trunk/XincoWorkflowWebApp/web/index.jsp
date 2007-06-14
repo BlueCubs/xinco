@@ -5,7 +5,7 @@
         <ui:page binding="#{index.page1}" id="page1">
             <ui:html binding="#{index.html1}" id="html1">
                 <ui:head binding="#{index.head1}" id="head1">
-                    <ui:link binding="#{index.link1}" id="link1" url="/resources/stylesheet.css"/>
+                    <ui:link binding="#{index.link1}" id="link1" url="/resources/xincostyle.css"/>
                 </ui:head>
                 <ui:body binding="#{index.body1}" focus="form1:languages" id="body1" style="-rave-layout: grid">
                     <center>
@@ -19,8 +19,7 @@
                             <div style="height: 22px; left: 264px; top: 504px; position: absolute">
                                 <jsp:directive.include file="indexFooter.jspf"/>
                             </div>
-                            <ui:label binding="#{index.label2}" id="label2" style="left: 408px; top: 408px; position: absolute" text="Workflow Manager"/>
-                            <ui:textArea binding="#{index.textArea1}" id="textArea1" style="left: 24px; top: 264px; position: absolute" text="#{SessionBean1.status}"/>
+                            <ui:label binding="#{index.label2}" id="label2" style="left: 288px; top: 408px; position: absolute; width: 358px" text="#{SessionBean1.title}"/>
                         </ui:form>
                     </center>
                 </ui:body>

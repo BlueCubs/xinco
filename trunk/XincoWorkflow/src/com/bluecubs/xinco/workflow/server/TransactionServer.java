@@ -48,18 +48,25 @@ public class TransactionServer extends Transaction{
     /** Creates a new instance of TransactionServer */
     public TransactionServer(int id, WorkflowDBManager DBM) {
         if(id>0){
-            System.out.println("Creating transaction with id: "+id);
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Creating transaction with id: "+id);
             try {
                 rs=DBM.getStatement().executeQuery("select * from transaction where id="+id);
                 rs.next();
                 setId(rs.getInt("id"));
                 setDescription(rs.getString("description"));
+                setTo(new NodeServer(rs.getInt("node_id"),DBM));
+                rs=DBM.getStatement().executeQuery("select node_id from " +
+                        "Node_has_Transaction where transaction_id="+id);
+                rs.next();
+                setFrom(new NodeServer(rs.getInt("node_id"),DBM));
                 loadActivities(DBM);
                 loadProperties(DBM);
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            System.out.println("Done!");
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Done!");
         }
     }
     

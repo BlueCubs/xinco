@@ -53,7 +53,8 @@ public class WorkflowInstanceServer extends WorkflowInstance{
     public WorkflowInstanceServer(int id, WorkflowDBManager DBM) throws WorkflowException {
         if(id>0){
             try {
-                System.out.println("Loading instance...");
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("Loading instance...");
                 rs=DBM.getStatement().executeQuery("select * from " +
                         "workflow_instance where id ="+id);
                 rs.next();
@@ -64,10 +65,15 @@ public class WorkflowInstanceServer extends WorkflowInstance{
                 setCreationTime(cal);
                 template =new WorkflowTemplateServer(getTemplateId(),DBM);
                 setNodes(template.getNodes());
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("# of nodes: "+getNodes().size());
                 setTransactions(template.getTransactions());
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("# of transactions: "+getTransactions().size());
                 setCurrentNode(rs.getInt("node_id"));
                 loadProperties();
-                System.out.println("Loading instance...Done!");
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("Loading instance...Done!");
             } catch (SQLException ex) {
                 ex.printStackTrace();
                 throw new WorkflowException();

@@ -6,11 +6,7 @@
  */
 package xincoworkflow;
 
-import com.bluecubs.xinco.core.server.WorkflowDBManager;
-import com.bluecubs.xinco.workflow.WorkflowException;
-import com.bluecubs.xinco.workflow.server.WorkflowInstanceManager;
-import com.bluecubs.xinco.workflow.server.WorkflowInstanceServer;
-import com.bluecubs.xinco.workflow.server.WorkflowSettingServer;
+import com.bluecubs.xinco.core.server.XincoSettingServer;
 import com.sun.rave.web.ui.appbase.AbstractSessionBean;
 import com.sun.rave.web.ui.model.Option;
 import java.util.Locale;
@@ -41,7 +37,7 @@ public class SessionBean1 extends AbstractSessionBean {
     // </editor-fold>
     private int i = 0;
     private ResourceBundle lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
-    private ResourceBundle rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoWorkflowMessages");;
+    private ResourceBundle rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");;
     private String[] locales;
     private String text = "";
     
@@ -88,7 +84,7 @@ public class SessionBean1 extends AbstractSessionBean {
         for (i=0;i<locales.length;i++)
             options[i]=new Option(locales[i], lrb.getString("Locale." + locales[i]));
         setLanguageOptions(options);
-        WorkflowSettingServer xss= new WorkflowSettingServer();
+        XincoSettingServer xss= new XincoSettingServer();
         String version="[Version " + xss.getSetting("workflow.version.high").getInt_value()
         + "." + xss.getSetting("workflow.version.med").getInt_value() + "." +
                 xss.getSetting("workflow.version.low").getInt_value();
@@ -97,21 +93,7 @@ public class SessionBean1 extends AbstractSessionBean {
             version+=" " + xss.getSetting("workflow.version.postfix").getString_value();
         version+="]";
         setFooterText(version);
-        String message="Button pressed...\n";
-        WorkflowInstanceServer instance=null;
-        try {
-            instance = new WorkflowInstanceServer(1, new WorkflowDBManager());
-        } catch (WorkflowException ex) {
-            ex.printStackTrace();
-            message+="Error!"+ex.toString()+"\n";
-        } catch (Exception ex) {
-            ex.printStackTrace();
-           message+="Error!"+ex.toString()+"\n";
-        }
-        message+="Instance created..."+"\n";
-        WorkflowInstanceManager manager = new WorkflowInstanceManager(instance);
-        manager.manage();
-        setStatus(message);
+        setTitle(lrb.getString("message.admin.main.title"));
     }
     
     /**
@@ -221,5 +203,26 @@ public class SessionBean1 extends AbstractSessionBean {
      */
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    /**
+     * Holds value of property title.
+     */
+    private String title;
+
+    /**
+     * Getter for property title.
+     * @return Value of property title.
+     */
+    public String getTitle() {
+        return this.title;
+    }
+
+    /**
+     * Setter for property title.
+     * @param title New value of property title.
+     */
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

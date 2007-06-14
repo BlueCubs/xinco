@@ -45,22 +45,28 @@ import java.util.Vector;
 
 public class WorkflowTemplateServer extends WorkflowTemplate{
     private ResultSet rs=null;
+    private Vector tNodes=null,tTransactions=null;
     /** Creates a new instance of WorkflowTemplateServer */
     public WorkflowTemplateServer(int id, WorkflowDBManager DBM){
         if(id>0){
             try {
-                System.out.println("Loading template..."+id);
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("Loading template..."+id);
                 rs=DBM.getStatement().executeQuery("select * from " +
                         "workflow_template where id ="+id);
                 rs.next();
                 setId(rs.getInt("id"));
                 setDescription(rs.getString("description"));
-                System.out.println("Loading Nodes...");
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("Loading Nodes...");
                 loadNodes(DBM);
-                System.out.println("Done!");
-                System.out.println("Loading Transactions...");
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("Done!");
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("Loading Transactions...");
                 loadTransactions(DBM);
-                System.out.println("Done!");
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("Done!");
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -72,7 +78,8 @@ public class WorkflowTemplateServer extends WorkflowTemplate{
         try {
             String sql="select node_id from " +
                     "Workflow_Template_has_Node where id="+getId();
-            System.out.println(sql);
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println(sql);
             rs=DBM.getStatement().executeQuery(sql);
             temp.removeAllElements();
             while(rs.next()){
@@ -82,7 +89,8 @@ public class WorkflowTemplateServer extends WorkflowTemplate{
             ex.printStackTrace();
             temp.removeAllElements();
         }
-        System.out.println("Vector size: "+temp.size());
+        if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            System.out.println("Vector size: "+temp.size());
         setNodes(temp);
         return getNodes();
     }
@@ -92,7 +100,8 @@ public class WorkflowTemplateServer extends WorkflowTemplate{
         try{
             String sql="select transaction_id from " +
                     "Workflow_Template_has_Transaction where id="+getId();
-            System.out.println(sql);
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println(sql);
             rs=DBM.getStatement().executeQuery(sql);
             values.removeAllElements();
             while(rs.next()){
@@ -102,8 +111,25 @@ public class WorkflowTemplateServer extends WorkflowTemplate{
             ex.printStackTrace();
             values.removeAllElements();
         }
-        System.out.println("Vector size: "+values.size());
+        if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            System.out.println("Vector size: "+values.size());
         setTransactions(values);
         return getTransactions();
+    }
+    
+    public Vector getTNodes() {
+        return tNodes;
+    }
+    
+    public void setTNodes(Vector tNodes) {
+        this.tNodes = tNodes;
+    }
+    
+    public Vector getTTransactions() {
+        return tTransactions;
+    }
+    
+    public void setTTransactions(Vector tTransactions) {
+        this.tTransactions = tTransactions;
     }
 }

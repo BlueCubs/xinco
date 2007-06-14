@@ -46,7 +46,8 @@ public class NodeServer extends Node{
     /** Creates a new instance of NodeServer */
     public NodeServer(int id, WorkflowDBManager DBM) {
         if(id > 0){
-            System.out.println("Creating node with id: "+id);
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Creating node with id: "+id);
             try {
                 //Node exists
                 rs =DBM.getStatement().executeQuery("select * from node where id="+id);
@@ -60,7 +61,8 @@ public class NodeServer extends Node{
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            System.out.println("Done!");
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Done!");
         }
     }
     

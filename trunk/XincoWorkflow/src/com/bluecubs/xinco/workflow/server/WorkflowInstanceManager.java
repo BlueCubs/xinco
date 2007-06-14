@@ -67,7 +67,6 @@ public class WorkflowInstanceManager {
     private void buildWorkflow(){
         //Find the root node
         sw=new SimpleWorkflow();
-        sw.nodes=new SimpleNode[this.currentInstance.getNodes().size()];
         boolean isRoot=false;
         for(int i=0;i<this.currentInstance.getNodes().size();i++){
             for(int j=0;j<this.currentInstance.getTransactions().size();j++){
@@ -79,42 +78,44 @@ public class WorkflowInstanceManager {
             }
             if(isRoot){
                 //We found the root node!
-                sw.nodes[0].id=((Node)this.currentInstance.getNodes().get(i)).getId();
+                SimpleNode temp= new SimpleNode(((Node)this.currentInstance.getNodes().get(i)).getId());
+                sw.addNode(temp);
                 System.out.println("Root id= "+sw.nodes[0].id);
                 break;
             }
         }
-        int actual_id=sw.nodes[0].id;
+        int actual_id=0;
         //Now build the rest of the workflow
         for(int j=0;j<this.currentInstance.getTransactions().size();j++){
+            actual_id=sw.nodes[j].id;
             if(((Transaction)this.currentInstance.getTransactions().get(j)).getFrom().getId()==actual_id){
-                sw.nodes[j].addConnection(new Connection());
-                sw.nodes[j].connections[sw.nodes[j].connections.length-1].id=((Transaction)this.currentInstance.getTransactions().get(j)).getId();
+                sw.nodes[j].addConnection(new Connection(((Transaction)this.currentInstance.getTransactions().get(j)).getId()));
                 sw.nodes[j].connections[sw.nodes[j].connections.length-1].previous=sw.nodes[j];
-                SimpleNode temp= new SimpleNode();
-                temp.id=((Transaction)this.currentInstance.getTransactions().get(j)).getTo().getId();
-                sw.nodes[j].connections[sw.nodes[j].connections.length-1].next=sw.nodes[sw.addNode(temp)];
-                System.out.println("("+sw.nodes[j]+")--->("+sw.nodes[j].connections[sw.nodes[j].connections.length-1].next.id+")");
+                SimpleNode temp= new SimpleNode(((Transaction)this.currentInstance.getTransactions().get(j)).getTo().getId());
+                sw.addNode(temp);
+                sw.nodes[j].connections[sw.nodes[j].connections.length-1].next=sw.nodes[sw.nodes.length-1];
+                System.out.println("("+sw.nodes[j].id+")--->("+sw.nodes[j].connections[sw.nodes[j].connections.length-1].next.id+")");
             }
         }
     }
     
     private class SimpleWorkflow{
         SimpleNode [] nodes;
-        int i;
+        int i=0;
         public int next(){
             
             return 0;
         }
-         public int addNode(SimpleNode node){
+        public int addNode(SimpleNode node){
             if(nodes==null)
                 nodes= new SimpleNode[1];
             else {
                 SimpleNode[] temp= new SimpleNode[nodes.length+1];
-                for(i=0;i<nodes.length;i++)
+                for(i=0;i<nodes.length;i++){
                     temp[i]=nodes[i];
-                if(node.id==temp[i].id)
-                    return node.id;
+                    if(node.id==temp[i].id)
+                        return node.id;
+                }
                 nodes=temp;
             }
             nodes[i]=node;
@@ -124,6 +125,9 @@ public class WorkflowInstanceManager {
     private class SimpleNode{
         int id,i;
         Connection[] connections=null;
+        public SimpleNode(int id){
+            this.id=id;
+        }
         public void addConnection(Connection con){
             if(connections==null)
                 connections= new Connection[1];
@@ -141,5 +145,8 @@ public class WorkflowInstanceManager {
         int id;
         SimpleNode next=null;
         SimpleNode previous=null;
+        public Connection(int id){
+            this.id=id;
+        }
     }
 }
