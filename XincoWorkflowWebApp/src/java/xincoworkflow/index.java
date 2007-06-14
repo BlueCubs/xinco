@@ -148,16 +148,6 @@ public class index extends AbstractPageBean {
     public void setLabel2(Label l) {
         this.label2 = l;
     }
-
-    private TextArea textArea1 = new TextArea();
-
-    public TextArea getTextArea1() {
-        return textArea1;
-    }
-
-    public void setTextArea1(TextArea ta) {
-        this.textArea1 = ta;
-    }
             
             // </editor-fold>
             
