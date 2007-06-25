@@ -7,6 +7,7 @@
 package xincoworkflow;
 
 import com.sun.rave.web.ui.appbase.AbstractApplicationBean;
+import java.util.Locale;
 import javax.faces.FacesException;
 
 /**
@@ -97,4 +98,5 @@ public class ApplicationBean1 extends AbstractApplicationBean {
     public String getLocaleCharacterEncoding() {
         return super.getLocaleCharacterEncoding();
     }
+
 }
