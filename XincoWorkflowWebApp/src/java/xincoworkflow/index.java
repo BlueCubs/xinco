@@ -17,7 +17,6 @@ import com.sun.rave.web.ui.component.ImageComponent;
 import com.sun.rave.web.ui.component.Label;
 import com.sun.rave.web.ui.component.Link;
 import com.sun.rave.web.ui.component.Page;
-import com.sun.rave.web.ui.component.TextArea;
 import javax.faces.FacesException;
 import javax.faces.event.ValueChangeEvent;
 
