@@ -172,7 +172,7 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<td class=\"text\">"+lrb.getString("message.xincocron.service.indexOptimizer")+"</td>");
         String xiot_first_run = "";
         String xiot_last_run = "";
-        if (xat != null) {
+        if (xiot != null) {
             if (xiot.firstRun != null) {
                 xiot_first_run = xiot.firstRun.getTime().toString();
             }

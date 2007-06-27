@@ -410,19 +410,10 @@
         <copy-ear-war file="${libs.theme-default-gray.classpath}" propname="included.lib.libs.theme-default-gray.classpath.X"/>
         <basename property="included.lib.reference.Xinco.jar" file="${reference.Xinco.jar}"/>
         <copy-ear-war file="${reference.Xinco.jar}" propname="included.lib.reference.Xinco.jar.X"/>
-        <copy file="${libs.jsf-runtime.classpath.libfile.6}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.jsf-runtime.classpath.libfile.5}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.jsf-runtime.classpath.libfile.4}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.jsf-runtime.classpath.libfile.3}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.jsf-runtime.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.jsf-runtime.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.jsfsupport-runtime.classpath.libfile.3}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jsfsupport-runtime.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jsfsupport-runtime.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.webui-runtime.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.webui-runtime.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.jdbcsupport-runtime.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.jdbcsupport-runtime.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.exceptionhandler-runtime.classpath}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jstl11.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jstl11.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
@@ -461,19 +452,10 @@
         <copy file="${reference.XincoWorkflow.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.theme-default-gray.classpath}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${reference.Xinco.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.jsf-runtime.classpath.libfile.6}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.jsf-runtime.classpath.libfile.5}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.jsf-runtime.classpath.libfile.4}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.jsf-runtime.classpath.libfile.3}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.jsf-runtime.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.jsf-runtime.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.jsfsupport-runtime.classpath.libfile.3}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jsfsupport-runtime.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jsfsupport-runtime.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.webui-runtime.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.webui-runtime.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.jdbcsupport-runtime.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.jdbcsupport-runtime.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.exceptionhandler-runtime.classpath}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jstl11.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jstl11.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
