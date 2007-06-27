@@ -10,13 +10,13 @@
                 <library files="2">
                     <file>${libs.jsf-designtime.classpath}</file>
                 </library>
-                <library files="3">
+                <library>
                     <file>${libs.jsfsupport-designtime.classpath}</file>
                 </library>
                 <library files="2">
                     <file>${libs.webui-designtime.classpath}</file>
                 </library>
-                <library files="2">
+                <library>
                     <file>${libs.jdbcsupport-designtime.classpath}</file>
                 </library>
                 <library files="2">
@@ -37,11 +37,11 @@
                 </library>
             </web-module-libraries>
             <web-module-additional-libraries>
-                <library files="6">
+                <library>
                     <file>${libs.jsf-runtime.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library files="3">
+                <library files="2">
                     <file>${libs.jsfsupport-runtime.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
@@ -49,7 +49,7 @@
                     <file>${libs.webui-runtime.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library files="2">
+                <library>
                     <file>${libs.jdbcsupport-runtime.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
