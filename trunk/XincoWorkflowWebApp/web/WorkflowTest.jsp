@@ -13,7 +13,8 @@
                             <ui:label binding="#{WorkflowTest.label1}" id="label1" style="left: 264px; top: 408px; position: absolute" text="Welcome!"/>
                             <ui:button action="#{WorkflowTest.load_action}" binding="#{WorkflowTest.load}" id="load"
                                 style="left: 335px; top: 408px; position: absolute" text="Load Workflow"/>
-                            <ui:textArea binding="#{WorkflowTest.result}" id="result" style="height: 110px; left: 264px; top: 432px; position: absolute; width: 264px"/>
+                            <ui:textArea binding="#{WorkflowTest.result}" id="result"
+                                style="height: 110px; left: 264px; top: 432px; position: absolute; width: 264px" valueChangeListener="#{WorkflowTest.result_processValueChange}"/>
                             <ui:image align="middle" binding="#{WorkflowTest.image1}" id="image1" style="left: 216px; top: 0px; position: absolute" url="/resources/blueCubs.gif"/>
                         </ui:form>
                     </center>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ProjectExtensions-generated" basedir="..">
+  <target name="project-extension-init" depends="init">
+    <property file="extension/ExtensionProperties.properties" />
+  </target>
+  <target name="-post-compile-extension" depends="hibernate-resources" />
+  <target name="-pre-compile-extension" depends="xdoclet-hibernate-build" />
+  <target name="-pre-init-extension" depends="extension-library-variants" />
+  <target name="extension-library-variants">
+    <property name="libs.hib-jdbc-driver.jar.classpath" value="C:\Documents and Settings\javydreamercsw\.netbeans\5.5.1\config\libraries\mm-mysql\mm-mysql-2.0.13-bin.jar" />
+  </target>
+  <target name="xdoclet-hibernate-build" depends="xdoclet-hibernate" />
+  <target name="hibernate-schema-export-build" depends="hibernate-schema-export" />
+  <target name="xdoclet-hibernate" depends="init,deps-jar,project-extension-init">
+    <taskdef name="hibernatedoclet" classname="xdoclet.modules.hibernate.HibernateDocletTask" classpath="${xdoclet.classpath}" />
+    <!-- Execute the hibernatedoclet task -->
+    <hibernatedoclet destdir="${build.classes.dir}" excludedtags="@version,@author,@todo" force="true" verbose="true" mergedir="${dist}">
+      <fileset dir="${src.dir}">
+        <include name="**/*.java" />
+      </fileset>
+      <hibernate version="3.0" />
+    </hibernatedoclet>
+  </target>
+  <target name="hibernate-schema-export" depends="init,project-extension-init">
+    <taskdef name="schemaexport" classname="org.hibernate.tool.hbm2ddl.SchemaExportTask" classpath="${hibernate.classpath}" />
+    <schemaexport properties="extension/hibernate.properties" quiet="yes" text="no" drop="no" delimiter=";" output="${basedir}/${build.dir}/schema-export.sql">
+      <fileset dir="${build.classes.dir}">
+        <include name="**/*.hbm.xml" />
+      </fileset>
+    </schemaexport>
+  </target>
+  <target name="hibernate-resources" if="hibernate.util.folder" depends="hibernate-test-user-props,hibernate-load-user-props">
+    <taskdef name="listfileset" classname="customanttasks.ListFileSet" classpath="${libs.NbXdocletAntTasks.classpath}" />
+    <listfileset targetfile="${build.classes.dir}/${hibernate.util.folder}/hibernateBeans.lst">
+      <fileset dir="${build.classes.dir}">
+        <include name="**/*.hbm.xml" />
+      </fileset>
+    </listfileset>
+    <!-- merge hibernate properties -->
+    <loadproperties srcFile="extension/hibernate.properties">
+      <filterchain>
+        <striplinecomments>
+          <comment value="#" />
+        </striplinecomments>
+        <prefixlines prefix="hibernate_prefX." />
+      </filterchain>
+    </loadproperties>
+    <echoproperties destfile="${build.classes.dir}/${hibernate.util.folder}/hibernate.properties">
+      <propertyset>
+        <propertyref prefix="hibernate_prefX." />
+        <mapper type="glob" from="hibernate_prefX.*" to="*" />
+      </propertyset>
+    </echoproperties>
+  </target>
+  <target name="hibernate-test-user-props">
+    <available property="hibernate-isuser-props" file="extension/userhibernate.properties" />
+  </target>
+  <target name="hibernate-load-user-props" if="hibernate-isuser-props">
+    <loadproperties srcFile="extension/userhibernate.properties">
+      <filterchain>
+        <striplinecomments>
+          <comment value="#" />
+        </striplinecomments>
+        <prefixlines prefix="hibernate_prefX." />
+      </filterchain>
+    </loadproperties>
+  </target>
+</project>
+

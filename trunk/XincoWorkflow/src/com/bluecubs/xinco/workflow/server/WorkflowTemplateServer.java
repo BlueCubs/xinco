@@ -44,7 +44,7 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 public class WorkflowTemplateServer extends WorkflowTemplate{
-    private ResultSet rs=null;
+    private ResultSet rs=null,rs2=null;
     private Vector tNodes=null,tTransactions=null;
     /** Creates a new instance of WorkflowTemplateServer */
     public WorkflowTemplateServer(int id, WorkflowDBManager DBM){
@@ -83,7 +83,13 @@ public class WorkflowTemplateServer extends WorkflowTemplate{
             rs=DBM.getStatement().executeQuery(sql);
             temp.removeAllElements();
             while(rs.next()){
-                temp.addElement(new NodeServer(rs.getInt("node_id"),DBM));
+                NodeServer tempNode=new NodeServer(rs.getInt("node_id"),DBM);
+                rs2=DBM.getStatement().executeQuery("select * from workflow_template_has_node " +
+                        "where node_id="+rs.getInt("node_id")+" and id="+getId());
+                rs2.next();
+                tempNode.setStartNode(rs2.getBoolean("isStartNode"));
+                tempNode.setEndNode(rs2.getBoolean("isEndNode"));
+                temp.addElement(tempNode);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -131,5 +137,18 @@ public class WorkflowTemplateServer extends WorkflowTemplate{
     
     public void setTTransactions(Vector tTransactions) {
         this.tTransactions = tTransactions;
+    }
+    
+    public NodeServer getRoot(){
+        if(getTNodes()!= null)
+        {
+            for(int i=0;i<getTNodes().size();i++)
+            {
+                if(((NodeServer)getTNodes().get(i)).isStartNode()){
+                    return ((NodeServer)getTNodes().get(i));
+                }
+            }
+        }
+        return null;
     }
 }
