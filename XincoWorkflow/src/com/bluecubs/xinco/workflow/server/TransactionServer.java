@@ -86,4 +86,8 @@ public class TransactionServer extends Transaction{
         values=new PropertyServer().getPropertiesForTransaction(getId(),DBM);
         setProperties(values);
     }
+    
+    public TransactionServer loadTransactionForInstance(){
+        return null;
+    }
 }

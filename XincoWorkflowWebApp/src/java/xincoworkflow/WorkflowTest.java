@@ -9,6 +9,8 @@ package xincoworkflow;
 import com.bluecubs.xinco.core.server.WorkflowDBManager;
 import com.bluecubs.xinco.workflow.Node;
 import com.bluecubs.xinco.workflow.Transaction;
+import com.bluecubs.xinco.workflow.server.WorkflowInstanceManager;
+import com.bluecubs.xinco.workflow.server.WorkflowInstanceServer;
 import com.bluecubs.xinco.workflow.server.WorkflowTemplateServer;
 import com.sun.rave.web.ui.appbase.AbstractPageBean;
 import com.sun.rave.web.ui.component.Body;
@@ -22,6 +24,7 @@ import com.sun.rave.web.ui.component.Link;
 import com.sun.rave.web.ui.component.Page;
 import com.sun.rave.web.ui.component.TextArea;
 import javax.faces.FacesException;
+import javax.faces.event.ValueChangeEvent;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -220,28 +223,26 @@ public class WorkflowTest extends AbstractPageBean {
     /**
      * <p>Return a reference to the scoped data bean.</p>
      */
-    protected SessionBean1 getSessionBean1() {
-        return (SessionBean1)getBean("SessionBean1");
+    protected Session getSession() {
+        return (Session)getBean("Session");
     }
 
     /**
      * <p>Return a reference to the scoped data bean.</p>
      */
-    protected ApplicationBean1 getApplicationBean1() {
-        return (ApplicationBean1)getBean("ApplicationBean1");
+    protected ApplicationBean getApplicationBean() {
+        return (ApplicationBean)getBean("ApplicationBean");
     }
 
     /**
      * <p>Return a reference to the scoped data bean.</p>
      */
-    protected RequestBean1 getRequestBean1() {
-        return (RequestBean1)getBean("RequestBean1");
+    protected Request getRequest() {
+        return (Request)getBean("Request");
     }
 
     public String load_action() {
         try {
-            // TODO: Process the button click action. Return value is a navigation
-            // case name where null will return to the same page. 
             w=new WorkflowTemplateServer(1,new WorkflowDBManager());
             String resultS="Nodes:\n---------------------\n";
             result.setText("");
@@ -254,10 +255,19 @@ public class WorkflowTest extends AbstractPageBean {
             }
             result.setText(resultS);
             System.out.println(resultS);
+            
+            WorkflowInstanceManager manager = new WorkflowInstanceManager(new WorkflowInstanceServer(1,new WorkflowDBManager()));
+            manager.manage();
+            
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    public void result_processValueChange(ValueChangeEvent event) {
+        // TODO: Replace with your code
+        
     }
 }
 

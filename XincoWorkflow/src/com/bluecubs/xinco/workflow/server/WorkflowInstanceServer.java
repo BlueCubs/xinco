@@ -50,7 +50,7 @@ public class WorkflowInstanceServer extends WorkflowInstance{
     /**
      * Creates a new instance of WorkflowInstanceServer
      */
-    public WorkflowInstanceServer(int id, WorkflowDBManager DBM) throws WorkflowException {
+    public WorkflowInstanceServer(int id,int template_id, WorkflowDBManager DBM) throws WorkflowException {
         if(id>0){
             try {
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
@@ -78,7 +78,36 @@ public class WorkflowInstanceServer extends WorkflowInstance{
                 ex.printStackTrace();
                 throw new WorkflowException();
             }
+        }else{
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("Creating instance...");
+            try {
+                DBM.getNewID("workflow_instance");
+                setId(id);
+                setTemplateId(template_id);
+                GregorianCalendar cal = new GregorianCalendar();
+                cal.setTimeInMillis(System.currentTimeMillis());
+                setCreationTime(cal);
+                template =new WorkflowTemplateServer(getTemplateId(),DBM);
+                setNodes(template.getNodes());
+                initializeNodes(DBM);
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("# of nodes: "+getNodes().size());
+                setTransactions(template.getTransactions());
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("# of transactions: "+getTransactions().size());
+                setCurrentNode(rs.getInt("node_id"));
+                loadProperties();
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("Creating instance...Done!");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
+    }
+    
+    public void write2DB(){
+        
     }
     
     private void loadProperties() throws WorkflowException{
@@ -88,5 +117,19 @@ public class WorkflowInstanceServer extends WorkflowInstance{
             ex.printStackTrace();
             throw new WorkflowException();
         }
+    }
+    
+    public void initializeNodes(WorkflowDBManager DBM){
+            for(int i=0;i<getNodes().size();i++){
+            try {
+                rs=DBM.getStatement().executeQuery("select * from workflow_instance_has_node " +
+                        "where node_id="+((NodeServer)getNodes().get(i)).getId()+" and workflow_instance_id="+getId());
+                rs.next();
+                ((NodeServer)getNodes().get(i)).setStartNode(rs.getBoolean("isStartNode"));
+                ((NodeServer)getNodes().get(i)).setEndNode(rs.getBoolean("isEndNode"));
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            }
     }
 }

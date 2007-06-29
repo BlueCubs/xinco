@@ -452,6 +452,30 @@
         <copy-ear-war file="${reference.XincoExplorer.jar}" propname="included.lib.reference.XincoExplorer.jar.X"/>
         <basename property="included.lib.reference.XincoWorkflow.jar" file="${reference.XincoWorkflow.jar}"/>
         <copy-ear-war file="${reference.XincoWorkflow.jar}" propname="included.lib.reference.XincoWorkflow.jar.X"/>
+        <basename property="included.lib.libs.Hibernate.classpath.12" file="${libs.Hibernate.classpath.libfile.12}"/>
+        <basename property="included.lib.libs.Hibernate.classpath.11" file="${libs.Hibernate.classpath.libfile.11}"/>
+        <basename property="included.lib.libs.Hibernate.classpath.10" file="${libs.Hibernate.classpath.libfile.10}"/>
+        <basename property="included.lib.libs.Hibernate.classpath.9" file="${libs.Hibernate.classpath.libfile.9}"/>
+        <basename property="included.lib.libs.Hibernate.classpath.8" file="${libs.Hibernate.classpath.libfile.8}"/>
+        <basename property="included.lib.libs.Hibernate.classpath.7" file="${libs.Hibernate.classpath.libfile.7}"/>
+        <basename property="included.lib.libs.Hibernate.classpath.6" file="${libs.Hibernate.classpath.libfile.6}"/>
+        <basename property="included.lib.libs.Hibernate.classpath.5" file="${libs.Hibernate.classpath.libfile.5}"/>
+        <basename property="included.lib.libs.Hibernate.classpath.4" file="${libs.Hibernate.classpath.libfile.4}"/>
+        <basename property="included.lib.libs.Hibernate.classpath.3" file="${libs.Hibernate.classpath.libfile.3}"/>
+        <basename property="included.lib.libs.Hibernate.classpath.2" file="${libs.Hibernate.classpath.libfile.2}"/>
+        <basename property="included.lib.libs.Hibernate.classpath.1" file="${libs.Hibernate.classpath.libfile.1}"/>
+        <copy-ear-war file="${libs.Hibernate.classpath.libfile.12}" propname="included.lib.libs.Hibernate.classpath.12.X"/>
+        <copy-ear-war file="${libs.Hibernate.classpath.libfile.11}" propname="included.lib.libs.Hibernate.classpath.11.X"/>
+        <copy-ear-war file="${libs.Hibernate.classpath.libfile.10}" propname="included.lib.libs.Hibernate.classpath.10.X"/>
+        <copy-ear-war file="${libs.Hibernate.classpath.libfile.9}" propname="included.lib.libs.Hibernate.classpath.9.X"/>
+        <copy-ear-war file="${libs.Hibernate.classpath.libfile.8}" propname="included.lib.libs.Hibernate.classpath.8.X"/>
+        <copy-ear-war file="${libs.Hibernate.classpath.libfile.7}" propname="included.lib.libs.Hibernate.classpath.7.X"/>
+        <copy-ear-war file="${libs.Hibernate.classpath.libfile.6}" propname="included.lib.libs.Hibernate.classpath.6.X"/>
+        <copy-ear-war file="${libs.Hibernate.classpath.libfile.5}" propname="included.lib.libs.Hibernate.classpath.5.X"/>
+        <copy-ear-war file="${libs.Hibernate.classpath.libfile.4}" propname="included.lib.libs.Hibernate.classpath.4.X"/>
+        <copy-ear-war file="${libs.Hibernate.classpath.libfile.3}" propname="included.lib.libs.Hibernate.classpath.3.X"/>
+        <copy-ear-war file="${libs.Hibernate.classpath.libfile.2}" propname="included.lib.libs.Hibernate.classpath.2.X"/>
+        <copy-ear-war file="${libs.Hibernate.classpath.libfile.1}" propname="included.lib.libs.Hibernate.classpath.1.X"/>
         <copy file="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir.real}/client"/>
         <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir.real}/client"/>
         <copy file="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir.real}/client"/>
@@ -473,7 +497,7 @@
         <copy file="${file.reference.blueCubsIcon16x16.GIF-1}" todir="${build.web.dir.real}/client"/>
         <mkdir dir="${build.web.dir.real}/META-INF"/>
         <manifest file="${build.web.dir.real}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.libs.XincoLibs.classpath.1.X} ${included.lib.libs.XincoLibs.classpath.2.X} ${included.lib.libs.XincoLibs.classpath.3.X} ${included.lib.libs.XincoLibs.classpath.4.X} ${included.lib.libs.XincoLibs.classpath.5.X} ${included.lib.libs.XincoLibs.classpath.6.X} ${included.lib.libs.XincoLibs.classpath.7.X} ${included.lib.libs.XincoLibs.classpath.8.X} ${included.lib.libs.XincoLibs.classpath.9.X} ${included.lib.libs.XincoLibs.classpath.10.X} ${included.lib.libs.XincoLibs.classpath.11.X} ${included.lib.libs.XincoLibs.classpath.12.X} ${included.lib.libs.XincoLibs.classpath.13.X} ${included.lib.libs.XincoLibs.classpath.14.X} ${included.lib.libs.XincoLibs.classpath.15.X} ${included.lib.libs.XincoLibs.classpath.16.X} ${included.lib.libs.XincoLibs.classpath.17.X} ${included.lib.libs.XincoLibs.classpath.18.X} ${included.lib.libs.XincoLibs.classpath.19.X} ${included.lib.libs.XincoLibs.classpath.20.X} ${included.lib.libs.XincoLibs.classpath.21.X} ${included.lib.libs.XincoLibs.classpath.22.X} ${included.lib.reference.Xinco.jar} ${included.lib.reference.XincoExplorer.jar} ${included.lib.reference.XincoWorkflow.jar} "/>
+            <attribute name="Class-Path" value="${included.lib.libs.XincoLibs.classpath.1.X} ${included.lib.libs.XincoLibs.classpath.2.X} ${included.lib.libs.XincoLibs.classpath.3.X} ${included.lib.libs.XincoLibs.classpath.4.X} ${included.lib.libs.XincoLibs.classpath.5.X} ${included.lib.libs.XincoLibs.classpath.6.X} ${included.lib.libs.XincoLibs.classpath.7.X} ${included.lib.libs.XincoLibs.classpath.8.X} ${included.lib.libs.XincoLibs.classpath.9.X} ${included.lib.libs.XincoLibs.classpath.10.X} ${included.lib.libs.XincoLibs.classpath.11.X} ${included.lib.libs.XincoLibs.classpath.12.X} ${included.lib.libs.XincoLibs.classpath.13.X} ${included.lib.libs.XincoLibs.classpath.14.X} ${included.lib.libs.XincoLibs.classpath.15.X} ${included.lib.libs.XincoLibs.classpath.16.X} ${included.lib.libs.XincoLibs.classpath.17.X} ${included.lib.libs.XincoLibs.classpath.18.X} ${included.lib.libs.XincoLibs.classpath.19.X} ${included.lib.libs.XincoLibs.classpath.20.X} ${included.lib.libs.XincoLibs.classpath.21.X} ${included.lib.libs.XincoLibs.classpath.22.X} ${included.lib.reference.Xinco.jar} ${included.lib.reference.XincoExplorer.jar} ${included.lib.reference.XincoWorkflow.jar} ${included.lib.libs.Hibernate.classpath.1.X} ${included.lib.libs.Hibernate.classpath.2.X} ${included.lib.libs.Hibernate.classpath.3.X} ${included.lib.libs.Hibernate.classpath.4.X} ${included.lib.libs.Hibernate.classpath.5.X} ${included.lib.libs.Hibernate.classpath.6.X} ${included.lib.libs.Hibernate.classpath.7.X} ${included.lib.libs.Hibernate.classpath.8.X} ${included.lib.libs.Hibernate.classpath.9.X} ${included.lib.libs.Hibernate.classpath.10.X} ${included.lib.libs.Hibernate.classpath.11.X} ${included.lib.libs.Hibernate.classpath.12.X} "/>
         </manifest>
         <delete dir="${dist.ear.dir}/temp"/>
     </target>
@@ -503,6 +527,18 @@
         <copy file="${reference.Xinco.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${reference.XincoWorkflow.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.Hibernate.classpath.libfile.12}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.Hibernate.classpath.libfile.11}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.Hibernate.classpath.libfile.10}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.Hibernate.classpath.libfile.9}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.Hibernate.classpath.libfile.8}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.Hibernate.classpath.libfile.7}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.Hibernate.classpath.libfile.6}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.Hibernate.classpath.libfile.5}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.Hibernate.classpath.libfile.4}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.Hibernate.classpath.libfile.3}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.Hibernate.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.Hibernate.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir.real}/client"/>
         <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir.real}/client"/>
         <copy file="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir.real}/client"/>

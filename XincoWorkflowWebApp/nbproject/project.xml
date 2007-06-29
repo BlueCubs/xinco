@@ -10,13 +10,13 @@
                 <library files="2">
                     <file>${libs.jsf-designtime.classpath}</file>
                 </library>
-                <library>
+                <library files="3">
                     <file>${libs.jsfsupport-designtime.classpath}</file>
                 </library>
                 <library files="2">
                     <file>${libs.webui-designtime.classpath}</file>
                 </library>
-                <library>
+                <library files="2">
                     <file>${libs.jdbcsupport-designtime.classpath}</file>
                 </library>
                 <library files="2">
@@ -35,13 +35,73 @@
                     <file>${reference.Xinco.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-            </web-module-libraries>
-            <web-module-additional-libraries>
-                <library>
-                    <file>${libs.jsf-runtime.classpath}</file>
+                <library files="12">
+                    <file>${libs.Hibernate.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library files="2">
+                    <file>${libs.Persistance.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.hib-hibernate.jar.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.hib-cglib-full.jar.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.hib-commons-collections.jar.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.hib-commons-logging.jar.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.hib-concurrent.jar.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.hib-dom4j-1.jar.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.hib-ehcache.jar.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.hib-jdbc-driver.jar.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.hib-jdbc2_0-stdext.jar.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.hib-jta.jar.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.hib-log4j.jar.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.hib-antlr.jar.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.hib-asm.jar.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+            </web-module-libraries>
+            <web-module-additional-libraries>
+                <library files="6">
+                    <file>${libs.jsf-runtime.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="3">
                     <file>${libs.jsfsupport-runtime.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
@@ -49,7 +109,7 @@
                     <file>${libs.webui-runtime.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
+                <library files="2">
                     <file>${libs.jdbcsupport-runtime.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
@@ -68,6 +128,10 @@
                 <library files="1">
                     <file>${libs.theme-default-gray.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${reference.XincoWorkflow.jar}</file>
+                    <path-in-war>client</path-in-war>
                 </library>
             </web-module-additional-libraries>
             <source-roots>

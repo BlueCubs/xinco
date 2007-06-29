@@ -3,8 +3,8 @@
                               "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
 <faces-config>
     <managed-bean>
-        <managed-bean-name>SessionBean1</managed-bean-name>
-        <managed-bean-class>xincoworkflow.SessionBean1</managed-bean-class>
+        <managed-bean-name>Session</managed-bean-name>
+        <managed-bean-class>xincoworkflow.Session</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
     <managed-bean>
@@ -13,13 +13,13 @@
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
-        <managed-bean-name>ApplicationBean1</managed-bean-name>
-        <managed-bean-class>xincoworkflow.ApplicationBean1</managed-bean-class>
+        <managed-bean-name>ApplicationBean</managed-bean-name>
+        <managed-bean-class>xincoworkflow.ApplicationBean</managed-bean-class>
         <managed-bean-scope>application</managed-bean-scope>
     </managed-bean>
     <managed-bean>
-        <managed-bean-name>RequestBean1</managed-bean-name>
-        <managed-bean-class>xincoworkflow.RequestBean1</managed-bean-class>
+        <managed-bean-name>Request</managed-bean-name>
+        <managed-bean-class>xincoworkflow.Request</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>

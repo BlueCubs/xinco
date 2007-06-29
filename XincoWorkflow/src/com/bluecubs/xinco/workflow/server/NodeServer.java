@@ -54,6 +54,7 @@ public class NodeServer extends Node{
                 rs.next();
                 setId(rs.getInt("id"));
                 setDescription(rs.getString("description"));
+                rs =DBM.getStatement().executeQuery("select * from node where id="+id);
                 setEndNode(rs.getBoolean("isEndNode"));
                 setStartNode(rs.getBoolean("isStartNode"));
                 //Load adtivities related to this node

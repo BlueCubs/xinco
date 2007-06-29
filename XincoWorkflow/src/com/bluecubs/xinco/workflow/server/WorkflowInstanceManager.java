@@ -35,9 +35,11 @@
 
 package com.bluecubs.xinco.workflow.server;
 
+import com.bluecubs.xinco.core.server.WorkflowDBManager;
 import com.bluecubs.xinco.workflow.Node;
 import com.bluecubs.xinco.workflow.Transaction;
 import com.bluecubs.xinco.workflow.WorkflowInstance;
+import java.sql.ResultSet;
 
 public class WorkflowInstanceManager {
     private WorkflowInstanceServer currentInstance=null;
@@ -65,6 +67,12 @@ public class WorkflowInstanceManager {
     }
     
     private void buildWorkflow(){
+        WorkflowDBManager DBM=null;
+        try {
+            DBM = new WorkflowDBManager();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         //Find the root node
         sw=new SimpleWorkflow();
         boolean isRoot=false;
@@ -80,7 +88,13 @@ public class WorkflowInstanceManager {
                 //We found the root node!
                 SimpleNode temp= new SimpleNode(((Node)this.currentInstance.getNodes().get(i)).getId());
                 sw.addNode(temp);
-                System.out.println("Root id= "+sw.nodes[0].id);
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("Root id= "+sw.nodes[0].id);
+//                ResultSet rs=DBM.getStatement().executeQuery("select * from workflow_instance_has_node " +
+//                        "where node_id="+rs.getInt("node_id")+" and workflow_instance_id="+getId());
+//                rs.next();
+//                tempNode.setStartNode(rs.getBoolean("isStartNode"));
+//                tempNode.setEndNode(rs.getBoolean("isEndNode"));
                 break;
             }
         }
@@ -94,7 +108,11 @@ public class WorkflowInstanceManager {
                 SimpleNode temp= new SimpleNode(((Transaction)this.currentInstance.getTransactions().get(j)).getTo().getId());
                 sw.addNode(temp);
                 sw.nodes[j].connections[sw.nodes[j].connections.length-1].next=sw.nodes[sw.nodes.length-1];
-                System.out.println("("+sw.nodes[j].id+")--->("+sw.nodes[j].connections[sw.nodes[j].connections.length-1].next.id+")");
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                    String s="("+sw.nodes[j].id+")--->("+sw.nodes[j].connections[sw.nodes[j].connections.length-1].next.id+")";
+                    
+                    System.out.println(s);
+                }
             }
         }
     }
@@ -125,6 +143,7 @@ public class WorkflowInstanceManager {
     private class SimpleNode{
         int id,i;
         Connection[] connections=null;
+        private boolean completed=false;
         public SimpleNode(int id){
             this.id=id;
         }
@@ -138,6 +157,14 @@ public class WorkflowInstanceManager {
                 connections=temp;
             }
             connections[i]=con;
+        }
+
+        public boolean isCompleted() {
+            return completed;
+        }
+
+        public void setCompleted(boolean completed) {
+            this.completed = completed;
         }
     }
     

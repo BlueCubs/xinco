@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document version="1.0">
-    <Node id="WorkflowIndex.jsp" x="120" y="160"/>
+    <Node id="WorkflowTest.jsp" x="112" y="160"/>
+    <Node id="index.jsp" x="232" y="96"/>
 </document>
