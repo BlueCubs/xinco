@@ -133,16 +133,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
                     <element name="xinco_core_data_type_id" type="xsd:int"/>
                 </sequence>
             </complexType>
-            <complexType name="XincoCoreAudit">
-                <sequence>
-                    <element name="schedule_id" type="xsd:int"/>
-                    <element name="data_id" type="xsd:int"/>
-                    <element name="schedule_type_id" type="xsd:int"/>
-                    <element name="scheduled_date" type="xsd:date"/>
-                    <element name="completion_date" type="xsd:date" nillable="true"/>
-                    <element name="completedBy" type="xsd:int"/>
-                </sequence>
-            </complexType>
             <complexType name="XincoSetting">
                 <sequence>
                     <element name="id" type="xsd:int"/>
@@ -153,19 +143,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
                     <element name="changerID" type="xsd:int"/>
                     <element name="long_value" type="xsd:long"/>
                     <element name="xinco_settings" nillable="true" type="apachesoap:Vector"/>
-                </sequence>
-            </complexType>
-            <complexType name="XincoCoreAuditType">
-                <sequence>
-                    <element name="id" type="xsd:int"/>
-                    <element name="days" type="xsd:int"/>
-                    <element name="weeks" type="xsd:int"/>
-                    <element name="months" type="xsd:int"/>
-                    <element name="years" type="xsd:int"/>
-                    <element name="description" type="xsd:string"/>
-                    <element name="due_same_day" type="xsd:boolean"/>
-                    <element name="due_same_week" type="xsd:boolean"/>
-                    <element name="due_same_month" type="xsd:boolean"/>
                 </sequence>
             </complexType>
             <complexType name="XincoEmail">
@@ -272,18 +249,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <wsdl:message name="setXincoSettingResponse">
         
         <wsdl:part name="setXincoSettingReturn" type="tns2:XincoSetting">
-            
-        </wsdl:part>
-        
-    </wsdl:message>
-    
-    <wsdl:message name="getXincoCoreAuditRequest">
-        
-        <wsdl:part name="in0" type="tns2:XincoCoreData">
-            
-        </wsdl:part>
-        
-        <wsdl:part name="in1" type="tns2:XincoCoreUser">
             
         </wsdl:part>
         
@@ -549,14 +514,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         
     </wsdl:message>
     
-    <wsdl:message name="getXincoCoreAuditTypesRequest">
-        
-        <wsdl:part name="in0" type="tns2:XincoCoreUser">
-            
-        </wsdl:part>
-        
-    </wsdl:message>
-    
     <wsdl:message name="getXincoCoreDataResponse">
         
         <wsdl:part name="getXincoCoreDataReturn" type="tns2:XincoCoreData">
@@ -580,18 +537,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <wsdl:message name="getXincoCoreDataTypeAttributeResponse">
         
         <wsdl:part name="getXincoCoreDataTypeAttributeReturn" type="tns2:XincoCoreDataTypeAttribute">
-            
-        </wsdl:part>
-        
-    </wsdl:message>
-    
-    <wsdl:message name="setXincoCoreAuditRequest">
-        
-        <wsdl:part name="in0" type="tns2:XincoCoreAudit">
-            
-        </wsdl:part>
-        
-        <wsdl:part name="in1" type="tns2:XincoCoreUser">
             
         </wsdl:part>
         
@@ -633,14 +578,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         
     </wsdl:message>
     
-    <wsdl:message name="getXincoCoreAuditTypesResponse">
-        
-        <wsdl:part name="getXincoCoreAuditTypesReturn" type="apachesoap:Vector">
-            
-        </wsdl:part>
-        
-    </wsdl:message>
-    
     <wsdl:message name="getXincoServerVersionRequest">
         
     </wsdl:message>
@@ -669,18 +606,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         
     </wsdl:message>
     
-    <wsdl:message name="getXincoCoreAuditTypeRequest">
-        
-        <wsdl:part name="in0" type="tns2:XincoCoreUser">
-            
-        </wsdl:part>
-        
-        <wsdl:part name="in1" type="xsd:int">
-            
-        </wsdl:part>
-        
-    </wsdl:message>
-    
     <wsdl:message name="setXincoCoreLanguageResponse">
         
         <wsdl:part name="setXincoCoreLanguageReturn" type="tns2:XincoCoreLanguage">
@@ -692,14 +617,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <wsdl:message name="getAllXincoCoreLanguagesRequest">
         
         <wsdl:part name="in0" type="tns2:XincoCoreUser">
-            
-        </wsdl:part>
-        
-    </wsdl:message>
-    
-    <wsdl:message name="setXincoCoreAuditResponse">
-        
-        <wsdl:part name="setXincoCoreAuditReturn" type="tns2:XincoCoreAudit">
             
         </wsdl:part>
         
@@ -732,14 +649,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <wsdl:message name="getAllXincoCoreDataTypesResponse">
         
         <wsdl:part name="getAllXincoCoreDataTypesReturn" type="apachesoap:Vector">
-            
-        </wsdl:part>
-        
-    </wsdl:message>
-    
-    <wsdl:message name="getXincoCoreAuditResponse">
-        
-        <wsdl:part name="getXincoCoreAuditReturn" type="apachesoap:Vector">
             
         </wsdl:part>
         
@@ -788,14 +697,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <wsdl:message name="getCurrentXincoCoreUserResponse">
         
         <wsdl:part name="getCurrentXincoCoreUserReturn" type="tns2:XincoCoreUser">
-            
-        </wsdl:part>
-        
-    </wsdl:message>
-    
-    <wsdl:message name="getXincoCoreAuditTypeResponse">
-        
-        <wsdl:part name="getXincoCoreAuditTypeReturn" type="tns2:XincoCoreAuditType">
             
         </wsdl:part>
         
@@ -1188,30 +1089,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
             
         </wsdl:operation>
         
-        <wsdl:operation name="getXincoCoreAudit" parameterOrder="in0 in1">
-            
-            <wsdl:input message="impl:getXincoCoreAuditRequest" name="getXincoCoreAuditRequest">
-                
-            </wsdl:input>
-            
-            <wsdl:output message="impl:getXincoCoreAuditResponse" name="getXincoCoreAuditResponse">
-                
-            </wsdl:output>
-            
-        </wsdl:operation>
-        
-        <wsdl:operation name="setXincoCoreAudit" parameterOrder="in0 in1">
-            
-            <wsdl:input message="impl:setXincoCoreAuditRequest" name="setXincoCoreAuditRequest">
-                
-            </wsdl:input>
-            
-            <wsdl:output message="impl:setXincoCoreAuditResponse" name="setXincoCoreAuditResponse">
-                
-            </wsdl:output>
-            
-        </wsdl:operation>
-        
         <wsdl:operation name="getAllXincoUsers" parameterOrder="in0">
             
             <wsdl:input name="getAllXincoUsersRequest" message="impl:getAllXincoUsersRequest">
@@ -1243,30 +1120,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
             </wsdl:input>
             
             <wsdl:output name="setXincoSettingResponse" message="impl:setXincoSettingResponse">
-                
-            </wsdl:output>
-            
-        </wsdl:operation>
-        
-        <wsdl:operation name="getXincoCoreAuditType" parameterOrder="in0 in1">
-            
-            <wsdl:input name="getXincoCoreAuditTypeRequest" message="impl:getXincoCoreAuditTypeRequest">
-                
-            </wsdl:input>
-            
-            <wsdl:output name="getXincoCoreAuditTypeResponse" message="impl:getXincoCoreAuditTypeResponse">
-                
-            </wsdl:output>
-            
-        </wsdl:operation>
-        
-        <wsdl:operation name="getXincoCoreAuditTypes" parameterOrder="in0">
-            
-            <wsdl:input name="getXincoCoreAuditTypesRequest" message="impl:getXincoCoreAuditTypesRequest">
-                
-            </wsdl:input>
-            
-            <wsdl:output name="getXincoCoreAuditTypesResponse" message="impl:getXincoCoreAuditTypesResponse">
                 
             </wsdl:output>
             
@@ -1759,42 +1612,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
             
         </wsdl:operation>
         
-        <wsdl:operation name="getXincoCoreAudit">
-            
-            <wsdlsoap:operation soapAction=""/>
-            
-            <wsdl:input name="getXincoCoreAuditRequest">
-                
-                <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
-                
-            </wsdl:input>
-            
-            <wsdl:output name="getXincoCoreAuditResponse">
-                
-                <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
-                
-            </wsdl:output>
-            
-        </wsdl:operation>
-        
-        <wsdl:operation name="setXincoCoreAudit">
-            
-            <wsdlsoap:operation soapAction=""/>
-            
-            <wsdl:input name="setXincoCoreAuditRequest">
-                
-                <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
-                
-            </wsdl:input>
-            
-            <wsdl:output name="setXincoCoreAuditResponse">
-                
-                <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
-                
-            </wsdl:output>
-            
-        </wsdl:operation>
-        
         <wsdl:operation name="getAllXincoUsers">
             
             <wsdlsoap:operation soapAction=""/>
@@ -1842,42 +1659,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
             </wsdl:input>
             
             <wsdl:output name="setXincoSettingResponse">
-                
-                <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
-                
-            </wsdl:output>
-            
-        </wsdl:operation>
-        
-        <wsdl:operation name="getXincoCoreAuditType">
-            
-            <wsdlsoap:operation soapAction=""/>
-            
-            <wsdl:input name="getXincoCoreAuditTypeRequest">
-                
-                <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
-                
-            </wsdl:input>
-            
-            <wsdl:output name="getXincoCoreAuditTypeResponse">
-                
-                <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
-                
-            </wsdl:output>
-            
-        </wsdl:operation>
-        
-        <wsdl:operation name="getXincoCoreAuditTypes">
-            
-            <wsdlsoap:operation soapAction=""/>
-            
-            <wsdl:input name="getXincoCoreAuditTypesRequest">
-                
-                <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
-                
-            </wsdl:input>
-            
-            <wsdl:output name="getXincoCoreAuditTypesResponse">
                 
                 <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
                 

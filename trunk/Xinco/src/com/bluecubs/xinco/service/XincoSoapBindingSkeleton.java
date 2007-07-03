@@ -355,32 +355,6 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
         }
         ((java.util.List)_myOperations.get("checkXincoCoreUserNewPassword")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreData"), com.bluecubs.xinco.core.XincoCoreData.class, false, false), 
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
-        };
-        _oper = new org.apache.axis.description.OperationDesc("getXincoCoreAudit", _params, new javax.xml.namespace.QName("", "getXincoCoreAuditReturn"));
-        _oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
-        _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "getXincoCoreAudit"));
-        _oper.setSoapAction("");
-        _myOperationsList.add(_oper);
-        if (_myOperations.get("getXincoCoreAudit") == null) {
-            _myOperations.put("getXincoCoreAudit", new java.util.ArrayList());
-        }
-        ((java.util.List)_myOperations.get("getXincoCoreAudit")).add(_oper);
-        _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreAudit"), com.bluecubs.xinco.core.XincoCoreAudit.class, false, false), 
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
-        };
-        _oper = new org.apache.axis.description.OperationDesc("setXincoCoreAudit", _params, new javax.xml.namespace.QName("", "setXincoCoreAuditReturn"));
-        _oper.setReturnType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreAudit"));
-        _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "setXincoCoreAudit"));
-        _oper.setSoapAction("");
-        _myOperationsList.add(_oper);
-        if (_myOperations.get("setXincoCoreAudit") == null) {
-            _myOperations.put("setXincoCoreAudit", new java.util.ArrayList());
-        }
-        ((java.util.List)_myOperations.get("setXincoCoreAudit")).add(_oper);
-        _params = new org.apache.axis.description.ParameterDesc [] {
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("getAllXincoUsers", _params, new javax.xml.namespace.QName("", "getAllXincoUsersReturn"));
@@ -417,31 +391,6 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
             _myOperations.put("setXincoSetting", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("setXincoSetting")).add(_oper);
-        _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, false, false), 
-        };
-        _oper = new org.apache.axis.description.OperationDesc("getXincoCoreAuditType", _params, new javax.xml.namespace.QName("", "getXincoCoreAuditTypeReturn"));
-        _oper.setReturnType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreAuditType"));
-        _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "getXincoCoreAuditType"));
-        _oper.setSoapAction("");
-        _myOperationsList.add(_oper);
-        if (_myOperations.get("getXincoCoreAuditType") == null) {
-            _myOperations.put("getXincoCoreAuditType", new java.util.ArrayList());
-        }
-        ((java.util.List)_myOperations.get("getXincoCoreAuditType")).add(_oper);
-        _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
-        };
-        _oper = new org.apache.axis.description.OperationDesc("getXincoCoreAuditTypes", _params, new javax.xml.namespace.QName("", "getXincoCoreAuditTypesReturn"));
-        _oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
-        _oper.setElementQName(new javax.xml.namespace.QName("urn:Xinco", "getXincoCoreAuditTypes"));
-        _oper.setSoapAction("");
-        _myOperationsList.add(_oper);
-        if (_myOperations.get("getXincoCoreAuditTypes") == null) {
-            _myOperations.put("getXincoCoreAuditTypes", new java.util.ArrayList());
-        }
-        ((java.util.List)_myOperations.get("getXincoCoreAuditTypes")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.INOUT, new javax.xml.namespace.QName("http://add.xinco.bluecubs.com", "XincoAddAttribute"), com.bluecubs.xinco.add.XincoAddAttribute.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
@@ -650,18 +599,6 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
         return ret;
     }
 
-    public java.util.Vector getXincoCoreAudit(com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
-    {
-        java.util.Vector ret = impl.getXincoCoreAudit(in0, in1);
-        return ret;
-    }
-
-    public com.bluecubs.xinco.core.XincoCoreAudit setXincoCoreAudit(com.bluecubs.xinco.core.XincoCoreAudit in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
-    {
-        com.bluecubs.xinco.core.XincoCoreAudit ret = impl.setXincoCoreAudit(in0, in1);
-        return ret;
-    }
-
     public java.util.Vector getAllXincoUsers(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException
     {
         java.util.Vector ret = impl.getAllXincoUsers(in0);
@@ -677,18 +614,6 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
     public com.bluecubs.xinco.core.XincoSetting setXincoSetting(com.bluecubs.xinco.core.XincoSetting in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         com.bluecubs.xinco.core.XincoSetting ret = impl.setXincoSetting(in0, in1);
-        return ret;
-    }
-
-    public com.bluecubs.xinco.core.XincoCoreAuditType getXincoCoreAuditType(com.bluecubs.xinco.core.XincoCoreUser in0, int in1) throws java.rmi.RemoteException
-    {
-        com.bluecubs.xinco.core.XincoCoreAuditType ret = impl.getXincoCoreAuditType(in0, in1);
-        return ret;
-    }
-
-    public java.util.Vector getXincoCoreAuditTypes(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException
-    {
-        java.util.Vector ret = impl.getXincoCoreAuditTypes(in0);
         return ret;
     }
 

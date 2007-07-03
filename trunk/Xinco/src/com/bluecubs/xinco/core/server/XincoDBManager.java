@@ -43,14 +43,12 @@ import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoSetting;
-import com.bluecubs.xinco.core.server.email.XincoMailer;
 import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import javax.mail.MessagingException;
 import org.apache.commons.dbcp.BasicDataSource;
 
 public class XincoDBManager {
@@ -262,7 +260,8 @@ public class XincoDBManager {
                 //Delete content of tables
                 s=getConnection().createStatement();
                 while(rs.next()){
-                    if(!rs.getString("TABLE_NAME").equals("xinco_id")){
+                    if(!rs.getString("TABLE_NAME").equals("xinco_id") &&
+                            rs.getString("TABLE_NAME").contains("xinco")){
                         number=1000;
                         column="id";
                         //Modify primary key name if needed
@@ -285,7 +284,8 @@ public class XincoDBManager {
                             number = -1;
                         condition = column +" > "+number;
                         sql="delete from "+rs.getString("TABLE_NAME")+" where "+condition;
-                        System.out.println(sql);
+                        if(getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                            System.out.println(sql);
                         s.executeUpdate(sql);
                     }
                 }
@@ -349,11 +349,11 @@ public class XincoDBManager {
     public XincoSetting getSetting(String name){
         return getXincoSettingServer().getSetting(name);
     }
-
+    
     public ResourceBundle getResourceBundle() {
         return lrb;
     }
-
+    
     public void setResourceBundle(ResourceBundle lrb) {
         this.lrb = lrb;
     }

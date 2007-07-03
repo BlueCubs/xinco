@@ -10,8 +10,6 @@ package com.bluecubs.xinco.service;
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
 import com.bluecubs.xinco.core.XincoCoreACE;
-import com.bluecubs.xinco.core.XincoCoreAudit;
-import com.bluecubs.xinco.core.XincoCoreAuditType;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreLog;
@@ -20,8 +18,6 @@ import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoVersion;
 import com.bluecubs.xinco.core.server.XincoCoreACEServer;
-import com.bluecubs.xinco.core.server.XincoCoreAuditServer;
-import com.bluecubs.xinco.core.server.XincoCoreAuditTypeServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataTypeServer;
 import com.bluecubs.xinco.core.server.XincoCoreGroupServer;
@@ -41,8 +37,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.rmi.RemoteException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Vector;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
@@ -749,41 +743,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         }
     }
     
-    public Vector getXincoCoreAudit(XincoCoreData in0, XincoCoreUser in1) throws RemoteException {
-        XincoDBManager dbm=null;
-        ResultSet rs=null;
-        Vector audits= new Vector();
-        try {
-            dbm = new XincoDBManager();
-            rs=dbm.getConnection().createStatement().executeQuery("SELECT id FROM xinco_audit " +
-                    "WHERE xinco_core_data_id=" + in0.getId()+ " order by scheduled_date");
-            while(rs.next())
-                audits.add((XincoCoreAudit)new XincoCoreAuditServer(rs.getInt("id"),new XincoDBManager()));
-        } catch (XincoException ex) {
-            ex.printStackTrace();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return audits;
-    }
-    
-    public XincoCoreAudit setXincoCoreAudit(XincoCoreAudit in0, XincoCoreUser in1) throws RemoteException {
-        XincoCoreAuditServer audit=null;
-        try {
-            audit= new XincoCoreAuditServer(in0.getSchedule_id(),
-                    in0.getData_id(),in0.getSchedule_type_id(),in0.getScheduled_date(),
-                    in0.getCompletion_date(),in0.getCompletedBy());
-            audit.write2DB(new XincoDBManager());
-        } catch (XincoException ex) {
-            ex.printStackTrace();
-        }catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
-    
     public java.util.Vector getXincoSetting(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException {
         XincoSettingServer setting=new XincoSettingServer();
         return setting.getXinco_settings();
@@ -791,32 +750,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     public com.bluecubs.xinco.core.XincoSetting setXincoSetting(com.bluecubs.xinco.core.XincoSetting in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
         //Dummy
         return null;
-    }
-    
-    public XincoCoreAuditType getXincoCoreAuditType(XincoCoreUser in0, int in1) throws RemoteException {
-        XincoCoreAuditType xcat=null;
-        try {
-            xcat=((XincoCoreAuditType)new XincoCoreAuditTypeServer(in1,in0,new XincoDBManager()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return xcat;
-    }
-    
-    public java.util.Vector getXincoCoreAuditTypes(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException {
-        XincoDBManager dbm=null;
-        XincoCoreUserServer user=null;
-        try {
-            dbm = new XincoDBManager();
-            //check if user exists
-            user = new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), dbm);
-        } catch (XincoException ex) {
-            ex.printStackTrace();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        XincoCoreAuditTypeServer xcats=new XincoCoreAuditTypeServer();
-        return xcats.getAuditTypes();
     }
     
     public boolean indexFiles(java.util.Vector in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException{

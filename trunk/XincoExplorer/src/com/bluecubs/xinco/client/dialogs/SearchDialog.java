@@ -67,10 +67,10 @@ public class SearchDialog extends javax.swing.JDialog {
     /** Creates new form SearchDialog */
     public SearchDialog(java.awt.Frame parent, boolean modal,XincoExplorer e) {
         super(parent, modal);
+        this.explorer=e;
         initComponents();
         setLocationRelativeTo(null);
         getRootPane().setDefaultButton(this.searchButton);
-        this.explorer=e;
         addMouseListener(this.explorer);
         this.xerb=this.explorer.getResourceBundle();
         setTitle(xerb.getString("window.search"));

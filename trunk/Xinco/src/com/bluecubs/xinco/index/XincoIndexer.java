@@ -54,20 +54,25 @@ import java.sql.Statement;
  * Edit configuration values in context.xml
  */
 public class XincoIndexer {
-    public static synchronized boolean indexXincoCoreData(XincoCoreData d, boolean index_content, XincoDBManager dbm) {
+    public static synchronized boolean indexXincoCoreData(XincoCoreData d, boolean index_content, XincoDBManager DBM) {
         IndexWriter writer = null;
         try {
             //check if document exists in index and delete
-            XincoIndexer.removeXincoCoreData(d, dbm);
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Removing data from index if it exists...");
+            XincoIndexer.removeXincoCoreData(d, DBM);
             //add document to index
             try {
-                writer = new IndexWriter(dbm.config.getFileIndexPath(), new StandardAnalyzer(), false);
+                writer = new IndexWriter(DBM.config.getFileIndexPath(), new StandardAnalyzer(), false);
             } catch (Exception ie) {
-                writer = new IndexWriter(dbm.config.getFileIndexPath(), new StandardAnalyzer(), true);
+                writer = new IndexWriter(DBM.config.getFileIndexPath(), new StandardAnalyzer(), true);
             }
-            writer.addDocument(XincoDocument.getXincoDocument(d, index_content, dbm));
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Indexing...");
+            writer.addDocument(XincoDocument.getXincoDocument(d, index_content, DBM));
             writer.close();
-            
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Indexing complete!");
         } catch (Exception e) {
             if (writer != null) {
                 try {

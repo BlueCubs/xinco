@@ -33,28 +33,30 @@
  *************************************************************
  */
 
-package com.bluecubs.xinco.workflow.server;
+package com.bluecubs.xinco.manager;
 
 import com.bluecubs.xinco.core.server.WorkflowDBManager;
 import com.bluecubs.xinco.workflow.Node;
 import com.bluecubs.xinco.workflow.Transaction;
-import com.bluecubs.xinco.workflow.WorkflowInstance;
-import java.sql.ResultSet;
+import com.bluecubs.xinco.workflow.server.NodeServer;
+import com.bluecubs.xinco.workflow.server.PropertyServer;
+import com.bluecubs.xinco.workflow.server.TransactionServer;
+import com.bluecubs.xinco.workflow.server.WorkflowInstanceServer;
+import java.util.Vector;
 
 public class WorkflowInstanceManager {
     private WorkflowInstanceServer currentInstance=null;
-    SimpleWorkflow sw=null;
+    private SimpleWorkflow sw=null;
+    private int changerId=3; //By default the changes are made by system.
     /**
      * Creates a new instance of WorkflowInstanceManager
      */
-    public WorkflowInstanceManager() {
-    }
     
     public WorkflowInstanceManager(WorkflowInstanceServer instance) {
         setCurrentInstance(instance);
     }
     
-    public WorkflowInstance getCurrentInstance() {
+    public WorkflowInstanceServer getCurrentInstance() {
         return currentInstance;
     }
     
@@ -64,6 +66,7 @@ public class WorkflowInstanceManager {
     
     public void manage(){
         buildWorkflow();
+        evaluateCurrentState();
     }
     
     private void buildWorkflow(){
@@ -86,15 +89,11 @@ public class WorkflowInstanceManager {
             }
             if(isRoot){
                 //We found the root node!
-                SimpleNode temp= new SimpleNode(((Node)this.currentInstance.getNodes().get(i)).getId());
+                SimpleNode temp= new SimpleNode(((NodeServer)this.currentInstance.getNodes().get(i)).getId());
+                temp.setCompleted(((NodeServer)this.currentInstance.getNodes().get(i)).instanceSetup(getCurrentInstance().getId(),DBM).isCompleted());
                 sw.addNode(temp);
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println("Root id= "+sw.nodes[0].id);
-//                ResultSet rs=DBM.getStatement().executeQuery("select * from workflow_instance_has_node " +
-//                        "where node_id="+rs.getInt("node_id")+" and workflow_instance_id="+getId());
-//                rs.next();
-//                tempNode.setStartNode(rs.getBoolean("isStartNode"));
-//                tempNode.setEndNode(rs.getBoolean("isEndNode"));
                 break;
             }
         }
@@ -109,8 +108,8 @@ public class WorkflowInstanceManager {
                 sw.addNode(temp);
                 sw.nodes[j].connections[sw.nodes[j].connections.length-1].next=sw.nodes[sw.nodes.length-1];
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
-                    String s="("+sw.nodes[j].id+")--->("+sw.nodes[j].connections[sw.nodes[j].connections.length-1].next.id+")";
-                    
+                    String s="("+sw.nodes[j].id+(sw.nodes[j].isCompleted() ? "*":"")+
+                            ")--->("+sw.nodes[j].connections[sw.nodes[j].connections.length-1].next.id+(sw.nodes[j].connections[sw.nodes[j].connections.length-1].next.isCompleted() ? "*":"")+")";
                     System.out.println(s);
                 }
             }
@@ -146,6 +145,7 @@ public class WorkflowInstanceManager {
         private boolean completed=false;
         public SimpleNode(int id){
             this.id=id;
+            setCompleted(false);
         }
         public void addConnection(Connection con){
             if(connections==null)
@@ -158,11 +158,11 @@ public class WorkflowInstanceManager {
             }
             connections[i]=con;
         }
-
+        
         public boolean isCompleted() {
             return completed;
         }
-
+        
         public void setCompleted(boolean completed) {
             this.completed = completed;
         }
@@ -175,5 +175,95 @@ public class WorkflowInstanceManager {
         public Connection(int id){
             this.id=id;
         }
+    }
+    
+    private boolean evaluateCurrentState(){
+        boolean ready=true;
+        WorkflowDBManager DBM=null;
+        try {
+            DBM = new WorkflowDBManager();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        NodeServer current=null;
+        if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            System.out.println("Starting current state evaluation...");
+        for(int i=0;i<sw.nodes.length;i++){
+            Vector transactions=new Vector(),
+                    transactionProperties=new Vector();
+            current=((NodeServer)getCurrentInstance().getNodes().get(i));
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Evaluating node: "+current.getId());
+            // This node needs to be evaluated to see if we can get to the next step
+            if(!current.isCompleted()){
+                if(evaluateNode(current)) {
+                    // All properties are fulfilled
+                    // this can happen once during the workflow since instance
+                    // properties can change later in the workflow.
+                    current.setCompleted(true);
+                    current.setChangerID(getChangerID());
+                    if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                        System.out.println("Changing node status to complete...");
+                    try {
+                        current.write2DB(new WorkflowDBManager());
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+            // If the node is completed after evaluation...
+            if(current.isCompleted()){
+                // Verify the transactions starting after this node's completion
+                // to see if we can move fordward.
+                transactions= getCurrentInstance().getTransactionsForNode(current);
+                for(int j=0;j<transactions.size();j++) {
+                    if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                        System.out.println("Evaluating transaction: "+((TransactionServer)transactions.get(j)).getId());
+                    transactionProperties=((TransactionServer)transactions.get(j)).getProperties();
+                    if(new PropertyServer().equals(transactionProperties,getCurrentInstance().getProperties())){
+                        ((TransactionServer)transactions.get(j)).setCompleted(true);
+                        ((TransactionServer)transactions.get(j)).setChangerID(getChangerID());
+                        if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                            System.out.println("Changing transaction status to complete...");
+                        try {
+                            ((TransactionServer)transactions.get(j)).write2DB(new WorkflowDBManager());
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+        return ready;
+    }
+    
+    private boolean evaluateNode(NodeServer node){
+        boolean ready=true,found = false;
+        Vector properties=node.getProperties(),
+                instanceProperties=getCurrentInstance().getProperties();
+        for(int j=0;j<properties.size();j++){
+            for(int k=0;k<instanceProperties.size();k++){
+                if(((PropertyServer)properties.get(j)).getDescription().equals(((PropertyServer)instanceProperties.get(j)).getDescription())){
+                    //Found a matching property.
+                    found=true;
+                    if(!((PropertyServer)properties.get(j)).equals(((PropertyServer)instanceProperties.get(j)))){
+                        ready=false;
+                        break;
+                    }
+                }
+            }
+            if(!found)
+                return false;
+            found=false;
+        }
+        return ready;
+    }
+    
+    public int getChangerID() {
+        return changerId;
+    }
+    
+    public void setChangerID(int changerId) {
+        this.changerId = changerId;
     }
 }

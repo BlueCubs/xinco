@@ -38,12 +38,10 @@ package com.bluecubs.xinco.client.object;
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.XincoMutableTreeNode;
-import com.bluecubs.xinco.client.dialogs.AddAttributeText;
 import com.bluecubs.xinco.client.object.dragNdrop.XincoDefaultTreeTransferHandler;
 import com.bluecubs.xinco.client.object.menu.XincoMenuRepository;
 import com.bluecubs.xinco.client.object.menu.XincoPopUpMenuRepository;
 import com.bluecubs.xinco.core.XincoCoreACE;
-import com.bluecubs.xinco.core.XincoCoreAudit;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.XincoCoreLog;
@@ -54,7 +52,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.dnd.DnDConstants;
 import java.awt.event.MouseEvent;
-import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
@@ -219,6 +216,9 @@ public class XincoJTree extends JTree{
                         if (temp_ace.isRead_permission()) {
                             ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(10,true);
                             ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(10,true);
+                            //Testing feature request: adding checkout functionality to contacts
+                            ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(12,true);
+                            ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(12,true);
                         }
                     }
                     if (temp_ace.isRead_permission()) {
@@ -284,26 +284,6 @@ public class XincoJTree extends JTree{
                                     getExplorer().getResourceBundle().getString("error.data.sufficientrights"),
                                     getExplorer().getResourceBundle().getString("error.accessdenied"),
                                     JOptionPane.WARNING_MESSAGE);
-                        }
-                        //Only files or text can be audited
-                        if (((XincoCoreData) node.getUserObject()).getStatus_number() !=8 ){
-                            if(((XincoCoreData)node.getUserObject()).getXinco_core_data_type().getId()==1 ||
-                                    ((XincoCoreData)node.getUserObject()).getXinco_core_data_type().getId()==2){
-                                try {
-                                    getExplorer().setAudits(getExplorer().getSession().xinco.getXincoCoreAudit(getExplorer().getXdata(),getExplorer().getSession().user));
-                                } catch (RemoteException ex) {
-                                    ex.printStackTrace();
-                                }
-                                if(getExplorer().getAudits()!=null){
-                                    if(getExplorer().getAudits().size()==0){
-                                        ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(19,true);
-                                        ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(19,true);
-                                    } else if(((XincoCoreAudit)getExplorer().getAudits().get(0)).getCompletion_date()!=null){
-                                        ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(19,true);
-                                        ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(19,true);
-                                    }
-                                }
-                            }
                         }
                     } catch (Exception rmie) {
                     }

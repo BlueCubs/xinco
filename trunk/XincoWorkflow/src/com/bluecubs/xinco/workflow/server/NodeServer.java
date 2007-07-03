@@ -35,6 +35,7 @@
 
 package com.bluecubs.xinco.workflow.server;
 
+import com.bluecubs.xinco.core.server.WorkflowAuditTrail;
 import com.bluecubs.xinco.core.server.WorkflowDBManager;
 import com.bluecubs.xinco.workflow.Node;
 import java.sql.ResultSet;
@@ -43,6 +44,7 @@ import java.util.Vector;
 
 public class NodeServer extends Node{
     private ResultSet rs=null;
+    private boolean completed=false;
     /** Creates a new instance of NodeServer */
     public NodeServer(int id, WorkflowDBManager DBM) {
         if(id > 0){
@@ -55,10 +57,10 @@ public class NodeServer extends Node{
                 setId(rs.getInt("id"));
                 setDescription(rs.getString("description"));
                 rs =DBM.getStatement().executeQuery("select * from node where id="+id);
-                setEndNode(rs.getBoolean("isEndNode"));
-                setStartNode(rs.getBoolean("isStartNode"));
                 //Load adtivities related to this node
                 loadActivities(DBM);
+                //Load properties related to this node
+                loadProperties(DBM);
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -81,5 +83,68 @@ public class NodeServer extends Node{
         }
     }
     
+    private void loadProperties(WorkflowDBManager DBM){
+        Vector values = new Vector();
+        try {
+            rs=DBM.getStatement().executeQuery("select property_id from node_has_property where node_id="+getId());
+            values.removeAllElements();
+            while(rs.next()){
+                values.addElement(new PropertyServer(rs.getInt("property_id"),DBM));
+            }
+            setProperties(values);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
     
+    public NodeServer instanceSetup(int instance_id, WorkflowDBManager DBM){
+        try {
+            ResultSet rs2=DBM.getStatement().executeQuery("select * from workflow_instance_has_node " +
+                    "where node_id="+getId()+" and workflow_instance_id="+instance_id);
+            rs2.next();
+            setStartNode(rs2.getBoolean("isStartNode"));
+            setEndNode(rs2.getBoolean("isEndNode"));
+            setCompleted(rs2.getBoolean("completed"));
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return this;
+    }
+    
+    public boolean isCompleted() {
+        return completed;
+    }
+    
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+    
+    public void write2DB(WorkflowDBManager DBM){
+        WorkflowAuditTrail wat= new WorkflowAuditTrail();
+        try {
+            if(getId()>0){
+                //Update Node
+                DBM.getConnection().createStatement().executeUpdate("update node set id="+
+                        getId()+", description='"+getDescription()+"' where id ="+getId());
+                wat.updateAuditTrail("node",new String [] {"id="+getId()},DBM,"audit.general.modified",getChangerID());
+                DBM.getConnection().commit();
+            } else{
+                setId(DBM.getNewID("node"));
+                DBM.getConnection().createStatement().executeUpdate("INSERT INTO Node (id, description) VALUES("+
+                        getId()+", '"+getDescription()+"')");
+                wat.updateAuditTrail("node",new String [] {"id="+getId()},DBM,"audit.general.create",getChangerID());
+                DBM.getConnection().commit();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            try {
+                DBM.getConnection().rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 }

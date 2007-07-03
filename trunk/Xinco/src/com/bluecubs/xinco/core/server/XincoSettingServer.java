@@ -112,7 +112,7 @@ public class XincoSettingServer extends XincoSetting{
             } else{
                 DBM.getConnection().createStatement().executeUpdate("insert into xinco_setting values("+getId()+
                         ", '"+getDescription()+"',"+getInt_value()+
-                        ", '"+getString_value()+"',"+isBool_value()+")");
+                        ", '"+getString_value()+"',"+isBool_value()+","+getLong_value()+")");
                 audit.updateAuditTrail("xinco_setting",new String [] {"id ="+getId()},
                         DBM,"audit.general.created",getChangerID());
             }
