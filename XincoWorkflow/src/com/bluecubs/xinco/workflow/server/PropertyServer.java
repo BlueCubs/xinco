@@ -104,4 +104,65 @@ public class PropertyServer extends Property{
         }
         return properties;
     }
+    
+    public boolean equals(Object o){
+        boolean equals=false;
+        PropertyServer temp=((PropertyServer)o);
+        equals= temp.getIntProperty()==this.getIntProperty() &&
+                temp.getLongProperty()==this.getLongProperty() &&
+                temp.getStringProperty().equals(this.getStringProperty()) &&
+                temp.isBoolProperty()==this.isBoolProperty();
+        try {
+            if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                System.out.println("Comparing: \n1: ");
+                System.out.println(o.toString()+"\nand 2:\n");
+                System.out.println(this.toString());
+                System.out.println("Result: "+equals);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return equals;
+    }
+    
+    public boolean equals(Vector o, Vector o2){
+        boolean equal=true,found = false;
+        if(o!=null && o.size()>0 && !o.get(1).getClass().equals(PropertyServer.class)
+                && o2.size()>0 && o2!=null && !o2.get(1).getClass().equals(PropertyServer.class))
+            return false;
+        else if(o.size()!=o2.size())
+            return false;
+        else{
+            for(int i=0;i<o.size();i++){
+                for(int j=0;j<o2.size();j++) {
+                    if(((PropertyServer)o.get(j)).getDescription().equals(((PropertyServer)o2.get(j)).getDescription())){
+                        //Found a matching property.
+                        found=true;
+                        if(!((PropertyServer)o.get(j)).equals(((PropertyServer)o2.get(j)))){
+                            equal=false;
+                            break;
+                        }
+                    }
+                }
+                if(!found)
+                    return false;
+                found=false;
+            }
+        }
+        return equal;
+    }
+    
+    public String toString(){
+        String s="";
+        s+="Description: "+this.getDescription()+"\n";
+        s+="ID: "+this.getId()+"\n";
+        s+="Activity ID: "+this.getActivityId()+"\n";
+        s+="Node ID: "+this.getNodeId()+"\n";
+        s+="Transaction ID: "+this.getTransactionId()+"\n";
+        s+="Int property: "+this.getIntProperty()+"\n";
+        s+="Long property: "+this.getLongProperty()+"\n";
+        s+="String Property: "+this.getStringProperty()+"\n";
+        s+="Boolan property: "+this.isBoolProperty()+"\n";
+        return s;
+    }
 }

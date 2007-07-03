@@ -36,7 +36,6 @@
 package com.bluecubs.xinco.workflow.server;
 
 import com.bluecubs.xinco.core.server.WorkflowDBManager;
-import com.bluecubs.xinco.workflow.Activity;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -44,33 +43,37 @@ import java.sql.SQLException;
  *
  * @author javydreamercsw
  */
-public class ActivityServer extends Activity{
+public class ActivityServer extends AbstractActivityServer{
     private int nodeID;
     private ResultSet rs;
-    /** Creates a new instance of ActivityServer */    
+    /** Creates a new instance of ActivityServer */
     public ActivityServer(int id,WorkflowDBManager DBM) {
         if(id>0){
-            System.out.println("Creating activity with id: "+id);
-        try {
-            rs=DBM.getStatement().executeQuery("select * from activity where id="+id);
-            rs.next();
-            setId(rs.getInt("id"));
-            setDescription(rs.getString("description"));
-            rs.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-            System.out.println("Done!");
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Creating activity with id: "+id);
+            try {
+                rs=DBM.getStatement().executeQuery("select * from activity where id="+id);
+                rs.next();
+                setId(rs.getInt("id"));
+                setDescription(rs.getString("description"));
+                rs.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Creating activity done!");
         }
     }
-
+    
     public int getNodeID() {
         return nodeID;
     }
-
+    
     public void setNodeID(int nodeID) {
         this.nodeID = nodeID;
     }
-    
-    
+
+    public boolean run() {
+        return false;
+    }
 }

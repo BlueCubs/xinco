@@ -186,12 +186,6 @@ public class XincoRepositoryActionHandler {
                 this.explorer.getXincoIcon(),
                 xerb.getString("menu.edit.commentdata"),
                 KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_8, java.awt.event.KeyEvent.ALT_MASK));
-        increaseCount();
-        //19
-        actions[count]=new AuditSettings(xerb.getString("menu.repository.audit"),
-                this.explorer.getXincoIcon(),
-                xerb.getString("menu.repository.audit"),
-                KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.KeyEvent.ALT_MASK));
     }
     
     private void increaseCount(){

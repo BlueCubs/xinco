@@ -161,10 +161,6 @@ public class XincoMenuRepository extends JMenu{
         add(this.items[counter]);
         //add item
         addSeparator();
-        //add item
-        increaseItemNumber();
-        this.items[counter] = new JMenuItem(this.explorer.getActionHandler().getActions()[counter]);
-        add(this.items[counter]);
     }
     public void resetItems(){
         for(int i=1;i<this.items.length;i++){

@@ -152,15 +152,16 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                 //Attributes already comes with attribute id assigned. If not...
                 if(getAttribute_id()==0){
                     rs = stmt.executeQuery("select count(attribute_id) from xinco_add_attribute" +
-                    " where xinco_core_data_id="+ getXinco_core_data_id() +
-                    " and attribute_id=" + getAttribute_id());
+                            " where xinco_core_data_id="+ getXinco_core_data_id() +
+                            " and attribute_id=" + getAttribute_id());
                     setAttribute_id(rs.getInt(1));
                 }
                 sql="INSERT INTO xinco_add_attribute VALUES (" + getXinco_core_data_id() +
                         ", " + getAttribute_id() + ", " + getAttrib_int() + ", " +
                         getAttrib_unsignedint() + ", " + getAttrib_double() + ", '" +
                         attrVC + "', '" + attrT + "', '" + attrDT + "')";
-                System.out.println(sql);
+                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
                 stmt.executeUpdate(sql);
                 audit.updateAuditTrail("xinco_add_attribute",new String [] {"attribute_id ="+getAttribute_id(),
                 "xinco_core_data_id="+getXinco_core_data_id()},

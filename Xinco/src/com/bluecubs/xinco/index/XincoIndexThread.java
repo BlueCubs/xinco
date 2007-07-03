@@ -52,27 +52,38 @@ import java.util.Vector;
 public class XincoIndexThread extends Thread {
     private Vector nodes=null;
     private boolean index_content = false, index_directory_deleted = false,index_result = false;
-    private XincoDBManager dbm = null;
+    private XincoDBManager DBM = null;
     /**
      * Run method
      */
     public void run() {
+        try {
+            DBM=new XincoDBManager();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            System.out.println("Data to index: "+nodes.size());
         while(nodes.size()>0){
-            XincoIndexer.indexXincoCoreData(((XincoCoreData)nodes.firstElement()), index_content, dbm);
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Indexing: "+((XincoCoreData)nodes.firstElement()).getDesignation());
+            XincoIndexer.indexXincoCoreData(((XincoCoreData)nodes.firstElement()), index_content, DBM);
             nodes.remove(0);
-            try {
-                sleep(3000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-                try {
-                    dbm.getConnection().close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Indexing done!");
+//            try {
+//                sleep(3000);
+//            } catch (InterruptedException ex) {
+//                ex.printStackTrace();
+//                try {
+//                    DBM.getConnection().close();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
         }
         try {
-            dbm.getConnection().close();
+            DBM.getConnection().close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,12 +92,13 @@ public class XincoIndexThread extends Thread {
     
     /**
      * Constructor
+     *
      * @param index_content Should index content?
-     * @param dbm XincoDatabaseManger
+     * @param DBM XincoDatabaseManger
      */
     public XincoIndexThread(boolean index_content, XincoDBManager dbm) {
         this.index_content = index_content;
-        this.dbm = dbm;
+        this.DBM = dbm;
     }
     
     /**
@@ -103,6 +115,8 @@ public class XincoIndexThread extends Thread {
         if(nodes==null)
             nodes = new Vector();
         nodes.add(d);
+        if(!this.isAlive())
+            run();
     }
     
     /**
@@ -113,8 +127,8 @@ public class XincoIndexThread extends Thread {
         this.nodes=n;
     }
     
-    public XincoDBManager getDbm() {
-        return dbm;
+    public XincoDBManager getXincoDBManager() {
+        return DBM;
     }
     
     public synchronized void deleteIndex(XincoDBManager dbm){

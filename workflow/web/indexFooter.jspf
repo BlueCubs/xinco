@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div style="height: 25px; width: 400px; -rave-layout: grid" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://www.sun.com/web/ui">
+    <f:subview id="indexFooter">
+        <ui:label binding="#{indexFooter.label1}" id="label1" style="left: 0px; top: 0px; position: absolute; width: 384px" text="#{Session.footerText}"/>
+    </f:subview>
+</div>

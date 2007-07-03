@@ -1,0 +1,34 @@
+a:link { color: #336699; text-decoration:none }
+a:visited { color: #336699; text-decoration:none }
+a:hover { color: #336699; text-decoration:underline }
+a:active { color: #336699; text-decoration:underline }
+a:focus { color: #336699; text-decoration:underline }
+.link {
+   color: #336699;
+   font-family: Verdana, Arial, Helvetica, sans-serif;
+   font-size: 12px;
+   font-weight: normal;
+   text-decoration: underline
+}
+.text { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px }
+.bigtext { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 16px ; font-weight: bold }
+a[href $='.doc'] { 
+   padding-right: 18px;
+   background: transparent url(icon_doc.png) no-repeat center right;
+}
+a[href $='.xls'] { 
+   padding-right: 18px;
+   background: transparent url(icon_xls.png) no-repeat center right;
+}
+a[href $='.ppt'] { 
+   padding-right: 18px;
+   background: transparent url(icon_ppt.png) no-repeat center right;
+}
+a[href $='.pdf'] { 
+   padding-right: 18px;
+   background: transparent url(icon_pdf.gif) no-repeat center right;
+}
+a[icon ^="xinco"] {
+   padding-right: 20px;
+   background: transparent url(blueCubsIcon16x16.GIF) no-repeat center right
+}
