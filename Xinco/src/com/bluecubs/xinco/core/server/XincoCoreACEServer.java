@@ -96,6 +96,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
     
     //write to db
     public int write2DB(XincoDBManager DBM) throws XincoException {
+        String sql="";
         try {
             String xcuid = "";
             String xcgid = "";
@@ -154,12 +155,15 @@ public class XincoCoreACEServer extends XincoCoreACE {
             XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
             if (getId() > 0) {
                 Statement stmt = DBM.getConnection().createStatement();
-                stmt.executeUpdate("UPDATE xinco_core_ace SET xinco_core_user_id=" + xcuid +
+                sql="UPDATE xinco_core_ace SET xinco_core_user_id=" + xcuid +
                         ", xinco_core_group_id=" + xcgid + ", xinco_core_node_id=" + xcnid +
                         ", xinco_core_data_id=" + xcdid + ", read_permission=" + rp +
                         ", write_permission=" + wp + ", execute_permission=" + xp +
                         ", admin_permission=" + ap + " , audit_permission=" + ad +
-                        " , owner=" + ow +" WHERE id=" + getId());
+                        " , owner=" + ow +" WHERE id=" + getId();
+                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
+                stmt.executeUpdate(sql);
                 stmt.close();
                 audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+getId()},
                         DBM,"window.acl",this.getChangerID());
@@ -167,10 +171,12 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 setId(DBM.getNewID("xinco_core_ace"));
                 
                 Statement stmt = DBM.getConnection().createStatement();
-                String sql="INSERT INTO xinco_core_ace VALUES (" + getId() +
+                sql="INSERT INTO xinco_core_ace VALUES (" + getId() +
                         ", " + xcuid + ", " + xcgid + ", " + xcnid +
                         ", " + xcdid + ", " + rp + ", " + wp + ", " +
                         xp + ", " + ap +  ", " + ad +", " + ow +")";
+                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
                 stmt.executeUpdate(sql);
                 stmt.close();
                 DBM.getConnection().commit();

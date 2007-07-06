@@ -90,7 +90,7 @@ public class XincoIndexer {
         //check if document exists in index and delete
         try {
             reader = IndexReader.open(dbm.config.getFileIndexPath());
-            reader.delete(new Term("id", "" + d.getId()));
+            reader.deleteDocument(d.getId());
             reader.close();
         } catch (Exception re) {
             if (reader != null) {
@@ -136,7 +136,8 @@ public class XincoIndexer {
             if (l != 0) {
                 s = s + " AND language:" + l;
             }
-            Query query = QueryParser.parse(s, "designation", analyzer);
+            QueryParser parser=new QueryParser("designation", analyzer);
+            Query query = parser.parse(s);
             
             Hits hits = searcher.search(query);
             

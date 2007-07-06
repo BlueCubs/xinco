@@ -92,7 +92,7 @@ public class XincoPublisherServlet extends HttpServlet {
         int j = 0;
         String request_path;
         String request_path_array[];
-        XincoDBManager dbm;
+        XincoDBManager DBM;
         boolean fileDownload = false;
         int core_data_id = 0;
         XincoCoreDataServer xcd = null;
@@ -106,7 +106,7 @@ public class XincoPublisherServlet extends HttpServlet {
         
         //connect to db
         try {
-            dbm = new XincoDBManager();
+            DBM = new XincoDBManager();
         } catch (Exception e) {
             //start output
             response.setContentType("text/html");
@@ -126,7 +126,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 } else {
                     try {
                         core_data_id = Integer.parseInt(request_path_array[1]);
-                        xcd = new XincoCoreDataServer(core_data_id, dbm);
+                        xcd = new XincoCoreDataServer(core_data_id, DBM);
                         isPublic = false;
                         //check status (5 = published)
                         if (xcd.getStatus_number() == 5) {
@@ -175,7 +175,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 response.setContentType("unknown/unknown");
                 OutputStream out = response.getOutputStream();
                 
-                FileInputStream in = new FileInputStream(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.getFileRepositoryPath(), core_data_id, "" + core_data_id));
+                FileInputStream in = new FileInputStream(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), core_data_id, "" + core_data_id));
                 byte[] buf = new byte[4096];
                 int len;
                 while ((len = in.read(buf)) > 0) {
@@ -227,10 +227,10 @@ public class XincoPublisherServlet extends HttpServlet {
                 if (printList) {
                     try {
                         XincoCoreDataServer xdata_temp = null;
-                        Statement stmt = dbm.getConnection().createStatement();
+                        Statement stmt = DBM.getConnection().createStatement();
                         ResultSet rs = stmt.executeQuery("SELECT DISTINCT xcd.id, xcd.designation FROM xinco_core_data xcd, xinco_core_ace xca WHERE xcd.id=xca.xinco_core_data_id AND (xcd.status_number=5 OR (xca.xinco_core_group_id=3 AND xca.read_permission=1)) ORDER BY xcd.designation");
                         while (rs.next()) {
-                            xdata_temp = new XincoCoreDataServer(rs.getInt("id"), dbm);
+                            xdata_temp = new XincoCoreDataServer(rs.getInt("id"), DBM);
                             temp_server_url = request.getRequestURL().toString();
                             temp_url = "";
                             //file = 1
@@ -259,7 +259,7 @@ public class XincoPublisherServlet extends HttpServlet {
                         
                         if (!(request.getParameter("FolderId") == null)) {
                             temp_xcn_id = Integer.parseInt(request.getParameter("FolderId"));
-                            xnode_temp = new XincoCoreNodeServer(temp_xcn_id, dbm);
+                            xnode_temp = new XincoCoreNodeServer(temp_xcn_id, DBM);
                             //check read permission for group "public"
                             isPublic = false;
                             for (i=0;i<xnode_temp.getXinco_core_acl().size();i++) {
@@ -270,8 +270,8 @@ public class XincoPublisherServlet extends HttpServlet {
                                 }
                             }
                             if (isPublic) {
-                                xnode_temp.fillXincoCoreNodes(dbm);
-                                xnode_temp.fillXincoCoreData(dbm);
+                                xnode_temp.fillXincoCoreNodes(DBM);
+                                xnode_temp.fillXincoCoreData(DBM);
                                 // print current path
                                 if (!(request.getParameter("Path") == null)) {
                                     temp_path = request.getParameter("Path");
@@ -292,7 +292,7 @@ public class XincoPublisherServlet extends HttpServlet {
                                 out.println("</tr>");
                                 out.flush();
                                 for (i=0;i<xnode_temp.getXinco_core_nodes().size();i++) {
-                                    xnode_temp2 = new XincoCoreNodeServer(((XincoCoreNodeServer)xnode_temp.getXinco_core_nodes().elementAt(i)).getId(), dbm);
+                                    xnode_temp2 = new XincoCoreNodeServer(((XincoCoreNodeServer)xnode_temp.getXinco_core_nodes().elementAt(i)).getId(), DBM);
                                     isPublic = false;
                                     //check read permission for group "public"
                                     for (j=0;j<xnode_temp2.getXinco_core_acl().size();j++) {
@@ -331,7 +331,7 @@ public class XincoPublisherServlet extends HttpServlet {
                                 out.println("</tr>");
                                 out.flush();
                                 for (i=0;i<xnode_temp.getXinco_core_data().size();i++) {
-                                    xdata_temp = new XincoCoreDataServer(((XincoCoreDataServer)xnode_temp.getXinco_core_data().elementAt(i)).getId(), dbm);
+                                    xdata_temp = new XincoCoreDataServer(((XincoCoreDataServer)xnode_temp.getXinco_core_data().elementAt(i)).getId(), DBM);
                                     isPublic = false;
                                     //check status (5 = published)
                                     if (xdata_temp.getStatus_number() == 5) {
@@ -451,7 +451,7 @@ public class XincoPublisherServlet extends HttpServlet {
         
         //close db connection
         try {
-            dbm.getConnection().close();
+            DBM.getConnection().close();
         } catch (Exception e) {
         }
         

@@ -172,7 +172,6 @@ public class LockDialog extends javax.swing.JDialog {
                     this.explorer.refreshJTree();
                     this.explorer.markConnectionStatus();
                     this.setVisible(false);
-//                    this.explorer.disconnect();
                 }
                 this.explorer.setLock(false);
             }
@@ -180,6 +179,7 @@ public class LockDialog extends javax.swing.JDialog {
         }
         this.password.setText("");
         this.username.setText("");
+        this.setVisible(false);
     }//GEN-LAST:event_connectActionPerformed
     
     private void disconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disconnectActionPerformed

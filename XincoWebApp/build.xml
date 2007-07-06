@@ -63,6 +63,7 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <!--
     <target name="-pre-dist">
         <signjar jar="${build.dir}/web/client/activation.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/axis.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
@@ -79,6 +80,8 @@
         <signjar jar="${build.dir}/web/client/xercesImpl.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/Xinco.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/XincoExplorer.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
+        <signjar jar="${build.dir}/web/client/XincoWorkflow.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/xmlParserAPIs-2.6.2.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
     </target>
+    -->
 </project>

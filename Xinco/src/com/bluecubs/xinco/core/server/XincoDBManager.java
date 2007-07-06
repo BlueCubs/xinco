@@ -98,6 +98,15 @@ public class XincoDBManager {
         }
     }
     
+    public Statement getStatement(){
+        try {
+            return getDatasource().getConnection().createStatement();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+    
     public int getNewID(String attrTN) throws Exception {
         int newID = 0;
         Statement stmt;
@@ -265,6 +274,12 @@ public class XincoDBManager {
                         number=1000;
                         column="id";
                         //Modify primary key name if needed
+                        if(rs.getString("TABLE_NAME").endsWith("_t")){
+                            column="record_id";
+                            number=0;
+                        }
+                        else
+                            number=1000;
                         if(rs.getString("TABLE_NAME").equals("xinco_add_attribute"))
                             column="xinco_core_data_id";
                         if(rs.getString("TABLE_NAME").equals("xinco_core_data_type_attribute"))
@@ -277,13 +292,23 @@ public class XincoDBManager {
                             column="scheduled_type_id";
                         if(rs.getString("TABLE_NAME").equals("xinco_scheduled_audit"))
                             column="schedule_id";
-                        if(rs.getString("TABLE_NAME").endsWith("_t"))
-                            column="record_id";
                         if(rs.getString("TABLE_NAME").equals("xinco_core_user_modified_record")||
                                 rs.getString("TABLE_NAME").equals("xinco_scheduled_audit"))
                             number = -1;
                         condition = column +" > "+number;
                         sql="delete from "+rs.getString("TABLE_NAME")+" where "+condition;
+                        if(getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                            System.out.println(sql);
+                        s.executeUpdate(sql);
+                    }
+                    if(rs.getString("TABLE_NAME").equals("xinco_id")){
+                        condition=" where last_id > 1000";
+                        sql="update "+rs.getString("TABLE_NAME")+" set last_id=1000"+condition;
+                        if(getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                            System.out.println(sql);
+                        s.executeUpdate(sql);
+                        condition=" where last_id < 1000";
+                        sql="update "+rs.getString("TABLE_NAME")+" set last_id=0"+condition;
                         if(getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                             System.out.println(sql);
                         s.executeUpdate(sql);
@@ -318,8 +343,10 @@ public class XincoDBManager {
     
     public Connection getConnection() {
         try {
-            if(con==null || con.isClosed())
+            if(con==null || con.isClosed()){
                 con = getDatasource().getConnection();
+            }
+            con.setAutoCommit(false);
         } catch (SQLException ex) {
             ex.printStackTrace();
             printStats();
@@ -328,6 +355,11 @@ public class XincoDBManager {
     }
     
     public DataSource getDatasource() {
+        try {
+            datasource.getConnection().setAutoCommit(false);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
         return datasource;
     }
     
@@ -339,6 +371,11 @@ public class XincoDBManager {
         if(con==null)
             getConnection();
         this.con = con;
+        try {
+            this.con.setAutoCommit(false);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
     
     public void printStats(){
