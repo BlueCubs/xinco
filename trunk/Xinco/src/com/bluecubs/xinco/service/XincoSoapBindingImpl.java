@@ -260,7 +260,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     
     public int uploadXincoCoreData(com.bluecubs.xinco.core.XincoCoreData in0, byte[] in1, com.bluecubs.xinco.core.XincoCoreUser in2) throws java.rmi.RemoteException {
         try {
-            XincoDBManager dbm = new XincoDBManager();
+            XincoDBManager DBM = new XincoDBManager();
             XincoCoreDataServer data;
             XincoCoreACE ace;
             int i = 0;
@@ -271,9 +271,9 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             Message m = null;
             AttachmentPart ap = null;
             InputStream in = null;
-            XincoCoreUserServer user = new XincoCoreUserServer(in2.getUsername(), in2.getUserpassword(), dbm);
+            XincoCoreUserServer user = new XincoCoreUserServer(in2.getUsername(), in2.getUserpassword(), DBM);
             //load data
-            data = new XincoCoreDataServer(in0.getId(), dbm);
+            data = new XincoCoreDataServer(in0.getId(), DBM);
             ace = XincoCoreACEServer.checkAccess(user, data.getXinco_core_acl());
             if (ace.isWrite_permission()) {
                 // decide whether to read from SOAP attachments or byte array
@@ -290,7 +290,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 } else {
                     in = new ByteArrayInputStream(in1);
                 }
-                CheckedOutputStream out = new CheckedOutputStream(new FileOutputStream(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.getFileRepositoryPath(), data.getId(), "" + data.getId())), new CRC32());
+                CheckedOutputStream out = new CheckedOutputStream(new FileOutputStream(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), data.getId(), "" + data.getId())), new CRC32());
                 byte[] buf = new byte[4096];
                 len = 0;
                 total_len = 0;
@@ -311,8 +311,8 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                     }
                     if (MaxLogId > 0) {
                         //copy file
-                        FileInputStream fcis  = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.getFileRepositoryPath(), data.getId(), "" + data.getId())));
-                        FileOutputStream fcos = new FileOutputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.getFileRepositoryPath(), data.getId(), data.getId() + "-" + MaxLogId)));
+                        FileInputStream fcis  = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), data.getId(), "" + data.getId())));
+                        FileOutputStream fcos = new FileOutputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), data.getId(), data.getId() + "-" + MaxLogId)));
                         byte[] fcbuf = new byte[4096];
                         len = 0;
                         while((len=fcis.read(fcbuf))!=-1) {
@@ -324,23 +324,30 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 }
                 //index data and file content
                 boolean index_success = false;
+//                try {
+//                    if(xit==null)
+                        xit = new XincoIndexThread(true, DBM);
+//                    xit.addData(data);
+//                    if(!xit.isAlive())
+//                        xit.start();
+//                    index_success = true;
+//                } catch (Exception xite) {
+//                    index_success = false;
+//                }
                 try {
-                    if(xit==null)
-                        xit = new XincoIndexThread(true, dbm);
-                    xit.addData(data);
-                    if(!xit.isAlive())
-                        xit.start();
+//                    XincoIndexThread xit = new XincoIndexThread(data, true, DBM);
+                    xit.start();
                     index_success = true;
                 } catch (Exception xite) {
                     index_success = false;
                 }
                 //close connection if indexing thread failed
                 if (!index_success) {
-                    dbm.getConnection().close();
+                    DBM.getConnection().close();
                 }
                 return (int)total_len;
             } else {
-                dbm.getConnection().close();
+                DBM.getConnection().close();
                 return 0;
             }
         } catch (Exception e) {
@@ -378,8 +385,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         try {
             dbm = new XincoDBManager();
             XincoCoreUserServer user = new XincoCoreUserServer(in2.getUsername(), in2.getUserpassword(), dbm);
-            //search on database
-            //java.util.Vector tv = XincoCoreDataServer.findXincoCoreData(in0, in1.getId(), true, true, dbm);
             //search on index
             java.util.Vector tv = XincoIndexer.findXincoCoreData(in0, in1.getId(), dbm);
             java.util.Vector tv2 = new java.util.Vector();
@@ -489,25 +494,25 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         try {
             int i = 0;
             boolean insertnewdata = false;
-            XincoDBManager dbm = new XincoDBManager();
+            XincoDBManager DBM = new XincoDBManager();
             XincoCoreDataServer data;
-            XincoCoreNodeServer parent_node = new XincoCoreNodeServer(0, 0, 1, "", 1, dbm);;
+            XincoCoreNodeServer parent_node = new XincoCoreNodeServer(0, 0, 1, "", 1, DBM);
             XincoCoreACE ace;
             XincoCoreACE parent_ace = new XincoCoreACE();
             parent_ace.setWrite_permission(true);
-            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
+            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), DBM);
             if (in0.getId() <= 0) {
                 //insert new node
                 insertnewdata = true;
-                parent_node = new XincoCoreNodeServer(in0.getXinco_core_node_id(), dbm);
+                parent_node = new XincoCoreNodeServer(in0.getXinco_core_node_id(), DBM);
                 ace = XincoCoreACEServer.checkAccess(user, parent_node.getXinco_core_acl());
-                data = new XincoCoreDataServer(0, 0, 1, 1, "", 1, dbm);
+                data = new XincoCoreDataServer(0, 0, 1, 1, "", 1, DBM);
             } else {
                 //update existing data
-                data = new XincoCoreDataServer(in0.getId(), dbm);
+                data = new XincoCoreDataServer(in0.getId(), DBM);
                 //moving node requires write permission to target node
                 if (in0.getXinco_core_node_id() != data.getXinco_core_node_id()) {
-                    parent_node = new XincoCoreNodeServer(in0.getXinco_core_node_id(), dbm);
+                    parent_node = new XincoCoreNodeServer(in0.getXinco_core_node_id(), DBM);
                     parent_node.setChangerID(in1.getId());
                     parent_ace = XincoCoreACEServer.checkAccess(user, parent_node.getXinco_core_acl());
                 }
@@ -523,11 +528,11 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 data.setXinco_add_attributes(in0.getXinco_add_attributes());
                 data.setStatus_number(in0.getStatus_number());
                 data.setUser(user);
-                data.write2DB(dbm);
+                data.write2DB(DBM);
                 
                 //index data (not on checkout, only when status = open = 1)
                 if (data.getStatus_number() == 1) {
-                    boolean index_success = XincoIndexer.indexXincoCoreData(data, false, dbm);
+                    boolean index_success = XincoIndexer.indexXincoCoreData(data, false, DBM);
                 }
                 
                 //insert default ACL when inserting new node
@@ -536,7 +541,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                     //owner
                     newace = new XincoCoreACEServer(0, user.getId(), 0, 0, data.getId(), true, true, true, true,false,true);
                     newace.setChangerID(user.getId());
-                    newace.write2DB(dbm);
+                    newace.write2DB(DBM);
                     //inherit all group ACEs
                     for (i=0;i<parent_node.getXinco_core_acl().size();i++) {
                         newace = (XincoCoreACEServer)parent_node.getXinco_core_acl().elementAt(i);
@@ -544,16 +549,16 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                             newace.setId(0);
                             newace.setXinco_core_node_id(0);
                             newace.setXinco_core_data_id(data.getId());
-                            newace.write2DB(dbm);
+                            newace.write2DB(DBM);
                         }
                     }
                     //load new ACL
-                    data.setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(data.getId(), "xinco_core_data_id", dbm));
+                    data.setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(data.getId(), "xinco_core_data_id", DBM));
                 }
-                dbm.getConnection().close();
+                DBM.getConnection().close();
                 return (XincoCoreData)data;
             } else {
-                dbm.getConnection().close();
+                DBM.getConnection().close();
                 return null;
             }
         } catch (Exception e) {
@@ -755,7 +760,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     public boolean indexFiles(java.util.Vector in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException{
         XincoIndexThread xit = new XincoIndexThread();
         for(int i=0; i < in0.size();i++){
-            xit.addData((XincoCoreData)in0.elementAt(i));
+//            xit.addData((XincoCoreData)in0.elementAt(i));
         }
         xit.start();
         return true;

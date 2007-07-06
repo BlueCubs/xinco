@@ -216,9 +216,6 @@ public class XincoJTree extends JTree{
                         if (temp_ace.isRead_permission()) {
                             ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(10,true);
                             ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(10,true);
-                            //Testing feature request: adding checkout functionality to contacts
-                            ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(12,true);
-                            ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(12,true);
                         }
                     }
                     if (temp_ace.isRead_permission()) {

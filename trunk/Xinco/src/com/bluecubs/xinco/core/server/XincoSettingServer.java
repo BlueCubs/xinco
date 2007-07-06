@@ -74,7 +74,10 @@ public class XincoSettingServer extends XincoSetting{
     
     public XincoSettingServer(int id,XincoDBManager DBM)throws XincoException{
         try {
-            ResultSet rs= DBM.getConnection().createStatement().executeQuery("select * from xinco_setting where id="+getId());
+            String sql="select * from xinco_setting where id="+id;
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println(sql);
+            ResultSet rs= DBM.getConnection().createStatement().executeQuery(sql);
             rs.next();
             this.setId(id);
             this.setDescription(rs.getString("description"));
@@ -103,16 +106,24 @@ public class XincoSettingServer extends XincoSetting{
     //write to db
     public int write2DB(XincoDBManager DBM) throws XincoException {
         try {
+            String sql="";
             if(getId()>0){
-                DBM.getConnection().createStatement().executeUpdate("update xinco_setting set id="+getId()+
+                sql="update xinco_setting set id="+getId()+
                         ", description='"+getDescription()+"', int_value="+getInt_value()+
-                        ", string_value='"+getString_value()+"', bool_val="+isBool_value());
+                        ", string_value='"+getString_value()+"', bool_value="+isBool_value()+
+                        " where id="+getId();
+                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
+                DBM.getConnection().createStatement().executeUpdate(sql);
                 audit.updateAuditTrail("xinco_setting",new String [] {"id ="+getId()},
                         DBM,"audit.general.modified",getChangerID());
             } else{
-                DBM.getConnection().createStatement().executeUpdate("insert into xinco_setting values("+getId()+
+                sql="insert into xinco_setting values("+getId()+
                         ", '"+getDescription()+"',"+getInt_value()+
-                        ", '"+getString_value()+"',"+isBool_value()+","+getLong_value()+")");
+                        ", '"+getString_value()+"',"+isBool_value()+","+getLong_value()+")";
+                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
+                DBM.getConnection().createStatement().executeUpdate(sql);
                 audit.updateAuditTrail("xinco_setting",new String [] {"id ="+getId()},
                         DBM,"audit.general.created",getChangerID());
             }

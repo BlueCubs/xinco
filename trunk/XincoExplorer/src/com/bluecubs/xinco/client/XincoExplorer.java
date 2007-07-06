@@ -996,7 +996,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         throw new XincoException(xerb.getString("menu.connection.error.user"));
                     }
                     updateSettings();
-                    if(getSettings().getSetting("general.setting.enable.lockidle").isBool_value())
+                    if(getSettings().getSetting("general.setting.enable.developermode").isBool_value())
                         xat=new XincoActivityTimer(XincoExplorer.this,
                                 getSettings().getSetting("general.setting.enable.lockidle").getInt_value());
                     getJDialogConnection().updateProfile();
@@ -1031,6 +1031,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             cone.toString() +" "+xerb.getString("error.connection.incorrect.deployment"),
                             xerb.getString("menu.connection.failed"),
                             JOptionPane.WARNING_MESSAGE);
+                    if(getSettings().getSetting("general.setting.enable.developermode").isBool_value())
+                        cone.printStackTrace();
                 }catch (Exception cone) {
                     getProgressBar().hide();
                     xincoClientSession.status = 0;
@@ -1047,6 +1049,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             cone.toString(),
                             xerb.getString("menu.connection.failed"),
                             JOptionPane.WARNING_MESSAGE);
+                    if(getSettings().getSetting("general.setting.enable.developermode").isBool_value())
+                        cone.printStackTrace();
                 }
                 String status_string = "";
                 temp=xincoClientSession.xinco.getCurrentXincoCoreUser(xincoClientSession.user.getUsername(), xincoClientSession.user.getUserpassword());
@@ -1087,8 +1091,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 }
                 getProgressBar().hide();
                 resetStrings();
-                //Test Workflow
-//                getSession().xinco.getWorkflow(1,getSession().user).toString();
             } catch (Exception cone) {
                 xincoClientSession.status = 0;
                 cone.printStackTrace();
@@ -1096,6 +1098,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("menu.connection.failed") + " " + xerb.getString("general.reason") + ": " + cone.toString(), xerb.getString("menu.connection.failed"), JOptionPane.WARNING_MESSAGE);
                 getProgressBar().hide();
                 resetStrings();
+                if(getSettings().getSetting("general.setting.enable.developermode").isBool_value())
+                    cone.printStackTrace();
                 return;
             }
         }
@@ -1128,7 +1132,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 getProgressBar().hide();
                 getJTreeRepository().setEnabled(true);
             } catch (Exception rmie) {
-                rmie.printStackTrace();
+                if(getSettings().getSetting("general.setting.enable.developermode").isBool_value())
+                    rmie.printStackTrace();
                 getProgressBar().hide();
             }
         }
@@ -1284,7 +1289,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 SwingUtilities.updateComponentTreeUI(jTreeRepository);
             }
         } catch (Exception plafe) {
-            //System.err.println(plafe.toString());
+            if(getSettings().getSetting("general.setting.enable.developermode").isBool_value())
+                plafe.printStackTrace();
         }
     }
     /**
@@ -1620,6 +1626,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         in.close();
                     }
                 } catch (Exception fe) {
+                    if(getSettings().getSetting("general.setting.enable.developermode").isBool_value())
+                        fe.printStackTrace();
                     throw new XincoException(xerb.getString("datawizard.unabletoloadfile"));
                 }
                 // save data to server
@@ -2008,6 +2016,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             }
                         } catch (Exception fe) {
                             getProgressBar().hide();
+                            if(getSettings().getSetting("general.setting.enable.developermode").isBool_value())
+                                fe.printStackTrace();
                             throw new XincoException(xerb.getString("datawizard.unabletoloadfile"));
                         }
                     }
@@ -2138,6 +2148,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             }
                             JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("datawizard.filedownloadfailed"), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
                             this.getProgressBar().hide();
+                            if(getSettings().getSetting("general.setting.enable.developermode").isBool_value())
+                                ce.printStackTrace();
                             throw(ce);
                         }
                         
@@ -2275,7 +2287,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             we.toString(), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
                 }
                 this.getProgressBar().hide();
-                we.printStackTrace();
+                if(getSettings().getSetting("general.setting.enable.developermode").isBool_value())
+                    we.printStackTrace();
             }
         }
     }
@@ -2599,7 +2612,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         try {
             settingsVector = xincoClientSession.xinco.getXincoSetting(xincoClientSession.user);
         } catch (RemoteException ex) {
-            ex.printStackTrace();
+            if(getSettings().getSetting("general.setting.enable.developermode").isBool_value())
+                ex.printStackTrace();
         }
         settings= new XincoClientSetting();
         settings.setXinco_settings(settingsVector);

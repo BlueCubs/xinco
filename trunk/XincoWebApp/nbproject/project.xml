@@ -52,6 +52,10 @@
                     <file>${file.reference.blueCubsIcon16x16.GIF-1}</file>
                     <path-in-war>client</path-in-war>
                 </library>
+                <library files="1">
+                    <file>${reference.XincoWorkflow.jar}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
             </web-module-additional-libraries>
             <source-roots>
                 <root id="src.src.dir" name="Source Packages"/>

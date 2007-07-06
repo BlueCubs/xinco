@@ -48,10 +48,11 @@ import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.XincoCoreLanguage;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoException;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Vector;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 import javax.swing.table.DefaultTableModel;
@@ -61,7 +62,7 @@ import javax.swing.tree.TreePath;
  *
  * @author  javydreamercsw
  */
-public class SearchDialog extends javax.swing.JDialog {
+public class SearchDialog extends javax.swing.JDialog implements MouseListener{
     private XincoExplorer explorer;
     private ResourceBundle xerb;
     /** Creates new form SearchDialog */
@@ -126,7 +127,7 @@ public class SearchDialog extends javax.swing.JDialog {
         alt_selection = 0;
         text = "";
         for (i=0;i<explorer.getSession().server_languages.size();i++) {
-            text = ((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getDesignation() + 
+            text = ((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getDesignation() +
                     " (" + ((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getSign() + ")";
             list.add(text);
             if (((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
@@ -175,6 +176,26 @@ public class SearchDialog extends javax.swing.JDialog {
                     this.explorer.getResourceBundle().getString("general.setting.index.lock"),
                     JOptionPane.WARNING_MESSAGE);
         }
+    }
+    
+    public void mouseClicked(MouseEvent e) {
+        this.explorer.resetTimer();
+    }
+    
+    public void mousePressed(MouseEvent e) {
+        this.explorer.resetTimer();
+    }
+    
+    public void mouseReleased(MouseEvent e) {
+        this.explorer.resetTimer();
+    }
+    
+    public void mouseEntered(MouseEvent e) {
+        this.explorer.resetTimer();
+    }
+    
+    public void mouseExited(MouseEvent e) {
+        this.explorer.resetTimer();
     }
     
     /** This method is called from within the constructor to
@@ -243,11 +264,6 @@ public class SearchDialog extends javax.swing.JDialog {
             }
         });
 
-        languageList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "x" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane1.setViewportView(languageList);
 
         searchButton.setText("jButton1");
@@ -259,13 +275,20 @@ public class SearchDialog extends javax.swing.JDialog {
 
         jScrollPane2.setAutoscrolls(true);
         jScrollPane2.setDoubleBuffered(true);
-        resultTable.setModel(new DefaultTableModel(new Object[][]{},
-                              new String[]{"Title 1", "Title 2"}) {
-            boolean[] canEdit = new boolean[]{false, false};
+        resultTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
 
-            @Override
+            },
+            new String [] {
+                "Title 1", "Title 2"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
+                return canEdit [columnIndex];
             }
         });
         jScrollPane2.setViewportView(resultTable);
