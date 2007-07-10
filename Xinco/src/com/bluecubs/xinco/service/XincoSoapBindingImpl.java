@@ -324,18 +324,8 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 }
                 //index data and file content
                 boolean index_success = false;
-//                try {
-//                    if(xit==null)
-                        xit = new XincoIndexThread(true, DBM);
-//                    xit.addData(data);
-//                    if(!xit.isAlive())
-//                        xit.start();
-//                    index_success = true;
-//                } catch (Exception xite) {
-//                    index_success = false;
-//                }
                 try {
-//                    XincoIndexThread xit = new XincoIndexThread(data, true, DBM);
+                    XincoIndexThread xit = new XincoIndexThread(data, true, DBM);
                     xit.start();
                     index_success = true;
                 } catch (Exception xite) {
@@ -465,7 +455,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 if (insertnewnode) {
                     XincoCoreACEServer newace;
                     //owner
-                    newace = new XincoCoreACEServer(0, user.getId(), 0, node.getId(), 0, true, true, true, true,false,true);
+                    newace = new XincoCoreACEServer(0, user.getId(), 0, node.getId(), 0, true, true, true, true,true);
                     newace.write2DB(dbm);
                     //inherit all group ACEs
                     for (i=0;i<parent_node.getXinco_core_acl().size();i++) {
@@ -539,7 +529,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 if (insertnewdata) {
                     XincoCoreACEServer newace;
                     //owner
-                    newace = new XincoCoreACEServer(0, user.getId(), 0, 0, data.getId(), true, true, true, true,false,true);
+                    newace = new XincoCoreACEServer(0, user.getId(), 0, 0, data.getId(), true, true, true, true,true);
                     newace.setChangerID(user.getId());
                     newace.write2DB(DBM);
                     //inherit all group ACEs
@@ -590,7 +580,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 if (in0.getId() > 0) {
                     newace = new XincoCoreACEServer(in0.getId(), dbm);
                 } else {
-                    newace = new XincoCoreACEServer(0, 0, 0, 0, 0, false, false, false, false, false, false);
+                    newace = new XincoCoreACEServer(0, 0, 0, 0, 0, false, false, false, false, false);
                 }
                 //update ACE
                 newace.setXinco_core_node_id(in0.getXinco_core_node_id());
@@ -602,7 +592,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 newace.setWrite_permission(in0.isWrite_permission());
                 newace.setExecute_permission(in0.isExecute_permission());
                 newace.setAdmin_permission(in0.isAdmin_permission());
-                newace.setAudit_permission(in0.isAudit_permission());
                 newace.setOwner(in0.isOwner());
                 newace.setChangerID(user.getId());
                 newace.write2DB(dbm);

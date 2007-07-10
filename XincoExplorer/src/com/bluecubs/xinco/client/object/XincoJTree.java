@@ -344,13 +344,6 @@ public class XincoJTree extends JTree{
                         rdata[1] = rdata[1] +
                                 "-";
                     }
-                    if (temp_ace.isAudit_permission()) {
-                        rdata[1] = rdata[1] +
-                                "U";
-                    } else {
-                        rdata[1] = rdata[1] +
-                                "-";
-                    }
                     rdata[1] = rdata[1] +
                             "]";
                     dtm.addRow(rdata);
@@ -434,13 +427,6 @@ public class XincoJTree extends JTree{
                     if (temp_ace.isAdmin_permission()) {
                         rdata[1] = rdata[1] +
                                 "A";
-                    } else {
-                        rdata[1] = rdata[1] +
-                                "-";
-                    }
-                    if (temp_ace.isAudit_permission()) {
-                        rdata[1] = rdata[1] +
-                                "U";
                     } else {
                         rdata[1] = rdata[1] +
                                 "-";

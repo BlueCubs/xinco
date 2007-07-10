@@ -330,9 +330,19 @@ public class XincoAdminServlet extends HttpServlet {
             current_location_desc = rb.getString("message.location.desc.auditresult");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
-        
-        out.println("Current location: "+current_location);
-        out.println("Current location desc: "+current_location_desc);
+        //switch to group modification
+        if (request.getParameter("DialogAdminGroupsSelect") != null) {
+            current_group_selection = Integer.parseInt(request.getParameter("DialogAdminGroupsSelect"));
+            session.setAttribute("XincoAdminServlet.current_group_selection", new Integer(current_group_selection));
+            current_location = "GroupAdminSingle";
+            session.setAttribute("XincoAdminServlet.current_location", current_location);
+            current_location_desc = rb.getString("message.location.desc.specificgroupadmin");
+            session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
+        }
+        if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+            out.println("Current location: "+current_location);
+            out.println("Current location desc: "+current_location_desc);
+        }
         //lock user
         if (request.getParameter("DialogAdminUsersLock") != null) {
             //main admin cannot be locked
@@ -438,15 +448,6 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_group.write2DB(DBM);
             } catch (Exception e) {
             }
-        }
-        //switch to group modification
-        if (request.getParameter("DialogAdminGroupsSelect") != null) {
-            current_group_selection = Integer.parseInt(request.getParameter("DialogAdminGroupsSelect"));
-            session.setAttribute("XincoAdminServlet.current_group_selection", new Integer(current_group_selection));
-            current_location = "GroupAdminSingle";
-            session.setAttribute("XincoAdminServlet.current_location", current_location);
-            current_location_desc = rb.getString("message.location.desc.specificgroupadmin");
-            session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //modify group
         if (request.getParameter("DialogEditGroupSubmit") != null) {
@@ -733,22 +734,21 @@ public class XincoAdminServlet extends HttpServlet {
             out.println("<td></td><td class=\"text\">|</td>");
             out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainEmptyTrash=EmptyTrash&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("message.admin.trash")+"</a></td>");
             out.println("<td></td><td class=\"text\">|</td>");
-            //For now developer's only function. Too dangerous to use at the moment. Maybe add confirmation screens before executing if founf as an usefull tool.
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
-                out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainResetDB=Reset&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("message.admin.main.resetDB.label")+"</a></td>");
-                out.println("<td></td><td class=\"text\">|</td>");
-            }
             out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainRebuildIndex=RebuildIndex&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("message.admin.index")+"</a></td>");
             out.println("<td></td><td class=\"text\">|</td>");
             out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuAudit=AuditMenu&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("general.audit.menu")+"</a></td>");
             out.println("<td></td><td class=\"text\">|</td>");
+            //For now developer's only function. Too dangerous to use at the moment. Maybe add confirmation screens before executing if found as an usefull tool.
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainResetDB=Reset&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("message.admin.main.resetDB.label")+"</a></td>");
+                out.println("<td></td><td class=\"text\">|</td>");
+            }
             out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainLogout=Logout&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("general.logout")+"</a></td>");
             out.println("</tr>");
             out.println("</table>");
-            out.println("<br><br>");
+            out.println("<br>");
             
             if (current_location.compareTo("MainMenu") == 0) {
-                
                 //show overview
                 out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
                 out.println("<tr>");
@@ -1096,12 +1096,11 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("</tr>");
                     out.println("<tr>");
                     out.println("<td class=\"text\">&nbsp;</td>");
-                    out.println("<td class=\"text\"><input type='hidden' name='list' value='"+request.getParameter("list")+"'/><input type=\"hidden\" name=\"DialogEditUserProfileID\" value=\"" +
+                    out.println("<td class=\"text\"><input type='hidden' name='list' value='"+request.getParameter("list")+"'/><input type=\"hidden\" name=\"DialogAdminUsersEdit\" value=\"" +//DialogEditUserProfileID
                             request.getParameter("DialogAdminUsersEdit") + "\"/><input type=\"submit\" name=\"DialogEditUserProfileSubmit\" value=\""+rb.getString("general.save")+"!\"/></td>");
                     out.println("</tr>");
                     out.println("</table>");
                     out.println("</form>");
-                    current_location="UserProfileEdit";
                 } catch (Exception e) {
                 }
                 
@@ -1446,7 +1445,7 @@ public class XincoAdminServlet extends HttpServlet {
                     s2= new XincoSettingServer(s.getId(),DBM);
                     out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
                     out.println("<tr>");
-                    out.println("<td class=\"bigtext\" colspan=\"2\">"+rb.getString("message.index.rebuild")+":</td>");
+                    out.println("<td class=\"bigtext\" colspan=\"2\">"+rb.getString("message.index.rebuild")+"</td>");
                     out.println("</tr>");
                     out.println("<tr>");
                     out.println("<td class=\"text\" colspan=\"2\">"+rb.getString("message.warning.index.rebuild")+"</td>");
@@ -1464,12 +1463,7 @@ public class XincoAdminServlet extends HttpServlet {
                     boolean index_directory_deleted = false;
                     indexDirectory = new File(DBM.config.getFileIndexPath());
                     if (indexDirectory.exists()) {
-                        indexDirectoryFileList = indexDirectory.list();
-                        for (i=0;i<indexDirectoryFileList.length;i++) {
-                            indexDirectoryFile = new File(DBM.config.getFileIndexPath() + indexDirectoryFileList[i]);
-                            indexDirectoryFile.delete();
-                        }
-                        index_directory_deleted = indexDirectory.delete();
+                        index_directory_deleted = XincoIndexThread.deleteIndex(DBM);
                         out.println("<tr>");
                         out.println("<td class=\"text\"><b>"+rb.getString("message.index.delete")+"</b></td>");
                         if (index_directory_deleted) {
@@ -1531,11 +1525,11 @@ public class XincoAdminServlet extends HttpServlet {
                     if(s2!=null){
                         s2.setBool_value(false);
                         s2.setChangerID(login_user.getId());
-                            try {
-                                s2.write2DB(DBM);
-                            } catch (XincoException ex) {
-                                ex.printStackTrace();
-                            }
+                        try {
+                            s2.write2DB(DBM);
+                        } catch (XincoException ex) {
+                            ex.printStackTrace();
+                        }
                     }
                 }
             }

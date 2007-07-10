@@ -45,6 +45,9 @@ import java.util.Vector;
 public class NodeServer extends Node{
     private ResultSet rs=null;
     private boolean completed=false;
+    private boolean instanceReady=false;
+    private int instance_template_id,instance_id;
+    private WorkflowAuditTrail wat;
     /** Creates a new instance of NodeServer */
     public NodeServer(int id, WorkflowDBManager DBM) {
         if(id > 0){
@@ -97,7 +100,7 @@ public class NodeServer extends Node{
         }
     }
     
-    public NodeServer instanceSetup(int instance_id, WorkflowDBManager DBM){
+    public NodeServer instanceSetup(int instance_id,int instance_template_id, WorkflowDBManager DBM){
         try {
             ResultSet rs2=DBM.getStatement().executeQuery("select * from workflow_instance_has_node " +
                     "where node_id="+getId()+" and workflow_instance_id="+instance_id);
@@ -105,6 +108,9 @@ public class NodeServer extends Node{
             setStartNode(rs2.getBoolean("isStartNode"));
             setEndNode(rs2.getBoolean("isEndNode"));
             setCompleted(rs2.getBoolean("completed"));
+            setInstance_template_id(instance_template_id);
+            setInstance_id(instance_id);
+            setInstanceReady(true);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -120,18 +126,27 @@ public class NodeServer extends Node{
     }
     
     public void write2DB(WorkflowDBManager DBM){
-        WorkflowAuditTrail wat= new WorkflowAuditTrail();
+        wat= new WorkflowAuditTrail();
+        String sql="";
         try {
             if(getId()>0){
                 //Update Node
-                DBM.getConnection().createStatement().executeUpdate("update node set id="+
-                        getId()+", description='"+getDescription()+"' where id ="+getId());
+                sql="update node set id="+
+                        getId()+", description='"+getDescription()+"' where id ="+getId();
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
+                DBM.getConnection().createStatement().executeUpdate(sql);
                 wat.updateAuditTrail("node",new String [] {"id="+getId()},DBM,"audit.general.modified",getChangerID());
+                instanceWrite2DB(DBM);
                 DBM.getConnection().commit();
             } else{
                 setId(DBM.getNewID("node"));
-                DBM.getConnection().createStatement().executeUpdate("INSERT INTO Node (id, description) VALUES("+
-                        getId()+", '"+getDescription()+"')");
+                sql="INSERT INTO Node (id, description) VALUES("+
+                        getId()+", '"+getDescription()+"')";
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
+                DBM.getConnection().createStatement().executeUpdate(sql);
+                instanceWrite2DB(DBM);
                 wat.updateAuditTrail("node",new String [] {"id="+getId()},DBM,"audit.general.create",getChangerID());
                 DBM.getConnection().commit();
             }
@@ -142,9 +157,49 @@ public class NodeServer extends Node{
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+    
+    public boolean isInstanceReady() {
+        return instanceReady;
+    }
+    
+    public void setInstanceReady(boolean instanceReady) {
+        this.instanceReady = instanceReady;
+    }
+    
+    private void instanceWrite2DB(WorkflowDBManager DBM){
+        String sql="update Workflow_Instance_has_Node set completed="+(isCompleted() ? 1:0)+
+                ",  isStartNode="+(isStartNode() ? 1:0)+", isEndNode="+(isEndNode() ? 1:0)+" where Workflow_Instance_id="+
+                getInstance_id()+" and Node_id="+getId()+" and Workflow_Instance_template_id="+
+                getInstance_template_id();
+        if(isInstanceReady()){
+            try {
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
+                DBM.getConnection().createStatement().executeUpdate(sql);
+            } catch (SQLException ex) {
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    ex.printStackTrace();
+            }
+        }
+    }
+    
+    public int getInstance_template_id() {
+        return instance_template_id;
+    }
+    
+    public void setInstance_template_id(int instance_template_id) {
+        this.instance_template_id = instance_template_id;
+    }
+
+    public int getInstance_id() {
+        return instance_id;
+    }
+
+    public void setInstance_id(int instance_id) {
+        this.instance_id = instance_id;
     }
 }

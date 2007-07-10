@@ -39,7 +39,7 @@ public class WorkflowServiceLocator extends org.apache.axis.client.Service imple
         WorkflowWSDDServiceName = name;
     }
 
-    public com.bluecubs.xinco.service.XincoWorkflow getWorkflow() throws javax.xml.rpc.ServiceException {
+    public com.bluecubs.xinco.service.Workflow getWorkflow() throws javax.xml.rpc.ServiceException {
        java.net.URL endpoint;
         try {
             endpoint = new java.net.URL(Workflow_address);
@@ -50,9 +50,9 @@ public class WorkflowServiceLocator extends org.apache.axis.client.Service imple
         return getWorkflow(endpoint);
     }
 
-    public com.bluecubs.xinco.service.XincoWorkflow getWorkflow(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
+    public com.bluecubs.xinco.service.Workflow getWorkflow(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
         try {
-            com.bluecubs.xinco.service.XincoWorkflowSoapBindingStub _stub = new com.bluecubs.xinco.service.XincoWorkflowSoapBindingStub(portAddress, this);
+            com.bluecubs.xinco.service.WorkflowSoapBindingStub _stub = new com.bluecubs.xinco.service.WorkflowSoapBindingStub(portAddress, this);
             _stub.setPortName(getWorkflowWSDDServiceName());
             return _stub;
         }
@@ -72,8 +72,8 @@ public class WorkflowServiceLocator extends org.apache.axis.client.Service imple
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (com.bluecubs.xinco.service.XincoWorkflow.class.isAssignableFrom(serviceEndpointInterface)) {
-                com.bluecubs.xinco.service.XincoWorkflowSoapBindingStub _stub = new com.bluecubs.xinco.service.XincoWorkflowSoapBindingStub(new java.net.URL(Workflow_address), this);
+            if (com.bluecubs.xinco.service.Workflow.class.isAssignableFrom(serviceEndpointInterface)) {
+                com.bluecubs.xinco.service.WorkflowSoapBindingStub _stub = new com.bluecubs.xinco.service.WorkflowSoapBindingStub(new java.net.URL(Workflow_address), this);
                 _stub.setPortName(getWorkflowWSDDServiceName());
                 return _stub;
             }

@@ -66,10 +66,10 @@ public class XincoDocument {
         
         //add XincoCoreData information
         doc.add(new Field("id", (new Integer(d.getId())).toString(),
-                Field.Store.COMPRESS,Field.Index.TOKENIZED));
-        doc.add(new Field("designation", d.getDesignation(),Field.Store.NO,Field.Index.NO));
+                Field.Store.YES,Field.Index.TOKENIZED));
+        doc.add(new Field("designation", d.getDesignation(),Field.Store.YES,Field.Index.TOKENIZED));
         doc.add(new Field("language", (new Integer(d.getXinco_core_language().getId())).toString(),
-                Field.Store.COMPRESS,Field.Index.TOKENIZED));
+                Field.Store.YES,Field.Index.TOKENIZED));
         //add content of file
         if (index_content) {
             if ((d.getXinco_core_data_type().getId() == 1) && (d.getStatus_number() != 3)) { //process non-archived file
@@ -123,7 +123,7 @@ public class XincoDocument {
                         } else {
                             ContentString = xift.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.getFileRepositoryPath(), d.getId(), "" + d.getId())));
                             if (ContentString != null) {
-                                doc.add(new Field("file", ContentString,Field.Store.NO,Field.Index.NO));
+                                doc.add(new Field("file", ContentString,Field.Store.YES,Field.Index.TOKENIZED));
                             }
                         }
                     } catch (Exception ie) {
@@ -136,27 +136,27 @@ public class XincoDocument {
         for (i=0;i<d.getXinco_add_attributes().size();i++) {
             if (((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().toLowerCase().compareTo("int") == 0) {
                 doc.add(new Field(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(),
-                        "" + ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_int(),Field.Store.NO,Field.Index.NO));
+                        "" + ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_int(),Field.Store.YES,Field.Index.NO));
             }
             if (((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().toLowerCase().compareTo("unsignedint") == 0) {
-                doc.add(new Field(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), "" 
-                        + ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint(),Field.Store.NO,Field.Index.NO));
+                doc.add(new Field(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), ""
+                        + ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint(),Field.Store.YES,Field.Index.NO));
             }
             if (((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().toLowerCase().compareTo("double") == 0) {
-                doc.add(new Field(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), "" + 
-                        ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_double(),Field.Store.NO,Field.Index.NO));
+                doc.add(new Field(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), "" +
+                        ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_double(),Field.Store.YES,Field.Index.NO)); 
             }
             if (((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().toLowerCase().compareTo("varchar") == 0) {
-                doc.add(new Field(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), 
-                        ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_varchar(),Field.Store.NO,Field.Index.NO));
+                doc.add(new Field(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(),
+                        ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_varchar(),Field.Store.YES,Field.Index.NO));
             }
             if (((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().toLowerCase().compareTo("text") == 0) {
-                doc.add(new Field(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), 
-                        ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_text(),Field.Store.NO,Field.Index.NO));
+                doc.add(new Field(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(),
+                        ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_text(),Field.Store.YES,Field.Index.NO));
             }
             if (((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().toLowerCase().compareTo("datetime") == 0) {
                 doc.add(new Field(((XincoCoreDataTypeAttribute)d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation(), "" +
-                        ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_datetime(),Field.Store.NO,Field.Index.NO));
+                        ((XincoAddAttribute)d.getXinco_add_attributes().elementAt(i)).getAttrib_datetime(),Field.Store.YES,Field.Index.NO));
             }
         }
         return doc;

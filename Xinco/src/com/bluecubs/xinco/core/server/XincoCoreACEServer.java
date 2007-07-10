@@ -63,7 +63,6 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 setWrite_permission(rs.getBoolean("write_permission"));
                 setExecute_permission(rs.getBoolean("execute_permission"));
                 setAdmin_permission(rs.getBoolean("admin_permission"));
-                setAudit_permission(rs.getBoolean("audit_permission"));
             }
             if (RowCount < 1) {
                 throw new XincoException();
@@ -80,7 +79,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
     //create single ace object for data structures
     public XincoCoreACEServer(int attrID, int attrUID, int attrGID, int attrNID,
             int attrDID, boolean attrRP, boolean attrWP, boolean attrEP,
-            boolean attrAP,boolean attrAD, boolean owner) throws XincoException {
+            boolean attrAP, boolean owner) throws XincoException {
         setId(attrID);
         setXinco_core_user_id(attrUID);
         setXinco_core_group_id(attrGID);
@@ -90,7 +89,6 @@ public class XincoCoreACEServer extends XincoCoreACE {
         setWrite_permission(attrWP);
         setExecute_permission(attrEP);
         setAdmin_permission(attrAP);
-        setAudit_permission(attrAD);
         setOwner(owner);
     }
     
@@ -107,7 +105,6 @@ public class XincoCoreACEServer extends XincoCoreACE {
             int wp = 0;
             int xp = 0;
             int ap = 0;
-            int ad = 0;
             int ow = 0;
             
             //set values of nullable attributes
@@ -145,9 +142,6 @@ public class XincoCoreACEServer extends XincoCoreACE {
             if (isAdmin_permission()) {
                 ap = 1;
             }
-            if (isAudit_permission()) {
-                ad = 1;
-            }
             if (isOwner()) {
                 ow = 1;
             }
@@ -159,8 +153,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                         ", xinco_core_group_id=" + xcgid + ", xinco_core_node_id=" + xcnid +
                         ", xinco_core_data_id=" + xcdid + ", read_permission=" + rp +
                         ", write_permission=" + wp + ", execute_permission=" + xp +
-                        ", admin_permission=" + ap + " , audit_permission=" + ad +
-                        " , owner=" + ow +" WHERE id=" + getId();
+                        ", admin_permission=" + ap +  " , owner=" + ow +" WHERE id=" + getId();
                 if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 stmt.executeUpdate(sql);
@@ -174,7 +167,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 sql="INSERT INTO xinco_core_ace VALUES (" + getId() +
                         ", " + xcuid + ", " + xcgid + ", " + xcnid +
                         ", " + xcdid + ", " + rp + ", " + wp + ", " +
-                        xp + ", " + ap +  ", " + ad +", " + ow +")";
+                        xp + ", " + ap + ", " + ow +")";
                 if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 stmt.executeUpdate(sql);
@@ -230,8 +223,8 @@ public class XincoCoreACEServer extends XincoCoreACE {
                         rs.getInt("xinco_core_user_id"), rs.getInt("xinco_core_group_id"),
                         rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_data_id"),
                         rs.getBoolean("read_permission"), rs.getBoolean("write_permission"),
-                        rs.getBoolean("execute_permission"), rs.getBoolean("admin_permission"),
-                        rs.getBoolean("audit_permission"),rs.getBoolean("owner")));
+                        rs.getBoolean("execute_permission"), rs.getBoolean("admin_permission")
+                        ,rs.getBoolean("owner")));
             }
             stmt.close();
         } catch (Exception e) {
@@ -284,10 +277,6 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 //modify admin permission
                 if (!core_ace.isAdmin_permission()) {
                     core_ace.setAdmin_permission(((XincoCoreACE)attrACL.elementAt(i)).isAdmin_permission());
-                }
-                //modify audit permission
-                if (!core_ace.isAudit_permission()) {
-                    core_ace.setAudit_permission(((XincoCoreACE)attrACL.elementAt(i)).isAudit_permission());
                 }
             }
         }

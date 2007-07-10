@@ -7,8 +7,8 @@
 
 package com.bluecubs.xinco.service;
 
-public class XincoWorkflowSoapBindingSkeleton implements com.bluecubs.xinco.service.XincoWorkflow, org.apache.axis.wsdl.Skeleton {
-    private com.bluecubs.xinco.service.XincoWorkflow impl;
+public class WorkflowSoapBindingSkeleton implements com.bluecubs.xinco.service.Workflow, org.apache.axis.wsdl.Skeleton {
+    private com.bluecubs.xinco.service.Workflow impl;
     private static java.util.Map _myOperations = new java.util.Hashtable();
     private static java.util.Collection _myOperationsList = new java.util.ArrayList();
 
@@ -261,11 +261,11 @@ public class XincoWorkflowSoapBindingSkeleton implements com.bluecubs.xinco.serv
         ((java.util.List)_myOperations.get("setWorkflowInstanceProperty")).add(_oper);
     }
 
-    public XincoWorkflowSoapBindingSkeleton() {
-        this.impl = new com.bluecubs.xinco.service.XincoWorkflowSoapBindingImpl();
+    public WorkflowSoapBindingSkeleton() {
+        this.impl = new com.bluecubs.xinco.service.WorkflowSoapBindingImpl();
     }
 
-    public XincoWorkflowSoapBindingSkeleton(com.bluecubs.xinco.service.XincoWorkflow impl) {
+    public WorkflowSoapBindingSkeleton(com.bluecubs.xinco.service.Workflow impl) {
         this.impl = impl;
     }
     public com.bluecubs.xinco.workflow.Activity getActivity(com.bluecubs.xinco.workflow.Activity in, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException

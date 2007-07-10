@@ -7,7 +7,7 @@
 
 package com.bluecubs.xinco.service;
 
-public class XincoWorkflowSoapBindingStub extends org.apache.axis.client.Stub implements com.bluecubs.xinco.service.XincoWorkflow {
+public class WorkflowSoapBindingStub extends org.apache.axis.client.Stub implements com.bluecubs.xinco.service.Workflow {
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
     private java.util.Vector cachedSerFactories = new java.util.Vector();
@@ -269,16 +269,16 @@ public class XincoWorkflowSoapBindingStub extends org.apache.axis.client.Stub im
 
     }
 
-    public XincoWorkflowSoapBindingStub() throws org.apache.axis.AxisFault {
+    public WorkflowSoapBindingStub() throws org.apache.axis.AxisFault {
          this(null);
     }
 
-    public XincoWorkflowSoapBindingStub(java.net.URL endpointURL, javax.xml.rpc.Service service) throws org.apache.axis.AxisFault {
+    public WorkflowSoapBindingStub(java.net.URL endpointURL, javax.xml.rpc.Service service) throws org.apache.axis.AxisFault {
          this(service);
          super.cachedEndpoint = endpointURL;
     }
 
-    public XincoWorkflowSoapBindingStub(javax.xml.rpc.Service service) throws org.apache.axis.AxisFault {
+    public WorkflowSoapBindingStub(javax.xml.rpc.Service service) throws org.apache.axis.AxisFault {
         if (service == null) {
             super.service = new org.apache.axis.client.Service();
         } else {
