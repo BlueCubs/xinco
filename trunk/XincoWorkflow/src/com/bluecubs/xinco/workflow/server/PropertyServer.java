@@ -105,7 +105,7 @@ public class PropertyServer extends Property{
         return properties;
     }
     
-    public boolean equals(Object o){
+    public boolean compare(Object o){
         boolean equals=false;
         PropertyServer temp=((PropertyServer)o);
         equals= temp.getIntProperty()==this.getIntProperty() &&
@@ -125,31 +125,52 @@ public class PropertyServer extends Property{
         return equals;
     }
     
-    public boolean equals(Vector o, Vector o2){
-        boolean equal=true,found = false;
+    public boolean compare(Vector o, Vector o2){
+        boolean found = false;
         if(o!=null && o.size()>0 && !o.get(1).getClass().equals(PropertyServer.class)
-                && o2.size()>0 && o2!=null && !o2.get(1).getClass().equals(PropertyServer.class))
+        && o2.size()>0 && o2!=null && !o2.get(1).getClass().equals(PropertyServer.class) ||
+                o.size()!=o2.size()){
+            try {
+                if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                    System.out.println("Different class, one or both are null or different vector size.");
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
             return false;
-        else if(o.size()!=o2.size())
-            return false;
-        else{
+        } else{
             for(int i=0;i<o.size();i++){
                 for(int j=0;j<o2.size();j++) {
                     if(((PropertyServer)o.get(j)).getDescription().equals(((PropertyServer)o2.get(j)).getDescription())){
                         //Found a matching property.
                         found=true;
-                        if(!((PropertyServer)o.get(j)).equals(((PropertyServer)o2.get(j)))){
-                            equal=false;
-                            break;
+                        if(!((PropertyServer)o.get(j)).compare(((PropertyServer)o2.get(j)))){
+                            try {
+                                if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                                    System.out.println("Properties are diffrent:\n1. \n"+((PropertyServer)o.get(j)).toString()+"\n2. \n"+
+                                            ((PropertyServer)o2.get(j)).toString());
+                                }
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                            return false;
                         }
                     }
                 }
-                if(!found)
+                if(!found){
+                    try {
+                        if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                            System.out.println("Matching property not found");
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                     return false;
+                }
                 found=false;
             }
         }
-        return equal;
+        return true;
     }
     
     public String toString(){

@@ -1,5 +1,5 @@
 /**
- * XincoWorkflowSoapBindingImpl.java
+ * WorkflowSoapBindingImpl.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
@@ -21,7 +21,7 @@ import com.bluecubs.xinco.workflow.server.ResourceServer;
 import java.rmi.RemoteException;
 import java.util.Vector;
 
-public class XincoWorkflowSoapBindingImpl implements com.bluecubs.xinco.service.XincoWorkflow{
+public class WorkflowSoapBindingImpl implements com.bluecubs.xinco.service.Workflow{
     private WorkflowDBManager DBM;
     public com.bluecubs.xinco.workflow.Activity getActivity(com.bluecubs.xinco.workflow.Activity in, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException {
         try {

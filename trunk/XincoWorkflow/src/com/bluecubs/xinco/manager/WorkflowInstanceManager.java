@@ -67,6 +67,7 @@ public class WorkflowInstanceManager {
     public void manage(){
         buildWorkflow();
         evaluateCurrentState();
+        buildWorkflow();
     }
     
     private void buildWorkflow(){
@@ -198,7 +199,7 @@ public class WorkflowInstanceManager {
             if(!current.isCompleted()){
                 if(evaluateNode(current)) {
                     // All properties are fulfilled
-                    // this can happen once during the workflow since instance
+                    // this might happen once during the workflow since instance
                     // properties can change later in the workflow.
                     current.setCompleted(true);
                     current.setChangerID(getChangerID());
@@ -220,7 +221,7 @@ public class WorkflowInstanceManager {
                     if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                         System.out.println("Evaluating transaction: "+((TransactionServer)transactions.get(j)).getId());
                     transactionProperties=((TransactionServer)transactions.get(j)).getProperties();
-                    if(new PropertyServer().equals(transactionProperties,getCurrentInstance().getProperties())){
+                    if(new PropertyServer().compare(transactionProperties,getCurrentInstance().getProperties())){
                         ((TransactionServer)transactions.get(j)).setCompleted(true);
                         ((TransactionServer)transactions.get(j)).setChangerID(getChangerID());
                         if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
@@ -246,14 +247,30 @@ public class WorkflowInstanceManager {
                 if(((PropertyServer)properties.get(j)).getDescription().equals(((PropertyServer)instanceProperties.get(j)).getDescription())){
                     //Found a matching property.
                     found=true;
-                    if(!((PropertyServer)properties.get(j)).equals(((PropertyServer)instanceProperties.get(j)))){
+                    if(!((PropertyServer)properties.get(j)).compare(((PropertyServer)instanceProperties.get(j)))){
                         ready=false;
+                        try {
+                            if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                                System.out.println("Properties are diffrent:\n1. \n"+((PropertyServer)properties.get(j)).toString()+"\n2. \n"+
+                                        ((PropertyServer)instanceProperties.get(j)).toString());
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
                         break;
                     }
                 }
             }
-            if(!found)
+            if(!found){
+                try {
+                    if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                        System.out.println("Matching property not found");
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
                 return false;
+            }
             found=false;
         }
         return ready;

@@ -98,7 +98,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
                     <element name="id" type="xsd:int"/>
                     <element name="read_permission" type="xsd:boolean"/>
                     <element name="write_permission" type="xsd:boolean"/>
-                    <element name="audit_permission" type="xsd:boolean"/>
                     <element name="owner" type="xsd:boolean"/>
                     <element name="userId" type="xsd:int"/>
                 </sequence>

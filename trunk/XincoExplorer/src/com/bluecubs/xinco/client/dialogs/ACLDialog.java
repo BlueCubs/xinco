@@ -75,7 +75,6 @@ public class ACLDialog extends javax.swing.JDialog {
         this.ACLWarning.setText(explorer.getResourceBundle().getString("window.acl.note"));
         this.AddACE.setText(explorer.getResourceBundle().getString("window.acl.addace"));
         this.Admin.setText(explorer.getResourceBundle().getString("general.acl.adminpermission"));
-        this.Audit.setText(explorer.getResourceBundle().getString("general.acl.auditpermission"));
         this.Close.setText(explorer.getResourceBundle().getString("general.close"));
         this.Execute.setText(explorer.getResourceBundle().getString("general.acl.executepermission"));
         this.Read.setText(explorer.getResourceBundle().getString("general.acl.readpermission"));
@@ -170,11 +169,6 @@ public class ACLDialog extends javax.swing.JDialog {
             } else {
                 temp_string = temp_string + "-";
             }
-            if (temp_ace.isAudit_permission()) {
-                temp_string = temp_string + "U";
-            } else {
-                temp_string = temp_string + "-";
-            }
             temp_string = temp_string + "]";
             list[i]=new String(temp_string);
         }
@@ -254,7 +248,6 @@ public class ACLDialog extends javax.swing.JDialog {
         RemoveACE = new javax.swing.JButton();
         ACLWarning = new javax.swing.JLabel();
         Close = new javax.swing.JButton();
-        Audit = new javax.swing.JCheckBox();
         jScrollPane3 = new javax.swing.JScrollPane();
         userList = new javax.swing.JList();
         resetListSelection = new javax.swing.JButton();
@@ -318,10 +311,6 @@ public class ACLDialog extends javax.swing.JDialog {
             }
         });
 
-        Audit.setText("jCheckBox1");
-        Audit.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        Audit.setMargin(new java.awt.Insets(0, 0, 0, 0));
-
         userList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane3.setViewportView(userList);
 
@@ -339,33 +328,29 @@ public class ACLDialog extends javax.swing.JDialog {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(ACLWarning, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
-                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
                     .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
                     .add(aclAddLabel)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, Read, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, Admin, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
+                    .add(Write, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
+                    .add(Execute, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
+                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, resetListSelection)
+                    .add(ACLWarning, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(aclRemoveLabel)
                         .add(79, 79, 79)
                         .add(AddACE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
                         .add(122, 122, 122))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, Read, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, Admin, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
-                    .add(Write, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
-                    .add(Execute, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, Audit, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
-                    .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE))
-                .addContainerGap())
-            .add(layout.createSequentialGroup()
-                .add(145, 145, 145)
-                .add(Close, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
-                .add(155, 155, 155))
-            .add(layout.createSequentialGroup()
-                .add(146, 146, 146)
-                .add(RemoveACE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
-                .add(154, 154, 154))
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(290, Short.MAX_VALUE)
-                .add(resetListSelection)
+                    .add(layout.createSequentialGroup()
+                        .add(135, 135, 135)
+                        .add(Close, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
+                        .add(145, 145, 145))
+                    .add(layout.createSequentialGroup()
+                        .add(136, 136, 136)
+                        .add(RemoveACE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
+                        .add(144, 144, 144)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -387,9 +372,7 @@ public class ACLDialog extends javax.swing.JDialog {
                 .add(Write)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(Admin)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(Audit)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(16, 16, 16)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(aclRemoveLabel)
@@ -403,7 +386,8 @@ public class ACLDialog extends javax.swing.JDialog {
                 .add(4, 4, 4)
                 .add(ACLWarning, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 26, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(Close))
+                .add(Close)
+                .addContainerGap())
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -487,7 +471,6 @@ public class ACLDialog extends javax.swing.JDialog {
                     ace.setWrite_permission(this.Write.isSelected());
                     ace.setExecute_permission(this.Execute.isSelected());
                     ace.setAdmin_permission(this.Admin.isSelected());
-                    ace.setAudit_permission(this.Audit.isSelected());
                     
                     if ((ace = this.explorer.getSession().xinco.setXincoCoreACE(ace, this.explorer.getSession().user)) == null) {
                         throw new XincoException(this.explorer.getResourceBundle().getString("error.noadminpermission"));
@@ -501,7 +484,6 @@ public class ACLDialog extends javax.swing.JDialog {
                     ace.setWrite_permission(this.Write.isSelected());
                     ace.setExecute_permission(this.Execute.isSelected());
                     ace.setAdmin_permission(this.Admin.isSelected());
-                    ace.setAudit_permission(this.Audit.isSelected());
                     
                     if ((ace = this.explorer.getSession().xinco.setXincoCoreACE(ace, this.explorer.getSession().user)) == null) {
                         throw new XincoException(this.explorer.getResourceBundle().getString("error.noadminpermission"));
@@ -545,7 +527,6 @@ public class ACLDialog extends javax.swing.JDialog {
                 ace.setWrite_permission(this.Write.isSelected());
                 ace.setExecute_permission(this.Execute.isSelected());
                 ace.setAdmin_permission(this.Admin.isSelected());
-                ace.setAudit_permission(this.Audit.isSelected());
                 if ((ace = this.explorer.getSession().xinco.setXincoCoreACE(ace, this.explorer.getSession().user)) == null) {
                     throw new XincoException(this.explorer.getResourceBundle().getString("error.noadminpermission"));
                 }
@@ -566,7 +547,6 @@ public class ACLDialog extends javax.swing.JDialog {
     private javax.swing.JLabel ACLWarning;
     private javax.swing.JButton AddACE;
     private javax.swing.JCheckBox Admin;
-    private javax.swing.JCheckBox Audit;
     private javax.swing.JButton Close;
     private javax.swing.JCheckBox Execute;
     private javax.swing.JCheckBox Read;

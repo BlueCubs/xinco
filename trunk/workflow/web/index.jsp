@@ -16,7 +16,7 @@
                             <ui:button action="#{index.button1_action}" binding="#{index.button1}" id="button1"
                                 style="left: 455px; top: 480px; position: absolute" text="Ok"/>
                             <ui:label binding="#{index.label2}" id="label2" style="left: 288px; top: 408px; position: absolute; width: 358px" text="#{Session.title}"/>
-                            <div style="position: absolute; left: 384px; top: 528px">
+                            <div style="left: 288px; top: 528px; position: absolute">
                                 <jsp:directive.include file="indexFooter.jspf"/>
                             </div>
                         </ui:form>

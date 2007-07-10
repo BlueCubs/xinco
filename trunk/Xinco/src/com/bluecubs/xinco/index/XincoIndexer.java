@@ -36,7 +36,6 @@
 
 package com.bluecubs.xinco.index;
 
-import java.sql.SQLException;
 import java.util.Vector;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.*;
@@ -45,9 +44,9 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.analysis.*;
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.server.*;
-import java.io.File;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.util.List;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 
 /**
  * This class handles document indexing for xinco.
@@ -69,7 +68,13 @@ public class XincoIndexer {
             }
             if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 System.out.println("Indexing...");
-            writer.addDocument(XincoDocument.getXincoDocument(d, index_content, DBM));
+            Document temp =XincoDocument.getXincoDocument(d, index_content, DBM);
+            List l = temp.getFields();
+            for(int i=0;i<l.size();i++){
+                System.out.println(((Field)l.get(i)).toString());
+            }
+            writer.addDocument(temp);
+            writer.flush();
             writer.close();
             if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 System.out.println("Indexing complete!");
@@ -85,14 +90,18 @@ public class XincoIndexer {
         return true;
     }
     
-    public static synchronized boolean removeXincoCoreData(XincoCoreData d, XincoDBManager dbm) {
+    public static synchronized boolean removeXincoCoreData(XincoCoreData d, XincoDBManager DBM) {
         IndexReader reader = null;
         //check if document exists in index and delete
         try {
-            reader = IndexReader.open(dbm.config.getFileIndexPath());
-            reader.deleteDocument(d.getId());
-            reader.close();
+            if(IndexReader.indexExists(DBM.config.getFileIndexPath())){
+                reader = IndexReader.open(DBM.config.getFileIndexPath());
+                reader.deleteDocuments(new Term("id", "" + d.getId()));
+                reader.close();
+            }
         } catch (Exception re) {
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                re.printStackTrace();
             if (reader != null) {
                 try {
                     reader.close();
@@ -100,15 +109,14 @@ public class XincoIndexer {
             }
             return false;
         }
-        
         return true;
     }
     
-    public static synchronized boolean optimizeIndex(XincoDBManager dbm) {
+    public static synchronized boolean optimizeIndex(XincoDBManager DBM) {
         IndexWriter writer = null;
         try {
             //optimize index
-            writer = new IndexWriter(dbm.config.getFileIndexPath(), new StandardAnalyzer(), false);
+            writer = new IndexWriter(DBM.config.getFileIndexPath(), new StandardAnalyzer(), false);
             writer.optimize();
             writer.close();
         } catch (Exception e) {
@@ -122,14 +130,14 @@ public class XincoIndexer {
         return true;
     }
     
-    public static synchronized Vector findXincoCoreData(String s, int l, XincoDBManager dbm) {
+    public static synchronized Vector findXincoCoreData(String s, int l, XincoDBManager DBM) {
         int i = 0;
         Vector v = new Vector();
         Searcher searcher = null;
         
         try {
             
-            searcher = new IndexSearcher(dbm.config.getFileIndexPath());
+            searcher = new IndexSearcher(DBM.config.getFileIndexPath());
             Analyzer analyzer = new StandardAnalyzer();
             
             //add language to query
@@ -143,11 +151,11 @@ public class XincoIndexer {
             
             for (i=0;i<hits.length();i++) {
                 try {
-                    v.addElement(new XincoCoreDataServer(Integer.parseInt(hits.doc(i).get("id")), dbm));
+                    v.addElement(new XincoCoreDataServer(Integer.parseInt(hits.doc(i).get("id")), DBM));
                 } catch (Exception xcde) {
                     // don't add non-existing data
                 }
-                if (i >= dbm.config.getMaxSearchResult()) {
+                if (i >= DBM.config.getMaxSearchResult()) {
                     break;
                 }
             }

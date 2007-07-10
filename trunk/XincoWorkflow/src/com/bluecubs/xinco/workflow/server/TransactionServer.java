@@ -45,6 +45,7 @@ import java.util.Vector;
 public class TransactionServer extends Transaction{
     private ResultSet rs;
     private boolean completed=false;
+    private boolean instanceReady=false;
     /** Creates a new instance of TransactionServer */
     public TransactionServer(int id, WorkflowDBManager DBM) {
         if(id>0){
@@ -87,39 +88,47 @@ public class TransactionServer extends Transaction{
         setProperties(values);
     }
     
-   public TransactionServer instanceSetup(int instance_id, WorkflowDBManager DBM){
+    public TransactionServer instanceSetup(int instance_id, WorkflowDBManager DBM){
         try {
             ResultSet rs2=DBM.getStatement().executeQuery("select * from workflow_instance_has_transaction " +
-                           "where node_id="+getId()+" and workflow_instance_id="+instance_id);
+                    "where node_id="+getId()+" and workflow_instance_id="+instance_id);
             rs2.next();
             setCompleted(rs2.getBoolean("completed"));
+            setInstanceReady(true);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
         return this;
     }
-
+    
     public boolean isCompleted() {
         return completed;
     }
-
+    
     public void setCompleted(boolean completed) {
         this.completed = completed;
     }
     
     public void write2DB(WorkflowDBManager DBM){
         WorkflowAuditTrail wat= new WorkflowAuditTrail();
+        String sql="";
         try {
             if(getId()>0){
                 //Update Transaction
-                DBM.getConnection().createStatement().executeUpdate("update transaction set id="+
-                        getId()+", description='"+getDescription()+"', node_id="+getTo().getId()+" where id="+getId());
+                sql="update transaction set id="+
+                        getId()+", description='"+getDescription()+"', node_id="+getTo().getId()+" where id="+getId();
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                            System.out.println(sql);
+                DBM.getConnection().createStatement().executeUpdate(sql);
                 wat.updateAuditTrail("transaction",new String [] {"id="+getId()},DBM,"audit.general.modified",getChangerID());
                 DBM.getConnection().commit();
             } else{
                 setId(DBM.getNewID("transaction"));
-                DBM.getConnection().createStatement().executeUpdate("INSERT INTO transaction (id, description,Node_id) VALUES("+
-                        getId()+", '"+getDescription()+"',"+getTo().getId()+")");
+                sql="INSERT INTO transaction (id, description,Node_id) VALUES("+
+                        getId()+", '"+getDescription()+"',"+getTo().getId()+")";
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                            System.out.println(sql);
+                DBM.getConnection().createStatement().executeUpdate(sql);
                 wat.updateAuditTrail("transaction",new String [] {"id="+getId()},DBM,"audit.general.create",getChangerID());
                 DBM.getConnection().commit();
             }
@@ -130,9 +139,16 @@ public class TransactionServer extends Transaction{
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public boolean isInstanceReady() {
+        return instanceReady;
+    }
+
+    public void setInstanceReady(boolean instanceReady) {
+        this.instanceReady = instanceReady;
     }
 }

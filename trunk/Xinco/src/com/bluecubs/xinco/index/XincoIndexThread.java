@@ -51,54 +51,33 @@ import java.util.Vector;
  */
 public class XincoIndexThread extends Thread {
     private Vector nodes=null;
-    private boolean index_content = false, index_directory_deleted = false,index_result = false;
+    private boolean index_content = false, index_result = false;
+    private static boolean index_directory_deleted = false;
     private XincoDBManager DBM = null;
+    private XincoCoreData d = null;
     /**
      * Run method
      */
     public void run() {
-        try {
-            DBM=new XincoDBManager();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-            System.out.println("Data to index: "+nodes.size());
-        while(nodes.size()>0){
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-                System.out.println("Indexing: "+((XincoCoreData)nodes.firstElement()).getDesignation());
-            XincoIndexer.indexXincoCoreData(((XincoCoreData)nodes.firstElement()), index_content, DBM);
-            nodes.remove(0);
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-                System.out.println("Indexing done!");
-//            try {
-//                sleep(3000);
-//            } catch (InterruptedException ex) {
-//                ex.printStackTrace();
-//                try {
-//                    DBM.getConnection().close();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-        }
+        XincoIndexer.indexXincoCoreData(d, index_content, DBM);
         try {
             DBM.getConnection().close();
         } catch (Exception e) {
-            e.printStackTrace();
+            //do nothing
         }
-        return;
     }
     
     /**
      * Constructor
      *
+     * @param d Data to index
      * @param index_content Should index content?
      * @param DBM XincoDatabaseManger
      */
-    public XincoIndexThread(boolean index_content, XincoDBManager dbm) {
+    public XincoIndexThread(XincoCoreData d, boolean index_content, XincoDBManager DBM) {
+        this.d = d;
         this.index_content = index_content;
-        this.DBM = dbm;
+        this.DBM = DBM;
     }
     
     /**
@@ -131,19 +110,22 @@ public class XincoIndexThread extends Thread {
         return DBM;
     }
     
-    public synchronized void deleteIndex(XincoDBManager dbm){
+    public synchronized static boolean deleteIndex(XincoDBManager DBM){
         File indexDirectory = null;
         File indexDirectoryFile = null;
         String[] indexDirectoryFileList = null;
-        indexDirectory = new File(dbm.config.getFileIndexPath());
+        indexDirectory = new File(DBM.config.getFileIndexPath());
         if (indexDirectory.exists()) {
             indexDirectoryFileList = indexDirectory.list();
             for (int i=0;i<indexDirectoryFileList.length;i++) {
-                indexDirectoryFile = new File(dbm.config.getFileIndexPath() + indexDirectoryFileList[i]);
+                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                                System.out.println("Deleting index file: "+DBM.config.getFileIndexPath() + indexDirectoryFileList[i]);
+                indexDirectoryFile = new File(DBM.config.getFileIndexPath() + indexDirectoryFileList[i]);
                 indexDirectoryFile.delete();
             }
             index_directory_deleted=indexDirectory.delete();
         }
+        return index_directory_deleted;
     }
     
     public Vector getNodes() {

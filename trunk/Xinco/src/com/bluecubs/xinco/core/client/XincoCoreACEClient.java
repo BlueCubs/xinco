@@ -90,10 +90,6 @@ public class XincoCoreACEClient extends XincoCoreACE {
                     if (!core_ace.isAdmin_permission()) {
                         core_ace.setAdmin_permission(((XincoCoreACE)attrACL.elementAt(i)).isAdmin_permission());
                     }
-                    //modify aaudit permission
-                    if (!core_ace.isAudit_permission()) {
-                        core_ace.setAudit_permission(((XincoCoreACE)attrACL.elementAt(i)).isAudit_permission());
-                    }
                 }
             }
         } catch (Exception e) {
