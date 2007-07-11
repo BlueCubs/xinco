@@ -46,6 +46,11 @@ public class TransactionServer extends Transaction{
     private ResultSet rs;
     private boolean completed=false;
     private boolean instanceReady=false;
+    private int instance_template_id,instance_id;
+    private WorkflowAuditTrail wat;
+    
+    /** Creates a new instance of TransactionServer */
+    public TransactionServer() {}
     /** Creates a new instance of TransactionServer */
     public TransactionServer(int id, WorkflowDBManager DBM) {
         if(id>0){
@@ -89,9 +94,10 @@ public class TransactionServer extends Transaction{
     }
     
     public TransactionServer instanceSetup(int instance_id, WorkflowDBManager DBM){
+        String sql="select * from workflow_instance_has_transaction " +
+                    "where transaction_id="+getId()+" and id="+instance_id;
         try {
-            ResultSet rs2=DBM.getStatement().executeQuery("select * from workflow_instance_has_transaction " +
-                    "where node_id="+getId()+" and workflow_instance_id="+instance_id);
+            ResultSet rs2=DBM.getStatement().executeQuery(sql);
             rs2.next();
             setCompleted(rs2.getBoolean("completed"));
             setInstanceReady(true);
@@ -110,7 +116,7 @@ public class TransactionServer extends Transaction{
     }
     
     public void write2DB(WorkflowDBManager DBM){
-        WorkflowAuditTrail wat= new WorkflowAuditTrail();
+        wat= new WorkflowAuditTrail();
         String sql="";
         try {
             if(getId()>0){
@@ -118,19 +124,21 @@ public class TransactionServer extends Transaction{
                 sql="update transaction set id="+
                         getId()+", description='"+getDescription()+"', node_id="+getTo().getId()+" where id="+getId();
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-                            System.out.println(sql);
+                    System.out.println(sql);
                 DBM.getConnection().createStatement().executeUpdate(sql);
                 wat.updateAuditTrail("transaction",new String [] {"id="+getId()},DBM,"audit.general.modified",getChangerID());
                 DBM.getConnection().commit();
+                instanceWrite2DB(DBM);
             } else{
                 setId(DBM.getNewID("transaction"));
                 sql="INSERT INTO transaction (id, description,Node_id) VALUES("+
                         getId()+", '"+getDescription()+"',"+getTo().getId()+")";
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-                            System.out.println(sql);
+                    System.out.println(sql);
                 DBM.getConnection().createStatement().executeUpdate(sql);
                 wat.updateAuditTrail("transaction",new String [] {"id="+getId()},DBM,"audit.general.create",getChangerID());
                 DBM.getConnection().commit();
+                instanceWrite2DB(DBM);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -143,12 +151,63 @@ public class TransactionServer extends Transaction{
             ex.printStackTrace();
         }
     }
-
+    
     public boolean isInstanceReady() {
         return instanceReady;
     }
-
+    
     public void setInstanceReady(boolean instanceReady) {
         this.instanceReady = instanceReady;
+    }
+    
+    public int getInstance_template_id() {
+        return instance_template_id;
+    }
+    
+    public void setInstance_template_id(int instance_template_id) {
+        this.instance_template_id = instance_template_id;
+    }
+    
+    public int getInstance_id() {
+        return instance_id;
+    }
+    
+    public void setInstance_id(int instance_id) {
+        this.instance_id = instance_id;
+    }
+    
+    private void instanceWrite2DB(WorkflowDBManager DBM){
+        if(isInstanceReady()){
+            String sql="update Workflow_Instance_has_transaction set completed="+(isCompleted() ? 1:0)+
+                    " where id="+
+                    getInstance_id()+" and transaction_id="+getId()+" and Workflow_template_id="+
+                    getInstance_template_id();
+            try {
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
+                DBM.getConnection().createStatement().executeUpdate(sql);
+                DBM.getConnection().commit();
+            } catch (SQLException ex) {
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    ex.printStackTrace();
+            }
+        }else{
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("Not instance ready...");
+        }
+    }
+    
+    public Vector loadTransactions(int instance_id,WorkflowDBManager DBM){
+        Vector transactions = new Vector();
+        try {
+            ResultSet rs= DBM.getConnection().createStatement().executeQuery("select transactions_id from " +
+                    "workflow_instance_has_transactions where id="+instance_id);
+            while(rs.next()){
+                transactions.add(new TransactionServer(rs.getInt("transactions_id"),DBM).instanceSetup(instance_id,DBM));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return transactions;
     }
 }

@@ -95,9 +95,14 @@ public class PropertyServer extends Property{
             break;
         }
         try {
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println(sql);
             rs=DBM.getStatement().executeQuery(sql);
             while(rs.next()){
-                properties.add(new PropertyServer(rs.getInt("id"),DBM));
+                PropertyServer temp=new PropertyServer(rs.getInt("id"),DBM);
+                properties.add(temp);
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("Added property: "+temp.toString());
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -106,6 +111,13 @@ public class PropertyServer extends Property{
     }
     
     public boolean compare(Object o){
+        try {
+            if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                System.out.println("Comparing properties...");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         boolean equals=false;
         PropertyServer temp=((PropertyServer)o);
         equals= temp.getIntProperty()==this.getIntProperty() &&
@@ -120,16 +132,29 @@ public class PropertyServer extends Property{
                 System.out.println("Result: "+equals);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            try {
+                if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    ex.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return equals;
     }
     
     public boolean compare(Vector o, Vector o2){
+        try {
+            if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                System.out.println("Comparing vectors...");
+                System.out.println("Vector 1 size: "+o.size());
+                System.out.println("Vector 2 size: "+o2.size());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         boolean found = false;
-        if(o!=null && o.size()>0 && !o.get(1).getClass().equals(PropertyServer.class)
-        && o2.size()>0 && o2!=null && !o2.get(1).getClass().equals(PropertyServer.class) ||
-                o.size()!=o2.size()){
+        if(o==null || o.size()==0 || !o.get(1).getClass().equals(PropertyServer.class)
+        || o2.size()==0 || o2==null || !o2.get(1).getClass().equals(PropertyServer.class)){
             try {
                 if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
                     System.out.println("Different class, one or both are null or different vector size.");
@@ -139,12 +164,26 @@ public class PropertyServer extends Property{
             }
             return false;
         } else{
+            try {
+                    if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                        System.out.println("Valid vectors to compare...");
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             for(int i=0;i<o.size();i++){
                 for(int j=0;j<o2.size();j++) {
-                    if(((PropertyServer)o.get(j)).getDescription().equals(((PropertyServer)o2.get(j)).getDescription())){
+                    if(((PropertyServer)o.get(i)).getDescription().equals(((PropertyServer)o2.get(j)).getDescription())){
                         //Found a matching property.
+                        try {
+                            if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                                System.out.println("Comparing matching properties");
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
                         found=true;
-                        if(!((PropertyServer)o.get(j)).compare(((PropertyServer)o2.get(j)))){
+                        if(!((PropertyServer)o.get(i)).compare(((PropertyServer)o2.get(j)))){
                             try {
                                 if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
                                     System.out.println("Properties are diffrent:\n1. \n"+((PropertyServer)o.get(j)).toString()+"\n2. \n"+

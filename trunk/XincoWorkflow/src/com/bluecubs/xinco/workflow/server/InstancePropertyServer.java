@@ -56,7 +56,7 @@ public class InstancePropertyServer extends InstanceProperty{
                 setStringProperty(rs.getString("propertystring"));
                 setBoolProperty(rs.getBoolean("propertybool"));
                 setLongProperty(rs.getInt("propertylong"));
-                setWorkflow_instance_id(rs.getInt("workflow_instance_id"));
+                setWorkflow_instance_id(rs.getInt("id"));
                 setWorkflow_template_id(rs.getInt("workflow_instance_workflow_template_id"));
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -72,8 +72,8 @@ public class InstancePropertyServer extends InstanceProperty{
         properties=new Vector();
         try {
             rs=DBM.getStatement().executeQuery("select id from " +
-                    "instance_property where Workflow_Instance_Workflow_Template_id ="+
-                    getWorkflow_template_id()+" and Workflow_Instance_id="+getWorkflow_instance_id());
+                    "instance_property where Workflow_Template_id ="+
+                    getWorkflow_template_id()+" and id="+getWorkflow_instance_id());
             while(rs.next())
                 properties.addElement(new InstancePropertyServer(rs.getInt("id"),DBM));
         } catch (SQLException ex) {
