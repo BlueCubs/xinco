@@ -48,6 +48,11 @@ public class NodeServer extends Node{
     private boolean instanceReady=false;
     private int instance_template_id,instance_id;
     private WorkflowAuditTrail wat;
+    
+    /** Creates a new instance of NodeServer */
+    public NodeServer() {
+    }
+    
     /** Creates a new instance of NodeServer */
     public NodeServer(int id, WorkflowDBManager DBM) {
         if(id > 0){
@@ -82,6 +87,7 @@ public class NodeServer extends Node{
             }
             setActivities(values);
         } catch (SQLException ex) {
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
             ex.printStackTrace();
         }
     }
@@ -96,14 +102,18 @@ public class NodeServer extends Node{
             }
             setProperties(values);
         } catch (SQLException ex) {
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
             ex.printStackTrace();
         }
     }
     
     public NodeServer instanceSetup(int instance_id,int instance_template_id, WorkflowDBManager DBM){
         try {
-            ResultSet rs2=DBM.getStatement().executeQuery("select * from workflow_instance_has_node " +
-                    "where node_id="+getId()+" and workflow_instance_id="+instance_id);
+            String sql="select * from workflow_instance_has_node " +
+                    "where node_id="+getId()+" and id="+instance_id;
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println(sql);
+            ResultSet rs2=DBM.getStatement().executeQuery(sql);
             rs2.next();
             setStartNode(rs2.getBoolean("isStartNode"));
             setEndNode(rs2.getBoolean("isEndNode"));
@@ -112,6 +122,7 @@ public class NodeServer extends Node{
             setInstance_id(instance_id);
             setInstanceReady(true);
         } catch (SQLException ex) {
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
             ex.printStackTrace();
         }
         return this;
@@ -171,20 +182,38 @@ public class NodeServer extends Node{
     }
     
     private void instanceWrite2DB(WorkflowDBManager DBM){
-        String sql="update Workflow_Instance_has_Node set completed="+(isCompleted() ? 1:0)+
-                ",  isStartNode="+(isStartNode() ? 1:0)+", isEndNode="+(isEndNode() ? 1:0)+" where Workflow_Instance_id="+
-                getInstance_id()+" and Node_id="+getId()+" and Workflow_Instance_template_id="+
-                getInstance_template_id();
         if(isInstanceReady()){
+            String sql="update Workflow_Instance_has_Node set completed="+(isCompleted() ? 1:0)+
+                ",  isStartNode="+(isStartNode() ? 1:0)+", isEndNode="+(isEndNode() ? 1:0)+" where id="+
+                getInstance_id()+" and Node_id="+getId()+" and workflow_template_id="+
+                getInstance_template_id();
             try {
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 DBM.getConnection().createStatement().executeUpdate(sql);
+                DBM.getConnection().commit();
             } catch (SQLException ex) {
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     ex.printStackTrace();
             }
+        }else{
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("Not instance ready...");
         }
+    }
+    
+    public Vector loadNodes(int instance_id,int template_id,WorkflowDBManager DBM){
+        Vector nodes = new Vector();
+        try {
+            ResultSet rs= DBM.getConnection().createStatement().executeQuery("select node_id from " +
+                    "workflow_instance_has_node where id="+instance_id);
+            while(rs.next()){
+                nodes.add(new NodeServer(rs.getInt("node_id"),DBM).instanceSetup(instance_id,template_id,DBM));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return nodes;
     }
     
     public int getInstance_template_id() {

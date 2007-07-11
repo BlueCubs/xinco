@@ -50,6 +50,8 @@ public class WorkflowInstanceServer extends WorkflowInstance{
     private WorkflowTemplateServer template;
     private Vector properties;
     private int changerId=-1;
+    private WorkflowDBManager DBM;
+    private String sql="";
     /**
      * Creates a new instance of WorkflowInstanceServer
      */
@@ -67,7 +69,7 @@ public class WorkflowInstanceServer extends WorkflowInstance{
                 cal.setTimeInMillis(rs.getTimestamp("creationtime").getTime());
                 setCreationTime(cal);
                 template =new WorkflowTemplateServer(getTemplateId(),DBM);
-                setNodes(loadNodes(DBM));
+                setNodes(new NodeServer().loadNodes(getId(),getTemplateId(),DBM));
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println("# of nodes: "+getNodes().size());
                 setTransactions(template.getTransactions());
@@ -116,34 +118,46 @@ public class WorkflowInstanceServer extends WorkflowInstance{
         try {
             if(getId()>0){
                 //Update Instance
-                DBM.getConnection().createStatement().executeUpdate("update workflow_instance set id="+
-                        getId()+", workflow_template_id="+getTemplateId()+", creationTime="+getCreationTime());
+                sql="update workflow_instance set id="+
+                        getId()+", workflow_template_id="+getTemplateId()+", creationTime="+getCreationTime();
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
+                DBM.getConnection().createStatement().executeUpdate(sql);
                 wat.updateAuditTrail("workflow_instance",new String [] {"id="+getId()},DBM,"audit.general.modified",getChangerID());
                 //Update Node status
                 for(int i=0;i<getNodes().size();i++){
                     ((NodeServer)getNodes().get(i)).write2DB(DBM);
-                    DBM.getConnection().createStatement().executeUpdate("update workflow_instance_has_node " +
-                            "set workflow_instance_workflow_template="+getTemplateId()+", workflow_instance_id="+getId()+
+                    sql="update workflow_instance_has_node " +
+                            "set workflow_instance_workflow_template="+getTemplateId()+", id="+getId()+
                             ", node_id="+((NodeServer)getNodes().get(i)).getId()+", completed="+
                             (((NodeServer)getNodes().get(i)).isCompleted() ? 1 : 0)+", isstartnode="+
                             (((NodeServer)getNodes().get(i)).isStartNode() ? 1 : 0)+", isendnode="+
-                            (((NodeServer)getNodes().get(i)).isEndNode() ? 1 : 0)+")");
+                            (((NodeServer)getNodes().get(i)).isEndNode() ? 1 : 0)+")";
+                    if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
+                    DBM.getConnection().createStatement().executeUpdate(sql);
                 }
                 //Update Transaction status
                 for(int i=0;i<getTransactions().size();i++){
                     ((TransactionServer)getTransactions().get(i)).write2DB(DBM);
-                    DBM.getConnection().createStatement().executeUpdate("update workflow_instance_has_transaction " +
-                            "set workflow_instance_workflow_template="+getTemplateId()+", workflow_instance_id="+getId()+
+                    sql="update workflow_instance_has_transaction " +
+                            "set workflow_instance_workflow_template="+getTemplateId()+", id="+getId()+
                             ", transaction_id="+((TransactionServer)getTransactions().get(i)).getId()+", completed="+
-                            (((TransactionServer)getTransactions().get(i)).isCompleted() ? 1 : 0)+")");
+                            (((TransactionServer)getTransactions().get(i)).isCompleted() ? 1 : 0)+")";
+                    if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
+                    DBM.getConnection().createStatement().executeUpdate(sql);
                 }
                 DBM.getConnection().commit();
             }else{
                 //Create Instance
                 Timestamp ts = new Timestamp(getCreationTime().getTimeInMillis());
-                DBM.getConnection().createStatement().executeUpdate("INSERT INTO Workflow_Instance " +
+                sql="INSERT INTO Workflow_Instance " +
                         "(id, Workflow_Template_id, Node_id, creationTime) VALUES("+
-                        getId()+", "+getTemplateId()+", "+ts);
+                        getId()+", "+getTemplateId()+", "+ts;
+                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
+                DBM.getConnection().createStatement().executeUpdate(sql);
                 wat.updateAuditTrail("workflow_instance",new String [] {"id="+getId()},DBM,"audit.general.modified",getChangerID());
                 DBM.getConnection().commit();
                 //Update Node status
@@ -176,7 +190,7 @@ public class WorkflowInstanceServer extends WorkflowInstance{
     
     public void initializeNodes(WorkflowDBManager DBM){
         for(int i=0;i<getNodes().size();i++){
-            ((NodeServer)getNodes().get(i)).instanceSetup(getId(),DBM);
+            ((NodeServer)getNodes().get(i)).instanceSetup(getId(),getTemplateId(),DBM);
             ((NodeServer)getNodes().get(i)).setChangerID(getChangerId());
         }
     }
@@ -196,38 +210,10 @@ public class WorkflowInstanceServer extends WorkflowInstance{
         this.changerId = changerId;
     }
     
-    private Vector loadNodes(WorkflowDBManager DBM){
-        Vector nodes = new Vector();
-        try {
-            ResultSet rs= DBM.getConnection().createStatement().executeQuery("select node_id from " +
-                    "workflow_instance_has_node where workflow_instance_id="+getId());
-            while(rs.next()){
-                nodes.add(new NodeServer(rs.getInt("node_id"),DBM).instanceSetup(getId(),DBM));
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return nodes;
-    }
-    
-    private Vector loadTransactions(WorkflowDBManager DBM){
-        Vector transactions = new Vector();
-        try {
-            ResultSet rs= DBM.getConnection().createStatement().executeQuery("select transactions_id from " +
-                    "workflow_instance_has_transactions where workflow_instance_id="+getId());
-            while(rs.next()){
-                transactions.add(new TransactionServer(rs.getInt("transactions_id"),DBM).instanceSetup(getId(),DBM));
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return transactions;
-    }
-    
     private void loadProperties(WorkflowDBManager DBM){
         Vector values = new Vector();
         try {
-            rs=DBM.getStatement().executeQuery("select id from instance_property where workflow_instance_id="+getId());
+            rs=DBM.getStatement().executeQuery("select id from instance_property where id="+getId());
             values.removeAllElements();
             while(rs.next()){
                 values.addElement(new PropertyServer(rs.getInt("id"),DBM));
@@ -247,10 +233,22 @@ public class WorkflowInstanceServer extends WorkflowInstance{
     }
     
     public Vector getTransactionsForNode(NodeServer node){
+        try {
+            DBM=new WorkflowDBManager();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         Vector t= new Vector();
         for(int j=0;j<getTransactions().size();j++){
             if(((TransactionServer)getTransactions().get(j)).getFrom().getId()==node.getId()){
-                t.add((TransactionServer)getTransactions().get(j));
+                TransactionServer temp = (TransactionServer)getTransactions().get(j);
+                try {
+                    temp.instanceSetup(getId(),DBM);
+                    t.add(temp);
+                } catch (Exception ex) {
+                    if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                        ex.printStackTrace();
+                }
             }
         }
         return t;

@@ -91,7 +91,8 @@ public class WorkflowInstanceManager {
             if(isRoot){
                 //We found the root node!
                 SimpleNode temp= new SimpleNode(((NodeServer)this.currentInstance.getNodes().get(i)).getId());
-                temp.setCompleted(((NodeServer)this.currentInstance.getNodes().get(i)).instanceSetup(getCurrentInstance().getId(),DBM).isCompleted());
+                temp.setCompleted(((NodeServer)this.currentInstance.getNodes().get(i)).instanceSetup(getCurrentInstance().getId(),
+                        getCurrentInstance().getTemplateId(),DBM).isCompleted());
                 sw.addNode(temp);
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println("Root id= "+sw.nodes[0].id);
@@ -193,6 +194,7 @@ public class WorkflowInstanceManager {
             Vector transactions=new Vector(),
                     transactionProperties=new Vector();
             current=((NodeServer)getCurrentInstance().getNodes().get(i));
+            current.instanceSetup(getCurrentInstance().getId(),getCurrentInstance().getTemplateId(),DBM);
             if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 System.out.println("Evaluating node: "+current.getId());
             // This node needs to be evaluated to see if we can get to the next step
@@ -216,10 +218,13 @@ public class WorkflowInstanceManager {
             if(current.isCompleted()){
                 // Verify the transactions starting after this node's completion
                 // to see if we can move fordward.
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                        System.out.println("Evaluating node done! Node is completed!");
                 transactions= getCurrentInstance().getTransactionsForNode(current);
                 for(int j=0;j<transactions.size();j++) {
-                    if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
                         System.out.println("Evaluating transaction: "+((TransactionServer)transactions.get(j)).getId());
+                    }
                     transactionProperties=((TransactionServer)transactions.get(j)).getProperties();
                     if(new PropertyServer().compare(transactionProperties,getCurrentInstance().getProperties())){
                         ((TransactionServer)transactions.get(j)).setCompleted(true);
