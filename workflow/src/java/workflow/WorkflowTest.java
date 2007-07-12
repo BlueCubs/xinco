@@ -255,11 +255,9 @@ public class WorkflowTest extends AbstractPageBean {
                 resultS+=((Transaction)w.getTransactions().get(i)).getDescription()+"\n";
             }
             result.setText(resultS);
-            System.out.println(resultS);
             
             WorkflowInstanceManager manager = new WorkflowInstanceManager(new WorkflowInstanceServer(1,1,new WorkflowDBManager()));
             manager.manage();
-            
         } catch (Exception ex) {
             ex.printStackTrace();
         }

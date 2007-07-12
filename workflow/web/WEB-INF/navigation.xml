@@ -8,5 +8,9 @@
             <from-outcome>case1</from-outcome>
             <to-view-id>/WorkflowTest.jsp</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>case2</from-outcome>
+            <to-view-id>/HibernateTest.jsp</to-view-id>
+        </navigation-case>
     </navigation-rule>
 </faces-config>

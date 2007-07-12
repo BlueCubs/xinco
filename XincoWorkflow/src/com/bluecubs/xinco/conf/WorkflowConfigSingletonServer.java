@@ -19,9 +19,9 @@
  * More information on: http://www.bluecubs.org
  *************************************************************
  *
- * Name:            XincoWorkflowConfigSingletonServer.java
+ * Name:            WorkflowConfigSingletonServer.java
  *
- * Description:     XincoWorkflowConfigSingletonServer
+ * Description:     WorkflowConfigSingletonServer
  *
  * Original Author: Javier A. Ortiz
  * Date:            June 11, 2007, 4:28 PM
@@ -39,11 +39,13 @@ import com.bluecubs.xinco.workflow.server.WorkflowSettingServer;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-public class XincoWorkflowConfigSingletonServer{
-    private static XincoWorkflowConfigSingletonServer  instance = null;
+public class WorkflowConfigSingletonServer{
+    private static WorkflowConfigSingletonServer  instance = null;
     private String JNDIDB = null;
-    /** Creates a new instance of XincoWorkflowConfigSingletonServer */
-    protected XincoWorkflowConfigSingletonServer() {
+    /**
+     * Creates a new instance of WorkflowConfigSingletonServer
+     */
+    protected WorkflowConfigSingletonServer() {
         try {
             JNDIDB = (String)(new InitialContext()).lookup("java:comp/env/xincoWorkflow/JNDIDB");
         } catch (NamingException ex) {
@@ -51,9 +53,9 @@ public class XincoWorkflowConfigSingletonServer{
         }
     }
     
-    public static XincoWorkflowConfigSingletonServer getInstance() {
+    public static WorkflowConfigSingletonServer getInstance() {
         if (instance == null) {
-            instance = new XincoWorkflowConfigSingletonServer();
+            instance = new WorkflowConfigSingletonServer();
         }
         return instance;
     }

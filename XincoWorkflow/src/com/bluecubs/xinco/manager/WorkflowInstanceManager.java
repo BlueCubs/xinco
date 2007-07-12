@@ -42,6 +42,7 @@ import com.bluecubs.xinco.workflow.server.NodeServer;
 import com.bluecubs.xinco.workflow.server.PropertyServer;
 import com.bluecubs.xinco.workflow.server.TransactionServer;
 import com.bluecubs.xinco.workflow.server.WorkflowInstanceServer;
+import java.sql.SQLException;
 import java.util.Vector;
 
 public class WorkflowInstanceManager {
@@ -219,13 +220,23 @@ public class WorkflowInstanceManager {
                 // Verify the transactions starting after this node's completion
                 // to see if we can move fordward.
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-                        System.out.println("Evaluating node done! Node is completed!");
+                    System.out.println("Evaluating node done! Node is completed!");
                 transactions= getCurrentInstance().getTransactionsForNode(current);
                 for(int j=0;j<transactions.size();j++) {
                     if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
                         System.out.println("Evaluating transaction: "+((TransactionServer)transactions.get(j)).getId());
                     }
+                    try {
+                        ((TransactionServer)transactions.get(j)).loadProperties(DBM);
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
                     transactionProperties=((TransactionServer)transactions.get(j)).getProperties();
+                    if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                        System.out.println("Vectors being compared...");
+                        System.out.println("Vector 1 size: "+transactionProperties.size());
+                        System.out.println("Vector 2 size: "+getCurrentInstance().getProperties().size());
+                    }
                     if(new PropertyServer().compare(transactionProperties,getCurrentInstance().getProperties())){
                         ((TransactionServer)transactions.get(j)).setCompleted(true);
                         ((TransactionServer)transactions.get(j)).setChangerID(getChangerID());

@@ -76,10 +76,13 @@ public class TransactionServer extends Transaction{
         }
     }
     
-    private void loadActivities(WorkflowDBManager DBM) throws SQLException{
+    public void loadActivities(WorkflowDBManager DBM) throws SQLException{
         Vector values = new Vector();
-        rs=DBM.getStatement().executeQuery("select activity_id from " +
-                "Transaction_has_Activity where transaction_id="+getId());
+        String sql="select activity_id from " +
+                "Transaction_has_Activity where transaction_id="+getId();
+        if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            System.out.println(sql);
+        rs=DBM.getStatement().executeQuery(sql);
         values.clear();
         while(rs.next()){
             values.addElement(new ActivityServer(rs.getInt("activity_id"),DBM));
@@ -87,7 +90,7 @@ public class TransactionServer extends Transaction{
         setActivities(values);
     }
     
-    private void loadProperties(WorkflowDBManager DBM) throws SQLException{
+    public void loadProperties(WorkflowDBManager DBM) throws SQLException{
         Vector values = new Vector();
         values=new PropertyServer().getPropertiesForTransaction(getId(),DBM);
         setProperties(values);
@@ -95,8 +98,10 @@ public class TransactionServer extends Transaction{
     
     public TransactionServer instanceSetup(int instance_id, WorkflowDBManager DBM){
         String sql="select * from workflow_instance_has_transaction " +
-                    "where transaction_id="+getId()+" and id="+instance_id;
+                "where transaction_id="+getId()+" and id="+instance_id;
         try {
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println(sql);
             ResultSet rs2=DBM.getStatement().executeQuery(sql);
             rs2.next();
             setCompleted(rs2.getBoolean("completed"));
@@ -193,7 +198,7 @@ public class TransactionServer extends Transaction{
             }
         }else{
             if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-                    System.out.println("Not instance ready...");
+                System.out.println("Not instance ready...");
         }
     }
     

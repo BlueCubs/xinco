@@ -46,9 +46,6 @@
             <complexType name="Property">
                 <sequence>
                     <element name="id" type="xsd:int"/>
-                    <element name="transactionId" type="xsd:int" nillable="true"/>
-                    <element name="nodeId" type="xsd:int" nillable="true"/>
-                    <element name="activityId" type="xsd:int" nillable="true"/>
                     <element name="description" type="xsd:string"/>
                     <element name="stringProperty" type="xsd:string" nillable="true"/>
                     <element name="intProperty" type="xsd:int"/>
