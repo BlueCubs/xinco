@@ -6,6 +6,7 @@
         <data xmlns="http://www.netbeans.org/ns/web-project/3">
             <name>workflow</name>
             <minimum-ant-version>1.6</minimum-ant-version>
+            <explicit-platform explicit-source-supported="true"/>
             <web-module-libraries>
                 <library files="2">
                     <file>${libs.jsf-designtime.classpath}</file>

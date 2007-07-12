@@ -35,7 +35,7 @@
 
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.conf.XincoWorkflowConfigSingletonServer;
+import com.bluecubs.xinco.conf.WorkflowConfigSingletonServer;
 import com.bluecubs.xinco.core.XincoSetting;
 import com.bluecubs.xinco.workflow.WorkflowSetting;
 import com.bluecubs.xinco.workflow.server.WorkflowSettingServer;
@@ -52,7 +52,7 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp.BasicDataSource;
 
 public class WorkflowDBManager {
-    public XincoWorkflowConfigSingletonServer config;
+    public WorkflowConfigSingletonServer config;
     private Connection con=null;
     public static int count = 0;
     private ResourceBundle lrb = null;
@@ -68,7 +68,7 @@ public class WorkflowDBManager {
     public WorkflowDBManager() throws Exception {
         setResourceBundle(ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoWorkflowMessages"));
         //load connection configuartion
-        config = XincoWorkflowConfigSingletonServer.getInstance();
+        config = WorkflowConfigSingletonServer.getInstance();
         while((DataSource)(new InitialContext()).lookup(config.getJNDIDB())==null);
         setDatasource((DataSource)(new InitialContext()).lookup(config.getJNDIDB()));
         getConnection().setAutoCommit(false);

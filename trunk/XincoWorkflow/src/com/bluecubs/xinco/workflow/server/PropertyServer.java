@@ -49,18 +49,18 @@ public class PropertyServer extends Property{
     public PropertyServer(int id, WorkflowDBManager DBM) {
         if(id>0){
             try {
-                rs=DBM.getStatement().executeQuery("select * from " +
-                        "property where id="+id);
+                String sql="select * from " +
+                        "property where id="+id;
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
+                rs=DBM.getStatement().executeQuery(sql);
                 rs.next();
                 setId(rs.getInt("id"));
-                setActivityId(rs.getInt("activity_id"));
-                setNodeId(rs.getInt("node_id"));
-                setTransactionId(rs.getInt("transaction_id"));
                 setDescription(rs.getString("description"));
                 setStringProperty(rs.getString("propertyString"));
                 setBoolProperty(rs.getBoolean("propertyBool"));
                 setIntProperty(rs.getInt("propertyInt"));
-                setLongProperty(rs.getLong("'propertyLong"));
+                setLongProperty(rs.getLong("propertyLong"));
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -99,7 +99,7 @@ public class PropertyServer extends Property{
                 System.out.println(sql);
             rs=DBM.getStatement().executeQuery(sql);
             while(rs.next()){
-                PropertyServer temp=new PropertyServer(rs.getInt("id"),DBM);
+                PropertyServer temp=new PropertyServer(rs.getInt("property_id"),DBM);
                 properties.add(temp);
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println("Added property: "+temp.toString());
@@ -153,8 +153,7 @@ public class PropertyServer extends Property{
             ex.printStackTrace();
         }
         boolean found = false;
-        if(o==null || o.size()==0 || !o.get(1).getClass().equals(PropertyServer.class)
-        || o2.size()==0 || o2==null || !o2.get(1).getClass().equals(PropertyServer.class)){
+        if(o==null || o.size()==0 || o2.size()==0 || o2==null){
             try {
                 if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
                     System.out.println("Different class, one or both are null or different vector size.");
@@ -165,12 +164,12 @@ public class PropertyServer extends Property{
             return false;
         } else{
             try {
-                    if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
-                        System.out.println("Valid vectors to compare...");
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                    System.out.println("Valid vectors to compare...");
                 }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
             for(int i=0;i<o.size();i++){
                 for(int j=0;j<o2.size();j++) {
                     if(((PropertyServer)o.get(i)).getDescription().equals(((PropertyServer)o2.get(j)).getDescription())){
@@ -216,13 +215,10 @@ public class PropertyServer extends Property{
         String s="";
         s+="Description: "+this.getDescription()+"\n";
         s+="ID: "+this.getId()+"\n";
-        s+="Activity ID: "+this.getActivityId()+"\n";
-        s+="Node ID: "+this.getNodeId()+"\n";
-        s+="Transaction ID: "+this.getTransactionId()+"\n";
         s+="Int property: "+this.getIntProperty()+"\n";
         s+="Long property: "+this.getLongProperty()+"\n";
         s+="String Property: "+this.getStringProperty()+"\n";
-        s+="Boolan property: "+this.isBoolProperty()+"\n";
+        s+="Boolean property: "+this.isBoolProperty()+"\n";
         return s;
     }
 }

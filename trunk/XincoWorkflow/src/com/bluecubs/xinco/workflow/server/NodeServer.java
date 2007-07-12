@@ -207,6 +207,7 @@ public class NodeServer extends Node{
         try {
             ResultSet rs= DBM.getConnection().createStatement().executeQuery("select node_id from " +
                     "workflow_instance_has_node where id="+instance_id);
+            NodeServer temp=null;
             while(rs.next()){
                 nodes.add(new NodeServer(rs.getInt("node_id"),DBM).instanceSetup(instance_id,template_id,DBM));
             }

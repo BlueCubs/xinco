@@ -10,12 +10,6 @@ package com.bluecubs.xinco.workflow;
 public class Property  implements java.io.Serializable {
     private int id;
 
-    private java.lang.Integer transactionId;
-
-    private java.lang.Integer nodeId;
-
-    private java.lang.Integer activityId;
-
     private java.lang.String description;
 
     private java.lang.String stringProperty;
@@ -33,9 +27,6 @@ public class Property  implements java.io.Serializable {
 
     public Property(
            int id,
-           java.lang.Integer transactionId,
-           java.lang.Integer nodeId,
-           java.lang.Integer activityId,
            java.lang.String description,
            java.lang.String stringProperty,
            int intProperty,
@@ -43,9 +34,6 @@ public class Property  implements java.io.Serializable {
            boolean boolProperty,
            java.lang.Integer changerID) {
            this.id = id;
-           this.transactionId = transactionId;
-           this.nodeId = nodeId;
-           this.activityId = activityId;
            this.description = description;
            this.stringProperty = stringProperty;
            this.intProperty = intProperty;
@@ -72,66 +60,6 @@ public class Property  implements java.io.Serializable {
      */
     public void setId(int id) {
         this.id = id;
-    }
-
-
-    /**
-     * Gets the transactionId value for this Property.
-     * 
-     * @return transactionId
-     */
-    public java.lang.Integer getTransactionId() {
-        return transactionId;
-    }
-
-
-    /**
-     * Sets the transactionId value for this Property.
-     * 
-     * @param transactionId
-     */
-    public void setTransactionId(java.lang.Integer transactionId) {
-        this.transactionId = transactionId;
-    }
-
-
-    /**
-     * Gets the nodeId value for this Property.
-     * 
-     * @return nodeId
-     */
-    public java.lang.Integer getNodeId() {
-        return nodeId;
-    }
-
-
-    /**
-     * Sets the nodeId value for this Property.
-     * 
-     * @param nodeId
-     */
-    public void setNodeId(java.lang.Integer nodeId) {
-        this.nodeId = nodeId;
-    }
-
-
-    /**
-     * Gets the activityId value for this Property.
-     * 
-     * @return activityId
-     */
-    public java.lang.Integer getActivityId() {
-        return activityId;
-    }
-
-
-    /**
-     * Sets the activityId value for this Property.
-     * 
-     * @param activityId
-     */
-    public void setActivityId(java.lang.Integer activityId) {
-        this.activityId = activityId;
     }
 
 
@@ -267,15 +195,6 @@ public class Property  implements java.io.Serializable {
         boolean _equals;
         _equals = true && 
             this.id == other.getId() &&
-            ((this.transactionId==null && other.getTransactionId()==null) || 
-             (this.transactionId!=null &&
-              this.transactionId.equals(other.getTransactionId()))) &&
-            ((this.nodeId==null && other.getNodeId()==null) || 
-             (this.nodeId!=null &&
-              this.nodeId.equals(other.getNodeId()))) &&
-            ((this.activityId==null && other.getActivityId()==null) || 
-             (this.activityId!=null &&
-              this.activityId.equals(other.getActivityId()))) &&
             ((this.description==null && other.getDescription()==null) || 
              (this.description!=null &&
               this.description.equals(other.getDescription()))) &&
@@ -300,15 +219,6 @@ public class Property  implements java.io.Serializable {
         __hashCodeCalc = true;
         int _hashCode = 1;
         _hashCode += getId();
-        if (getTransactionId() != null) {
-            _hashCode += getTransactionId().hashCode();
-        }
-        if (getNodeId() != null) {
-            _hashCode += getNodeId().hashCode();
-        }
-        if (getActivityId() != null) {
-            _hashCode += getActivityId().hashCode();
-        }
         if (getDescription() != null) {
             _hashCode += getDescription().hashCode();
         }
@@ -336,24 +246,6 @@ public class Property  implements java.io.Serializable {
         elemField.setXmlName(new javax.xml.namespace.QName("", "id"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("transactionId");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "transactionId"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("nodeId");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "nodeId"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("activityId");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "activityId"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("description");

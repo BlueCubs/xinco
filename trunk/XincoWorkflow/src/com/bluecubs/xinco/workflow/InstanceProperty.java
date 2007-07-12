@@ -17,9 +17,6 @@ public class InstanceProperty  extends com.bluecubs.xinco.workflow.Property  imp
 
     public InstanceProperty(
            int id,
-           java.lang.Integer transactionId,
-           java.lang.Integer nodeId,
-           java.lang.Integer activityId,
            java.lang.String description,
            java.lang.String stringProperty,
            int intProperty,
@@ -30,9 +27,6 @@ public class InstanceProperty  extends com.bluecubs.xinco.workflow.Property  imp
            int workflow_instance_id) {
         super(
             id,
-            transactionId,
-            nodeId,
-            activityId,
             description,
             stringProperty,
             intProperty,
