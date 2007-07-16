@@ -37,7 +37,6 @@ package com.bluecubs.xinco.workflow.server;
 
 import com.bluecubs.xinco.core.server.WorkflowDBManager;
 import com.bluecubs.xinco.workflow.InstanceProperty;
-import com.bluecubs.xinco.workflow.Property;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
@@ -83,15 +82,31 @@ public class InstancePropertyServer extends InstanceProperty{
             rs=DBM.getStatement().executeQuery(sql);
             while(rs.next()){
                 InstancePropertyServer temp=new InstancePropertyServer(rs.getInt("id"),DBM);
-//                properties.addElement(new InstancePropertyServer(rs.getInt("id"),DBM));
-                properties.addElement(new Property(temp.getId(),temp.getDescription(),
+                properties.addElement(new PropertyServer(temp.getId(),temp.getDescription(),
                         temp.getStringProperty(),temp.getIntProperty(), temp.getLongProperty(),
-                        temp.isBoolProperty(),0));
+                        temp.isBoolProperty()));
             }
         } catch (SQLException ex) {
             if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 ex.printStackTrace();
         }
         return properties;
+    }
+    
+    public int getInstanceID(WorkflowDBManager DBM){
+        int id=0;
+        try {
+            String sql="select max(property_id)+1 as id from instance_property where id = "+getId();
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println(sql);
+            rs=DBM.getStatement().executeQuery(sql);
+            while(rs.next()){
+                id=rs.getInt("id");
+            }
+        }catch (SQLException ex){
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                ex.printStackTrace();
+        }
+        return id;
     }
 }

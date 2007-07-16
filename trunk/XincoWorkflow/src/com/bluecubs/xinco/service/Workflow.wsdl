@@ -19,6 +19,7 @@
                 <sequence>
                     <element name="id" type="xsd:int"/>
                     <element name="description" type="xsd:string"/>
+                    <element name="classname" type="xsd:string"></element>
                     <element name="assignedTo" type="tns:Resource"/>
                     <element name="assignedOn" type="xsd:dateTime"/>
                     <element name="completedOn" type="xsd:dateTime"/>

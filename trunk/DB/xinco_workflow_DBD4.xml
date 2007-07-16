@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="yes" ?>
 <DBMODEL Version="4.0">
 <SETTINGS>
-<GLOBALSETTINGS ModelName="xinco_main_DBD4" IDModel="0" IDVersion="0" VersionStr="1.0.0.0" Comments="" UseVersionHistroy="1" AutoIncVersion="1" DatabaseType="MySQL" ZoomFac="75.00" XPos="254" YPos="288" DefaultDataType="5" DefaultTablePrefix="0" DefSaveDBConn="" DefSyncDBConn="Xinco 2.1" DefQueryDBConn="" Printer="PDF-Datei" HPageCount="4.059464816650148" PageAspectRatio="1.436398386069229" PageOrientation="1" PageFormat="A4 (210x297 mm, 8.26x11.7 inches)" SelectedPages="0;1;5" UsePositionGrid="1" PositionGridX="20" PositionGridY="20" TableNameInRefs="0" DefaultTableType="1" ActivateRefDefForNewRelations="1" FKPrefix="" FKPostfix="" CreateFKRefDefIndex="1" DBQuoteCharacter="`" CreateSQLforLinkedObjects="0" DefModelFont="Tahoma" CanvasWidth="4096" CanvasHeight="2842" />
+<GLOBALSETTINGS ModelName="xinco_main_DBD4" IDModel="0" IDVersion="0" VersionStr="1.0.0.0" Comments="" UseVersionHistroy="1" AutoIncVersion="1" DatabaseType="MySQL" ZoomFac="75.00" XPos="231" YPos="72" DefaultDataType="5" DefaultTablePrefix="0" DefSaveDBConn="" DefSyncDBConn="Xinco 2.1" DefQueryDBConn="" Printer="PDF-Datei" HPageCount="4.059464816650148" PageAspectRatio="1.436398386069229" PageOrientation="1" PageFormat="A4 (210x297 mm, 8.26x11.7 inches)" SelectedPages="0;1;5" UsePositionGrid="1" PositionGridX="20" PositionGridY="20" TableNameInRefs="0" DefaultTableType="1" ActivateRefDefForNewRelations="1" FKPrefix="" FKPostfix="" CreateFKRefDefIndex="1" DBQuoteCharacter="`" CreateSQLforLinkedObjects="0" DefModelFont="Tahoma" CanvasWidth="4096" CanvasHeight="2842" />
 <DATATYPEGROUPS>
 <DATATYPEGROUP Name="Numeric Types" Icon="1" />
 <DATATYPEGROUP Name="Date and Time Types" Icon="2" />
@@ -412,7 +412,7 @@
 </INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="4621" Tablename="Instance_Property" PrevTableName="Table_26" XPos="1340" YPos="240" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO Instance_Property (property_id,id,Workflow_Template_id, description, propertyString, propertyBool, propertyInt, propertyLong) VALUES(1, 1,1,\aworkflow.activity.notify\a, null,1, null,null);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="5" >
+<TABLE ID="4621" Tablename="Instance_Property" PrevTableName="Table_26" XPos="1340" YPos="240" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO Instance_Property (property_id,id,Workflow_Template_id, description, propertyString, propertyBool, propertyInt, propertyLong) VALUES(1,1,1,\aworkflow.activity.notify\a, null,1,0,null);\nINSERT INTO Instance_Property (property_id,id,Workflow_Template_id, description, propertyString, propertyBool, propertyInt, propertyLong) VALUES(2,1,1,\aworkflow.step.evaluate\a, null,1,0,null);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="5" >
 <COLUMNS>
 <COLUMN ID="6321" ColName="property_id" PrevColName="" Pos="7" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
 <OPTIONSELECTED>
@@ -478,7 +478,7 @@
 </INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="4632" Tablename="Activity" PrevTableName="Table_27" XPos="60" YPos="460" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO Activity (id, description) VALUES(1,\aworkflow.activity.notify\a);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="8" >
+<TABLE ID="4632" Tablename="Activity" PrevTableName="Table_27" XPos="60" YPos="460" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO Activity (id, description,className) VALUES(1,\aworkflow.activity.notify\a,\acom.bluecubs.xinco.workflow.server.activity.Notify\a);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="8" >
 <COLUMNS>
 <COLUMN ID="4634" ColName="id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="1" IsForeignKey="0" DefaultValue="" Comments="">
 <OPTIONSELECTED>
@@ -487,6 +487,11 @@
 </OPTIONSELECTED>
 </COLUMN>
 <COLUMN ID="4694" ColName="description" PrevColName="" Pos="3" idDatatype="20" DatatypeParams="(45)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="6342" ColName="className" PrevColName="" Pos="2" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
 <OPTIONSELECTED>
 <OPTIONSELECT Value="0" />
 </OPTIONSELECTED>
@@ -941,7 +946,7 @@
 </INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="4918" Tablename="Property" PrevTableName="Table_26" XPos="780" YPos="660" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO Property (id, description, propertyString, propertyBool, propertyInt, Propertylong) VALUES(1, \aworkflow.property.email\a, \ajavier.ortiz.78@gmail.com\a,null, null,null ); \nINSERT INTO Property (id, description, propertyString, propertyBool, propertyInt, Propertylong) VALUES(2, \aworkflow.property.email.message\a, \aTest message\a,null, 1,null );  \nINSERT INTO Property (id, description, propertyString, propertyBool, propertyInt, Propertylong) VALUES(3, \aworkflow.property.email.message\a, \aTest message\a,null, 1,null ); \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="5" >
+<TABLE ID="4918" Tablename="Property" PrevTableName="Table_26" XPos="780" YPos="660" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO Property (id, description, propertyString, propertyBool, propertyInt, Propertylong) VALUES(1, \aworkflow.property.email\a, \ajavier.ortiz.78@gmail.com\a,null, null,null ); \nINSERT INTO Property (id, description, propertyString, propertyBool, propertyInt, Propertylong) VALUES(2, \aworkflow.property.email.message\a, \aTest message\a,null, 1,null );  \nINSERT INTO Property (id, description, propertyString, propertyBool, propertyInt, Propertylong) VALUES(3, \aworkflow.activity.notify\a, null,true,0, null);\nINSERT INTO Property (id, description, propertyString, propertyBool, propertyInt, Propertylong) VALUES(4, \aworkflow.step.evaluate\a, null,true,0, null);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="5" >
 <COLUMNS>
 <COLUMN ID="4919" ColName="id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="1" IsForeignKey="0" DefaultValue="" Comments="">
 <OPTIONSELECTED>
@@ -989,7 +994,7 @@
 </INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="4931" Tablename="Node_has_Property" PrevTableName="" XPos="680" YPos="500" TableType="1" TablePrefix="0" nmTable="1" Temporary="0" UseStandardInserts="0" StandardInserts="\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="40" >
+<TABLE ID="4931" Tablename="Node_has_Property" PrevTableName="" XPos="680" YPos="500" TableType="1" TablePrefix="0" nmTable="1" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO Node_has_Property (Node_id, Property_id) VALUES(2, 4);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="40" >
 <COLUMNS>
 <COLUMN ID="6217" ColName="Node_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
 <OPTIONSELECTED>
@@ -1513,6 +1518,11 @@
 </OPTIONSELECTED>
 </COLUMN>
 <COLUMN ID="6061" ColName="description" PrevColName="" Pos="3" idDatatype="20" DatatypeParams="(45)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="6344" ColName="className" PrevColName="" Pos="3" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
 <OPTIONSELECTED>
 <OPTIONSELECT Value="0" />
 </OPTIONSELECTED>
