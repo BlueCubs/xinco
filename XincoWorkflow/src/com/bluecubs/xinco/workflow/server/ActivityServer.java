@@ -56,6 +56,7 @@ public class ActivityServer extends AbstractActivityServer{
                 rs.next();
                 setId(rs.getInt("id"));
                 setDescription(rs.getString("description"));
+                setClassname(rs.getString("className"));
                 rs.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -63,6 +64,10 @@ public class ActivityServer extends AbstractActivityServer{
             if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 System.out.println("Creating activity done!");
         }
+    }
+    
+    public ActivityServer(){
+        
     }
     
     public int getNodeID() {

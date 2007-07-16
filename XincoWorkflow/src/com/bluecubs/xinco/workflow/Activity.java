@@ -12,6 +12,8 @@ public class Activity  implements java.io.Serializable {
 
     private java.lang.String description;
 
+    private java.lang.String classname;
+
     private com.bluecubs.xinco.workflow.Resource assignedTo;
 
     private java.util.Calendar assignedOn;
@@ -28,6 +30,7 @@ public class Activity  implements java.io.Serializable {
     public Activity(
            int id,
            java.lang.String description,
+           java.lang.String classname,
            com.bluecubs.xinco.workflow.Resource assignedTo,
            java.util.Calendar assignedOn,
            java.util.Calendar completedOn,
@@ -35,6 +38,7 @@ public class Activity  implements java.io.Serializable {
            java.lang.Integer changerID) {
            this.id = id;
            this.description = description;
+           this.classname = classname;
            this.assignedTo = assignedTo;
            this.assignedOn = assignedOn;
            this.completedOn = completedOn;
@@ -80,6 +84,26 @@ public class Activity  implements java.io.Serializable {
      */
     public void setDescription(java.lang.String description) {
         this.description = description;
+    }
+
+
+    /**
+     * Gets the classname value for this Activity.
+     * 
+     * @return classname
+     */
+    public java.lang.String getClassname() {
+        return classname;
+    }
+
+
+    /**
+     * Sets the classname value for this Activity.
+     * 
+     * @param classname
+     */
+    public void setClassname(java.lang.String classname) {
+        this.classname = classname;
     }
 
 
@@ -198,6 +222,9 @@ public class Activity  implements java.io.Serializable {
             ((this.description==null && other.getDescription()==null) || 
              (this.description!=null &&
               this.description.equals(other.getDescription()))) &&
+            ((this.classname==null && other.getClassname()==null) || 
+             (this.classname!=null &&
+              this.classname.equals(other.getClassname()))) &&
             ((this.assignedTo==null && other.getAssignedTo()==null) || 
              (this.assignedTo!=null &&
               this.assignedTo.equals(other.getAssignedTo()))) &&
@@ -227,6 +254,9 @@ public class Activity  implements java.io.Serializable {
         _hashCode += getId();
         if (getDescription() != null) {
             _hashCode += getDescription().hashCode();
+        }
+        if (getClassname() != null) {
+            _hashCode += getClassname().hashCode();
         }
         if (getAssignedTo() != null) {
             _hashCode += getAssignedTo().hashCode();
@@ -262,6 +292,12 @@ public class Activity  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("description");
         elemField.setXmlName(new javax.xml.namespace.QName("", "description"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("classname");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "classname"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);

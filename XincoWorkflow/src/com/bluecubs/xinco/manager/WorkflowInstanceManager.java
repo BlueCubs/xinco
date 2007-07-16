@@ -112,7 +112,8 @@ public class WorkflowInstanceManager {
                 sw.nodes[j].connections[sw.nodes[j].connections.length-1].next=sw.nodes[sw.nodes.length-1];
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
                     String s="("+sw.nodes[j].id+(sw.nodes[j].isCompleted() ? "*":"")+
-                            ")--->("+sw.nodes[j].connections[sw.nodes[j].connections.length-1].next.id+(sw.nodes[j].connections[sw.nodes[j].connections.length-1].next.isCompleted() ? "*":"")+")";
+                            ")--->("+sw.nodes[j].connections[sw.nodes[j].connections.length-1].next.id+
+                            (sw.nodes[j].connections[sw.nodes[j].connections.length-1].next.isCompleted() ? "*":"")+")";
                     System.out.println(s);
                 }
             }
@@ -175,8 +176,18 @@ public class WorkflowInstanceManager {
         int id;
         SimpleNode next=null;
         SimpleNode previous=null;
+        private boolean completed=false;
         public Connection(int id){
             this.id=id;
+            setCompleted(false);
+        }
+
+        public boolean isCompleted() {
+            return completed;
+        }
+
+        public void setCompleted(boolean completed) {
+            this.completed = completed;
         }
     }
     
@@ -247,6 +258,10 @@ public class WorkflowInstanceManager {
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
+                    }
+                    else{
+                         if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                            System.out.println("Transaction not completed...");
                     }
                 }
             }
