@@ -91,9 +91,10 @@ public class WorkflowInstanceManager {
             }
             if(isRoot){
                 //We found the root node!
-                SimpleNode temp= new SimpleNode(((NodeServer)this.currentInstance.getNodes().get(i)).getId());
-                temp.setCompleted(((NodeServer)this.currentInstance.getNodes().get(i)).instanceSetup(getCurrentInstance().getId(),
-                        getCurrentInstance().getTemplateId(),DBM).isCompleted());
+                SimpleNode temp= new SimpleNode(((NodeServer)this.currentInstance.getNodes().get(i)).getId(),
+                        this.currentInstance.getId(),this.currentInstance.getTemplateId());
+//                temp.setCompleted(((NodeServer)this.currentInstance.getNodes().get(i)).instanceSetup(getCurrentInstance().getId(),
+//                        getCurrentInstance().getTemplateId(),DBM).isCompleted());
                 sw.addNode(temp);
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println("Root id= "+sw.nodes[0].id);
@@ -107,7 +108,8 @@ public class WorkflowInstanceManager {
             if(((Transaction)this.currentInstance.getTransactions().get(j)).getFrom().getId()==actual_id){
                 sw.nodes[j].addConnection(new Connection(((Transaction)this.currentInstance.getTransactions().get(j)).getId()));
                 sw.nodes[j].connections[sw.nodes[j].connections.length-1].previous=sw.nodes[j];
-                SimpleNode temp= new SimpleNode(((Transaction)this.currentInstance.getTransactions().get(j)).getTo().getId());
+                SimpleNode temp= new SimpleNode(((Transaction)this.currentInstance.getTransactions().get(j)).getTo().getId(),
+                        this.currentInstance.getId(),this.currentInstance.getTemplateId());
                 sw.addNode(temp);
                 sw.nodes[j].connections[sw.nodes[j].connections.length-1].next=sw.nodes[sw.nodes.length-1];
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
@@ -124,8 +126,7 @@ public class WorkflowInstanceManager {
         SimpleNode [] nodes;
         int i=0;
         public int next(){
-            
-            return 0;
+            return nodes[i+1].id;
         }
         public int addNode(SimpleNode node){
             if(nodes==null)
@@ -140,16 +141,27 @@ public class WorkflowInstanceManager {
                 nodes=temp;
             }
             nodes[i]=node;
+            this.i=i;
             return i;
         }
     }
+    
     private class SimpleNode{
         int id,i;
         Connection[] connections=null;
         private boolean completed=false;
-        public SimpleNode(int id){
+        private WorkflowDBManager DBM;
+        public SimpleNode(int id,int instance_id,int template_id){
+            try {
+                DBM= new WorkflowDBManager();
+            } catch (Exception ex) {
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    ex.printStackTrace();
+            }
             this.id=id;
-            setCompleted(false);
+            NodeServer temp = new NodeServer(id,DBM);
+            temp.instanceSetup(instance_id,template_id,DBM);
+            setCompleted(temp.isCompleted());
         }
         public void addConnection(Connection con){
             if(connections==null)
@@ -181,11 +193,11 @@ public class WorkflowInstanceManager {
             this.id=id;
             setCompleted(false);
         }
-
+        
         public boolean isCompleted() {
             return completed;
         }
-
+        
         public void setCompleted(boolean completed) {
             this.completed = completed;
         }
@@ -258,9 +270,8 @@ public class WorkflowInstanceManager {
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
-                    }
-                    else{
-                         if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    } else{
+                        if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                             System.out.println("Transaction not completed...");
                     }
                 }
@@ -270,15 +281,15 @@ public class WorkflowInstanceManager {
     }
     
     private boolean evaluateNode(NodeServer node){
-        boolean ready=true,found = false;
+        boolean ready=false,found = false;
         Vector properties=node.getProperties(),
                 instanceProperties=getCurrentInstance().getProperties();
         for(int j=0;j<properties.size();j++){
             for(int k=0;k<instanceProperties.size();k++){
-                if(((PropertyServer)properties.get(j)).getDescription().equals(((PropertyServer)instanceProperties.get(j)).getDescription())){
+                if(((PropertyServer)properties.get(j)).getDescription().equals(((PropertyServer)instanceProperties.get(k)).getDescription())){
                     //Found a matching property.
                     found=true;
-                    if(!((PropertyServer)properties.get(j)).compare(((PropertyServer)instanceProperties.get(j)))){
+                    if(!((PropertyServer)properties.get(j)).compare(((PropertyServer)instanceProperties.get(k)))){
                         ready=false;
                         try {
                             if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
@@ -289,6 +300,16 @@ public class WorkflowInstanceManager {
                             ex.printStackTrace();
                         }
                         break;
+                    }else{
+                        ready=true;
+                        try {
+                            if(new WorkflowDBManager().getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                                System.out.println("Properties are diffrent:\n1. \n"+((PropertyServer)properties.get(j)).toString()+"\n2. \n"+
+                                        ((PropertyServer)instanceProperties.get(j)).toString());
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
                     }
                 }
             }
