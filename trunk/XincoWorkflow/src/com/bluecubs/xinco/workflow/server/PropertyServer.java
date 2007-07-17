@@ -133,10 +133,6 @@ public class PropertyServer extends Property{
         }
         boolean equals=false;
         PropertyServer temp=((PropertyServer)o);
-        System.out.println(String.valueOf(temp.getIntProperty()).equals(String.valueOf(this.getIntProperty())));
-        System.out.println(String.valueOf(temp.getLongProperty()).equals(String.valueOf(this.getLongProperty())));
-        System.out.println(temp.getStringProperty()==null && this.getStringProperty()== null || temp.getStringProperty().equals(this.getStringProperty()));
-        System.out.println(temp.isBoolProperty()==this.isBoolProperty());
         equals= String.valueOf(temp.getIntProperty()).equals(String.valueOf(this.getIntProperty())) &&
                 String.valueOf(temp.getLongProperty()).equals(String.valueOf(this.getLongProperty())) &&
                 temp.getStringProperty()==null && this.getStringProperty()== null || temp.getStringProperty().equals(this.getStringProperty()) &&

@@ -105,6 +105,7 @@ public class TransactionServer extends Transaction{
             ResultSet rs2=DBM.getStatement().executeQuery(sql);
             rs2.next();
             setCompleted(rs2.getBoolean("completed"));
+            setInstance_id(instance_id);
             setInstanceReady(true);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -184,8 +185,7 @@ public class TransactionServer extends Transaction{
     private void instanceWrite2DB(WorkflowDBManager DBM){
         if(isInstanceReady()){
             String sql="update Workflow_Instance_has_transaction set completed="+(isCompleted() ? 1:0)+
-                    " where id="+
-                    getInstance_id()+" and transaction_id="+getId()+" and Workflow_template_id="+
+                    " where id="+ getInstance_id()+" and transaction_id="+getId()+" and Workflow_template_id="+
                     getInstance_template_id();
             try {
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
