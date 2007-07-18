@@ -28,4 +28,6 @@ public interface XincoWorkflow extends java.rmi.Remote {
     public void setWorkflowLog(com.bluecubs.xinco.workflow.holders.WorkflowLogHolder workflow_log, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException;
     public com.bluecubs.xinco.workflow.InstanceProperty getWorkflowInstanceProperty(com.bluecubs.xinco.workflow.InstanceProperty instanceProperty, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException;
     public void setWorkflowInstanceProperty(com.bluecubs.xinco.workflow.holders.InstancePropertyHolder property, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException;
+    public boolean sendEmail(com.bluecubs.xinco.workflow.Email email, com.bluecubs.xinco.workflow.Resource from) throws java.rmi.RemoteException;
+    public com.bluecubs.xinco.workflow.Email getEmail(int id, com.bluecubs.xinco.workflow.Resource user) throws java.rmi.RemoteException;
 }

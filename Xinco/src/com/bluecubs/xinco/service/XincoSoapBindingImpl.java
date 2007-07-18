@@ -27,7 +27,6 @@ import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
-import com.bluecubs.xinco.core.server.email.XincoMailer;
 import com.bluecubs.xinco.index.XincoIndexThread;
 import com.bluecubs.xinco.index.XincoIndexer;
 import java.io.ByteArrayInputStream;
@@ -41,7 +40,6 @@ import java.util.Vector;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.CheckedOutputStream;
-import javax.mail.MessagingException;
 import org.apache.axis.Message;
 import org.apache.axis.MessageContext;
 import org.apache.axis.attachments.AttachmentPart;
@@ -778,61 +776,8 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         }
     }
     
-//    public void setWorkflow(XincoWorkflowHolder workflow, XincoCoreUser user) throws RemoteException {
-//    }
-//    
-//    public XincoWorkflow getWorkflow(int workflow_id, XincoCoreUser user) throws RemoteException {
-//        XincoWorkflowServer xws=null;
-//        try {
-//            xws=new XincoWorkflowServer(workflow_id,new XincoDBManager());
-//            System.out.println(xws.toString());
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//        return xws;
-//    }
-    
-//    public XincoWorkflow getWorkflowInstance(int id, int workflow_id, int data_id, XincoCoreUser user) throws RemoteException {
-//        return null;
-//    }
-    
     public Vector getWorkflowAttributes(int workflow_id, XincoCoreUser user) throws RemoteException {
         return null;
     }
     
-//    public void setXincoWorkflowInstance(XincoWorkflowInstanceHolder workflow_instance, XincoCoreUser user) throws RemoteException {
-//    }
-//    
-//    public void setXincoWorkflowStep(XincoWorkflowStepHolder step, XincoCoreUser user) throws RemoteException {
-//    }
-//    
-//    public void setWorkflowInstanceStep(XincoWorkflowStepInstanceHolder step_instance, XincoCoreUser user) throws RemoteException {
-//    }
-    
-//    public com.bluecubs.xinco.workflow.XincoWorkflowStepFork setXincoWorkflowStepFork(int id, int yesStep, int noStep, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException {
-//        return null;
-//    }
-    
-    public boolean sendEmail(com.bluecubs.xinco.core.XincoEmail email, com.bluecubs.xinco.core.XincoCoreUser from) throws java.rmi.RemoteException {
-        XincoMailer mailer=null;
-        try {
-            mailer = new XincoMailer(new XincoDBManager());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        String [] rec=new String[email.getRecipients().size()];
-        for(int i=0;i<email.getRecipients().size();i++)
-            rec[i]=((XincoCoreUser)email.getRecipients().get(i)).getEmail();
-        try {
-            mailer.postMail(rec,email.getSubject(),email.getMessage(),from.getEmail());
-        } catch (MessagingException ex) {
-            ex.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-    
-    public com.bluecubs.xinco.core.XincoEmail getEmail(int id, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException {
-        return null;
-    }
 }

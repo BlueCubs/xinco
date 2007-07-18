@@ -35,14 +35,18 @@
 
 package com.bluecubs.xinco.workflow.server.activity;
 
-import com.bluecubs.xinco.core.server.WorkflowDBManager;
+import com.bluecubs.xinco.core.server.email.Mailer;
+import com.bluecubs.xinco.general.DBManager;
 import com.bluecubs.xinco.workflow.server.ActivityServer;
+import java.util.Vector;
 
 public class Notify extends ActivityServer{
-    
+    private Mailer mailer;
     /** Creates a new instance of Notify */
-    public Notify(int id,WorkflowDBManager DBM) {
+    public Notify(int id,DBManager DBM) {
         super(id,DBM);
+        mailer = new Mailer(DBM);
+        Vector properties= new Vector();
     }
     
 }

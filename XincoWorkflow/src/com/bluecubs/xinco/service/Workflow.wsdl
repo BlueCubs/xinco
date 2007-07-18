@@ -27,6 +27,15 @@
                     <element name="changerID" type="xsd:int" nillable="true"></element>
                 </sequence>
             </complexType>
+            <complexType name="Email">
+                <sequence>
+                    <element name="id" type="xsd:int"></element>
+                    <element name="from" type="xsd:int"></element>
+                    <element name="subject" type="xsd:string"></element>
+                    <element name="message" type="xsd:string"></element>
+                    <element name="recipients" nillable="true" type="apachesoap:Vector"/>
+                </sequence>
+            </complexType>
             <complexType name="Resource">
                 <sequence>
                     <element name="change" type="xsd:boolean"/>
@@ -297,6 +306,20 @@
     <message name="setWorkflowInstancePropertyResponse">
         <wsdl:part name="property" type="tns:InstanceProperty"/>
     </message>
+    <wsdl:message name="sendEmailRequest">
+        <wsdl:part name="email" type="tns:Email"/>
+        <wsdl:part name="from" type="tns:Resource"/>
+    </wsdl:message>
+    <wsdl:message name="sendEmailResponse">
+        <wsdl:part name="success" type="xsd:boolean"/>
+    </wsdl:message>
+    <wsdl:message name="getEmailRequest">
+        <wsdl:part name="id" type="xsd:int"/>
+        <wsdl:part name="user" type="tns:Resource"/>
+    </wsdl:message>
+    <wsdl:message name="getEmailResponse">
+        <wsdl:part name="email" type="tns:Email"/>
+    </wsdl:message>
     <portType name="XincoWorkflow">
         <wsdl:operation name="getActivity">
             <wsdl:input name="getActivityRequest" message="impl:getActivityRequest"/>
@@ -377,6 +400,14 @@
         <wsdl:operation name="setWorkflowInstanceProperty">
             <wsdl:input name="setWorkflowInstancePropertyRequest" message="impl:setWorkflowInstancePropertyRequest"/>
             <wsdl:output name="setWorkflowInstancePropertyResponse" message="impl:setWorkflowInstancePropertyResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="SendEmail">
+            <wsdl:input name="sendEmailRequest" message="impl:sendEmailRequest"/>
+            <wsdl:output name="sendEmailResponse" message="impl:sendEmailResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getEmail">
+            <wsdl:input name="getEmailRequest" message="impl:getEmailRequest"/>
+            <wsdl:output name="getEmailResponse" message="impl:getEmailResponse"/>
         </wsdl:operation>
     </portType>
     <wsdl:binding name="XincoWorkflowSoapBinding" type="impl:XincoWorkflow">
@@ -460,6 +491,14 @@
         <wsdl:operation name="setWorkflowInstanceProperty">
             <wsdl:input name="setWorkflowInstancePropertyRequest"/>
             <wsdl:output name="setWorkflowInstancePropertyResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="SendEmail">
+            <wsdl:input name="sendEmailRequest"/>
+            <wsdl:output name="sendEmailResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getEmail">
+            <wsdl:input name="getEmailRequest"/>
+            <wsdl:output name="getEmailResponse"/>
         </wsdl:operation>
     </wsdl:binding>
     <wsdl:service name="WorkflowService">

@@ -40,7 +40,6 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoSetting;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Vector;
 
 /**
@@ -93,16 +92,6 @@ public class XincoSettingServer extends XincoSetting{
     public XincoSettingServer(){
     }
     
-    public Vector getXinco_settings() {
-        if(xinco_settings==null)
-            try {
-                setXinco_settings(new XincoDBManager().getXincoSettingServer().getXinco_settings());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        return xinco_settings;
-    }
-    
     //write to db
     public int write2DB(XincoDBManager DBM) throws XincoException {
         try {
@@ -147,7 +136,19 @@ public class XincoSettingServer extends XincoSetting{
         return null;
     }
     
+    public Vector getXinco_settings() {
+        if (xinco_settings == null)
+            try {
+                setXinco_settings(new XincoDBManager().getXincoSettingServer().getXinco_settings());
+            }  catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        return xinco_settings;
+    }
+
+    
     public void setXinco_settings(Vector xinco_settings) {
         this.xinco_settings = xinco_settings;
     }
+
 }

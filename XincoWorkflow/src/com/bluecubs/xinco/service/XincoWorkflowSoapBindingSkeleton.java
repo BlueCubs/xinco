@@ -259,6 +259,30 @@ public class XincoWorkflowSoapBindingSkeleton implements com.bluecubs.xinco.serv
             _myOperations.put("setWorkflowInstanceProperty", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("setWorkflowInstanceProperty")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "email"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Email"), com.bluecubs.xinco.workflow.Email.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "from"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Resource"), com.bluecubs.xinco.workflow.Resource.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("sendEmail", _params, new javax.xml.namespace.QName("", "success"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        _oper.setElementQName(new javax.xml.namespace.QName("", "SendEmail"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("sendEmail") == null) {
+            _myOperations.put("sendEmail", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("sendEmail")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "id"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "user"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Resource"), com.bluecubs.xinco.workflow.Resource.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getEmail", _params, new javax.xml.namespace.QName("", "email"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Email"));
+        _oper.setElementQName(new javax.xml.namespace.QName("", "getEmail"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getEmail") == null) {
+            _myOperations.put("getEmail", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getEmail")).add(_oper);
     }
 
     public XincoWorkflowSoapBindingSkeleton() {
@@ -378,6 +402,18 @@ public class XincoWorkflowSoapBindingSkeleton implements com.bluecubs.xinco.serv
     public void setWorkflowInstanceProperty(com.bluecubs.xinco.workflow.holders.InstancePropertyHolder property, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException
     {
         impl.setWorkflowInstanceProperty(property, resource);
+    }
+
+    public boolean sendEmail(com.bluecubs.xinco.workflow.Email email, com.bluecubs.xinco.workflow.Resource from) throws java.rmi.RemoteException
+    {
+        boolean ret = impl.sendEmail(email, from);
+        return ret;
+    }
+
+    public com.bluecubs.xinco.workflow.Email getEmail(int id, com.bluecubs.xinco.workflow.Resource user) throws java.rmi.RemoteException
+    {
+        com.bluecubs.xinco.workflow.Email ret = impl.getEmail(id, user);
+        return ret;
     }
 
 }
