@@ -33,13 +33,14 @@
  */
 package com.bluecubs.xinco.core.server.email;
 
-import com.bluecubs.xinco.core.XincoEmail;
-import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.WorkflowDBManager;
+import com.bluecubs.xinco.general.DBManager;
+import com.bluecubs.xinco.workflow.Email;
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.util.*;
 
-public class XincoMailer extends XincoEmail{
+public class Mailer extends Email{
     private String host_name = "";
     private String User = "";
     private String Password  = "";
@@ -52,11 +53,11 @@ public class XincoMailer extends XincoEmail{
     // Add List of Email address to who email needs to be sent to
     private String[] emailList = {""};
     
-    public XincoMailer(XincoDBManager DBM){
-        setHostName(DBM.getSetting("general.setting.email.host").getString_value());
-        setUsername(DBM.getSetting("general.setting.email.user").getString_value());
-        setPassword(DBM.getSetting("general.setting.email.password").getString_value());
-        setPort(DBM.getSetting("general.setting.email.port").getString_value());
+    public Mailer(DBManager DBM){
+        setHostName(((WorkflowDBManager)DBM).getSetting("general.setting.email.host").getString_value());
+        setUsername(((WorkflowDBManager)DBM).getSetting("general.setting.email.user").getString_value());
+        setPassword(((WorkflowDBManager)DBM).getSetting("general.setting.email.password").getString_value());
+        setPort(((WorkflowDBManager)DBM).getSetting("general.setting.email.port").getString_value());
     }
     
     public void postMail( String recipients[ ], String subject,

@@ -36,6 +36,7 @@
 package com.bluecubs.xinco.workflow.server;
 
 import com.bluecubs.xinco.core.server.WorkflowDBManager;
+import com.bluecubs.xinco.general.DBManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -47,9 +48,9 @@ public class ActivityServer extends AbstractActivityServer{
     private int nodeID;
     private ResultSet rs;
     /** Creates a new instance of ActivityServer */
-    public ActivityServer(int id,WorkflowDBManager DBM) {
+    public ActivityServer(int id,DBManager DBM) {
         if(id>0){
-            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(((WorkflowDBManager)DBM).getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 System.out.println("Creating activity with id: "+id);
             try {
                 rs=DBM.getStatement().executeQuery("select * from activity where id="+id);
@@ -61,7 +62,7 @@ public class ActivityServer extends AbstractActivityServer{
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(((WorkflowDBManager)DBM).getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 System.out.println("Creating activity done!");
         }
     }

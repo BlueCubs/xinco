@@ -8,6 +8,8 @@
 package com.bluecubs.xinco.service;
 
 import com.bluecubs.xinco.core.server.WorkflowDBManager;
+import com.bluecubs.xinco.core.server.email.Mailer;
+import com.bluecubs.xinco.workflow.Email;
 import com.bluecubs.xinco.workflow.InstanceProperty;
 import com.bluecubs.xinco.workflow.Resource;
 import com.bluecubs.xinco.workflow.WorkflowSetting;
@@ -20,6 +22,7 @@ import com.bluecubs.xinco.workflow.server.PropertyServer;
 import com.bluecubs.xinco.workflow.server.ResourceServer;
 import java.rmi.RemoteException;
 import java.util.Vector;
+import javax.mail.MessagingException;
 
 public class XincoWorkflowSoapBindingImpl implements com.bluecubs.xinco.service.XincoWorkflow{
     private WorkflowDBManager DBM;
@@ -156,5 +159,28 @@ public class XincoWorkflowSoapBindingImpl implements com.bluecubs.xinco.service.
     }
 
     public void setWorkflowInstanceProperty(InstancePropertyHolder property, Resource resource) throws RemoteException {
+    }
+
+    public boolean sendEmail(Email email, Resource from) throws RemoteException {
+        Mailer mailer=null;
+        try {
+            mailer = new Mailer(new WorkflowDBManager());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        String [] rec=new String[email.getRecipients().size()];
+        for(int i=0;i<email.getRecipients().size();i++)
+            rec[i]=((Resource)email.getRecipients().get(i)).getEmail();
+        try {
+            mailer.postMail(rec,email.getSubject(),email.getMessage(),from.getEmail());
+        } catch (MessagingException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public Email getEmail(int id, Resource user) throws RemoteException {
+        return null;
     }
 }

@@ -1,13 +1,13 @@
 /**
- * XincoEmail.java
+ * Email.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
-package com.bluecubs.xinco.core;
+package com.bluecubs.xinco.workflow;
 
-public class XincoEmail  implements java.io.Serializable {
+public class Email  implements java.io.Serializable {
     private int id;
 
     private int from;
@@ -18,10 +18,10 @@ public class XincoEmail  implements java.io.Serializable {
 
     private java.util.Vector recipients;
 
-    public XincoEmail() {
+    public Email() {
     }
 
-    public XincoEmail(
+    public Email(
            int id,
            int from,
            java.lang.String subject,
@@ -36,7 +36,7 @@ public class XincoEmail  implements java.io.Serializable {
 
 
     /**
-     * Gets the id value for this XincoEmail.
+     * Gets the id value for this Email.
      * 
      * @return id
      */
@@ -46,7 +46,7 @@ public class XincoEmail  implements java.io.Serializable {
 
 
     /**
-     * Sets the id value for this XincoEmail.
+     * Sets the id value for this Email.
      * 
      * @param id
      */
@@ -56,7 +56,7 @@ public class XincoEmail  implements java.io.Serializable {
 
 
     /**
-     * Gets the from value for this XincoEmail.
+     * Gets the from value for this Email.
      * 
      * @return from
      */
@@ -66,7 +66,7 @@ public class XincoEmail  implements java.io.Serializable {
 
 
     /**
-     * Sets the from value for this XincoEmail.
+     * Sets the from value for this Email.
      * 
      * @param from
      */
@@ -76,7 +76,7 @@ public class XincoEmail  implements java.io.Serializable {
 
 
     /**
-     * Gets the subject value for this XincoEmail.
+     * Gets the subject value for this Email.
      * 
      * @return subject
      */
@@ -86,7 +86,7 @@ public class XincoEmail  implements java.io.Serializable {
 
 
     /**
-     * Sets the subject value for this XincoEmail.
+     * Sets the subject value for this Email.
      * 
      * @param subject
      */
@@ -96,7 +96,7 @@ public class XincoEmail  implements java.io.Serializable {
 
 
     /**
-     * Gets the message value for this XincoEmail.
+     * Gets the message value for this Email.
      * 
      * @return message
      */
@@ -106,7 +106,7 @@ public class XincoEmail  implements java.io.Serializable {
 
 
     /**
-     * Sets the message value for this XincoEmail.
+     * Sets the message value for this Email.
      * 
      * @param message
      */
@@ -116,7 +116,7 @@ public class XincoEmail  implements java.io.Serializable {
 
 
     /**
-     * Gets the recipients value for this XincoEmail.
+     * Gets the recipients value for this Email.
      * 
      * @return recipients
      */
@@ -126,7 +126,7 @@ public class XincoEmail  implements java.io.Serializable {
 
 
     /**
-     * Sets the recipients value for this XincoEmail.
+     * Sets the recipients value for this Email.
      * 
      * @param recipients
      */
@@ -136,8 +136,8 @@ public class XincoEmail  implements java.io.Serializable {
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof XincoEmail)) return false;
-        XincoEmail other = (XincoEmail) obj;
+        if (!(obj instanceof Email)) return false;
+        Email other = (Email) obj;
         if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
@@ -185,10 +185,10 @@ public class XincoEmail  implements java.io.Serializable {
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(XincoEmail.class, true);
+        new org.apache.axis.description.TypeDesc(Email.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoEmail"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://workflow.xinco.bluecubs.com", "Email"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("id");
         elemField.setXmlName(new javax.xml.namespace.QName("", "id"));
