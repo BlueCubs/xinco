@@ -57,7 +57,7 @@ public class XincoIndexer {
         IndexWriter writer = null;
         try {
             //check if document exists in index and delete
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 System.out.println("Removing data from index if it exists...");
             XincoIndexer.removeXincoCoreData(d, DBM);
             //add document to index
@@ -66,7 +66,7 @@ public class XincoIndexer {
             } catch (Exception ie) {
                 writer = new IndexWriter(DBM.config.getFileIndexPath(), new StandardAnalyzer(), true);
             }
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 System.out.println("Indexing...");
             Document temp =XincoDocument.getXincoDocument(d, index_content, DBM);
             List l = temp.getFields();
@@ -76,7 +76,7 @@ public class XincoIndexer {
             writer.addDocument(temp);
             writer.flush();
             writer.close();
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 System.out.println("Indexing complete!");
         } catch (Exception e) {
             if (writer != null) {
@@ -100,7 +100,7 @@ public class XincoIndexer {
                 reader.close();
             }
         } catch (Exception re) {
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 re.printStackTrace();
             if (reader != null) {
                 try {

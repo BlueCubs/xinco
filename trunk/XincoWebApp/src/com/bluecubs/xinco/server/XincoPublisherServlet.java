@@ -84,7 +84,7 @@ public class XincoPublisherServlet extends HttpServlet {
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
         String setting="";
         try {
-            setting = new XincoDBManager().getXincoSettingServer().getSetting("general.copyright.date").getString_value();
+            setting = new XincoDBManager().getSettingServer().getSetting("general.copyright.date").getString_value();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -40,6 +40,7 @@ import java.util.Vector;
 import java.sql.*;
 
 import com.bluecubs.xinco.core.*;
+import com.bluecubs.xinco.general.AuditTrail;
 
 public class XincoCoreACEServer extends XincoCoreACE {
     //create single ace object for data structures
@@ -146,7 +147,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 ow = 1;
             }
             
-            XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
+            AuditTrail audit= new AuditTrail();
             if (getId() > 0) {
                 Statement stmt = DBM.getConnection().createStatement();
                 sql="UPDATE xinco_core_ace SET xinco_core_user_id=" + xcuid +
@@ -154,7 +155,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                         ", xinco_core_data_id=" + xcdid + ", read_permission=" + rp +
                         ", write_permission=" + wp + ", execute_permission=" + xp +
                         ", admin_permission=" + ap +  " , owner=" + ow +" WHERE id=" + getId();
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 stmt.executeUpdate(sql);
                 stmt.close();
@@ -168,7 +169,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                         ", " + xcuid + ", " + xcgid + ", " + xcnid +
                         ", " + xcdid + ", " + rp + ", " + wp + ", " +
                         xp + ", " + ap + ", " + ow +")";
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 stmt.executeUpdate(sql);
                 stmt.close();
@@ -192,7 +193,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
     public static int removeFromDB(XincoCoreACE attrCACE, XincoDBManager DBM, int userID) throws XincoException {
         try {
             Statement stmt = DBM.getConnection().createStatement();
-            XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
+            AuditTrail audit= new AuditTrail();
             audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+attrCACE.getId()},
                     DBM,"audit.general.delete",userID);
             stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE id=" + attrCACE.getId());

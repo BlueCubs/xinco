@@ -416,6 +416,18 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
             _myOperations.put("indexFiles", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("indexFiles")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "key"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "user"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"), com.bluecubs.xinco.core.XincoCoreUser.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("localizeString", _params, new javax.xml.namespace.QName("", "text"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        _oper.setElementQName(new javax.xml.namespace.QName("", "localizeString"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("localizeString") == null) {
+            _myOperations.put("localizeString", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("localizeString")).add(_oper);
     }
 
     public XincoSoapBindingSkeleton() {
@@ -601,6 +613,12 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
     public boolean indexFiles(java.util.Vector in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException
     {
         boolean ret = impl.indexFiles(in0, in1);
+        return ret;
+    }
+
+    public java.lang.String localizeString(java.lang.String key, com.bluecubs.xinco.core.XincoCoreUser user) throws java.rmi.RemoteException
+    {
+        java.lang.String ret = impl.localizeString(key, user);
         return ret;
     }
 

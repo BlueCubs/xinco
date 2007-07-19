@@ -37,6 +37,7 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.general.DBManager;
+import com.bluecubs.xinco.general.SettingServer;
 import java.sql.*;
 import javax.sql.DataSource;
 import javax.naming.InitialContext;
@@ -50,14 +51,6 @@ import java.util.Vector;
 
 public class XincoDBManager extends DBManager {
     
-    private Connection con=null;
-    public XincoConfigSingletonServer config;
-    private int EmailLink=1,DataLink=2;
-    private ResourceBundle lrb = null;
-    private Locale loc=null;
-    private XincoSettingServer xss=null;
-    private DataSource datasource=null;
-    
     public XincoDBManager() throws Exception {
         setResourceBundle(ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages"));
         //load connection configuartion
@@ -67,13 +60,13 @@ public class XincoDBManager extends DBManager {
         getConnection().setAutoCommit(false);
         //load configuration from database
         fillSettings();
-        config.init(getXincoSettingServer());
+        config.init(getSettingServer());
         count++;
     }
     
     protected void fillSettings(){
         ResultSet rs=null;
-        getXincoSettingServer().setXinco_settings(new Vector());
+        getSettingServer().setSettings(new Vector());
         String string_value="";
         try {
             Statement stm=getConnection().createStatement();
@@ -83,7 +76,7 @@ public class XincoDBManager extends DBManager {
                     string_value="";
                 else
                     string_value=rs.getString("string_value");
-                getXincoSettingServer().getXinco_settings().addElement(new XincoSetting(rs.getInt("id"),
+                getSettingServer().getSettings().addElement(new XincoSetting(rs.getInt("id"),
                         rs.getString("description"),rs.getInt("int_value"),string_value,
                         rs.getBoolean("bool_value"),0,rs.getLong("long_value"),null));
             }
@@ -146,19 +139,19 @@ public class XincoDBManager extends DBManager {
                             number = -1;
                         condition = column +" > "+number;
                         sql="delete from "+rs.getString("TABLE_NAME")+" where "+condition;
-                        if(getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                        if(getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                             System.out.println(sql);
                         s.executeUpdate(sql);
                     }
                     if(rs.getString("TABLE_NAME").equals("xinco_id")){
                         condition=" where last_id > 1000";
                         sql="update "+rs.getString("TABLE_NAME")+" set last_id=1000"+condition;
-                        if(getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                        if(getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                             System.out.println(sql);
                         s.executeUpdate(sql);
                         condition=" where last_id < 1000";
                         sql="update "+rs.getString("TABLE_NAME")+" set last_id=0"+condition;
-                        if(getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                        if(getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                             System.out.println(sql);
                         s.executeUpdate(sql);
                     }
@@ -184,14 +177,14 @@ public class XincoDBManager extends DBManager {
             throw new XincoException(getResourceBundle().getString("error.noadminpermission"));
     }
     
-    public XincoSettingServer getXincoSettingServer() {
-        if(xss==null)
-            xss=new XincoSettingServer();
-        return xss;
+    public SettingServer getSettingServer() {
+        if(ss==null)
+            ss=new XincoSettingServer();
+        return ss;
     }
     
-    public XincoSetting getSetting(String name){
-        return getXincoSettingServer().getSetting(name);
+    public SettingServer getSetting(String name){
+        return getSettingServer().getSetting(name);
     }
 
 }

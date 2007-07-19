@@ -2616,7 +2616,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 ex.printStackTrace();
         }
         settings= new XincoClientSetting();
-        settings.setXinco_settings(settingsVector);
+        settings.setSettings(settingsVector);
     }
     
     public int getActionSize() {

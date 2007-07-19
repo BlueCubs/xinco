@@ -42,11 +42,15 @@ import java.util.Vector;
 
 public class Notify extends ActivityServer{
     private Mailer mailer;
+    private boolean foundEmail=false,foundMessage=false, readyToSend=false;
     /** Creates a new instance of Notify */
     public Notify(int id,DBManager DBM) {
         super(id,DBM);
         mailer = new Mailer(DBM);
-        Vector properties= new Vector();
+        Vector properties= getProperties();
+        for(int i=0;i<properties.size();i++){
+            
+        }
     }
     
 }

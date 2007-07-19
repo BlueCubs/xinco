@@ -40,9 +40,10 @@ import java.util.Vector;
 import java.sql.*;
 
 import com.bluecubs.xinco.core.*;
+import com.bluecubs.xinco.general.AuditTrail;
 
 public class XincoCoreGroupServer extends XincoCoreGroup {
-    private XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
+    private AuditTrail audit= new AuditTrail();
     //create group object for data structures
     public XincoCoreGroupServer(int attrID, XincoDBManager DBM) throws XincoException {
         try {

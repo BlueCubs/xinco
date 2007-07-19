@@ -35,7 +35,7 @@
     }
     ResourceBundle rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
     XincoSettingServer xss= new XincoSettingServer();
-    String setting = ((XincoSetting)(xss.getXinco_settings().elementAt(6))).getString_value();
+    String setting = ((XincoSetting)(xss.getSettings().elementAt(6))).getString_value();
     out.println("<span class='bigtext'>"+rb.getString("password.aged")+"</span><br/><br/>");
     out.print(rb.getString("password.change.warning").replaceAll("%n",setting));%>
     </span><br/><br/>

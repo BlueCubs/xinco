@@ -42,6 +42,7 @@ package com.bluecubs.xinco.client.dialogs;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataType;
+import java.rmi.RemoteException;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon; 
 
@@ -73,8 +74,13 @@ public class DataTypeDialog extends javax.swing.JDialog {
             DefaultListModel dlm = new DefaultListModel();
             dlm.removeAllElements();
             for (i=0;i<explorer.getSession().server_datatypes.size();i++) {
-                text = ((XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(i)).getDesignation() + " (" + ((XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(i)).getDescription() + ")";
-                dlm.addElement(text);
+                try {
+                    text = explorer.getSession().xinco.localizeString(((XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(i)).getDesignation(),explorer.getSession().user) +
+                            " (" + explorer.getSession().xinco.localizeString(((XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(i)).getDescription(),explorer.getSession().user) + ")";
+                    dlm.addElement(text);
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
                 if (((XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(i)).getId() == ((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getId()) {
                     this.dataType.setSelectedIndex(i);
                 }

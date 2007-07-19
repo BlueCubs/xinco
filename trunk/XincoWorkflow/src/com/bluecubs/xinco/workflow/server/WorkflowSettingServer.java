@@ -37,16 +37,17 @@ package com.bluecubs.xinco.workflow.server;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.WorkflowDBManager;
-import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.general.DBManager;
+import com.bluecubs.xinco.general.SettingServer;
 import com.bluecubs.xinco.workflow.WorkflowSetting;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
-public class WorkflowSettingServer extends WorkflowSetting{
+public class WorkflowSettingServer  extends SettingServer{
     private Vector workflow_settings=null;
     /** Creates a new instance of WorkflowSettingServer */
-    public WorkflowSettingServer() {
+    public WorkflowSettingServer(){
     }
     
     public WorkflowSettingServer(int id,WorkflowDBManager DBM)throws XincoException{
@@ -68,7 +69,7 @@ public class WorkflowSettingServer extends WorkflowSetting{
         if(workflow_settings==null)
             try {
                 setWorkflow_settings(new WorkflowDBManager().getWorkflowSettingServer().getWorkflow_settings());
-                super.setWorkflow_settings(workflow_settings);
+                super.setSettings(workflow_settings);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -79,15 +80,19 @@ public class WorkflowSettingServer extends WorkflowSetting{
         return (WorkflowSetting)getWorkflow_settings().get(i);
     }
     
-    public WorkflowSetting getSetting(String s){
-        for(int i=0;i<getWorkflow_settings().size();i++){
-            if(((WorkflowSetting)getWorkflow_settings().get(i)).getDescription().equals(s))
-                return (WorkflowSetting)getWorkflow_settings().get(i);
+    public SettingServer getSetting(String s){
+        for(int i=0;i<getSettings().size();i++){
+            if(((WorkflowSetting)getSettings().get(i)).getDescription().equals(s))
+                return (SettingServer)getSettings().get(i);
         }
         return null;
     }
 
     public void setWorkflow_settings(Vector workflow_settings) {
         this.workflow_settings = workflow_settings;
+    }
+
+    public int write2DB(DBManager DBM) throws XincoException {
+        return 0;
     }
 }
