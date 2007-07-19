@@ -185,7 +185,7 @@ public class XincoAdminServlet extends HttpServlet {
                             request.getParameter("DialogLoginUsername") + "'");
                     if(rs.next()){
                         temp_user = new XincoCoreUserServer(rs.getInt("id"), DBM);
-                        long attempts = DBM.getXincoSettingServer().getSetting("password.attempts").getInt_value();
+                        long attempts = DBM.getSettingServer().getSetting("password.attempts").getInt_value();
                         //If user exists increase the atempt tries in the db. If limit reached lock account
                         if(temp_user.getAttempts()>=attempts &&  rs.getInt("id") != 1){
                             //The logged in admin does the locking
@@ -339,7 +339,7 @@ public class XincoAdminServlet extends HttpServlet {
             current_location_desc = rb.getString("message.location.desc.specificgroupadmin");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
-        if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+        if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
             out.println("Current location: "+current_location);
             out.println("Current location desc: "+current_location_desc);
         }
@@ -739,7 +739,7 @@ public class XincoAdminServlet extends HttpServlet {
             out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuAudit=AuditMenu&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("general.audit.menu")+"</a></td>");
             out.println("<td></td><td class=\"text\">|</td>");
             //For now developer's only function. Too dangerous to use at the moment. Maybe add confirmation screens before executing if found as an usefull tool.
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+            if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
                 out.println("<td class=\"text\"><a href=\"XincoAdmin?MenuMainResetDB=Reset&list="+request.getParameter("list")+"\" class=\"link\"  icon=\"xinco\">"+rb.getString("message.admin.main.resetDB.label")+"</a></td>");
                 out.println("<td></td><td class=\"text\">|</td>");
             }
@@ -784,7 +784,7 @@ public class XincoAdminServlet extends HttpServlet {
                 out.println("<td class=\"text\">"+rb.getString("message.admin.index.message")+"</td>");
                 out.println("</tr>");
                 out.println("<tr>");
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
                     out.println("<td class=\"bigtext\">"+rb.getString("message.admin.main.resetDB.label")+"</td>");
                     out.println("<td class=\"text\">"+rb.getString("message.admin.main.resetdesc")+"</td>");
                     out.println("</tr>");
@@ -1540,7 +1540,7 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; "+DBM.getXincoSettingServer().getSetting("general.copyright.date").getString_value()+", "+rb.getString("message.admin.main.footer"));
+        out.println("<td class=\"text\">&copy; "+DBM.getSettingServer().getSetting("general.copyright.date").getString_value()+", "+rb.getString("message.admin.main.footer"));
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                 rb.getString("message.admin.main.backtomain")+"' />" +

@@ -80,15 +80,19 @@ public class NodeServer extends Node{
     private void loadActivities(WorkflowDBManager DBM){
         Vector values = new Vector();
         try {
-            rs=DBM.getStatement().executeQuery("select activity_id from node_has_activity where node_id="+getId());
+            rs=DBM.getStatement().executeQuery("select * from node_has_activity where node_id="+getId());
             values.removeAllElements();
             while(rs.next()){
-                values.addElement(new ActivityServer(rs.getInt("activity_id"),DBM));
+                try {
+                    values.addElement(new ActivityServer(rs.getInt("activity_id"),DBM));
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
             setActivities(values);
         } catch (SQLException ex) {
             if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-            ex.printStackTrace();
+                ex.printStackTrace();
         }
     }
     
@@ -103,7 +107,7 @@ public class NodeServer extends Node{
             setProperties(values);
         } catch (SQLException ex) {
             if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-            ex.printStackTrace();
+                ex.printStackTrace();
         }
     }
     
@@ -123,7 +127,7 @@ public class NodeServer extends Node{
             setInstanceReady(true);
         } catch (SQLException ex) {
             if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-            ex.printStackTrace();
+                ex.printStackTrace();
         }
         return this;
     }
@@ -184,9 +188,9 @@ public class NodeServer extends Node{
     private void instanceWrite2DB(WorkflowDBManager DBM){
         if(isInstanceReady()){
             String sql="update Workflow_Instance_has_Node set completed="+(isCompleted() ? 1:0)+
-                ",  isStartNode="+(isStartNode() ? 1:0)+", isEndNode="+(isEndNode() ? 1:0)+" where id="+
-                getInstance_id()+" and Node_id="+getId()+" and workflow_template_id="+
-                getInstance_template_id();
+                    ",  isStartNode="+(isStartNode() ? 1:0)+", isEndNode="+(isEndNode() ? 1:0)+" where id="+
+                    getInstance_id()+" and Node_id="+getId()+" and workflow_template_id="+
+                    getInstance_template_id();
             try {
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println(sql);
@@ -198,7 +202,7 @@ public class NodeServer extends Node{
             }
         }else{
             if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-                    System.out.println("Not instance ready...");
+                System.out.println("Not instance ready...");
         }
     }
     
@@ -224,11 +228,11 @@ public class NodeServer extends Node{
     public void setInstance_template_id(int instance_template_id) {
         this.instance_template_id = instance_template_id;
     }
-
+    
     public int getInstance_id() {
         return instance_id;
     }
-
+    
     public void setInstance_id(int instance_id) {
         this.instance_id = instance_id;
     }

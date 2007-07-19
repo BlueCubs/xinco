@@ -10,7 +10,7 @@
 package com.bluecubs.xinco.general;
 
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
-import com.bluecubs.xinco.core.XincoSetting;
+import com.bluecubs.xinco.general.SettingServer;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -35,7 +35,7 @@ public abstract class DBManager {
     private int EmailLink=1,DataLink=2;
     private ResourceBundle lrb = null;
     private Locale loc=null;
-    private XincoSettingServer xss=null;
+    protected SettingServer ss=null;
     private DataSource datasource=null;
     /**
      * Creates a new instance of DBManager
@@ -55,7 +55,7 @@ public abstract class DBManager {
             out.println(header+"</td></tr><tr>");
             while (rs.next()){
                 for (int i = 1; i<=size; i++) {
-                    String value = canReplace(rs.getString(i));
+                    String value = localizeString(rs.getString(i));
                     if(rs.getMetaData().getColumnName(i).contains("password"))
                         value = "******************************";
                     if(i==size && details) {
@@ -97,7 +97,7 @@ public abstract class DBManager {
      *Replace a string with contents of resource bundle is applicable
      *Used to transform db contents to human readable form.
      */
-    protected String canReplace(String s){
+    public String localizeString(String s){
         if(s==null)
             return null;
         try{
@@ -109,7 +109,7 @@ public abstract class DBManager {
     }
     
     
-    public void finalize() throws Throwable {
+    protected void finalize() throws Throwable {
         try {
             count--;
             getConnection().close();
@@ -241,7 +241,7 @@ public abstract class DBManager {
     
     
     public void setLocale(Locale loc) {
-        this.loc = loc;
+        this.setLoc(loc);
         if (loc==null)
             loc = Locale.getDefault();
         else
@@ -277,5 +277,18 @@ public abstract class DBManager {
             set.absolute(currentRow);               // Restore it
         return rowCount;
     }
+
+    public abstract SettingServer getSettingServer();
     
+    public abstract SettingServer getSetting(String name);
+
+    public Locale getLocale() {
+        if(loc==null)
+            loc=Locale.getDefault();
+        return loc;
+    }
+
+    public void setLoc(Locale loc) {
+        this.loc = loc;
+    }
 }

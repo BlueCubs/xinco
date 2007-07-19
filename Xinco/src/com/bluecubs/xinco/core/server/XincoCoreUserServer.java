@@ -45,6 +45,7 @@ import java.sql.*;
 import java.util.Vector;
 
 import com.bluecubs.xinco.core.*;
+import com.bluecubs.xinco.general.AuditTrail;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
@@ -64,7 +65,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
     private XincoSettingServer settings=null;
     private java.sql.Timestamp lastModified;
     private int attempts;
-    private XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
+    private AuditTrail audit= new AuditTrail();
     private ResultSet rs=null;
     
     private void fillXincoCoreGroups(XincoDBManager DBM) throws XincoException {
@@ -75,15 +76,13 @@ public class XincoCoreUserServer extends XincoCoreUser {
             if(getSettings().getSetting("general.setting.enable.lockidle").isBool_value())
                 System.out.println(sql);
             ResultSet rs = stmt.executeQuery(sql);
-//            if(!rs.isClosed()){
             while (rs.next()) {
                 getXinco_core_groups().addElement(new XincoCoreGroupServer(rs.getInt("xinco_core_group_id"), DBM));
             }
-//            }
             stmt.close();
         } catch (Exception e) {
             getXinco_core_groups().removeAllElements();
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 e.printStackTrace();
             throw new XincoException();
         }
@@ -160,7 +159,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
             stmt = DBM.getConnection().createStatement();
             String sql="SELECT * FROM xinco_core_user WHERE username='" +
                     attrUN + "' AND userpassword=MD5('" + attrUPW + "') AND status_number <> 2";
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 System.out.println(sql);
             rs = stmt.executeQuery(sql);
             //throw exception if no result found
@@ -197,7 +196,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
             if (RowCount < 1) {
                 sql="SELECT * FROM xinco_core_user WHERE username='" +
                         attrUN + "'";
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 rs = stmt.executeQuery(sql);
                 //The username is valid but wrong password. Increase the login attempts.
@@ -223,7 +222,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 String sql="SELECT * FROM xinco_core_user WHERE username='" +
                         attrUN + "' AND status_number <> 2";
                 stmt = DBM.getConnection().createStatement();
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 rs = stmt.executeQuery(sql);
                 //increase number of attempts

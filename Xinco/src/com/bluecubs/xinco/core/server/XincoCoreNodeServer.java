@@ -40,10 +40,11 @@ import java.sql.*;
 import java.util.Vector;
 
 import com.bluecubs.xinco.core.*;
+import com.bluecubs.xinco.general.AuditTrail;
 import com.bluecubs.xinco.index.*;
 
 public class XincoCoreNodeServer extends XincoCoreNode {
-    
+    private static AuditTrail audit;
     //create node object for data structures
     public XincoCoreNodeServer(int attrID, XincoDBManager DBM) throws XincoException {
         
@@ -121,7 +122,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 } else {
                     xcnid = "" + getXinco_core_node_id();
                 }
-                XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
+                audit= new AuditTrail();
                 audit.updateAuditTrail("xinco_core_node",new String [] {"id ="+getId()},
                         DBM,"audit.corenode.change",this.getChangerID());
                 stmt.executeUpdate("UPDATE xinco_core_node SET xinco_core_node_id=" + xcnid + ", xinco_core_language_id=" + getXinco_core_language().getId() + ", designation='" + getDesignation().replaceAll("'","\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
@@ -177,7 +178,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 ((XincoCoreDataServer)getXinco_core_data().elementAt(i)).deleteFromDB(DBM);
             }
             if (delete_this) {
-                XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
+                audit= new AuditTrail();
                 /*
                  * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
                 audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+getId()},

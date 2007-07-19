@@ -37,6 +37,7 @@ package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.conf.WorkflowConfigSingletonServer;
 import com.bluecubs.xinco.general.DBManager;
+import com.bluecubs.xinco.general.SettingServer;
 import com.bluecubs.xinco.workflow.WorkflowSetting;
 import com.bluecubs.xinco.workflow.server.WorkflowSettingServer;
 import java.sql.Connection;
@@ -44,12 +45,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Locale;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
-import org.apache.commons.dbcp.BasicDataSource;
 
 public class WorkflowDBManager extends DBManager{
     public WorkflowConfigSingletonServer config;
@@ -107,7 +106,11 @@ public class WorkflowDBManager extends DBManager{
         return wss;
     }
     
-    public WorkflowSetting getSetting(String name){
-        return getWorkflowSettingServer().getSetting(name);
+    public SettingServer getSetting(String name){
+        return getSettingServer().getSetting(name);
+    }
+
+    public SettingServer getSettingServer() {
+        return wss;
     }
 }

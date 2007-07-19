@@ -1,13 +1,13 @@
 /*
- * XincoCoreAuditTrail.java
+ * AuditTrail.java
  *
- * Created on November 28, 2006, 9:40 AM
+ * Created on July 19, 2007, 9:11 AM
  *
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
 
-package com.bluecubs.xinco.core.server;
+package com.bluecubs.xinco.general;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,27 +16,27 @@ import java.sql.Timestamp;
 
 /**
  *
- * @author ortizbj
+ * @author Javier A. Ortiz Bultrón
  */
-public class XincoCoreAuditTrail {
-    /**
-     * Creates a new instance of XincoCoreAuditTrail
-     */
-    public XincoCoreAuditTrail() {
-    }
+public class AuditTrail {
     
-    public void updateAuditTrail(String table,String [] keys, XincoDBManager DBM,String reason,int id){
+    /** Creates a new instance of AuditTrail */
+    public AuditTrail() {
+    }
+
+    
+    public void updateAuditTrail(String table, String[] keys, DBManager DBM, String reason, int id){
         try {
             //"Copy and Paste" the original record in the audit tables
-            String where="";
-            for(int i=0;i<keys.length;i++){
+            String where = "";
+            for (int i = 0; i<keys.length; i++){
                 where+=keys[i];
                 if(i<keys.length-1)
                     where+=" and ";
             }
             Statement stmt = DBM.getConnection().createStatement();
-            int record_ID=0;
-            String sql="select * from "+table+" where "+where;
+            int record_ID = 0;
+            String sql = "select * from "+table+" where "+where;
             ResultSet rs = stmt.executeQuery(sql);
             try {
                 record_ID=DBM.getNewID("xinco_core_user_modified_record");
@@ -44,8 +44,8 @@ public class XincoCoreAuditTrail {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            if(rs.next()) {
-                for(int i=1;i<=rs.getMetaData().getColumnCount();i++){
+            if (rs.next()) {
+                for (int i = 1; i<=rs.getMetaData().getColumnCount(); i++){
                     if(rs.getString(i)==null)
                         sql+=rs.getString(i);
                     else
@@ -55,18 +55,17 @@ public class XincoCoreAuditTrail {
                     else
                         sql+=")";
                 }
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if (DBM.getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 stmt.executeUpdate(sql);
-                sql="insert into xinco_core_user_modified_record (id, record_id, mod_Time, " +
-                        "mod_Reason) values ("+id+", "+record_ID+", '"+
-                        new Timestamp(System.currentTimeMillis())+"', '"+reason+"')";
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                sql = "insert into xinco_core_user_modified_record (id, record_id, mod_Time, " +
+                        "mod_Reason) values ("+id+", "+record_ID+", '" + new Timestamp(System.currentTimeMillis()) + "', '" + reason + "')";
+                if (DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 stmt.executeUpdate(sql);
             }
             DBM.getConnection().commit();
-        } catch (SQLException ex) {
+        }  catch (SQLException ex) {
             ex.printStackTrace();
             try {
                 DBM.getConnection().rollback();
@@ -76,4 +75,5 @@ public class XincoCoreAuditTrail {
             return;
         }
     }
+    
 }

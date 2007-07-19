@@ -55,10 +55,10 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         }
         //return current version of server
         XincoVersion version = new XincoVersion();
-        version.setVersion_high(DBM.getXincoSettingServer().getSetting("version.high").getInt_value());
-        version.setVersion_mid(DBM.getXincoSettingServer().getSetting("version.med").getInt_value());
-        version.setVersion_low(DBM.getXincoSettingServer().getSetting("version.low").getInt_value());
-        version.setVersion_postfix(DBM.getXincoSettingServer().getSetting("version.postfix").getString_value());
+        version.setVersion_high(DBM.getSettingServer().getSetting("version.high").getInt_value());
+        version.setVersion_mid(DBM.getSettingServer().getSetting("version.med").getInt_value());
+        version.setVersion_low(DBM.getSettingServer().getSetting("version.low").getInt_value());
+        version.setVersion_postfix(DBM.getSettingServer().getSetting("version.postfix").getString_value());
         return version;
     }
     
@@ -737,7 +737,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     
     public java.util.Vector getXincoSetting(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException {
         XincoSettingServer setting=new XincoSettingServer();
-        return setting.getXinco_settings();
+        return setting.getSettings();
     }
     public com.bluecubs.xinco.core.XincoSetting setXincoSetting(com.bluecubs.xinco.core.XincoSetting in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
         //Dummy
@@ -764,11 +764,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                     in0.value.getAttrib_datetime());
             xaas.setChangerID(in0.value.getChangerID());
             xaas.write2DB(dbm);
-            try {
-                dbm.finalize();
-            } catch (Throwable ex) {
-                ex.printStackTrace();
-            }
         } catch (XincoException ex) {
             ex.printStackTrace();
         } catch (Exception ex) {
@@ -778,6 +773,16 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     
     public Vector getWorkflowAttributes(int workflow_id, XincoCoreUser user) throws RemoteException {
         return null;
+    }
+    
+    public String localizeString(String key, XincoCoreUser user) throws RemoteException {
+        XincoDBManager DBM=null;
+        try {
+            DBM = new XincoDBManager();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return DBM.localizeString(key);
     }
     
 }

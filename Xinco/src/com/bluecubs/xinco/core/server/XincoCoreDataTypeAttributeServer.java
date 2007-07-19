@@ -40,6 +40,7 @@ import java.util.Vector;
 import java.sql.*;
 
 import com.bluecubs.xinco.core.*;
+import com.bluecubs.xinco.general.AuditTrail;
 
 public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute {
     private static int changer=0;
@@ -128,7 +129,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             Statement stmt = null;
             
             stmt = DBM.getConnection().createStatement();
-            XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
+            AuditTrail audit= new AuditTrail();
             /*
              * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
             audit.updateAuditTrail("xinco_add_attribute",new String [] {"xinco_add_attribute.attribute_id=" + attrCDTA.getAttribute_id(),
