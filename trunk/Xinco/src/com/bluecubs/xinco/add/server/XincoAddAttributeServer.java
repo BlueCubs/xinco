@@ -44,10 +44,8 @@ import java.sql.*;
 
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.server.*;
-import com.bluecubs.xinco.general.AuditTrail;
 
 public class XincoAddAttributeServer extends XincoAddAttribute {
-    private static AuditTrail audit;
     //create add attribute object for data structures
     public XincoAddAttributeServer(){
         
@@ -99,7 +97,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
     public int write2DB(XincoDBManager DBM) throws XincoException {
         
         try {
-            audit= new AuditTrail();
+            XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
             Statement stmt;
             String attrT = "";
             String attrVC = "";
@@ -162,7 +160,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                         ", " + getAttribute_id() + ", " + getAttrib_int() + ", " +
                         getAttrib_unsignedint() + ", " + getAttrib_double() + ", '" +
                         attrVC + "', '" + attrT + "', '" + attrDT + "')";
-                if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 stmt.executeUpdate(sql);
                 audit.updateAuditTrail("xinco_add_attribute",new String [] {"attribute_id ="+getAttribute_id(),
@@ -208,7 +206,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
     
     public static int deleteFromDB(int xinco_core_data_id, int attribute_id, XincoDBManager DBM, int userID) throws XincoException {
         Statement stmt = null;
-        audit= new AuditTrail();
+        XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
         try {
             stmt = DBM.getConnection().createStatement();
             stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_add_attribute.attribute_id=" +

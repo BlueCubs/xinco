@@ -10,7 +10,7 @@ com.bluecubs.xinco.client.*"
 <%@page import="com.bluecubs.xinco.service.*"%>
 <%
 XincoSettingServer xss= new XincoSettingServer();
-String setting = ((XincoSetting)(xss.getSettings().elementAt(7))).getString_value();
+String setting = ((XincoSetting)(xss.getXinco_settings().elementAt(7))).getString_value();
 Locale loc = null;
 try {
     String list = request.getParameter("list");

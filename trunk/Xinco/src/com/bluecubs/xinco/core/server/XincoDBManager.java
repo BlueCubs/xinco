@@ -36,8 +36,6 @@
 
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.general.DBManager;
-import com.bluecubs.xinco.general.SettingServer;
 import java.sql.*;
 import javax.sql.DataSource;
 import javax.naming.InitialContext;
@@ -45,28 +43,40 @@ import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoSetting;
+import java.io.PrintWriter;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
 import java.util.Vector;
+import org.apache.commons.dbcp.BasicDataSource;
 
-public class XincoDBManager extends DBManager {
+public class XincoDBManager{
+    
+    private Connection con=null;
+    public XincoConfigSingletonServer config;
+    private int EmailLink=1,DataLink=2;
+    private ResourceBundle lrb = null;
+    private Locale loc=null;
+    private XincoSettingServer xss=null;
+    private DataSource datasource=null;
+    public static int count=0;
     
     public XincoDBManager() throws Exception {
         setResourceBundle(ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages"));
         //load connection configuartion
         config = XincoConfigSingletonServer.getInstance();
-        while((DataSource)(new InitialContext()).lookup(config.getJNDIDB())==null);
         setDatasource((DataSource)(new InitialContext()).lookup(config.getJNDIDB()));
         getConnection().setAutoCommit(false);
         //load configuration from database
         fillSettings();
-        config.init(getSettingServer());
+        config.init(getXincoSettingServer());
         count++;
     }
     
     protected void fillSettings(){
         ResultSet rs=null;
-        getSettingServer().setSettings(new Vector());
+        getXincoSettingServer().setXinco_settings(new Vector());
         String string_value="";
         try {
             Statement stm=getConnection().createStatement();
@@ -76,7 +86,7 @@ public class XincoDBManager extends DBManager {
                     string_value="";
                 else
                     string_value=rs.getString("string_value");
-                getSettingServer().getSettings().addElement(new XincoSetting(rs.getInt("id"),
+                getXincoSettingServer().getXinco_settings().addElement(new XincoSetting(rs.getInt("id"),
                         rs.getString("description"),rs.getInt("int_value"),string_value,
                         rs.getBoolean("bool_value"),0,rs.getLong("long_value"),null));
             }
@@ -84,7 +94,7 @@ public class XincoDBManager extends DBManager {
         } catch (SQLException ex) {
             ex.printStackTrace();
             printStats();
-        }
+        } 
     }
     
     /*
@@ -119,8 +129,7 @@ public class XincoDBManager extends DBManager {
                         if(rs.getString("TABLE_NAME").endsWith("_t")){
                             column="record_id";
                             number=0;
-                        }
-                        else
+                        } else
                             number=1000;
                         if(rs.getString("TABLE_NAME").equals("xinco_add_attribute"))
                             column="xinco_core_data_id";
@@ -139,19 +148,19 @@ public class XincoDBManager extends DBManager {
                             number = -1;
                         condition = column +" > "+number;
                         sql="delete from "+rs.getString("TABLE_NAME")+" where "+condition;
-                        if(getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                        if(getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                             System.out.println(sql);
                         s.executeUpdate(sql);
                     }
                     if(rs.getString("TABLE_NAME").equals("xinco_id")){
                         condition=" where last_id > 1000";
                         sql="update "+rs.getString("TABLE_NAME")+" set last_id=1000"+condition;
-                        if(getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                        if(getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                             System.out.println(sql);
                         s.executeUpdate(sql);
                         condition=" where last_id < 1000";
                         sql="update "+rs.getString("TABLE_NAME")+" set last_id=0"+condition;
-                        if(getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                        if(getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                             System.out.println(sql);
                         s.executeUpdate(sql);
                     }
@@ -177,14 +186,253 @@ public class XincoDBManager extends DBManager {
             throw new XincoException(getResourceBundle().getString("error.noadminpermission"));
     }
     
-    public SettingServer getSettingServer() {
-        if(ss==null)
-            ss=new XincoSettingServer();
-        return ss;
+    public XincoSettingServer getXincoSettingServer() {
+        if(xss==null)
+            xss=new XincoSettingServer();
+        return xss;
     }
     
-    public SettingServer getSetting(String name){
-        return getSettingServer().getSetting(name);
+    public XincoSetting getSetting(String name){
+        return getXincoSettingServer().getSetting(name);
+    }
+    
+    /**Draws a table with results of the query stored in the ResultSet rs in the PrintWriter out*/
+    public void drawTable(ResultSet rs, PrintWriter out, String header, String title, int columnAsLink, boolean details, int linkType) {
+        try{
+            int size = rs.getMetaData().getColumnCount();
+            out.println(title);
+            out.println("<center><table border =1 ><tr>");
+            out.println(header+"</td></tr><tr>");
+            while (rs.next()){
+                for (int i = 1; i<=size; i++) {
+                    String value = localizeString(rs.getString(i));
+                    if(rs.getMetaData().getColumnName(i).contains("password"))
+                        value = "******************************";
+                    if(i==size && details) {
+                        out.println("<td><form action='Detail.jsp' method='post'><input type='submit' value='Get Details' onclick='Detail.jsp'><input type='hidden' name = 'key' value='"+
+                                value+"'><input type='hidden' name='Page' value='ProcessData.jsp'></form></td>");
+                    } else {
+                        if(i==columnAsLink && linkType==this.EmailLink){
+                            if(value==null)
+                                out.println("<td>No email address available</td>");
+                            else
+                                out.println("<td><a href= mailto:"+value+">Email this person</a></td>");
+                        }
+                        if(i==columnAsLink && linkType==this.DataLink){
+                            if(value==null)
+                                out.println("<td>No code available</td>");
+                            else
+                                out.println("<td>"+value+"</td><td><form action='Detail.jsp' method='post'><input type='submit' value='Get Details' onclick='Detail.jsp'><input type='hidden' name = 'key' value='"+
+                                        value+"'><input type='hidden' name='Page' value='Codes.jsp'></form></td>");
+                        } else {
+                            if(value==null)
+                                out.println("<td>"+getResourceBundle().getString("general.nodata")+"</td>");
+                            else
+                                out.println("<td>"+value+"</td>");
+                        }
+                    }
+                }
+                out.println("</tr><tr>");
+            }
+            out.println("</tr></table></center>");
+        }  catch (Exception e) {
+            out.println(getResourceBundle().getString("general.nodata"));
+            System.out.println("Exception drawing table: " + e.getMessage());
+        }
+    }
+    
+    /*
+     *Replace a string with contents of resource bundle is applicable
+     *Used to transform db contents to human readable form.
+     */
+    public String localizeString(String s){
+        if(s==null)
+            return null;
+        try{
+            getResourceBundle().getString(s);
+        }catch (MissingResourceException e){
+            return s;
+        }
+        return getResourceBundle().getString(s);
+    }
+    
+    
+    protected void finalize() throws Throwable {
+        try {
+            count--;
+            getConnection().close();
+        } finally {
+            if (!getConnection().isClosed()) {
+                count++;
+            }
+            super.finalize();
+        }
+    }
+    
+    
+    /** Returns the column names of the query in an HTML table format for use
+     * as header for a table produced by the drawTable method.*/
+    public String getColumnNames(ResultSet rs) {
+        String header = "";
+        try{
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int numColumns = rsmd.getColumnCount();
+            // Get the column names; column indices start from 1
+            for (int i = 1; i<numColumns+1; i++) {
+                header += "<td><b>"+rsmd.getColumnName(i)+"</b>";
+            }
+            header +="</td>";
+        }  catch (SQLException e) {
+            e.printStackTrace();
+            printStats();
+        }
+        return header;
+    }
+    
+    
+    /** Returns the column names of the query in an HTML table format for use
+     * as header for a table produced by the drawTable method.*/
+    public StringTokenizer getColumnNamesList(ResultSet rs) {
+        String list = "";
+        StringTokenizer t;
+        try{
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int numColumns = rsmd.getColumnCount();
+            
+            // Get the column names; column indices start from 1
+            for (int i = 1; i<numColumns+1; i++) {
+                list+=rsmd.getColumnName(i)+",";
+            }
+        }  catch (SQLException e) {
+            System.err.println("Error getting names from result set. "+e);
+        }
+        t = new StringTokenizer(list, ",");
+        return t;
+    }
+    
+    
+    public Connection getConnection() {
+        try {
+            if (con == null || con.isClosed()){
+                con = getDatasource().getConnection();
+            }
+            con.setAutoCommit(false);
+        }  catch (SQLException ex) {
+            ex.printStackTrace();
+            printStats();
+        }
+        return con;
+    }
+    
+    
+    public DataSource getDatasource() {
+        try {
+            datasource.getConnection().setAutoCommit(false);
+        }  catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return datasource;
+    }
+    
+    public int getNewID(String attrTN) throws Exception {
+        int newID = 0;
+        Statement stmt;
+        stmt = getConnection().createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_id WHERE tablename='" + attrTN + "'");
+        while (rs.next()) {
+            newID = rs.getInt("last_id") + 1;
+        }
+        stmt.close();
+        stmt = getConnection().createStatement();
+        stmt.executeUpdate("UPDATE xinco_id SET last_id=last_id+1 WHERE tablename='" + attrTN + "'");
+        stmt.close();
+        return newID;
+    }
+    
+    
+    public ResourceBundle getResourceBundle() {
+        return lrb;
+    }
+    
+    public Statement getStatement(){
+        try {
+            return getDatasource().getConnection().createStatement();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+    
+    
+    public void printStats(){
+        System.out.println("Number Active: " + ((BasicDataSource) getDatasource()).getNumActive());
+        System.out.println("Number Idle: " + ((BasicDataSource) getDatasource()).getNumIdle());
+    }
+    
+    
+    public void setConnection(Connection con) {
+        if(con==null)
+            getConnection();
+        this.con = con;
+        try {
+            this.con.setAutoCommit(false);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    
+    public void setDatasource(DataSource datasource) {
+        this.datasource = datasource;
+    }
+    
+    
+    public void setLocale(Locale loc) {
+        this.setLoc(loc);
+        if (loc==null)
+            loc = Locale.getDefault();
+        else
+            try {
+                setResourceBundle(ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc));
+            }  catch (Exception e) {
+                e.printStackTrace();
+                printStats();
+            }
+    }
+    
+    
+    public void setResourceBundle(ResourceBundle lrb) {
+        this.lrb = lrb;
+    }
+    
+    /**
+     * Determines the number of rows in a <code>ResultSet</code>. Upon exit, if the cursor was not
+     * currently on a row, it is just before the first row in the result set (a call to
+     * {@link ResultSet#next()} will go to the first row).
+     * @param set The <code>ResultSet</code> to check (must be scrollable).
+     * @return The number of rows.
+     * @throws SQLException If the <code>ResultSet</code> is not scrollable.
+     * @see #hasSingleRow(ResultSet)
+     */
+    public static int getRowCount(ResultSet set) throws SQLException {
+        int rowCount;
+        int currentRow = set.getRow();              // Get current row
+        rowCount = set.last() ? set.getRow() : 0;   // Determine number of rows
+        if (currentRow == 0)                        // If there was no current row
+            set.beforeFirst();                      // We want next() to go to first row
+        else                                        // If there WAS a current row
+            set.absolute(currentRow);               // Restore it
+        return rowCount;
     }
 
+    public Locale getLocale() {
+        if(loc==null)
+            loc=Locale.getDefault();
+        return loc;
+    }
+
+    public void setLoc(Locale loc) {
+        this.loc = loc;
+    }
+    
 }

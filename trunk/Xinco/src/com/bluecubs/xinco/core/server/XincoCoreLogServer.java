@@ -54,7 +54,6 @@ import java.util.GregorianCalendar;
 import java.sql.*;
 
 import com.bluecubs.xinco.core.*;
-import com.bluecubs.xinco.general.AuditTrail;
 import java.util.ResourceBundle;
 
 public class XincoCoreLogServer extends XincoCoreLog {
@@ -116,7 +115,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
         try {
             if (getId() > 0) {
                 Statement stmt = DBM.getConnection().createStatement();
-                AuditTrail audit= new AuditTrail();
+                XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
                 ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+getId()},
                         DBM,xerb.getString("audit.log.change"),this.getChangerID());

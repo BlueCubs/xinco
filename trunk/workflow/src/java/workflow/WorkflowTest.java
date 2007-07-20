@@ -6,13 +6,12 @@
  */
 package workflow;
 
-
 import com.bluecubs.xinco.core.server.WorkflowDBManager;
-import com.bluecubs.xinco.manager.WorkflowInstanceManager;
 import com.bluecubs.xinco.workflow.Node;
 import com.bluecubs.xinco.workflow.Transaction;
 import com.bluecubs.xinco.workflow.server.WorkflowInstanceServer;
 import com.bluecubs.xinco.workflow.server.WorkflowTemplateServer;
+import com.bluecubs.xinco.manager.WorkflowInstanceManager;
 import com.sun.rave.web.ui.appbase.AbstractPageBean;
 import com.sun.rave.web.ui.component.Body;
 import com.sun.rave.web.ui.component.Button;

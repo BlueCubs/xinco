@@ -15,7 +15,7 @@
                 xmlns="http://www.w3.org/2001/XMLSchema">
             <import namespace="http://xml.apache.org/xml-soap"/>
             <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
-            <complexType name="Activity" abstract="true">
+            <complexType name="Activity">
                 <sequence>
                     <element name="id" type="xsd:int"/>
                     <element name="description" type="xsd:string"/>
@@ -113,6 +113,7 @@
                     <element name="version_low" type="xsd:int"/>
                     <element name="version_mid" type="xsd:int"/>
                     <element name="version_postfix" nillable="true" type="xsd:string"/>
+                    <element name="changerID" type="xsd:int" nillable="true"></element>
                 </sequence>
             </complexType>
             <complexType name="WorkflowSetting">

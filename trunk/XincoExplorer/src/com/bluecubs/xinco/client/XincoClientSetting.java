@@ -49,13 +49,13 @@ public class XincoClientSetting extends XincoSetting{
     }
     
     private XincoSetting getSetting(int i){
-        return (XincoSetting)getSettings().get(i);
+        return (XincoSetting)getXinco_settings().get(i);
     }
     
     public XincoSetting getSetting(String s){
-        for(int i=0;i<getSettings().size();i++){
-            if(((XincoSetting)getSettings().get(i)).getDescription().equals(s))
-                return (XincoSetting)getSettings().get(i);
+        for(int i=0;i<getXinco_settings().size();i++){
+            if(((XincoSetting)getXinco_settings().get(i)).getDescription().equals(s))
+                return (XincoSetting)getXinco_settings().get(i);
         }
         return null;
     }

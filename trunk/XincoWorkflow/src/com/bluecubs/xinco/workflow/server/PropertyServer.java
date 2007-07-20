@@ -37,7 +37,6 @@ package com.bluecubs.xinco.workflow.server;
 
 import com.bluecubs.xinco.core.server.WorkflowDBManager;
 import com.bluecubs.xinco.workflow.Property;
-import com.bluecubs.xinco.workflow.server.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;

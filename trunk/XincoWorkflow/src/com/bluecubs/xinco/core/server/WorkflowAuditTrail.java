@@ -35,7 +35,6 @@
 
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.general.AuditTrail;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -45,7 +44,7 @@ import java.sql.Timestamp;
  *
  * @author ortizbj
  */
-public class WorkflowAuditTrail extends AuditTrail{
+public class WorkflowAuditTrail {
     /**
      * Creates a new instance of WorkflowAuditTrail
      */

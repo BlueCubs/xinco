@@ -74,7 +74,7 @@ public class XincoArchiver {
             int querycount = 0;
             String[] query = new String[2];
             
-            query[querycount] = "SELECT DISTINCT xcd.id FROM xinco_core_data xcd, xinco_add_attribute xaa1, xinco_add_attribute xaa2 " +
+            query[querycount] = new String("SELECT DISTINCT xcd.id FROM xinco_core_data xcd, xinco_add_attribute xaa1, xinco_add_attribute xaa2 " +
                     "WHERE xcd.xinco_core_data_type_id = 1 " +
                     "AND xcd.status_number <> 3 " +
                     "AND xcd.id = xaa1.xinco_core_data_id " +
@@ -83,10 +83,10 @@ public class XincoArchiver {
                     "AND xaa1.attrib_unsignedint = 1 " +
                     "AND xaa2.attribute_id = 6 " +
                     "AND xaa2.attrib_datetime < now() " +
-                    "ORDER BY xcd.id";
+                    "ORDER BY xcd.id");
             querycount++;
             
-            query[querycount] = "SELECT DISTINCT xcd.id FROM xinco_core_data xcd, xinco_add_attribute xaa1, xinco_add_attribute xaa2, xinco_core_log xcl " +
+            query[querycount] = new String("SELECT DISTINCT xcd.id FROM xinco_core_data xcd, xinco_add_attribute xaa1, xinco_add_attribute xaa2, xinco_core_log xcl " +
                     "WHERE xcd.xinco_core_data_type_id = 1 " +
                     "AND xcd.status_number <> 3 " +
                     "AND xcd.id = xaa1.xinco_core_data_id " +
@@ -96,7 +96,7 @@ public class XincoArchiver {
                     "AND xaa1.attrib_unsignedint = 2 " +
                     "AND xaa2.attribute_id = 7 " +
                     "AND ADDDATE(DATE(xcl.op_datetime), xaa2.attrib_unsignedint) < now() " +
-                    "ORDER BY xcd.id";
+                    "ORDER BY xcd.id");
             //"AND xcl.op_datetime < (now()-(xaa2.attrib_unsignedint*3600*24)) " +
             querycount++;
             

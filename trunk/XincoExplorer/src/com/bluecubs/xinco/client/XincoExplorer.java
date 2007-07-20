@@ -1017,7 +1017,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         status_string_1 += "      + " + ((XincoCoreGroup)xincoClientSession.user.getXinco_core_groups().elementAt(i)).getDesignation() + "\n";
                     }
                     for (i=0;i<xincoClientSession.server_datatypes.size();i++) {
-                        status_string_2 += "      + " + ((XincoCoreDataType)xincoClientSession.server_datatypes.elementAt(i)).getDesignation() + "\n";
+                        status_string_2 += "      + " + getSession().xinco.localizeString(((XincoCoreDataType)xincoClientSession.server_datatypes.elementAt(i)).getDesignation()) + "\n";
                     }
                 }catch (java.rmi.RemoteException cone) {
                     if(getProgressBar()!=null)
@@ -2616,7 +2616,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 ex.printStackTrace();
         }
         settings= new XincoClientSetting();
-        settings.setSettings(settingsVector);
+        settings.setXinco_settings(settingsVector);
     }
     
     public int getActionSize() {

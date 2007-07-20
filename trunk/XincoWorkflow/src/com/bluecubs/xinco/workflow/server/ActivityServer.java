@@ -37,10 +37,10 @@ package com.bluecubs.xinco.workflow.server;
 
 import com.bluecubs.xinco.core.server.WorkflowAuditTrail;
 import com.bluecubs.xinco.core.server.WorkflowDBManager;
-import com.bluecubs.xinco.general.DBManager;
 import com.bluecubs.xinco.workflow.Activity;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Vector;
 
 /**
  *
@@ -51,9 +51,9 @@ public class ActivityServer extends Activity{
     private ResultSet rs;
     private WorkflowAuditTrail wat;
     /** Creates a new instance of ActivityServer */
-    public ActivityServer(int id,DBManager DBM) {
+    public ActivityServer(int id,WorkflowDBManager DBM) {
         if(id>0){
-            if(((WorkflowDBManager)DBM).getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 System.out.println("Retrieving activity with id: "+id);
             try {
                 rs=DBM.getStatement().executeQuery("select * from activity where id="+id);
@@ -65,7 +65,7 @@ public class ActivityServer extends Activity{
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            if(((WorkflowDBManager)DBM).getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 System.out.println("Retrieving activity done!");
         }
     }
@@ -124,5 +124,18 @@ public class ActivityServer extends Activity{
             }
         }
         return completed;
+    }
+    
+    public Vector getDefaultPropertiesForType(WorkflowDBManager DBM){
+        Vector set = new Vector();
+        try {
+            ResultSet rs = DBM.getConnection().createStatement().executeQuery("select activity_type_id from activity_type where id ="+getId());
+            rs.next();
+            int atid=rs.getInt("activity_type_id");
+            rs = DBM.getConnection().createStatement().executeQuery("select activity_type_id from activity_type where id ="+getId());
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return set;
     }
 }

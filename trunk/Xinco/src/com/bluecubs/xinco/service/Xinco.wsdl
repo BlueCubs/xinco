@@ -4,10 +4,10 @@
                   xmlns:impl="urn:Xinco" 
                   xmlns:intf="urn:Xinco" 
                   xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
-                  xmlns="http://schemas.xmlsoap.org/wsdl/" 
-                  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" 
                   xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
-                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" 
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+                  xmlns="http://schemas.xmlsoap.org/wsdl/"
                   xmlns:tns2="http://core.xinco.bluecubs.com" 
                   xmlns:tns3="http://add.xinco.bluecubs.com" >
     <!--WSDL created by Apache Axis version: 1.4
@@ -141,7 +141,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
                     <element name="bool_value" type="xsd:boolean"/>
                     <element name="changerID" type="xsd:int"/>
                     <element name="long_value" type="xsd:long"/>
-                    <element name="settings" nillable="true" type="apachesoap:Vector"/>
+                    <element name="xinco_settings" nillable="true" type="apachesoap:Vector"/>
                 </sequence>
             </complexType>
         </schema>
@@ -765,10 +765,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     </wsdl:message>
     <wsdl:message name="localizeStringRequest">
         <wsdl:part name="key" type="xsd:string"/>
-        <wsdl:part name="user" type="tns2:XincoCoreUser"/>
     </wsdl:message>
     <wsdl:message name="localizeStringResponse">
-        <wsdl:part name="text" type="xsd:string"/>
+        <wsdl:part name="localizedString" type="xsd:string"/>
     </wsdl:message>
     <wsdl:portType name="Xinco">
         
