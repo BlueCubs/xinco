@@ -42,11 +42,9 @@ import java.sql.*;
 import java.util.Vector;
 import java.io.File;
 import com.bluecubs.xinco.core.*;
-import com.bluecubs.xinco.general.AuditTrail;
 
 public class XincoCoreDataServer extends XincoCoreData {
     private XincoCoreUserServer user;
-    private static AuditTrail audit;
     //create data object for data structures
     public XincoCoreDataServer(int attrID, XincoDBManager DBM) throws XincoException {
         
@@ -120,7 +118,7 @@ public class XincoCoreDataServer extends XincoCoreData {
             
             if (getId() > 0) {
                 stmt = DBM.getConnection().createStatement();
-                audit= new AuditTrail();
+                XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
                 audit.updateAuditTrail("xinco_core_data",new String [] {"id ="+getId()},
                         DBM,"audit.data.change",this.getChangerID());
                 stmt.executeUpdate("UPDATE xinco_core_data SET xinco_core_node_id=" +
@@ -179,7 +177,7 @@ public class XincoCoreDataServer extends XincoCoreData {
     public static void removeFromDB(XincoDBManager DBM,int userID,int id)throws XincoException{
         try{
         Statement stmt;
-        audit= new AuditTrail();
+        XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
         /*
          * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
         audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+id},
@@ -220,7 +218,7 @@ public class XincoCoreDataServer extends XincoCoreData {
         
         try {
             Statement stmt;
-            audit= new AuditTrail();
+            XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
             //delete file / file = 1
             if (getXinco_core_data_type().getId() == 1) {
                 try {

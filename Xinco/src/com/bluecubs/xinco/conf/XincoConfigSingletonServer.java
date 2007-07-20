@@ -37,7 +37,7 @@
 package com.bluecubs.xinco.conf;
 
 import com.bluecubs.xinco.core.XincoSetting;
-import com.bluecubs.xinco.general.SettingServer;
+import com.bluecubs.xinco.core.server.XincoSettingServer;
 import java.util.Vector;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -80,25 +80,25 @@ public class XincoConfigSingletonServer {
         return FileArchivePath;
     }
     
-    public void init(SettingServer ss){
+    public void init(XincoSettingServer xss){
         try{
-            FileRepositoryPath=ss.getSetting("xinco/FileRepositoryPath").getString_value();
+            FileRepositoryPath=xss.getSetting("xinco/FileRepositoryPath").getString_value();
             if (!(getFileRepositoryPath().substring(getFileRepositoryPath().length()-1).equals(System.getProperty("file.separator")))) {
                 FileRepositoryPath = getFileRepositoryPath() + System.getProperty("file.separator");
             }
-            MaxSearchResult=ss.getSetting("xinco/MaxSearchResult").getInt_value();
-            FileIndexPath=ss.getSetting("xinco/FileIndexPath").getString_value();
-            if(getFileIndexPath().equals(""))
+            MaxSearchResult=xss.getSetting("xinco/MaxSearchResult").getInt_value();
+            FileIndexPath=xss.getSetting("xinco/FileIndexPath").getString_value();
+            if(getFileIndexPath()=="")
                 FileIndexPath = getFileRepositoryPath() + "index";
             if (!(getFileIndexPath().substring(getFileIndexPath().length()-1).equals(System.getProperty("file.separator")))) {
                 FileIndexPath += System.getProperty("file.separator");
             }
-            FileArchivePath=ss.getSetting("xinco/FileArchivePath").getString_value();
+            FileArchivePath=xss.getSetting("xinco/FileArchivePath").getString_value();
             if (!(getFileArchivePath().substring(getFileArchivePath().length()-1).equals(System.getProperty("file.separator")))) {
                 FileArchivePath += System.getProperty("file.separator");
             }
-            FileArchivePeriod=ss.getSetting("xinco/FileArchivePeriod").getLong_value();
-            Vector s=ss.getSettings();
+            FileArchivePeriod=xss.getSetting("xinco/FileArchivePeriod").getLong_value();
+            Vector s=xss.getXinco_settings();
             for(int i=0;i<s.size();i++){
                 if(((XincoSetting)s.get(i)).getDescription().startsWith("xinco/FileIndexer") &&
                         ((XincoSetting)s.get(i)).getDescription().endsWith("Class") ){
@@ -113,7 +113,7 @@ public class XincoConfigSingletonServer {
                     getIndexFileTypesExt().add(((XincoSetting)s.get(i)).getString_value());
                 }
             }
-            getIndexFileTypesExt().add(ss.getSetting("xinco/IndexNoIndex").getString_value());
+            getIndexFileTypesExt().add(xss.getSetting("xinco/IndexNoIndex").getString_value());
         } catch (Exception ex) {
             ex.printStackTrace();
             //Default values
@@ -177,7 +177,7 @@ public class XincoConfigSingletonServer {
     }
 
     public String[] getIndexNoIndex() {
-        return IndexNoIndex.clone();
+        return IndexNoIndex;
     }
 
     public String getJNDIDB() {

@@ -37,9 +37,7 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.general.AuditTrail;
-import com.bluecubs.xinco.general.DBManager;
-import com.bluecubs.xinco.general.SettingServer;
+import com.bluecubs.xinco.core.XincoSetting;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
@@ -48,9 +46,9 @@ import java.util.Vector;
  *
  * @author Javier A. Ortiz
  */
-public class XincoSettingServer extends SettingServer{
+public class XincoSettingServer extends XincoSetting{
     private Vector xinco_settings=null;
-    private AuditTrail audit= new AuditTrail();
+    private XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
     
     /** Creates a new instance of XincoSettingServer */
     public XincoSettingServer(int id,java.lang.String description,int int_value,
@@ -62,11 +60,11 @@ public class XincoSettingServer extends SettingServer{
         this.setBool_value(bool_value);
         this.setChangerID(changerID);
         this.setLong_value(long_value);
-        DBManager DBM =null;
+        XincoDBManager DBM =null;
         try {
             DBM =new XincoDBManager();
             write2DB(DBM);
-            setSettings(DBM.getSettingServer().getSettings((DBManager)DBM));
+            setXinco_settings(DBM.getXincoSettingServer().getXinco_settings());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -76,7 +74,7 @@ public class XincoSettingServer extends SettingServer{
     public XincoSettingServer(int id,XincoDBManager DBM)throws XincoException{
         try {
             String sql="select * from xinco_setting where id="+id;
-            if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 System.out.println(sql);
             ResultSet rs= DBM.getConnection().createStatement().executeQuery(sql);
             rs.next();
@@ -95,7 +93,7 @@ public class XincoSettingServer extends SettingServer{
     }
     
     //write to db
-    public int write2DB(DBManager DBM) throws XincoException {
+    public int write2DB(XincoDBManager DBM) throws XincoException {
         try {
             String sql="";
             if(getId()>0){
@@ -103,7 +101,7 @@ public class XincoSettingServer extends SettingServer{
                         ", description='"+getDescription()+"', int_value="+getInt_value()+
                         ", string_value='"+getString_value()+"', bool_value="+isBool_value()+
                         " where id="+getId();
-                if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 DBM.getConnection().createStatement().executeUpdate(sql);
                 audit.updateAuditTrail("xinco_setting",new String [] {"id ="+getId()},
@@ -112,7 +110,7 @@ public class XincoSettingServer extends SettingServer{
                 sql="insert into xinco_setting values("+getId()+
                         ", '"+getDescription()+"',"+getInt_value()+
                         ", '"+getString_value()+"',"+isBool_value()+","+getLong_value()+")";
-                if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 DBM.getConnection().createStatement().executeUpdate(sql);
                 audit.updateAuditTrail("xinco_setting",new String [] {"id ="+getId()},
@@ -125,6 +123,32 @@ public class XincoSettingServer extends SettingServer{
         }
         return this.getId();
     }
+    
+    public XincoSetting getSetting(int i){
+        return (XincoSetting)getXinco_settings().get(i);
+    }
+    
+    public XincoSetting getSetting(String s){
+        for(int i=0;i<getXinco_settings().size();i++){
+            if(((XincoSetting)getXinco_settings().get(i)).getDescription().equals(s))
+                return (XincoSetting)getXinco_settings().get(i);
+        }
+        return null;
+    }
+    
+    public Vector getXinco_settings() {
+        if (xinco_settings == null)
+            try {
+                setXinco_settings(new XincoDBManager().getXincoSettingServer().getXinco_settings());
+            }  catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        return xinco_settings;
+    }
 
+    
+    public void setXinco_settings(Vector xinco_settings) {
+        this.xinco_settings = xinco_settings;
+    }
 
 }

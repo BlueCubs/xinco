@@ -37,15 +37,14 @@ package com.bluecubs.xinco.workflow.server;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.WorkflowDBManager;
-import com.bluecubs.xinco.general.DBManager;
-import com.bluecubs.xinco.general.SettingServer;
 import com.bluecubs.xinco.workflow.WorkflowSetting;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
-public class WorkflowSettingServer  extends SettingServer{
+public class WorkflowSettingServer  extends WorkflowSetting{
     private Vector workflow_settings=null;
+    private WorkflowSettingServer wss=null;
     /** Creates a new instance of WorkflowSettingServer */
     public WorkflowSettingServer(){
     }
@@ -69,30 +68,28 @@ public class WorkflowSettingServer  extends SettingServer{
         if(workflow_settings==null)
             try {
                 setWorkflow_settings(new WorkflowDBManager().getWorkflowSettingServer().getWorkflow_settings());
-                super.setSettings(workflow_settings);
+                setWorkflow_settings(workflow_settings);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         return workflow_settings;
     }
     
-     public WorkflowSetting getSetting(int i){
+    public WorkflowSetting getSetting(int i){
         return (WorkflowSetting)getWorkflow_settings().get(i);
     }
     
-    public SettingServer getSetting(String s){
-        for(int i=0;i<getSettings().size();i++){
-            if(((WorkflowSetting)getSettings().get(i)).getDescription().equals(s))
-                return (SettingServer)getSettings().get(i);
-        }
-        return null;
+    public WorkflowSetting getSetting(String name){
+        return getWorkflowSettingServer().getSetting(name);
     }
-
+    
     public void setWorkflow_settings(Vector workflow_settings) {
         this.workflow_settings = workflow_settings;
     }
-
-    public int write2DB(DBManager DBM) throws XincoException {
-        return 0;
+    
+    public WorkflowSettingServer getWorkflowSettingServer() {
+        if(wss==null)
+            wss=new WorkflowSettingServer();
+        return wss;
     }
 }

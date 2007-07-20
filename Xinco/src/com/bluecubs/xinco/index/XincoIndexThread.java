@@ -118,8 +118,8 @@ public class XincoIndexThread extends Thread {
         if (indexDirectory.exists()) {
             indexDirectoryFileList = indexDirectory.list();
             for (int i=0;i<indexDirectoryFileList.length;i++) {
-                if(DBM.getSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-                                System.out.println("Deleting index file: "+DBM.config.getFileIndexPath() + indexDirectoryFileList[i]);
+                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("Deleting index file: "+DBM.config.getFileIndexPath() + indexDirectoryFileList[i]);
                 indexDirectoryFile = new File(DBM.config.getFileIndexPath() + indexDirectoryFileList[i]);
                 indexDirectoryFile.delete();
             }

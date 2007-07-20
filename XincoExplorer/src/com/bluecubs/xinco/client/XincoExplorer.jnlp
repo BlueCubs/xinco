@@ -2,7 +2,7 @@
 <!--
 ###############################################################################
 #
-# @(#)XincoExplorer.jnlp	2.01.00 2007/06/04
+# @(#)XincoExplorer.jnlp	2.01.00 2007/07/20
 #
 # JNLP File for XincoExplorer
 #
@@ -22,6 +22,7 @@
     <shortcut online="true">
     </shortcut>
   </information>
+  <icon href="blueCubs.gif" kind="splash"/>
   <resources locale="" os="">
     <j2se href="http://java.sun.com/products/autodl/j2se" version="1.5.0+"/>
     <!-- required libraries, ALL SIGNED -->

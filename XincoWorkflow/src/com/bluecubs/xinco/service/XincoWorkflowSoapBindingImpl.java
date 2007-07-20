@@ -27,22 +27,23 @@ import javax.mail.MessagingException;
 public class XincoWorkflowSoapBindingImpl implements com.bluecubs.xinco.service.XincoWorkflow{
     private WorkflowDBManager DBM;
     public com.bluecubs.xinco.workflow.Activity getActivity(com.bluecubs.xinco.workflow.Activity in, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException {
-        try {
-            ResourceServer r = new ResourceServer(resource.getUsername(),resource.getUserpassword(),new WorkflowDBManager());
-        } catch (WorkflowException ex) {
-            ex.printStackTrace();
-            return null;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        ActivityServer a=null;
-        try {
-            a = new ActivityServer(in.getId(), new WorkflowDBManager());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return a;
+//        try {
+//            ResourceServer r = new ResourceServer(resource.getUsername(),resource.getUserpassword(),new WorkflowDBManager());
+//        } catch (WorkflowException ex) {
+//            ex.printStackTrace();
+//            return null;
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            return null;
+//        }
+//        ActivityServer a=null;
+//        try {
+//            a = new ActivityServer(in.getId(), new WorkflowDBManager());
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return (com.bluecubs.xinco.core.workflow.Activity)a;
+        return null;
     }
     
     public void setActivity(com.bluecubs.xinco.workflow.holders.ActivityHolder activity, com.bluecubs.xinco.workflow.Resource resource) throws java.rmi.RemoteException {
