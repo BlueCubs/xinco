@@ -427,6 +427,8 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
         oper.setName("localizeString");
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "key"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "locale"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
         oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         oper.setReturnClass(java.lang.String.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "localizedString"));
@@ -1548,7 +1550,7 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
 }
     }
 
-    public java.lang.String localizeString(java.lang.String key) throws java.rmi.RemoteException {
+    public java.lang.String localizeString(java.lang.String key, java.lang.String locale) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -1561,7 +1563,7 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {key});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {key, locale});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;

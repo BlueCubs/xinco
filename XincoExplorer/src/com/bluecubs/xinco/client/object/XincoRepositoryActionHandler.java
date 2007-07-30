@@ -219,7 +219,7 @@ public class XincoRepositoryActionHandler {
             if (explorer.getSession().currentTreeNodeSelection != null) {
                 if (explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
                     //set current node to new one
-                    newnode = new XincoMutableTreeNode(new XincoCoreNode());
+                    newnode = new XincoMutableTreeNode(new XincoCoreNode(),explorer);
                     //set node attributes
                     ((XincoCoreNode)newnode.getUserObject()).setXinco_core_node_id(((XincoCoreNode)explorer.getSession().currentTreeNodeSelection.getUserObject()).getId());
                     ((XincoCoreNode)newnode.getUserObject()).setDesignation(xerb.getString("general.newfolder"));

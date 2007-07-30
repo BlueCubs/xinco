@@ -36,8 +36,6 @@
 
 package com.bluecubs.xinco.client;
 
-import com.bluecubs.xinco.client.XincoClientRepository;
-import com.bluecubs.xinco.client.XincoMutableTreeNode;
 import java.util.Vector;
 
 import com.bluecubs.xinco.core.*;
@@ -47,7 +45,7 @@ import com.bluecubs.xinco.service.*;
  * XincoClientSession
  */
 public class XincoClientSession {
-    
+    private XincoExplorer explorer;
     /**
      * Service Endpoint
      */
@@ -117,11 +115,12 @@ public class XincoClientSession {
      * 2 = connected
      * 3 = disconnecting
      */
-    public XincoClientSession() {
+    public XincoClientSession(XincoExplorer e) {
+        setExplorer(e);
         service_endpoint = "";
         user = new XincoCoreUser();
         //init repository
-        xincoClientRepository = new XincoClientRepository();
+        xincoClientRepository = new XincoClientRepository(getExplorer());
         server_version = new XincoVersion();
         server_groups = new Vector();
         server_users = new Vector();
@@ -131,6 +130,14 @@ public class XincoClientSession {
         currentSearchResult = new Vector();
         server_settings = new Vector();
         status = 0;
+    }
+
+    public XincoExplorer getExplorer() {
+        return explorer;
+    }
+
+    public void setExplorer(XincoExplorer explorer) {
+        this.explorer = explorer;
     }
     
 }

@@ -38,6 +38,7 @@ package com.bluecubs.xinco.workflow.server;
 import com.bluecubs.xinco.core.server.WorkflowAuditTrail;
 import com.bluecubs.xinco.core.server.WorkflowDBManager;
 import com.bluecubs.xinco.workflow.Node;
+import com.bluecubs.xinco.workflow.Transaction;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
@@ -48,6 +49,7 @@ public class NodeServer extends Node{
     private boolean instanceReady=false;
     private int instance_template_id,instance_id;
     private WorkflowAuditTrail wat;
+    private TransactionServer [] myTransactions;
     
     /** Creates a new instance of NodeServer */
     public NodeServer() {
@@ -124,12 +126,56 @@ public class NodeServer extends Node{
             setCompleted(rs2.getBoolean("completed"));
             setInstance_template_id(instance_template_id);
             setInstance_id(instance_id);
+            loadTransactions(instance_id,instance_template_id,DBM);
             setInstanceReady(true);
         } catch (SQLException ex) {
             if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 ex.printStackTrace();
         }
         return this;
+    }
+    
+    public NodeServer switchToNodeServer(Node n){
+        NodeServer temp=null;
+        try {
+            temp = new NodeServer(n.getId(), new WorkflowDBManager());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return temp;
+    }
+    
+    private void loadTransactions(int instance_id,int instance_template_id,WorkflowDBManager DBM){
+        String sql ="select * from Workflow_Instance_has_Transaction where workflow_template_id = "+
+                instance_template_id+" and node_id="+getId();
+        if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            System.out.println(sql);
+        ResultSet rs2=null;
+        try {
+            rs2 = DBM.getStatement().executeQuery(sql);
+            while(rs2.next()){
+                if(getMyTransactions()==null)
+                    setMyTransactions(new TransactionServer[1]);
+                else{
+                    TransactionServer [] temp = new TransactionServer[getMyTransactions().length+1];
+                    for(int i=0;i<getMyTransactions().length;i++)
+                        temp[i]=getMyTransactions()[i];
+                    setMyTransactions(temp);
+                }
+                getMyTransactions()[getMyTransactions().length-1]=new TransactionServer(rs2.getInt("transaction_id"),DBM);
+                getMyTransactions()[getMyTransactions().length-1].instanceSetup(instance_id,DBM);
+            }
+        } catch (SQLException ex) {
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                ex.printStackTrace();
+        }
+    }
+    
+    public void resetTransactions(){
+        if(getMyTransactions()!=null){
+            for(int i=0;i<getMyTransactions().length;i++)
+                getMyTransactions()[i].setCompleted(false);
+        }
     }
     
     public boolean isCompleted() {
@@ -235,5 +281,13 @@ public class NodeServer extends Node{
     
     public void setInstance_id(int instance_id) {
         this.instance_id = instance_id;
+    }
+    
+    public TransactionServer[] getMyTransactions() {
+        return myTransactions;
+    }
+    
+    public void setMyTransactions(TransactionServer[] myTransactions) {
+        this.myTransactions = myTransactions;
     }
 }

@@ -75,8 +75,8 @@ public class DataTypeDialog extends javax.swing.JDialog {
             dlm.removeAllElements();
             for (i=0;i<explorer.getSession().server_datatypes.size();i++) {
                 try {
-                    text = explorer.getSession().xinco.localizeString(((XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(i)).getDesignation()) +
-                            " (" + explorer.getSession().xinco.localizeString(((XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(i)).getDescription()) + ")";
+                    text = explorer.getSession().xinco.localizeString(((XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(i)).getDesignation(),explorer.getLocale().toString()) +
+                            " (" + explorer.getSession().xinco.localizeString(((XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(i)).getDescription(),explorer.getLocale().toString()) + ")";
                     dlm.addElement(text);
                 } catch (RemoteException ex) {
                     ex.printStackTrace();

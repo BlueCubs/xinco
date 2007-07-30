@@ -107,6 +107,8 @@ public class TransactionServer extends Transaction{
             setCompleted(rs2.getBoolean("completed"));
             setInstance_id(instance_id);
             setInstanceReady(true);
+            setTo(new NodeServer(rs2.getInt("id"),DBM));
+            setFrom(new NodeServer(rs2.getInt("node_id"),DBM));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

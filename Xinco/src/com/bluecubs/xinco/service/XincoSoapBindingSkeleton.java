@@ -418,6 +418,7 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
         ((java.util.List)_myOperations.get("indexFiles")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "key"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "locale"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("localizeString", _params, new javax.xml.namespace.QName("", "localizedString"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
@@ -615,9 +616,9 @@ public class XincoSoapBindingSkeleton implements com.bluecubs.xinco.service.Xinc
         return ret;
     }
 
-    public java.lang.String localizeString(java.lang.String key) throws java.rmi.RemoteException
+    public java.lang.String localizeString(java.lang.String key, java.lang.String locale) throws java.rmi.RemoteException
     {
-        java.lang.String ret = impl.localizeString(key);
+        java.lang.String ret = impl.localizeString(key, locale);
         return ret;
     }
 
