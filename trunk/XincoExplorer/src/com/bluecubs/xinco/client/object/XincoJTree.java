@@ -52,6 +52,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.dnd.DnDConstants;
 import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
@@ -290,15 +291,13 @@ public class XincoJTree extends JTree{
                     DefaultTableModel dtm = (DefaultTableModel) getExplorer().getJTableRepository().getModel();
                     
                     j = dtm.getRowCount();
-                    for (i = 0; i <
-                            j; i++) {
+                    for (i = 0; i < j; i++) {
                         dtm.removeRow(0);
                     }
                     String[] rdata = {"", ""};
                     
                     rdata[0] = getExplorer().getResourceBundle().getString("general.id");
-                    rdata[1] = "" +
-                            ((XincoCoreNode) node.getUserObject()).getId();
+                    rdata[1] = "" + ((XincoCoreNode) node.getUserObject()).getId();
                     dtm.addRow(rdata);
                     rdata[0] = getExplorer().getResourceBundle().getString("general.designation");
                     rdata[1] = ((XincoCoreNode) node.getUserObject()).getDesignation();
@@ -378,8 +377,7 @@ public class XincoJTree extends JTree{
                     String[] rdata = {"",""};
                     
                     rdata[0] = getExplorer().getResourceBundle().getString("general.id");
-                    rdata[1] = "" +
-                            getExplorer().getXdata().getId();
+                    rdata[1] = "" + getExplorer().getXdata().getId();
                     dtm.addRow(rdata);
                     rdata[0] = getExplorer().getResourceBundle().getString("general.designation");
                     rdata[1] = getExplorer().getXdata().getDesignation();
@@ -391,10 +389,13 @@ public class XincoJTree extends JTree{
                             ")";
                     dtm.addRow(rdata);
                     rdata[0] = getExplorer().getResourceBundle().getString("general.datatype");
-                    rdata[1] = getExplorer().getXdata().getXinco_core_data_type().getDesignation() +
-                            " (" +
-                            getExplorer().getXdata().getXinco_core_data_type().getDescription() +
-                            ")";
+                    try {
+                        rdata[1] = getExplorer().getSession().xinco.localizeString(getExplorer().getXdata().getXinco_core_data_type().getDesignation(),getExplorer().getLocale().toString()) +
+                                " (" + getExplorer().getSession().xinco.localizeString(getExplorer().getXdata().getXinco_core_data_type().getDescription(),getExplorer().getLocale().toString()) +
+                                ")";
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
                     dtm.addRow(rdata);
                     rdata[0] = "";
                     rdata[1] = "";
@@ -987,5 +988,4 @@ public class XincoJTree extends JTree{
     public void setTargetTreeNode(XincoMutableTreeNode targetTreeNode) {
         this.targetTreeNode = targetTreeNode;
     }
-    
 }

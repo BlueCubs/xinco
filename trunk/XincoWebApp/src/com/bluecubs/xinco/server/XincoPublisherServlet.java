@@ -46,6 +46,7 @@ import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.server.*;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 public class XincoPublisherServlet extends HttpServlet {
     ResourceBundle rb;
@@ -107,6 +108,7 @@ public class XincoPublisherServlet extends HttpServlet {
         //connect to db
         try {
             DBM = new XincoDBManager();
+            DBM.setLocale(loc);
         } catch (Exception e) {
             //start output
             response.setContentType("text/html");
@@ -239,9 +241,24 @@ public class XincoPublisherServlet extends HttpServlet {
                             } else {
                                 temp_url = xdata_temp.getDesignation();
                             }
+                            // Display file name if different from designation
+                            String file_name="";
+                            if(xdata_temp.getXinco_core_data_type().getId()==1) {
+                                //Is a file thus it has a file name associated
+                                Vector attribs = xdata_temp.getXinco_add_attributes();
+                                for(int k=0;k< attribs.size();k++) {
+                                    if(((XincoAddAttribute)attribs.get(k)).getAttribute_id()==1)
+                                        file_name=" ["+DBM.localizeString(xdata_temp.getXinco_core_data_type().getDesignation())+": "+
+                                                ((XincoAddAttribute)attribs.get(k)).getAttrib_varchar()+"]";
+                                }
+                            }
                             out.println("<tr>");
-                            out.println("<td class=\"text\">" + xdata_temp.getDesignation() + " (" + xdata_temp.getXinco_core_data_type().getDesignation() + " | " + xdata_temp.getXinco_core_language().getSign() + ")" + "</td>");
-                            out.println("<td class=\"text\"><a href=\"" + "XincoPublisher/" + xdata_temp.getId() + "/" + temp_url + "?list="+request.getParameter("list")+"\" target=\"_blank\">" + temp_server_url + "/" + xdata_temp.getId() + "/" + temp_url + "</a></td>");
+                            out.println("<td class=\"text\">" + xdata_temp.getDesignation() + file_name  +
+                                    " (" + DBM.localizeString(xdata_temp.getXinco_core_data_type().getDesignation()) + " | " +
+                                    xdata_temp.getXinco_core_language().getSign() + ")" + "</td>");
+                            out.println("<td class=\"text\"><a href=\"" + "XincoPublisher/" + xdata_temp.getId() +
+                                    "/" + temp_url + "?list="+request.getParameter("list")+"\" target=\"_blank\">" +
+                                    temp_server_url + "/" + xdata_temp.getId() + "/" + temp_url + "</a></td>");
                             out.println("</tr>");
                             out.flush();
                         }
@@ -355,8 +372,20 @@ public class XincoPublisherServlet extends HttpServlet {
                                         } else {
                                             temp_url = xdata_temp.getDesignation();
                                         }
+                                        // Display file name if different from designation
+                                        String file_name="";
+                                        if(xdata_temp.getXinco_core_data_type().getId()==1) {
+                                            //Is a file thus it has a file name associated
+                                            Vector attribs = xdata_temp.getXinco_add_attributes();
+                                            for(int k=0;k< attribs.size();k++) {
+                                                if(((XincoAddAttribute)attribs.get(k)).getAttribute_id()==1)
+                                                    file_name=" ["+DBM.localizeString(xdata_temp.getXinco_core_data_type().getDesignation())+": "+
+                                                            ((XincoAddAttribute)attribs.get(k)).getAttrib_varchar()+"]";
+                                            }
+                                        }
                                         out.println("<tr>");
-                                        out.println("<td class=\"text\">" + xdata_temp.getDesignation() + " (" + xdata_temp.getXinco_core_data_type().getDesignation() + " | " + xdata_temp.getXinco_core_language().getSign() + ")" + "</td>");
+                                        out.println("<td class=\"text\">" + xdata_temp.getDesignation() + file_name  +
+                                        " (" + DBM.localizeString(xdata_temp.getXinco_core_data_type().getDesignation()) + " | " + xdata_temp.getXinco_core_language().getSign() + ")" + "</td>");
                                         out.println("<td class=\"text\"><a href=\"" + "XincoPublisher/" + xdata_temp.getId() + "/" + temp_url + "?list="+request.getParameter("list")+"\" target=\"_blank\">" + temp_server_url + "/" + xdata_temp.getId() + "/" + temp_url + "</a></td>");
                                         out.println("</tr>");
                                         out.flush();

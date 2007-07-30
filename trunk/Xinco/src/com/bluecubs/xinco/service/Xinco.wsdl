@@ -765,6 +765,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     </wsdl:message>
     <wsdl:message name="localizeStringRequest">
         <wsdl:part name="key" type="xsd:string"/>
+        <wsdl:part name="locale" type="xsd:string"/>
     </wsdl:message>
     <wsdl:message name="localizeStringResponse">
         <wsdl:part name="localizedString" type="xsd:string"/>

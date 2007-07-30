@@ -270,6 +270,9 @@ public class WorkflowInstanceManager {
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
+                        //If workflow has desition loops make sure that the target node status is not set to complete
+                        Node destiny=((TransactionServer)transactions.get(j)).getTo();
+                        
                     } else{
                         if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                             System.out.println("Transaction not completed...");

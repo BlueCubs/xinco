@@ -775,11 +775,12 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         return null;
     }
 
-    public String localizeString(String key) throws RemoteException {
+    public String localizeString(String key,String locale) throws RemoteException {
         XincoDBManager DBM=null;
         String answer="";
         try {
             DBM = new XincoDBManager();
+            DBM.createAndLoadLocale(locale);
             answer=DBM.localizeString(key);
         } catch (Exception ex) {
             ex.printStackTrace();

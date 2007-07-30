@@ -388,7 +388,7 @@ public class XincoDBManager{
     
     
     public void setLocale(Locale loc) {
-        this.setLoc(loc);
+        this.loc = loc;
         if (loc==null)
             loc = Locale.getDefault();
         else
@@ -398,6 +398,24 @@ public class XincoDBManager{
                 e.printStackTrace();
                 printStats();
             }
+    }
+    
+    public void createAndLoadLocale(String locale){
+        Locale temp=null;
+        try {
+            String[] locales;
+            locales = locale.split("_");
+            switch(locales.length){
+                case 1: temp = new Locale(locales[0]);break;
+                case 2: temp = new Locale(locales[0],locales[1]);break;
+                case 3: temp = new
+                        Locale(locales[0],locales[1],locales[2]);break;
+                default: temp = Locale.getDefault();
+            }
+        } catch (Exception e) {
+            temp = Locale.getDefault();
+        }
+        setLocale(temp);
     }
     
     
@@ -429,10 +447,5 @@ public class XincoDBManager{
         if(loc==null)
             loc=Locale.getDefault();
         return loc;
-    }
-
-    public void setLoc(Locale loc) {
-        this.loc = loc;
-    }
-    
+    }  
 }

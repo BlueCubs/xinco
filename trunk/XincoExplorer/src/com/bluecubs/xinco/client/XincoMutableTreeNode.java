@@ -36,19 +36,22 @@
 
 package com.bluecubs.xinco.client;
 
+import com.bluecubs.xinco.client.*;
+import java.rmi.RemoteException;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.bluecubs.xinco.core.*;
 
 public class XincoMutableTreeNode extends DefaultMutableTreeNode {
-    
-    public XincoMutableTreeNode(Object o) {
+    private XincoExplorer explorer;
+    public XincoMutableTreeNode(Object o, XincoExplorer e) {
         super(o);
+        setExplorer(e);
     }
     
     @Override
     public String toString() {
-        String s = null;
+        String s = null,result="";
         String status = null;
         
         if (this.getUserObject() != null) {
@@ -80,11 +83,24 @@ public class XincoMutableTreeNode extends DefaultMutableTreeNode {
                 if (((XincoCoreData)this.getUserObject()).getStatus_number() == 5) {
                     status = new String(" | WWW");
                 }
-                return "" + s + " (" + ((XincoCoreData)this.getUserObject()).getXinco_core_data_type().getDesignation() +
-                        " | " + ((XincoCoreData)this.getUserObject()).getXinco_core_language().getSign() + status + ")";
+                try {
+                    result="" + s + " (" + getExplorer().getSession().xinco.localizeString(((XincoCoreData)this.getUserObject()).getXinco_core_data_type().getDesignation(),getExplorer().getLocale().toString()) +
+                            " | " + ((XincoCoreData)this.getUserObject()).getXinco_core_language().getSign() + status + ")";
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
+                return result;
             }
         }
         return super.toString();
+    }
+
+    public XincoExplorer getExplorer() {
+        return explorer;
+    }
+
+    public void setExplorer(XincoExplorer explorer) {
+        this.explorer = explorer;
     }
     
 }
