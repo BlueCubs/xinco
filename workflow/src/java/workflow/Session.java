@@ -86,12 +86,12 @@ public class Session extends AbstractSessionBean {
             options[i]=new Option(locales[i], lrb.getString("Locale." + locales[i]));
         setLanguageOptions(options);
         WorkflowSettingServer xss= new WorkflowSettingServer();
-        String version="[Version " + xss.getSetting("workflow.version.high").getIntValue()
-        + "." + xss.getSetting("workflow.version.med").getIntValue() + "." +
-                xss.getSetting("workflow.version.low").getIntValue();
-        if(xss.getSetting("workflow.version.postfix").getStringValue()!=null &&
-                !xss.getSetting("workflow.version.postfix").getStringValue().trim().equals(""))
-            version+=" " + xss.getSetting("workflow.version.postfix").getStringValue();
+        String version="[Version " + xss.getSetting("workflow.version.high").getInt_value()
+        + "." + xss.getSetting("workflow.version.med").getInt_value() + "." +
+                xss.getSetting("workflow.version.low").getInt_value();
+        if(xss.getSetting("workflow.version.postfix").getString_value()!=null &&
+                !xss.getSetting("workflow.version.postfix").getString_value().trim().equals(""))
+            version+=" " + xss.getSetting("workflow.version.postfix").getString_value();
         version+="]";
         setFooterText(version);
         setTitle(rb.getString("message.admin.main.title"));

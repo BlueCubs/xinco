@@ -13,7 +13,11 @@
   <!-- ### driverClassName: org.postgresql.Driver                      ###-->
   <!-- ###################################################################-->
   <!-- factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="100"-->
-  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoWorkflowDB" password="" removeAbandoned="true" removeAbandonedTimeout="0" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3307/xinco2?autoReconnect=true" username="root"/>
+  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" 
+  factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="100" 
+  maxIdle="30" maxWait="10000" name="jdbc/XincoWorkflowDB" password="" 
+  removeAbandoned="true" removeAbandonedTimeout="0" type="javax.sql.DataSource" 
+  url="jdbc:mysql://localhost:3307/xinco2?autoReconnect=true" username="root"/>
   <!-- #################### ################ ####################-->
   <ResourceParams name="jdbc/XincoWorkflowDB">
     <parameter>
@@ -23,6 +27,7 @@
   </ResourceParams>
   <!-- ################# Optional Configuration #################-->
   <!-- Database JNDI Name -->
-  <Environment name="xincoWorkflow/JNDIDB" override="false" type="java.lang.String" value="java:comp/env/jdbc/XincoWorkflowDB"/>
+  <Environment name="xincoWorkflow/JNDIDB" override="false" type="java.lang.String" 
+  value="java:comp/env/jdbc/XincoWorkflowDB"/>
   <!-- ################# ###################### #################-->
 </Context>
