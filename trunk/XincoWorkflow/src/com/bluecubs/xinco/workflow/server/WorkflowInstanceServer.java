@@ -60,8 +60,10 @@ public class WorkflowInstanceServer extends WorkflowInstance{
             try {
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println("Loading instance...");
-                rs=DBM.getStatement().executeQuery("select * from " +
-                        "workflow_instance where id ="+id);
+                String sql="select * from workflow_instance where id ="+id;
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
+                rs=DBM.getStatement().executeQuery(sql);
                 rs.next();
                 setId(rs.getInt("id"));
                 setTemplateId(rs.getInt("workflow_template_id"));
@@ -82,7 +84,8 @@ public class WorkflowInstanceServer extends WorkflowInstance{
                 if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println("Loading instance...Done!");
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    ex.printStackTrace();
                 throw new WorkflowException();
             }
         }else{
@@ -199,6 +202,8 @@ public class WorkflowInstanceServer extends WorkflowInstance{
     
     public void initializeTransactions(WorkflowDBManager DBM){
         for(int i=0;i<getTransactions().size();i++){
+            if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Initializing transaction "+((TransactionServer)getTransactions().get(i)).getId());
             ((TransactionServer)getTransactions().get(i)).instanceSetup(getId(),DBM);
             ((TransactionServer)getTransactions().get(i)).setChangerID(getChangerId());
         }

@@ -27,11 +27,11 @@
 	<!ATTLIST Irresolvable 
 		   id CDATA #IMPLIED >
 ]--><TypeManagement projectID="DCE.1E17B809-35D5-F7F5-A34A-0CC882C6F4A8">
-	<Locations nextID="0">
-	</Locations>
+	<Locations nextID="1">
+	<Location locID="T.0" href=".\XincoWorkflow-Model.etup"/></Locations>
 
    <Types>
-   </Types>
+   <Type id="DCE.8D662840-6FC2-2213-B3DF-02AF09F4CF4B" location="T.0" name="Unnamed"/></Types>
 
 	<IrresolvableTypes>
 	</IrresolvableTypes>

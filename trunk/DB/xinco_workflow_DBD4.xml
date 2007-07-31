@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="yes" ?>
 <DBMODEL Version="4.0">
 <SETTINGS>
-<GLOBALSETTINGS ModelName="xinco_main_DBD4" IDModel="0" IDVersion="0" VersionStr="1.0.0.0" Comments="" UseVersionHistroy="1" AutoIncVersion="1" DatabaseType="MySQL" ZoomFac="75.00" XPos="22" YPos="288" DefaultDataType="5" DefaultTablePrefix="0" DefSaveDBConn="" DefSyncDBConn="Xinco 2.1" DefQueryDBConn="" Printer="PDF-Datei" HPageCount="4.059464816650148" PageAspectRatio="1.436398386069229" PageOrientation="1" PageFormat="A4 (210x297 mm, 8.26x11.7 inches)" SelectedPages="0;1;5" UsePositionGrid="1" PositionGridX="20" PositionGridY="20" TableNameInRefs="1" DefaultTableType="1" ActivateRefDefForNewRelations="1" FKPrefix="" FKPostfix="" CreateFKRefDefIndex="1" DBQuoteCharacter="`" CreateSQLforLinkedObjects="0" DefModelFont="Tahoma" CanvasWidth="4096" CanvasHeight="2842" />
+<GLOBALSETTINGS ModelName="xinco_main_DBD4" IDModel="0" IDVersion="0" VersionStr="1.0.0.0" Comments="" UseVersionHistroy="1" AutoIncVersion="1" DatabaseType="MySQL" ZoomFac="75.00" XPos="22" YPos="0" DefaultDataType="5" DefaultTablePrefix="0" DefSaveDBConn="" DefSyncDBConn="Xinco 2.1" DefQueryDBConn="" Printer="PDF-Datei" HPageCount="4.059464816650148" PageAspectRatio="1.436398386069229" PageOrientation="1" PageFormat="A4 (210x297 mm, 8.26x11.7 inches)" SelectedPages="0;1;5" UsePositionGrid="1" PositionGridX="20" PositionGridY="20" TableNameInRefs="1" DefaultTableType="1" ActivateRefDefForNewRelations="1" FKPrefix="" FKPostfix="" CreateFKRefDefIndex="1" DBQuoteCharacter="`" CreateSQLforLinkedObjects="0" DefModelFont="Tahoma" CanvasWidth="4096" CanvasHeight="2842" />
 <DATATYPEGROUPS>
 <DATATYPEGROUP Name="Numeric Types" Icon="1" />
 <DATATYPEGROUP Name="Date and Time Types" Icon="2" />
@@ -258,8 +258,8 @@
 </SETTINGS>
 <METADATA>
 <REGIONS>
-<REGION ID="5994" RegionName="Audit Trail Zone" XPos="2460" YPos="0" Width="1560" Height="1400" RegionColor="1" TablePrefix="0" TableType="1" OverwriteTablePrefix="0" OverwriteTableType="1" Comments="" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="62" />
 <REGION ID="4836" RegionName="Workflow" XPos="40" YPos="160" Width="1660" Height="1380" RegionColor="3" TablePrefix="0" TableType="1" OverwriteTablePrefix="0" OverwriteTableType="1" Comments="" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="35" />
+<REGION ID="5994" RegionName="Audit Trail Zone" XPos="2460" YPos="0" Width="1560" Height="1400" RegionColor="1" TablePrefix="0" TableType="1" OverwriteTablePrefix="0" OverwriteTableType="1" Comments="" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="62" />
 </REGIONS>
 <TABLES>
 <TABLE ID="1040" Tablename="xinco_core_user" PrevTableName="Table_05" XPos="920" YPos="1780" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="Status: \nopen = 1 \nlocked = 2 \n" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="6" >
@@ -672,7 +672,7 @@
 </INDEX>
 </INDICES>
 </TABLE>
-<TABLE ID="4701" Tablename="Workflow_Template_has_Node" PrevTableName="" XPos="960" YPos="380" TableType="1" TablePrefix="0" nmTable="1" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO Workflow_Template_has_Node (Node_id, id,isStartNode,isEndNode) VALUES(1, 1,1,0);\nINSERT INTO Workflow_Template_has_Node (Node_id, id,isStartNode,isEndNode) VALUES(2, 1,0,0); \nINSERT INTO Workflow_Template_has_Node (Node_id, id,isStartNode,isEndNode) VALUES(3, 1,0,0); \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="20" >
+<TABLE ID="4701" Tablename="Workflow_Template_has_Node" PrevTableName="" XPos="960" YPos="380" TableType="1" TablePrefix="0" nmTable="1" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO Workflow_Template_has_Node (Node_id, id,isStartNode,isEndNode) VALUES(1, 1,1,0);\nINSERT INTO Workflow_Template_has_Node (Node_id, id,isStartNode,isEndNode) VALUES(2, 1,0,0); \nINSERT INTO Workflow_Template_has_Node (Node_id, id,isStartNode,isEndNode) VALUES(3, 1,0,0); \nINSERT INTO Workflow_Template_has_Node (Node_id, id,isStartNode,isEndNode) VALUES(4, 1,0,0);\nINSERT INTO Workflow_Template_has_Node (Node_id, id,isStartNode,isEndNode) VALUES(5, 1,0,0);\nINSERT INTO Workflow_Template_has_Node (Node_id, id,isStartNode,isEndNode) VALUES(6, 1,0,0);   \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="20" >
 <COLUMNS>
 <COLUMN ID="4801" ColName="id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
 <OPTIONSELECTED>

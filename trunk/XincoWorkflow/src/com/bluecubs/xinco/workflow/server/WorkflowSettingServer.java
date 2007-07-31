@@ -68,7 +68,6 @@ public class WorkflowSettingServer  extends WorkflowSetting{
         if(workflow_settings==null)
             try {
                 setWorkflow_settings(new WorkflowDBManager().getWorkflowSettingServer().getWorkflow_settings());
-                setWorkflow_settings(workflow_settings);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -79,8 +78,12 @@ public class WorkflowSettingServer  extends WorkflowSetting{
         return (WorkflowSetting)getWorkflow_settings().get(i);
     }
     
-    public WorkflowSetting getSetting(String name){
-        return getWorkflowSettingServer().getSetting(name);
+    public WorkflowSetting getSetting(String s){
+        for(int i=0;i<getWorkflow_settings().size();i++){
+            if(((WorkflowSetting)getWorkflow_settings().get(i)).getDescription().equals(s))
+                return (WorkflowSetting)getWorkflow_settings().get(i);
+        }
+        return null;
     }
     
     public void setWorkflow_settings(Vector workflow_settings) {
