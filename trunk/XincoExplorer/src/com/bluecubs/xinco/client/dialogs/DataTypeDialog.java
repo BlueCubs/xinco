@@ -70,19 +70,19 @@ public class DataTypeDialog extends javax.swing.JDialog {
         this.dataTypeLabel.setText(explorer.getResourceBundle().getString("window.datatype.datatype") + ":");
         int i = 0;
         String text = "";
-        if (explorer.getSession().currentTreeNodeSelection.getUserObject() != null) {
+        if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject() != null) {
             DefaultListModel dlm = new DefaultListModel();
             dlm.removeAllElements();
-            for (i=0;i<explorer.getSession().server_datatypes.size();i++) {
+            for (i=0;i<explorer.getSession().getServer_datatypes().size();i++) {
                 try {
-                    text = explorer.getSession().xinco.localizeString(((XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(i)).getDesignation(),explorer.getLocale().toString()) +
-                            " (" + explorer.getSession().xinco.localizeString(((XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(i)).getDescription(),explorer.getLocale().toString()) + ")";
+                    text = explorer.getSession().getXinco().localizeString(((XincoCoreDataType)explorer.getSession().getServer_datatypes().elementAt(i)).getDesignation(),explorer.getLocale().toString()) +
+                            " (" + explorer.getSession().getXinco().localizeString(((XincoCoreDataType)explorer.getSession().getServer_datatypes().elementAt(i)).getDescription(),explorer.getLocale().toString()) + ")";
                     dlm.addElement(text);
                 } catch (RemoteException ex) {
                     ex.printStackTrace();
                 }
-                if (((XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(i)).getId() == 
-                        ((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getId()) {
+                if (((XincoCoreDataType)explorer.getSession().getServer_datatypes().elementAt(i)).getId() == 
+                        ((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId()) {
                     this.dataType.setSelectedIndex(i);
                 }
             }
@@ -164,7 +164,7 @@ public class DataTypeDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelActionPerformed
     
     private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
-        ((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).setXinco_core_data_type((XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(this.dataType.getSelectedIndex()));
+        ((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).setXinco_core_data_type((XincoCoreDataType)explorer.getSession().getServer_datatypes().elementAt(this.dataType.getSelectedIndex()));
         explorer.set_global_dialog_return_value(1);
         setVisible(false);
     }//GEN-LAST:event_continueButtonActionPerformed

@@ -122,10 +122,10 @@ public class ConnectionDialog extends javax.swing.JDialog {
     
     private void connect(){
         //save session info
-        explorer.getSession().service_endpoint = this.endpoint.getText();
-        explorer.getSession().user.setUsername(this.username.getText());
-        explorer.getSession().user.setUserpassword(new String(this.password.getPassword()));
-        explorer.getSession().status = 1;
+        explorer.getSession().setService_endpoint(this.endpoint.getText());
+        explorer.getSession().getUser().setUsername(this.username.getText());
+        explorer.getSession().getUser().setUserpassword(new String(this.password.getPassword()));
+        explorer.getSession().setStatus(1);
         setVisible(false);
     }
     

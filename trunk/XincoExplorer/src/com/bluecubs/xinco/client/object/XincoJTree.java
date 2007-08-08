@@ -118,6 +118,8 @@ public class XincoJTree extends JTree{
         });
         addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent e) {
+                getExplorer().getProgressBar().setTitle(getExplorer().getResourceBundle().getString("message.explorer.verifyingcredentials"));
+                getExplorer().getProgressBar().show();
                 getExplorer().resetTimer();
                 int i = 0;
                 int j = 0;
@@ -129,12 +131,10 @@ public class XincoJTree extends JTree{
                 setCurrentTreeNodeSelection(node);
                 // get ace
                 if (node.getUserObject().getClass() == XincoCoreNode.class) {
-                    temp_ace = XincoCoreACEClient.checkAccess(getExplorer().getSession().user,
-                            ((XincoCoreNode) node.getUserObject()).getXinco_core_acl());
+                    temp_ace = XincoCoreACEClient.checkAccess(getExplorer().getSession().getUser(),                             ((XincoCoreNode) node.getUserObject()).getXinco_core_acl());
                 }
                 if (node.getUserObject().getClass() == XincoCoreData.class) {
-                    temp_ace = XincoCoreACEClient.checkAccess(getExplorer().getSession().user,
-                            ((XincoCoreData) node.getUserObject()).getXinco_core_acl());
+                    temp_ace = XincoCoreACEClient.checkAccess(getExplorer().getSession().getUser(),                             ((XincoCoreData) node.getUserObject()).getXinco_core_acl());
                 }
                 // Intelligent menu
                 // reset menus
@@ -167,7 +167,7 @@ public class XincoJTree extends JTree{
                         ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(1,true);
                         ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(2,true);
                         ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(3,true);
-                        if (getExplorer().getSession().clipboardTreeNodeSelection.size() >0) {
+                        if (getExplorer().getSession().getClipboardTreeNodeSelection().size() >0) {
                             ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(8,true);
                             ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(8,true);
                         }
@@ -250,15 +250,12 @@ public class XincoJTree extends JTree{
                     if ((((XincoCoreNode) node.getUserObject()).getXinco_core_nodes().size() ==0) &&
                             (((XincoCoreNode) node.getUserObject()).getXinco_core_data().size() ==0)) {
                         try {
-                            XincoCoreNode xnode = getExplorer().getSession().xinco.getXincoCoreNode((XincoCoreNode) node.getUserObject(),
-                                    getExplorer().getSession().user);
+                            XincoCoreNode xnode = getExplorer().getSession().getXinco().getXincoCoreNode((XincoCoreNode) node.getUserObject(), getExplorer().getSession().getUser());
                             
                             if (xnode !=null) {
-                                getExplorer().getSession().xincoClientRepository.assignObject2TreeNode(node,
+                                getExplorer().getSession().getXincoClientRepository().assignObject2TreeNode(node,
                                         xnode,
-                                        getExplorer().getSession().xinco,
-                                        getExplorer().getSession().user,
-                                        2);
+getExplorer().getSession().getXinco(), getExplorer().getSession().getUser(),                                         2);
                             } else {
                                 JOptionPane.showMessageDialog(getExplorer(),
                                         getExplorer().getResourceBundle().getString("error.folder.sufficientrights"),
@@ -272,11 +269,10 @@ public class XincoJTree extends JTree{
                 // load full data
                 if (node.getUserObject().getClass() == XincoCoreData.class) {
                     try {
-                        getExplorer().setXdata(getExplorer().getSession().xinco.getXincoCoreData((XincoCoreData) node.getUserObject(),
-                                getExplorer().getSession().user));
+                        getExplorer().setXdata(getExplorer().getSession().getXinco().getXincoCoreData((XincoCoreData) node.getUserObject(), getExplorer().getSession().getUser()));
                         if (getExplorer().getXdata() !=null) {
                             node.setUserObject(getExplorer().getXdata());
-                            getExplorer().getSession().xincoClientRepository.treemodel.nodeChanged(node);
+                            getExplorer().getSession().getXincoClientRepository().treemodel.nodeChanged(node);
                         } else {
                             JOptionPane.showMessageDialog(getExplorer(),
                                     getExplorer().getResourceBundle().getString("error.data.sufficientrights"),
@@ -390,8 +386,8 @@ public class XincoJTree extends JTree{
                     dtm.addRow(rdata);
                     rdata[0] = getExplorer().getResourceBundle().getString("general.datatype");
                     try {
-                        rdata[1] = getExplorer().getSession().xinco.localizeString(getExplorer().getXdata().getXinco_core_data_type().getDesignation(),getExplorer().getLocale().toString()) +
-                                " (" + getExplorer().getSession().xinco.localizeString(getExplorer().getXdata().getXinco_core_data_type().getDescription(),getExplorer().getLocale().toString()) +
+                        rdata[1] = getExplorer().getSession().getXinco().localizeString(getExplorer().getXdata().getXinco_core_data_type().getDesignation(),getExplorer().getLocale().toString()) +
+                                " (" + getExplorer().getSession().getXinco().localizeString(getExplorer().getXdata().getXinco_core_data_type().getDescription(),getExplorer().getLocale().toString()) +
                                 ")";
                     } catch (RemoteException ex) {
                         ex.printStackTrace();
@@ -888,6 +884,7 @@ public class XincoJTree extends JTree{
                 XincoAutofitTableColumns autofit = new XincoAutofitTableColumns();
                 autofit.autoResizeTable(getExplorer().getXincoAuditPanel().getAuditTable(),true);
                 autofit.autoResizeTable(getExplorer().getJTableRepository(),true);
+                getExplorer().getProgressBar().hide();
             }
         });
         java.awt.event.MouseListener ml = new java.awt.event.MouseAdapter() {
@@ -905,15 +902,15 @@ public class XincoJTree extends JTree{
                     } else if (e.getClickCount() == 2) {
                         // double-click -> preview file
                         // setSelectionPath(selPath);
-                        if (getExplorer().getSession().currentTreeNodeSelection.getUserObject().getClass() ==
+                        if (getExplorer().getSession().getCurrentTreeNodeSelection().getUserObject().getClass() ==
                                 XincoCoreData.class) {
                             // file = 1
-                            if (((XincoCoreData) getExplorer().getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getId() == 1) {
+                            if (((XincoCoreData) getExplorer().getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId() == 1) {
                                 getExplorer().doDataWizard(14);
                                 getExplorer().setCurrentPathFilename(getExplorer().previous_fullpath);
                             }
                             // text = 2
-                            if (((XincoCoreData) getExplorer().getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getId() == 2) {
+                            if (((XincoCoreData) getExplorer().getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId() == 2) {
                                 getExplorer().getJDialogAddAttributesText().setViewOnly(true);
                                 getExplorer().getJDialogAddAttributesText().showMe();
                             }
@@ -942,7 +939,7 @@ public class XincoJTree extends JTree{
         expandRow(0);
     }
     private boolean isLeaf() {
-        return getExplorer().getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreData.class;
+        return getExplorer().getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class;
     }
     
     //Drag and Drop functionality methods
@@ -973,8 +970,8 @@ public class XincoJTree extends JTree{
     }
     
     private void setCurrentTreeNodeSelection(XincoMutableTreeNode current){
-        setPreviousTreeNodeSelection(getExplorer().getSession().currentTreeNodeSelection);
-        getExplorer().getSession().currentTreeNodeSelection=current;
+        setPreviousTreeNodeSelection(getExplorer().getSession().getCurrentTreeNodeSelection());
+        getExplorer().getSession().setCurrentTreeNodeSelection(current);
     }
     
     protected void setPreviousTreeNodeSelection(XincoMutableTreeNode previousTreeNodeSelection) {

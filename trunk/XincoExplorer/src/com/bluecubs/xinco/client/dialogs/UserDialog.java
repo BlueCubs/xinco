@@ -81,30 +81,30 @@ public class UserDialog extends javax.swing.JDialog {
         String text=null;
         setTitle(explorer.getResourceBundle().getString("window.userinfo"));
         //processing independent of creation
-        this.id.setText("" + explorer.getSession().user.getId());
+        this.id.setText("" + explorer.getSession().getUser().getId());
         this.idLabel.setText(explorer.getResourceBundle().getString("general.id") + ":");
-        this.username.setText("" + explorer.getSession().user.getUsername());
+        this.username.setText("" + explorer.getSession().getUser().getUsername());
         this.usernameLabel.setText(explorer.getResourceBundle().getString("general.username") + ":");
         if(this.isAged)
             this.password.setText("");
         else
-            this.password.setText("" + explorer.getSession().user.getUserpassword());
+            this.password.setText("" + explorer.getSession().getUser().getUserpassword());
         this.passwordLabel.setText(explorer.getResourceBundle().getString("general.password") + ":");
         if(this.isAged)
             this.verification.setText("");
         else
-            this.verification.setText("" + explorer.getSession().user.getUserpassword());
+            this.verification.setText("" + explorer.getSession().getUser().getUserpassword());
         this.verificationLabel.setText(explorer.getResourceBundle().getString("general.verifypassword") + ":");
-        this.name.setText("" + explorer.getSession().user.getFirstname());
+        this.name.setText("" + explorer.getSession().getUser().getFirstname());
         this.nameLabel.setText(explorer.getResourceBundle().getString("window.userinfo.firstname") + ":");
-        this.lastname.setText("" + explorer.getSession().user.getName());
+        this.lastname.setText("" + explorer.getSession().getUser().getName());
         this.lastnameLabel.setText(explorer.getResourceBundle().getString("window.userinfo.lastname") + ":");
-        this.email.setText("" + explorer.getSession().user.getEmail());
+        this.email.setText("" + explorer.getSession().getUser().getEmail());
         this.emailLabel.setText(explorer.getResourceBundle().getString("window.userinfo.email") + ":");
-        if (explorer.getSession().user.getStatus_number() == 1) {
+        if (explorer.getSession().getUser().getStatus_number() == 1) {
             text = explorer.getResourceBundle().getString("general.status.open") + "";
         }
-        if (explorer.getSession().user.getStatus_number() == 2) {
+        if (explorer.getSession().getUser().getStatus_number() == 2) {
             text = explorer.getResourceBundle().getString("general.status.locked") + " (-)";
         }
         this.status.setText(text);
@@ -285,22 +285,20 @@ public class UserDialog extends javax.swing.JDialog {
         if ((new String(password.getPassword())).equals(new String(verification.getPassword()))) {
             try {
                 if (this.isAged &&
-                    !this.explorer.getSession().xinco.checkXincoCoreUserNewPassword(new String(password.getPassword()),
-                                                                                    this.explorer.getSession().user,
-                                                                                    null)) {
-                    this.explorer.getSession().xinco.checkXincoCoreUserNewPassword(new String(password.getPassword()),
-                                                                                                      this.explorer.getSession().user,
-                                                                                                      null);
+                    !this.explorer.getSession().getXinco().checkXincoCoreUserNewPassword(new String(password.getPassword()),
+this.explorer.getSession().getUser(),                                                                                     null)) {
+                    this.explorer.getSession().getXinco().checkXincoCoreUserNewPassword(new String(password.getPassword()),
+this.explorer.getSession().getUser(),                                                                                                       null);
                     throw new XincoException(explorer.getResourceBundle().getString("password.unusable"));
                 }
-                explorer.getUser().setId(explorer.getSession().user.getId());
-                explorer.getUser().setUsername(explorer.getSession().user.getUsername());
+                explorer.getUser().setId(explorer.getSession().getUser().getId());
+                explorer.getUser().setUsername(explorer.getSession().getUser().getUsername());
                 explorer.getUser().setUserpassword(new String(password.getPassword()));
                 explorer.getUser().setFirstname(name.getText());
                 explorer.getUser().setName(lastname.getText());
                 explorer.getUser().setEmail(email.getText());
-                explorer.getUser().setXinco_core_groups(explorer.getSession().user.getXinco_core_groups());
-                explorer.getUser().setStatus_number(explorer.getSession().user.getStatus_number());
+                explorer.getUser().setXinco_core_groups(explorer.getSession().getUser().getXinco_core_groups());
+                explorer.getUser().setStatus_number(explorer.getSession().getUser().getStatus_number());
                 explorer.getUser().setChange(true);
                 explorer.getUser().setUserpassword(new String(password.getPassword()));
                 ChangeReasonDialog crd = null;
@@ -331,10 +329,10 @@ public class UserDialog extends javax.swing.JDialog {
                     explorer.getUser().setStatus_number(4);
                 } else
                     explorer.getUser().setReason(crd.getReason());
-                explorer.getSession().user = explorer.getSession().xinco.setXincoCoreUser(explorer.getUser(),
-                                                                    explorer.getSession().user);
+                explorer.getSession().setUser(explorer.getSession().getXinco().setXincoCoreUser(explorer.getUser(),
+                                                                    explorer.getSession().getUser()));
                 // set plain-text password
-                explorer.getSession().user.setUserpassword(explorer.getUser().getUserpassword());
+                explorer.getSession().getUser().setUserpassword(explorer.getUser().getUserpassword());
                 // update transaction info
                 explorer.jLabelInternalFrameInformationText.setText(explorer.getResourceBundle().getString("window.userinfo.updatesuccess"));
                 setVisible(false);

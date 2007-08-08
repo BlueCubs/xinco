@@ -84,7 +84,7 @@ public class XincoMutableTreeNode extends DefaultMutableTreeNode {
                     status = new String(" | WWW");
                 }
                 try {
-                    result="" + s + " (" + getExplorer().getSession().xinco.localizeString(((XincoCoreData)this.getUserObject()).getXinco_core_data_type().getDesignation(),getExplorer().getLocale().toString()) +
+                    result="" + s + " (" + getExplorer().getSession().getXinco().localizeString(((XincoCoreData)this.getUserObject()).getXinco_core_data_type().getDesignation(),getExplorer().getLocale().toString()) +
                             " | " + ((XincoCoreData)this.getUserObject()).getXinco_core_language().getSign() + status + ")";
                 } catch (RemoteException ex) {
                     ex.printStackTrace();

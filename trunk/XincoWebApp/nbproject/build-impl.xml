@@ -402,6 +402,10 @@
     </target>
     <target name="do-dist" depends="init,compile,compile-jsps,-pre-dist,-do-dist-with-manifest,-do-dist-without-manifest"/>
     <target name="library-inclusion-in-manifest" depends="init" if="dist.ear.dir">
+        <basename property="included.lib.libs.XincoLibs.classpath.25" file="${libs.XincoLibs.classpath.libfile.25}"/>
+        <basename property="included.lib.libs.XincoLibs.classpath.24" file="${libs.XincoLibs.classpath.libfile.24}"/>
+        <basename property="included.lib.libs.XincoLibs.classpath.23" file="${libs.XincoLibs.classpath.libfile.23}"/>
+        <basename property="included.lib.libs.XincoLibs.classpath.22" file="${libs.XincoLibs.classpath.libfile.22}"/>
         <basename property="included.lib.libs.XincoLibs.classpath.21" file="${libs.XincoLibs.classpath.libfile.21}"/>
         <basename property="included.lib.libs.XincoLibs.classpath.20" file="${libs.XincoLibs.classpath.libfile.20}"/>
         <basename property="included.lib.libs.XincoLibs.classpath.19" file="${libs.XincoLibs.classpath.libfile.19}"/>
@@ -423,6 +427,10 @@
         <basename property="included.lib.libs.XincoLibs.classpath.3" file="${libs.XincoLibs.classpath.libfile.3}"/>
         <basename property="included.lib.libs.XincoLibs.classpath.2" file="${libs.XincoLibs.classpath.libfile.2}"/>
         <basename property="included.lib.libs.XincoLibs.classpath.1" file="${libs.XincoLibs.classpath.libfile.1}"/>
+        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.25}" propname="included.lib.libs.XincoLibs.classpath.25.X"/>
+        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.24}" propname="included.lib.libs.XincoLibs.classpath.24.X"/>
+        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.23}" propname="included.lib.libs.XincoLibs.classpath.23.X"/>
+        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.22}" propname="included.lib.libs.XincoLibs.classpath.22.X"/>
         <copy-ear-war file="${libs.XincoLibs.classpath.libfile.21}" propname="included.lib.libs.XincoLibs.classpath.21.X"/>
         <copy-ear-war file="${libs.XincoLibs.classpath.libfile.20}" propname="included.lib.libs.XincoLibs.classpath.20.X"/>
         <copy-ear-war file="${libs.XincoLibs.classpath.libfile.19}" propname="included.lib.libs.XincoLibs.classpath.19.X"/>
@@ -472,11 +480,15 @@
         <copy file="${reference.XincoWorkflow.jar}" todir="${build.web.dir.real}/client"/>
         <mkdir dir="${build.web.dir.real}/META-INF"/>
         <manifest file="${build.web.dir.real}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.libs.XincoLibs.classpath.1.X} ${included.lib.libs.XincoLibs.classpath.2.X} ${included.lib.libs.XincoLibs.classpath.3.X} ${included.lib.libs.XincoLibs.classpath.4.X} ${included.lib.libs.XincoLibs.classpath.5.X} ${included.lib.libs.XincoLibs.classpath.6.X} ${included.lib.libs.XincoLibs.classpath.7.X} ${included.lib.libs.XincoLibs.classpath.8.X} ${included.lib.libs.XincoLibs.classpath.9.X} ${included.lib.libs.XincoLibs.classpath.10.X} ${included.lib.libs.XincoLibs.classpath.11.X} ${included.lib.libs.XincoLibs.classpath.12.X} ${included.lib.libs.XincoLibs.classpath.13.X} ${included.lib.libs.XincoLibs.classpath.14.X} ${included.lib.libs.XincoLibs.classpath.15.X} ${included.lib.libs.XincoLibs.classpath.16.X} ${included.lib.libs.XincoLibs.classpath.17.X} ${included.lib.libs.XincoLibs.classpath.18.X} ${included.lib.libs.XincoLibs.classpath.19.X} ${included.lib.libs.XincoLibs.classpath.20.X} ${included.lib.libs.XincoLibs.classpath.21.X} ${included.lib.reference.Xinco.jar} ${included.lib.reference.XincoExplorer.jar} ${included.lib.reference.XincoWorkflow.jar} "/>
+            <attribute name="Class-Path" value="${included.lib.libs.XincoLibs.classpath.1.X} ${included.lib.libs.XincoLibs.classpath.2.X} ${included.lib.libs.XincoLibs.classpath.3.X} ${included.lib.libs.XincoLibs.classpath.4.X} ${included.lib.libs.XincoLibs.classpath.5.X} ${included.lib.libs.XincoLibs.classpath.6.X} ${included.lib.libs.XincoLibs.classpath.7.X} ${included.lib.libs.XincoLibs.classpath.8.X} ${included.lib.libs.XincoLibs.classpath.9.X} ${included.lib.libs.XincoLibs.classpath.10.X} ${included.lib.libs.XincoLibs.classpath.11.X} ${included.lib.libs.XincoLibs.classpath.12.X} ${included.lib.libs.XincoLibs.classpath.13.X} ${included.lib.libs.XincoLibs.classpath.14.X} ${included.lib.libs.XincoLibs.classpath.15.X} ${included.lib.libs.XincoLibs.classpath.16.X} ${included.lib.libs.XincoLibs.classpath.17.X} ${included.lib.libs.XincoLibs.classpath.18.X} ${included.lib.libs.XincoLibs.classpath.19.X} ${included.lib.libs.XincoLibs.classpath.20.X} ${included.lib.libs.XincoLibs.classpath.21.X} ${included.lib.libs.XincoLibs.classpath.22.X} ${included.lib.libs.XincoLibs.classpath.23.X} ${included.lib.libs.XincoLibs.classpath.24.X} ${included.lib.libs.XincoLibs.classpath.25.X} ${included.lib.reference.Xinco.jar} ${included.lib.reference.XincoExplorer.jar} ${included.lib.reference.XincoWorkflow.jar} "/>
         </manifest>
         <delete dir="${dist.ear.dir}/temp"/>
     </target>
     <target name="library-inclusion-in-archive" depends="init" unless="dist.ear.dir">
+        <copy file="${libs.XincoLibs.classpath.libfile.25}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.XincoLibs.classpath.libfile.24}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.XincoLibs.classpath.libfile.23}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.XincoLibs.classpath.libfile.22}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.XincoLibs.classpath.libfile.21}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.XincoLibs.classpath.libfile.20}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.XincoLibs.classpath.libfile.19}" todir="${build.web.dir.real}/WEB-INF/lib"/>

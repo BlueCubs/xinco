@@ -43,12 +43,9 @@ import com.bluecubs.xinco.core.*;
 import java.util.ResourceBundle;
 
 public class XincoCoreLanguageServer extends XincoCoreLanguage {
-    
     //create language object for data structures
     public XincoCoreLanguageServer(int attrID, XincoDBManager DBM) throws XincoException {
-        
         try {
-            
             Statement stmt = DBM.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_language WHERE id=" + attrID);
             
@@ -63,21 +60,20 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             if (RowCount < 1) {
                 throw new XincoException();
             }
-            
             stmt.close();
-            
         } catch (Exception e) {
             throw new XincoException();
         }
-        
     }
     
     //create language object for data structures
     public XincoCoreLanguageServer(int attrID, String attrS, String attrD) throws XincoException {
-        
         setId(attrID);
         setSign(attrS);
         setDesignation(attrD);
+    }
+    
+    public XincoCoreLanguageServer(){
         
     }
     
@@ -98,7 +94,6 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
                 stmt.close();
             } else {
                 setId(DBM.getNewID("xinco_core_language"));
-                
                 stmt = DBM.getConnection().createStatement();
                 stmt.executeUpdate("INSERT INTO xinco_core_language VALUES (" + getId() + ", '" + getSign().replaceAll("'","\\\\'") + "', '" + getDesignation().replaceAll("'","\\\\'") + "')");
                 stmt.close();

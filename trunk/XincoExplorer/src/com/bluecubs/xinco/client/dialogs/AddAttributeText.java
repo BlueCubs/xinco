@@ -64,7 +64,7 @@ public class AddAttributeText extends javax.swing.JDialog {
         setResizable(false);
         text.setEditable(!isViewOnly());
         //processing independent of creation
-        if (((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getStatus_number() == 1) {
+        if (((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 1) {
             save.setEnabled(true && !isViewOnly());
         } else {
             save.setEnabled(false);
@@ -80,9 +80,9 @@ public class AddAttributeText extends javax.swing.JDialog {
     }
     
     public void showMe(){
-        XincoMutableTreeNode node=this.explorer.getSession().currentTreeNodeSelection;
+        XincoMutableTreeNode node=this.explorer.getSession().getCurrentTreeNodeSelection();
         Vector attr=((XincoCoreData) node.getUserObject()).getXinco_add_attributes();
-        if (((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getStatus_number() == 1) {
+        if (((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 1) {
             save.setEnabled(true && !isViewOnly());
         } else {
             save.setEnabled(false);
@@ -95,7 +95,7 @@ public class AddAttributeText extends javax.swing.JDialog {
                 }
             }
         }else
-            text.setText(((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(0)).getAttrib_text());
+            text.setText(((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(0)).getAttrib_text());
         this.jScrollPane1.setLocation(0,0);
         this.setVisible(true);
     }
@@ -165,7 +165,7 @@ public class AddAttributeText extends javax.swing.JDialog {
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         save.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(0)).setAttrib_text(text.getText());
+                ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(0)).setAttrib_text(text.getText());
                 explorer.set_global_dialog_return_value(1);
                 setVisible(false);
             }

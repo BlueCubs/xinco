@@ -45,7 +45,6 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     private static int changer=0;
     //create data type attribute object for data structures
     public XincoCoreDataTypeAttributeServer(int attrID1, int attrID2, XincoDBManager DBM) throws XincoException {
-        
         try {
             Statement stmt = DBM.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data_type_attribute WHERE xinco_core_data_type_id=" + attrID1 + " AND attribute_id=" + attrID2);
@@ -63,23 +62,19 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             if (RowCount < 1) {
                 throw new XincoException();
             }
-            
             stmt.close();
         } catch (Exception e) {
             throw new XincoException();
         }
-        
     }
     
     //create data type attribute object for data structures
     public XincoCoreDataTypeAttributeServer(int attrID1, int attrID2, String attrD, String attrDT, int attrS) throws XincoException {
-        
         setXinco_core_data_type_id(attrID1);
         setAttribute_id(attrID2);
         setDesignation(attrD);
         setData_type(attrDT);
         setSize(attrS);
-        
     }
     
     //write to db
@@ -163,9 +158,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     
     //create complete list of data type attributes
     public static Vector getXincoCoreDataTypeAttributes(int attrID, XincoDBManager DBM) {
-        
         Vector coreDataTypeAttributes = new Vector();
-        
         try {
             Statement stmt = DBM.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data_type_attribute WHERE xinco_core_data_type_id =" + attrID + " ORDER BY attribute_id");
@@ -173,12 +166,10 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             while (rs.next()) {
                 coreDataTypeAttributes.addElement(new XincoCoreDataTypeAttributeServer(rs.getInt("xinco_core_data_type_id"), rs.getInt("attribute_id"), rs.getString("designation"), rs.getString("data_type"), rs.getInt("size")));
             }
-            
             stmt.close();
         } catch (Exception e) {
             coreDataTypeAttributes.removeAllElements();
         }
-        
         return coreDataTypeAttributes;
     }
     

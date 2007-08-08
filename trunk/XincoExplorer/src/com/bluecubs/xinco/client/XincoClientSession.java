@@ -49,37 +49,37 @@ public class XincoClientSession {
     /**
      * Service Endpoint
      */
-    public String service_endpoint = "";
+    private String service_endpoint = "";
     /**
      * User
      */
-    public XincoCoreUser user = null;
+    private XincoCoreUser user = null;
     //web service
     /**
      * Xinco Service
      */
-    XincoService xinco_service = null;
+    private XincoService xinco_service = null;
     /**
      * Xinco object
      */
-    public Xinco xinco = null;
+    private Xinco xinco = null;
     //repository
     /**
      * XincoClientRepository object
      */
-    public XincoClientRepository xincoClientRepository = null;
+    private XincoClientRepository xincoClientRepository = null;
     /**
      * Server version
      */
-    XincoVersion server_version = null;
+    private XincoVersion server_version = null;
     /**
      * Server groups
      */
-    public Vector server_groups = null;
+    private Vector server_groups = null;
     /**
      * Server users
      */
-    public Vector server_users = null;
+    private Vector server_users = null;
     /**
      * Server settings
      */
@@ -87,27 +87,27 @@ public class XincoClientSession {
     /**
      * Server languages
      */
-    public Vector server_languages = null;
+    private Vector server_languages = null;
     /**
      * Server data type
      */
-    public Vector server_datatypes = null;
+    private Vector server_datatypes = null;
     /**
      * Current tree node selection
      */
-    public XincoMutableTreeNode currentTreeNodeSelection = null;
+    private XincoMutableTreeNode currentTreeNodeSelection = null;
     /**
      * Clipboard tree node selection
      */
-    public Vector clipboardTreeNodeSelection = null;
+    private Vector clipboardTreeNodeSelection = null;
     /**
      * Current search result
      */
-    public Vector currentSearchResult = null;
+    private Vector currentSearchResult = null;
     /**
      * Status
      */
-    public int status = 0;	//0 = not connected
+    private int status = 0;	//0 = not connected
     
     /**
      * XincoClientSession
@@ -116,20 +116,36 @@ public class XincoClientSession {
      * 3 = disconnecting
      */
     public XincoClientSession(XincoExplorer e) {
-        setExplorer(e);
-        service_endpoint = "";
-        user = new XincoCoreUser();
+        setService_endpoint("");
+        setUser(new XincoCoreUser());
         //init repository
-        xincoClientRepository = new XincoClientRepository(getExplorer());
-        server_version = new XincoVersion();
-        server_groups = new Vector();
-        server_users = new Vector();
-        server_languages = new Vector();
-        server_datatypes = new Vector();
-        clipboardTreeNodeSelection = new Vector();
-        currentSearchResult = new Vector();
-        server_settings = new Vector();
-        status = 0;
+        setXincoClientRepository(new XincoClientRepository(getExplorer()));
+        setServer_version(new XincoVersion());
+        setServer_groups(new Vector());
+        setServer_users(new Vector());
+        setServer_languages(new Vector());
+        setServer_datatypes(new Vector());
+        setClipboardTreeNodeSelection(new Vector());
+        setCurrentSearchResult(new Vector());
+        setServer_settings(new Vector());
+        setStatus(0);
+        setExplorer(e);
+    }
+    
+    public XincoClientSession() {
+        setService_endpoint("");
+        setUser(new XincoCoreUser());
+        //init repository
+        setXincoClientRepository(new XincoClientRepository(getExplorer()));
+        setServer_version(new XincoVersion());
+        setServer_groups(new Vector());
+        setServer_users(new Vector());
+        setServer_languages(new Vector());
+        setServer_datatypes(new Vector());
+        setClipboardTreeNodeSelection(new Vector());
+        setCurrentSearchResult(new Vector());
+        setServer_settings(new Vector());
+        setStatus(0);
     }
 
     public XincoExplorer getExplorer() {
@@ -138,6 +154,126 @@ public class XincoClientSession {
 
     public void setExplorer(XincoExplorer explorer) {
         this.explorer = explorer;
+    }
+
+    public String getService_endpoint() {
+        return service_endpoint;
+    }
+
+    public void setService_endpoint(String service_endpoint) {
+        this.service_endpoint = service_endpoint;
+    }
+
+    public XincoCoreUser getUser() {
+        return user;
+    }
+
+    public void setUser(XincoCoreUser user) {
+        this.user = user;
+    }
+
+    public XincoService getXinco_service() {
+        return xinco_service;
+    }
+
+    public void setXinco_service(XincoService xinco_service) {
+        this.xinco_service = xinco_service;
+    }
+
+    public Xinco getXinco() {
+        return xinco;
+    }
+
+    public void setXinco(Xinco xinco) {
+        this.xinco = xinco;
+    }
+
+    public XincoClientRepository getXincoClientRepository() {
+        return xincoClientRepository;
+    }
+
+    public void setXincoClientRepository(XincoClientRepository xincoClientRepository) {
+        this.xincoClientRepository = xincoClientRepository;
+    }
+
+    public XincoVersion getServer_version() {
+        return server_version;
+    }
+
+    public void setServer_version(XincoVersion server_version) {
+        this.server_version = server_version;
+    }
+
+    public Vector getServer_groups() {
+        return server_groups;
+    }
+
+    public void setServer_groups(Vector server_groups) {
+        this.server_groups = server_groups;
+    }
+
+    public Vector getServer_users() {
+        return server_users;
+    }
+
+    public void setServer_users(Vector server_users) {
+        this.server_users = server_users;
+    }
+
+    public Vector getServer_settings() {
+        return server_settings;
+    }
+
+    public void setServer_settings(Vector server_settings) {
+        this.server_settings = server_settings;
+    }
+
+    public Vector getServer_languages() {
+        return server_languages;
+    }
+
+    public void setServer_languages(Vector server_languages) {
+        this.server_languages = server_languages;
+    }
+
+    public Vector getServer_datatypes() {
+        return server_datatypes;
+    }
+
+    public void setServer_datatypes(Vector server_datatypes) {
+        this.server_datatypes = server_datatypes;
+    }
+
+    public XincoMutableTreeNode getCurrentTreeNodeSelection() {
+        return currentTreeNodeSelection;
+    }
+
+    public void setCurrentTreeNodeSelection(XincoMutableTreeNode currentTreeNodeSelection) {
+        this.currentTreeNodeSelection = currentTreeNodeSelection;
+    }
+
+    public Vector getClipboardTreeNodeSelection() {
+        return clipboardTreeNodeSelection;
+    }
+
+    public void setClipboardTreeNodeSelection(Vector clipboardTreeNodeSelection) {
+        this.clipboardTreeNodeSelection = clipboardTreeNodeSelection;
+    }
+
+    public Vector getCurrentSearchResult() {
+        return currentSearchResult;
+    }
+
+    public void setCurrentSearchResult(Vector currentSearchResult) {
+        this.currentSearchResult = currentSearchResult;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
     
 }

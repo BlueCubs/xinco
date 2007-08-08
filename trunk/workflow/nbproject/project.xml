@@ -76,7 +76,7 @@
                     <file>${libs.jsf12-support.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library files="21">
+                <library files="25">
                     <file>${libs.XincoLibs.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
