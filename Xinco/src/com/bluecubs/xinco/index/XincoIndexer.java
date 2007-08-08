@@ -86,7 +86,6 @@ public class XincoIndexer {
             }
             return false;
         }
-        
         return true;
     }
     
@@ -134,43 +133,46 @@ public class XincoIndexer {
         int i = 0;
         Vector v = new Vector();
         Searcher searcher = null;
-        
         try {
-            
             searcher = new IndexSearcher(DBM.config.getFileIndexPath());
             Analyzer analyzer = new StandardAnalyzer();
-            
             //add language to query
             if (l != 0) {
-                s = s + " AND language:" + l;
+                s += " AND language:" + l;
             }
             QueryParser parser=new QueryParser("designation", analyzer);
             Query query = parser.parse(s);
-            
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Query: "+s);
             Hits hits = searcher.search(query);
-            
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Hits: "+hits.length());
             for (i=0;i<hits.length();i++) {
                 try {
+                    if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                        System.out.println("Document found: "+hits.doc(i).get("designation"));
                     v.addElement(new XincoCoreDataServer(Integer.parseInt(hits.doc(i).get("id")), DBM));
                 } catch (Exception xcde) {
-                    // don't add non-existing data
+                    if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                        xcde.printStackTrace();
                 }
                 if (i >= DBM.config.getMaxSearchResult()) {
                     break;
                 }
             }
-            
             searcher.close();
-            
         } catch (Exception e) {
             if (searcher != null) {
                 try {
                     searcher.close();
                 } catch (Exception se) {}
             }
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                e.printStackTrace();
             return null;
         }
-        
+        if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Returning "+v.size()+" results.");
         return v;
     }
     

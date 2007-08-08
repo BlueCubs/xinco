@@ -63,15 +63,19 @@ public class XincoDBManager{
     public static int count=0;
     
     public XincoDBManager() throws Exception {
-        setResourceBundle(ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages"));
-        //load connection configuartion
-        config = XincoConfigSingletonServer.getInstance();
-        setDatasource((DataSource)(new InitialContext()).lookup(config.getJNDIDB()));
-        getConnection().setAutoCommit(false);
-        //load configuration from database
-        fillSettings();
-        config.init(getXincoSettingServer());
-        count++;
+        try{
+            setResourceBundle(ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages"));
+            //load connection configuartion
+            config = XincoConfigSingletonServer.getInstance();
+            setDatasource((DataSource)(new InitialContext()).lookup(config.getJNDIDB()));
+            getConnection().setAutoCommit(false);
+            //load configuration from database
+            fillSettings();
+            config.init(getXincoSettingServer());
+            count++;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
     
     protected void fillSettings(){
@@ -94,7 +98,7 @@ public class XincoDBManager{
         } catch (SQLException ex) {
             ex.printStackTrace();
             printStats();
-        } 
+        }
     }
     
     /*
@@ -442,10 +446,10 @@ public class XincoDBManager{
             set.absolute(currentRow);               // Restore it
         return rowCount;
     }
-
+    
     public Locale getLocale() {
         if(loc==null)
             loc=Locale.getDefault();
         return loc;
-    }  
+    }
 }

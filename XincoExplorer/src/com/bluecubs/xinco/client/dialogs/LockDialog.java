@@ -141,7 +141,7 @@ public class LockDialog extends javax.swing.JDialog {
     private void connectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectActionPerformed
         try {
             //User might be locked by any user attempting to log in incorrectly
-            XincoCoreUser temp=temp = this.explorer.getSession().xinco.getCurrentXincoCoreUser(this.username.getText(),
+            XincoCoreUser temp=temp = this.explorer.getSession().getXinco().getCurrentXincoCoreUser(this.username.getText(),
                     new String(this.password.getPassword()));
             if (temp == null){
                 JOptionPane.showMessageDialog(this.explorer,
@@ -149,26 +149,24 @@ public class LockDialog extends javax.swing.JDialog {
                         explorer.getResourceBundle().getString("password.login.fail"),
                         JOptionPane.INFORMATION_MESSAGE);
             } else{
-                if(!temp.getUsername().equals(this.explorer.getSession().user.getUsername())) {
+                if(!temp.getUsername().equals(this.explorer.getSession().getUser().getUsername())) {
                     JOptionPane.showMessageDialog(this.explorer,
                             explorer.getResourceBundle().getString("password.unlock.differentuser"),
                             explorer.getResourceBundle().getString("password.unlock.differentuser.detail"),
                             JOptionPane.INFORMATION_MESSAGE);
                     this.explorer.resetTimer();
                     //reconnect with new user info
-                    this.explorer.getSession().status = 1;
+                    this.explorer.getSession().setStatus(1);
                     temp.setUsername(this.username.getText());
                     temp.setUserpassword(new String(this.password.getPassword()));
-                    this.explorer.getSession().user=temp;
+                    this.explorer.getSession().setUser(temp);
                     this.explorer.temp=temp;
                     XincoCoreNode xnode = new XincoCoreNode();
                     xnode.setId(1);
-                    xnode = this.explorer.getSession().xinco.getXincoCoreNode(xnode, this.explorer.getSession().user);
-                    this.explorer.getSession().xincoClientRepository.assignObject2TreeNode((XincoMutableTreeNode) (this.explorer.getSession().xincoClientRepository.treemodel).getRoot(),
+                    xnode = this.explorer.getSession().getXinco().getXincoCoreNode(xnode, this.explorer.getSession().getUser());
+                    this.explorer.getSession().getXincoClientRepository().assignObject2TreeNode((XincoMutableTreeNode) (this.explorer.getSession().getXincoClientRepository().treemodel).getRoot(),
                             xnode,
-                            this.explorer.getSession().xinco,
-                            this.explorer.getSession().user,
-                            2);
+this.explorer.getSession().getXinco(), this.explorer.getSession().getUser(),                             2);
                     this.explorer.refreshJTree();
                     this.explorer.markConnectionStatus();
                     this.setVisible(false);
@@ -186,7 +184,7 @@ public class LockDialog extends javax.swing.JDialog {
         this.setVisible(false);
         this.explorer.setLock(false);
         this.explorer.resetTimer();
-        this.explorer.getSession().status=0;
+        this.explorer.getSession().setStatus(0);
         this.explorer.markConnectionStatus();
         this.explorer.collapseAllNodes();
         this.password.setText("");

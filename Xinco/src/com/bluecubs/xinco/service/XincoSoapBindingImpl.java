@@ -65,9 +65,9 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     public com.bluecubs.xinco.core.XincoCoreUser getCurrentXincoCoreUser(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException {
         //login
         try {
-            XincoDBManager dbm = new XincoDBManager();
-            XincoCoreUserServer user = new XincoCoreUserServer(in0, in1, dbm);
-            dbm.getConnection().close();
+            XincoDBManager DBM = new XincoDBManager();
+            XincoCoreUserServer user = new XincoCoreUserServer(in0, in1, DBM);
+            DBM.getConnection().close();
             return (XincoCoreUser)user;
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,11 +77,11 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     
     public java.util.Vector getAllXincoCoreGroups(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException {
         try {
-            XincoDBManager dbm = new XincoDBManager();
+            XincoDBManager DBM = new XincoDBManager();
             //check if user exists
-            XincoCoreUserServer user = new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), dbm);
-            java.util.Vector v = XincoCoreGroupServer.getXincoCoreGroups(dbm);
-            dbm.getConnection().close();
+            XincoCoreUserServer user = new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), DBM);
+            java.util.Vector v = XincoCoreGroupServer.getXincoCoreGroups(DBM);
+            DBM.getConnection().close();
             return v;
         } catch (Exception e) {
             return null;
@@ -90,11 +90,11 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     
     public java.util.Vector getAllXincoCoreLanguages(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException {
         try {
-            XincoDBManager dbm = new XincoDBManager();
+            XincoDBManager DBM = new XincoDBManager();
             //check if user exists
-            XincoCoreUserServer user = new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), dbm);
-            java.util.Vector v = XincoCoreLanguageServer.getXincoCoreLanguages(dbm);
-            dbm.getConnection().close();
+            XincoCoreUserServer user = new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), DBM);
+            java.util.Vector v = XincoCoreLanguageServer.getXincoCoreLanguages(DBM);
+            DBM.getConnection().close();
             return v;
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,11 +104,11 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     
     public java.util.Vector getAllXincoCoreDataTypes(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException {
         try {
-            XincoDBManager dbm = new XincoDBManager();
+            XincoDBManager DBM = new XincoDBManager();
             //check if user exists
-            XincoCoreUserServer user = new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), dbm);
-            java.util.Vector v = XincoCoreDataTypeServer.getXincoCoreDataTypes(dbm);
-            dbm.getConnection().close();
+            XincoCoreUserServer user = new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), DBM);
+            java.util.Vector v = XincoCoreDataTypeServer.getXincoCoreDataTypes(DBM);
+            DBM.getConnection().close();
             return v;
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,9 +119,9 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     public com.bluecubs.xinco.core.XincoCoreNode getXincoCoreNode(com.bluecubs.xinco.core.XincoCoreNode in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
         try {
             int i = 0;
-            XincoDBManager dbm = new XincoDBManager();
-            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
-            XincoCoreNodeServer node = new XincoCoreNodeServer(in0.getId(), dbm);
+            XincoDBManager DBM = new XincoDBManager();
+            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), DBM);
+            XincoCoreNodeServer node = new XincoCoreNodeServer(in0.getId(), DBM);
             XincoCoreACE ace = XincoCoreACEServer.checkAccess(user, node.getXinco_core_acl());
             if (ace.isRead_permission()) {
                 boolean show_children = false;
@@ -137,13 +137,13 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                     show_children = true;
                 }
                 if (show_children) {
-                    node.fillXincoCoreNodes(dbm);
-                    node.fillXincoCoreData(dbm);
+                    node.fillXincoCoreNodes(DBM);
+                    node.fillXincoCoreData(DBM);
                 }
-                dbm.getConnection().close();
+                DBM.getConnection().close();
                 return (XincoCoreNode)node;
             } else {
-                dbm.getConnection().close();
+                DBM.getConnection().close();
                 return null;
             }
         } catch (Exception e) {
@@ -154,15 +154,15 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     
     public com.bluecubs.xinco.core.XincoCoreData getXincoCoreData(com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
         try {
-            XincoDBManager dbm = new XincoDBManager();
-            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
-            XincoCoreDataServer data = new XincoCoreDataServer(in0.getId(), dbm);
+            XincoDBManager DBM = new XincoDBManager();
+            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), DBM);
+            XincoCoreDataServer data = new XincoCoreDataServer(in0.getId(), DBM);
             XincoCoreACE ace = XincoCoreACEServer.checkAccess(user, data.getXinco_core_acl());
             if (ace.isRead_permission()) {
-                dbm.getConnection().close();
+                DBM.getConnection().close();
                 return (XincoCoreData)data;
             } else {
-                dbm.getConnection().close();
+                DBM.getConnection().close();
                 return null;
             }
         } catch (Exception e) {
@@ -188,7 +188,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     
     public byte[] downloadXincoCoreData(com.bluecubs.xinco.core.XincoCoreData in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
         try {
-            XincoDBManager dbm = new XincoDBManager();
+            XincoDBManager DBM = new XincoDBManager();
             XincoCoreDataServer data;
             XincoCoreACE ace;
             byte[] byte_array = null;
@@ -200,9 +200,9 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             AttachmentPart ap = null;
             InputStream in = null;
             ByteArrayOutputStream out = null;
-            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
+            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), DBM);
             //load data
-            data = new XincoCoreDataServer(in0.getId(), dbm);
+            data = new XincoCoreDataServer(in0.getId(), DBM);
             ace = XincoCoreACEServer.checkAccess(user, data.getXinco_core_acl());
             if (ace.isRead_permission()) {
                 //determine requested revision if data with only one specific log object is requested
@@ -225,7 +225,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 } else {
                     useSAAJ = false;
                 }
-                in = new CheckedInputStream(new FileInputStream(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.getFileRepositoryPath(), data.getId(), data.getId() + revision)), new CRC32());
+                in = new CheckedInputStream(new FileInputStream(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), data.getId(), data.getId() + revision)), new CRC32());
                 if (useSAAJ) {
                     //attach file to SOAP message
                     m = mc.getResponseMessage();
@@ -245,10 +245,10 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                     byte_array = out.toByteArray();
                     out.close();
                 }
-                dbm.getConnection().close();
+                DBM.getConnection().close();
                 return byte_array;
             } else {
-                dbm.getConnection().close();
+                DBM.getConnection().close();
                 return null;
             }
         } catch (Exception e) {
@@ -346,9 +346,9 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     public java.util.Vector findXincoCoreNodes(java.lang.String in0, com.bluecubs.xinco.core.XincoCoreLanguage in1, com.bluecubs.xinco.core.XincoCoreUser in2) throws java.rmi.RemoteException {
         /*
                 try {
-                        XincoDBManager dbm = new XincoDBManager();
-                        XincoCoreUserServer user = new XincoCoreUserServer(in2.getUsername(), in2.getUserpassword(), dbm);
-                        java.util.Vector v = XincoCoreNodeServer.findXincoCoreNodes(in0, in1.getId(), dbm);
+                        XincoDBManager DBM = new XincoDBManager();
+                        XincoCoreUserServer user = new XincoCoreUserServer(in2.getUsername(), in2.getUserpassword(), DBM);
+                        java.util.Vector v = XincoCoreNodeServer.findXincoCoreNodes(in0, in1.getId(), DBM);
                         return v;
                         } catch (Exception e) {
                                 return null;
@@ -358,7 +358,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     }
     
     public java.util.Vector findXincoCoreData(java.lang.String in0, com.bluecubs.xinco.core.XincoCoreLanguage in1, com.bluecubs.xinco.core.XincoCoreUser in2) throws java.rmi.RemoteException {
-        XincoDBManager dbm;
+        XincoDBManager DBM=null;
         boolean rp = false;
         java.util.Vector v = new java.util.Vector();
         java.util.Vector v2 = new java.util.Vector();
@@ -371,44 +371,76 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             in0 = in0.substring(1, in0.length()-1);
         }
         try {
-            dbm = new XincoDBManager();
-            XincoCoreUserServer user = new XincoCoreUserServer(in2.getUsername(), in2.getUserpassword(), dbm);
+            DBM = new XincoDBManager();
+            XincoCoreUserServer user = new XincoCoreUserServer(in2.getUsername(),
+                    in2.getUserpassword(), DBM);
             //search on index
-            java.util.Vector tv = XincoIndexer.findXincoCoreData(in0, in1.getId(), dbm);
+            java.util.Vector tv = XincoIndexer.findXincoCoreData(in0, in1.getId(), DBM);
             java.util.Vector tv2 = new java.util.Vector();
+//            Leave the acess right management to the explorer's tree'
             //check immediate permissions
-            for (int i=0; i<tv.size();i++) {
-                XincoCoreACE ace = XincoCoreACEServer.checkAccess(user, ((XincoCoreData)tv.elementAt(i)).getXinco_core_acl());
-                if (ace.isRead_permission()) {
-                    tv2.add(tv.elementAt(i));
+//            for (int i=0; i<tv.size();i++) {
+//                XincoCoreACE ace = XincoCoreACEServer.checkAccess(user, ((XincoCoreData)tv.elementAt(i)).getXinco_core_acl());
+//                if (ace.isRead_permission()) {
+//                    tv2.add(tv.get(i));
+//                }
+//            }
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                System.out.println("Hits-----------------------------------");
+                for(int i=0;i<tv.size();i++){
+                    System.out.println(((XincoCoreData)tv.get(i)).getDesignation());
                 }
             }
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+                System.out.println("Hits with read permissions-----------------------------------");
+                for(int i=0;i<tv2.size();i++){
+                    System.out.println(((XincoCoreData)tv2.get(i)).getDesignation());
+                }
+            }
+//            Leave the acess right management to the explorer's tree'
+            v.add(tv);
             //check permissions on parents
             java.util.Vector tvp;
-            for (int i=0; i<tv2.size();i++) {
-                tvp = XincoCoreNodeServer.getXincoCoreNodeParents(((XincoCoreData)tv2.elementAt(i)).getXinco_core_node_id(), dbm);
-                rp = true;
-                for (int j=0; j<tvp.size();j++) {
-                    XincoCoreACE ace = XincoCoreACEServer.checkAccess(user, ((XincoCoreNode)tvp.elementAt(j)).getXinco_core_acl());
-                    if (!ace.isRead_permission()) {
-                        rp = false;
-                        break;
-                    }
-                }
-                //for complete read permission, add Data + Parent Nodes to result!
-                if (rp) {
-                    v2 = new java.util.Vector();
-                    v2.add(tv2.elementAt(i));
-                    for (int j=tvp.size()-1; j>=0;j--) {
-                        v2.add(tvp.elementAt(j));
-                    }
-                    v.add(v2);
-                }
-            }
-            dbm.getConnection().close();
+//            for (int i=0; i<tv2.size();i++) {
+//                tvp = XincoCoreNodeServer.getXincoCoreNodeParents(((XincoCoreData)tv2.elementAt(i)).getXinco_core_node_id(), DBM);
+//                rp = true;
+//                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+//                    System.out.println("Checking permissions on parents-----------------------------------");
+//                for (int j=0; j<tvp.size();j++) {
+//                    XincoCoreACE ace = XincoCoreACEServer.checkAccess(user, ((XincoCoreNode)tvp.elementAt(j)).getXinco_core_acl());
+//                    if (!ace.isRead_permission()) {
+//                        if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+//                            System.out.println("Can't read parent!-----------------------------------");
+//                        rp = false;
+//                        break;
+//                    }
+//                }
+//                //for complete read permission, add Data + Parent Nodes to result!
+//                if (rp) {
+//                    v2 = new java.util.Vector();
+//                    v2.add(tv2.elementAt(i));
+//                    for (int j=tvp.size()-1; j>=0;j--) {
+//                        v2.add(tvp.elementAt(j));
+//                    }
+//                    if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value()){
+//                        System.out.println("Parents-----------------------------------");
+//                        for(int k=0;k<tv2.size();k++){
+//                            System.out.println(((XincoCoreData)tv2.get(k)).getDesignation());
+//                        }
+//                    }
+//                    v.add(v2);
+//                }
+//                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+//                    System.out.println(v.size()+" results found in server!");
+//            }
+            DBM.getConnection().close();
         } catch (Exception e) {
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                e.printStackTrace();
             return null;
         }
+        if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            System.out.println(v.size()+" results found in server returned!");
         return v;
     }
     
@@ -416,25 +448,25 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
         try {
             int i = 0;
             boolean insertnewnode = false;
-            XincoDBManager dbm = new XincoDBManager();
+            XincoDBManager DBM = new XincoDBManager();
             XincoCoreNodeServer node;
-            XincoCoreNodeServer parent_node = new XincoCoreNodeServer(0, 0, 1, "", 1, dbm);
+            XincoCoreNodeServer parent_node = new XincoCoreNodeServer(0, 0, 1, "", 1, DBM);
             XincoCoreACE ace;
             XincoCoreACE parent_ace = new XincoCoreACE();
             parent_ace.setWrite_permission(true);
-            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
+            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), DBM);
             if (in0.getId() <= 0) {
                 //insert new node
                 insertnewnode = true;
-                parent_node = new XincoCoreNodeServer(in0.getXinco_core_node_id(), dbm);
+                parent_node = new XincoCoreNodeServer(in0.getXinco_core_node_id(), DBM);
                 ace = XincoCoreACEServer.checkAccess(user, parent_node.getXinco_core_acl());
-                node = new XincoCoreNodeServer(0, 0, 1, "", 1, dbm);
+                node = new XincoCoreNodeServer(0, 0, 1, "", 1, DBM);
             } else {
                 //update existing node
-                node = new XincoCoreNodeServer(in0.getId(), dbm);
+                node = new XincoCoreNodeServer(in0.getId(), DBM);
                 //moving node requires write permission to target node
                 if (in0.getXinco_core_node_id() != node.getXinco_core_node_id()) {
-                    parent_node = new XincoCoreNodeServer(in0.getXinco_core_node_id(), dbm);
+                    parent_node = new XincoCoreNodeServer(in0.getXinco_core_node_id(), DBM);
                     parent_node.setChangerID(in1.getId());
                     parent_ace = XincoCoreACEServer.checkAccess(user, parent_node.getXinco_core_acl());
                 }
@@ -448,29 +480,29 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 node.setDesignation(in0.getDesignation());
                 node.setXinco_core_language(in0.getXinco_core_language());
                 node.setStatus_number(in0.getStatus_number());
-                node.write2DB(dbm);
+                node.write2DB(DBM);
                 //insert default ACL when inserting new node
                 if (insertnewnode) {
                     XincoCoreACEServer newace;
                     //owner
                     newace = new XincoCoreACEServer(0, user.getId(), 0, node.getId(), 0, true, true, true, true,true);
-                    newace.write2DB(dbm);
+                    newace.write2DB(DBM);
                     //inherit all group ACEs
                     for (i=0;i<parent_node.getXinco_core_acl().size();i++) {
                         newace = (XincoCoreACEServer)parent_node.getXinco_core_acl().elementAt(i);
                         if (newace.getXinco_core_group_id() > 0){
                             newace.setId(0);
                             newace.setXinco_core_node_id(node.getId());
-                            newace.write2DB(dbm);
+                            newace.write2DB(DBM);
                         }
                     }
                     //load new ACL
-                    node.setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(node.getId(), "xinco_core_node_id", dbm));
+                    node.setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(node.getId(), "xinco_core_node_id", DBM));
                 }
-                dbm.getConnection().close();
+                DBM.getConnection().close();
                 return (XincoCoreNode)node;
             } else {
-                dbm.getConnection().close();
+                DBM.getConnection().close();
                 return null;
             }
         } catch (Exception e) {
@@ -557,26 +589,26 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     
     public com.bluecubs.xinco.core.XincoCoreACE setXincoCoreACE(com.bluecubs.xinco.core.XincoCoreACE in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
         try {
-            XincoDBManager dbm = new XincoDBManager();
+            XincoDBManager DBM = new XincoDBManager();
             XincoCoreNodeServer node;
             XincoCoreDataServer data;
             XincoCoreACE ace = new XincoCoreACE();
             XincoCoreACEServer newace;
-            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
+            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), DBM);
             if (in0.getXinco_core_node_id() > 0) {
-                node = new XincoCoreNodeServer(in0.getXinco_core_node_id(), dbm);
+                node = new XincoCoreNodeServer(in0.getXinco_core_node_id(), DBM);
                 node.setChangerID(in1.getId());
                 ace = XincoCoreACEServer.checkAccess(user, node.getXinco_core_acl());
             }
             if (in0.getXinco_core_data_id() > 0) {
-                data = new XincoCoreDataServer(in0.getXinco_core_data_id(), dbm);
+                data = new XincoCoreDataServer(in0.getXinco_core_data_id(), DBM);
                 data.setChangerID(in1.getId());
                 ace = XincoCoreACEServer.checkAccess(user, data.getXinco_core_acl());
             }
             if (ace.isAdmin_permission()) {
                 //load ACE or create new one
                 if (in0.getId() > 0) {
-                    newace = new XincoCoreACEServer(in0.getId(), dbm);
+                    newace = new XincoCoreACEServer(in0.getId(), DBM);
                 } else {
                     newace = new XincoCoreACEServer(0, 0, 0, 0, 0, false, false, false, false, false);
                 }
@@ -592,11 +624,11 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 newace.setAdmin_permission(in0.isAdmin_permission());
                 newace.setOwner(in0.isOwner());
                 newace.setChangerID(user.getId());
-                newace.write2DB(dbm);
-                dbm.getConnection().close();
+                newace.write2DB(DBM);
+                DBM.getConnection().close();
                 return (XincoCoreACE)newace;
             } else {
-                dbm.getConnection().close();
+                DBM.getConnection().close();
                 return null;
             }
         } catch (Exception e) {
@@ -606,27 +638,27 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     
     public boolean removeXincoCoreACE(com.bluecubs.xinco.core.XincoCoreACE in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
         try {
-            XincoDBManager dbm = new XincoDBManager();
+            XincoDBManager DBM = new XincoDBManager();
             XincoCoreNodeServer node;
             XincoCoreDataServer data;
             XincoCoreACE ace = new XincoCoreACE();
-            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
+            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), DBM);
             if (in0.getXinco_core_node_id() > 0) {
-                node = new XincoCoreNodeServer(in0.getXinco_core_node_id(), dbm);
+                node = new XincoCoreNodeServer(in0.getXinco_core_node_id(), DBM);
                 node.setChangerID(in1.getId());
                 ace = XincoCoreACEServer.checkAccess(user, node.getXinco_core_acl());
             }
             if (in0.getXinco_core_data_id() > 0) {
-                data = new XincoCoreDataServer(in0.getXinco_core_data_id(), dbm);
+                data = new XincoCoreDataServer(in0.getXinco_core_data_id(), DBM);
                 data.setChangerID(in1.getId());
                 ace = XincoCoreACEServer.checkAccess(user, data.getXinco_core_acl());
             }
             if (ace.isAdmin_permission()) {
-                XincoCoreACEServer.removeFromDB(in0, dbm,user.getId());
-                dbm.getConnection().close();
+                XincoCoreACEServer.removeFromDB(in0, DBM,user.getId());
+                DBM.getConnection().close();
                 return true;
             } else {
-                dbm.getConnection().close();
+                DBM.getConnection().close();
                 return false;
             }
         } catch (Exception e) {
@@ -636,12 +668,12 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     
     public com.bluecubs.xinco.core.XincoCoreLog setXincoCoreLog(com.bluecubs.xinco.core.XincoCoreLog in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
         try {
-            XincoDBManager dbm = new XincoDBManager();
+            XincoDBManager DBM = new XincoDBManager();
             XincoCoreLogServer log;
-            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
+            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), DBM);
             //load log or create new one
             if (in0.getId() > 0) {
-                log = new XincoCoreLogServer(in0.getId(), dbm);
+                log = new XincoCoreLogServer(in0.getId(), DBM);
             } else {
                 log = new XincoCoreLogServer(0, 0, 0, 0, null, "", 0, 0, 0, "");
             }
@@ -654,8 +686,8 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             log.setOp_datetime(in0.getOp_datetime());
             log.setVersion(in0.getVersion());
             log.setUser(user);
-            log.write2DB(dbm);
-            dbm.getConnection().close();
+            log.write2DB(DBM);
+            DBM.getConnection().close();
             return (XincoCoreLog)log;
         } catch (Exception e) {
             return null;
@@ -664,11 +696,11 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     
     public com.bluecubs.xinco.core.XincoCoreUser setXincoCoreUser(com.bluecubs.xinco.core.XincoCoreUser in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException {
         try {
-            XincoDBManager dbm = new XincoDBManager();
-            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
+            XincoDBManager DBM = new XincoDBManager();
+            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), DBM);
             //Update audit trail
             user.setChange(in1.isChange());
-            user.write2DB(dbm);
+            user.write2DB(DBM);
             //update user
             user.setUsername(in0.getUsername());
             user.setUserpassword(in0.getUserpassword());
@@ -679,8 +711,8 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             user.setChange(false);
             user.setReason(in0.getReason());
             user.setAttempts(0);
-            user.write2DB(dbm);
-            dbm.getConnection().close();
+            user.write2DB(DBM);
+            DBM.getConnection().close();
             return (XincoCoreUser)user;
         } catch (Exception e) {
             return null;
@@ -709,11 +741,11 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     /*in1 is the original XincoUser, in0 is the new XincoUser with the proposed new password
      **/
     public boolean checkXincoCoreUserNewPassword(java.lang.String in0, com.bluecubs.xinco.core.XincoCoreUser in1, com.bluecubs.xinco.core.XincoCoreUser in2) throws java.rmi.RemoteException {
-        XincoDBManager dbm=null;
+        XincoDBManager DBM=null;
         XincoCoreUserServer user=null;
         try {
-            dbm = new XincoDBManager();
-            user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), dbm);
+            DBM = new XincoDBManager();
+            user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), DBM);
         } catch (XincoException ex) {
             ex.printStackTrace();
         } catch (Exception ex) {
@@ -724,11 +756,11 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     
     public Vector getAllXincoUsers(XincoCoreUser in0) throws RemoteException {
         try {
-            XincoDBManager dbm = new XincoDBManager();
+            XincoDBManager DBM = new XincoDBManager();
             //check if user exists
-            XincoCoreUserServer user = new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), dbm);
-            java.util.Vector v = user.getXincoCoreUsers(dbm);
-            dbm.getConnection().close();
+            XincoCoreUserServer user = new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), DBM);
+            java.util.Vector v = user.getXincoCoreUsers(DBM);
+            DBM.getConnection().close();
             return v;
         } catch (Exception e) {
             return null;
@@ -755,15 +787,15 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     
     public void setXincoAddAttribute(com.bluecubs.xinco.add.holders.XincoAddAttributeHolder in0, XincoCoreUser in1) throws RemoteException {
         XincoAddAttributeServer xaas=null;
-        XincoDBManager dbm=null;
+        XincoDBManager DBM=null;
         try {
-            dbm=new XincoDBManager();
+            DBM=new XincoDBManager();
             xaas= new XincoAddAttributeServer(in0.value.getXinco_core_data_id(),
                     in0.value.getAttribute_id(),in0.value.getAttrib_int(),in0.value.getAttrib_unsignedint(),
                     in0.value.getAttrib_double(),in0.value.getAttrib_varchar(),in0.value.getAttrib_text(),
                     in0.value.getAttrib_datetime());
             xaas.setChangerID(in0.value.getChangerID());
-            xaas.write2DB(dbm);
+            xaas.write2DB(DBM);
         } catch (XincoException ex) {
             ex.printStackTrace();
         } catch (Exception ex) {
@@ -774,7 +806,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
     public Vector getWorkflowAttributes(int workflow_id, XincoCoreUser user) throws RemoteException {
         return null;
     }
-
+    
     public String localizeString(String key,String locale) throws RemoteException {
         XincoDBManager DBM=null;
         String answer="";

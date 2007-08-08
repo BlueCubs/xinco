@@ -94,16 +94,14 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
             XincoCoreACE temp_ace = new XincoCoreACE();
             // get ace
             if (draggedNode.getUserObject().getClass() == XincoCoreNode.class) {
-                temp_ace = XincoCoreACEClient.checkAccess(getTree().getExplorer().getSession().user,
-                        ((XincoCoreNode) draggedNode.getUserObject()).getXinco_core_acl());
+                temp_ace = XincoCoreACEClient.checkAccess(getTree().getExplorer().getSession().getUser(),                         ((XincoCoreNode) draggedNode.getUserObject()).getXinco_core_acl());
             }
             if (draggedNode.getUserObject().getClass() == XincoCoreData.class) {
-                temp_ace = XincoCoreACEClient.checkAccess(getTree().getExplorer().getSession().user,
-                        ((XincoCoreData) draggedNode.getUserObject()).getXinco_core_acl());
+                temp_ace = XincoCoreACEClient.checkAccess(getTree().getExplorer().getSession().getUser(),                         ((XincoCoreData) draggedNode.getUserObject()).getXinco_core_acl());
             }
             //Drop only if you have write permissions
             if (temp_ace.isWrite_permission()) {
-                getTree().getExplorer().getSession().currentTreeNodeSelection=(XincoMutableTreeNode)draggedNodeParent;
+                getTree().getExplorer().getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode)draggedNodeParent);
                 ((DefaultTreeModel)getTree().getModel()).nodeStructureChanged(draggedNodeParent);
                 getTree().expandPath(new TreePath(draggedNodeParent.getPath()));
                 getTree().expandPath(new TreePath(draggedNode.getPath()));

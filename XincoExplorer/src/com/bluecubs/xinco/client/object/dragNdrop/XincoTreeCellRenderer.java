@@ -69,7 +69,7 @@ public class XincoTreeCellRenderer extends DefaultTreeCellRenderer{
                 hasFocus);
         if (leaf) {
             //Only attempt if connected!
-            if(explorer.getSession().xinco!=null){
+            if(explorer.getSession().getXinco()!=null){
                 if(!isFolder(value)){
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
                     String ext=value.toString().substring(0,value.toString().indexOf("(")-1);

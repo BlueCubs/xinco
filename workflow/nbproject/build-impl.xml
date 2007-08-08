@@ -492,6 +492,10 @@
         <copy file="${libs.jsf12-support.classpath.libfile.3}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jsf12-support.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jsf12-support.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.XincoLibs.classpath.libfile.25}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.XincoLibs.classpath.libfile.24}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.XincoLibs.classpath.libfile.23}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.XincoLibs.classpath.libfile.22}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.XincoLibs.classpath.libfile.21}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.XincoLibs.classpath.libfile.20}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.XincoLibs.classpath.libfile.19}" todir="${build.web.dir.real}/WEB-INF/lib"/>
@@ -563,6 +567,10 @@
         <copy file="${libs.jsf12-support.classpath.libfile.3}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jsf12-support.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jsf12-support.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.XincoLibs.classpath.libfile.25}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.XincoLibs.classpath.libfile.24}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.XincoLibs.classpath.libfile.23}" todir="${build.web.dir.real}/WEB-INF/lib"/>
+        <copy file="${libs.XincoLibs.classpath.libfile.22}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.XincoLibs.classpath.libfile.21}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.XincoLibs.classpath.libfile.20}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.XincoLibs.classpath.libfile.19}" todir="${build.web.dir.real}/WEB-INF/lib"/>

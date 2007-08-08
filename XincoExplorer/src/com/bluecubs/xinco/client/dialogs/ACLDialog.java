@@ -95,9 +95,9 @@ public class ACLDialog extends javax.swing.JDialog {
      * Loads the ACL group list
      */
     protected void loadACLGroupListACL() {
-        String[] list = new String[this.explorer.getSession().server_groups.size()];
-        for (int i=0;i<this.explorer.getSession().server_groups.size();i++) {
-            list[i]=new String(((XincoCoreGroup)this.explorer.getSession().server_groups.elementAt(i)).getDesignation());
+        String[] list = new String[this.explorer.getSession().getServer_groups().size()];
+        for (int i=0;i<this.explorer.getSession().getServer_groups().size();i++) {
+            list[i]=new String(((XincoCoreGroup)this.explorer.getSession().getServer_groups().elementAt(i)).getDesignation());
         }
         setACLGroupModel(list);
     }
@@ -106,9 +106,9 @@ public class ACLDialog extends javax.swing.JDialog {
      * Loads the user list
      */
     protected void loadACLUserListACL() {
-        String[] list = new String[this.explorer.getSession().server_users.size()];
-        for (int i=0;i<this.explorer.getSession().server_users.size();i++) {
-            list[i]=new String(((XincoCoreUser)this.explorer.getSession().server_users.elementAt(i)).getName());
+        String[] list = new String[this.explorer.getSession().getServer_users().size()];
+        for (int i=0;i<this.explorer.getSession().getServer_users().size();i++) {
+            list[i]=new String(((XincoCoreUser)this.explorer.getSession().getServer_users().elementAt(i)).getName());
         }
         setACLUserModel(list);
     }
@@ -121,11 +121,11 @@ public class ACLDialog extends javax.swing.JDialog {
         String temp_string = "";
         Vector temp_vector = new Vector();
         
-        if (this.explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
-            temp_vector = ((XincoCoreNode)this.explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_acl();
+        if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
+            temp_vector = ((XincoCoreNode)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
         }
-        if (this.explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreData.class) {
-            temp_vector = ((XincoCoreData)this.explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_acl();
+        if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
+            temp_vector = ((XincoCoreData)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
         }
         if(temp_acl!=null){
             temp_vector=temp_acl;
@@ -139,10 +139,10 @@ public class ACLDialog extends javax.swing.JDialog {
                         "=" + temp_ace.getXinco_core_user_id();
             }
             if (temp_ace.getXinco_core_group_id() > 0) {
-                for (j=0;j<this.explorer.getSession().server_groups.size();j++) {
-                    if (((XincoCoreGroup)this.explorer.getSession().server_groups.elementAt(j)).getId() == temp_ace.getXinco_core_group_id()) {
+                for (j=0;j<this.explorer.getSession().getServer_groups().size();j++) {
+                    if (((XincoCoreGroup)this.explorer.getSession().getServer_groups().elementAt(j)).getId() == temp_ace.getXinco_core_group_id()) {
                         temp_string = this.explorer.getResourceBundle().getString("general.group") +
-                                ": " + ((XincoCoreGroup)this.explorer.getSession().server_groups.elementAt(j)).getDesignation();
+                                ": " + ((XincoCoreGroup)this.explorer.getSession().getServer_groups().elementAt(j)).getDesignation();
                         break;
                     }
                 }
@@ -409,18 +409,18 @@ public class ACLDialog extends javax.swing.JDialog {
         if (this.currentACLList.getSelectedIndex() >= 0) {
             try {
                 temp_ace = new XincoCoreACE();
-                if (this.explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
-                    temp_acl = ((XincoCoreNode)this.explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_acl();
+                if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
+                    temp_acl = ((XincoCoreNode)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
                     temp_ace = (XincoCoreACE)temp_acl.elementAt(this.currentACLList.getSelectedIndex());
                 }
-                if (this.explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreData.class) {
-                    temp_acl = ((XincoCoreData)this.explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_acl();
+                if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
+                    temp_acl = ((XincoCoreData)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
                     temp_ace = (XincoCoreACE)temp_acl.elementAt(this.currentACLList.getSelectedIndex());
                 }
                 if (temp_ace.isOwner()) {
                     throw new XincoException(this.explorer.getResourceBundle().getString("window.acl.cannotremoveowner"));
                 }
-                if (!this.explorer.getSession().xinco.removeXincoCoreACE(temp_ace, this.explorer.getSession().user)) {
+                if (!this.explorer.getSession().getXinco().removeXincoCoreACE(temp_ace, this.explorer.getSession().getUser())) {
                     throw new XincoException(this.explorer.getResourceBundle().getString("error.noadminpermission"));
                 }
                 //remove ACE from ACL and reload
@@ -443,15 +443,15 @@ public class ACLDialog extends javax.swing.JDialog {
         XincoCoreACE ace=null;
         if (this.groupList.getSelectedIndex() >= 0) {
             try {
-                if (this.explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
-                    temp_acl = ((XincoCoreNode)this.explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_acl();
+                if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
+                    temp_acl = ((XincoCoreNode)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
                 }
-                if (this.explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreData.class) {
-                    temp_acl = ((XincoCoreData)this.explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_acl();
+                if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
+                    temp_acl = ((XincoCoreData)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
                 }
                 //check if an ACE already exists for selected group
                 for (i=0;i<temp_acl.size();i++) {
-                    if (((XincoCoreACE)temp_acl.elementAt(i)).getXinco_core_group_id() == ((XincoCoreGroup)this.explorer.getSession().server_groups.elementAt(this.groupList.getSelectedIndex())).getId()) {
+                    if (((XincoCoreACE)temp_acl.elementAt(i)).getXinco_core_group_id() == ((XincoCoreGroup)this.explorer.getSession().getServer_groups().elementAt(this.groupList.getSelectedIndex())).getId()) {
                         isNew=false;
                         old = i;
                     }
@@ -459,19 +459,19 @@ public class ACLDialog extends javax.swing.JDialog {
                 if(isNew){
                     //create new ACE
                     ace = new XincoCoreACE();
-                    ace.setXinco_core_group_id(((XincoCoreGroup)this.explorer.getSession().server_groups.elementAt(this.groupList.getSelectedIndex())).getId());
-                    if (this.explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
-                        ace.setXinco_core_node_id(((XincoCoreNode)this.explorer.getSession().currentTreeNodeSelection.getUserObject()).getId());
+                    ace.setXinco_core_group_id(((XincoCoreGroup)this.explorer.getSession().getServer_groups().elementAt(this.groupList.getSelectedIndex())).getId());
+                    if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
+                        ace.setXinco_core_node_id(((XincoCoreNode)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
                     }
-                    if (this.explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreData.class) {
-                        ace.setXinco_core_data_id(((XincoCoreData)this.explorer.getSession().currentTreeNodeSelection.getUserObject()).getId());
+                    if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
+                        ace.setXinco_core_data_id(((XincoCoreData)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
                     }
                     ace.setRead_permission(this.Read.isSelected());
                     ace.setWrite_permission(this.Write.isSelected());
                     ace.setExecute_permission(this.Execute.isSelected());
                     ace.setAdmin_permission(this.Admin.isSelected());
                     
-                    if ((ace = this.explorer.getSession().xinco.setXincoCoreACE(ace, this.explorer.getSession().user)) == null) {
+                    if ((ace = this.explorer.getSession().getXinco().setXincoCoreACE(ace, this.explorer.getSession().getUser())) == null) {
                         throw new XincoException(this.explorer.getResourceBundle().getString("error.noadminpermission"));
                     }
                     //add ACE to ACL
@@ -484,7 +484,7 @@ public class ACLDialog extends javax.swing.JDialog {
                     ace.setExecute_permission(this.Execute.isSelected());
                     ace.setAdmin_permission(this.Admin.isSelected());
                     
-                    if ((ace = this.explorer.getSession().xinco.setXincoCoreACE(ace, this.explorer.getSession().user)) == null) {
+                    if ((ace = this.explorer.getSession().getXinco().setXincoCoreACE(ace, this.explorer.getSession().getUser())) == null) {
                         throw new XincoException(this.explorer.getResourceBundle().getString("error.noadminpermission"));
                     }
                 }
@@ -501,32 +501,32 @@ public class ACLDialog extends javax.swing.JDialog {
         }
         if (this.userList.getSelectedIndex() >= 0) {
             try {
-                if (this.explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
-                    temp_acl = ((XincoCoreNode)this.explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_acl();
+                if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
+                    temp_acl = ((XincoCoreNode)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
                 }
-                if (this.explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreData.class) {
-                    temp_acl = ((XincoCoreData)this.explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_acl();
+                if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
+                    temp_acl = ((XincoCoreData)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
                 }
                 //check if an ACE already exists for selected group
                 for (i=0;i<temp_acl.size();i++) {
-                    if (((XincoCoreACE)temp_acl.elementAt(i)).getXinco_core_user_id() == ((XincoCoreUser)this.explorer.getSession().server_users.elementAt(this.userList.getSelectedIndex())).getId()) {
+                    if (((XincoCoreACE)temp_acl.elementAt(i)).getXinco_core_user_id() == ((XincoCoreUser)this.explorer.getSession().getServer_users().elementAt(this.userList.getSelectedIndex())).getId()) {
                         throw new XincoException(this.explorer.getResourceBundle().getString("window.acl.userexists"));
                     }
                 }
                 //create new ACE
                 ace = new XincoCoreACE();
-                ace.setXinco_core_user_id(((XincoCoreUser)this.explorer.getSession().server_users.elementAt(this.userList.getSelectedIndex())).getId());
-                if (this.explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
-                    ace.setXinco_core_node_id(((XincoCoreNode)this.explorer.getSession().currentTreeNodeSelection.getUserObject()).getId());
+                ace.setXinco_core_user_id(((XincoCoreUser)this.explorer.getSession().getServer_users().elementAt(this.userList.getSelectedIndex())).getId());
+                if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
+                    ace.setXinco_core_node_id(((XincoCoreNode)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
                 }
-                if (this.explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreData.class) {
-                    ace.setXinco_core_data_id(((XincoCoreData)this.explorer.getSession().currentTreeNodeSelection.getUserObject()).getId());
+                if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
+                    ace.setXinco_core_data_id(((XincoCoreData)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
                 }
                 ace.setRead_permission(this.Read.isSelected());
                 ace.setWrite_permission(this.Write.isSelected());
                 ace.setExecute_permission(this.Execute.isSelected());
                 ace.setAdmin_permission(this.Admin.isSelected());
-                if ((ace = this.explorer.getSession().xinco.setXincoCoreACE(ace, this.explorer.getSession().user)) == null) {
+                if ((ace = this.explorer.getSession().getXinco().setXincoCoreACE(ace, this.explorer.getSession().getUser())) == null) {
                     throw new XincoException(this.explorer.getResourceBundle().getString("error.noadminpermission"));
                 }
                 //add ACE to ACL and reload

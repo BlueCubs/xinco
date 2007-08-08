@@ -63,8 +63,8 @@ public class XincoImportThread extends Thread {
             ResourceBundle xerb = this.explorer.getResourceBundle();
             this.explorer.getJTreeRepository().setEnabled(false);
             //import data structure
-            if (explorer.getSession().currentTreeNodeSelection != null) {
-                if (explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
+            if (explorer.getSession().getCurrentTreeNodeSelection() != null) {
+                if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
                     JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.info"),
                             xerb.getString("window.massiveimport"),
                             JOptionPane.INFORMATION_MESSAGE);
@@ -86,11 +86,11 @@ public class XincoImportThread extends Thread {
                                 xerb.getString("window.massiveimport"),
                                 JOptionPane.INFORMATION_MESSAGE);
                         explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.progress"));
-                        explorer.importContentOfFolder((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject(),
+                        explorer.importContentOfFolder((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject(),
                                 new File(explorer.current_path));
                         this.sleep(10000);
                         // select current path
-                        explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().currentTreeNodeSelection.getPath()));
+                        explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
                         // update transaction info
                         explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.importsuccess"));
                     } catch (Exception ie) {
@@ -104,8 +104,7 @@ public class XincoImportThread extends Thread {
                 }
             }
             try {
-                explorer.getSession().xinco.indexFiles(explorer.getFilesToBeIndexed(),
-                        explorer.getSession().user);
+                explorer.getSession().getXinco().indexFiles(explorer.getFilesToBeIndexed(), explorer.getSession().getUser());
                 System.err.println("Indexing complete!");
             } catch (RemoteException ex) {
                 ex.printStackTrace();

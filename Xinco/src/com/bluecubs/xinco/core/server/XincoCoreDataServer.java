@@ -47,12 +47,13 @@ public class XincoCoreDataServer extends XincoCoreData {
     private XincoCoreUserServer user;
     //create data object for data structures
     public XincoCoreDataServer(int attrID, XincoDBManager DBM) throws XincoException {
-        
         try {
-            
             Statement stmt = DBM.getConnection().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data WHERE id=" + attrID);
-            
+            String sql="SELECT * FROM xinco_core_data WHERE id=" + attrID;
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println(sql);
+            ResultSet rs = stmt.executeQuery(sql);
+                
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {
@@ -73,14 +74,14 @@ public class XincoCoreDataServer extends XincoCoreData {
             if (RowCount < 1) {
                 throw new XincoException();
             }
-            
             stmt.close();
-            
         } catch (Exception e) {
-            getXinco_core_acl().removeAllElements();
+            if(getXinco_core_acl()!=null)
+                getXinco_core_acl().removeAllElements();
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                e.printStackTrace();
             throw new XincoException();
         }
-        
     }
     
     //create data object for data structures
@@ -92,8 +93,6 @@ public class XincoCoreDataServer extends XincoCoreData {
         setXinco_core_data_type(new XincoCoreDataTypeServer(attrDTID, DBM));
         //load logs
         setXinco_core_logs(XincoCoreLogServer.getXincoCoreLogs(attrID, DBM));
-        //load add attributes
-        //setXinco_add_attributes(XincoAddAttributeServer.getXincoAddAttributes(attrID, DBM));
         //security: don't load add attribute, force direct access to data including check of access rights!
         setXinco_add_attributes(new Vector());
         setDesignation(attrD);
@@ -176,32 +175,32 @@ public class XincoCoreDataServer extends XincoCoreData {
     
     public static void removeFromDB(XincoDBManager DBM,int userID,int id)throws XincoException{
         try{
-        Statement stmt;
-        XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
+            Statement stmt;
+            XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
         /*
          * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
         audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+id},
                 DBM,"audit.general.delete",userID);
-        */
-        stmt = DBM.getConnection().createStatement();
-        stmt.executeUpdate("DELETE FROM xinco_core_log WHERE xinco_core_data_id=" + id);
-        stmt.close();
+         */
+            stmt = DBM.getConnection().createStatement();
+            stmt.executeUpdate("DELETE FROM xinco_core_log WHERE xinco_core_data_id=" + id);
+            stmt.close();
         /*
          * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
         audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+id},
                 DBM,"audit.general.delete",userID);
-        */
-        stmt = DBM.getConnection().createStatement();
-        stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE xinco_core_data_id=" + id);
-        stmt.close();
+         */
+            stmt = DBM.getConnection().createStatement();
+            stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE xinco_core_data_id=" + id);
+            stmt.close();
         /*
          * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
         audit.updateAuditTrail("xinco_add_attribute",new String [] {"id ="+id},
                 DBM,"audit.general.delete",userID);
-        */
-        stmt = DBM.getConnection().createStatement();
-        stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_core_data_id=" + id);
-        stmt.close();
+         */
+            stmt = DBM.getConnection().createStatement();
+            stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_core_data_id=" + id);
+            stmt.close();
         }catch (Exception e) {
             try {
                 DBM.getConnection().rollback();

@@ -157,7 +157,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
         GregorianCalendar cal = null;
         getSettings();
         try {
-            stmt = DBM.getConnection().createStatement();
+            stmt = DBM.getStatement();
             String sql="SELECT * FROM xinco_core_user WHERE username='" +
                     attrUN + "' AND userpassword=MD5('" + attrUPW + "') AND status_number <> 2";
             if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
@@ -225,28 +225,30 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 stmt = DBM.getConnection().createStatement();
                 if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                     System.out.println(sql);
-                rs = stmt.executeQuery(sql);
+                ResultSet rs2 = stmt.executeQuery(sql);
                 //increase number of attempts
-                if(rs.next()){
-                    setId(rs.getInt("id"));
-                    setUsername(rs.getString("username"));
+                if(rs2.next()){
+                    setId(rs2.getInt("id"));
+                    setUsername(rs2.getString("username"));
                     //Don't rehash the pasword!
                     hashPassword = false;
-                    setUserpassword(rs.getString("userpassword"));
-                    setName(rs.getString("name"));
-                    setFirstname(rs.getString("firstname"));
-                    setEmail(rs.getString("email"));
-                    setStatus_number(rs.getInt("status_number"));
+                    setUserpassword(rs2.getString("userpassword"));
+                    setName(rs2.getString("name"));
+                    setFirstname(rs2.getString("firstname"));
+                    setEmail(rs2.getString("email"));
+                    setStatus_number(rs2.getInt("status_number"));
                     //Increase attempts after a unsuccessfull login.
                     setIncreaseAttempts(true);
-                    setLastModified(rs.getTimestamp("last_modified"));
+                    setLastModified(rs2.getTimestamp("last_modified"));
                     setChange(false);
                     write2DB(dbm);
                 }
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    ex.printStackTrace();
             }
-            e.printStackTrace();
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                e.printStackTrace();
             throw new XincoException();
         }
     }

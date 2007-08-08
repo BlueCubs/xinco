@@ -37,6 +37,7 @@
 package com.bluecubs.xinco.conf;
 
 import com.bluecubs.xinco.core.XincoSetting;
+import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
 import java.util.Vector;
 import javax.naming.InitialContext;
@@ -115,7 +116,12 @@ public class XincoConfigSingletonServer {
             }
             getIndexFileTypesExt().add(xss.getSetting("xinco/IndexNoIndex").getString_value());
         } catch (Exception ex) {
-            ex.printStackTrace();
+            try {
+                if(new XincoDBManager().getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                ex.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             //Default values
             FileRepositoryPath = "";
             FileIndexPath = "";
