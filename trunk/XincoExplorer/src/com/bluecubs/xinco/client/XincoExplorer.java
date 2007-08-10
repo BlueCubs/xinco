@@ -1080,7 +1080,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 xnode = xincoClientSession.getXinco().getXincoCoreNode(xnode, xincoClientSession.getUser());
                 xincoClientSession.getXincoClientRepository().assignObject2TreeNode((XincoMutableTreeNode) (xincoClientSession.getXincoClientRepository().treemodel).getRoot(),
                         xnode,
-xincoClientSession.getXinco(), xincoClientSession.getUser(),                         2);
+                        xincoClientSession.getXinco(), xincoClientSession.getUser(),                         2);
                 getJTreeRepository().expandPath(new TreePath(xincoClientSession.getXincoClientRepository().treemodel.getPathToRoot((XincoMutableTreeNode) (xincoClientSession.getXincoClientRepository().treemodel).getRoot())));
                 markConnectionStatus();
                 if(temp.getStatus_number()==3){
@@ -1121,7 +1121,7 @@ xincoClientSession.getXinco(), xincoClientSession.getUser(),                    
                 xnode = getSession().getXinco().getXincoCoreNode(xnode, getSession().getUser());
                 getSession().getXincoClientRepository().assignObject2TreeNode((XincoMutableTreeNode) (explorer.getSession().getXincoClientRepository().treemodel).getRoot(),
                         xnode,
-explorer.getSession().getXinco(), explorer.getSession().getUser(),                         2);
+                        explorer.getSession().getXinco(), explorer.getSession().getUser(),                         2);
                 jTreeRepository.expandPath(new TreePath(getSession().getXincoClientRepository().treemodel.getPathToRoot((XincoMutableTreeNode) (getSession().getXincoClientRepository().treemodel).getRoot())));
                 collapseAllNodes();
                 getProgressBar().hide();
@@ -1529,8 +1529,9 @@ explorer.getSession().getXinco(), explorer.getSession().getUser(),              
         getProgressBar().setTitle(xerb.getString("datawizard.fileuploadinfo"));
         getProgressBar().show();
         for (i = 0; i < folder_list.length; i++) {
-            if (folder_list[i].isFile()) {
-                System.out.println("Processing file: "+folder_list[i].getName()+"("+(i+1)+"/"+folder_list.length+")");
+            if (folder_list.length >0 && folder_list[i].isFile()) {
+                if(getSettings().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("Processing file: "+folder_list[i].getName()+"("+(i+1)+"/"+folder_list.length+")");
                 // set current node to new one
                 newnode = new XincoMutableTreeNode(new XincoCoreData(),this);
                 // set data attributes
@@ -1543,7 +1544,7 @@ explorer.getSession().getXinco(), explorer.getSession().getUser(),              
                 ((XincoCoreData) newnode.getUserObject()).setXinco_core_logs(new Vector());
                 ((XincoCoreData) newnode.getUserObject()).setStatus_number(1);
                 xincoClientSession.getXincoClientRepository().treemodel.insertNodeInto(newnode,
-xincoClientSession.getCurrentTreeNodeSelection(),                         xincoClientSession.getCurrentTreeNodeSelection().getChildCount());
+                        xincoClientSession.getCurrentTreeNodeSelection(),                         xincoClientSession.getCurrentTreeNodeSelection().getChildCount());
                 xincoClientSession.setCurrentTreeNodeSelection(newnode);
                 // add specific attributes
                 XincoAddAttribute xaa;
@@ -1551,7 +1552,6 @@ xincoClientSession.getCurrentTreeNodeSelection(),                         xincoC
                 for (j = 0; j <
                         ((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().size(); j++) {
                     xaa = new XincoAddAttribute();
-                    // xaa.setAttribute_id(j+1); // bug => attribute_ids might be missing in between
                     xaa.setAttribute_id(((XincoCoreDataTypeAttribute) xcdt1.getXinco_core_data_type_attributes().elementAt(j)).getAttribute_id());
                     xaa.setAttrib_varchar("");
                     xaa.setAttrib_text("");
@@ -1672,6 +1672,7 @@ xincoClientSession.getCurrentTreeNodeSelection(),                         xincoC
                 ((XincoCoreNode) newnode.getUserObject()).setDesignation(folder_list[i].getName());
                 ((XincoCoreNode) newnode.getUserObject()).setXinco_core_language(xcl1);
                 ((XincoCoreNode) newnode.getUserObject()).setStatus_number(1);
+                if(getSettings().getSetting("general.setting.enable.developermode").isBool_value()){
                 System.out.println("Node Info:");
                 System.out.println(((XincoCoreNode) newnode.getUserObject()).getXinco_core_node_id());
                 System.out.println(((XincoCoreNode) newnode.getUserObject()).getDesignation());
@@ -1679,15 +1680,18 @@ xincoClientSession.getCurrentTreeNodeSelection(),                         xincoC
                 System.out.println(((XincoCoreNode) newnode.getUserObject()).getStatus_number());
                 System.out.println("------------------------");
                 System.out.println("Node Selected: "+xincoClientSession.getCurrentTreeNodeSelection());
+                }
                 //Recovery code
                 if(xincoClientSession.getCurrentTreeNodeSelection()==null){
                     xincoClientSession.setCurrentTreeNodeSelection(previousnode);
                 }
                 //-------
+                if(getSettings().getSetting("general.setting.enable.developermode").isBool_value()){
                 System.out.println("Child Count: "+xincoClientSession.getCurrentTreeNodeSelection().getChildCount());
                 System.out.println("New node: "+newnode);
+                }
                 xincoClientSession.getXincoClientRepository().treemodel.insertNodeInto(newnode,
-xincoClientSession.getCurrentTreeNodeSelection(),                         xincoClientSession.getCurrentTreeNodeSelection().getChildCount());
+                        xincoClientSession.getCurrentTreeNodeSelection(),                         xincoClientSession.getCurrentTreeNodeSelection().getChildCount());
                 previousnode=xincoClientSession.getCurrentTreeNodeSelection();
                 xincoClientSession.setCurrentTreeNodeSelection(newnode);
                 // save node to server

@@ -511,7 +511,7 @@ public class XincoRepositoryActionHandler {
                             }
                             if(!dragNdrop){
                                 explorer.getSession().getXincoClientRepository().treemodel.insertNodeInto(temp_node,
-explorer.getSession().getCurrentTreeNodeSelection(),                                         explorer.getSession().getCurrentTreeNodeSelection().getChildCount());
+                                        explorer.getSession().getCurrentTreeNodeSelection(),                                         explorer.getSession().getCurrentTreeNodeSelection().getChildCount());
                             } else{
                                 explorer.getSession().getXincoClientRepository().treemodel.insertNodeInto(temp_node,
                                         explorer.getJTreeRepository().getTargetTreeNode(),
@@ -561,7 +561,7 @@ explorer.getSession().getCurrentTreeNodeSelection(),                            
                             explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(temp_node);
                             if(!dragNdrop){
                                 explorer.getSession().getXincoClientRepository().treemodel.insertNodeInto(temp_node,
-explorer.getSession().getCurrentTreeNodeSelection(),                                         explorer.getSession().getCurrentTreeNodeSelection().getChildCount());
+                                        explorer.getSession().getCurrentTreeNodeSelection(),                                         explorer.getSession().getCurrentTreeNodeSelection().getChildCount());
                             }
                             if(dragNdrop){
                                 //For some reason removing the node from parent changes the xinco core node id to was it was. Modify node afterwards.
