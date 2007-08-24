@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * -Javier A. Ortiz 02/20/2007        Add XincoSetting vector to client session
+ * Javier A. Ortiz 02/20/2007        Add XincoSetting vector to client session
  *
  *************************************************************
  */
@@ -116,6 +116,7 @@ public class XincoClientSession {
      * 3 = disconnecting
      */
     public XincoClientSession(XincoExplorer e) {
+        setExplorer(e);
         setService_endpoint("");
         setUser(new XincoCoreUser());
         //init repository
@@ -129,7 +130,6 @@ public class XincoClientSession {
         setCurrentSearchResult(new Vector());
         setServer_settings(new Vector());
         setStatus(0);
-        setExplorer(e);
     }
     
     public XincoClientSession() {
