@@ -436,6 +436,18 @@ public class XincoCoreUserServer extends XincoCoreUser {
             rs.next();
             rs.getString(1);
             //---------------------------
+            
+            /*Bug fix: The password was only verified against past passwords not current password.
+             *The current passwords is not usable after the first change when it was added to the 
+             *audit trail table.
+            */
+            //Now check if password is not the same as the current password
+            rs=stmt.executeQuery("select userpassword from xinco_core_user where id=" +
+                    id+" and MD5('"+ newPass+"') ="+newPass);
+            //Here we'll catch if the password is the same as the actual
+            rs.next();
+            rs.getString(1);
+            //End bug fix
         } catch (SQLException ex) {
             passwordIsUsable=true;
         }
