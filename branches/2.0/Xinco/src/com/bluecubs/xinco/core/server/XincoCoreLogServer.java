@@ -51,7 +51,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
         
         try {
             
-            Statement stmt = DBM.con.createStatement();
+            Statement stmt = DBM.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_log WHERE id=" + attrID);
             
             //throw exception if no result found
@@ -110,7 +110,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
         try {
             
             if (getId() > 0) {
-                Statement stmt = DBM.con.createStatement();
+                Statement stmt = DBM.getConnection().createStatement();
                 XincoCoreAuditServer audit= new XincoCoreAuditServer();
                 ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+getId()},
@@ -120,16 +120,16 @@ public class XincoCoreLogServer extends XincoCoreLog {
             } else {
                 setId(DBM.getNewID("xinco_core_log"));
                 
-                Statement stmt = DBM.con.createStatement();
+                Statement stmt = DBM.getConnection().createStatement();
                 stmt.executeUpdate("INSERT INTO xinco_core_log VALUES (" + getId() + ", " + getXinco_core_data_id() + ", " + getXinco_core_user_id() + ", " + getOp_code() + ", now(), '" + getOp_description().replaceAll("'","\\\\'") + "', " + getVersion().getVersion_high() + ", " + getVersion().getVersion_mid() + ", " + getVersion().getVersion_low() + ", '" + getVersion().getVersion_postfix().replaceAll("'","\\\\'") + "')");
                 stmt.close();
             }
             
-            DBM.con.commit();
+            DBM.getConnection().commit();
             
         } catch (Exception e) {
             try {
-                DBM.con.rollback();
+                DBM.getConnection().rollback();
             } catch (Exception erollback) {
             }
             throw new XincoException();
@@ -146,7 +146,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
         GregorianCalendar cal = new GregorianCalendar();
         
         try {
-            Statement stmt = DBM.con.createStatement();
+            Statement stmt = DBM.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_log WHERE xinco_core_data_id=" + attrID);
             
             while (rs.next()) {

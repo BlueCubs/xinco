@@ -40,7 +40,6 @@ out.println("<td class='text'>"+rb.getString("message.admin.main.webstart")+"</t
 out.println("</tr>");
 out.println("<tr>");
 out.println("<td class='text'>"+rb.getString("message.admin.main.endpoint.label")+"</td>");
-//out.println("<td class='text'>"+rb.getString("message.admin.main.endpointdesc")+"</td>");
 String xinco_service_endpoint = request.getRequestURL().toString();
 xinco_service_endpoint = xinco_service_endpoint.substring(0, xinco_service_endpoint.indexOf("/menu.jsp"));
 xinco_service_endpoint = xinco_service_endpoint + "/services/Xinco";
@@ -52,7 +51,7 @@ out.println("<td class='text'>"+rb.getString("message.admin.main.publisherdesc")
 out.println("</tr>");
 out.println("<tr>");
 out.println("<td class='text'><a href='http://java.sun.com' " +
-"target='_blank' class='link'>"+rb.getString("message.admin.main.java.label")+"</a></td>");
+" class='link'>"+rb.getString("message.admin.main.java.label")+"</a></td>");
 out.println("<td class='text'>"+rb.getString("message.admin.main.javadesc")+"</td>");
 out.println("</tr>");
 out.println("<tr>");
@@ -68,7 +67,7 @@ out.println("<td class='text'><a href='XincoCron?list="+request.getParameter("li
 out.println("<td class='text'>"+rb.getString("message.admin.main.xincocrondesc")+"</td>");
 out.println("</tr>");
 out.println("<tr>");
-out.println("<td class='text'><a href='happyaxis.jsp' target='_blank' class='link'>"+rb.getString("message.admin.main.validate.label")+"</a></td>");
+out.println("<td class='text'><a href='happyaxis.jsp'  class='link'>"+rb.getString("message.admin.main.validate.label")+"</a></td>");
 out.println("<td class='text'>"+rb.getString("message.admin.main.validatedesc"));
 out.println("</tr>");
 out.println("<tr>");

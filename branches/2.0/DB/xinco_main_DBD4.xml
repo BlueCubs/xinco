@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="yes" ?>
 <DBMODEL Version="4.0">
 <SETTINGS>
-<GLOBALSETTINGS ModelName="xinco_main_DBD4" IDModel="0" IDVersion="0" VersionStr="1.0.0.0" Comments="" UseVersionHistroy="1" AutoIncVersion="1" DatabaseType="MySQL" ZoomFac="80.00" XPos="985" YPos="144" DefaultDataType="5" DefaultTablePrefix="0" DefSaveDBConn="" DefSyncDBConn="xinco" DefQueryDBConn="" Printer="PDF-Datei" HPageCount="4.059464816650148" PageAspectRatio="1.436398386069229" PageOrientation="1" PageFormat="A4 (210x297 mm, 8.26x11.7 inches)" SelectedPages="0;1;5" UsePositionGrid="1" PositionGridX="20" PositionGridY="20" TableNameInRefs="1" DefaultTableType="1" ActivateRefDefForNewRelations="1" FKPrefix="" FKPostfix="" CreateFKRefDefIndex="1" DBQuoteCharacter="`" CreateSQLforLinkedObjects="0" DefModelFont="Tahoma" CanvasWidth="4096" CanvasHeight="2842" />
+<GLOBALSETTINGS ModelName="xinco_main_DBD4" IDModel="0" IDVersion="0" VersionStr="1.0.0.0" Comments="" UseVersionHistroy="1" AutoIncVersion="1" DatabaseType="MySQL" ZoomFac="80.00" XPos="0" YPos="0" DefaultDataType="5" DefaultTablePrefix="0" DefSaveDBConn="" DefSyncDBConn="xinco" DefQueryDBConn="" Printer="PDF-Datei" HPageCount="4.059464816650148" PageAspectRatio="1.436398386069229" PageOrientation="1" PageFormat="A4 (210x297 mm, 8.26x11.7 inches)" SelectedPages="0;1;5" UsePositionGrid="1" PositionGridX="20" PositionGridY="20" TableNameInRefs="1" DefaultTableType="1" ActivateRefDefForNewRelations="1" FKPrefix="" FKPostfix="" CreateFKRefDefIndex="1" DBQuoteCharacter="`" CreateSQLforLinkedObjects="0" DefModelFont="Tahoma" CanvasWidth="4096" CanvasHeight="2842" />
 <DATATYPEGROUPS>
 <DATATYPEGROUP Name="Numeric Types" Icon="1" />
 <DATATYPEGROUP Name="Date and Time Types" Icon="2" />
@@ -923,6 +923,49 @@
 <INDEX ID="1500" IndexName="xinco_core_log_FKIndex2" IndexKind="1" FKRefDef_Obj_id="1499">
 <INDEXCOLUMNS>
 <INDEXCOLUMN idColumn="1493" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+</INDICES>
+</TABLE>
+<TABLE ID="4584" Tablename="xinco_setting" PrevTableName="Table_17" XPos="0" YPos="0" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(1,\aversion.high\a, 2,null,null );\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(2,\aversion.med\a, 1,null ,null );\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(3,\aversion.low\a, 0,null,null );\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(4,\aversion.postfix\a, null,null ,null );\n\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(5,\apassword.aging\a, 120,null,null );\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(6,\apassword.attempts\a, 3,null,null);\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(7,\apassword.unusable_period\a, 365,null,null);\n\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(8,\ageneral.copyright.date\a, null,\a2004-2007\a ,null);\n\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(9,\ageneral.setting.enable.savepassword\a, null,null ,0);\n\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(10,\ageneral.setting.enable.developermode\a, null,null ,0);\n\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(11,\ageneral.setting.enable.lockidle\a, 5,null ,1);\n\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(12,\asystem.password\a, null,\asystem\a,null);\n\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(13,\axinco/FileRepositoryPath\a ,null ,\aC:\\\\Temp\\\\xinco\\\\file_repository\\\\\a , null);\n\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(14,\axinco/FileIndexPath\a ,null ,\aC:\\\\Temp\\\\xinco\\\\file_repository\\\\index\\\\\a , null); \n\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(15,\axinco/FileArchivePath\a ,null ,\aC:\\\\Temp\\\\xinco\\\\file_repository\\\\archive\\\\\a , null); \n\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(16,\axinco/FileArchivePeriod\a ,null ,null, null,14400000); \n\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(17,\axinco/FileIndexer_1_Class\a ,null ,\acom.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF\a, null,null); \nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(18,\axinco/FileIndexer_1_Ext\a ,null ,\apdf\a, null,null); \nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(19,\axinco/FileIndexer_2_Class\a ,null ,\acom.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftWord\a, null,null);\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(20,\axinco/FileIndexer_2_Ext\a ,null ,\adoc\a, null,null); \nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(21,\axinco/FileIndexer_3_Class\a ,null ,\acom.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftExcel\a, null,null);\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(22,\axinco/FileIndexer_3_Ext\a ,null ,\axls\a, null,null); \nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(23,\axinco/FileIndexer_4_Class\a ,null ,\acom.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftPowerpoint\a, null,null);\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(24,\axinco/FileIndexer_4_Ext\a ,null ,\appt\a, null,null); \nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(25,\axinco/FileIndexer_5_Class\a ,null ,\acom.bluecubs.xinco.index.filetypes.XincoIndexHTML\a, null,null);\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(26,\axinco/FileIndexer_5_Ext\a ,null ,\aasp;htm;html;jsf;jsp;php;php3;php4\a, null,null); \nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(27,\axinco/IndexNoIndex\a ,null ,\a;aac;ac3;ace;ade;adp;aif;aifc;aiff;amf;arc;arj;asx;au;avi;b64;bh;bmp;bz;bz2;cab;cda;chm;class;com;div;divx;ear;exe;far;fla;gif;gz;hlp;ico;;iso;jar;jpe;jpeg;jpg;lha;lzh;mda;mdb;mde;mdn;mdt;mdw;mid;midi;mim;mod;mov;mp1;mp2;mp2v;mp3;mp4;mpa;mpe;mpeg;mpg;mpg4;mpv2;msi;ntx;ocx;ogg;ogm;okt;pae;pcx;pk3;png;pot;ppa;pps;ppt;pwz;qwk;ra;ram;rar;raw;rep;rm;rmi;snd;swf;swt;tar;taz;tbz;tbz2;tgz;tif;tiff;uu;uue;vxd;war;wav;wbm;wbmp;wma;wmd;wmf;wmv;xpi;xxe;z;zip;zoo;;;\a, null,null);\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(28,\axinco/JNDIDB\a ,null ,\ajava:comp/env/jdbc/XincoDB\a, null,null); \nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(29,\axinco/MaxSearchResult\a ,100 ,null, null,null); \n\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(30,\ageneral.setting.email.host\a,null,\asmtp.gmail.com\a, null,null);\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(31,\ageneral.setting.email.user\a,null,\ainfo@bluecubs.com\a, null,null); \nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(32,\ageneral.setting.email.password\a,null,\apassword\a, null,null); \nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(33,\ageneral.setting.email.port\a,null,\a25\a, null,null); \n\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(34,\ageneral.setting.index.lock\a,null,null,false,null); \n\nINSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(35,\ageneral.setting.allowoutsidelinks\a,null,null,false,null); \n/*Inserts 51-100 reserved for Workflow settings*/\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="40" >
+<COLUMNS>
+<COLUMN ID="4585" ColName="id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="1" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="4586" ColName="description" PrevColName="" Pos="1" idDatatype="20" DatatypeParams="(45)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="4587" ColName="int_value" PrevColName="" Pos="2" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="null" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="4588" ColName="string_value" PrevColName="" Pos="3" idDatatype="20" DatatypeParams="(500)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="null" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="4589" ColName="bool_value" PrevColName="" Pos="4" idDatatype="22" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="null" Comments="">
+<OPTIONSELECTED>
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="4590" ColName="long_value" PrevColName="" Pos="5" idDatatype="6" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="null" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+</COLUMNS>
+<INDICES>
+<INDEX ID="4591" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="4585" LengthParam="0" />
 </INDEXCOLUMNS>
 </INDEX>
 </INDICES>

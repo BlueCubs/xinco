@@ -49,7 +49,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
         
         try {
             
-            Statement stmt = DBM.con.createStatement();
+            Statement stmt = DBM.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_node WHERE id=" + attrID);
             
             //throw exception if no result found
@@ -114,7 +114,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             String xcnid = "";
             
             if (getId() > 0) {
-                stmt = DBM.con.createStatement();
+                stmt = DBM.getConnection().createStatement();
                 //set values of nullable attributes
                 if (getXinco_core_node_id() == 0) {
                     xcnid = "NULL";
@@ -129,7 +129,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             } else {
                 setId(DBM.getNewID("xinco_core_node"));
                 
-                stmt = DBM.con.createStatement();
+                stmt = DBM.getConnection().createStatement();
                 //set values of nullable attributes
                 if (getXinco_core_node_id() == 0) {
                     xcnid = "NULL";
@@ -140,10 +140,10 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 stmt.close();
             }
             
-            DBM.con.commit();
+            DBM.getConnection().commit();
         } catch (Exception e) {
             try {
-                DBM.con.rollback();
+                DBM.getConnection().rollback();
             } catch (Exception erollback) {
             }
             throw new XincoException();
@@ -183,19 +183,19 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+getId()},
                         DBM,"audit.general.delete",userID);
                 */
-                stmt = DBM.con.createStatement();
+                stmt = DBM.getConnection().createStatement();
                 stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE xinco_core_node_id=" + getId());
                 stmt.close();
                 audit.updateAuditTrail("xinco_core_node",new String [] {"id ="+getId()},
                         DBM,"audit.general.delete",userID);
-                stmt = DBM.con.createStatement();
+                stmt = DBM.getConnection().createStatement();
                 stmt.executeUpdate("DELETE FROM xinco_core_node WHERE id=" + getId());
                 stmt.close();
             }
-            DBM.con.commit();
+            DBM.getConnection().commit();
         } catch (Exception e) {
             try {
-                DBM.con.rollback();
+                DBM.getConnection().rollback();
             } catch (Exception erollback) {
             }
             throw new XincoException();
@@ -207,7 +207,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
         
         try {
             
-            Statement stmt = DBM.con.createStatement();
+            Statement stmt = DBM.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_node WHERE xinco_core_node_id = " + getId() + " ORDER BY designation");
             
             while (rs.next()) {
@@ -226,7 +226,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
         
         try {
             
-            Statement stmt = DBM.con.createStatement();
+            Statement stmt = DBM.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data WHERE xinco_core_node_id = " + getId() + " ORDER BY designation");
             
             while (rs.next()) {
@@ -247,14 +247,14 @@ public class XincoCoreNodeServer extends XincoCoreNode {
         
         try {
             
-            Statement stmt = DBM.con.createStatement();
+            Statement stmt = DBM.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_node WHERE xinco_core_language_id = " + attrLID + " AND designation LIKE '" + attrS + "%' ORDER BY designation, xinco_core_language_id");
             
             int i = 0;
             while (rs.next()) {
                 nodes.addElement(new XincoCoreNodeServer(rs.getInt("id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_language_id"), rs.getString("designation"), rs.getInt("status_number"), DBM));
                 i++;
-                if (i >= DBM.config.MaxSearchResult) {
+                if (i >= DBM.config.getMaxSearchResult()) {
                     break;
                 }
             }
@@ -282,7 +282,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             ResultSet rs;
             
             while (id > 0) {
-                stmt = DBM.con.createStatement();
+                stmt = DBM.getConnection().createStatement();
                 rs = stmt.executeQuery("SELECT * FROM xinco_core_node WHERE id = " + id);
                 while (rs.next()) {
                     nodes.addElement(new XincoCoreNodeServer(rs.getInt("id"), DBM));

@@ -46,12 +46,12 @@ public class XincoIndexThread extends Thread {
 	
 	private XincoCoreData d = null;
 	private boolean index_content = false;
-	private XincoDBManager dbm = null;
+	private XincoDBManager DBM = null;
 
 	public void run() {
-		XincoIndexer.indexXincoCoreData(d, index_content, dbm);
+		XincoIndexer.indexXincoCoreData(d, index_content, DBM);
 		try {
-			dbm.con.close();
+			DBM.getConnection().close();
 		} catch (Exception e)
 		{
 			//do nothing
@@ -61,7 +61,7 @@ public class XincoIndexThread extends Thread {
 	public XincoIndexThread(XincoCoreData d, boolean index_content, XincoDBManager dbm) {
 		this.d = d;
 		this.index_content = index_content;
-		this.dbm = dbm;
+		this.DBM = dbm;
 	}
 	
 }

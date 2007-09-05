@@ -57,12 +57,12 @@ public class XincoIndexOptimizeThread extends Thread {
 		firstRun = new GregorianCalendar();
 		while (true) {
 			try {
-				XincoDBManager dbm = null;
-				dbm = new XincoDBManager();
-				XincoIndexer.optimizeIndex(dbm);
+				XincoDBManager DBM = null;
+				DBM = new XincoDBManager();
+				XincoIndexer.optimizeIndex(DBM);
 				lastRun = new GregorianCalendar();
-				dbm.con.close();
-				dbm = null;
+				DBM.getConnection().close();
+				DBM = null;
 			} catch (Exception e){
 				//continue, wait and try again...
 			}

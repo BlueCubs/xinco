@@ -49,7 +49,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
     //create add attribute object for data structures
     public XincoAddAttributeServer(int attrID1, int attrID2, XincoDBManager DBM) throws XincoException {
         try {
-            Statement stmt = DBM.con.createStatement();
+            Statement stmt = DBM.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_add_attribute " +
                     "WHERE xinco_core_data_id=" + attrID1 + " AND attribute_id=" + attrID2);
             while (rs.next()) {
@@ -112,7 +112,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
 				attrDT = "NULL";
 			}
 
-			stmt = DBM.con.createStatement();
+			stmt = DBM.getConnection().createStatement();
 			stmt.executeUpdate("INSERT INTO xinco_add_attribute VALUES (" + getXinco_core_data_id() + ", " + getAttribute_id() + ", " + getAttrib_int() + ", " + getAttrib_unsignedint() + ", " + getAttrib_double() + ", '" + attrVC + "', '" + attrT + "', '" + attrDT + "')");
 			stmt.close();
 		} catch (Exception e) {
@@ -125,7 +125,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
     public static Vector getXincoAddAttributes(int attrID, XincoDBManager DBM) {
         Vector addAttributes = new Vector();
         try {
-            Statement stmt = DBM.con.createStatement();
+            Statement stmt = DBM.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_add_attribute WHERE xinco_core_data_id =" + attrID + " ORDER BY attribute_id");
 
 			GregorianCalendar cal;

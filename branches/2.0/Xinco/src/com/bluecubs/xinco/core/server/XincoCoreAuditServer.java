@@ -32,7 +32,7 @@ public class XincoCoreAuditServer {
                 if(i<keys.length-1)
                     where+=" and ";
             }
-            Statement stmt = DBM.con.createStatement();
+            Statement stmt = DBM.getConnection().createStatement();
             int record_ID=0;
             String sql="select * from "+table+" where "+where;
             ResultSet rs = stmt.executeQuery(sql);
@@ -60,11 +60,11 @@ public class XincoCoreAuditServer {
                     new Timestamp(System.currentTimeMillis())+"', '"+reason+"')";
             stmt.executeUpdate(sql);
             //System.out.println(sql);
-            DBM.con.commit();
+            DBM.getConnection().commit();
         } catch (SQLException ex) {
             ex.printStackTrace();
             try {
-                DBM.con.rollback();
+                DBM.getConnection().rollback();
             } catch (SQLException ex2) {
                 ex2.printStackTrace();
             }

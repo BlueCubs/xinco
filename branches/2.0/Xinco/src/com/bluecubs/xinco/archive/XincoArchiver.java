@@ -68,7 +68,7 @@ public class XincoArchiver {
 			Vector xnode_temp_vector = null;
 			Calendar ngc = new GregorianCalendar();
 			String ArchiveName = ngc.get(Calendar.YEAR) + "-" + (ngc.get(Calendar.MONTH) + 1) + "-" + ngc.get(Calendar.DAY_OF_MONTH);
-			String ArchiveBaseDir = dbm.config.FileArchivePath + ArchiveName;
+			String ArchiveBaseDir = dbm.config.getFileArchivePath() + ArchiveName;
 			String ArchiveFileDir = null;
 			Vector OrgFileNames = new Vector();
 			Vector OrgFileIDs = new Vector();
@@ -104,7 +104,7 @@ public class XincoArchiver {
 
 			for (j=0;j<querycount;j++) {
 				
-				Statement stmt = dbm.con.createStatement();
+				Statement stmt = dbm.getConnection().createStatement();
 				//select data with expired archiving date
 				ResultSet rs = stmt.executeQuery(query[j]);
 				while (rs.next()) {
@@ -130,8 +130,8 @@ public class XincoArchiver {
 					//copy + delete files
 					for (k=0;k<OrgFileNames.size();k++) {
 						FileName = ((String)OrgFileNames.elementAt(k)) + "_" + ((XincoAddAttribute)xdata_temp.getXinco_add_attributes().elementAt(0)).getAttrib_varchar();
-						if ((new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, ((Integer)OrgFileIDs.elementAt(k)).intValue(), ((String)OrgFileNames.elementAt(k))))).exists()) {
-							fcis  = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, ((Integer)OrgFileIDs.elementAt(k)).intValue(), ((String)OrgFileNames.elementAt(k)))));
+						if ((new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.getFileRepositoryPath(), ((Integer)OrgFileIDs.elementAt(k)).intValue(), ((String)OrgFileNames.elementAt(k))))).exists()) {
+							fcis  = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.getFileRepositoryPath(), ((Integer)OrgFileIDs.elementAt(k)).intValue(), ((String)OrgFileNames.elementAt(k)))));
 							fcos = new FileOutputStream(new File(ArchiveBaseDir + ArchiveFileDir + System.getProperty("file.separator") + FileName));
 							fcbuf = new byte[4096];
 							len = 0;
@@ -141,7 +141,7 @@ public class XincoArchiver {
 							fcis.close();
 							fcos.close();
 							//delete
-							(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.FileRepositoryPath, ((Integer)OrgFileIDs.elementAt(k)).intValue(), ((String)OrgFileNames.elementAt(k))))).delete();
+							(new File(XincoCoreDataServer.getXincoCoreDataPath(dbm.config.getFileRepositoryPath(), ((Integer)OrgFileIDs.elementAt(k)).intValue(), ((String)OrgFileNames.elementAt(k))))).delete();
 						}
 					}
 					//update data + log

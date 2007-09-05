@@ -178,7 +178,7 @@ public class XincoAdminServlet extends HttpServlet {
                     login_user=temp_user;
                 } catch (Exception loginex) {
                     //Wrong password or username
-                    Statement stmt=dbm.con.createStatement();
+                    Statement stmt=dbm.getConnection().createStatement();
                     ResultSet rs= stmt.executeQuery("SELECT id FROM xinco_core_user WHERE username='" +
                             request.getParameter("DialogLoginUsername") + "' AND status_number<>2");
                     //Check if the username is correct if not just throw the wrong login message
@@ -450,13 +450,13 @@ public class XincoAdminServlet extends HttpServlet {
             //main admin always is admin and everyone is a regular user
             if (!(((current_group_selection == 1) && (Integer.parseInt(request.getParameter("DialogEditGroupRemoveUser")) == 1)) || (current_group_selection == 2))) {
                 try {
-                    Statement stmt = dbm.con.createStatement();
+                    Statement stmt = dbm.getConnection().createStatement();
                     stmt.executeUpdate("DELETE FROM xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + Integer.parseInt(request.getParameter("DialogEditGroupRemoveUser")) + " AND xinco_core_group_id=" + current_group_selection);
                     stmt.close();
-                    dbm.con.commit();
+                    dbm.getConnection().commit();
                 } catch (Exception e) {
                     try {
-                        dbm.con.rollback();
+                        dbm.getConnection().rollback();
                     } catch (Exception rbe) {
                     }
                 }
@@ -467,13 +467,13 @@ public class XincoAdminServlet extends HttpServlet {
         //add user to group
         if (request.getParameter("DialogEditGroupAddUser") != null) {
             try {
-                Statement stmt = dbm.con.createStatement();
+                Statement stmt = dbm.getConnection().createStatement();
                 stmt.executeUpdate("INSERT INTO xinco_core_user_has_xinco_core_group VALUES (" + Integer.parseInt(request.getParameter("DialogEditGroupAddUser")) + ", " + current_group_selection + ", " + "1)");
                 stmt.close();
-                dbm.con.commit();
+                dbm.getConnection().commit();
             } catch (Exception e) {
                 try {
-                    dbm.con.rollback();
+                    dbm.getConnection().rollback();
                     e.printStackTrace();
                 } catch (Exception rbe) {
                 }
@@ -577,7 +577,7 @@ public class XincoAdminServlet extends HttpServlet {
                 ex.printStackTrace();
             }
             try {
-                Statement stmt=DBM.con.createStatement();
+                Statement stmt=dbm.getConnection().createStatement();
                 sql="select id from xinco_core_user where username='"+request.getParameter("user").substring(0,request.getParameter("user").length()-1)+"'";
                 rs=stmt.executeQuery(sql);
                 rs.next();
@@ -1226,13 +1226,13 @@ public class XincoAdminServlet extends HttpServlet {
                     
                     ResultSet rs;
                     XincoDBManager DBM = new XincoDBManager();
-                    DBM.setLoc(loc);
+                    DBM.setLocale(loc);
                     String column="id";
                     if(request.getParameter("table").equals("xinco_add_attribute"))
                         column="xinco_core_data_id";
                     if(request.getParameter("table").equals("xinco_core_data_type_attribute"))
                         column="xinco_core_data_type_id";
-                    rs=DBM.con.createStatement().executeQuery("select * from "+request.getParameter("table")+
+                    rs=dbm.getConnection().createStatement().executeQuery("select * from "+request.getParameter("table")+
                             "_t a, (select concat(concat(a.firstname , ' ' ), a.name) as \""+
                             rb.getString("general.user")+"\" , b.mod_time as \""+rb.getString("general.audit.modtime")+
                             "\" ,b.mod_reason as \""+rb.getString("general.reason")+"\" ,b.record_id " +
@@ -1284,12 +1284,12 @@ public class XincoAdminServlet extends HttpServlet {
                         column="xinco_core_data_id";
                     if(request.getParameter("table").equals("xinco_core_data_type_attribute"))
                         column="xinco_core_data_type_id";
-                    rs=DBM.con.createStatement().executeQuery("select distinct * from "+request.getParameter("table")+
+                    rs=dbm.getConnection().createStatement().executeQuery("select distinct * from "+request.getParameter("table")+
                             " where "+column+" in (select distinct "+column+" from "+request.getParameter("table")+"_t)");
                     DBM.drawTable(rs,response.getWriter(),DBM.getColumnNames(rs),"",-1,false,-1);
-                    rs=DBM.con.createStatement().executeQuery("select distinct "+column+" from "+request.getParameter("table")+"_t");
+                    rs=dbm.getConnection().createStatement().executeQuery("select distinct "+column+" from "+request.getParameter("table")+"_t");
                     out.println("<form action='XincoAdmin?MenuAudit=AuditTable' method='POST'>");
-                    rs=DBM.con.createStatement().executeQuery("select distinct "+column+" from "+
+                    rs=dbm.getConnection().createStatement().executeQuery("select distinct "+column+" from "+
                             request.getParameter("table")+"_t");
                     out.println("Select record id: ");
                     out.println("<select name='id'>");
@@ -1333,7 +1333,7 @@ public class XincoAdminServlet extends HttpServlet {
                     
                     ResultSet rs;
                     XincoDBManager DBM = new XincoDBManager();
-                    DatabaseMetaData meta = DBM.con.getMetaData();
+                    DatabaseMetaData meta = dbm.getConnection().getMetaData();
                     String[] types =  {
                         "TABLE"
                     };
@@ -1383,11 +1383,11 @@ public class XincoAdminServlet extends HttpServlet {
                     File indexDirectoryFile = null;
                     String[] indexDirectoryFileList = null;
                     boolean index_directory_deleted = false;
-                    indexDirectory = new File(dbm.config.FileIndexPath);
+                    indexDirectory = new File(dbm.config.getFileIndexPath());
                     if (indexDirectory.exists()) {
                         indexDirectoryFileList = indexDirectory.list();
                         for (i=0;i<indexDirectoryFileList.length;i++) {
-                            indexDirectoryFile = new File(dbm.config.FileIndexPath + indexDirectoryFileList[i]);
+                            indexDirectoryFile = new File(dbm.config.getFileIndexPath() + indexDirectoryFileList[i]);
                             indexDirectoryFile.delete();
                         }
                         index_directory_deleted = indexDirectory.delete();
@@ -1414,7 +1414,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("</tr>");
                     XincoCoreDataServer xdata_temp = null;
                     boolean index_result = false;
-                    Statement stmt = dbm.con.createStatement();
+                    Statement stmt = dbm.getConnection().createStatement();
                     ResultSet rs = stmt.executeQuery("SELECT id FROM xinco_core_data ORDER BY designation");
                     while (rs.next()) {
                         xdata_temp = new XincoCoreDataServer(rs.getInt("id"), dbm);
@@ -1473,7 +1473,7 @@ public class XincoAdminServlet extends HttpServlet {
         
         //close db connection
         try {
-            dbm.con.close();
+            dbm.getConnection().close();
         } catch (Exception e) {
             global_error_message = global_error_message + e.toString();
         }
