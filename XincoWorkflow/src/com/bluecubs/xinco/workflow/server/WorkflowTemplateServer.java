@@ -57,16 +57,8 @@ public class WorkflowTemplateServer extends WorkflowTemplate{
                 rs.next();
                 setId(rs.getInt("id"));
                 setDescription(rs.getString("description"));
-                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-                    System.out.println("Loading Nodes...");
                 loadNodes(DBM);
-                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-                    System.out.println("Done!");
-                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-                    System.out.println("Loading Transactions...");
                 loadTransactions(DBM);
-                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-                    System.out.println("Done!");
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -74,6 +66,8 @@ public class WorkflowTemplateServer extends WorkflowTemplate{
     }
     
     private Vector loadNodes(WorkflowDBManager DBM){
+        if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            System.out.println("Loading Nodes...");
         Vector temp = new Vector();
         try {
             String sql="select node_id from " +
@@ -98,10 +92,14 @@ public class WorkflowTemplateServer extends WorkflowTemplate{
         if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
             System.out.println("Vector size: "+temp.size());
         setNodes(temp);
+        if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            System.out.println("Done!\n");
         return getNodes();
     }
     
     private Vector loadTransactions(WorkflowDBManager DBM){
+        if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            System.out.println("Loading Transactions...");
         Vector values = new Vector();
         try{
             String sql="select transaction_id from " +
@@ -120,6 +118,8 @@ public class WorkflowTemplateServer extends WorkflowTemplate{
         if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
             System.out.println("Vector size: "+values.size());
         setTransactions(values);
+        if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            System.out.println("Done!\n");
         return getTransactions();
     }
     
@@ -140,10 +140,8 @@ public class WorkflowTemplateServer extends WorkflowTemplate{
     }
     
     public NodeServer getRoot(){
-        if(getTNodes()!= null)
-        {
-            for(int i=0;i<getTNodes().size();i++)
-            {
+        if(getTNodes()!= null) {
+            for(int i=0;i<getTNodes().size();i++) {
                 if(((NodeServer)getTNodes().get(i)).isStartNode()){
                     return ((NodeServer)getTNodes().get(i));
                 }

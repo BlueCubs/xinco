@@ -452,4 +452,20 @@ public class XincoDBManager{
             loc=Locale.getDefault();
         return loc;
     }
+    
+    public String getWebBlockRightClickScript(){
+        return "<script language=JavaScript> /n" +
+                "<!--/n" +
+                "var message='';/n" +
+                "function clickIE() {if (document.all) {(message);return false;}}/n" +
+                "function clickNS(e) {if /n" +
+                "(document.layers||(document.getElementById&&!document.all)) {/n" +
+                "if (e.which==2||e.which==3) {(message);return false;}}}/n" +
+                "if (document.layers) /n" +
+                "{document.captureEvents(Event.MOUSEDOWN);document.onmousedown=clickNS;}/n" +
+                "else{document.onmouseup=clickNS;document.oncontextmenu=clickIE;}/n" +
+                "document.oncontextmenu=new Function('return false')/n" +
+                "// --> /n" +
+                "</script>";
+    }
 }

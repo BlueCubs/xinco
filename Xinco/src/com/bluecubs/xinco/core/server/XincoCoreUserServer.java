@@ -493,11 +493,22 @@ public class XincoCoreUserServer extends XincoCoreUser {
             rs=stmt.executeQuery("select userpassword from xinco_core_user_t where id=" +
                     id+" and DATEDIFF(NOW(),last_modified) <= "+
                     getSettings().getSetting("password.aging").getInt_value() + " and MD5('"+
-                    newPass+"') = userpassword");
+                    newPass+"') ="+newPass);
             //Here we'll catch if the password have been used in the unusable period
             rs.next();
             rs.getString(1);
-            //---------------------------
+            
+            /*Bug fix: The password was only verified against past passwords not current password.
+             *The current passwords is not usable after the first change when it was added to the 
+             *audit trail table.
+            */
+            //Now check if password is not the same as the current password
+            rs=stmt.executeQuery("select userpassword from xinco_core_user where id=" +
+                    id+" and MD5('"+ newPass+"') ="+newPass);
+            //Here we'll catch if the password is the same as the actual
+            rs.next();
+            rs.getString(1);
+            //End bug fix
         } catch (SQLException ex) {
             passwordIsUsable=true;
         }

@@ -430,44 +430,6 @@
         <copy-ear-war file="${reference.Xinco.jar}" propname="included.lib.reference.Xinco.jar.X"/>
         <basename property="included.lib.reference.XincoWorkflow.jar" file="${reference.XincoWorkflow.jar}"/>
         <copy-ear-war file="${reference.XincoWorkflow.jar}" propname="included.lib.reference.XincoWorkflow.jar.X"/>
-        <basename property="included.lib.libs.Hibernate.classpath.19" file="${libs.Hibernate.classpath.libfile.19}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.18" file="${libs.Hibernate.classpath.libfile.18}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.17" file="${libs.Hibernate.classpath.libfile.17}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.16" file="${libs.Hibernate.classpath.libfile.16}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.15" file="${libs.Hibernate.classpath.libfile.15}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.14" file="${libs.Hibernate.classpath.libfile.14}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.13" file="${libs.Hibernate.classpath.libfile.13}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.12" file="${libs.Hibernate.classpath.libfile.12}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.11" file="${libs.Hibernate.classpath.libfile.11}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.10" file="${libs.Hibernate.classpath.libfile.10}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.9" file="${libs.Hibernate.classpath.libfile.9}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.8" file="${libs.Hibernate.classpath.libfile.8}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.7" file="${libs.Hibernate.classpath.libfile.7}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.6" file="${libs.Hibernate.classpath.libfile.6}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.5" file="${libs.Hibernate.classpath.libfile.5}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.4" file="${libs.Hibernate.classpath.libfile.4}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.3" file="${libs.Hibernate.classpath.libfile.3}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.2" file="${libs.Hibernate.classpath.libfile.2}"/>
-        <basename property="included.lib.libs.Hibernate.classpath.1" file="${libs.Hibernate.classpath.libfile.1}"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.19}" propname="included.lib.libs.Hibernate.classpath.19.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.18}" propname="included.lib.libs.Hibernate.classpath.18.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.17}" propname="included.lib.libs.Hibernate.classpath.17.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.16}" propname="included.lib.libs.Hibernate.classpath.16.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.15}" propname="included.lib.libs.Hibernate.classpath.15.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.14}" propname="included.lib.libs.Hibernate.classpath.14.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.13}" propname="included.lib.libs.Hibernate.classpath.13.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.12}" propname="included.lib.libs.Hibernate.classpath.12.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.11}" propname="included.lib.libs.Hibernate.classpath.11.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.10}" propname="included.lib.libs.Hibernate.classpath.10.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.9}" propname="included.lib.libs.Hibernate.classpath.9.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.8}" propname="included.lib.libs.Hibernate.classpath.8.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.7}" propname="included.lib.libs.Hibernate.classpath.7.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.6}" propname="included.lib.libs.Hibernate.classpath.6.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.5}" propname="included.lib.libs.Hibernate.classpath.5.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.4}" propname="included.lib.libs.Hibernate.classpath.4.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.3}" propname="included.lib.libs.Hibernate.classpath.3.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.2}" propname="included.lib.libs.Hibernate.classpath.2.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.1}" propname="included.lib.libs.Hibernate.classpath.1.X"/>
         <basename property="included.lib.libs.Persistance.classpath.2" file="${libs.Persistance.classpath.libfile.2}"/>
         <basename property="included.lib.libs.Persistance.classpath.1" file="${libs.Persistance.classpath.libfile.1}"/>
         <copy-ear-war file="${libs.Persistance.classpath.libfile.2}" propname="included.lib.libs.Persistance.classpath.2.X"/>
@@ -519,32 +481,13 @@
         <copy file="${libs.XincoLibs.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <mkdir dir="${build.web.dir.real}/META-INF"/>
         <manifest file="${build.web.dir.real}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.reference.Xinco.jar} ${included.lib.reference.XincoWorkflow.jar} ${included.lib.libs.Hibernate.classpath.1.X} ${included.lib.libs.Hibernate.classpath.2.X} ${included.lib.libs.Hibernate.classpath.3.X} ${included.lib.libs.Hibernate.classpath.4.X} ${included.lib.libs.Hibernate.classpath.5.X} ${included.lib.libs.Hibernate.classpath.6.X} ${included.lib.libs.Hibernate.classpath.7.X} ${included.lib.libs.Hibernate.classpath.8.X} ${included.lib.libs.Hibernate.classpath.9.X} ${included.lib.libs.Hibernate.classpath.10.X} ${included.lib.libs.Hibernate.classpath.11.X} ${included.lib.libs.Hibernate.classpath.12.X} ${included.lib.libs.Hibernate.classpath.13.X} ${included.lib.libs.Hibernate.classpath.14.X} ${included.lib.libs.Hibernate.classpath.15.X} ${included.lib.libs.Hibernate.classpath.16.X} ${included.lib.libs.Hibernate.classpath.17.X} ${included.lib.libs.Hibernate.classpath.18.X} ${included.lib.libs.Hibernate.classpath.19.X} ${included.lib.libs.Persistance.classpath.1.X} ${included.lib.libs.Persistance.classpath.2.X} "/>
+            <attribute name="Class-Path" value="${included.lib.reference.Xinco.jar} ${included.lib.reference.XincoWorkflow.jar} ${included.lib.libs.Persistance.classpath.1.X} ${included.lib.libs.Persistance.classpath.2.X} "/>
         </manifest>
         <delete dir="${dist.ear.dir}/temp"/>
     </target>
     <target name="library-inclusion-in-archive" depends="init" unless="dist.ear.dir">
         <copy file="${reference.Xinco.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${reference.XincoWorkflow.jar}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.19}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.18}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.17}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.16}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.15}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.14}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.13}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.12}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.11}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.10}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.9}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.8}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.7}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.6}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.5}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.4}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.3}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.Persistance.classpath.libfile.2}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.Persistance.classpath.libfile.1}" todir="${build.web.dir.real}/WEB-INF/lib"/>
         <copy file="${libs.jsf-runtime.classpath.libfile.6}" todir="${build.web.dir.real}/WEB-INF/lib"/>

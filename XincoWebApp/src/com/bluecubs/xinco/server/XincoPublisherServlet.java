@@ -208,8 +208,19 @@ public class XincoPublisherServlet extends HttpServlet {
                 out.println("<title>" +  xcd.getDesignation() + "</title>");
                 out.println("<link rel=\"stylesheet\" href=\"../../xincostyle.css\" type=\"text/css\"/>");
             }
+            //Avoid external links if general.setting.allowoutsidelinks is set to false
+            //Security bug
+            if(!DBM.getXincoSettingServer().getSetting("general.setting.allowoutsidelinks").isBool_value()){
+                out.println(DBM.getWebBlockRightClickScript());
+            }
             out.println("</head>");
             out.println("<body>");
+            //Avoid external links if general.setting.allowoutsidelinks is set to false
+            //Security bug
+            if(!DBM.getXincoSettingServer().getSetting("general.setting.allowoutsidelinks").isBool_value()){
+                out.println(DBM.getWebBlockRightClickScript());
+            }
+            
             out.println("<center>");
             out.println("<span class=\"text\">");
             
@@ -385,7 +396,7 @@ public class XincoPublisherServlet extends HttpServlet {
                                         }
                                         out.println("<tr>");
                                         out.println("<td class=\"text\">" + xdata_temp.getDesignation() + file_name  +
-                                        " (" + DBM.localizeString(xdata_temp.getXinco_core_data_type().getDesignation()) + " | " + xdata_temp.getXinco_core_language().getSign() + ")" + "</td>");
+                                                " (" + DBM.localizeString(xdata_temp.getXinco_core_data_type().getDesignation()) + " | " + xdata_temp.getXinco_core_language().getSign() + ")" + "</td>");
                                         out.println("<td class=\"text\"><a href=\"" + "XincoPublisher/" + xdata_temp.getId() + "/" + temp_url + "?list="+request.getParameter("list")+"\" target=\"_blank\">" + temp_server_url + "/" + xdata_temp.getId() + "/" + temp_url + "</a></td>");
                                         out.println("</tr>");
                                         out.flush();
@@ -459,7 +470,10 @@ public class XincoPublisherServlet extends HttpServlet {
                 out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
                 out.println("<tr>");
                 out.println("<td class=\"text\">&nbsp;</td>");
-                out.println("<td class=\"text\">&copy; "+setting+", "+rb.getString("message.admin.main.footer"));
+                out.println("<td class=\"text\">&copy; "+setting+", "+rb.getString("general.copyright.date")+", "+
+                        //Avoid external links if general.setting.allowoutsidelinks is set to false
+                        //Security bug
+                        (DBM.config.isAllowOutsideLinks()? rb.getString("message.admin.main.footer"):"blueCubs.com and xinco.org"));
                 out.println("</tr>");
                 out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                         rb.getString("message.admin.main.backtomain")+"' />" +

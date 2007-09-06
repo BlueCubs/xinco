@@ -48,6 +48,7 @@ public class TransactionServer extends Transaction{
     private boolean instanceReady=false;
     private int instance_template_id,instance_id;
     private WorkflowAuditTrail wat;
+    private String sql;
     
     /** Creates a new instance of TransactionServer */
     public TransactionServer() {}
@@ -57,13 +58,16 @@ public class TransactionServer extends Transaction{
             if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 System.out.println("Creating transaction with id: "+id);
             try {
-                rs=DBM.getStatement().executeQuery("select * from transaction where id="+id);
+                sql="select * from transaction where id="+id;
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
+                rs=DBM.getStatement().executeQuery(sql);
                 rs.next();
                 setId(rs.getInt("id"));
                 setDescription(rs.getString("description"));
                 setTo(new NodeServer(rs.getInt("node_id"),DBM));
-                rs=DBM.getStatement().executeQuery("select node_id from " +
-                        "Node_has_Transaction where transaction_id="+id);
+                sql="select node_id from Node_has_Transaction where transaction_id="+id;
+                rs=DBM.getStatement().executeQuery(sql);
                 rs.next();
                 setFrom(new NodeServer(rs.getInt("node_id"),DBM));
                 loadActivities(DBM);
@@ -72,11 +76,13 @@ public class TransactionServer extends Transaction{
                 ex.printStackTrace();
             }
             if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-                System.out.println("Done!");
+                System.out.println("Done!\n");
         }
     }
     
     public void loadActivities(WorkflowDBManager DBM) throws SQLException{
+        if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            System.out.println("Loading activities...\n");
         Vector values = new Vector();
         String sql="select activity_id from " +
                 "Transaction_has_Activity where transaction_id="+getId();
@@ -88,12 +94,18 @@ public class TransactionServer extends Transaction{
             values.addElement(new ActivityServer(rs.getInt("activity_id"),DBM));
         }
         setActivities(values);
+        if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            System.out.println("Loading activities done!\n");
     }
     
     public void loadProperties(WorkflowDBManager DBM) throws SQLException{
+        if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            System.out.println("Loading properties...\n");
         Vector values = new Vector();
         values=new PropertyServer().getPropertiesForTransaction(getId(),DBM);
         setProperties(values);
+        if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            System.out.println("Loading properties done!\n");
     }
     
     public TransactionServer instanceSetup(int instance_id, WorkflowDBManager DBM){
