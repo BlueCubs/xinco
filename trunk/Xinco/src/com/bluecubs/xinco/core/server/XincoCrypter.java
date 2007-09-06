@@ -44,6 +44,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
+import org.apache.axis.encoding.Base64;
 
 /**
  *
@@ -53,8 +54,9 @@ import javax.crypto.spec.PBEParameterSpec;
  * Creates a new instance of XincoCrypter
  */
 public class XincoCrypter {
-    Cipher ecipher;
-    Cipher dcipher;
+    private Cipher ecipher;
+    private Cipher dcipher;
+    private Base64 base64= new Base64();
     
     // 8-byte Salt
     byte[] salt = {
@@ -81,10 +83,15 @@ public class XincoCrypter {
             ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
             dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
         } catch (java.security.InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
         } catch (java.security.spec.InvalidKeySpecException e) {
+            e.printStackTrace();
         } catch (javax.crypto.NoSuchPaddingException e) {
+            e.printStackTrace();
         } catch (java.security.NoSuchAlgorithmException e) {
+            e.printStackTrace();
         } catch (java.security.InvalidKeyException e) {
+            e.printStackTrace();
         }
     }
     
@@ -97,11 +104,15 @@ public class XincoCrypter {
             byte[] enc = ecipher.doFinal(utf8);
             
             // Encode bytes to base64 to get a string
-            return new sun.misc.BASE64Encoder().encode(enc);
+            return base64.encode(enc);
         } catch (javax.crypto.BadPaddingException e) {
+            e.printStackTrace();
         } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         } catch (java.io.IOException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -109,7 +120,7 @@ public class XincoCrypter {
     public String decrypt(String str) {
         try {
             // Decode base64 to get bytes
-            byte[] dec = new sun.misc.BASE64Decoder().decodeBuffer(str);
+            byte[] dec = base64.decode(str);
             
             // Decrypt
             byte[] utf8 = dcipher.doFinal(dec);

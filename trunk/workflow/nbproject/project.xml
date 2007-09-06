@@ -34,7 +34,7 @@
                     <file>${reference.XincoWorkflow.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library files="19">
+                <library>
                     <file>${libs.Hibernate.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>

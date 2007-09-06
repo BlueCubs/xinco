@@ -4,6 +4,7 @@
 <%@page import="java.util.Locale"%>
 <%@page import="com.bluecubs.xinco.core.server.XincoSettingServer"%>
 <%@page import="com.bluecubs.xinco.core.XincoSetting"%>
+<%@page import="com.bluecubs.xinco.core.server.XincoDBManager"%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
@@ -80,7 +81,7 @@ out.println("<td class='text'>&nbsp;</td>");
 out.println("</tr>");
 out.println("<tr>");
 out.println("<td class='text'>&nbsp;</td>");
-out.println("<td class='text'>&copy; "+setting+", "+rb.getString("message.admin.main.footer")+"</a></td>");
+out.println("<td class='text'>&copy; "+setting+", "+(new XincoDBManager().config.isAllowOutsideLinks()? rb.getString("message.admin.main.footer"):"blueCubs.com and xinco.org")+"</a></td>");
 out.println("</tr>");
 out.println("</table>");
 out.println("</span>");

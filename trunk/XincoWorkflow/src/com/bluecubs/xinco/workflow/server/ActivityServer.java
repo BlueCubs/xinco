@@ -50,13 +50,18 @@ public class ActivityServer extends Activity{
     private int nodeID;
     private ResultSet rs;
     private WorkflowAuditTrail wat;
+    private String sql;
+    
     /** Creates a new instance of ActivityServer */
     public ActivityServer(int id,WorkflowDBManager DBM) {
         if(id>0){
             if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
                 System.out.println("Retrieving activity with id: "+id);
             try {
-                rs=DBM.getStatement().executeQuery("select * from activity where id="+id);
+                sql="select * from activity where id="+id;
+                if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
+                rs=DBM.getStatement().executeQuery(sql);
                 rs.next();
                 setId(rs.getInt("id"));
                 setDescription(rs.getString("description"));
@@ -81,7 +86,7 @@ public class ActivityServer extends Activity{
     public void setNodeID(int nodeID) {
         this.nodeID = nodeID;
     }
-
+    
     public boolean run() {
         return false;
     }
@@ -108,17 +113,17 @@ public class ActivityServer extends Activity{
             try {
                 setId(DBM.getNewID("activity"));
                 if(((WorkflowDBManager)DBM).getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-                System.out.println("Updating activity with id: "+getId());
-            try {
-                DBM.getStatement().executeUpdate("INSERT INTO Activity (id, description, className) VALUES("+
-                        getId()+",'"+getDescription()+"', '"+getClassname()+"')");
-                wat.updateAuditTrail("node",new String [] {"id="+getId()},DBM,"audit.general.create",getChangerID());
-                DBM.getConnection().commit();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-            if(((WorkflowDBManager)DBM).getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-                System.out.println("Updating activity done!");
+                    System.out.println("Updating activity with id: "+getId());
+                try {
+                    DBM.getStatement().executeUpdate("INSERT INTO Activity (id, description, className) VALUES("+
+                            getId()+",'"+getDescription()+"', '"+getClassname()+"')");
+                    wat.updateAuditTrail("node",new String [] {"id="+getId()},DBM,"audit.general.create",getChangerID());
+                    DBM.getConnection().commit();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                if(((WorkflowDBManager)DBM).getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println("Updating activity done!");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

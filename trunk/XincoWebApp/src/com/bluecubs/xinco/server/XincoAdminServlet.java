@@ -664,8 +664,20 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<head>");
         out.println("<title>XincoAdmin</title>");
         out.println("<link rel=\"stylesheet\" href=\"xincostyle.css\" type=\"text/css\"/>");
+        //Avoid external links if general.setting.allowoutsidelinks is set to false
+        //Security bug
+        if(!DBM.config.isAllowOutsideLinks()){
+            out.println(DBM.getWebBlockRightClickScript());
+        }
         out.println("</head>");
         out.println("<body onload=\"if (document.forms[0] != null) { if (document.forms[0].elements[0] != null) { document.forms[0].elements[0].focus(); } }\">");
+        
+        //Avoid external links if general.setting.allowoutsidelinks is set to false
+        //Security bug
+        if(!DBM.config.isAllowOutsideLinks()){
+            out.println(DBM.getWebBlockRightClickScript());
+        }
+        
         out.println("<center>");
         out.println("<span class=\"text\">");
         
@@ -1540,7 +1552,10 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; "+DBM.getXincoSettingServer().getSetting("general.copyright.date").getString_value()+", "+rb.getString("message.admin.main.footer"));
+        out.println("<td class=\"text\">&copy; "+DBM.getXincoSettingServer().getSetting("general.copyright.date").getString_value()+", "+
+                //Avoid external links if general.setting.allowoutsidelinks is set to false
+                //Security bug
+                (DBM.config.isAllowOutsideLinks()? rb.getString("message.admin.main.footer"):"blueCubs.com and xinco.org"));
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                 rb.getString("message.admin.main.backtomain")+"' />" +

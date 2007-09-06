@@ -75,7 +75,7 @@ public class NodeServer extends Node{
                 ex.printStackTrace();
             }
             if(DBM.getWorkflowSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-                System.out.println("Done!");
+                System.out.println("Done!\n");
         }
     }
     

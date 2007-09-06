@@ -113,7 +113,22 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<link rel=\"stylesheet\" href=\"xincostyle.css\" type=\"text/css\"/>");
         out.println("</head>");
         
+        //Avoid external links if general.setting.allowoutsidelinks is set to false
+        //Security bug
+        XincoDBManager DBM=null;
+        try {
+            DBM = new XincoDBManager();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        if(!DBM.config.isAllowOutsideLinks()){
+            out.println(DBM.getWebBlockRightClickScript());
+        }
+        
         out.println("<body>");
+        if(!DBM.config.isAllowOutsideLinks()){
+            out.println(DBM.getWebBlockRightClickScript());
+        }
         out.println("<center>");
         out.println("<span class=\"text\">");
         
@@ -191,7 +206,11 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; "+setting+", "+lrb.getString("message.admin.main.footer"));
+        out.println("<td class=\"text\">&copy; "+setting+", "+
+                lrb.getString("general.copyright.date")+", "+
+                //Avoid external links if general.setting.allowoutsidelinks is set to false
+                //Security bug
+                (DBM.config.isAllowOutsideLinks()? lrb.getString("message.admin.main.footer"):"blueCubs.com and xinco.org"));
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                 lrb.getString("message.admin.main.backtomain")+"' />" +
