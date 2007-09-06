@@ -62,7 +62,7 @@
   <Environment name="xinco/JNDIDB" override="false" type="java.lang.String" value="java:comp/env/jdbc/XincoDB"/>
   <!-- Max. number of returned search results -->
   <Environment name="xinco/MaxSearchResult" override="false" type="java.lang.Integer" value="100"/>
-  <!-- Max. number of returned search results -->
+  <!-- allow external links. -->
   <Environment name="general.setting.allowoutsidelinks" override="false" type="java.lang.String" value="false"/>
   <!-- ################# ###################### #################-->
 </Context>
