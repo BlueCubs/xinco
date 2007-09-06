@@ -356,9 +356,9 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_user.setAttempts(0);
                 //The logged in admin does the unlocking
                 if(login_user==null)
-                        temp_user.setChangerID(1);
-                    else
-                        temp_user.setChangerID(login_user.getId());
+                    temp_user.setChangerID(1);
+                else
+                    temp_user.setChangerID(login_user.getId());
                 temp_user.setWriteGroups(true);
                 //Register change in audit trail
                 temp_user.setChange(true);
@@ -377,9 +377,9 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_user.setUserpassword("123456");
                 //The logged in admin does the locking
                 if(login_user==null)
-                        temp_user.setChangerID(1);
-                    else
-                        temp_user.setChangerID(login_user.getId());
+                    temp_user.setChangerID(1);
+                else
+                    temp_user.setChangerID(login_user.getId());
                 temp_user.setWriteGroups(true);
                 //Register change in audit trail
                 temp_user.setChange(true);
@@ -641,8 +641,17 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<head>");
         out.println("<title>XincoAdmin</title>");
         out.println("<link rel=\"stylesheet\" href=\"xincostyle.css\" type=\"text/css\"/>");
+        if(!dbm.config.isAllowOutsideLinks())
+            out.println(dbm.getWebBlockRightClickScript());
         out.println("</head>");
         out.println("<body onload=\"if (document.forms[0] != null) { if (document.forms[0].elements[0] != null) { document.forms[0].elements[0].focus(); } }\">");
+        
+        //Avoid external links if general.setting.allowoutsidelinks is set to false
+        //Security bug
+        if(!dbm.config.isAllowOutsideLinks()){
+            out.println(dbm.getWebBlockRightClickScript());
+        }
+        
         out.println("<center>");
         out.println("<span class=\"text\">");
         
@@ -1456,7 +1465,10 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; "+rb.getString("general.copyright.date")+", "+rb.getString("message.admin.main.footer"));
+        out.println("<td class=\"text\">&copy; "+rb.getString("general.copyright.date")+", "+
+                //Avoid external links if general.setting.allowoutsidelinks is set to false
+                //Security bug
+                (dbm.config.isAllowOutsideLinks()? rb.getString("message.admin.main.footer"):"blueCubs.com and xinco.org"));
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                 rb.getString("message.admin.main.backtomain")+"' />" +

@@ -2,11 +2,18 @@
 <%@page pageEncoding="UTF-8"%>
 <%@page import="java.util.ResourceBundle"%>
 <%@page import="java.util.Locale"%>
+<%@page import="com.bluecubs.xinco.core.server.XincoDBManager"%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <%
 Locale loc = null;
+XincoDBManager DBM=null;
+try {
+    DBM = new XincoDBManager();
+} catch (Exception ex) {
+    ex.printStackTrace();
+}
 try {
     String list = request.getParameter("list");
     String[] locales;
@@ -27,8 +34,12 @@ out.println("<html>");
 out.println("<head>");
 out.println("<title>"+rb.getString("message.admin.main.title")+"</title>");
 out.println("<link rel='stylesheet' href='xincostyle.css' type='text/css'/>");
+if(DBM.config.isAllowOutsideLinks())
+    out.println(DBM.getWebBlockRightClickScript());
 out.println("</head>");
 out.println("<body>");
+if(DBM.config.isAllowOutsideLinks())
+    out.println(DBM.getWebBlockRightClickScript());
 out.println("<center>");
 out.println("<span class='text'>");
 out.println("<br><img src='blueCubs.gif' border='0'/>");
@@ -51,7 +62,7 @@ out.println("<td class='text'>"+rb.getString("message.admin.main.publisherdesc")
 out.println("</tr>");
 out.println("<tr>");
 out.println("<td class='text'><a href='http://java.sun.com' " +
-" class='link'>"+rb.getString("message.admin.main.java.label")+"</a></td>");
+        " class='link'>"+rb.getString("message.admin.main.java.label")+"</a></td>");
 out.println("<td class='text'>"+rb.getString("message.admin.main.javadesc")+"</td>");
 out.println("</tr>");
 out.println("<tr>");
@@ -76,7 +87,7 @@ out.println("<td class='text'>&nbsp;</td>");
 out.println("</tr>");
 out.println("<tr>");
 out.println("<td class='text'>&nbsp;</td>");
-out.println("<td class='text'>&copy; "+rb.getString("general.copyright.date")+", "+rb.getString("message.admin.main.footer")+"</a></td>");
+out.println("<td class='text'>&copy; "+rb.getString("general.copyright.date")+", "+(DBM.config.isAllowOutsideLinks()? rb.getString("message.admin.main.footer"):"blueCubs.com and xinco.org")+"</a></td>");
 out.println("</tr>");
 out.println("</table>");
 out.println("</span>");

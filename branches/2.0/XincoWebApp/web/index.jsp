@@ -51,7 +51,9 @@
     <%
     //load settings
     ResourceBundle settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
-    out.println("[Version " + settings.getString("version.high") + "." + settings.getString("version.mid") + "." + settings.getString("version.low") + " " + settings.getString("version.postfix") + "]");
+    out.println("[Version " + settings.getString("version.high") + "." + 
+            settings.getString("version.mid") + "." + settings.getString("version.low") + " " + 
+            settings.getString("version.postfix") + "]");
     %>
 </span>
 

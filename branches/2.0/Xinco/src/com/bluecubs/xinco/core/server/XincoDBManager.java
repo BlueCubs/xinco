@@ -69,35 +69,9 @@ public class XincoDBManager{
             config = XincoConfigSingletonServer.getInstance();
             setDatasource((DataSource)(new InitialContext()).lookup(config.getJNDIDB()));
             getConnection().setAutoCommit(false);
-            //load configuration from database
-            fillSettings();
-            config.init(getXincoSettingServer());
             count++;
         }catch(Exception e){
             e.printStackTrace();
-        }
-    }
-    
-    protected void fillSettings(){
-        ResultSet rs=null;
-        getXincoSettingServer().setXinco_settings(new Vector());
-        String string_value="";
-        try {
-            Statement stm=getConnection().createStatement();
-            rs=stm.executeQuery("select * from xinco_setting order by id");
-            while(rs.next()){
-                if(rs.getString("string_value")==null)
-                    string_value="";
-                else
-                    string_value=rs.getString("string_value");
-                getXincoSettingServer().getXinco_settings().addElement(new XincoSetting(rs.getInt("id"),
-                        rs.getString("description"),rs.getInt("int_value"),string_value,
-                        rs.getBoolean("bool_value"),0,rs.getLong("long_value"),null));
-            }
-            stm.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            printStats();
         }
     }
     
@@ -451,5 +425,24 @@ public class XincoDBManager{
         if(loc==null)
             loc=Locale.getDefault();
         return loc;
+    }
+    
+    public String getWebBlockRightClickScript(){
+        return "<script language=JavaScript> \n" +
+                "<!--\n" +
+                "//Disable right click script III- By Renigade (renigade@mediaone.net)\n"+
+                "//For full source code, visit http://www.dynamicdrive.com\n"+
+                "///////////////////////////////////\n"+
+                "var message='';\n" +
+                "function clickIE() {if (document.all) {(message);return false;}}\n" +
+                "function clickNS(e) {if \n" +
+                "(document.layers||(document.getElementById&&!document.all)) {\n" +
+                "if (e.which==2||e.which==3) {(message);return false;}}}\n" +
+                "if (document.layers) \n" +
+                "{document.captureEvents(Event.MOUSEDOWN);document.onmousedown=clickNS;}\n" +
+                "else{document.onmouseup=clickNS;document.oncontextmenu=clickIE;}\n" +
+                "document.oncontextmenu=new Function('return false')\n" +
+                "// --> \n" +
+                "</script>";
     }
 }

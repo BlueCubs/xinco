@@ -97,14 +97,30 @@ public class XincoCronServlet extends HttpServlet {
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
         
+        //Avoid external links if general.setting.allowoutsidelinks is set to false
+        //Security bug
+        XincoDBManager DBM=null;
+        try {
+            DBM = new XincoDBManager();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
         //show header
         out.println("<html>");
         out.println("<head>");
         out.println("<title>"+lrb.getString("message.admin.main.xincocron.label")+"</title>");
         out.println("<link rel=\"stylesheet\" href=\"xincostyle.css\" type=\"text/css\"/>");
+        if(!DBM.config.isAllowOutsideLinks())
+            out.println(DBM.getWebBlockRightClickScript());
         out.println("</head>");
         
         out.println("<body>");
+        
+        if(!DBM.config.isAllowOutsideLinks()){
+            out.println(DBM.getWebBlockRightClickScript());
+        }
+        
         out.println("<center>");
         out.println("<span class=\"text\">");
         
@@ -182,7 +198,10 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; "+lrb.getString("general.copyright.date")+", "+lrb.getString("message.admin.main.footer"));
+        out.println("<td class=\"text\">&copy; "+lrb.getString("general.copyright.date")+", "+
+                //Avoid external links if general.setting.allowoutsidelinks is set to false
+                //Security bug
+                (DBM.config.isAllowOutsideLinks()? lrb.getString("message.admin.main.footer"):"blueCubs.com and xinco.org"));
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                 lrb.getString("message.admin.main.backtomain")+"' />" +
