@@ -63,6 +63,6 @@
   <!-- Max. number of returned search results -->
   <Environment name="xinco/MaxSearchResult" override="false" type="java.lang.Integer" value="100"/>
   <!-- allow external links. -->
-  <Environment name="general.setting.allowoutsidelinks" override="false" type="java.lang.String" value="false"/>
+  <Environment name="general.setting.allowoutsidelinks" override="false" type="java.lang.String" value="true"/>
   <!-- ################# ###################### #################-->
 </Context>
