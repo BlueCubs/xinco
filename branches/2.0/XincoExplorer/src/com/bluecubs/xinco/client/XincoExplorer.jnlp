@@ -31,7 +31,6 @@
     <jar href="commons-discovery-0.4.jar"/>
     <jar href="commons-logging-1.1.jar"/>
     <jar href="jaxrpc.jar"/>
-    <jar href="jaxrpc.jar"/>
     <jar href="mail.jar"/>
     <jar href="napkinlaf.jar"/>
     <jar href="saaj.jar"/>
