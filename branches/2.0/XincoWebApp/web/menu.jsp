@@ -61,8 +61,8 @@ out.println("<td class='text'><a href='XincoPublisher?list="+request.getParamete
 out.println("<td class='text'>"+rb.getString("message.admin.main.publisherdesc")+"</td>");
 out.println("</tr>");
 out.println("<tr>");
-out.println("<td class='text'><a href='http://java.sun.com' " +
-        " class='link'>"+rb.getString("message.admin.main.java.label")+"</a></td>");
+out.println("<td class='text'>"+(DBM.config.isAllowOutsideLinks()? "<a href='http://java.sun.com' class='link'>"+
+        rb.getString("message.admin.main.java.label")+"</a>":"http://java.sun.com")+"</td>");
 out.println("<td class='text'>"+rb.getString("message.admin.main.javadesc")+"</td>");
 out.println("</tr>");
 out.println("<tr>");

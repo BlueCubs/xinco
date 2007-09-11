@@ -6,16 +6,16 @@
             <name>xinco</name>
             <minimum-ant-version>1.6</minimum-ant-version>
             <web-module-libraries>
-                <library files="25">
+                <library files="21">
                     <file>${libs.XincoLibs.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library files="1">
-                    <file>${reference.XincoExplorer.jar}</file>
+                    <file>${reference.Xinco.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library files="1">
-                    <file>${reference.Xinco.jar}</file>
+                    <file>${reference.XincoExplorer.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
@@ -24,8 +24,12 @@
                     <file>${file.reference.XincoExplorer.jnlp-2}</file>
                     <path-in-war>client</path-in-war>
                 </library>
-                <library files="14">
+                <library files="13">
                     <file>${libs.XincoLibsClient.classpath}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${file.reference.blueCubsIcon.gif-1}</file>
                     <path-in-war>client</path-in-war>
                 </library>
                 <library files="1">
@@ -34,10 +38,6 @@
                 </library>
                 <library files="1">
                     <file>${reference.XincoExplorer.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library files="1">
-                    <file>${file.reference.blueCubsIcon.gif-1}</file>
                     <path-in-war>client</path-in-war>
                 </library>
             </web-module-additional-libraries>

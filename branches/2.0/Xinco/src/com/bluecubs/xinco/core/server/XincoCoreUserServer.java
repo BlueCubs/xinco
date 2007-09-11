@@ -33,9 +33,9 @@
  *                                    write2DB, XincoCoreUserServer, XincoCoreUserServer (x 2), getXincoCoreUsers
  * Javier A. Ortiz 11/06/2006         Moved the logic of locking an account due to login attempts from the XincoAdminServlet
  * Alexander Manes 11/12/2006         Moved the new user features to core class
- * Javier A. Ortiz 11/20/2006         Undo previous changes and corrected a bug that increased twice 
+ * Javier A. Ortiz 11/20/2006         Undo previous changes and corrected a bug that increased twice
  *                                    the attempts in the DB when wrong password was used
- * Javier A. Ortiz 01/08/2007         
+ * Javier A. Ortiz 01/08/2007
  *************************************************************
  */
 
@@ -414,7 +414,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
     public boolean isPasswordUsable(String newPass){
         ResultSet rs=null;
         String sql=null;
-        int id=0;
+        Statement stmt=null;
         boolean passwordIsUsable=false;
         try {
             XincoDBManager DBM=null;
@@ -423,33 +423,37 @@ public class XincoCoreUserServer extends XincoCoreUser {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            Statement stmt=DBM.getConnection().createStatement();
-            sql="select id from xinco_core_user where username='"+getUsername()+"'";
-            rs=stmt.executeQuery(sql);
-            rs.next();
-            id = rs.getInt(1);
-            rs=stmt.executeQuery("select userpassword from xinco_core_user_t where id=" +
-                    id+" and DATEDIFF(NOW(),last_modified) <= "+
-                    settings.getString("password.unusable_period") + " and MD5('"+
-                    newPass+"') = userpassword");
-            //Here we'll catch if the password have been used in the unusable period
-            rs.next();
-            rs.getString(1);
-            //---------------------------
-            
+            stmt=DBM.getConnection().createStatement();
             /*Bug fix: The password was only verified against past passwords not current password.
-             *The current passwords is not usable after the first change when it was added to the 
+             *The current passwords is not usable after the first change when it was added to the
              *audit trail table.
-            */
+             */
             //Now check if password is not the same as the current password
-            rs=stmt.executeQuery("select userpassword from xinco_core_user where id=" +
-                    id+" and MD5('"+ newPass+"') ="+newPass);
+            sql="select userpassword from xinco_core_user where id=" +
+                    getId()+" and MD5('"+ newPass+"') =userpassword";
+            System.out.println(sql);
+            rs=stmt.executeQuery(sql);
             //Here we'll catch if the password is the same as the actual
             rs.next();
             rs.getString(1);
             //End bug fix
+            stmt.close();
         } catch (SQLException ex) {
-            passwordIsUsable=true;
+            try{
+                //If password is not current then check against audit trail
+                sql="select userpassword from xinco_core_user_t where id=" +
+                        getId()+" and DATEDIFF(NOW(),last_modified) <= "+
+                        settings.getString("password.unusable_period") + " and MD5('"+
+                        newPass+"') = userpassword";
+                System.out.println(sql);
+                rs=stmt.executeQuery(sql);
+                //Here we'll catch if the password have been used in the unusable period
+                rs.next();
+                rs.getString(1);
+                stmt.close();
+            }catch (Exception e) {
+                passwordIsUsable=true;
+            }
         }
         return passwordIsUsable;
     }
