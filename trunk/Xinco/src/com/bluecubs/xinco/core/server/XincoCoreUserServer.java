@@ -475,49 +475,60 @@ public class XincoCoreUserServer extends XincoCoreUser {
     
     public boolean isPasswordUsable(String newPass){
         ResultSet rs=null;
+        XincoDBManager DBM=null;
         String sql=null;
-        int id=0;
+        Statement stmt=null;
         boolean passwordIsUsable=false;
         try {
-            XincoDBManager DBM=null;
             try {
                 DBM = new XincoDBManager();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            Statement stmt=DBM.getConnection().createStatement();
-            sql="select id from xinco_core_user where username='"+getUsername()+"'";
-            rs=stmt.executeQuery(sql);
-            rs.next();
-            id = rs.getInt(1);
-            rs=stmt.executeQuery("select userpassword from xinco_core_user_t where id=" +
-                    id+" and DATEDIFF(NOW(),last_modified) <= "+
-                    getSettings().getSetting("password.aging").getInt_value() + " and MD5('"+
-                    newPass+"') ="+newPass);
-            //Here we'll catch if the password have been used in the unusable period
-            rs.next();
-            rs.getString(1);
-            
+            stmt=DBM.getConnection().createStatement();
             /*Bug fix: The password was only verified against past passwords not current password.
-             *The current passwords is not usable after the first change when it was added to the 
+             *The current passwords is not usable after the first change when it was added to the
              *audit trail table.
-            */
+             */
             //Now check if password is not the same as the current password
-            rs=stmt.executeQuery("select userpassword from xinco_core_user where id=" +
-                    id+" and MD5('"+ newPass+"') ="+newPass);
+            sql="select userpassword from xinco_core_user where id=" +
+                    getId()+" and MD5('"+ newPass+"') =userpassword";
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println(sql);
+            rs=stmt.executeQuery(sql);
             //Here we'll catch if the password is the same as the actual
             rs.next();
             rs.getString(1);
             //End bug fix
+            stmt.close();
         } catch (SQLException ex) {
-            passwordIsUsable=true;
+            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Password different than actual");
+            try{
+                //If password is not current then check against audit trail
+                sql="select userpassword from xinco_core_user_t where id=" +
+                        getId()+" and DATEDIFF(NOW(),last_modified) <= "+
+                        getSettings().getSetting("password.unusable_period").getInt_value() +
+                        " and MD5('"+newPass+"') = userpassword";
+                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    System.out.println(sql);
+                rs=stmt.executeQuery(sql);
+                //Here we'll catch if the password have been used in the unusable period
+                rs.next();
+                rs.getString(1);
+                stmt.close();
+            }catch (Exception e) {
+                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                System.out.println("Password not used within the unusable period-"+
+                        getSettings().getSetting("password.unusable_period").getInt_value());
+                passwordIsUsable=true;
+            }
         }
         return passwordIsUsable;
     }
     
     private XincoSettingServer getSettings(){
         if(settings==null){
-            System.out.println("Creating settings...");
             settings = new XincoSettingServer();
         }
         return settings;

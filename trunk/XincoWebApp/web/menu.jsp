@@ -55,8 +55,9 @@ out.println("<td class='text'><a href='XincoPublisher?list="+request.getParamete
 out.println("<td class='text'>"+rb.getString("message.admin.main.publisherdesc")+"</td>");
 out.println("</tr>");
 out.println("<tr>");
-out.println("<td class='text'><a href='http://java.sun.com' " +
-        "target='_blank' class='link'  icon='xinco'>"+rb.getString("message.admin.main.java.label")+"</a></td>");
+out.println("<td class='text'>"+(new XincoDBManager().config.isAllowOutsideLinks()? 
+        "<a href='http://java.sun.com' class='link'  icon='xinco' </a>":"http://java.sun.com") +
+        rb.getString("message.admin.main.java.label")+"</td>");
 out.println("<td class='text'>"+rb.getString("message.admin.main.javadesc")+"</td>");
 out.println("</tr>");
 out.println("<tr>");
@@ -81,7 +82,7 @@ out.println("<td class='text'>&nbsp;</td>");
 out.println("</tr>");
 out.println("<tr>");
 out.println("<td class='text'>&nbsp;</td>");
-out.println("<td class='text'>&copy; "+setting+", "+(new XincoDBManager().config.isAllowOutsideLinks()? rb.getString("message.admin.main.footer"):"blueCubs.com and xinco.org")+"</a></td>");
+out.println("<td class='text'>&copy; "+setting+", "+(new XincoDBManager().config.isAllowOutsideLinks()? rb.getString("message.admin.main.footer")+"</a>":"blueCubs.com and xinco.org")+"</td>");
 out.println("</tr>");
 out.println("</table>");
 out.println("</span>");
