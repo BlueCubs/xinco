@@ -180,7 +180,7 @@ public class XincoAdminServlet extends HttpServlet {
                             request.getParameter("DialogLoginUsername") + "' AND status_number<>2");
                     //Check if the username is correct if not just throw the wrong login message
                     if(!rs.next())
-                        throw new XincoException("Login "+rb.getString("general.fail")+" Username and/or Password may be incorrect!");
+                        throw new XincoException(rb.getString("password.login.fail"));
                     rs= stmt.executeQuery("SELECT id FROM xinco_core_user WHERE username='" +
                             request.getParameter("DialogLoginUsername") + "'");
                     if(rs.next()){
