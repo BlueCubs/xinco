@@ -34,11 +34,11 @@ out.println("<html>");
 out.println("<head>");
 out.println("<title>"+rb.getString("message.admin.main.title")+"</title>");
 out.println("<link rel='stylesheet' href='xincostyle.css' type='text/css'/>");
-if(DBM.config.isAllowOutsideLinks())
+if(!DBM.config.isAllowOutsideLinks())
     out.println(DBM.getWebBlockRightClickScript());
 out.println("</head>");
 out.println("<body>");
-if(DBM.config.isAllowOutsideLinks())
+if(!DBM.config.isAllowOutsideLinks())
     out.println(DBM.getWebBlockRightClickScript());
 out.println("<center>");
 out.println("<span class='text'>");

@@ -641,6 +641,8 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<head>");
         out.println("<title>XincoAdmin</title>");
         out.println("<link rel=\"stylesheet\" href=\"xincostyle.css\" type=\"text/css\"/>");
+        //Avoid external links if general.setting.allowoutsidelinks is set to false
+        //Security bug
         if(!dbm.config.isAllowOutsideLinks())
             out.println(dbm.getWebBlockRightClickScript());
         out.println("</head>");

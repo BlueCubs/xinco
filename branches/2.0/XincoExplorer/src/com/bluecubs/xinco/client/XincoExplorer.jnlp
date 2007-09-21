@@ -7,43 +7,44 @@
 # JNLP File for XincoExplorer
 #
 ###############################################################################
- -->
+-->
 <!-- ### IMPORTANT: Change codebase to where your client will be deployed to!                         ### -->
 <!-- ###            e.g. http://your_domain:8080/xinco/client or http://192.168.0.1:8080/xinco/client ### -->
 <jnlp codebase="http://localhost:8080/xinco/client" href="XincoExplorer.jnlp" spec="0.2 1.0">
-  <information>
-    <title>XincoExplorer</title>
-    <vendor>blueCubs.com</vendor>
-    <homepage href="http://www.xinco.org"/>
-    <description>XincoExplorer - Client of xinco, the Core of Information and Document Management</description>
-    <description kind="short">XincoExplorer - Client of xinco, the Core of Information and Document Management</description>
-    <icon href="blueCubsIcon.gif"/>
-    <offline-allowed/>
-    <shortcut online="true">
-    </shortcut>
-  </information>
-  <resources locale="" os="">
-    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.5.0+"/>
-    <!-- required libraries, ALL SIGNED -->
-    <jar download="eager" href="XincoExplorer.jar" main="true"/>
-    <jar href="activation.jar"/>
-    <jar href="axis.jar"/>
-    <jar href="commons-discovery-0.4.jar"/>
-    <jar href="commons-logging-1.1.jar"/>
-    <jar href="jaxrpc.jar"/>
-    <jar href="mail.jar"/>
-    <jar href="napkinlaf.jar"/>
-    <jar href="saaj.jar"/>
-    <jar href="substance.jar"/>
-    <jar href="swing-layout-1.0.jar"/>
-    <jar href="wsdl4j.jar"/>
-    <jar href="xercesImpl.jar"/>
-    <jar href="Xinco.jar"/>
-    <jar href="xmlParserAPIs-2.6.2.jar"/>
-  </resources>
-  <security>
-    <!-- all permissions required on Client-Computer -->
-    <all-permissions/>
-  </security>
-  <application-desc main-class="com.bluecubs.xinco.client.XincoExplorer"/>
+    <information>
+        <title>XincoExplorer</title>
+        <vendor>blueCubs.com</vendor>
+        <homepage href="http://www.xinco.org"/>
+        <description>XincoExplorer - Client of xinco, the Core of Information and Document Management</description>
+        <description kind="short">XincoExplorer - Client of xinco, the Core of Information and Document Management</description>
+        <icon href="blueCubsIcon.gif"/>
+        <offline-allowed/>
+        <shortcut online="true">
+        </shortcut>
+    </information>
+    <resources locale="" os="">
+        <j2se href="http://java.sun.com/products/autodl/j2se" version="1.5.0+"/>
+        <j2se href="http://java.sun.com/products/autodl/j2se" version="1.6.0+"/>
+        <!-- required libraries, ALL SIGNED -->
+        <jar download="eager" href="XincoExplorer.jar" main="true"/>
+        <jar href="activation.jar"/>
+        <jar href="axis.jar"/>
+        <jar href="commons-discovery-0.4.jar"/>
+        <jar href="commons-logging-1.1.jar"/>
+        <jar href="jaxrpc.jar"/>
+        <jar href="mail.jar"/>
+        <jar href="napkinlaf.jar"/>
+        <jar href="saaj.jar"/>
+        <jar href="substance.jar"/>
+        <jar href="swing-layout-1.0.jar"/>
+        <jar href="wsdl4j.jar"/>
+        <jar href="xercesImpl.jar"/>
+        <jar href="Xinco.jar"/>
+        <jar href="xmlParserAPIs-2.6.2.jar"/>
+    </resources>
+    <security>
+        <!-- all permissions required on Client-Computer -->
+        <all-permissions/>
+    </security>
+    <application-desc main-class="com.bluecubs.xinco.client.XincoExplorer"/>
 </jnlp>
