@@ -537,6 +537,7 @@
         <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir.real}/client"/>
         <copy file="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir.real}/client"/>
         <copy file="${reference.Xinco.jar}" todir="${build.web.dir.real}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.14}" todir="${build.web.dir.real}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.13}" todir="${build.web.dir.real}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.12}" todir="${build.web.dir.real}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.11}" todir="${build.web.dir.real}/client"/>
@@ -588,6 +589,7 @@
         <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir.real}/client"/>
         <copy file="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir.real}/client"/>
         <copy file="${reference.Xinco.jar}" todir="${build.web.dir.real}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.14}" todir="${build.web.dir.real}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.13}" todir="${build.web.dir.real}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.12}" todir="${build.web.dir.real}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.11}" todir="${build.web.dir.real}/client"/>
