@@ -62,7 +62,7 @@
     properties which you can use check the target you are overriding in 
     nbproject/build-impl.xml file. 
     -->
-
+    
     <target name="-pre-dist">
         <signjar jar="${build.dir}/web/client/activation.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/axis.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>

@@ -57,17 +57,17 @@ public class XincoArchiveThread extends Thread {
 		firstRun = new GregorianCalendar();
 		while (true) {
 			try {
-				XincoDBManager dbm = null;
-				dbm = new XincoDBManager();
-				archive_period = dbm.config.getFileArchivePeriod();
+				XincoDBManager DBM = null;
+				DBM = new XincoDBManager();
+				archive_period = DBM.config.getFileArchivePeriod();
 				//exit archiver if period = 0
 				if (archive_period == 0) {
 					break;
 				}
-				XincoArchiver.archiveData(dbm);
+				XincoArchiver.archiveData(DBM);
 				lastRun = new GregorianCalendar();
-				dbm.getConnection().close();
-				dbm = null;
+				DBM.getConnection().close();
+				DBM = null;
 			} catch (Exception e){
 				//continue, wait and try again...
 				archive_period = 14400000;

@@ -6,16 +6,20 @@
             <name>xinco</name>
             <minimum-ant-version>1.6</minimum-ant-version>
             <web-module-libraries>
-                <library files="21">
-                    <file>${libs.XincoLibs.classpath}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
                 <library files="1">
                     <file>${reference.Xinco.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library files="1">
                     <file>${reference.XincoExplorer.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="21">
+                    <file>${libs.XincoLibs.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${libs.restapi.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
@@ -36,7 +40,7 @@
                     <file>${reference.XincoExplorer.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
-                <library files="13">
+                <library files="14">
                     <file>${libs.XincoLibsClient.classpath}</file>
                     <path-in-war>client</path-in-war>
                 </library>
