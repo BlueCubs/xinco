@@ -136,6 +136,7 @@ public class XincoSettingServer extends XincoSetting{
         return null;
     }
     
+    @Override
     public Vector getXinco_settings() {
         if (xinco_settings == null)
             try {
@@ -147,6 +148,7 @@ public class XincoSettingServer extends XincoSetting{
     }
 
     
+    @Override
     public void setXinco_settings(Vector xinco_settings) {
         this.xinco_settings = xinco_settings;
     }

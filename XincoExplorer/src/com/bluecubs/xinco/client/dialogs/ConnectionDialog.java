@@ -38,8 +38,7 @@ package com.bluecubs.xinco.client.dialogs;
 
 import com.bluecubs.xinco.client.*;
 import com.bluecubs.xinco.client.XincoClientConnectionProfile;
-import java.rmi.RemoteException;
-import java.util.ResourceBundle;
+import java.awt.event.KeyEvent;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -300,7 +299,7 @@ public class ConnectionDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     
     private void connectKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_connectKeyPressed
-        if(evt.getKeyCode()==evt.VK_ENTER)
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER)
             connect();
     }//GEN-LAST:event_connectKeyPressed
     
@@ -340,6 +339,7 @@ public class ConnectionDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_deleteProfileActionPerformed
     
+    @SuppressWarnings("unchecked")
     private void CreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateActionPerformed
         
         DefaultListModel dlm = (DefaultListModel)this.profileList.getModel();

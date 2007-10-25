@@ -720,7 +720,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         if(jScrollPaneRepositoryTable == null) {
             jScrollPaneRepositoryTable = new javax.swing.JScrollPane();
             jScrollPaneRepositoryTable.setViewportView(getJTableRepository());
-            jScrollPaneRepositoryTable.setHorizontalScrollBarPolicy(jScrollPaneRepositoryTable.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            jScrollPaneRepositoryTable.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         }
         return jScrollPaneRepositoryTable;
     }
@@ -1492,6 +1492,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      *
      * @return void
      */
+    @SuppressWarnings("unchecked")
     public void importContentOfFolder(XincoCoreNode node, File folder) throws Exception {
         int i=0;
         int j=0;
@@ -1717,6 +1718,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      *
      * @return void
      */
+    @SuppressWarnings("unchecked")
     public void doDataWizard(final int wizard_type) {
         this.wizard_type=wizard_type;
                 /*
@@ -2466,6 +2468,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      *
      * @return void
      */
+    @SuppressWarnings("unchecked")
     private void loadConfig() {
         Vector tmp_vector_old = new Vector();
         try {
@@ -2627,7 +2630,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             this.xat.getActivityTimer().restart();
     }
     
-    public loginThread getLoginT() {
+    loginThread getLoginT() {
         return loginT;
     }
     

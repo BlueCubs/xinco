@@ -78,6 +78,7 @@ public class XincoConfigSingletonServer {
         }
     }
     
+    @SuppressWarnings("unchecked")
     public void init(XincoSettingServer xss){
         try{
             FileRepositoryPath=xss.getSetting("xinco/FileRepositoryPath").getString_value();
@@ -86,7 +87,7 @@ public class XincoConfigSingletonServer {
             }
             MaxSearchResult=xss.getSetting("xinco/MaxSearchResult").getInt_value();
             FileIndexPath=xss.getSetting("xinco/FileIndexPath").getString_value();
-            if(getFileIndexPath()=="")
+            if(getFileIndexPath().equals(""))
                 FileIndexPath = getFileRepositoryPath() + "index";
             if (!(getFileIndexPath().substring(getFileIndexPath().length()-1).equals(System.getProperty("file.separator")))) {
                 FileIndexPath += System.getProperty("file.separator");
