@@ -78,6 +78,7 @@ public class XincoDBManager{
         }
     }
     
+    @SuppressWarnings("unchecked")
     protected void fillSettings(){
         ResultSet rs=null;
         getXincoSettingServer().setXinco_settings(new Vector());

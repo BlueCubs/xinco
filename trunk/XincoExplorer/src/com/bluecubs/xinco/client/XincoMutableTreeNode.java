@@ -36,7 +36,6 @@
 
 package com.bluecubs.xinco.client;
 
-import com.bluecubs.xinco.client.*;
 import java.rmi.RemoteException;
 import javax.swing.tree.DefaultMutableTreeNode;
 
