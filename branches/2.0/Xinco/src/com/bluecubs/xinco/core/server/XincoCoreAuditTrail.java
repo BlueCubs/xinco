@@ -18,9 +18,9 @@ import java.sql.Timestamp;
  *
  * @author ortizbj
  */
-public class XincoCoreAuditServer {
+public class XincoCoreAuditTrail {
     /** Creates a new instance of XincoCoreAuditServer */
-    public XincoCoreAuditServer() {
+    public XincoCoreAuditTrail() {
     }
     
     public void updateAuditTrail(String table,String [] keys, XincoDBManager DBM,String reason,int id){

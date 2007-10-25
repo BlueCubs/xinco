@@ -642,7 +642,7 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<head>");
         out.println("<title>XincoAdmin</title>");
         out.println("<link rel=\"stylesheet\" href=\"xincostyle.css\" type=\"text/css\"/>");
-        //Avoid external links if general.setting.allowoutsidelinks is set to false
+        //Avoid external links if setting.allowoutsidelinks is set to false
         //Security bug
         if (!DBM.config.isAllowOutsideLinks()) {
             out.println(DBM.getWebBlockRightClickScript());
@@ -650,7 +650,7 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("</head>");
         out.println("<body onload=\"if (document.forms[0] != null) { if (document.forms[0].elements[0] != null) { document.forms[0].elements[0].focus(); } }\">");
 
-        //Avoid external links if general.setting.allowoutsidelinks is set to false
+        //Avoid external links if setting.allowoutsidelinks is set to false
         //Security bug
         if (!DBM.config.isAllowOutsideLinks()) {
             out.println(DBM.getWebBlockRightClickScript());

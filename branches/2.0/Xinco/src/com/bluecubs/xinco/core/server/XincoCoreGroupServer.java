@@ -77,7 +77,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
         try {
             Statement stmt;
             if (getId() > 0) {
-                XincoCoreAuditServer audit= new XincoCoreAuditServer();
+                XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
                 audit.updateAuditTrail("xinco_core_group",new String [] {"id ="+getId()},
                         DBM,"audit.coregroup.change",this.getChangerID());
                 stmt = DBM.getConnection().createStatement();

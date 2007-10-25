@@ -312,7 +312,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
             if (getId() > 0) {
                 stmt = DBM.getConnection().createStatement();
                 if (isChange()) {
-                    XincoCoreAuditServer audit = new XincoCoreAuditServer();
+                    XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
                     audit.updateAuditTrail("xinco_core_user", new String[]{"id =" + getId()}, DBM, getReason(), getId());
                     ts = new Timestamp(System.currentTimeMillis());
                     setLastModified(ts);

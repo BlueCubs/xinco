@@ -1,3 +1,5 @@
+Verify---
+
 CREATE TABLE xinco_setting (
   id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   description VARCHAR(45) NOT NULL,

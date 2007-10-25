@@ -128,7 +128,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             Statement stmt = null;
             
             stmt = DBM.getConnection().createStatement();
-            XincoCoreAuditServer audit= new XincoCoreAuditServer();
+            XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
             /*
              * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
             audit.updateAuditTrail("xinco_add_attribute",new String [] {"xinco_add_attribute.attribute_id=" + attrCDTA.getAttribute_id(),

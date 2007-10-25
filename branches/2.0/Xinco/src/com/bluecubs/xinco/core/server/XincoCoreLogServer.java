@@ -111,7 +111,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
             
             if (getId() > 0) {
                 Statement stmt = DBM.getConnection().createStatement();
-                XincoCoreAuditServer audit= new XincoCoreAuditServer();
+                XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
                 ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+getId()},
                         DBM,xerb.getString("audit.log.change"),this.getChangerID());
@@ -140,6 +140,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
     }
     
     //create complete log list for data
+    @SuppressWarnings("unchecked")
     public static Vector getXincoCoreLogs(int attrID, XincoDBManager DBM) {
         
         Vector core_log = new Vector();

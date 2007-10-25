@@ -97,7 +97,7 @@ public class XincoCronServlet extends HttpServlet {
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
         
-        //Avoid external links if general.setting.allowoutsidelinks is set to false
+        //Avoid external links if setting.allowoutsidelinks is set to false
         //Security bug
         XincoDBManager DBM=null;
         try {
@@ -199,7 +199,7 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
         out.println("<td class=\"text\">&copy; "+lrb.getString("general.copyright.date")+", "+
-                //Avoid external links if general.setting.allowoutsidelinks is set to false
+                //Avoid external links if setting.allowoutsidelinks is set to false
                 //Security bug
                 (DBM.config.isAllowOutsideLinks()? lrb.getString("message.admin.main.footer"):"blueCubs.com and xinco.org"));
         out.println("</tr>");

@@ -211,7 +211,7 @@ public class XincoPublisherServlet extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
 
-            //Avoid external links if general.setting.allowoutsidelinks is set to false
+            //Avoid external links if setting.allowoutsidelinks is set to false
             //Security bug
             if (!DBM.config.isAllowOutsideLinks()) {
                 out.println(DBM.getWebBlockRightClickScript());
