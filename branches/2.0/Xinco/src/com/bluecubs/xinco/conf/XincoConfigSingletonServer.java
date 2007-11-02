@@ -72,7 +72,7 @@ public class XincoConfigSingletonServer {
     //private constructor to avoid instance generation with new-operator!
     protected XincoConfigSingletonServer() {
         try {
-            JNDIDB = (String)(new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
+            JNDIDB = (String)(new InitialContext()).lookup("xinco/JNDIDB");
         } catch (NamingException ex) {
             JNDIDB = "java:comp/env/jdbc/XincoDB";
         }
@@ -115,12 +115,6 @@ public class XincoConfigSingletonServer {
             getIndexFileTypesExt().add(xss.getSetting("xinco/IndexNoIndex").getString_value());
             setAllowOutsideLinks(xss.getSetting("setting.allowoutsidelinks").isBool_value());
         } catch (Exception ex) {
-            try {
-                if(new XincoDBManager().getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
-                    ex.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             //Default values
             setFileRepositoryPath("");
             setFileIndexPath("");
@@ -150,7 +144,6 @@ public class XincoConfigSingletonServer {
             getIndexNoIndex()[0] = "";
             getIndexNoIndex()[1] = "com";
             getIndexNoIndex()[2] = "exe";
-            
             setJNDIDB("java:comp/env/jdbc/XincoDB");
             setMaxSearchResult(30);
         }

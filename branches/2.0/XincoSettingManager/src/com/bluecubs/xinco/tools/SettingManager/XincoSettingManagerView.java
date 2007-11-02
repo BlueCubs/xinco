@@ -194,7 +194,7 @@ public class XincoSettingManagerView extends FrameView {
                         return null;
                     }
 
-            @Override
+                    @Override
                     protected void finished() {
                         setMessage("Done.");
                     }

@@ -28,4 +28,6 @@
     </parameter>
   </ResourceParams>
   
+  <!-- Database JNDI Name -->
+  <Environment name="xinco/JNDIDB" override="false" type="java.lang.String" value="java:comp/env/jdbc/XincoDB"/>
 </Context>

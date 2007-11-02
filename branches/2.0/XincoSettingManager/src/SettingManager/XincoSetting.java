@@ -8,7 +8,6 @@
  */
 package SettingManager;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;

@@ -422,27 +422,6 @@ INSERT INTO xinco_core_node VALUES (3, 1, 1, 'Temp', 1);
 INSERT INTO xinco_core_node VALUES (4, 1, 1, 'News', 1); 
 
 
-CREATE TABLE xinco_core_user (
-  id INTEGER UNSIGNED NOT NULL,
-  username VARCHAR(255) NOT NULL,
-  userpassword VARCHAR(255) NOT NULL,
-  name VARCHAR(255) NOT NULL,
-  firstname VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL,
-  status_number INTEGER UNSIGNED NOT NULL,
-  attempts INTEGER UNSIGNED NOT NULL DEFAULT 0,
-  last_modified DATE NOT NULL,
-  PRIMARY KEY(id),
-  INDEX xinco_core_user_index_username(username),
-  INDEX xinco_core_user_index_status(status_number)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_core_user VALUES (1, 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', 1, 0, now()); 
-INSERT INTO xinco_core_user VALUES (2, 'user', MD5('user'), 'User', 'Default', 'user@xinco.org', 1, 0, now());
-INSERT INTO xinco_core_user VALUES (3, 'bluecubs', MD5('bluecubs'), 'System', 'User', 'info@bluecubs.com', 1, 0, now());
-
-
 CREATE TABLE xinco_core_user_has_xinco_core_group (
   xinco_core_user_id INTEGER UNSIGNED NOT NULL,
   xinco_core_group_id INTEGER UNSIGNED NOT NULL,

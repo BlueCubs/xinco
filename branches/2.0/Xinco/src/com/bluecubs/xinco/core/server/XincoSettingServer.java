@@ -138,12 +138,12 @@ public class XincoSettingServer extends XincoSetting{
     
     @Override
     public Vector getXinco_settings() {
-        if (xinco_settings == null)
-            try {
-                setXinco_settings(new XincoDBManager().getXincoSettingServer().getXinco_settings());
-            }  catch (Exception ex) {
-                ex.printStackTrace();
-            }
+//        if (xinco_settings == null)
+//            try {
+//                setXinco_settings(new XincoDBManager().getXincoSettingServer().getXinco_settings());
+//            }  catch (Exception ex) {
+//                ex.printStackTrace();
+//            }
         return xinco_settings;
     }
 

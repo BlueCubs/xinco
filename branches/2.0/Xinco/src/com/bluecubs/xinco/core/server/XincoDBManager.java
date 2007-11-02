@@ -37,6 +37,8 @@
 package com.bluecubs.xinco.core.server;
 
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sql.DataSource;
 import javax.naming.InitialContext;
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
@@ -68,7 +70,6 @@ public class XincoDBManager{
             //load connection configuartion
             config = XincoConfigSingletonServer.getInstance();
             setDatasource((DataSource)(new InitialContext()).lookup(config.getJNDIDB()));
-            getConnection().setAutoCommit(false);
             //load configuration from database
             fillSettings();
             config.init(getXincoSettingServer());
@@ -332,11 +333,11 @@ public class XincoDBManager{
     
     
     public DataSource getDatasource() {
-        try {
-            datasource.getConnection().setAutoCommit(false);
-        }  catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+//        try {
+//            datasource.getConnection().setAutoCommit(false);
+//        }  catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
         return datasource;
     }
     
@@ -371,8 +372,15 @@ public class XincoDBManager{
     
     
     public void printStats(){
-        System.out.println("Number Active: " + ((BasicDataSource) getDatasource()).getNumActive());
-        System.out.println("Number Idle: " + ((BasicDataSource) getDatasource()).getNumIdle());
+        try {
+            System.out.println("Number Active: " + ((BasicDataSource) getDatasource()).getNumActive());
+            System.out.println("Number Idle: " + ((BasicDataSource) getDatasource()).getNumIdle());
+            if (!getDatasource().getConnection().isClosed()) {
+                getDatasource().getConnection().close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     
