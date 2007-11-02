@@ -262,6 +262,7 @@ public class XincoDBManager{
     }
     
     
+    @Override
     protected void finalize() throws Throwable {
         try {
             count--;
