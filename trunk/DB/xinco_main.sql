@@ -218,40 +218,6 @@ INSERT INTO xinco_add_attribute (xinco_core_data_id, attribute_id, attrib_text) 
 INSERT INTO xinco_add_attribute (xinco_core_data_id, attribute_id, attrib_varchar) VALUES (2, 1, 'http://www.xinco.org');   
 
 
-CREATE TABLE xinco_audit (
-  id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  xinco_core_data_id INTEGER UNSIGNED NOT NULL,
-  xinco_audit_type_id INTEGER(10) UNSIGNED NOT NULL,
-  xinco_core_user_id INTEGER UNSIGNED NULL,
-  scheduled_date DATE NOT NULL,
-  completion_date DATE NULL,
-  PRIMARY KEY(id, xinco_core_data_id, xinco_audit_type_id),
-  INDEX xinco_scheduled_audit_FKIndex1(xinco_core_data_id),
-  INDEX xinco_audit_FKIndex2(xinco_core_user_id),
-  INDEX xinco_audit_FKIndex3(xinco_core_user_id),
-  INDEX xinco_audit_type_FKIndex(xinco_audit_type_id),
-  INDEX xinco_audit_FKIndex4(xinco_core_data_id)
-)
-TYPE=InnoDB;
-
-CREATE TABLE xinco_audit_type (
-  id INTEGER(10) UNSIGNED NOT NULL,
-  days INTEGER(10) UNSIGNED NOT NULL,
-  weeks INTEGER(10) UNSIGNED NOT NULL,
-  months INTEGER(10) UNSIGNED NOT NULL,
-  years INTEGER(10) UNSIGNED NOT NULL,
-  description VARCHAR(45) NOT NULL,
-  due_same_day BOOL NULL,
-  due_same_week BOOL NULL,
-  due_same_month BOOL NULL,
-  PRIMARY KEY(id)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_audit_type (id, days, weeks, months, years, description,due_same_day,due_same_week,due_same_month) VALUES(1,0,0,1,0,'scheduled.audit.monthly',0,0,1);
-INSERT INTO xinco_audit_type (id, days, weeks, months, years, description,due_same_day,due_same_week,due_same_month) VALUES(2,0,0,0,1,'scheduled.audit.yearly',0,0,1);
-
-
 CREATE TABLE xinco_core_ace (
   id INTEGER UNSIGNED NOT NULL,
   xinco_core_user_id INTEGER UNSIGNED NULL,
@@ -262,8 +228,7 @@ CREATE TABLE xinco_core_ace (
   write_permission BOOL NOT NULL,
   execute_permission BOOL NOT NULL,
   admin_permission BOOL NOT NULL,
-  audit_permission BOOL NOT NULL,
-  owner BOOL NOT NULL,
+  owner BOOL NOT NULL DEFAULT 0,
   PRIMARY KEY(id),
   INDEX xinco_core_ace_FKIndex1(xinco_core_user_id),
   INDEX xinco_core_ace_FKIndex2(xinco_core_group_id),
@@ -272,30 +237,30 @@ CREATE TABLE xinco_core_ace (
 )
 TYPE=InnoDB;
 
-INSERT INTO xinco_core_ace VALUES (1, 1, NULL, 1, NULL, 1, 1, 1, 1,1,1);        
-INSERT INTO xinco_core_ace VALUES (2, 1, NULL, 2, NULL, 1, 1, 1, 1,1,1);        
-INSERT INTO xinco_core_ace VALUES (3, 1, NULL, 3, NULL, 1, 1, 1, 1,1,1);         
-INSERT INTO xinco_core_ace VALUES (4, NULL, 1, 1, NULL, 1, 1, 1, 1,0,0);         
-INSERT INTO xinco_core_ace VALUES (5, NULL, 1, 2, NULL, 1, 1, 1, 1,0,0);         
-INSERT INTO xinco_core_ace VALUES (6, NULL, 1, 3, NULL, 1, 1, 1, 1,0,0);          
-INSERT INTO xinco_core_ace VALUES (7, NULL, 2, 1, NULL, 1, 1, 1, 0,0,0);         
-INSERT INTO xinco_core_ace VALUES (8, NULL, 2, 2, NULL, 1, 1, 1, 0,0,0);         
-INSERT INTO xinco_core_ace VALUES (9, NULL, 2, 3, NULL, 1, 1, 1, 0,0,0);          
-INSERT INTO xinco_core_ace VALUES (10, 1, NULL, NULL, 1, 1, 1, 1, 1,1,1);          
-INSERT INTO xinco_core_ace VALUES (11, 1, NULL, NULL, 2, 1, 1, 1, 1,1,1);          
-INSERT INTO xinco_core_ace VALUES (12, NULL, 1, NULL, 1, 1, 1, 1, 1,0,0);            
-INSERT INTO xinco_core_ace VALUES (13, NULL, 1, NULL, 2, 1, 1, 1, 1,0,0);            
-INSERT INTO xinco_core_ace VALUES (14, NULL, 2, NULL, 1, 1, 0, 0, 0,0,0);            
-INSERT INTO xinco_core_ace VALUES (15, NULL, 2, NULL, 2, 1, 0, 0, 0,0,0);            
+INSERT INTO xinco_core_ace VALUES (1, 1, NULL, 1, NULL, 1, 1, 1, 1,1);        
+INSERT INTO xinco_core_ace VALUES (2, 1, NULL, 2, NULL, 1, 1, 1, 1,1);        
+INSERT INTO xinco_core_ace VALUES (3, 1, NULL, 3, NULL, 1, 1, 1, 1,1);         
+INSERT INTO xinco_core_ace VALUES (4, NULL, 1, 1, NULL, 1, 1, 1, 1,0);         
+INSERT INTO xinco_core_ace VALUES (5, NULL, 1, 2, NULL, 1, 1, 1, 1,0);         
+INSERT INTO xinco_core_ace VALUES (6, NULL, 1, 3, NULL, 1, 1, 1, 1,0);          
+INSERT INTO xinco_core_ace VALUES (7, NULL, 2, 1, NULL, 1, 1, 1, 0,0);         
+INSERT INTO xinco_core_ace VALUES (8, NULL, 2, 2, NULL, 1, 1, 1, 0,0);         
+INSERT INTO xinco_core_ace VALUES (9, NULL, 2, 3, NULL, 1, 1, 1, 0,0);          
+INSERT INTO xinco_core_ace VALUES (10, 1, NULL, NULL, 1, 1, 1, 1, 1,1);          
+INSERT INTO xinco_core_ace VALUES (11, 1, NULL, NULL, 2, 1, 1, 1, 1,1);          
+INSERT INTO xinco_core_ace VALUES (12, NULL, 1, NULL, 1, 1, 1, 1, 1,0);            
+INSERT INTO xinco_core_ace VALUES (13, NULL, 1, NULL, 2, 1, 1, 1, 1,0);            
+INSERT INTO xinco_core_ace VALUES (14, NULL, 2, NULL, 1, 1, 0, 0, 0,0);            
+INSERT INTO xinco_core_ace VALUES (15, NULL, 2, NULL, 2, 1, 0, 0, 0,0);            
 
-INSERT INTO xinco_core_ace VALUES (16, 1, NULL, 4, NULL, 1, 1, 1, 1,1,1);          
-INSERT INTO xinco_core_ace VALUES (17, NULL, 1, 4, NULL, 1, 1, 1, 1,0,0);           
-INSERT INTO xinco_core_ace VALUES (18, NULL, 2, 4, NULL, 1, 0, 0, 0,0,0);           
+INSERT INTO xinco_core_ace VALUES (16, 1, NULL, 4, NULL, 1, 1, 1, 1,1);          
+INSERT INTO xinco_core_ace VALUES (17, NULL, 1, 4, NULL, 1, 1, 1, 1,0);           
+INSERT INTO xinco_core_ace VALUES (18, NULL, 2, 4, NULL, 1, 0, 0, 0,0);           
 
-INSERT INTO xinco_core_ace VALUES (19, NULL, 3, 1, NULL, 1, 0, 0, 0,0,0);             
-INSERT INTO xinco_core_ace VALUES (20, NULL, 3, 4, NULL, 1, 0, 0, 0,0,0);             
-INSERT INTO xinco_core_ace VALUES (21, NULL, 3, NULL, 1, 1, 0, 0, 0,0,0);             
-INSERT INTO xinco_core_ace VALUES (22, NULL, 3, NULL, 2, 1, 0, 0, 0,0,0);             
+INSERT INTO xinco_core_ace VALUES (19, NULL, 3, 1, NULL, 1, 0, 0, 0,0);             
+INSERT INTO xinco_core_ace VALUES (20, NULL, 3, 4, NULL, 1, 0, 0, 0,0);             
+INSERT INTO xinco_core_ace VALUES (21, NULL, 3, NULL, 1, 1, 0, 0, 0,0);             
+INSERT INTO xinco_core_ace VALUES (22, NULL, 3, NULL, 2, 1, 0, 0, 0,0);             
 
 
 CREATE TABLE xinco_core_data (
@@ -326,11 +291,11 @@ CREATE TABLE xinco_core_data_type (
 )
 TYPE=InnoDB;
 
-INSERT INTO xinco_core_data_type VALUES (1, 'File', 'Files stored on the server file system.');    
-INSERT INTO xinco_core_data_type VALUES (2, 'Text', 'Text stored inside the data base.');     
-INSERT INTO xinco_core_data_type VALUES (3, 'URL', 'General uniform ressource locator.');      
+INSERT INTO xinco_core_data_type VALUES (1, 'general.data.type.file', 'general.data.type.file.description');    
+INSERT INTO xinco_core_data_type VALUES (2, 'general.data.type.text', 'general.data.type.text.description');     
+INSERT INTO xinco_core_data_type VALUES (3, 'general.data.type.URL', 'general.data.type.URL.description');      
 
-INSERT INTO xinco_core_data_type VALUES (4, 'Contact', 'Personal and business contacts.');      
+INSERT INTO xinco_core_data_type VALUES (4, 'general.data.type.contact', 'general.data.type.contact.description');      
 
 
 CREATE TABLE xinco_core_data_type_attribute (
@@ -356,7 +321,6 @@ INSERT INTO xinco_core_data_type_attribute VALUES (1, 9, 'Description', 'varchar
 INSERT INTO xinco_core_data_type_attribute VALUES (1, 10, 'Keyword_1', 'varchar', 255);      
 INSERT INTO xinco_core_data_type_attribute VALUES (1, 11, 'Keyword_2', 'varchar', 255);      
 INSERT INTO xinco_core_data_type_attribute VALUES (1, 12, 'Keyword_3', 'varchar', 255);  
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 13, 'Audit Type', 'varchar', 255); 
     
 INSERT INTO xinco_core_data_type_attribute VALUES (2, 1, 'Text', 'text', 0);   
  
@@ -395,6 +359,8 @@ TYPE=InnoDB;
 INSERT INTO xinco_core_group VALUES (1, 'Administrators', 1);     
 INSERT INTO xinco_core_group VALUES (2, 'AllUsers', 1);    
 INSERT INTO xinco_core_group VALUES (3, 'Public', 1);    
+
+/*Entries 51-100 reserved for Workflow*/
 
 
 CREATE TABLE xinco_core_language (
@@ -491,6 +457,7 @@ TYPE=InnoDB;
 INSERT INTO xinco_core_user_has_xinco_core_group VALUES (1, 1, 1);
 INSERT INTO xinco_core_user_has_xinco_core_group VALUES (1, 2, 1);  
 INSERT INTO xinco_core_user_has_xinco_core_group VALUES (2, 2, 1);  
+INSERT INTO xinco_core_user_has_xinco_core_group VALUES (3, 2, 1); 
 
 
 CREATE TABLE xinco_id (
@@ -510,10 +477,6 @@ INSERT INTO xinco_id VALUES ('xinco_core_ace', 1000);
 INSERT INTO xinco_id VALUES ('xinco_core_log', 1000);   
 INSERT INTO xinco_id VALUES ('xinco_core_user_modified_record', 0);  
 INSERT INTO xinco_id (tablename, last_id) VALUES('xinco_setting',1000);
-INSERT INTO xinco_id (tablename, last_id) VALUES('xinco_audit',0 );
-
-INSERT INTO xinco_id (tablename, last_id) VALUES('xinco_audit_type',1000 ); 
-INSERT INTO xinco_id (tablename, last_id) VALUES('xinco_workflow',1000 );
 
 
 CREATE TABLE xinco_setting (
@@ -527,144 +490,59 @@ CREATE TABLE xinco_setting (
 )
 TYPE=InnoDB;
 
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(1,'version.high', 2,null,null );
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(2,'version.med', 1,null ,null );
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(3,'version.low', 0,null,null );
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(4,'version.postfix', null,null ,null );
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(1,'version.high', 2,null,null ); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(2,'version.med', 0,null ,null ); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(3,'version.low', 3,null,null ); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(4,'version.postfix', null,null ,null ); 
+ 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(5,'password.aging', 120,null,null ); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(6,'password.attempts', 3,null,null); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(7,'password.unusable_period', 365,null,null); 
+ 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(8,'general.copyright.date', null,'2004-2007' ,null); 
+ 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(9,'setting.enable.savepassword', null,null ,0); 
+ 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(10,'setting.enable.developermode', null,null ,0); 
+ 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(11,'setting.enable.lockidle', 5,null ,1); 
+ 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(12,'system.password', null,'system',null); 
+ 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(13,'xinco/FileRepositoryPath' ,null ,'C:\\Temp\\xinco\\file_repository\\' , null); 
+ 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(14,'xinco/FileIndexPath' ,null ,'C:\\Temp\\xinco\\file_repository\\index\\' , null);  
+ 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(15,'xinco/FileArchivePath' ,null ,'C:\\Temp\\xinco\\file_repository\\archive\\' , null);  
+ 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(16,'xinco/FileArchivePeriod' ,null ,null, null,14400000);  
+ 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(17,'xinco/FileIndexer_1_Class' ,null ,'com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF', null,null);  
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(18,'xinco/FileIndexer_1_Ext' ,null ,'pdf', null,null);  
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(19,'xinco/FileIndexer_2_Class' ,null ,'com.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftWord', null,null); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(20,'xinco/FileIndexer_2_Ext' ,null ,'doc', null,null);  
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(21,'xinco/FileIndexer_3_Class' ,null ,'com.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftExcel', null,null); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(22,'xinco/FileIndexer_3_Ext' ,null ,'xls', null,null);  
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(23,'xinco/FileIndexer_4_Class' ,null ,'com.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftPowerpoint', null,null); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(24,'xinco/FileIndexer_4_Ext' ,null ,'ppt', null,null);  
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(25,'xinco/FileIndexer_5_Class' ,null ,'com.bluecubs.xinco.index.filetypes.XincoIndexHTML', null,null); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(26,'xinco/FileIndexer_5_Ext' ,null ,'asp;htm;html;jsf;jsp;php;php3;php4', null,null);  
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(27,'xinco/IndexNoIndex' ,null ,';aac;ac3;ace;ade;adp;aif;aifc;aiff;amf;arc;arj;asx;au;avi;b64;bh;bmp;bz;bz2;cab;cda;chm;class;com;div;divx;ear;exe;far;fla;gif;gz;hlp;ico;;iso;jar;jpe;jpeg;jpg;lha;lzh;mda;mdb;mde;mdn;mdt;mdw;mid;midi;mim;mod;mov;mp1;mp2;mp2v;mp3;mp4;mpa;mpe;mpeg;mpg;mpg4;mpv2;msi;ntx;ocx;ogg;ogm;okt;pae;pcx;pk3;png;pot;ppa;pps;ppt;pwz;qwk;ra;ram;rar;raw;rep;rm;rmi;snd;swf;swt;tar;taz;tbz;tbz2;tgz;tif;tiff;uu;uue;vxd;war;wav;wbm;wbmp;wma;wmd;wmf;wmv;xpi;xxe;z;zip;zoo;;;', null,null); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(28,'xinco/JNDIDB' ,null ,'java:comp/env/jdbc/XincoDB', null,null);  
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(29,'xinco/MaxSearchResult' ,100 ,null, null,null);  
+ 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(30,'setting.email.host',null,'smtp.gmail.com', null,null); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(31,'setting.email.user',null,'info@bluecubs.com', null,null);  
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(32,'setting.email.password',null,'password', null,null);  
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(33,'setting.email.port',null,'25', null,null);  
+ 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(34,'setting.index.lock',null,null,false,null);  
+ 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(35,'setting.allowoutsidelinks',null,null,false,null);  
 
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(5,'password.aging', 120,null,null );
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(6,'password.attempts', 3,null,null);
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(7,'password.unusable_period', 365,null,null);
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(36,'setting.securitycheck.enable',null,null,true,null);   
 
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(8,'general.copyright.date', null,'2004-2007' ,null);
+/*Inserts 51-100 reserved for Workflow settings*/ 
 
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(9,'general.setting.enable.savepassword', null,null ,0);
-
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(10,'general.setting.enable.developermode', null,null ,0);
-
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(11,'general.setting.enable.lockidle', 5,null ,1);
-
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(12,'system.password', null,'system',null);
-
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(13,'xinco/FileRepositoryPath' ,null ,'C:\\Temp\\xinco\\file_repository\\' , null);
-
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(14,'xinco/FileIndexPath' ,null ,'C:\\Temp\\xinco\\file_repository\\index\\' , null); 
-
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(15,'xinco/FileArchivePath' ,null ,'C:\\Temp\\xinco\\file_repository\\archive\\' , null); 
-
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(16,'xinco/FileArchivePeriod' ,null ,null, null,14400000); 
-
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(17,'xinco/FileIndexer_1_Class' ,null ,'com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF', null,null); 
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(18,'xinco/FileIndexer_1_Ext' ,null ,'pdf', null,null); 
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(19,'xinco/FileIndexer_2_Class' ,null ,'com.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftWord', null,null);
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(20,'xinco/FileIndexer_2_Ext' ,null ,'doc', null,null); 
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(21,'xinco/FileIndexer_3_Class' ,null ,'com.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftExcel', null,null);
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(22,'xinco/FileIndexer_3_Ext' ,null ,'xls', null,null); 
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(23,'xinco/FileIndexer_4_Class' ,null ,'com.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftPowerpoint', null,null);
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(24,'xinco/FileIndexer_4_Ext' ,null ,'ppt', null,null); 
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(25,'xinco/FileIndexer_5_Class' ,null ,'com.bluecubs.xinco.index.filetypes.XincoIndexHTML', null,null);
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(26,'xinco/FileIndexer_5_Ext' ,null ,'asp;htm;html;jsf;jsp;php;php3;php4', null,null); 
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(27,'xinco/IndexNoIndex' ,null ,';aac;ac3;ace;ade;adp;aif;aifc;aiff;amf;arc;arj;asx;au;avi;b64;bh;bmp;bz;bz2;cab;cda;chm;class;com;div;divx;ear;exe;far;fla;gif;gz;hlp;ico;;iso;jar;jpe;jpeg;jpg;lha;lzh;mda;mdb;mde;mdn;mdt;mdw;mid;midi;mim;mod;mov;mp1;mp2;mp2v;mp3;mp4;mpa;mpe;mpeg;mpg;mpg4;mpv2;msi;ntx;ocx;ogg;ogm;okt;pae;pcx;pk3;png;pot;ppa;pps;ppt;pwz;qwk;ra;ram;rar;raw;rep;rm;rmi;snd;swf;swt;tar;taz;tbz;tbz2;tgz;tif;tiff;uu;uue;vxd;war;wav;wbm;wbmp;wma;wmd;wmf;wmv;xpi;xxe;z;zip;zoo;;;', null,null);
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(28,'xinco/JNDIDB' ,null ,'java:comp/env/jdbc/XincoDB', null,null); 
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(29,'xinco/MaxSearchResult' ,100 ,null, null,null); 
-
-
-CREATE TABLE xinco_workflow (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  designation VARCHAR(45) NOT NULL,
-  PRIMARY KEY(id)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_workflow (id, designation) VALUES(1, 'workflow.audit.description');
-
-
-CREATE TABLE xinco_workflow_attribute (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  xinco_workflow_id INTEGER UNSIGNED NOT NULL,
-  xinco_workflow_attribute_xinco_workflow_id INTEGER UNSIGNED NULL,
-  xinco_workflow_attribute_id INTEGER UNSIGNED NULL,
-  designation VARCHAR(45) NOT NULL,
-  attrib_int INTEGER NULL,
-  attrib_unsignedint INTEGER UNSIGNED NULL,
-  attrib_double DOUBLE NULL,
-  attrib_varchar VARCHAR(255) NULL,
-  attrib_text TEXT NULL,
-  attrib_datetime DATETIME NULL,
-  attrib_bool BOOL NULL,
-  PRIMARY KEY(id, xinco_workflow_id),
-  INDEX xinco_workflow_attribute_FKIndex1(xinco_workflow_id),
-  INDEX xinco_workflow_attribute_FKIndex2(xinco_workflow_attribute_id, xinco_workflow_attribute_xinco_workflow_id)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_workflow_attribute (id, xinco_workflow_id, xinco_workflow_attribute_xinco_workflow_id, xinco_workflow_attribute_id, designation, attrib_int, attrib_unsignedint, attrib_double, attrib_varchar, attrib_text, attrib_datetime, attrib_bool) VALUES(1,1,null,null,'general.designation',0,0,0.0,'workflow.audit.monthly',null,now(),1);
-INSERT INTO xinco_workflow_attribute (id, xinco_workflow_id, xinco_workflow_attribute_xinco_workflow_id, xinco_workflow_attribute_id, designation, attrib_int, attrib_unsignedint, attrib_double, attrib_varchar, attrib_text, attrib_datetime, attrib_bool) VALUES(2,1,1,1,'workflow.audit.days',0,0,0.0,'',null,now(),1);
-INSERT INTO xinco_workflow_attribute (id, xinco_workflow_id, xinco_workflow_attribute_xinco_workflow_id, xinco_workflow_attribute_id, designation, attrib_int, attrib_unsignedint, attrib_double, attrib_varchar, attrib_text, attrib_datetime, attrib_bool) VALUES(3,1,1,1,'workflow.audit.weeks',0,0,0.0,'',null,now(),1);
-INSERT INTO xinco_workflow_attribute (id, xinco_workflow_id, xinco_workflow_attribute_xinco_workflow_id, xinco_workflow_attribute_id, designation, attrib_int, attrib_unsignedint, attrib_double, attrib_varchar, attrib_text, attrib_datetime, attrib_bool) VALUES(4,1,1,1,'workflow.audit.months',1,0,0.0,'',null,now(),1);
-INSERT INTO xinco_workflow_attribute (id, xinco_workflow_id, xinco_workflow_attribute_xinco_workflow_id, xinco_workflow_attribute_id, designation, attrib_int, attrib_unsignedint, attrib_double, attrib_varchar, attrib_text, attrib_datetime, attrib_bool) VALUES(5,1,1,1,'workflow.audit.years',0,0,0.0,'',null,now(),1);
-
-INSERT INTO xinco_workflow_attribute (id, xinco_workflow_id, xinco_workflow_attribute_xinco_workflow_id, xinco_workflow_attribute_id, designation, attrib_int, attrib_unsignedint, attrib_double, attrib_varchar, attrib_text, attrib_datetime, attrib_bool) VALUES(6,1,null,null,'general.designation',0,0,0.0,'workflow.audit.yearly',null,now(),1); 
-INSERT INTO xinco_workflow_attribute (id, xinco_workflow_id, xinco_workflow_attribute_xinco_workflow_id, xinco_workflow_attribute_id, designation, attrib_int, attrib_unsignedint, attrib_double, attrib_varchar, attrib_text, attrib_datetime, attrib_bool) VALUES(7,1,6,1,'workflow.audit.days',0,0,0.0,'',null,now(),1); 
-INSERT INTO xinco_workflow_attribute (id, xinco_workflow_id, xinco_workflow_attribute_xinco_workflow_id, xinco_workflow_attribute_id, designation, attrib_int, attrib_unsignedint, attrib_double, attrib_varchar, attrib_text, attrib_datetime, attrib_bool) VALUES(8,1,6,1,'workflow.audit.weeks',0,0,0.0,'',null,now(),1); 
-INSERT INTO xinco_workflow_attribute (id, xinco_workflow_id, xinco_workflow_attribute_xinco_workflow_id, xinco_workflow_attribute_id, designation, attrib_int, attrib_unsignedint, attrib_double, attrib_varchar, attrib_text, attrib_datetime, attrib_bool) VALUES(9,1,6,1,'workflow.audit.months',0,0,0.0,'',null,now(),1); 
-INSERT INTO xinco_workflow_attribute (id, xinco_workflow_id, xinco_workflow_attribute_xinco_workflow_id, xinco_workflow_attribute_id, designation, attrib_int, attrib_unsignedint, attrib_double, attrib_varchar, attrib_text, attrib_datetime, attrib_bool) VALUES(10,1,6,1,'workflow.audit.years',1,0,0.0,'',null,now(),1);
-
-
-CREATE TABLE xinco_workflow_has_xinco_workflow_step (
-  xinco_workflow_id INTEGER UNSIGNED NOT NULL,
-  id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(xinco_workflow_id, id),
-  INDEX xinco_workflow_has_xinco_workflow_step_FKIndex1(xinco_workflow_id),
-  INDEX xinco_workflow_has_xinco_workflow_step_FKIndex2(id)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_workflow_has_xinco_workflow_step (xinco_workflow_id, id) VALUES(1,1);
-
-
-CREATE TABLE xinco_workflow_instance (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  xinco_workflow_id INTEGER UNSIGNED NOT NULL,
-  xinco_core_data_id INTEGER UNSIGNED NOT NULL,
-  current_step INTEGER UNSIGNED ZEROFILL NOT NULL,
-  start_date DATE NULL,
-  end_date DATE NULL,
-  PRIMARY KEY(id, xinco_workflow_id, xinco_core_data_id),
-  INDEX xinco_workflow_instance_FKIndex1(xinco_workflow_id),
-  INDEX xinco_workflow_instance_FKIndex2(xinco_core_data_id)
-)
-TYPE=InnoDB;
-
-CREATE TABLE xinco_workflow_step (
-  id INTEGER UNSIGNED NOT NULL,
-  xinco_workflow_id INTEGER UNSIGNED NULL,
-  designation VARCHAR(45) NULL,
-  PRIMARY KEY(id),
-  INDEX xinco_workflow_step_FKIndex1(xinco_workflow_id)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_workflow_step (id, xinco_workflow_id,designation) VALUES(1,null,'workflow.step.audit');
-INSERT INTO xinco_workflow_step (id, xinco_workflow_id,designation) VALUES(2,null,'workflow.step.notify');
-INSERT INTO xinco_workflow_step (id, xinco_workflow_id,designation) VALUES(3,null,'workflow.step.claim');
-INSERT INTO xinco_workflow_step (id, xinco_workflow_id,designation) VALUES(4,null,'workflow.step.evaluate');
-INSERT INTO xinco_workflow_step (id, xinco_workflow_id,designation) VALUES(5,null,'workflow.step.checkout');
-
-
-CREATE TABLE xinco_workflow_step_instance (
-  xinco_core_data_id INTEGER UNSIGNED NOT NULL,
-  xinco_workflow_id INTEGER UNSIGNED NOT NULL,
-  id INTEGER UNSIGNED NOT NULL,
-  xinco_core_user_id INTEGER UNSIGNED NOT NULL,
-  xinco_workflow_step_id INTEGER UNSIGNED NOT NULL,
-  assign_date DATE NULL,
-  completion_date DATE NULL,
-  PRIMARY KEY(xinco_core_data_id, xinco_workflow_id, id, xinco_core_user_id),
-  INDEX xinco_instance_step_FKIndex1(id, xinco_workflow_id, xinco_core_data_id),
-  INDEX xinco_instance_step_FKIndex2(xinco_workflow_step_id),
-  INDEX xinco_instance_step_FKIndex3(xinco_core_user_id)
-)
-TYPE=InnoDB;
 
 
