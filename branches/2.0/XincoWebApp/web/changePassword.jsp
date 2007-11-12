@@ -2,6 +2,8 @@
 <%@page pageEncoding="UTF-8"%>
 <%@page import="java.util.Locale"%>
 <%@page import="java.util.ResourceBundle"%>
+<%@page import="com.bluecubs.xinco.core.server.XincoSettingServer"%>
+<%@page import="com.bluecubs.xinco.core.XincoSetting"%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
@@ -31,11 +33,12 @@
     } catch (Exception e) {
         loc = Locale.getDefault();
     }
-    ResourceBundle rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc),
-            settings=ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings",loc);
+    ResourceBundle rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
+    XincoSettingServer xss= new XincoSettingServer();
+    String setting = ((XincoSetting)(xss.getXinco_settings().elementAt(6))).getString_value();
     out.println("<span class='bigtext'>"+rb.getString("password.aged")+"</span><br/><br/>");
-    out.print(rb.getString("password.change.warning").replaceAll("%n",settings.getString("password.unusable_period")));%>
-    <br/><br/>
+    out.print(rb.getString("password.change.warning").replaceAll("%n",setting));%>
+    </span><br/><br/>
     <form name="password" action="XincoAdmin" method="post">
         <table border="0">
             <tbody>
