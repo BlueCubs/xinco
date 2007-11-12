@@ -46,13 +46,17 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
     private XincoDBManager DBM = null;
 
     public com.bluecubs.xinco.core.XincoVersion getXincoServerVersion() throws java.rmi.RemoteException {
-        ResourceBundle settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
+        try {
+            DBM=new XincoDBManager();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         //return current version of server
         XincoVersion version = new XincoVersion();
-        version.setVersion_high(Integer.parseInt(settings.getString("version.high")));
-        version.setVersion_mid(Integer.parseInt(settings.getString("version.mid")));
-        version.setVersion_low(Integer.parseInt(settings.getString("version.low")));
-        version.setVersion_postfix(settings.getString("version.postfix"));
+        version.setVersion_high(DBM.getXincoSettingServer().getSetting("version.high").getInt_value());
+        version.setVersion_mid(DBM.getXincoSettingServer().getSetting("version.med").getInt_value());
+        version.setVersion_low(DBM.getXincoSettingServer().getSetting("version.low").getInt_value());
+        version.setVersion_postfix(DBM.getXincoSettingServer().getSetting("version.postfix").getString_value());
         return version;
     }
 
