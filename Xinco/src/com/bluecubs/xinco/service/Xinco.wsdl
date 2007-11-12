@@ -770,6 +770,12 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <wsdl:message name="localizeStringResponse">
         <wsdl:part name="localizedString" type="xsd:string"/>
     </wsdl:message>
+    <wsdl:message name="getJDBCDriverRequest">
+        <wsdl:part name="user" type="tns2:XincoCoreUser"/>
+    </wsdl:message>
+    <wsdl:message name="getJDBCDriverResponse">
+        <wsdl:part name="driverClass" type="xsd:string"/>
+    </wsdl:message>
     <wsdl:portType name="Xinco">
         
         <wsdl:operation name="getXincoServerVersion">
@@ -1134,6 +1140,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         <wsdl:operation name="localizeString">
             <wsdl:input name="localizeStringRequest" message="impl:localizeStringRequest"/>
             <wsdl:output name="localizeStringResponse" message="impl:localizeStringResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getJDBCDriver">
+            <wsdl:input name="getJDBCDriverRequest" message="impl:getJDBCDriverRequest"/>
+            <wsdl:output name="getJDBCDriverResponse" message="impl:getJDBCDriverResponse"/>
         </wsdl:operation>
     </wsdl:portType>
     
@@ -1683,6 +1693,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         <wsdl:operation name="localizeString">
             <wsdl:input name="localizeStringRequest"/>
             <wsdl:output name="localizeStringResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getJDBCDriver">
+            <wsdl:input name="getJDBCDriverRequest"/>
+            <wsdl:output name="getJDBCDriverResponse"/>
         </wsdl:operation>
     </wsdl:binding>
     

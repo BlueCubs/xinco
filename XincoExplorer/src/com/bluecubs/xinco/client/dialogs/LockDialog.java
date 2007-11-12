@@ -160,7 +160,7 @@ public class LockDialog extends javax.swing.JDialog {
                     temp.setUsername(this.username.getText());
                     temp.setUserpassword(new String(this.password.getPassword()));
                     this.explorer.getSession().setUser(temp);
-                    this.explorer.temp=temp;
+                    this.explorer.setTemp(temp);
                     XincoCoreNode xnode = new XincoCoreNode();
                     xnode.setId(1);
                     xnode = this.explorer.getSession().getXinco().getXincoCoreNode(xnode, this.explorer.getSession().getUser());

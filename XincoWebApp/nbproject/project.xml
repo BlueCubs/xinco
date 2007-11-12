@@ -22,8 +22,8 @@
                     <file>${reference.XincoWorkflow.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
-                    <file>${libs.restapi.classpath}</file>
+                <library files="1">
+                    <file>${reference.XincoSettingManager.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
@@ -44,16 +44,16 @@
                     <file>${reference.Xinco.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
-                <library files="13">
-                    <file>${libs.XincoLibsClient.classpath}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
                 <library files="1">
                     <file>${file.reference.blueCubsIcon16x16.GIF-1}</file>
                     <path-in-war>client</path-in-war>
                 </library>
                 <library files="1">
                     <file>${reference.XincoWorkflow.jar}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+                <library files="14">
+                    <file>${libs.XincoClientLibs.classpath}</file>
                     <path-in-war>client</path-in-war>
                 </library>
             </web-module-additional-libraries>
@@ -75,6 +75,14 @@
             </reference>
             <reference>
                 <foreign-project>XincoExplorer</foreign-project>
+                <artifact-type>jar</artifact-type>
+                <script>build.xml</script>
+                <target>jar</target>
+                <clean-target>clean</clean-target>
+                <id>jar</id>
+            </reference>
+            <reference>
+                <foreign-project>XincoSettingManager</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
                 <target>jar</target>
