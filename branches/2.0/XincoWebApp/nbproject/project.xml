@@ -2,20 +2,25 @@
 <project xmlns="http://www.netbeans.org/ns/project/1">
     <type>org.netbeans.modules.web.project</type>
     <configuration>
+        <buildExtensions xmlns="http://www.netbeans.org/ns/ant-build-extender/1">
+            <extension file="rest-build.xml" id="rest.1">
+                <dependency dependsOn="-rest-post-compile" target="-post-compile"/>
+            </extension>
+        </buildExtensions>
         <data xmlns="http://www.netbeans.org/ns/web-project/3">
             <name>xinco</name>
             <minimum-ant-version>1.6</minimum-ant-version>
             <web-module-libraries>
-                <library files="1">
-                    <file>${reference.Xinco.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
                 <library files="21">
                     <file>${libs.XincoLibs.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library files="1">
-                    <file>${reference.XincoExplorer.jar}</file>
+                    <file>${reference.XincoExplorer-1.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library files="1">
+                    <file>${reference.Xinco-1.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
@@ -29,15 +34,15 @@
                     <path-in-war>client</path-in-war>
                 </library>
                 <library files="13">
-                    <file>${libs.XincoClientLibs.classpath}</file>
+                    <file>${libs.XincoLibsClient.classpath}</file>
                     <path-in-war>client</path-in-war>
                 </library>
                 <library files="1">
-                    <file>${reference.XincoExplorer.jar}</file>
+                    <file>${reference.XincoExplorer-1.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
                 <library files="1">
-                    <file>${reference.Xinco.jar}</file>
+                    <file>${reference.Xinco-1.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
             </web-module-additional-libraries>
@@ -50,7 +55,7 @@
         </data>
         <references xmlns="http://www.netbeans.org/ns/ant-project-references/1">
             <reference>
-                <foreign-project>Xinco</foreign-project>
+                <foreign-project>Xinco-1</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
                 <target>jar</target>
@@ -58,7 +63,7 @@
                 <id>jar</id>
             </reference>
             <reference>
-                <foreign-project>XincoExplorer</foreign-project>
+                <foreign-project>XincoExplorer-1</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
                 <target>jar</target>

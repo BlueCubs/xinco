@@ -41,9 +41,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import com.bluecubs.xinco.core.*;
 
 public class XincoMutableTreeNode extends DefaultMutableTreeNode {
-    
-    public XincoMutableTreeNode(Object o) {
+    private XincoExplorer explorer;
+    public XincoMutableTreeNode(Object o, XincoExplorer e) {
         super(o);
+        explorer=e;
     }
     
     @Override
@@ -79,10 +80,10 @@ public class XincoMutableTreeNode extends DefaultMutableTreeNode {
                 if (((XincoCoreData)this.getUserObject()).getStatus_number() == 5) {
                     status = new String(" | WWW");
                 }
-                return "" + s + " (" + ((XincoCoreData)this.getUserObject()).getXinco_core_data_type().getDesignation() + " | " + ((XincoCoreData)this.getUserObject()).getXinco_core_language().getSign() + status + ")";
+                return "" + s + " (" + explorer.getResourceBundle().getString(((XincoCoreData)this.getUserObject()).getXinco_core_data_type().getDesignation()) +
+                        " | " + ((XincoCoreData)this.getUserObject()).getXinco_core_language().getSign() + status + ")";
             }
         }
         return super.toString();
-    }
-    
+    } 
 }

@@ -33,7 +33,6 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.client;
 
 import java.util.Vector;
@@ -45,7 +44,7 @@ import com.bluecubs.xinco.service.*;
  * XincoClientSession
  */
 public class XincoClientSession {
-    
+
     /**
      * Service Endpoint
      */
@@ -100,18 +99,18 @@ public class XincoClientSession {
      * Status
      */
     public int status = 0;	//0 = not connected
-    
+
     /**
      * XincoClientSession
      * 1 = connecting...
      * 2 = connected
      * 3 = disconnecting
      */
-    public XincoClientSession() {
+    public XincoClientSession(XincoExplorer e) {
         service_endpoint = "";
         user = new XincoCoreUser();
         //init repository
-        xincoClientRepository = new XincoClientRepository();
+        xincoClientRepository = new XincoClientRepository(e);
         server_version = new XincoVersion();
         server_groups = new Vector();
         server_languages = new Vector();
@@ -120,5 +119,4 @@ public class XincoClientSession {
         currentSearchResult = new Vector();
         status = 0;
     }
-    
 }

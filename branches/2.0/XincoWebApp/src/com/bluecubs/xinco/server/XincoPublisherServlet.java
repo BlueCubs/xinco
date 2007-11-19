@@ -46,11 +46,12 @@ import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.server.*;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import org.apache.axis.encoding.Base64;
 
 public class XincoPublisherServlet extends HttpServlet {
 
-    ResourceBundle rb;
-
+    private ResourceBundle rb;
+    private XincoDBManager DBM;
     /** Initializes the servlet.
      */
     @Override
@@ -95,7 +96,6 @@ public class XincoPublisherServlet extends HttpServlet {
         int j = 0;
         String request_path;
         String[] request_path_array;
-        XincoDBManager DBM;
         boolean fileDownload = false;
         int core_data_id = 0;
         XincoCoreDataServer xcd = null;
@@ -280,7 +280,7 @@ public class XincoPublisherServlet extends HttpServlet {
                                 // print current path
                                 if (!(request.getParameter("Path") == null)) {
                                     temp_path = request.getParameter("Path");
-                                    temp_path = new String(new sun.misc.BASE64Decoder().decodeBuffer(temp_path));
+                                    temp_path = new String(Base64.decode(temp_path));
                                     out.println("<tr>");
                                     out.println("<td colspan=\"2\" class=\"text\"><b>" + rb.getString("general.path") + "</b> " + temp_path + "</td>");
                                     out.println("</tr>");
@@ -309,7 +309,7 @@ public class XincoPublisherServlet extends HttpServlet {
                                     if (isPublic) {
                                         if (temp_path != null) {
                                             temp_path2 = temp_path + " / " + xnode_temp2.getDesignation() + " (" + xnode_temp2.getXinco_core_language().getSign() + ")";
-                                            temp_path2 = new sun.misc.BASE64Encoder().encode(temp_path2.getBytes());
+                                            temp_path2 = Base64.encode(temp_path2.getBytes());
                                             temp_path2 = "&Path=" + temp_path2;
                                         } else {
                                             temp_path2 = "";
@@ -370,7 +370,7 @@ public class XincoPublisherServlet extends HttpServlet {
                     out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=list&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.xincopublisher.list") + "</td>");
                     out.println("</tr>");
                     out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path=" + (new sun.misc.BASE64Encoder().encode((new String("xincoRoot")).getBytes())) + "&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.xincopublisher.browse") + "</td>");
+                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path=" + (Base64.encode((new String("xincoRoot")).getBytes())) + "&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.xincopublisher.browse") + "</td>");
                     out.println("</tr>");
                 }
                 out.println("<tr>");
@@ -429,7 +429,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
                 out.println("<tr>");
                 out.println("<td class=\"text\">&nbsp;</td>");
-                out.println("<td class=\"text\">&copy; " + rb.getString("general.copyright.date") + ", " + (DBM.config.isAllowOutsideLinks() ? rb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
+                out.println("<td class=\"text\">&copy; " + DBM.getSetting("general.copyright.date").getString_value() + ", " + (DBM.config.isAllowOutsideLinks() ? rb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
                 out.println("</tr>");
                 out.println("</table><tr><form action='menu.jsp'><input type='submit' value='" + rb.getString("message.admin.main.backtomain") + "' />" + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></form></tr>" + "<tr><FORM><INPUT TYPE='button' VALUE='" + rb.getString("message.admin.main.back") + "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value='" + request.getParameter("list") + "'/></FORM></tr>");
             }
@@ -452,6 +452,7 @@ public class XincoPublisherServlet extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      */
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
@@ -460,12 +461,14 @@ public class XincoPublisherServlet extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      */
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
     /** Returns a short description of the servlet.
      */
+    @Override
     public String getServletInfo() {
         return "Servlet of xinco";
     }

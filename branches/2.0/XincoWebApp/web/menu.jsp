@@ -87,7 +87,7 @@ out.println("<td class='text'>&nbsp;</td>");
 out.println("</tr>");
 out.println("<tr>");
 out.println("<td class='text'>&nbsp;</td>");
-out.println("<td class='text'>&copy; "+rb.getString("general.copyright.date")+", "+(DBM.config.isAllowOutsideLinks()? rb.getString("message.admin.main.footer"):"blueCubs.com and xinco.org")+"</a></td>");
+out.println("<td class='text'>&copy; "+DBM.getSetting("general.copyright.date").getString_value()+", "+(DBM.config.isAllowOutsideLinks()? rb.getString("message.admin.main.footer"):"blueCubs.com and xinco.org")+"</a></td>");
 out.println("</tr>");
 out.println("</table>");
 out.println("</span>");

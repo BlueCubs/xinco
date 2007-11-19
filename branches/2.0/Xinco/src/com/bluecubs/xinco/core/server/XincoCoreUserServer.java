@@ -38,7 +38,6 @@
  * Javier A. Ortiz 01/08/2007
  *************************************************************
  */
-
 package com.bluecubs.xinco.core.server;
 
 import java.sql.*;
@@ -55,112 +54,103 @@ import java.util.ResourceBundle;
 //3 = aged password
 //Temporary statuses
 //-1 = aged password modified, ready to turn unlocked
-
 public class XincoCoreUserServer extends XincoCoreUser {
+
     private String sql;
     private boolean hashPassword = true;
     private boolean increaseAttempts = false;
-    private ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
-    private XincoSettingServer settings=null;
+    private ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages"),  settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
     private java.sql.Timestamp lastModified;
     private int attempts;
-    private XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
-    private ResultSet rs=null;
-    
+    private XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
+    private ResultSet rs = null;
+
+    @SuppressWarnings("unchecked")
     private void fillXincoCoreGroups(XincoDBManager DBM) throws XincoException {
         setXinco_core_groups(new Vector());
         try {
             Statement stmt = DBM.getConnection().createStatement();
-            String sql="SELECT * FROM xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + getId();
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.lockidle").isBool_value())
+            sql = "SELECT * FROM xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + getId();
+            if (DBM.getSetting("setting.enable.lockidle").isBool_value()) {
                 System.out.println(sql);
-            ResultSet rs = stmt.executeQuery(sql);
-//            if(!rs.isClosed()){
+            }
+            rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 getXinco_core_groups().addElement(new XincoCoreGroupServer(rs.getInt("xinco_core_group_id"), DBM));
             }
-//            }
             stmt.close();
         } catch (Exception e) {
             getXinco_core_groups().removeAllElements();
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
                 e.printStackTrace();
+            }
             throw new XincoException();
         }
     }
-    
+
     private void writeXincoCoreGroups(XincoDBManager DBM) throws XincoException {
         Statement stmt;
-        String sql=null;
-        ResultSet rs2=null;
-        boolean found=false;
-        int i=-1;
-        int place=0;
+        sql = null;
+        ResultSet rs2 = null;
+        boolean found = false;
+        int i = -1;
+        int place = 0;
         try {
             stmt = DBM.getConnection().createStatement();
-            rs=stmt.executeQuery("select * from xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + getId());
-            while(rs.next()){
+            rs = stmt.executeQuery("select * from xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + getId());
+            while (rs.next()) {
                 stmt = DBM.getConnection().createStatement();
-                for(int j =0;j<getXinco_core_groups().size();j++){
-                    if(((XincoCoreGroupServer)getXinco_core_groups().elementAt(j)).getId()==rs.getInt("xinco_core_group_id")){
-                        found=true;
-                        place=j;
+                for (int j = 0; j < getXinco_core_groups().size(); j++) {
+                    if (((XincoCoreGroupServer) getXinco_core_groups().elementAt(j)).getId() == rs.getInt("xinco_core_group_id")) {
+                        found = true;
+                        place = j;
                     }
                 }
                 //The record exists
-                if(found){
+                if (found) {
                     //Change detected
-                    if(getStatus_number()!=rs.getInt("status_number")){
-                        stmt.executeUpdate("update xinco_core_user_has_xinco_core_group set status_number="+
-                                getStatus_number()+" where xinco_core_user_id="+ getId()+", xinco_core_group_id="+
-                                ((XincoCoreGroupServer)getXinco_core_groups().elementAt(place)).getId());
-                        audit.updateAuditTrail("xinco_core_user_has_xinco_core_group",new String [] {"xinco_core_user_id ="+getId(),
-                        "xinco_core_group_id="+((XincoCoreGroupServer)getXinco_core_groups().elementAt(place)).getId()},
-                                DBM,"audit.general.modified",getChangerID());
+                    if (getStatus_number() != rs.getInt("status_number")) {
+                        stmt.executeUpdate("update xinco_core_user_has_xinco_core_group set status_number=" +
+                                getStatus_number() + " where xinco_core_user_id=" + getId() + ", xinco_core_group_id=" +
+                                ((XincoCoreGroupServer) getXinco_core_groups().elementAt(place)).getId());
+                        audit.updateAuditTrail("xinco_core_user_has_xinco_core_group", new String[]{"xinco_core_user_id =" + getId(),
+                            "xinco_core_group_id=" + ((XincoCoreGroupServer) getXinco_core_groups().elementAt(place)).getId()
+                        },
+                                DBM, "audit.general.modified", getChangerID());
                     }
-                }
-                //New record
-                else{
-                    sql="INSERT INTO xinco_core_user_has_xinco_core_group VALUES (" + getId() +
-                            ", " + ((XincoCoreGroupServer)getXinco_core_groups().elementAt(i)).getId() +
+                } //New record
+                else {
+                    sql = "INSERT INTO xinco_core_user_has_xinco_core_group VALUES (" + getId() +
+                            ", " + ((XincoCoreGroupServer) getXinco_core_groups().elementAt(i)).getId() +
                             ", " + 1 + ")";
                     stmt.executeUpdate(sql);
-                    audit.updateAuditTrail("xinco_core_user_has_xinco_core_group",new String [] {"xinco_core_user_id ="+getId(),
-                    "xinco_core_group_id="+((XincoCoreGroupServer)getXinco_core_groups().elementAt(place)).getId()},
-                            DBM,"audit.general.created",getChangerID());
+                    audit.updateAuditTrail("xinco_core_user_has_xinco_core_group", new String[]{"xinco_core_user_id =" + getId(),
+                        "xinco_core_group_id=" + ((XincoCoreGroupServer) getXinco_core_groups().elementAt(place)).getId()
+                    },
+                            DBM, "audit.general.created", getChangerID());
                 }
                 found = false;
-                place=0;
+                place = 0;
             }
             stmt.close();
-//            stmt.executeUpdate("DELETE FROM xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + getId());
-//            stmt.close();
-//            for (i=0; i<getXinco_core_groups().size(); i++) {
-//                stmt = DBM.con.createStatement();
-//                sql="INSERT INTO xinco_core_user_has_xinco_core_group VALUES (" + getId() +
-//                        ", " + ((XincoCoreGroupServer)getXinco_core_groups().elementAt(i)).getId() +
-//                        ", " + 1 + ")";
-//                stmt.executeUpdate(sql);
-//
-//                stmt.close();
-//            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new XincoException();
         }
     }
-    
+
     //create user object and login
     public XincoCoreUserServer(String attrUN, String attrUPW, XincoDBManager DBM) throws XincoException {
         Statement stmt = null;
-        ResultSet rs = null;
+        rs = null;
         GregorianCalendar cal = null;
         try {
             stmt = DBM.getStatement();
-            String sql="SELECT * FROM xinco_core_user WHERE username='" +
+            sql = "SELECT * FROM xinco_core_user WHERE username='" +
                     attrUN + "' AND userpassword=MD5('" + attrUPW + "') AND status_number <> 2";
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
                 System.out.println(sql);
+            }
             rs = stmt.executeQuery(sql);
             //throw exception if no result found
             int RowCount = 0;
@@ -175,32 +165,34 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 setFirstname(rs.getString("firstname"));
                 setEmail(rs.getString("email"));
                 setLastModified(rs.getTimestamp("last_modified"));
-                int status=0;
-                if(rs.getInt("status_number")!=2){
-                    Calendar cal2 = GregorianCalendar.getInstance(),now= GregorianCalendar.getInstance();
+                int status = 0;
+                if (rs.getInt("status_number") != 2) {
+                    Calendar cal2 = GregorianCalendar.getInstance(), now = GregorianCalendar.getInstance();
                     cal2.setTime(rs.getTimestamp("last_modified"));
-                    long diffMillis = now.getTimeInMillis()-cal2.getTimeInMillis();
-                    long diffDays = diffMillis/(24*60*60*1000);
-                    long age = DBM.getXincoSettingServer().getSetting("password.aging").getInt_value();
-                    if(diffDays >= age){
-                        status=3;
-                    } else{
-                        status=1;
+                    long diffMillis = now.getTimeInMillis() - cal2.getTimeInMillis();
+                    long diffDays = diffMillis / (24 * 60 * 60 * 1000);
+                    long age = DBM.getSetting("password.aging").getInt_value();
+                    if (diffDays >= age) {
+                        status = 3;
+                    } else {
+                        status = 1;
                     }
                     setAttempts(0);
-                } else
+                } else {
                     setAttempts(rs.getInt("attempts"));
+                }
                 setStatus_number(status);
                 write2DB(DBM);
             }
             if (RowCount < 1) {
-                sql="SELECT * FROM xinco_core_user WHERE username='" +
+                sql = "SELECT * FROM xinco_core_user WHERE username='" +
                         attrUN + "'";
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
                     System.out.println(sql);
+                }
                 rs = stmt.executeQuery(sql);
                 //The username is valid but wrong password. Increase the login attempts.
-                if(rs.next()){
+                if (rs.next()) {
                     increaseAttempts = true;
                     setAttempts(rs.getInt("attempts"));
                 }
@@ -209,24 +201,25 @@ public class XincoCoreUserServer extends XincoCoreUser {
             fillXincoCoreGroups(DBM);
             stmt.close();
         } catch (Exception e) {
+            e.printStackTrace();
             if (getXinco_core_groups() != null) {
                 getXinco_core_groups().removeAllElements();
             }
             try {
-                XincoDBManager dbm=null;
                 try {
-                    dbm = new XincoDBManager();
+                    DBM = new XincoDBManager();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-                String sql="SELECT * FROM xinco_core_user WHERE username='" +
+                sql = "SELECT * FROM xinco_core_user WHERE username='" +
                         attrUN + "' AND status_number <> 2";
                 stmt = DBM.getConnection().createStatement();
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
                     System.out.println(sql);
+                }
                 ResultSet rs2 = stmt.executeQuery(sql);
                 //increase number of attempts
-                if(rs2.next()){
+                if (rs2.next()) {
                     setId(rs2.getInt("id"));
                     setUsername(rs2.getString("username"));
                     //Don't rehash the pasword!
@@ -240,24 +233,26 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     setIncreaseAttempts(true);
                     setLastModified(rs2.getTimestamp("last_modified"));
                     setChange(false);
-                    write2DB(dbm);
+                    write2DB(DBM);
                 }
             } catch (SQLException ex) {
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
                     ex.printStackTrace();
+                }
             }
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
                 e.printStackTrace();
+            }
             throw new XincoException();
         }
     }
-    
-//create user object for data structures
+
+    //create user object for data structures
     public XincoCoreUserServer(int attrID, XincoDBManager DBM) throws XincoException {
         GregorianCalendar cal = null;
         try {
             Statement stmt = DBM.getConnection().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_user WHERE id=" + attrID);
+            rs = stmt.executeQuery("SELECT * FROM xinco_core_user WHERE id=" + attrID);
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {
@@ -282,10 +277,10 @@ public class XincoCoreUserServer extends XincoCoreUser {
             throw new XincoException();
         }
     }
-    
-//create user object
+
+    //create user object
     public XincoCoreUserServer(int attrID, String attrUN, String attrUPW, String attrN,
-            String attrFN, String attrE, int attrSN,int attrAN, java.sql.Timestamp attrTS,
+            String attrFN, String attrE, int attrSN, int attrAN, java.sql.Timestamp attrTS,
             XincoDBManager DBM) throws XincoException {
         try {
             setId(attrID);
@@ -303,7 +298,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
             throw new XincoException();
         }
     }
-    
+
     /**
      * Gets the attempts value for this XincoCoreUser.
      *
@@ -312,7 +307,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
     public int getAttempts() {
         return attempts;
     }
-    
+
     /**
      * Sets the attempts value for this XincoCoreUser.
      *
@@ -321,7 +316,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
     public void setAttempts(int attempts) {
         this.attempts = attempts;
     }
-    
+
     /**
      * Sets the lastModified value for this XincoCoreUser.
      *
@@ -330,7 +325,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
     public void setLastModified(java.sql.Timestamp lastModified) {
         this.lastModified = lastModified;
     }
-    
+
     /**
      * Gets the lastModified value for this XincoCoreUser.
      *
@@ -339,83 +334,90 @@ public class XincoCoreUserServer extends XincoCoreUser {
     public java.lang.Object getLastModified() {
         return lastModified;
     }
-    
+
     //write to db
     public int write2DB(XincoDBManager DBM) throws XincoException {
-        String sql="";
-        xerb= ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
-        Timestamp ts=null;
-        boolean isNew=false;
+        sql = "";
+        xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+        Timestamp ts = null;
+        boolean isNew = false;
         try {
             Statement stmt;
-            if(getStatus_number()==4){
+            if (getStatus_number() == 4) {
                 //Changed from aged out to password changed. Clear status
                 setStatus_number(1);
                 setAttempts(0);
                 setChange(true);
                 setReason("audit.user.account.aged");
-                ts= new Timestamp(System.currentTimeMillis());
+                ts = new Timestamp(System.currentTimeMillis());
             }
             //Increase login attempts
-            if(increaseAttempts){
-                setAttempts(getAttempts()+1);
+            if (increaseAttempts) {
+                setAttempts(getAttempts() + 1);
                 increaseAttempts = false;
             }
             //Lock account if needed. Can't lock main admin.
-            if(getAttempts()>DBM.getXincoSettingServer().getSetting("password.aging").getInt_value() &&
-                    getId() > 1){
+            if (getAttempts() > DBM.getSetting("password.aging").getInt_value() &&
+                    getId() > 1) {
                 setStatus_number(2);
             }
             if (getId() > 0) {
                 stmt = DBM.getConnection().createStatement();
-                if(isChange()){
-                    audit.updateAuditTrail("xinco_core_user",new String [] {"id ="+getId()},
-                            DBM,getReason(),getChangerID());
-                    ts= new Timestamp(System.currentTimeMillis());
+                if (isChange()) {
+                    audit.updateAuditTrail("xinco_core_user", new String[]{"id =" + getId()},
+                            DBM, getReason(), getChangerID());
+                    ts = new Timestamp(System.currentTimeMillis());
                     setLastModified(ts);
                     setChange(false);
-                } else
-                    ts= (Timestamp)getLastModified();
+                } else {
+                    ts = (Timestamp) getLastModified();
+                }
                 setLastModified(ts);
                 //Sometimes password got re-hashed
-                String password="";
-                if(hashPassword)
-                    password="userpassword=MD5('" +
-                            getUserpassword().replaceAll("'","\\\\'") + "')";
-                else
-                    password="userpassword='" +
-                            getUserpassword().replaceAll("'","\\\\'") + "'";
-                stmt.executeUpdate("UPDATE xinco_core_user SET username='" +
-                        getUsername().replaceAll("'","\\\\'") + "', "+password+", name='" +
-                        getName().replaceAll("'","\\\\'") + "', firstname='" +
-                        getFirstname().replaceAll("'","\\\\'") + "', email='" +
-                        getEmail().replaceAll("'","\\\\'") + "', status_number=" +
-                        getStatus_number() + ", attempts="+getAttempts() +
-                        ", last_modified='"+getLastModified()+"'"+
-                        " WHERE id=" + getId());
+                String password = "";
+                if (hashPassword) {
+                    password = "userpassword=MD5('" +
+                            getUserpassword().replaceAll("'", "\\\\'") + "')";
+                } else {
+                    password = "userpassword='" +
+                            getUserpassword().replaceAll("'", "\\\\'") + "'";
+                }
+                sql = "UPDATE xinco_core_user SET username='" +
+                        getUsername().replaceAll("'", "\\\\'") + "', " + password + ", name='" +
+                        getName().replaceAll("'", "\\\\'") + "', firstname='" +
+                        getFirstname().replaceAll("'", "\\\\'") + "', email='" +
+                        getEmail().replaceAll("'", "\\\\'") + "', status_number=" +
+                        getStatus_number() + ", attempts=" + getAttempts() +
+                        ", last_modified='" + getLastModified().toString() + "'" +
+                        " WHERE id=" + getId();
+                if (DBM.getSetting("setting.enable.lockidle").isBool_value()) {
+                    System.out.println(sql);
+                }
+                stmt.executeUpdate(sql);
                 stmt.close();
             } else {
                 setId(DBM.getNewID("xinco_core_user"));
-                isNew=true;
-                ts= new Timestamp(System.currentTimeMillis());
+                isNew = true;
+                ts = new Timestamp(System.currentTimeMillis());
                 stmt = DBM.getConnection().createStatement();
-                sql="INSERT INTO xinco_core_user VALUES (" + getId() +
-                        ", '" + getUsername().replaceAll("'","\\\\'") +
-                        "', MD5('" + getUserpassword().replaceAll("'","\\\\'") +
-                        "'), '" + getName().replaceAll("'","\\\\'") + "', '" +
-                        getFirstname().replaceAll("'","\\\\'") + "', '" +
-                        getEmail().replaceAll("'","\\\\'") + "', " +
-                        getStatus_number() +", "+ getAttempts() +", '"+ts.toString()+"')";
+                sql = "INSERT INTO xinco_core_user VALUES (" + getId() +
+                        ", '" + getUsername().replaceAll("'", "\\\\'") +
+                        "', MD5('" + getUserpassword().replaceAll("'", "\\\\'") +
+                        "'), '" + getName().replaceAll("'", "\\\\'") + "', '" +
+                        getFirstname().replaceAll("'", "\\\\'") + "', '" +
+                        getEmail().replaceAll("'", "\\\\'") + "', " +
+                        getStatus_number() + ", " + getAttempts() + ", '" + ts.toString() + "')";
                 stmt.executeUpdate(sql);
                 stmt.close();
             }
-            if(isWriteGroups())
+            if (isWriteGroups()) {
                 writeXincoCoreGroups(DBM);
+            }
             DBM.getConnection().commit();
-            if(isNew){
-                audit.updateAuditTrail("xinco_core_user",new String [] {"id ="+getId()},
-                        DBM,getReason(),getChangerID());
-                isNew=false;
+            if (isNew) {
+                audit.updateAuditTrail("xinco_core_user", new String[]{"id =" + getId()},
+                        DBM, getReason(), getChangerID());
+                isNew = false;
             }
         } catch (Exception e) {
             try {
@@ -430,8 +432,8 @@ public class XincoCoreUserServer extends XincoCoreUser {
         setReason("");
         return getId();
     }
-    
-//create complete list of users
+
+    //create complete list of users
     public static Vector getXincoCoreUsers(XincoDBManager DBM) {
         Vector coreUsers = new Vector();
         GregorianCalendar cal = null;
@@ -451,74 +453,76 @@ public class XincoCoreUserServer extends XincoCoreUser {
         }
         return coreUsers;
     }
-    
-    
-    
+
     public boolean isHashPassword() {
         return hashPassword;
     }
-    
+
     public void setHashPassword(boolean hashPassword) {
         this.hashPassword = hashPassword;
     }
-    
+
     public boolean isIncreaseAttempts() {
         return increaseAttempts;
     }
-    
+
     public void setIncreaseAttempts(boolean increaseAttempts) {
         this.increaseAttempts = increaseAttempts;
     }
-    
-    public boolean isPasswordUsable(String newPass){
-        ResultSet rs=null;
-        XincoDBManager DBM=null;
-        String sql=null;
-        Statement stmt=null;
-        boolean passwordIsUsable=false;
+
+    public boolean isPasswordUsable(String newPass) {
+        rs = null;
+        XincoDBManager DBM = null;
+        sql = null;
+        Statement stmt = null;
+        boolean passwordIsUsable = false;
         try {
             try {
                 DBM = new XincoDBManager();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            stmt=DBM.getConnection().createStatement();
+            stmt = DBM.getConnection().createStatement();
             /*Bug fix: The password was only verified against past passwords not current password.
              *The current passwords is not usable after the first change when it was added to the
              *audit trail table.
              */
             //Now check if password is not the same as the current password
-            sql="select userpassword from xinco_core_user where id=" +
-                    getId()+" and MD5('"+ newPass+"') =userpassword";
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            sql = "select userpassword from xinco_core_user where id=" +
+                    getId() + " and MD5('" + newPass + "') =userpassword";
+            if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
                 System.out.println(sql);
-            rs=stmt.executeQuery(sql);
+            }
+            rs = stmt.executeQuery(sql);
             //Here we'll catch if the password is the same as the actual
             rs.next();
             rs.getString(1);
             //End bug fix
             stmt.close();
         } catch (SQLException ex) {
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
                 System.out.println("Password different than actual");
-            try{
+            }
+            try {
                 //If password is not current then check against audit trail
-                sql="select userpassword from xinco_core_user_t where id=" +
-                        getId()+" and DATEDIFF(NOW(),last_modified) <= "+
-                        DBM.getXincoSettingServer().getSetting("password.unusable_period").getInt_value() +
-                        " and MD5('"+newPass+"') = userpassword";
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                sql = "select userpassword from xinco_core_user_t where id=" +
+                        getId() + " and DATEDIFF(NOW(),last_modified) <= " +
+                        DBM.getSetting("password.unusable_period").getInt_value() +
+                        " and MD5('" + newPass + "') = userpassword";
+                if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
                     System.out.println(sql);
-                rs=stmt.executeQuery(sql);
+                }
+                rs = stmt.executeQuery(sql);
                 //Here we'll catch if the password have been used in the unusable period
                 rs.next();
                 rs.getString(1);
                 stmt.close();
-            }catch (Exception e) {
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
-                System.out.println("Password not used within the unusable period-"+
-                        DBM.getXincoSettingServer().getSetting("password.unusable_period").getInt_value());
-                passwordIsUsable=true;
+            } catch (Exception e) {
+                if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
+                    System.out.println("Password not used within the unusable period-" +
+                            DBM.getSetting("password.unusable_period").getInt_value());
+                }
+                passwordIsUsable = true;
             }
         }
         return passwordIsUsable;

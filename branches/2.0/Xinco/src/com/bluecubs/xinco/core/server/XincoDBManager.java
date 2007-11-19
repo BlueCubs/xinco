@@ -36,6 +36,7 @@
 
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.XincoSettingException;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -193,13 +194,21 @@ public class XincoDBManager{
     }
     
     public XincoSettingServer getXincoSettingServer() {
-        if(xss==null)
+        if(xss==null){
             xss=new XincoSettingServer();
+            fillSettings();
+        }
         return xss;
     }
     
     public XincoSetting getSetting(String name){
-        return getXincoSettingServer().getSetting(name);
+        try {
+            return getXincoSettingServer().getSetting(name);
+        } catch (XincoSettingException ex) {
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, 
+                    lrb.getString("error.setting").replace("%s", name), ex);
+        }
+        return null;
     }
     
     /**Draws a table with results of the query stored in the ResultSet rs in the PrintWriter out*/

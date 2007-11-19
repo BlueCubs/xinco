@@ -37,7 +37,6 @@
 package com.bluecubs.xinco.conf;
 
 import com.bluecubs.xinco.core.XincoSetting;
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
 import java.util.Vector;
 import javax.naming.InitialContext;

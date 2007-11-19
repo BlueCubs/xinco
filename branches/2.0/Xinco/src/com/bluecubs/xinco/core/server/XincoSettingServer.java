@@ -38,8 +38,10 @@ package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoSetting;
+import com.bluecubs.xinco.core.XincoSettingException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ResourceBundle;
 import java.util.Vector;
 
 /**
@@ -49,6 +51,7 @@ import java.util.Vector;
 public class XincoSettingServer extends XincoSetting{
     private Vector xinco_settings=null;
     private XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
+    private ResourceBundle rb;
     
     /** Creates a new instance of XincoSettingServer */
     public XincoSettingServer(int id,java.lang.String description,int int_value,
@@ -74,7 +77,7 @@ public class XincoSettingServer extends XincoSetting{
     public XincoSettingServer(int id,XincoDBManager DBM)throws XincoException{
         try {
             String sql="select * from xinco_setting where id="+id;
-            if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
+            if(DBM.getSetting("setting.enable.developermode").isBool_value())
                 System.out.println(sql);
             ResultSet rs= DBM.getConnection().createStatement().executeQuery(sql);
             rs.next();
@@ -101,7 +104,7 @@ public class XincoSettingServer extends XincoSetting{
                         ", description='"+getDescription()+"', int_value="+getInt_value()+
                         ", string_value='"+getString_value()+"', bool_value="+isBool_value()+
                         " where id="+getId();
-                if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
+                if(DBM.getSetting("setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 DBM.getConnection().createStatement().executeUpdate(sql);
                 audit.updateAuditTrail("xinco_setting",new String [] {"id ="+getId()},
@@ -110,7 +113,7 @@ public class XincoSettingServer extends XincoSetting{
                 sql="insert into xinco_setting values("+getId()+
                         ", '"+getDescription()+"',"+getInt_value()+
                         ", '"+getString_value()+"',"+isBool_value()+","+getLong_value()+")";
-                if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
+                if(DBM.getSetting("setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 DBM.getConnection().createStatement().executeUpdate(sql);
                 audit.updateAuditTrail("xinco_setting",new String [] {"id ="+getId()},
@@ -128,22 +131,22 @@ public class XincoSettingServer extends XincoSetting{
         return (XincoSetting)getXinco_settings().get(i);
     }
     
-    public XincoSetting getSetting(String s){
+    public XincoSetting getSetting(String s) throws XincoSettingException{
         for(int i=0;i<getXinco_settings().size();i++){
             if(((XincoSetting)getXinco_settings().get(i)).getDescription().equals(s))
                 return (XincoSetting)getXinco_settings().get(i);
         }
-        return null;
+        throw new XincoSettingException();
     }
     
     @Override
     public Vector getXinco_settings() {
-//        if (xinco_settings == null)
-//            try {
-//                setXinco_settings(new XincoDBManager().getXincoSettingServer().getXinco_settings());
-//            }  catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
+        if (xinco_settings == null)
+            try {
+                setXinco_settings(new XincoDBManager().getXincoSettingServer().getXinco_settings());
+            }  catch (Exception ex) {
+                ex.printStackTrace();
+            }
         return xinco_settings;
     }
 

@@ -53,10 +53,10 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
         }
         //return current version of server
         XincoVersion version = new XincoVersion();
-        version.setVersion_high(DBM.getXincoSettingServer().getSetting("version.high").getInt_value());
-        version.setVersion_mid(DBM.getXincoSettingServer().getSetting("version.med").getInt_value());
-        version.setVersion_low(DBM.getXincoSettingServer().getSetting("version.low").getInt_value());
-        version.setVersion_postfix(DBM.getXincoSettingServer().getSetting("version.postfix").getString_value());
+        version.setVersion_high(DBM.getSetting("version.high").getInt_value());
+        version.setVersion_mid(DBM.getSetting("version.med").getInt_value());
+        version.setVersion_low(DBM.getSetting("version.low").getInt_value());
+        version.setVersion_postfix(DBM.getSetting("version.postfix").getString_value());
         return version;
     }
 

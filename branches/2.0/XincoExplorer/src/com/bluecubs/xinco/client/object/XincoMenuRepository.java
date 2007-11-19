@@ -48,17 +48,14 @@ import com.bluecubs.xinco.core.XincoCoreLanguage;
 import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoException;
-import java.io.File;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListModel;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 /**
@@ -131,7 +128,7 @@ public class XincoMenuRepository extends JMenu{
                 if (explorer.getSession().currentTreeNodeSelection != null) {
                     if (explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
                         //set current node to new one
-                        newnode = new XincoMutableTreeNode(new XincoCoreNode());
+                        newnode = new XincoMutableTreeNode(new XincoCoreNode(), explorer);
                         //set node attributes
                         ((XincoCoreNode)newnode.getUserObject()).setXinco_core_node_id(((XincoCoreNode)explorer.getSession().currentTreeNodeSelection.getUserObject()).getId());
                         ((XincoCoreNode)newnode.getUserObject()).setDesignation(xerb.getString("general.newfolder"));
