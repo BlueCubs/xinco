@@ -581,7 +581,7 @@ public class XincoExplorer extends JFrame {
                 xerb.getString("general.version") + " " +
                 xincoClientVersion.getVersion_high() + "." +
                 xincoClientVersion.getVersion_mid() + "." +
-                xincoClientVersion.getVersion_low() + "" +
+                xincoClientVersion.getVersion_low() + " " +
                 xincoClientVersion.getVersion_postfix());
         this.setJMenuBar(getJJMenuBar());
         this.setContentPane(getJDesktopPane());
