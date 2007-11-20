@@ -52,7 +52,7 @@
                     <file>${reference.XincoWorkflow.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
-                <library files="14">
+                <library>
                     <file>${libs.XincoClientLibs.classpath}</file>
                     <path-in-war>client</path-in-war>
                 </library>

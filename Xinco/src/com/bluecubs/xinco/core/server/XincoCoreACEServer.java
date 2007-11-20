@@ -183,6 +183,8 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 DBM.getConnection().rollback();
             } catch (Exception erollback) {
             }
+            if(DBM.getSetting("setting.enable.developermode").isBool_value())
+                e.printStackTrace();
             throw new XincoException();
         }
         return getId();
