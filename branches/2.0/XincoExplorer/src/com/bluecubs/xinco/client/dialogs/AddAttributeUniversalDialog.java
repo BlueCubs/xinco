@@ -75,7 +75,7 @@ public class AddAttributeUniversalDialog extends javax.swing.JDialog {
         //reset selection
         table.editCellAt(-1, -1);
         //processing independent of creation
-        if (((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getStatus_number() == 1) {
+        if (((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 1) {
             this.save.setEnabled(true);
         } else {
             this.save.setEnabled(false);
@@ -89,33 +89,33 @@ public class AddAttributeUniversalDialog extends javax.swing.JDialog {
         //prevent editing of fixed attributes for certain data types
         start = 0;
         //file = 1
-        if (((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getId() == 1) {
+        if (((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId() == 1) {
             start = 8;
         }
         //text = 2
-        if (((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getId() == 2) {
+        if (((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId() == 2) {
             start = 1;
         }
-        for (i=start;i<((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().size();i++) {
-            rdata[0] = ((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation();
+        for (i=start;i<((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().size();i++) {
+            rdata[0] = ((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation();
             rdata[1] = "";
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("datetime"))) {
-                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_datetime().getTime().toString();
+            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("datetime"))) {
+                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_datetime().getTime().toString();
             }
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("double"))) {
-                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_double();
+            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("double"))) {
+                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_double();
             }
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("int"))) {
-                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_int();
+            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("int"))) {
+                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_int();
             }
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("text"))) {
-                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_text();
+            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("text"))) {
+                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_text();
             }
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("unsignedint"))) {
-                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint();
+            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("unsignedint"))) {
+                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint();
             }
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("varchar"))) {
-                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_varchar();
+            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("varchar"))) {
+                rdata[1] = "" + ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_varchar();
             }
             dtm.addRow(rdata);
         }
@@ -211,58 +211,58 @@ public class AddAttributeUniversalDialog extends javax.swing.JDialog {
         //prevent editing of fixed attributes for certain data types
         start = 0;
         //file = 1
-        if (((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getId() == 1) {
+        if (((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId() == 1) {
             start = 8;
         }
-        if (((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getId() == 2) {
+        if (((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId() == 2) {
             start = 1;
         }
         //update add attributes
-        for (i=0;i<((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().size()-start;i++) {
+        for (i=0;i<((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().size()-start;i++) {
             dtm = (DefaultTableModel)table.getModel();
             try {
                 text = (String)dtm.getValueAt(i, 1);
             } catch (Exception dtme) {
                 text = "";
             }
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("datetime"))) {
+            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("datetime"))) {
                 try {
                     DateFormat df = DateFormat.getInstance();
                     attr_dt = df.parse(text);
                 } catch (Exception pe) {
                     attr_dt = new Date(0);
                 }
-                ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i+start)).getAttrib_datetime().setTime(attr_dt);
+                ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i+start)).getAttrib_datetime().setTime(attr_dt);
             }
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("double"))) {
+            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("double"))) {
                 try {
                     attr_d = Double.parseDouble(text);
                 } catch (Exception pe) {
                     attr_d = 0.0;
                 }
-                ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i+start)).setAttrib_double(attr_d);
+                ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i+start)).setAttrib_double(attr_d);
             }
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("int"))) {
+            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("int"))) {
                 try {
                     attr_i = Integer.parseInt(text);
                 } catch (Exception pe) {
                     attr_i = 0;
                 }
-                ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i+start)).setAttrib_int(attr_i);
+                ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i+start)).setAttrib_int(attr_i);
             }
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("text"))) {
-                ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i+start)).setAttrib_text(text);
+            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("text"))) {
+                ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i+start)).setAttrib_text(text);
             }
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("unsignedint"))) {
+            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("unsignedint"))) {
                 try {
                     attr_l = Long.parseLong(text);
                 } catch (Exception pe) {
                     attr_l = 0;
                 }
-                ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i+start)).setAttrib_unsignedint(attr_l);
+                ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i+start)).setAttrib_unsignedint(attr_l);
             }
-            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("varchar"))) {
-                ((XincoAddAttribute)((XincoCoreData)explorer.getSession().currentTreeNodeSelection.getUserObject()).getXinco_add_attributes().elementAt(i+start)).setAttrib_varchar(text);
+            if (((XincoCoreDataTypeAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i+start)).getData_type().equals(new String("varchar"))) {
+                ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i+start)).setAttrib_varchar(text);
             }
         }
         explorer.set_global_dialog_return_value(1);

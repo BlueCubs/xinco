@@ -4,10 +4,10 @@
  * This file was auto-generated from WSDL
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
-
 package com.bluecubs.xinco.service;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
+import com.bluecubs.xinco.add.holders.XincoAddAttributeHolder;
 import com.bluecubs.xinco.core.XincoCoreACE;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreGroup;
@@ -15,6 +15,7 @@ import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.XincoSetting;
 import com.bluecubs.xinco.core.XincoVersion;
 import com.bluecubs.xinco.core.server.XincoCoreACEServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
@@ -33,7 +34,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.ResourceBundle;
+import java.rmi.RemoteException;
+import java.sql.ResultSet;
+import java.util.Locale;
+import java.util.Vector;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.CheckedOutputStream;
@@ -44,10 +48,12 @@ import org.apache.axis.attachments.AttachmentPart;
 public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
 
     private XincoDBManager DBM = null;
+    private String sql;
+    private ResultSet rs;
 
     public com.bluecubs.xinco.core.XincoVersion getXincoServerVersion() throws java.rmi.RemoteException {
         try {
-            DBM=new XincoDBManager();
+            DBM = new XincoDBManager();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -757,5 +763,49 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
             ex.printStackTrace();
         }
         return user.isPasswordUsable(in0);
+    }
+
+    public Vector getAllXincoUsers(XincoCoreUser in0) throws RemoteException {
+        Vector temp = null;
+        try {
+            if (DBM == null) {
+                DBM = new XincoDBManager();
+            }
+            sql = "select distinct id from xinco_core_user";
+            rs = DBM.getConnection().createStatement().executeQuery(sql);
+            temp = new Vector();
+            while (rs.next()) {
+                temp.add(new XincoCoreUserServer(rs.getInt("id"), DBM));
+            }
+        } catch (XincoException ex) {
+            ex.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return temp;
+    }
+
+    public Vector getXincoSetting(XincoCoreUser in0) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public XincoSetting setXincoSetting(XincoSetting in0, XincoCoreUser in1) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setXincoAddAttribute(XincoAddAttributeHolder in0, XincoCoreUser in1) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean indexFiles(Vector in0, XincoCoreUser in1) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public String localizeString(String key, String locale) throws RemoteException {
+        Locale temp = DBM.getLocale();
+        DBM.setLocale(new Locale(locale));
+        String tempS = DBM.localizeString(key);
+        DBM.setLocale(temp);
+        return tempS;
     }
 }

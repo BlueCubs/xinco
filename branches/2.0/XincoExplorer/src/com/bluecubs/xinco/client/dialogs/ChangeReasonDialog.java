@@ -69,7 +69,7 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
-        this.user=explorer.getSession().user;
+        this.user=explorer.getSession().getUser();
         this.explorer=explorer;
         setTitle(explorer.getResourceBundle().getString("window.changereason.title"));
         this.reasonLabel.setText(explorer.getResourceBundle().getString("window.changereason.label"));

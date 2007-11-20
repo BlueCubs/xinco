@@ -41,7 +41,7 @@ package com.bluecubs.xinco.client.dialogs;
 
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.XincoMutableTreeNode;
-import com.bluecubs.xinco.client.object.XincoProgressBarThread;
+import com.bluecubs.xinco.client.object.thread.XincoProgressBarThread;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataType;
 import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
@@ -107,8 +107,8 @@ public class SearchDialog extends javax.swing.JDialog {
         this.optionsComboBox.addItem(" ");
         this.optionsComboBox.addItem(xerb.getString("window.search.filecontent") + " (file)");
         text = "";
-        for (i=0;i<explorer.getSession().server_datatypes.size();i++) {
-            xcdt = (XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(i);
+        for (i=0;i<explorer.getSession().getServer_datatypes().size();i++) {
+            xcdt = (XincoCoreDataType)explorer.getSession().getServer_datatypes().elementAt(i);
             for (j=0;j<xcdt.getXinco_core_data_type_attributes().size();j++) {
                 text = ((XincoCoreDataTypeAttribute)xcdt.getXinco_core_data_type_attributes().elementAt(j)).getDesignation();
                 this.optionsComboBox.addItem(text);
@@ -122,13 +122,13 @@ public class SearchDialog extends javax.swing.JDialog {
         selection = -1;
         alt_selection = 0;
         text = "";
-        for (i=0;i<explorer.getSession().server_languages.size();i++) {
-            text = ((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getSign() + ")";
+        for (i=0;i<explorer.getSession().getServer_languages().size();i++) {
+            text = ((XincoCoreLanguage)explorer.getSession().getServer_languages().elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage)explorer.getSession().getServer_languages().elementAt(i)).getSign() + ")";
             list.add(text);
-            if (((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
+            if (((XincoCoreLanguage)explorer.getSession().getServer_languages().elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
                 selection = i;
             }
-            if (((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getId() == 1) {
+            if (((XincoCoreLanguage)explorer.getSession().getServer_languages().elementAt(i)).getId() == 1) {
                 alt_selection = i;
             }
         }
@@ -338,14 +338,14 @@ public class SearchDialog extends javax.swing.JDialog {
         if (this.resultTable.getSelectedRow() < 0) {
             return;
         }
-        Vector v = (Vector)explorer.getSession().currentSearchResult.elementAt(this.resultTable.getSelectedRow());
+        Vector v = (Vector)explorer.getSession().getCurrentSearchResult().elementAt(this.resultTable.getSelectedRow());
         int i = 0;
         int j = 0;
         int k = 0;
         TreePath tp = null;
         try {
             //expand tree to selected result (check root items first, then check all sub-folders)
-            XincoMutableTreeNode xmtn = (XincoMutableTreeNode)explorer.getSession().xincoClientRepository.treemodel.getRoot();
+            XincoMutableTreeNode xmtn = (XincoMutableTreeNode)explorer.getSession().getXincoClientRepository().treemodel.getRoot();
             if (xmtn.getUserObject().getClass() == XincoCoreNode.class) {
                 if (((XincoCoreNode)xmtn.getUserObject()).getId() == ((XincoCoreNode)v.elementAt(1)).getId()) {
                     tp = new TreePath(xmtn.getPath());
@@ -442,14 +442,15 @@ public class SearchDialog extends javax.swing.JDialog {
             XincoCoreLanguage lid = new XincoCoreLanguage();
             lid.setId(0);
             if ((!allLanguagesCheckBox.isSelected()) && (languageList.getSelectedIndex() >= 0)) {
-                lid = (XincoCoreLanguage)explorer.getSession().server_languages.elementAt(languageList.getSelectedIndex());
+                lid = (XincoCoreLanguage)explorer.getSession().getServer_languages().elementAt(languageList.getSelectedIndex());
             }
             try {
-                if ((explorer.getSession().currentSearchResult = explorer.getSession().xinco.findXincoCoreData(queryValueField.getText(), lid, explorer.getSession().user)) == null) {
+                explorer.getSession().setCurrentSearchResult(explorer.getSession().getXinco().findXincoCoreData(queryValueField.getText(), lid,explorer.getSession().getUser()));
+                if (explorer.getSession().getCurrentSearchResult()== null) {
                     throw new XincoException();
                 }
             } catch (Exception rme) {
-                explorer.getSession().currentSearchResult = new Vector();
+                explorer.getSession().setCurrentSearchResult(new Vector());
             }
             //update search result
             String[] rdata = {"", ""};
@@ -458,11 +459,11 @@ public class SearchDialog extends javax.swing.JDialog {
             for (i=0;i<j;i++) {
                 dtm.removeRow(0);
             }
-            for (i=0;i<explorer.getSession().currentSearchResult.size();i++) {
-                rdata[0] = ((XincoCoreData)(((Vector)explorer.getSession().currentSearchResult.elementAt(i)).elementAt(0))).getDesignation() + " (" + ((XincoCoreData)(((Vector)explorer.getSession().currentSearchResult.elementAt(i)).elementAt(0))).getXinco_core_data_type().getDesignation() + " | " + ((XincoCoreData)(((Vector)explorer.getSession().currentSearchResult.elementAt(i)).elementAt(0))).getXinco_core_language().getSign() + ")";
+            for (i=0;i<explorer.getSession().getCurrentSearchResult().size();i++) {
+                rdata[0] = ((XincoCoreData)(((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getDesignation() + " (" + ((XincoCoreData)(((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getXinco_core_data_type().getDesignation() + " | " + ((XincoCoreData)(((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getXinco_core_language().getSign() + ")";
                 rdata[1] = new String("");
-                for (j=1;j<((Vector)explorer.getSession().currentSearchResult.elementAt(i)).size();j++) {
-                    rdata[1] = rdata[1] + ((XincoCoreNode)(((Vector)explorer.getSession().currentSearchResult.elementAt(i)).elementAt(j))).getDesignation() + " / ";
+                for (j=1;j<((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).size();j++) {
+                    rdata[1] = rdata[1] + ((XincoCoreNode)(((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(j))).getDesignation() + " / ";
                 }
                 dtm.addRow(rdata);
             }

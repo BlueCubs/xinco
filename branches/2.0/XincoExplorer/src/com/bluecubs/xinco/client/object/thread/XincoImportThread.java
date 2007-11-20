@@ -19,9 +19,9 @@
  * More information on: http://www.bluecubs.org
  *************************************************************
  *
- * Name:            importThread
+ * Name:            XincoImportThread
  *
- * Description:     importThread
+ * Description:     XincoImportThread
  *
  * Original Author: Javier A. Ortiz
  * Date:            2007
@@ -32,12 +32,12 @@
  * 
  *
  *************************************************************
- * importThread.java
+ * XincoImportThread.java
  *
  * Created on January 9, 2007, 3:52 PM
  */
 
-package com.bluecubs.xinco.client.object;
+package com.bluecubs.xinco.client.object.thread;
 
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.core.XincoCoreNode;
@@ -52,15 +52,15 @@ import javax.swing.tree.TreePath;
  *
  * @author ortizbj
  */
-public class importThread extends Thread {
+public class XincoImportThread extends Thread {
     private XincoExplorer explorer;
     @Override
     public void run() {
         if(this.explorer!=null){
             ResourceBundle xerb = this.explorer.getResourceBundle();
             //import data structure
-            if (explorer.getSession().currentTreeNodeSelection != null) {
-                if (explorer.getSession().currentTreeNodeSelection.getUserObject().getClass() == XincoCoreNode.class) {
+            if (explorer.getSession().getCurrentTreeNodeSelection() != null) {
+                if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
                     JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.info"), xerb.getString("window.massiveimport"), JOptionPane.INFORMATION_MESSAGE);
                     try {
                         JFileChooser fc = new JFileChooser();
@@ -82,10 +82,10 @@ public class importThread extends Thread {
                                                       xerb.getString("window.massiveimport"),
                                                       JOptionPane.INFORMATION_MESSAGE);
                         explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.progress"));
-                        explorer.importContentOfFolder((XincoCoreNode) explorer.getSession().currentTreeNodeSelection.getUserObject(),
+                        explorer.importContentOfFolder((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject(),
                                                        new File(explorer.current_path));
                         // select current path
-                        explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().currentTreeNodeSelection.getPath()));
+                        explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
                         // update transaction info
                         explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.importsuccess"));
                     } catch (Exception ie) {

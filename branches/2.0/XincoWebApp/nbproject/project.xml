@@ -16,11 +16,11 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library files="1">
-                    <file>${reference.XincoExplorer-1.jar}</file>
+                    <file>${reference.Xinco.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library files="1">
-                    <file>${reference.Xinco-1.jar}</file>
+                    <file>${reference.XincoExplorer.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
@@ -38,11 +38,11 @@
                     <path-in-war>client</path-in-war>
                 </library>
                 <library files="1">
-                    <file>${reference.XincoExplorer-1.jar}</file>
+                    <file>${reference.Xinco.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
                 <library files="1">
-                    <file>${reference.Xinco-1.jar}</file>
+                    <file>${reference.XincoExplorer.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
             </web-module-additional-libraries>
@@ -55,7 +55,7 @@
         </data>
         <references xmlns="http://www.netbeans.org/ns/ant-project-references/1">
             <reference>
-                <foreign-project>Xinco-1</foreign-project>
+                <foreign-project>Xinco</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
                 <target>jar</target>
@@ -63,7 +63,7 @@
                 <id>jar</id>
             </reference>
             <reference>
-                <foreign-project>XincoExplorer-1</foreign-project>
+                <foreign-project>XincoExplorer</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
                 <target>jar</target>
