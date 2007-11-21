@@ -61,16 +61,13 @@
     compile target as regular run target does. Again, for list of available 
     properties which you can use check the target you are overriding in 
     nbproject/build-impl.xml file. 
-
-    
-    
+    -->
     <target name="-pre-dist">
         <signjar jar="${build.dir}/web/client/activation.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/axis.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/commons-discovery-0.4.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/commons-logging-1.1.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/jaxrpc.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/jcalendar-1.3.2.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/mail.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/napkinlaf.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/saaj.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
@@ -80,8 +77,6 @@
         <signjar jar="${build.dir}/web/client/xercesImpl.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/Xinco.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/XincoExplorer.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/XincoWorkflow.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/xmlParserAPIs-2.6.2.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
     </target>
-    -->
 </project>

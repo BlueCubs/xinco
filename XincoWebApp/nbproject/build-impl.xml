@@ -18,6 +18,7 @@
 
         -->
 <project xmlns:webproject1="http://www.netbeans.org/ns/web-project/1" xmlns:webproject2="http://www.netbeans.org/ns/web-project/2" xmlns:webproject3="http://www.netbeans.org/ns/web-project/3" basedir=".." default="default" name="xinco-impl">
+    <import file="rest-build.xml"/>
     <import file="ant-deploy.xml"/>
     <target depends="dist,javadoc" description="Build whole project." name="default"/>
     <!--
@@ -311,14 +312,10 @@
     <target depends="init" if="no.dist.ear.dir" name="deps-module-jar" unless="no.deps">
         <ant antfile="${project.Xinco}/build.xml" inheritall="false" target="jar"/>
         <ant antfile="${project.XincoExplorer}/build.xml" inheritall="false" target="jar"/>
-        <ant antfile="${project.XincoSettingManager}/build.xml" inheritall="false" target="jar"/>
-        <ant antfile="${project.XincoWorkflow}/build.xml" inheritall="false" target="jar"/>
     </target>
     <target depends="init" if="dist.ear.dir" name="deps-ear-jar" unless="no.deps">
         <ant antfile="${project.Xinco}/build.xml" inheritall="false" target="jar"/>
         <ant antfile="${project.XincoExplorer}/build.xml" inheritall="false" target="jar"/>
-        <ant antfile="${project.XincoSettingManager}/build.xml" inheritall="false" target="jar"/>
-        <ant antfile="${project.XincoWorkflow}/build.xml" inheritall="false" target="jar"/>
     </target>
     <target depends="init, deps-module-jar, deps-ear-jar" name="deps-jar" unless="no.deps"/>
     <target depends="init,deps-jar" name="-pre-pre-compile">
@@ -355,7 +352,7 @@
             <fileset dir="${conf.dir}" includes="persistence.xml"/>
         </copy>
     </target>
-    <target name="-post-compile">
+    <target depends="-rest-post-compile" name="-post-compile">
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
     </target>
@@ -504,19 +501,26 @@
         <copy-ear-war file="${reference.Xinco.jar}" propname="included.lib.reference.Xinco.jar.X"/>
         <basename file="${reference.XincoExplorer.jar}" property="included.lib.reference.XincoExplorer.jar"/>
         <copy-ear-war file="${reference.XincoExplorer.jar}" propname="included.lib.reference.XincoExplorer.jar.X"/>
-        <basename file="${reference.XincoWorkflow.jar}" property="included.lib.reference.XincoWorkflow.jar"/>
-        <copy-ear-war file="${reference.XincoWorkflow.jar}" propname="included.lib.reference.XincoWorkflow.jar.X"/>
-        <basename file="${reference.XincoSettingManager.jar}" property="included.lib.reference.XincoSettingManager.jar"/>
-        <copy-ear-war file="${reference.XincoSettingManager.jar}" propname="included.lib.reference.XincoSettingManager.jar.X"/>
         <copy file="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir}/client"/>
-        <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
         <copy file="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.13}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.12}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.11}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.10}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.9}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.8}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.7}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.6}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.5}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.4}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.3}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.2}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.1}" todir="${build.web.dir}/client"/>
         <copy file="${reference.Xinco.jar}" todir="${build.web.dir}/client"/>
-        <copy file="${file.reference.blueCubsIcon16x16.GIF-1}" todir="${build.web.dir}/client"/>
-        <copy file="${reference.XincoWorkflow.jar}" todir="${build.web.dir}/client"/>
+        <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
         <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.libs.XincoLibs.classpath.1.X} ${included.lib.libs.XincoLibs.classpath.2.X} ${included.lib.libs.XincoLibs.classpath.3.X} ${included.lib.libs.XincoLibs.classpath.4.X} ${included.lib.libs.XincoLibs.classpath.5.X} ${included.lib.libs.XincoLibs.classpath.6.X} ${included.lib.libs.XincoLibs.classpath.7.X} ${included.lib.libs.XincoLibs.classpath.8.X} ${included.lib.libs.XincoLibs.classpath.9.X} ${included.lib.libs.XincoLibs.classpath.10.X} ${included.lib.libs.XincoLibs.classpath.11.X} ${included.lib.libs.XincoLibs.classpath.12.X} ${included.lib.libs.XincoLibs.classpath.13.X} ${included.lib.libs.XincoLibs.classpath.14.X} ${included.lib.libs.XincoLibs.classpath.15.X} ${included.lib.libs.XincoLibs.classpath.16.X} ${included.lib.libs.XincoLibs.classpath.17.X} ${included.lib.libs.XincoLibs.classpath.18.X} ${included.lib.libs.XincoLibs.classpath.19.X} ${included.lib.libs.XincoLibs.classpath.20.X} ${included.lib.libs.XincoLibs.classpath.21.X} ${included.lib.reference.Xinco.jar} ${included.lib.reference.XincoExplorer.jar} ${included.lib.reference.XincoWorkflow.jar} ${included.lib.reference.XincoSettingManager.jar} "/>
+            <attribute name="Class-Path" value="${included.lib.libs.XincoLibs.classpath.1.X} ${included.lib.libs.XincoLibs.classpath.2.X} ${included.lib.libs.XincoLibs.classpath.3.X} ${included.lib.libs.XincoLibs.classpath.4.X} ${included.lib.libs.XincoLibs.classpath.5.X} ${included.lib.libs.XincoLibs.classpath.6.X} ${included.lib.libs.XincoLibs.classpath.7.X} ${included.lib.libs.XincoLibs.classpath.8.X} ${included.lib.libs.XincoLibs.classpath.9.X} ${included.lib.libs.XincoLibs.classpath.10.X} ${included.lib.libs.XincoLibs.classpath.11.X} ${included.lib.libs.XincoLibs.classpath.12.X} ${included.lib.libs.XincoLibs.classpath.13.X} ${included.lib.libs.XincoLibs.classpath.14.X} ${included.lib.libs.XincoLibs.classpath.15.X} ${included.lib.libs.XincoLibs.classpath.16.X} ${included.lib.libs.XincoLibs.classpath.17.X} ${included.lib.libs.XincoLibs.classpath.18.X} ${included.lib.libs.XincoLibs.classpath.19.X} ${included.lib.libs.XincoLibs.classpath.20.X} ${included.lib.libs.XincoLibs.classpath.21.X} ${included.lib.reference.Xinco.jar} ${included.lib.reference.XincoExplorer.jar} "/>
         </manifest>
         <delete dir="${dist.ear.dir}/temp"/>
     </target>
@@ -544,14 +548,23 @@
         <copy file="${libs.XincoLibs.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${reference.Xinco.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${reference.XincoWorkflow.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${reference.XincoSettingManager.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir}/client"/>
-        <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
         <copy file="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.13}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.12}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.11}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.10}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.9}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.8}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.7}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.6}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.5}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.4}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.3}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.2}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.1}" todir="${build.web.dir}/client"/>
         <copy file="${reference.Xinco.jar}" todir="${build.web.dir}/client"/>
-        <copy file="${file.reference.blueCubsIcon16x16.GIF-1}" todir="${build.web.dir}/client"/>
-        <copy file="${reference.XincoWorkflow.jar}" todir="${build.web.dir}/client"/>
+        <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
     </target>
     <target depends="init,compile,compile-jsps,-pre-dist,library-inclusion-in-manifest" name="do-ear-dist">
         <dirname file="${dist.ear.war}" property="dist.jar.dir"/>
@@ -833,8 +846,6 @@
     <target depends="init" if="no.dist.ear.dir" name="deps-clean" unless="no.deps">
         <ant antfile="${project.Xinco}/build.xml" inheritall="false" target="clean"/>
         <ant antfile="${project.XincoExplorer}/build.xml" inheritall="false" target="clean"/>
-        <ant antfile="${project.XincoSettingManager}/build.xml" inheritall="false" target="clean"/>
-        <ant antfile="${project.XincoWorkflow}/build.xml" inheritall="false" target="clean"/>
     </target>
     <target depends="init" name="do-clean">
         <condition property="build.dir.to.clean" value="${build.web.dir}">
