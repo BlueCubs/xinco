@@ -206,7 +206,7 @@ public class XincoDBManager{
             return getXincoSettingServer().getSetting(name);
         } catch (XincoSettingException ex) {
             Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, 
-                    lrb.getString("error.setting").replace("%s", name), ex);
+                    lrb.getString("menu.connection.error.settings").replace("%s", name), ex);
         }
         return null;
     }
