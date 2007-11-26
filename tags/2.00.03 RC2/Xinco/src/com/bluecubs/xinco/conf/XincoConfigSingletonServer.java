@@ -123,6 +123,7 @@ public class XincoConfigSingletonServer {
             setAllowOutsideLinks(false);
             setIndexFileTypesClass(new Vector());
             setIndexFileTypesExt(new Vector());
+            setIndexNoIndex(new String[3]);
             String[] tsa = new String[1];
             getIndexFileTypesClass().add("com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF");
             tsa[0] = "pdf";
