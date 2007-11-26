@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xalan="http://xml.apache.org/xslt" xmlns:j2seproject3="http://www.netbeans.org/ns/j2se-project/3" xmlns:jaxws="http://www.netbeans.org/ns/jax-ws/1">
+    <!--
+                ===================
+                JAX-WS WSIMPORT SECTION
+                ===================
+            -->
+    <target name="wsimport-init" depends="init">
+        <mkdir dir="${build.generated.dir}/wsimport/client"/>
+        <mkdir dir="${build.generated.dir}/wsimport/binaries"/>
+        <taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
+            <classpath path="${libs.jaxws21.classpath}"/>
+        </taskdef>
+    </target>
+    <target name="wsimport-client-check-Xinco" depends="wsimport-init">
+        <condition property="wsimport-client-Xinco.notRequired">
+            <available file="${build.generated.dir}/wsimport/client/com/bluecubs/xinco/core" type="dir"/>
+        </condition>
+    </target>
+    <target name="wsimport-client-Xinco" depends="wsimport-init,wsimport-client-check-Xinco" unless="wsimport-client-Xinco.notRequired">
+        <wsimport fork="true" xendorsed="true" sourcedestdir="${build.generated.dir}/wsimport/client" extension="true" package="com.bluecubs.xinco.core" destdir="${build.generated.dir}/wsimport/binaries" wsdl="${basedir}/xml-resources/web-service-references/Xinco/wsdl/Xinco.wsdl" wsdlLocation="file:/E:/Documents%20and%20Settings/javydreamercsw/My%20Documents/NetBeans%20Projects/Xinco/Xinco%202.0.3/Xinco/src/com/bluecubs/xinco/service/Xinco.wsdl" catalog="catalog.xml">
+            <jvmarg value="-Djava.endorsed.dirs=${jaxws.endorsed.dir}"/>
+        </wsimport>
+        <copy todir="${build.classes.dir}">
+            <fileset dir="${build.generated.dir}/wsimport/binaries" includes="**/*.xml"/>
+        </copy>
+    </target>
+    <target name="wsimport-client-clean-Xinco" depends="-init-project">
+        <delete dir="${build.generated.dir}/wsimport/client/com/bluecubs/xinco/core"/>
+    </target>
+    <target name="wsimport-client-generate" depends="wsimport-client-Xinco"/>
+    <target name="wsimport-client-compile" depends="-pre-pre-compile">
+        <j2seproject3:depend srcdir="${build.generated.dir}/wsimport/client" classpath="${libs.jaxws21.classpath}:${javac.classpath}" destdir="${build.classes.dir}"/>
+        <j2seproject3:javac srcdir="${build.generated.dir}/wsimport/client" classpath="${libs.jaxws21.classpath}:${javac.classpath}" destdir="${build.classes.dir}" javac.compilerargs.jaxws="-Djava.endorsed.dirs='${jaxws.endorsed.dir}'"/>
+    </target>
+</project>
