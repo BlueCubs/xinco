@@ -18,7 +18,7 @@
     <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" 
               factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="100" 
               maxIdle="30" maxWait="10000" name="jdbc/XincoDB" type="javax.sql.DataSource" 
-              url="jdbc:mysql://localhost:3307/xinco?autoReconnect=true" username="root" password=""/>
+              url="jdbc:mysql://localhost:3307/xinco?autoReconnect=true" username="root" password="bmwtint"/>
     
     <!-- #################### ################ ####################-->
     <ResourceParams name="jdbc/XincoDB">
