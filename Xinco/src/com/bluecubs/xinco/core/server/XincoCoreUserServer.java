@@ -71,7 +71,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
         try {
             Statement stmt = DBM.getConnection().createStatement();
             sql = "SELECT * FROM xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + getId();
-            if (DBM.getSetting("setting.enable.lockidle").isBool_value()) {
+            if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
                 System.out.println(sql);
             }
             rs = stmt.executeQuery(sql);
@@ -390,7 +390,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                         getStatus_number() + ", attempts=" + getAttempts() +
                         ", last_modified='" + getLastModified().toString() + "'" +
                         " WHERE id=" + getId();
-                if (DBM.getSetting("setting.enable.lockidle").isBool_value()) {
+                if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
                     System.out.println(sql);
                 }
                 stmt.executeUpdate(sql);
