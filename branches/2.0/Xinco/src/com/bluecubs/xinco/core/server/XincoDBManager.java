@@ -98,6 +98,7 @@ public class XincoDBManager{
                         rs.getBoolean("bool_value"),0,rs.getLong("long_value"),null));
             }
             stm.close();
+            getConnection().close();
         } catch (SQLException ex) {
             ex.printStackTrace();
             printStats();

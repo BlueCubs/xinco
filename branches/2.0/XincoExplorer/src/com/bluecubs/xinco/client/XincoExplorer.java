@@ -3477,7 +3477,7 @@ public class XincoExplorer extends JFrame {
         return jDialogArchive;
     }
 
-    private int get_global_dialog_return_value() {
+    private int getGlobalDialogReturnValue() {
         return this.global_dialog_return_value;
     }
 

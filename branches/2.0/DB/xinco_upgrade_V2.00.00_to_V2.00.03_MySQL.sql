@@ -62,3 +62,17 @@ INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value,
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(36,'setting.securitycheck.enable',null,null,true,null);   
 
 /*Inserts 51-100 reserved for Workflow settings*/ 
+
+UPDATE XINCO_CORE_DATA_TYPE SET DESIGNATION = 'general.data.type.file' WHERE ID =1
+
+UPDATE XINCO_CORE_DATA_TYPE SET DESIGNATION = 'general.data.type.text' WHERE ID =2
+
+UPDATE XINCO_CORE_DATA_TYPE SET DESIGNATION = 'general.data.type.URL' WHERE ID =3
+
+UPDATE XINCO_CORE_DATA_TYPE SET DESIGNATION = 'general.data.type.contact' WHERE ID =4
+
+UPDATE XINCO_CORE_group SET DESIGNATION = 'general.group.admin' WHERE ID =1;
+
+UPDATE XINCO_CORE_group SET DESIGNATION = 'general.group.allusers' WHERE ID =2;
+
+UPDATE XINCO_CORE_group SET DESIGNATION = 'general.group.public' WHERE ID =3;

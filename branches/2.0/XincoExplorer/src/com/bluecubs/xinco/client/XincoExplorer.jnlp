@@ -10,7 +10,7 @@
 -->
 <!-- ### IMPORTANT: Change codebase to where your client will be deployed to!                         ### -->
 <!-- ###            e.g. http://your_domain:8080/xinco/client or http://192.168.0.1:8080/xinco/client ### -->
-<jnlp codebase="http://localhost:8080/xinco/client" href="XincoExplorer.jnlp" spec="0.2 1.0">
+<jnlp codebase="http://praifil501:8080/xinco/client" href="XincoExplorer.jnlp" spec="0.2 1.0">
     <information>
         <title>XincoExplorer</title>
         <vendor>blueCubs.com</vendor>

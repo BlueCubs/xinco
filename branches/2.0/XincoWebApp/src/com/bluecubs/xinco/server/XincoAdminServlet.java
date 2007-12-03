@@ -72,9 +72,9 @@ public class XincoAdminServlet extends HttpServlet {
     private String credentialID = "";
     private XincoCoreUserServer login_user = null;
     private XincoDBManager DBM = null;
+
     /** Initializes the servlet.
      */
-
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -116,7 +116,7 @@ public class XincoAdminServlet extends HttpServlet {
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
         String global_error_message = "";
         int i = 0,
-         j = 0;
+                j = 0;
         XincoCoreUserServer temp_user = null;
         XincoCoreGroupServer temp_group;
         XincoCoreLanguageServer temp_language;
@@ -615,7 +615,7 @@ public class XincoAdminServlet extends HttpServlet {
             ResultSet rs = null;
             String sql = null;
             int id = 0;
-            XincoDBManager DBM = null;
+            DBM = null;
             try {
                 DBM = new XincoDBManager();
             } catch (Exception ex) {
@@ -949,7 +949,12 @@ public class XincoAdminServlet extends HttpServlet {
                 for (i = 0; i < allgroups.size(); i++) {
                     out.println("<tr>");
                     out.println("<td class=\"text\">" + ((XincoCoreGroupServer) allgroups.elementAt(i)).getId() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreGroupServer) allgroups.elementAt(i)).getDesignation() + "</td>");
+                    //Default groups
+                    if (((XincoCoreGroupServer) allgroups.elementAt(i)).getId() <= 1000) {
+                        out.println("<td class=\"text\">" + rb.getString(((XincoCoreGroupServer) allgroups.elementAt(i)).getDesignation()) + "</td>");
+                    } else {
+                        out.println("<td class=\"text\">" + rb.getString(((XincoCoreGroupServer) allgroups.elementAt(i)).getDesignation()) + "</td>");
+                    }
                     out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminGroupsSelect=" +
                             ((XincoCoreGroupServer) allgroups.elementAt(i)).getId() +
                             "&list=" + request.getParameter("list") + "\" class=\"link\"  icon=\"xinco\">[" +
@@ -1330,7 +1335,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("            ");
 
                     ResultSet rs;
-                    XincoDBManager DBM = new XincoDBManager();
+                    DBM = new XincoDBManager();
                     DBM.setLocale(loc);
                     String column = "id";
                     if (request.getParameter("table").equals("xinco_add_attribute")) {
@@ -1385,7 +1390,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("            ");
 
                     ResultSet rs;
-                    XincoDBManager DBM = new XincoDBManager();
+                    DBM = new XincoDBManager();
                     String column = "id";
                     if (request.getParameter("table").equals("xinco_add_attribute")) {
                         column = "xinco_core_data_id";
@@ -1441,7 +1446,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("        ");
 
                     ResultSet rs;
-                    XincoDBManager DBM = new XincoDBManager();
+                    DBM = new XincoDBManager();
                     DatabaseMetaData meta = DBM.getConnection().getMetaData();
                     String[] types = {"TABLE"};
                     rs = meta.getTables(null, null, null, types);
