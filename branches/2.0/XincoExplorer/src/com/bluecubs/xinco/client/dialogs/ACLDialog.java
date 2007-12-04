@@ -177,7 +177,7 @@ public class ACLDialog extends javax.swing.JDialog {
 
             String[] strings = list;
 
-            public int getSize() {
+            public int getSize()  {
                 return strings.length;
             }
 
