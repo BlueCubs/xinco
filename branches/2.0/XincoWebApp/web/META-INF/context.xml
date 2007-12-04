@@ -16,8 +16,8 @@
     <!-- ### driverClassName: org.postgresql.Driver                      ###-->
     <!-- ###################################################################-->
     <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" 
-              factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="100" 
-              maxIdle="30" maxWait="10000" name="jdbc/XincoDB" type="javax.sql.DataSource" 
+              factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="1000" 
+              maxIdle="10" maxWait="10000" name="jdbc/XincoDB" type="javax.sql.DataSource" 
               url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true" username="root" password=""/>
     
     <!-- #################### ################ ####################-->
