@@ -26,7 +26,7 @@ import javax.faces.FacesException;
 public class Session extends AbstractSessionBean {
     // <editor-fold defaultstate="collapsed" desc="Managed Component Definition">
     private int __placeholder;
-    
+
     /**
      * <p>Automatically managed component initialization.  <strong>WARNING:</strong>
      * This method is automatically generated, so any user-specified code inserted
@@ -37,16 +37,20 @@ public class Session extends AbstractSessionBean {
     // </editor-fold>
     private int i = 0;
     private ResourceBundle lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale");
-    private ResourceBundle rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");;
-    private String[] locales;
-    private String text = "";
+    private ResourceBundle rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+
     
+    
+      ;
+    private  String   [] locales;
+    private String text = "";
+
     /**
      * <p>Construct a new session data bean instance.</p>
      */
     public Session() {
     }
-    
+
     /**
      * <p>This method is called when this bean is initially added to
      * session scope.  Typically, this occurs as a result of evaluating
@@ -58,13 +62,14 @@ public class Session extends AbstractSessionBean {
      * or resources that are required for the lifetime of a particular
      * user session.</p>
      */
+    @Override
     public void init() {
         // Perform initializations inherited from our superclass
         super.init();
         // Perform application initialization that must complete
         // *before* managed components are initialized
         // TODO - add your own initialiation code here
-        
+
         // <editor-fold defaultstate="collapsed" desc="Managed Component Initialization">
         // Initialize automatically managed components
         // *Note* - this logic should NOT be modified
@@ -72,31 +77,32 @@ public class Session extends AbstractSessionBean {
             _init();
         } catch (Exception e) {
             log("SessionBean1 Initialization Failure", e);
-            throw e instanceof FacesException ? (FacesException) e: new FacesException(e);
+            throw e instanceof FacesException ? (FacesException) e : new FacesException(e);
         }
-        
+
         // </editor-fold>
         // Perform application initialization that must complete
         // *after* managed components are initialized
         // TODO - add your own initialization code here
-        
+
         locales = lrb.getString("AvailableLocales").split(",");
-        Option []options= new Option[locales.length];
-        for (i=0;i<locales.length;i++)
-            options[i]=new Option(locales[i], lrb.getString("Locale." + locales[i]));
+        Option[] options = new Option[locales.length];
+        for (i = 0; i < locales.length; i++) {
+            options[i] = new Option(locales[i], lrb.getString("Locale." + locales[i]));
+        }
         setLanguageOptions(options);
-        WorkflowSettingServer xss= new WorkflowSettingServer();
-        String version="[Version " + xss.getSetting("workflow.version.high").getInt_value()
-        + "." + xss.getSetting("workflow.version.med").getInt_value() + "." +
+        WorkflowSettingServer xss = new WorkflowSettingServer();
+        String version = "[Version " + xss.getSetting("workflow.version.high").getInt_value() + "." + xss.getSetting("workflow.version.med").getInt_value() + "." +
                 xss.getSetting("workflow.version.low").getInt_value();
-        if(xss.getSetting("workflow.version.postfix").getString_value()!=null &&
-                !xss.getSetting("workflow.version.postfix").getString_value().trim().equals(""))
-            version+=" " + xss.getSetting("workflow.version.postfix").getString_value();
-        version+="]";
+        if (xss.getSetting("workflow.version.postfix").getString_value() != null &&
+                !xss.getSetting("workflow.version.postfix").getString_value().trim().equals("")) {
+            version += " " + xss.getSetting("workflow.version.postfix").getString_value();
+        }
+        version += "]";
         setFooterText(version);
         setTitle(rb.getString("message.admin.main.title"));
     }
-    
+
     /**
      * <p>This method is called when the session containing it is about to be
      * passivated.  Typically, this occurs in a distributed servlet container
@@ -107,9 +113,10 @@ public class Session extends AbstractSessionBean {
      * <p>You may customize this method to release references to session data
      * or resources that can not be serialized with the session itself.</p>
      */
+    @Override
     public void passivate() {
     }
-    
+
     /**
      * <p>This method is called when the session containing it was
      * reactivated.</p>
@@ -118,9 +125,10 @@ public class Session extends AbstractSessionBean {
      * data or resources that could not be serialized with the
      * session itself.</p>
      */
+    @Override
     public void activate() {
     }
-    
+
     /**
      * <p>This method is called when this bean is removed from
      * session scope.  Typically, this occurs as a result of
@@ -130,24 +138,24 @@ public class Session extends AbstractSessionBean {
      * during the execution of the <code>init()</code> method, or
      * at any later time during the lifetime of the application.</p>
      */
+    @Override
     public void destroy() {
     }
-    
+
     /**
      * <p>Return a reference to the scoped data bean.</p>
      */
     protected ApplicationBean getApplicationBean() {
-        return (ApplicationBean)getBean("ApplicationBean");
+        return (ApplicationBean) getBean("ApplicationBean");
     }
-    
+
     static {
     }
-    
     /**
      * Holds value of property languageOptions.
      */
     private Option[] languageOptions;
-    
+
     /**
      * Getter for property languageOptions.
      * @return Value of property languageOptions.
@@ -155,7 +163,7 @@ public class Session extends AbstractSessionBean {
     public Option[] getLanguageOptions() {
         return this.languageOptions;
     }
-    
+
     /**
      * Setter for property languageOptions.
      * @param languageOptions New value of property languageOptions.
@@ -163,12 +171,11 @@ public class Session extends AbstractSessionBean {
     public void setLanguageOptions(Option[] languageOptions) {
         this.languageOptions = languageOptions;
     }
-    
     /**
      * Holds value of property footerText.
      */
     private String footerText;
-    
+
     /**
      * Getter for property footerText.
      * @return Value of property footerText.
@@ -176,15 +183,14 @@ public class Session extends AbstractSessionBean {
     public String getFooterText() {
         return this.footerText;
     }
-    
+
     /**
      * Setter for property footerText.
      * @param footerText New value of property footerText.
      */
     public void setFooterText(String footerText) {
-        this.footerText=footerText;
+        this.footerText = footerText;
     }
-
     /**
      * Holds value of property status.
      */
@@ -205,7 +211,6 @@ public class Session extends AbstractSessionBean {
     public void setStatus(String status) {
         this.status = status;
     }
-
     /**
      * Holds value of property title.
      */
@@ -226,8 +231,7 @@ public class Session extends AbstractSessionBean {
     public void setTitle(String title) {
         this.title = title;
     }
-    
-     private String licenseString;
+    private String licenseString;
 
     /**
      * Getter for property licenseString.
@@ -244,38 +248,37 @@ public class Session extends AbstractSessionBean {
     public void setLicenseString(String licenseString) {
         this.licenseString = licenseString;
     }
-    
-    public void setResourceBundle(ResourceBundle rb){
-        this.rb=rb;
+
+    public void setResourceBundle(ResourceBundle rb) {
+        this.rb = rb;
     }
-    
-    public ResourceBundle getResourceBundle(){
-        if(rb==null){
-            rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",getLocale());
+
+    public ResourceBundle getResourceBundle() {
+        if (rb == null) {
+            rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", getLocale());
         }
         return this.rb;
     }
-    
     /**
      * Holds value of property locale.
      */
-    private Locale locale=null;
-    
+    private Locale locale = null;
+
     /**
      * Getter for property locale.
      * @return Value of property locale.
      */
     public Locale getLocale() {
-        if(locale==null)
+        if (locale == null) {
             locale = Locale.getDefault();
+        }
         return this.locale;
     }
-    
     /**
      * Holds value of property localeString.
      */
     private String localeString;
-    
+
     /**
      * Getter for property localeString.
      * @return Value of property localeString.
@@ -283,7 +286,7 @@ public class Session extends AbstractSessionBean {
     public String getLocaleString() {
         return this.localeString;
     }
-    
+
     /**
      * Setter for property localeString.
      * @param localeString New value of property localeString.
@@ -292,19 +295,25 @@ public class Session extends AbstractSessionBean {
         this.localeString = localeString;
         this.locale = null;
         try {
-            String[] locales;
-            locales = this.localeString.split("_");
-            switch(locales.length){
-                case 1: this.locale = new Locale(locales[0]);break;
-                case 2: this.locale = new Locale(locales[0],locales[1]);break;
-                case 3: this.locale = new
-                        Locale(locales[0],locales[1],locales[2]);break;
-                default: this.locale = Locale.getDefault();
+            String[] localeArray;
+            localeArray = this.localeString.split("_");
+            switch (localeArray.length) {
+                case 1:
+                    this.locale = new Locale(localeArray[0]);
+                    break;
+                case 2:
+                    this.locale = new Locale(localeArray[0], localeArray[1]);
+                    break;
+                case 3:
+                    this.locale = new Locale(localeArray[0], localeArray[1], localeArray[2]);
+                    break;
+                default:
+                    this.locale = Locale.getDefault();
             }
         } catch (Exception e) {
             this.locale = Locale.getDefault();
             e.printStackTrace();
         }
-        setResourceBundle(ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",this.locale));
+        setResourceBundle(ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", this.locale));
     }
 }

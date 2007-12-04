@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-OpenIDE-Module: com.bluecubs.xinco.templates
+OpenIDE-Module: com.bluecubs.xinco.templates/1
 OpenIDE-Module-Layer: com/bluecubs/xinco/templates/layer.xml
 OpenIDE-Module-Localizing-Bundle: com/bluecubs/xinco/templates/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.0

@@ -228,7 +228,6 @@ CREATE TABLE xinco_core_ace (
   write_permission BOOL NOT NULL,
   execute_permission BOOL NOT NULL,
   admin_permission BOOL NOT NULL,
-  owner BOOL NOT NULL DEFAULT 0,
   PRIMARY KEY(id),
   INDEX xinco_core_ace_FKIndex1(xinco_core_user_id),
   INDEX xinco_core_ace_FKIndex2(xinco_core_group_id),
@@ -237,30 +236,30 @@ CREATE TABLE xinco_core_ace (
 )
 TYPE=InnoDB;
 
-INSERT INTO xinco_core_ace VALUES (1, 1, NULL, 1, NULL, 1, 1, 1, 1,1);        
-INSERT INTO xinco_core_ace VALUES (2, 1, NULL, 2, NULL, 1, 1, 1, 1,1);        
-INSERT INTO xinco_core_ace VALUES (3, 1, NULL, 3, NULL, 1, 1, 1, 1,1);         
-INSERT INTO xinco_core_ace VALUES (4, NULL, 1, 1, NULL, 1, 1, 1, 1,0);         
-INSERT INTO xinco_core_ace VALUES (5, NULL, 1, 2, NULL, 1, 1, 1, 1,0);         
-INSERT INTO xinco_core_ace VALUES (6, NULL, 1, 3, NULL, 1, 1, 1, 1,0);          
-INSERT INTO xinco_core_ace VALUES (7, NULL, 2, 1, NULL, 1, 1, 1, 0,0);         
-INSERT INTO xinco_core_ace VALUES (8, NULL, 2, 2, NULL, 1, 1, 1, 0,0);         
-INSERT INTO xinco_core_ace VALUES (9, NULL, 2, 3, NULL, 1, 1, 1, 0,0);          
-INSERT INTO xinco_core_ace VALUES (10, 1, NULL, NULL, 1, 1, 1, 1, 1,1);          
-INSERT INTO xinco_core_ace VALUES (11, 1, NULL, NULL, 2, 1, 1, 1, 1,1);          
-INSERT INTO xinco_core_ace VALUES (12, NULL, 1, NULL, 1, 1, 1, 1, 1,0);            
-INSERT INTO xinco_core_ace VALUES (13, NULL, 1, NULL, 2, 1, 1, 1, 1,0);            
-INSERT INTO xinco_core_ace VALUES (14, NULL, 2, NULL, 1, 1, 0, 0, 0,0);            
-INSERT INTO xinco_core_ace VALUES (15, NULL, 2, NULL, 2, 1, 0, 0, 0,0);            
+INSERT INTO xinco_core_ace VALUES (1, 1, NULL, 1, NULL, 1, 1, 1, 1);        
+INSERT INTO xinco_core_ace VALUES (2, 1, NULL, 2, NULL, 1, 1, 1, 1);        
+INSERT INTO xinco_core_ace VALUES (3, 1, NULL, 3, NULL, 1, 1, 1, 1);         
+INSERT INTO xinco_core_ace VALUES (4, NULL, 1, 1, NULL, 1, 1, 1, 1);         
+INSERT INTO xinco_core_ace VALUES (5, NULL, 1, 2, NULL, 1, 1, 1, 1);         
+INSERT INTO xinco_core_ace VALUES (6, NULL, 1, 3, NULL, 1, 1, 1, 1);          
+INSERT INTO xinco_core_ace VALUES (7, NULL, 2, 1, NULL, 1, 1, 1, 0);         
+INSERT INTO xinco_core_ace VALUES (8, NULL, 2, 2, NULL, 1, 1, 1, 0);         
+INSERT INTO xinco_core_ace VALUES (9, NULL, 2, 3, NULL, 1, 1, 1, 0);          
+INSERT INTO xinco_core_ace VALUES (10, 1, NULL, NULL, 1, 1, 1, 1, 1);          
+INSERT INTO xinco_core_ace VALUES (11, 1, NULL, NULL, 2, 1, 1, 1, 1);          
+INSERT INTO xinco_core_ace VALUES (12, NULL, 1, NULL, 1, 1, 1, 1, 1);            
+INSERT INTO xinco_core_ace VALUES (13, NULL, 1, NULL, 2, 1, 1, 1, 1);            
+INSERT INTO xinco_core_ace VALUES (14, NULL, 2, NULL, 1, 1, 0, 0, 0);            
+INSERT INTO xinco_core_ace VALUES (15, NULL, 2, NULL, 2, 1, 0, 0, 0);            
 
-INSERT INTO xinco_core_ace VALUES (16, 1, NULL, 4, NULL, 1, 1, 1, 1,1);          
-INSERT INTO xinco_core_ace VALUES (17, NULL, 1, 4, NULL, 1, 1, 1, 1,0);           
-INSERT INTO xinco_core_ace VALUES (18, NULL, 2, 4, NULL, 1, 0, 0, 0,0);           
+INSERT INTO xinco_core_ace VALUES (16, 1, NULL, 4, NULL, 1, 1, 1, 1);          
+INSERT INTO xinco_core_ace VALUES (17, NULL, 1, 4, NULL, 1, 1, 1, 1);           
+INSERT INTO xinco_core_ace VALUES (18, NULL, 2, 4, NULL, 1, 0, 0, 0);           
 
-INSERT INTO xinco_core_ace VALUES (19, NULL, 3, 1, NULL, 1, 0, 0, 0,0);             
-INSERT INTO xinco_core_ace VALUES (20, NULL, 3, 4, NULL, 1, 0, 0, 0,0);             
-INSERT INTO xinco_core_ace VALUES (21, NULL, 3, NULL, 1, 1, 0, 0, 0,0);             
-INSERT INTO xinco_core_ace VALUES (22, NULL, 3, NULL, 2, 1, 0, 0, 0,0);             
+INSERT INTO xinco_core_ace VALUES (19, NULL, 3, 1, NULL, 1, 0, 0, 0);             
+INSERT INTO xinco_core_ace VALUES (20, NULL, 3, 4, NULL, 1, 0, 0, 0);             
+INSERT INTO xinco_core_ace VALUES (21, NULL, 3, NULL, 1, 1, 0, 0, 0);             
+INSERT INTO xinco_core_ace VALUES (22, NULL, 3, NULL, 2, 1, 0, 0, 0);             
 
 
 CREATE TABLE xinco_core_data (
@@ -545,6 +544,7 @@ INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value,
 /*Inserts 51-100 reserved for Workflow settings*/ 
 
 
+
 CREATE TABLE xinco_add_attribute_t (
   record_id INTEGER(10) UNSIGNED NOT NULL,
   xinco_core_data_id INTEGER(10) UNSIGNED NOT NULL,
@@ -559,54 +559,9 @@ CREATE TABLE xinco_add_attribute_t (
 )
 TYPE=InnoDB;
 
-CREATE TABLE xinco_audit_has_xinco_core_group_t (
-  record_id INTEGER(10) UNSIGNED NOT NULL,
-  xinco_core_group_id INTEGER(10) UNSIGNED NULL,
-  xinco_audit_type_id INTEGER(10) UNSIGNED NULL,
-  xinco_audit_id INTEGER(10) UNSIGNED NULL,
-  PRIMARY KEY(record_id)
-)
-TYPE=InnoDB;
-
-CREATE TABLE xinco_audit_has_xinco_core_user_t (
-  record_id INTEGER(10) UNSIGNED NOT NULL,
-  xinco_core_user_id INTEGER(10) UNSIGNED NULL,
-  xinco_audit_type_id INTEGER(10) UNSIGNED NULL,
-  xinco_audit_id INTEGER(10) UNSIGNED NULL,
-  PRIMARY KEY(record_id)
-)
-TYPE=InnoDB;
-
-CREATE TABLE xinco_audit_t (
-  record_id INTEGER(10) UNSIGNED NOT NULL,
-  id INTEGER(10) UNSIGNED NULL,
-  xinco_audit_type_id INTEGER(10) UNSIGNED NULL,
-  xinco_core_user_id INTEGER(10) UNSIGNED NULL,
-  xinco_core_data_id INTEGER(10) UNSIGNED NULL,
-  scheduled_date DATE NULL,
-  completion_date DATE NULL,
-  PRIMARY KEY(record_id)
-)
-TYPE=InnoDB;
-
-CREATE TABLE xinco_audit_type_t (
-  record_id INTEGER(10) UNSIGNED NOT NULL,
-  id INTEGER(10) UNSIGNED NULL,
-  days INTEGER(10) UNSIGNED NULL,
-  weeks INTEGER(10) UNSIGNED NULL,
-  months INTEGER(10) UNSIGNED NULL,
-  years INTEGER(10) UNSIGNED NULL,
-  description VARCHAR(45) NULL,
-  due_same_day BOOL NULL,
-  due_same_week BOOL NULL,
-  due_same_month BOOL NULL,
-  PRIMARY KEY(record_id)
-)
-TYPE=InnoDB;
-
 CREATE TABLE xinco_core_ace_t (
   record_id INTEGER(10) UNSIGNED NOT NULL,
-  id INTEGER(10) UNSIGNED NULL,
+  id INTEGER(10) UNSIGNED NOT NULL,
   xinco_core_user_id INTEGER(10) UNSIGNED NULL,
   xinco_core_group_id INTEGER(10) UNSIGNED NULL,
   xinco_core_node_id INTEGER(10) UNSIGNED NULL,
@@ -615,8 +570,6 @@ CREATE TABLE xinco_core_ace_t (
   write_permission BOOL NOT NULL,
   execute_permission BOOL NOT NULL,
   admin_permission BOOL NOT NULL,
-  audit_permission BOOL NOT NULL,
-  owner BOOL NOT NULL,
   PRIMARY KEY(record_id)
 )
 TYPE=InnoDB;
@@ -716,15 +669,15 @@ CREATE TABLE xinco_core_user_t (
 TYPE=InnoDB;
 
 CREATE TABLE xinco_setting_t (
-  record_id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  id INTEGER(10) UNSIGNED NULL,
-  description VARCHAR(45) NULL,
-  int_value INTEGER(10) UNSIGNED NULL,
-  string_value VARCHAR(255) NULL,
-  bool_value BOOL NULL,
+  record_id INTEGER UNSIGNED NOT NULL,
+  id INTEGER(10) UNSIGNED NOT NULL,
+  description VARCHAR(45) NOT NULL,
+  int_value INTEGER(10) UNSIGNED NULL DEFAULT null,
+  string_value VARCHAR(500) NULL DEFAULT null,
+  bool_value BOOL NULL DEFAULT null,
+  long_value BIGINT NULL DEFAULT null,
   PRIMARY KEY(record_id)
 )
 TYPE=InnoDB;
-
 
 

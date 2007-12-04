@@ -12,54 +12,9 @@ CREATE TABLE xinco_add_attribute_t (
 )
 TYPE=InnoDB;
 
-CREATE TABLE xinco_audit_has_xinco_core_group_t (
-  record_id INTEGER(10) UNSIGNED NOT NULL,
-  xinco_core_group_id INTEGER(10) UNSIGNED NULL,
-  xinco_audit_type_id INTEGER(10) UNSIGNED NULL,
-  xinco_audit_id INTEGER(10) UNSIGNED NULL,
-  PRIMARY KEY(record_id)
-)
-TYPE=InnoDB;
-
-CREATE TABLE xinco_audit_has_xinco_core_user_t (
-  record_id INTEGER(10) UNSIGNED NOT NULL,
-  xinco_core_user_id INTEGER(10) UNSIGNED NULL,
-  xinco_audit_type_id INTEGER(10) UNSIGNED NULL,
-  xinco_audit_id INTEGER(10) UNSIGNED NULL,
-  PRIMARY KEY(record_id)
-)
-TYPE=InnoDB;
-
-CREATE TABLE xinco_audit_t (
-  record_id INTEGER(10) UNSIGNED NOT NULL,
-  id INTEGER(10) UNSIGNED NULL,
-  xinco_audit_type_id INTEGER(10) UNSIGNED NULL,
-  xinco_core_user_id INTEGER(10) UNSIGNED NULL,
-  xinco_core_data_id INTEGER(10) UNSIGNED NULL,
-  scheduled_date DATE NULL,
-  completion_date DATE NULL,
-  PRIMARY KEY(record_id)
-)
-TYPE=InnoDB;
-
-CREATE TABLE xinco_audit_type_t (
-  record_id INTEGER(10) UNSIGNED NOT NULL,
-  id INTEGER(10) UNSIGNED NULL,
-  days INTEGER(10) UNSIGNED NULL,
-  weeks INTEGER(10) UNSIGNED NULL,
-  months INTEGER(10) UNSIGNED NULL,
-  years INTEGER(10) UNSIGNED NULL,
-  description VARCHAR(45) NULL,
-  due_same_day BOOL NULL,
-  due_same_week BOOL NULL,
-  due_same_month BOOL NULL,
-  PRIMARY KEY(record_id)
-)
-TYPE=InnoDB;
-
 CREATE TABLE xinco_core_ace_t (
   record_id INTEGER(10) UNSIGNED NOT NULL,
-  id INTEGER(10) UNSIGNED NULL,
+  id INTEGER(10) UNSIGNED NOT NULL,
   xinco_core_user_id INTEGER(10) UNSIGNED NULL,
   xinco_core_group_id INTEGER(10) UNSIGNED NULL,
   xinco_core_node_id INTEGER(10) UNSIGNED NULL,
@@ -68,8 +23,6 @@ CREATE TABLE xinco_core_ace_t (
   write_permission BOOL NOT NULL,
   execute_permission BOOL NOT NULL,
   admin_permission BOOL NOT NULL,
-  audit_permission BOOL NOT NULL,
-  owner BOOL NOT NULL,
   PRIMARY KEY(record_id)
 )
 TYPE=InnoDB;
@@ -185,12 +138,13 @@ CREATE TABLE xinco_core_user_t (
 TYPE=InnoDB;
 
 CREATE TABLE xinco_setting_t (
-  record_id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  id INTEGER(10) UNSIGNED NULL,
-  description VARCHAR(45) NULL,
-  int_value INTEGER(10) UNSIGNED NULL,
-  string_value VARCHAR(255) NULL,
-  bool_value BOOL NULL,
+  record_id INTEGER UNSIGNED NOT NULL,
+  id INTEGER(10) UNSIGNED NOT NULL,
+  description VARCHAR(45) NOT NULL,
+  int_value INTEGER(10) UNSIGNED NULL DEFAULT null,
+  string_value VARCHAR(500) NULL DEFAULT null,
+  bool_value BOOL NULL DEFAULT null,
+  long_value BIGINT NULL DEFAULT null,
   PRIMARY KEY(record_id)
 )
 TYPE=InnoDB;
