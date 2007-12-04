@@ -238,7 +238,8 @@ public class XincoAdminServlet extends HttpServlet {
                 status = 1;
                 //Check for password aging
                 if (temp_user.getStatus_number() == 3) {
-                    status = 2;
+//                    status = 2;
+                    session.setAttribute("XincoAdminServlet.status", new Integer(status - 1));
                 }
                 session.setAttribute("XincoAdminServlet.status", new Integer(status));
                 current_location = "MainMenu";
@@ -391,7 +392,8 @@ public class XincoAdminServlet extends HttpServlet {
             try {
                 i = Integer.parseInt(request.getParameter("DialogAdminUsersUnlock"));
                 temp_user = new XincoCoreUserServer(i, DBM);
-                temp_user.setStatus_number(1);
+                //Prompt the user for new password
+                temp_user.setStatus_number(4);
                 //Reset login attempts
                 temp_user.setAttempts(0);
                 //The logged in admin does the unlocking
@@ -427,6 +429,8 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_user.setChange(true);
                 //Reason for change
                 temp_user.setReason("audit.user.account.password.reset");
+                //Prompt for new password next login - 21 CFR related
+                temp_user.setStatus_number(3);
                 temp_user.write2DB(DBM);
             } catch (Exception e) {
             }
@@ -733,7 +737,7 @@ public class XincoAdminServlet extends HttpServlet {
             out.println("</tr>");
             out.println("</table>");
             out.println("</form>");
-        } else if (status == 2) {
+        } else if (status == 3) {
             //Password must be changed
             out.println("<br><img src=\"blueCubs.gif\" border=\"0\"/>");
             out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
@@ -885,27 +889,23 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getFirstname() + "</td>");
                     out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getName() + "</td>");
                     out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getEmail() + "</td>");
-                    if (((XincoCoreUserServer) allusers.elementAt(i)).getStatus_number() == 1) {
-                        out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminUsersLock=" +
+                    if (((XincoCoreUserServer) allusers.elementAt(i)).getStatus_number() == 1 ||
+                            ((XincoCoreUserServer) allusers.elementAt(i)).getStatus_number() == 3) {
+                        String temp = "<td class=\"text\"><a href=\"XincoAdmin?DialogAdminUsersLock=" +
                                 ((XincoCoreUserServer) allusers.elementAt(i)).getId() +
-                                "&list=" + request.getParameter("list") + "\" class=\"link\"  icon=\"xinco\">[" + rb.getString("general.lock") +
-                                "]</a>&nbsp;<a href=\"XincoAdmin?DialogAdminUsersResetPW=" +
-                                ((XincoCoreUserServer) allusers.elementAt(i)).getId() +
-                                "&list=" + request.getParameter("list") + "\" class=\"link\"  icon=\"xinco\">[" + rb.getString("general.password.reset") + "*]</a>" +
-                                "&nbsp;<a href=\"XincoAdmin?DialogAdminUsersEdit=" +
-                                ((XincoCoreUserServer) allusers.elementAt(i)).getId() +
-                                "&list=" + request.getParameter("list") + "\" class=\"link\"  icon=\"xinco\">[" + rb.getString("general.edit") + "]</a></td>");
-                    }
-                    if (((XincoCoreUserServer) allusers.elementAt(i)).getStatus_number() == 2) {
-                        out.println("<td class=\"text\"><b>" + rb.getString("general.status.locked") + "</b> <a href=\"XincoAdmin?DialogAdminUsersUnlock=" +
-                                ((XincoCoreUserServer) allusers.elementAt(i)).getId() +
-                                "&list=" + request.getParameter("list") + "\" class=\"link\"  icon=\"xinco\">[" + rb.getString("general.unlock") +
-                                "]</a>&nbsp;<a href=\"XincoAdmin?DialogAdminUsersResetPW=" +
+                                "&list=" + request.getParameter("list") + "\" class=\"link\"  icon=\"xinco\">[";
+                        if (((XincoCoreUserServer) allusers.elementAt(i)).getStatus_number() == 2) {
+                            temp += rb.getString("general.unlock");
+                        } else {
+                            temp += rb.getString("general.lock");
+                        }
+                        temp += "]</a>&nbsp;<a href=\"XincoAdmin?DialogAdminUsersResetPW=" +
                                 ((XincoCoreUserServer) allusers.elementAt(i)).getId() +
                                 "&list=" + request.getParameter("list") + "\" class=\"link\"  icon=\"xinco\">[" + rb.getString("general.password.reset") + "*]</a>" +
                                 "&nbsp;<a href=\"XincoAdmin?DialogAdminUsersEdit=" +
                                 ((XincoCoreUserServer) allusers.elementAt(i)).getId() +
-                                "&list=" + request.getParameter("list") + "\" class=\"link\"  icon=\"xinco\">[" + rb.getString("general.edit") + "]</a></td>");
+                                "&list=" + request.getParameter("list") + "\" class=\"link\"  icon=\"xinco\">[" + rb.getString("general.edit") + "]</a></td>";
+                        out.println(temp);
                     }
                     out.println("</tr>");
                 }
