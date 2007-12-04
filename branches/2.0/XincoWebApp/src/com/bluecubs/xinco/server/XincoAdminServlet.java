@@ -953,7 +953,7 @@ public class XincoAdminServlet extends HttpServlet {
                     if (((XincoCoreGroupServer) allgroups.elementAt(i)).getId() <= 1000) {
                         out.println("<td class=\"text\">" + rb.getString(((XincoCoreGroupServer) allgroups.elementAt(i)).getDesignation()) + "</td>");
                     } else {
-                        out.println("<td class=\"text\">" + rb.getString(((XincoCoreGroupServer) allgroups.elementAt(i)).getDesignation()) + "</td>");
+                        out.println("<td class=\"text\">" + ((XincoCoreGroupServer) allgroups.elementAt(i)).getDesignation() + "</td>");
                     }
                     out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminGroupsSelect=" +
                             ((XincoCoreGroupServer) allgroups.elementAt(i)).getId() +
