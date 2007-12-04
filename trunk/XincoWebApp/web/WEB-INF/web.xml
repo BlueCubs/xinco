@@ -66,6 +66,8 @@
         <load-on-startup>100</load-on-startup>
     </servlet>
     
+    
+    
     <servlet-mapping>
         <servlet-name>XincoAdminServlet</servlet-name>
         <url-pattern>/XincoAdmin</url-pattern>
@@ -107,6 +109,8 @@
         <servlet-name>AdminServlet</servlet-name>
         <url-pattern>/servlet/AdminServlet</url-pattern>
     </servlet-mapping>
+    
+    
     
     <session-config>
         <session-timeout>30</session-timeout>

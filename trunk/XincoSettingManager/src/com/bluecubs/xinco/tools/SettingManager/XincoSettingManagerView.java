@@ -61,7 +61,6 @@ public class XincoSettingManagerView extends FrameView {
     private XincoSettingManagerView.loginThread loginT;
     private XincoCoreUser temp,  newuser = null;
     //client version
-
     private XincoVersion xincoClientVersion = null;
 
     @SuppressWarnings("unchecked")
@@ -95,7 +94,7 @@ public class XincoSettingManagerView extends FrameView {
         props.put("toplink.jdbc.url", xincoClientSession.getService_endpoint());
         props.put("toplink.jdbc.password", temp.getUserpassword());
         props.put("toplink.jdbc.driver", xincoClientSession.getJDBCDriver());
-        entityManager=javax.persistence.Persistence.createEntityManagerFactory("xinco?autoReconnect=truePU", props).createEntityManager();
+        entityManager = javax.persistence.Persistence.createEntityManagerFactory("xinco?autoReconnect=truePU", props).createEntityManager();
         System.out.println("Switched to servers information...");
         initComponents();
 
@@ -104,10 +103,10 @@ public class XincoSettingManagerView extends FrameView {
         int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
         messageTimer = new Timer(messageTimeout, new ActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        statusMessageLabel.setText("");
-                    }
-                });
+            public void actionPerformed(ActionEvent e) {
+                statusMessageLabel.setText("");
+            }
+        });
         messageTimer.setRepeats(false);
         int busyAnimationRate = resourceMap.getInteger("StatusBar.busyAnimationRate");
         for (int i = 0; i < busyIcons.length; i++) {
@@ -115,11 +114,11 @@ public class XincoSettingManagerView extends FrameView {
         }
         busyIconTimer = new Timer(busyAnimationRate, new ActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        busyIconIndex = (busyIconIndex + 1) % busyIcons.length;
-                        statusAnimationLabel.setIcon(busyIcons[busyIconIndex]);
-                    }
-                });
+            public void actionPerformed(ActionEvent e) {
+                busyIconIndex = (busyIconIndex + 1) % busyIcons.length;
+                statusAnimationLabel.setIcon(busyIcons[busyIconIndex]);
+            }
+        });
         idleIcon = resourceMap.getIcon("StatusBar.idleIcon");
         statusAnimationLabel.setIcon(idleIcon);
         progressBar.setVisible(false);
@@ -128,54 +127,54 @@ public class XincoSettingManagerView extends FrameView {
         TaskMonitor taskMonitor = new TaskMonitor(getApplication().getContext());
         taskMonitor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
 
-                    public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                        String propertyName = evt.getPropertyName();
-                        if ("started".equals(propertyName)) {
-                            if (!busyIconTimer.isRunning()) {
-                                statusAnimationLabel.setIcon(busyIcons[0]);
-                                busyIconIndex = 0;
-                                busyIconTimer.start();
-                            }
-                            progressBar.setVisible(true);
-                            progressBar.setIndeterminate(true);
-                        } else if ("done".equals(propertyName)) {
-                            busyIconTimer.stop();
-                            statusAnimationLabel.setIcon(idleIcon);
-                            progressBar.setVisible(false);
-                            progressBar.setValue(0);
-                        } else if ("message".equals(propertyName)) {
-                            String text = (String) (evt.getNewValue());
-                            statusMessageLabel.setText((text == null) ? "" : text);
-                            messageTimer.restart();
-                        } else if ("progress".equals(propertyName)) {
-                            int value = (Integer) (evt.getNewValue());
-                            progressBar.setVisible(true);
-                            progressBar.setIndeterminate(false);
-                            progressBar.setValue(value);
-                        }
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                String propertyName = evt.getPropertyName();
+                if ("started".equals(propertyName)) {
+                    if (!busyIconTimer.isRunning()) {
+                        statusAnimationLabel.setIcon(busyIcons[0]);
+                        busyIconIndex = 0;
+                        busyIconTimer.start();
                     }
-                });
+                    progressBar.setVisible(true);
+                    progressBar.setIndeterminate(true);
+                } else if ("done".equals(propertyName)) {
+                    busyIconTimer.stop();
+                    statusAnimationLabel.setIcon(idleIcon);
+                    progressBar.setVisible(false);
+                    progressBar.setValue(0);
+                } else if ("message".equals(propertyName)) {
+                    String text = (String) (evt.getNewValue());
+                    statusMessageLabel.setText((text == null) ? "" : text);
+                    messageTimer.restart();
+                } else if ("progress".equals(propertyName)) {
+                    int value = (Integer) (evt.getNewValue());
+                    progressBar.setVisible(true);
+                    progressBar.setIndeterminate(false);
+                    progressBar.setValue(value);
+                }
+            }
+        });
 
         // tracking table selection
         masterTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
-                    public void valueChanged(ListSelectionEvent e) {
-                        firePropertyChange("recordSelected", !isRecordSelected(), isRecordSelected());
-                    }
-                });
+            public void valueChanged(ListSelectionEvent e) {
+                firePropertyChange("recordSelected", !isRecordSelected(), isRecordSelected());
+            }
+        });
 
         // tracking changes to save
         bindingGroup.addBindingListener(new AbstractBindingListener() {
 
-                    @Override
+            @Override
             public void targetEdited(Binding binding) {
-                        // save action observes saveNeeded property
-                        if (!saveNeeded) {
-                            saveNeeded = true;
-                            firePropertyChange("saveNeeded", false, true);
-                        }
-                    }
-                });
+                // save action observes saveNeeded property
+                if (!saveNeeded) {
+                    saveNeeded = true;
+                    firePropertyChange("saveNeeded", false, true);
+                }
+            }
+        });
 
         // have a transaction started
         entityManager.getTransaction().begin();
@@ -223,18 +222,18 @@ public class XincoSettingManagerView extends FrameView {
     public Task save() {
         return new Task(getApplication()) {
 
-                    protected Void doInBackground() {
-                        entityManager.getTransaction().commit();
-                        entityManager.getTransaction().begin();
-                        return null;
-                    }
+            protected Void doInBackground() {
+                entityManager.getTransaction().commit();
+                entityManager.getTransaction().begin();
+                return null;
+            }
 
-                    @Override
+            @Override
             protected void finished() {
-                        saveNeeded = false;
-                        XincoSettingManagerView.this.firePropertyChange("saveNeeded", true, false);
-                    }
-                };
+                saveNeeded = false;
+                XincoSettingManagerView.this.firePropertyChange("saveNeeded", true, false);
+            }
+        };
     }
 
     /**
@@ -244,36 +243,36 @@ public class XincoSettingManagerView extends FrameView {
      * progress visualization - remove the sleeps for real application.
      */
     @Action
-     public Task refresh() {
+    public Task refresh() {
         return new Task(getApplication()) {
 
-                    @SuppressWarnings("unchecked")
-                    protected Void doInBackground() {
+            @SuppressWarnings("unchecked")
+            protected Void doInBackground() {
 
-                        setProgress(0, 0, 4);
-                        setMessage("Rolling back the current changes...");
-                        setProgress(1, 0, 4);
-                        entityManager.getTransaction().rollback();
-                        setProgress(2, 0, 4);
+                setProgress(0, 0, 4);
+                setMessage("Rolling back the current changes...");
+                setProgress(1, 0, 4);
+                entityManager.getTransaction().rollback();
+                setProgress(2, 0, 4);
 
-                        setMessage("Starting a new transaction...");
-                        entityManager.getTransaction().begin();
-                        setProgress(3, 0, 4);
+                setMessage("Starting a new transaction...");
+                entityManager.getTransaction().begin();
+                setProgress(3, 0, 4);
 
-                        setMessage("Fetching new data...");
-                        java.util.Collection data = query.getResultList();
-                        setProgress(4, 0, 4);
+                setMessage("Fetching new data...");
+                java.util.Collection data = query.getResultList();
+                setProgress(4, 0, 4);
 
-                        list.clear();
-                        list.addAll(data);
-                        return null;
-                    }
+                list.clear();
+                list.addAll(data);
+                return null;
+            }
 
-                    @Override
-                    protected void finished() {
-                        setMessage("Done.");
-                    }
-                };
+            @Override
+            protected void finished() {
+                setMessage("Done.");
+            }
+        };
     }
 
     @Action
@@ -345,116 +344,116 @@ public class XincoSettingManagerView extends FrameView {
         private XincoSettingManagerView me;
 
         @Action
-     public Task login() {
+        public Task login() {
             return new Task(getApplication()) {
 
-                        private XincoActivityTimer xat;
-                        private String status_string_1,  status_string_2;
+                private XincoActivityTimer xat;
+                private String status_string_1,  status_string_2;
 
-                        @SuppressWarnings("unchecked")
-                    protected Void doInBackground() throws RemoteException {
+                @SuppressWarnings("unchecked")
+                protected Void doInBackground() throws RemoteException {
 
-                            int i = 0;
-                            try {
-                                getSession().setXinco_service(new XincoServiceLocator());
-                                getSession().setXinco(getSession().getXinco_service().getXinco(new java.net.URL(getSession().getService_endpoint())));
-                                getSession().setServer_version(getSession().getXinco().getXincoServerVersion());
-                                //check if client and server versions match (high AND mid must match!)
-                                if ((xincoClientVersion.getVersion_high() != getSession().getServer_version().getVersion_high()) || (xincoClientVersion.getVersion_mid() != getSession().getServer_version().getVersion_mid())) {
-                                    throw new XincoException(xerb.getString("menu.connection.error.serverversion") + " " + getSession().getServer_version().getVersion_high() + "." + getSession().getServer_version().getVersion_mid() + ".x");
-                                }
-                                if ((temp = getSession().getXinco().getCurrentXincoCoreUser(getSession().getUser().getUsername(), getSession().getUser().getUserpassword())) == null) {
-                                    throw new XincoException(xerb.getString("menu.connection.error.user"));
-                                }
-                                getJDialogConnection().updateProfile();
-                                temp.setUserpassword(getSession().getUser().getUserpassword());
-                                newuser.setEmail(temp.getEmail());
-                                newuser.setFirstname(temp.getFirstname());
-                                newuser.setId(temp.getId());
-                                newuser.setName(temp.getName());
-                                newuser.setStatus_number(temp.getStatus_number());
-                                newuser.setUsername(temp.getUsername());
-                                newuser.setUserpassword(temp.getUserpassword());
-                                getSession().setUser(getSession().getXinco().getCurrentXincoCoreUser(newuser.getUsername(), newuser.getUserpassword()));
-                                getSession().setServer_datatypes(getSession().getXinco().getAllXincoCoreDataTypes(getSession().getUser()));
-                                getSession().setServer_groups(getSession().getXinco().getAllXincoCoreGroups(getSession().getUser()));
-                                getSession().setServer_languages(getSession().getXinco().getAllXincoCoreLanguages(getSession().getUser()));
-                                getSession().setServer_users(getSession().getXinco().getAllXincoUsers(getSession().getUser()));
-                                String space = "      + ";
-                                for (i = 0; i < getSession().getUser().getXinco_core_groups().size(); i++) {
-                                    status_string_1 += space + ((XincoCoreGroup) getSession().getUser().getXinco_core_groups().elementAt(i)).getDesignation() + "\n";
-                                }
-                                for (i = 0; i < getSession().getServer_datatypes().size(); i++) {
-                                    status_string_2 += space + getSession().getXinco().localizeString(((XincoCoreDataType) getSession().getServer_datatypes().elementAt(i)).getDesignation(), getLocale().toString()) + "\n";
-                                }
-                            } catch (java.rmi.RemoteException cone) {
-                                setProgress(0, 0, 4);
-                                setMessage(xerb.getString("menu.connection.failed") + " " +
-                                        xerb.getString("general.reason") + ": " +
-                                        cone.toString() + " " + xerb.getString("error.connection.incorrect.deployment"));
-                                getSession().setStatus(0);
-                                cone.printStackTrace();
-                            } catch (Exception cone) {
-                                getSession().setStatus(0);
-                                cone.printStackTrace();
-                                String exception = "";
-                                if (cone.toString().equals("java.lang")) {
-                                    exception = xerb.getString("error.connection.incorrect.deployment");
-                                } else {
-                                    exception = cone.toString();
-                                }
-                                setMessage(xerb.getString("menu.connection.failed") + " " +
-                                        xerb.getString("general.reason") + ": " +
-                                        cone.toString());
-                                Query q = entityManager.createNamedQuery("XincoSetting.findByDescription").setParameter("description", "general.setting.enable.developermode");
-                                x = (XincoSetting) q.getSingleResult();
-                                if (x.getBoolValue()) {
-                                    cone.printStackTrace();
-                                }
-                            }
-
-                            String status_string = "";
-                            temp = getSession().getXinco().getCurrentXincoCoreUser(getSession().getUser().getUsername(), getSession().getUser().getUserpassword());
-                            status_string += xerb.getString("menu.connection.connectedto") + ": " + getSession().getService_endpoint() + "\n";
-                            status_string += xerb.getString("general.serverversion") + ": ";
-                            status_string += getSession().getServer_version().getVersion_high() + ".";
-                            status_string += (getSession().getServer_version().getVersion_mid() < 9 ? "0" +
-                                    getSession().getServer_version().getVersion_mid() : getSession().getServer_version().getVersion_mid()) + ".";
-                            status_string += (getSession().getServer_version().getVersion_low() < 9 ? "0" +
-                                    getSession().getServer_version().getVersion_low() : getSession().getServer_version().getVersion_low());
-                            status_string += " " + getSession().getServer_version().getVersion_postfix() + "\n";
-                            status_string += "\n";
-                            status_string += xerb.getString("general.user") + ": " + getSession().getUser().getFirstname() + " " + getSession().getUser().getName() + " <" + getSession().getUser().getEmail() + ">\n";
-                            status_string += xerb.getString("general.memberof") + ":\n";
-                            status_string += status_string_1 + "\n";
-                            status_string += xerb.getString("general.groupsonserver") + ": " + getSession().getServer_groups().size() + "\n";
-                            status_string += xerb.getString("general.languagesonserver") + ": " + getSession().getServer_languages().size() + "\n";
-                            status_string += xerb.getString("general.datatypesonserver") + ": " + getSession().getServer_datatypes().size() + "\n";
-                            status_string += status_string_2 + "\n";
-                            getSession().setCurrentSearchResult(new Vector());
-                            getSession().setStatus(2);
-                            setMessage(xerb.getString("menu.connection.established"));
-                            //get root
-                            XincoCoreNode xnode = new XincoCoreNode();
-                            xnode.setId(1);
-                            xnode = getSession().getXinco().getXincoCoreNode(xnode, getSession().getUser());
-                            getSession().getXincoClientRepository().assignObject2TreeNode((XincoMutableTreeNode) (getSession().getXincoClientRepository().treemodel).getRoot(),
-                                    xnode,
-                                    getSession().getXinco(), getSession().getUser(), 2);
-                            if (temp.getStatus_number() == 3) {
-                                setMessage(xerb.getString("password.aged"));
-                                getJDialogUser(true);
-                            }
-                            resetStrings();
-                            return null;
+                    int i = 0;
+                    try {
+                        getSession().setXinco_service(new XincoServiceLocator());
+                        getSession().setXinco(getSession().getXinco_service().getXinco(new java.net.URL(getSession().getService_endpoint())));
+                        getSession().setServer_version(getSession().getXinco().getXincoServerVersion());
+                        //check if client and server versions match (high AND mid must match!)
+                        if ((xincoClientVersion.getVersion_high() != getSession().getServer_version().getVersion_high()) || (xincoClientVersion.getVersion_mid() != getSession().getServer_version().getVersion_mid())) {
+                            throw new XincoException(xerb.getString("menu.connection.error.serverversion") + " " + getSession().getServer_version().getVersion_high() + "." + getSession().getServer_version().getVersion_mid() + ".x");
                         }
-
-                        public void resetStrings() {
-                            status_string_1 = "";
-                            status_string_2 =
-                                    "";
+                        if ((temp = getSession().getXinco().getCurrentXincoCoreUser(getSession().getUser().getUsername(), getSession().getUser().getUserpassword())) == null) {
+                            throw new XincoException(xerb.getString("menu.connection.error.user"));
                         }
-                    };
+                        getJDialogConnection().updateProfile();
+                        temp.setUserpassword(getSession().getUser().getUserpassword());
+                        newuser.setEmail(temp.getEmail());
+                        newuser.setFirstname(temp.getFirstname());
+                        newuser.setId(temp.getId());
+                        newuser.setName(temp.getName());
+                        newuser.setStatus_number(temp.getStatus_number());
+                        newuser.setUsername(temp.getUsername());
+                        newuser.setUserpassword(temp.getUserpassword());
+                        getSession().setUser(getSession().getXinco().getCurrentXincoCoreUser(newuser.getUsername(), newuser.getUserpassword()));
+                        getSession().setServer_datatypes(getSession().getXinco().getAllXincoCoreDataTypes(getSession().getUser()));
+                        getSession().setServer_groups(getSession().getXinco().getAllXincoCoreGroups(getSession().getUser()));
+                        getSession().setServer_languages(getSession().getXinco().getAllXincoCoreLanguages(getSession().getUser()));
+                        getSession().setServer_users(getSession().getXinco().getAllXincoUsers(getSession().getUser()));
+                        String space = "      + ";
+                        for (i = 0; i < getSession().getUser().getXinco_core_groups().size(); i++) {
+                            status_string_1 += space + ((XincoCoreGroup) getSession().getUser().getXinco_core_groups().elementAt(i)).getDesignation() + "\n";
+                        }
+                        for (i = 0; i < getSession().getServer_datatypes().size(); i++) {
+                            status_string_2 += space + getSession().getXinco().localizeString(((XincoCoreDataType) getSession().getServer_datatypes().elementAt(i)).getDesignation(), getLocale().toString()) + "\n";
+                        }
+                    } catch (java.rmi.RemoteException cone) {
+                        setProgress(0, 0, 4);
+                        setMessage(xerb.getString("menu.connection.failed") + " " +
+                                xerb.getString("general.reason") + ": " +
+                                cone.toString() + " " + xerb.getString("error.connection.incorrect.deployment"));
+                        getSession().setStatus(0);
+                        cone.printStackTrace();
+                    } catch (Exception cone) {
+                        getSession().setStatus(0);
+                        cone.printStackTrace();
+                        String exception = "";
+                        if (cone.toString().equals("java.lang")) {
+                            exception = xerb.getString("error.connection.incorrect.deployment");
+                        } else {
+                            exception = cone.toString();
+                        }
+                        setMessage(xerb.getString("menu.connection.failed") + " " +
+                                xerb.getString("general.reason") + ": " +
+                                cone.toString());
+                        Query q = entityManager.createNamedQuery("XincoSetting.findByDescription").setParameter("description", "general.setting.enable.developermode");
+                        x = (XincoSetting) q.getSingleResult();
+                        if (x.getBoolValue()) {
+                            cone.printStackTrace();
+                        }
+                    }
+
+                    String status_string = "";
+                    temp = getSession().getXinco().getCurrentXincoCoreUser(getSession().getUser().getUsername(), getSession().getUser().getUserpassword());
+                    status_string += xerb.getString("menu.connection.connectedto") + ": " + getSession().getService_endpoint() + "\n";
+                    status_string += xerb.getString("general.serverversion") + ": ";
+                    status_string += getSession().getServer_version().getVersion_high() + ".";
+                    status_string += (getSession().getServer_version().getVersion_mid() < 9 ? "0" +
+                            getSession().getServer_version().getVersion_mid() : getSession().getServer_version().getVersion_mid()) + ".";
+                    status_string += (getSession().getServer_version().getVersion_low() < 9 ? "0" +
+                            getSession().getServer_version().getVersion_low() : getSession().getServer_version().getVersion_low());
+                    status_string += " " + getSession().getServer_version().getVersion_postfix() + "\n";
+                    status_string += "\n";
+                    status_string += xerb.getString("general.user") + ": " + getSession().getUser().getFirstname() + " " + getSession().getUser().getName() + " <" + getSession().getUser().getEmail() + ">\n";
+                    status_string += xerb.getString("general.memberof") + ":\n";
+                    status_string += status_string_1 + "\n";
+                    status_string += xerb.getString("general.groupsonserver") + ": " + getSession().getServer_groups().size() + "\n";
+                    status_string += xerb.getString("general.languagesonserver") + ": " + getSession().getServer_languages().size() + "\n";
+                    status_string += xerb.getString("general.datatypesonserver") + ": " + getSession().getServer_datatypes().size() + "\n";
+                    status_string += status_string_2 + "\n";
+                    getSession().setCurrentSearchResult(new Vector());
+                    getSession().setStatus(2);
+                    setMessage(xerb.getString("menu.connection.established"));
+                    //get root
+                    XincoCoreNode xnode = new XincoCoreNode();
+                    xnode.setId(1);
+                    xnode = getSession().getXinco().getXincoCoreNode(xnode, getSession().getUser());
+                    getSession().getXincoClientRepository().assignObject2TreeNode((XincoMutableTreeNode) (getSession().getXincoClientRepository().treemodel).getRoot(),
+                            xnode,
+                            getSession().getXinco(), getSession().getUser(), 2);
+                    if (temp.getStatus_number() == 3) {
+                        setMessage(xerb.getString("password.aged"));
+                        getJDialogUser(true);
+                    }
+                    resetStrings();
+                    return null;
+                }
+
+                public void resetStrings() {
+                    status_string_1 = "";
+                    status_string_2 =
+                            "";
+                }
+            };
         }
 
         private void getJDialogUser(boolean b) {
@@ -764,7 +763,6 @@ public class XincoSettingManagerView extends FrameView {
     private javax.swing.JLabel stringValueLabel;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
-
     private final Timer messageTimer;
     private final Timer busyIconTimer;
     private final Icon idleIcon;
@@ -881,11 +879,11 @@ public class XincoSettingManagerView extends FrameView {
             xincoClientConfig.addElement(Locale.getDefault());
         }
     }
+
     /**
      * This method saves the configuration
      *
      */
-
     public void saveConfig() {
         try {
             java.io.FileOutputStream fout = new java.io.FileOutputStream(System.getProperty("user.home") +

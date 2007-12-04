@@ -40,10 +40,8 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import com.bluecubs.xinco.archive.*;
-import com.bluecubs.xinco.core.XincoSetting;
 import com.bluecubs.xinco.index.*;
 import com.bluecubs.xinco.core.server.XincoDBManager;
-import com.bluecubs.xinco.core.server.XincoSettingServer;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -95,25 +93,11 @@ public class XincoCronServlet extends HttpServlet {
             loc = Locale.getDefault();
         }
         lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
-        String setting="";
-        try {
-            setting = new XincoDBManager().getXincoSettingServer().getSetting("general.copyright.date").getString_value();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
         //start output
         response.setContentType("text/html");
-        response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
         
-        //show header
-        out.println("<html>");
-        out.println("<head>");
-        out.println("<title>"+lrb.getString("message.admin.main.xincocron.label")+"</title>");
-        out.println("<link rel=\"stylesheet\" href=\"xincostyle.css\" type=\"text/css\"/>");
-        out.println("</head>");
-        
-        //Avoid external links if general.setting.allowoutsidelinks is set to false
+        //Avoid external links if setting.allowoutsidelinks is set to false
         //Security bug
         XincoDBManager DBM=null;
         try {
@@ -121,14 +105,22 @@ public class XincoCronServlet extends HttpServlet {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        
+        //show header
+        out.println("<html>");
+        out.println("<head>");
+        out.println("<title>"+lrb.getString("message.admin.main.xincocron.label")+"</title>");
+        out.println("<link rel=\"stylesheet\" href=\"xincostyle.css\" type=\"text/css\"/>");
+        if(!DBM.config.isAllowOutsideLinks())
+            out.println(DBM.getWebBlockRightClickScript());
+        out.println("</head>");
+        
+        out.println("<body>");
+        
         if(!DBM.config.isAllowOutsideLinks()){
             out.println(DBM.getWebBlockRightClickScript());
         }
         
-        out.println("<body>");
-        if(!DBM.config.isAllowOutsideLinks()){
-            out.println(DBM.getWebBlockRightClickScript());
-        }
         out.println("<center>");
         out.println("<span class=\"text\">");
         
@@ -187,7 +179,7 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<td class=\"text\">"+lrb.getString("message.xincocron.service.indexOptimizer")+"</td>");
         String xiot_first_run = "";
         String xiot_last_run = "";
-        if (xiot != null) {
+        if (xat != null) {
             if (xiot.firstRun != null) {
                 xiot_first_run = xiot.firstRun.getTime().toString();
             }
@@ -206,9 +198,8 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; "+setting+", "+
-                lrb.getString("general.copyright.date")+", "+
-                //Avoid external links if general.setting.allowoutsidelinks is set to false
+        out.println("<td class=\"text\">&copy; "+lrb.getString("general.copyright.date")+", "+
+                //Avoid external links if setting.allowoutsidelinks is set to false
                 //Security bug
                 (DBM.config.isAllowOutsideLinks()? lrb.getString("message.admin.main.footer"):"blueCubs.com and xinco.org"));
         out.println("</tr>");

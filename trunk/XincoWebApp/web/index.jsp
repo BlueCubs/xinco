@@ -57,12 +57,12 @@
                     <%
                     //load settings
                     XincoSettingServer xss= new XincoSettingServer();
-                    String version="[Version " + xss.getSetting("version.high").getInt_value()
-                    + "." + xss.getSetting("version.med").getInt_value() + "." +
-                            xss.getSetting("version.low").getInt_value();
-                    if(xss.getSetting("version.postfix").getString_value()!=null &&
-                            !xss.getSetting("version.postfix").getString_value().trim().equals(""))
-                        version+=" " + xss.getSetting("version.postfix").getString_value();
+                    String version="[Version " + xss.getSetting("version.high").getIntValue()
+                    + "." + xss.getSetting("version.med").getIntValue() + "." +
+                            xss.getSetting("version.low").getIntValue();
+                    if(xss.getSetting("version.postfix").getStringValue()!=null &&
+                            !xss.getSetting("version.postfix").getStringValue().trim().equals(""))
+                        version+=" " + xss.getSetting("version.postfix").getStringValue();
                     version+="]";
                     out.println(version);
                     %>

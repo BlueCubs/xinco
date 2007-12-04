@@ -36,7 +36,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.rmi.RemoteException;
-import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
@@ -485,7 +484,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
                 if (insertnewnode) {
                     XincoCoreACEServer newace;
                     //owner
-                    newace = new XincoCoreACEServer(0, user.getId(), 0, node.getId(), 0, true, true, true, true);
+                    newace = new XincoCoreACEServer(0, user.getId(), 0, node.getId(), 0, true, true, true, true,false);
                     newace.write2DB(DBM);
                     //inherit all group ACEs
                     for (i = 0; i < parent_node.getXinco_core_acl().size(); i++) {
@@ -561,7 +560,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
                 if (insertnewdata) {
                     XincoCoreACEServer newace;
                     //owner
-                    newace = new XincoCoreACEServer(0, user.getId(), 0, 0, data.getId(), true, true, true, true);
+                    newace = new XincoCoreACEServer(0, user.getId(), 0, 0, data.getId(), true, true, true, true,false);
                     newace.setUserId(user.getId());
                     newace.write2DB(DBM);
                     //inherit all group ACEs
@@ -614,7 +613,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
                 if (in0.getId() > 0) {
                     newace = new XincoCoreACEServer(in0.getId(), DBM);
                 } else {
-                    newace = new XincoCoreACEServer(0, 0, 0, 0, 0, false, false, false, false);
+                    newace = new XincoCoreACEServer(0, 0, 0, 0, 0, false, false, false, false,false);
                 }
                 //update ACE
                 newace.setXinco_core_node_id(in0.getXinco_core_node_id());

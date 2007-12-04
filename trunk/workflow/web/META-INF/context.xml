@@ -15,9 +15,9 @@
   <!-- factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="100"-->
   <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" 
   factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="100" 
-  maxIdle="30" maxWait="10000" name="jdbc/XincoWorkflowDB" password="" 
+  maxIdle="30" maxWait="10000" name="jdbc/XincoWorkflowDB"
   removeAbandoned="true" removeAbandonedTimeout="0" type="javax.sql.DataSource" 
-  url="jdbc:mysql://localhost:3307/xinco2?autoReconnect=true" username="root"/>
+  url="jdbc:mysql://localhost:3307/xinco2?autoReconnect=true" username="root" password="lyjx100pre"/>
   <!-- #################### ################ ####################-->
   <ResourceParams name="jdbc/XincoWorkflowDB">
     <parameter>
