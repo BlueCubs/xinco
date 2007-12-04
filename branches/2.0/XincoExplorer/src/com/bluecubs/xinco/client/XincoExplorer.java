@@ -1806,7 +1806,12 @@ public class XincoExplorer extends JFrame {
                             xincoClientSession.setServer_groups(xincoClientSession.getXinco().getAllXincoCoreGroups(xincoClientSession.getUser()));
                             xincoClientSession.setServer_languages(xincoClientSession.getXinco().getAllXincoCoreLanguages(xincoClientSession.getUser()));
                             for (i = 0; i < xincoClientSession.getUser().getXinco_core_groups().size(); i++) {
-                                status_string_1 = status_string_1 + "      + " + xerb.getString(((XincoCoreGroup) xincoClientSession.getUser().getXinco_core_groups().elementAt(i)).getDesignation()) + "\n";
+                                status_string_1 = status_string_1 + "      + ";
+                                if(((XincoCoreGroup) xincoClientSession.getUser().getXinco_core_groups().elementAt(i)).getId()<=1000){
+                                    status_string_1+= xerb.getString(((XincoCoreGroup) xincoClientSession.getUser().getXinco_core_groups().elementAt(i)).getDesignation()) + "\n";
+                                }else{
+                                    status_string_1+= ((XincoCoreGroup) xincoClientSession.getUser().getXinco_core_groups().elementAt(i)).getDesignation() + "\n";
+                                }
                             }
                             for (i = 0; i < xincoClientSession.getServer_datatypes().size(); i++) {
                                 status_string_2 += "      + " + xerb.getString(((XincoCoreDataType) xincoClientSession.getServer_datatypes().elementAt(i)).getDesignation()) + "\n";
