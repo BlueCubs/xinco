@@ -111,12 +111,11 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     //Change detected
                     if (getStatus_number() != rs.getInt("status_number")) {
                         stmt.executeUpdate("update xinco_core_user_has_xinco_core_group set status_number=" +
-                                getStatus_number() + " where xinco_core_user_id=" + getId() + ", xinco_core_group_id=" +
+                                getStatus_number() + " where xinco_core_user_id=" + getId() + " and xinco_core_group_id=" +
                                 ((XincoCoreGroupServer) getXinco_core_groups().elementAt(place)).getId());
                         audit.updateAuditTrail("xinco_core_user_has_xinco_core_group", new String[]{"xinco_core_user_id =" + getId(),
                             "xinco_core_group_id=" + ((XincoCoreGroupServer) getXinco_core_groups().elementAt(place)).getId()
-                        },
-                                DBM, "audit.general.modified", getChangerID());
+                        }, DBM, "audit.general.modified", getChangerID());
                     }
                 } //New record
                 else {
@@ -134,7 +133,10 @@ public class XincoCoreUserServer extends XincoCoreUser {
             }
             stmt.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
+                e.printStackTrace();
+                System.out.println("Query: " + sql);
+            }
             throw new XincoException();
         }
     }
