@@ -148,6 +148,7 @@ public class XincoExplorer extends JFrame {
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemViewStyleMotif = null;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemViewStyleNapkin = null;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemViewStyleSubstance = null;
+    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemViewStyleLiquid= null;
     private javax.swing.ButtonGroup bgwindowstyle;
     //client version
     private XincoVersion xincoClientVersion = null;
@@ -341,6 +342,7 @@ public class XincoExplorer extends JFrame {
     private XincoClientSetting settings;
     private Vector settingsVector;
     private boolean lock;
+    private Vector dialogs;
 
     /**
      * This is the default constructor
@@ -376,7 +378,7 @@ public class XincoExplorer extends JFrame {
                 default:
                     loc = Locale.getDefault();
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             loc = Locale.getDefault();
         }
         xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
@@ -1605,6 +1607,7 @@ public class XincoExplorer extends JFrame {
             bgwindowstyle = new ButtonGroup();
             jMenuView.add(getJRadioButtonMenuItemViewStyleWindows());
             jMenuView.add(getJRadioButtonMenuItemViewStyleJava());
+            jMenuView.add(getJRadioButtonMenuItemViewStyleLiquid());
             jMenuView.add(getJRadioButtonMenuItemViewStyleMotif());
             jMenuView.add(getJRadioButtonMenuItemViewStyleNapkin());
             jMenuView.add(getJRadioButtonMenuItemViewStyleSubstance());
@@ -1725,6 +1728,33 @@ public class XincoExplorer extends JFrame {
         }
         return jRadioButtonMenuItemViewStyleJava;
     }
+    
+    /**
+     * This method initializes jRadioButtonMenuItemViewStyleJava
+     *
+     * @return javax.swing.JRadioButtonMenuItem
+     */
+    private javax.swing.JRadioButtonMenuItem getJRadioButtonMenuItemViewStyleLiquid() {
+        if (jRadioButtonMenuItemViewStyleLiquid == null) {
+            jRadioButtonMenuItemViewStyleLiquid = new javax.swing.JRadioButtonMenuItem();
+            if (((String) xincoClientConfig.elementAt(1)).equals(new String("javax.swing.plaf.metal.MetalLookAndFeel"))) {
+                jRadioButtonMenuItemViewStyleLiquid.setSelected(true);
+            } else {
+                jRadioButtonMenuItemViewStyleLiquid.setSelected(false);
+            }
+            jRadioButtonMenuItemViewStyleLiquid.setText(xerb.getString("menu.view.liquid"));
+            jRadioButtonMenuItemViewStyleLiquid.addItemListener(new java.awt.event.ItemListener() {
+
+                @SuppressWarnings("unchecked")
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+                    switchPLAF("com.birosoft.liquid.LiquidLookAndFeel");
+                    xincoClientConfig.setElementAt(new String("com.birosoft.liquid.LiquidLookAndFeel"), 1);
+                    saveConfig();
+                }
+            });
+        }
+        return jRadioButtonMenuItemViewStyleLiquid;
+    }
 
     /**
      * This method initializes jRadioButtonMenuItemViewStyleMotif
@@ -1835,6 +1865,14 @@ public class XincoExplorer extends JFrame {
 
     public XincoCoreUser getUser() {
         return this.newuser;
+    }
+
+    public Vector getDialogs() {
+        return dialogs;
+    }
+
+    public void setDialogs(Vector dialogs) {
+        this.dialogs = dialogs;
     }
 
     private class loginThread extends Thread {
@@ -2047,6 +2085,9 @@ public class XincoExplorer extends JFrame {
             }
             if (jTreeRepository != null) {
                 SwingUtilities.updateComponentTreeUI(jTreeRepository);
+            }
+            if (jDialogLocale!= null) {
+                SwingUtilities.updateComponentTreeUI(jDialogLocale);
             }
         } catch (Exception plafe) {
         //System.err.println(plafe.toString());
@@ -3107,7 +3148,7 @@ public class XincoExplorer extends JFrame {
                 } else {
                     previous_path = "";
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 previous_filename = "";
                 previous_path = "";
                 previous_fullpath = "";
@@ -3142,7 +3183,7 @@ public class XincoExplorer extends JFrame {
                 } else {
                     current_path = "";
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 current_filename = "";
                 current_path = "";
                 current_fullpath = "";

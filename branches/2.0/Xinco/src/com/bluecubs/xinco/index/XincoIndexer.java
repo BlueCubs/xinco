@@ -69,7 +69,7 @@ public class XincoIndexer {
             //writer.optimize();
             writer.close();
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             if (writer != null) {
                 try {
                     writer.close();
@@ -115,7 +115,7 @@ public class XincoIndexer {
             writer.optimize();
             writer.close();
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             if (writer != null) {
                 try {
                     writer.close();
@@ -160,7 +160,7 @@ public class XincoIndexer {
 
             searcher.close();
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             if (searcher != null) {
                 try {
                     searcher.close();

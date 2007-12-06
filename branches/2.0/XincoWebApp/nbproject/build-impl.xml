@@ -508,6 +508,7 @@
         <copy-ear-war file="${reference.XincoExplorer.jar}" propname="included.lib.reference.XincoExplorer.jar.X"/>
         <copy file="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir}/client"/>
         <copy file="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.14}" todir="${build.web.dir}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.13}" todir="${build.web.dir}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.12}" todir="${build.web.dir}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.11}" todir="${build.web.dir}/client"/>
@@ -555,6 +556,7 @@
         <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir}/client"/>
         <copy file="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir}/client"/>
+        <copy file="${libs.XincoLibsClient.classpath.libfile.14}" todir="${build.web.dir}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.13}" todir="${build.web.dir}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.12}" todir="${build.web.dir}/client"/>
         <copy file="${libs.XincoLibsClient.classpath.libfile.11}" todir="${build.web.dir}/client"/>

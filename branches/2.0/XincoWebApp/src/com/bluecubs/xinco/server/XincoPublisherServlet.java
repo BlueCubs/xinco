@@ -33,13 +33,13 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.server;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import java.io.*;
 import java.sql.ResultSet;
-import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import com.bluecubs.xinco.core.*;
@@ -52,6 +52,7 @@ public class XincoPublisherServlet extends HttpServlet {
 
     private ResourceBundle rb;
     private XincoDBManager DBM;
+
     /** Initializes the servlet.
      */
     @Override
@@ -88,7 +89,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 default:
                     loc = Locale.getDefault();
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             loc = Locale.getDefault();
         }
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
@@ -110,7 +111,7 @@ public class XincoPublisherServlet extends HttpServlet {
         //connect to db
         try {
             DBM = new XincoDBManager();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             //start output
             response.setContentType("text/html");
             PrintWriter out = response.getWriter();
@@ -145,7 +146,7 @@ public class XincoPublisherServlet extends HttpServlet {
                         if (!isPublic) {
                             core_data_id = -1;
                         }
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         core_data_id = -1;
                     }
                 }
@@ -183,11 +184,11 @@ public class XincoPublisherServlet extends HttpServlet {
                     out.write(buf, 0, len);
                 }
                 in.close();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 System.out.println(e);
             }
 
-            //end FILE output
+        //end FILE output
         } else {
             // begin HTML output
             //start output
@@ -233,8 +234,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 if (printList) {
                     try {
                         XincoCoreDataServer xdata_temp = null;
-                        Statement stmt = DBM.getConnection().createStatement();
-                        ResultSet rs = stmt.executeQuery("SELECT DISTINCT xcd.id, xcd.designation FROM xinco_core_data xcd, " + "xinco_core_ace xca WHERE xcd.id=xca.xinco_core_data_id AND (xcd.status_number=5 OR " + "(xca.xinco_core_group_id=3 AND xca.read_permission=1)) ORDER BY xcd.designation");
+                        ResultSet rs = DBM.executeQuery("SELECT DISTINCT xcd.id, xcd.designation FROM xinco_core_data xcd, " + "xinco_core_ace xca WHERE xcd.id=xca.xinco_core_data_id AND (xcd.status_number=5 OR " + "(xca.xinco_core_group_id=3 AND xca.read_permission=1)) ORDER BY xcd.designation");
                         while (rs.next()) {
                             xdata_temp = new XincoCoreDataServer(rs.getInt("id"), DBM);
                             temp_server_url = request.getRequestURL().toString();
@@ -251,8 +251,14 @@ public class XincoPublisherServlet extends HttpServlet {
                             out.println("</tr>");
                             out.flush();
                         }
-                        stmt.close();
-                    } catch (Exception sqle) {
+                    } catch (Throwable sqle) {
+                        try {
+                            if (DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
+                                sqle.printStackTrace();
+                            }
+                        } catch (XincoSettingException ex) {
+                            Logger.getLogger(XincoPublisherServlet.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 } else if (browseFolder) {
                     try {
@@ -443,8 +449,8 @@ public class XincoPublisherServlet extends HttpServlet {
         } //end HTML output
         //close db connection
         try {
-            DBM.getConnection().close();
-        } catch (Exception e) {
+            DBM.finalize();
+        } catch (Throwable e) {
         }
     }
 

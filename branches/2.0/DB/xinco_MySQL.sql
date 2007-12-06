@@ -355,9 +355,9 @@ CREATE TABLE xinco_core_group (
 )
 TYPE=InnoDB;
 
-INSERT INTO xinco_core_group VALUES (1, 'Administrators', 1);     
-INSERT INTO xinco_core_group VALUES (2, 'AllUsers', 1);    
-INSERT INTO xinco_core_group VALUES (3, 'Public', 1);    
+INSERT INTO xinco_core_group VALUES (1, 'general.group.admin', 1);     
+INSERT INTO xinco_core_group VALUES (2, 'general.group.allusers', 1);    
+INSERT INTO xinco_core_group VALUES (3, 'general.group.public', 1);    
 
 /*Entries 51-100 reserved for Workflow*/
 
@@ -542,7 +542,6 @@ INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value,
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(36,'setting.securitycheck.enable',null,null,true,null);   
 
 /*Inserts 51-100 reserved for Workflow settings*/ 
-
 
 
 CREATE TABLE xinco_add_attribute_t (

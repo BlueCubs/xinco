@@ -10,9 +10,9 @@
 package com.bluecubs.xinco.core.server;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -32,10 +32,9 @@ public class XincoCoreAuditTrail {
                 if(i<keys.length-1)
                     where+=" and ";
             }
-            Statement stmt = DBM.getConnection().createStatement();
             int record_ID=0;
             String sql="select * from "+table+" where "+where;
-            ResultSet rs = stmt.executeQuery(sql);
+            ResultSet rs = DBM.executeQuery(sql);
             try {
                 record_ID=DBM.getNewID("xinco_core_user_modified_record");
             } catch (Exception ex) {
@@ -53,21 +52,15 @@ public class XincoCoreAuditTrail {
                     else
                         sql+=")";
                 }
-                stmt.executeUpdate(sql);
+                DBM.executeUpdate(sql);
             }
             sql="insert into xinco_core_user_modified_record (id, record_id, mod_Time, " +
                     "mod_Reason) values ("+id+", "+record_ID+", '"+
                     new Timestamp(System.currentTimeMillis())+"', '"+reason+"')";
-            stmt.executeUpdate(sql);
-            //System.out.println(sql);
-            DBM.getConnection().commit();
-        } catch (SQLException ex) {
+            DBM.executeUpdate(sql);
+        } catch (Throwable ex) {
+            Logger.getLogger(XincoCoreAuditTrail.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
-            try {
-                DBM.getConnection().rollback();
-            } catch (SQLException ex2) {
-                ex2.printStackTrace();
-            }
         }
     }
 }

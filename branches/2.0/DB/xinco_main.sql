@@ -355,9 +355,9 @@ CREATE TABLE xinco_core_group (
 )
 TYPE=InnoDB;
 
-INSERT INTO xinco_core_group VALUES (1, 'Administrators', 1);     
-INSERT INTO xinco_core_group VALUES (2, 'AllUsers', 1);    
-INSERT INTO xinco_core_group VALUES (3, 'Public', 1);    
+INSERT INTO xinco_core_group VALUES (1, 'general.group.admin', 1);     
+INSERT INTO xinco_core_group VALUES (2, 'general.group.allusers', 1);    
+INSERT INTO xinco_core_group VALUES (3, 'general.group.public', 1);    
 
 /*Entries 51-100 reserved for Workflow*/
 

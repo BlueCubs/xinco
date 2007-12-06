@@ -88,7 +88,7 @@ public class XincoCoreACEClient extends XincoCoreACE {
                                     }
                             }
                     }
-                } catch (Exception e) {
+                } catch (Throwable e) {
                 }
         
 		return core_ace;

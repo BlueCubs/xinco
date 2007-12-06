@@ -33,7 +33,6 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.core.server;
 
 import java.util.Vector;
@@ -42,63 +41,48 @@ import java.sql.*;
 import com.bluecubs.xinco.core.*;
 
 public class XincoCoreDataTypeServer extends XincoCoreDataType {
-    
+
     //create data type object for data structures
     public XincoCoreDataTypeServer(int attrID, XincoDBManager DBM) throws XincoException {
-        
         try {
-            Statement stmt = DBM.getConnection().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data_type WHERE id=" + attrID);
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_data_type WHERE id=" + attrID);
 
-			//throw exception if no result found
-			int RowCount = 0;
+            //throw exception if no result found
+            int RowCount = 0;
             while (rs.next()) {
-				RowCount++;
+                RowCount++;
                 setId(rs.getInt("id"));
                 setDesignation(rs.getString("designation"));
                 setDescription(rs.getString("description"));
-				setXinco_core_data_type_attributes(XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(getId(), DBM));
+                setXinco_core_data_type_attributes(XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(getId(), DBM));
             }
-			if (RowCount < 1) {
-				throw new XincoException();
-			}
-
-            stmt.close();
-        } catch (Exception e) {
-        	throw new XincoException();
+            if (RowCount < 1) {
+                throw new XincoException();
+            }
+        } catch (Throwable e) {
+            throw new XincoException();
         }
-        
     }
 
     //create data type object for data structures
     public XincoCoreDataTypeServer(int attrID, String attrD, String attrDESC, Vector attrA) throws XincoException {
-        
         setId(attrID);
         setDesignation(attrD);
         setDescription(attrDESC);
-		setXinco_core_data_type_attributes(attrA);
-        
+        setXinco_core_data_type_attributes(attrA);
     }
-    
+
     //create complete list of data types
     public static Vector getXincoCoreDataTypes(XincoDBManager DBM) {
-        
         Vector coreDataTypes = new Vector();
-        
         try {
-            Statement stmt = DBM.getConnection().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data_type ORDER BY designation");
-
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_data_type ORDER BY designation");
             while (rs.next()) {
                 coreDataTypes.addElement(new XincoCoreDataTypeServer(rs.getInt("id"), rs.getString("designation"), rs.getString("description"), XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(rs.getInt("id"), DBM)));
             }
-
-            stmt.close();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             coreDataTypes.removeAllElements();
         }
-
         return coreDataTypes;
     }
-
 }

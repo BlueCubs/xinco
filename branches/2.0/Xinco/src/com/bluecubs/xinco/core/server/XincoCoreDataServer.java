@@ -33,26 +33,25 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
 import com.bluecubs.xinco.add.XincoAddAttribute;
+import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
 import java.sql.*;
 import java.util.Vector;
 import java.io.File;
 import com.bluecubs.xinco.core.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class XincoCoreDataServer extends XincoCoreData {
+
     private XincoCoreUserServer user;
     //create data object for data structures
     public XincoCoreDataServer(int attrID, XincoDBManager DBM) throws XincoException {
-        
         try {
-            
-            Statement stmt = DBM.getConnection().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data WHERE id=" + attrID);
-            
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_data WHERE id=" + attrID);
+
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {
@@ -62,30 +61,28 @@ public class XincoCoreDataServer extends XincoCoreData {
                 setXinco_core_language(new XincoCoreLanguageServer(rs.getInt("xinco_core_language_id"), DBM));
                 setXinco_core_data_type(new XincoCoreDataTypeServer(rs.getInt("xinco_core_data_type_id"), DBM));
                 //load logs
-                setXinco_core_logs(XincoCoreLogServer.getXincoCoreLogs(rs.getInt("id"), DBM));
+                setXinco_core_logs(XincoCoreLogServer.getXincoCoreLogs(getId(), DBM));
                 //load add attributes
-                setXinco_add_attributes(XincoAddAttributeServer.getXincoAddAttributes(rs.getInt("id"), DBM));
+                setXinco_add_attributes(XincoAddAttributeServer.getXincoAddAttributes(getId(), DBM));
                 setDesignation(rs.getString("designation"));
                 setStatus_number(rs.getInt("status_number"));
                 //load acl for this object
                 setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(rs.getInt("id"), "xinco_core_data_id", DBM));
             }
+            
             if (RowCount < 1) {
                 throw new XincoException();
             }
-            
-            stmt.close();
-            
-        } catch (Exception e) {
+        } catch (Throwable ex) {
+            Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, ex);
             getXinco_core_acl().removeAllElements();
             throw new XincoException();
         }
-        
     }
-    
+
     //create data object for data structures
     public XincoCoreDataServer(int attrID, int attrCNID, int attrLID, int attrDTID, String attrD, int attrSN, XincoDBManager DBM) throws XincoException {
-        
+
         setId(attrID);
         setXinco_core_node_id(attrCNID);
         setXinco_core_language(new XincoCoreLanguageServer(attrLID, DBM));
@@ -100,100 +97,81 @@ public class XincoCoreDataServer extends XincoCoreData {
         setStatus_number(attrSN);
         //load acl for this object
         setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(getId(), "xinco_core_data_id", DBM));
-        
+
     }
-    
-    public void setUser(XincoCoreUserServer user){
-        this.user=user;
+
+    public void setUser(XincoCoreUserServer user) {
+        this.user = user;
     }
-    
+
     //write to db
     public int write2DB(XincoDBManager DBM) throws XincoException {
-        
+
         int i = 0;
-        
+
         try {
-            
-            Statement stmt;
-            
             if (getId() > 0) {
-                stmt = DBM.getConnection().createStatement();
-                XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
-                audit.updateAuditTrail("xinco_core_data",new String [] {"id ="+getId()},
-                        DBM,"audit.data.change",this.getChangerID());
-                stmt.executeUpdate("UPDATE xinco_core_data SET xinco_core_node_id=" +
+                XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
+                audit.updateAuditTrail("xinco_core_data", new String[]{"id =" + getId()},
+                        DBM, "audit.data.change", this.getChangerID());
+                DBM.executeUpdate("UPDATE xinco_core_data SET xinco_core_node_id=" +
                         getXinco_core_node_id() + ", xinco_core_language_id=" +
                         getXinco_core_language().getId() + ", xinco_core_data_type_id=" +
                         getXinco_core_data_type().getId() + ", designation='" +
-                        getDesignation().replaceAll("'","\\\\'") + "', status_number=" +
+                        getDesignation().replaceAll("'", "\\\\'") + "', status_number=" +
                         getStatus_number() + " WHERE id =" + getId());
-                stmt.close();
-                
             } else {
                 setId(DBM.getNewID("xinco_core_data"));
-                
-                stmt = DBM.getConnection().createStatement();
-                stmt.executeUpdate("INSERT INTO xinco_core_data VALUES (" + getId() + ", " + getXinco_core_node_id() + ", " + getXinco_core_language().getId() + ", " + getXinco_core_data_type().getId() + ", '" + getDesignation().replaceAll("'","\\\\'") + "', " + getStatus_number() + ")");
-                stmt.close();
-                
+                DBM.executeUpdate("INSERT INTO xinco_core_data VALUES (" + getId() + ", " + getXinco_core_node_id() + ", " + getXinco_core_language().getId() + ", " + getXinco_core_data_type().getId() + ", '" + getDesignation().replaceAll("'", "\\\\'") + "', " + getStatus_number() + ")");
             }
-            
+
             //write add attributes
-            stmt = DBM.getConnection().createStatement();
-            stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_core_data_id=" + getId());
-            stmt.close();
+            DBM.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_core_data_id=" + getId());
             XincoAddAttributeServer xaas;
-            for (i=0;i<getXinco_add_attributes().size();i++) {
-                ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).setXinco_core_data_id(getId());
+            for (i = 0; i < getXinco_add_attributes().size(); i++) {
+                ((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).setXinco_core_data_id(getId());
                 //copy fields from XincoAddAttribute to XincoAddAttributeServer
-                xaas = new XincoAddAttributeServer(((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getXinco_core_data_id(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttribute_id(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_int(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_double(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_varchar(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_text(), ((XincoAddAttribute)getXinco_add_attributes().elementAt(i)).getAttrib_datetime());
+                xaas = new XincoAddAttributeServer(((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getXinco_core_data_id(), ((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttribute_id(), ((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_int(), ((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint(), ((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_double(), ((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_varchar(), ((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_text(), ((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_datetime());
                 xaas.write2DB(DBM);
-                //((XincoAddAttributeServer)getXinco_add_attributes().elementAt(i)).write2DB(DBM);
+            //((XincoAddAttributeServer)getXinco_add_attributes().elementAt(i)).write2DB(DBM);
             }
-            
+
             DBM.getConnection().commit();
-            
-        } catch (Exception e) {
+
+        } catch (Throwable e) {
             try {
                 DBM.getConnection().rollback();
             } catch (Exception erollback) {
             }
             throw new XincoException();
         }
-        
+
         return getId();
-        
+
     }
-    
-    public static void removeFromDB(XincoDBManager DBM,int userID,int id)throws XincoException{
-        try{
-        Statement stmt;
-        XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
-        /*
-         * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
-        audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+id},
-                DBM,"audit.general.delete",userID);
-        */
-        stmt = DBM.getConnection().createStatement();
-        stmt.executeUpdate("DELETE FROM xinco_core_log WHERE xinco_core_data_id=" + id);
-        stmt.close();
-        /*
-         * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
-        audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+id},
-                DBM,"audit.general.delete",userID);
-        */
-        stmt = DBM.getConnection().createStatement();
-        stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE xinco_core_data_id=" + id);
-        stmt.close();
-        /*
-         * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
-        audit.updateAuditTrail("xinco_add_attribute",new String [] {"id ="+id},
-                DBM,"audit.general.delete",userID);
-        */
-        stmt = DBM.getConnection().createStatement();
-        stmt.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_core_data_id=" + id);
-        stmt.close();
-        }catch (Exception e) {
+
+    public static void removeFromDB(XincoDBManager DBM, int userID, int id) throws XincoException {
+        try {
+            XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
+            /*
+             * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
+            audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+id},
+            DBM,"audit.general.delete",userID);
+             */
+            DBM.executeUpdate("DELETE FROM xinco_core_log WHERE xinco_core_data_id=" + id);
+            /*
+             * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
+            audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+id},
+            DBM,"audit.general.delete",userID);
+             */
+            DBM.executeUpdate("DELETE FROM xinco_core_ace WHERE xinco_core_data_id=" + id);
+            /*
+             * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
+            audit.updateAuditTrail("xinco_add_attribute",new String [] {"id ="+id},
+            DBM,"audit.general.delete",userID);
+             */
+            DBM.executeUpdate("DELETE FROM xinco_add_attribute WHERE xinco_core_data_id=" + id);
+        } catch (Throwable e) {
             try {
                 DBM.getConnection().rollback();
             } catch (Exception erollback) {
@@ -201,80 +179,67 @@ public class XincoCoreDataServer extends XincoCoreData {
             throw new XincoException();
         }
     }
-    
+
     //delete from db
     public void deleteFromDB(XincoDBManager DBM) throws XincoException {
-        
-        int i=0;
-        
+        int i = 0;
         try {
-            Statement stmt;
-            XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
+            XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
             //delete file / file = 1
             if (getXinco_core_data_type().getId() == 1) {
                 try {
                     (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), getId(), "" + getId()))).delete();
                 } catch (Exception dfe) {
-                    // continue, file might not exists
+                // continue, file might not exists
                 }
                 // delete revisions created upon creation or checkin
-                for (i=0;i<this.getXinco_core_logs().size();i++) {
-                    if ((((XincoCoreLog)getXinco_core_logs().elementAt(i)).getOp_code() == 1) || (((XincoCoreLog)getXinco_core_logs().elementAt(i)).getOp_code() == 5))
+                for (i = 0; i < this.getXinco_core_logs().size(); i++) {
+                    if ((((XincoCoreLog) getXinco_core_logs().elementAt(i)).getOp_code() == 1) || (((XincoCoreLog) getXinco_core_logs().elementAt(i)).getOp_code() == 5)) {
                         try {
-                            (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), getId(), getId() + "-" + ((XincoCoreLog)getXinco_core_logs().elementAt(i)).getId()))).delete();
+                            (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), getId(), getId() + "-" + ((XincoCoreLog) getXinco_core_logs().elementAt(i)).getId()))).delete();
                         } catch (Exception drfe) {
-                            // continue, delete next revision
+                        // continue, delete next revision
                         }
+                    }
                 }
             }
-            audit.updateAuditTrail("xinco_core_data",new String [] {"id ="+ getId()},
-                    DBM,"audit.general.delete",this.getChangerID());
-            stmt = DBM.getConnection().createStatement();
-            stmt.executeUpdate("DELETE FROM xinco_core_data WHERE id=" + getId());
-            stmt.close();
-            DBM.getConnection().commit();
-        } catch (Exception e) {
-            try {
-                DBM.getConnection().rollback();
-            } catch (Exception erollback) {
-            }
+            audit.updateAuditTrail("xinco_core_data", new String[]{"id =" + getId()},
+                    DBM, "audit.general.delete", this.getChangerID());
+            DBM.executeUpdate("DELETE FROM xinco_core_data WHERE id=" + getId());
+        } catch (Throwable e) {
             throw new XincoException();
         }
-        
+
     }
-    
+
     public static byte[] loadBinaryData(XincoCoreData attrCD) {
-        
+
         byte[] binary_data = null;
-        
+
         return binary_data;
-        
+
     }
-    
+
     public static int saveBinaryData(XincoCoreData attrCD, byte[] attrBD) {
-        
+
         return 0;
-        
+
     }
-    
+
     public static Vector findXincoCoreData(String attrS, int attrLID, boolean attrSA, boolean attrSFD, XincoDBManager DBM) {
-        
         Vector data = new Vector();
-        
         try {
-            
-            Statement stmt = DBM.getConnection().createStatement();
             ResultSet rs;
             String lang = "";
             if (attrLID != 0) {
                 lang = "AND (xinco_core_language_id = " + attrLID + ")";
             }
             if (attrSA) {
-                rs = stmt.executeQuery("SELECT DISTINCT xinco_core_data.* FROM xinco_core_data, xinco_add_attribute WHERE (xinco_core_data.id = xinco_add_attribute.xinco_core_data_id) AND (xinco_core_data.designation LIKE '" + attrS + "%' OR xinco_add_attribute.attrib_varchar LIKE '" + attrS + "' OR xinco_add_attribute.attrib_text LIKE '" + attrS + "') " + lang + " ORDER BY xinco_core_data.designation, xinco_core_data.xinco_core_language_id");
+                rs = DBM.executeQuery("SELECT DISTINCT xinco_core_data.* FROM xinco_core_data, xinco_add_attribute WHERE (xinco_core_data.id = xinco_add_attribute.xinco_core_data_id) AND (xinco_core_data.designation LIKE '" + attrS + "%' OR xinco_add_attribute.attrib_varchar LIKE '" + attrS + "' OR xinco_add_attribute.attrib_text LIKE '" + attrS + "') " + lang + " ORDER BY xinco_core_data.designation, xinco_core_data.xinco_core_language_id");
             } else {
-                rs = stmt.executeQuery("SELECT DISTINCT xinco_core_data.* FROM xinco_core_data WHERE designation LIKE '" + attrS + "' " + lang + " ORDER BY designation, xinco_core_language_id");
+                rs = DBM.executeQuery("SELECT DISTINCT xinco_core_data.* FROM xinco_core_data WHERE designation LIKE '" + attrS + "' " + lang + " ORDER BY designation, xinco_core_language_id");
             }
-            
+
             int i = 0;
             while (rs.next()) {
                 data.addElement(new XincoCoreDataServer(rs.getInt("id"), DBM));
@@ -284,16 +249,13 @@ public class XincoCoreDataServer extends XincoCoreData {
                 }
             }
             
-            stmt.close();
-            
-        } catch (Exception e) {
+        } catch (Throwable ex) {
+            Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, ex);
             data.removeAllElements();
         }
-        
         return data;
-        
     }
-    
+
     public static String getXincoCoreDataPath(String attrRP, int attrID, String attrFN) {
         String path = null;
         // convert ID to String
@@ -305,8 +267,8 @@ public class XincoCoreDataServer extends XincoCoreData {
         // shorten to 7 chars
         path4Id = path4Id.substring(0, 7);
         // add seperator
-        for (int i=0; i<7; i++) {
-            path4Id = path4Id.substring(0, (i*2+1)) + System.getProperty("file.separator") + path4Id.substring((i*2+1));
+        for (int i = 0; i < 7; i++) {
+            path4Id = path4Id.substring(0, (i * 2 + 1)) + System.getProperty("file.separator") + path4Id.substring((i * 2 + 1));
         }
         // create path if neccessary
         (new File(attrRP + path4Id)).mkdirs();
@@ -326,5 +288,4 @@ public class XincoCoreDataServer extends XincoCoreData {
         }
         return path;
     }
-    
 }

@@ -47,10 +47,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
     public XincoCoreACEServer(int attrID, XincoDBManager DBM) throws XincoException {
 
         try {
-
-            Statement stmt = DBM.getConnection().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_ace WHERE id=" + attrID);
-
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_ace WHERE id=" + attrID);
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {
@@ -68,10 +65,8 @@ public class XincoCoreACEServer extends XincoCoreACE {
             if (RowCount < 1) {
                 throw new XincoException();
             }
-
-            stmt.close();
-
-        } catch (Exception e) {
+            
+        } catch (Throwable e) {
             throw new XincoException();
         }
 
@@ -147,27 +142,19 @@ public class XincoCoreACEServer extends XincoCoreACE {
             XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
 
             if (getId() > 0) {
-                Statement stmt = DBM.getConnection().createStatement();
                 audit.updateAuditTrail("xinco_core_ace", new String[]{"id =" + getId()},
                         DBM, "window.acl", this.getChangerID());
-                stmt.executeUpdate("UPDATE xinco_core_ace SET xinco_core_user_id=" + xcuid +
+                DBM.executeUpdate("UPDATE xinco_core_ace SET xinco_core_user_id=" + xcuid +
                         ", xinco_core_group_id=" + xcgid + ", xinco_core_node_id=" + xcnid +
                         ", xinco_core_data_id=" + xcdid + ", read_permission=" + rp +
                         ", write_permission=" + wp + ", execute_permission=" + xp +
                         ", admin_permission=" + ap + " WHERE id=" + getId());
-                stmt.close();
             } else {
                 setId(DBM.getNewID("xinco_core_ace"));
-
-                //System.out.println("New ACE");
-                Statement stmt = DBM.getConnection().createStatement();
-                stmt.executeUpdate("INSERT INTO xinco_core_ace VALUES (" + getId() + ", " + xcuid + ", " + xcgid + ", " + xcnid + ", " + xcdid + ", " + rp + ", " + wp + ", " + xp + ", " + ap + ")");
-                stmt.close();
+                DBM.executeUpdate("INSERT INTO xinco_core_ace VALUES (" + getId() + ", " + xcuid + ", " + xcgid + ", " + xcnid + ", " + xcdid + ", " + rp + ", " + wp + ", " + xp + ", " + ap + ")");
             }
-
             DBM.getConnection().commit();
-
-        } catch (Exception e) {
+        } catch (Throwable e) {
             try {
                 DBM.getConnection().rollback();
             } catch (Exception erollback) {
@@ -175,25 +162,18 @@ public class XincoCoreACEServer extends XincoCoreACE {
             e.printStackTrace();
             throw new XincoException();
         }
-
         return getId();
-
     }
 
     //remove from db
     public static int removeFromDB(XincoCoreACE attrCACE, XincoDBManager DBM, int userID) throws XincoException {
-
         try {
-            Statement stmt = DBM.getConnection().createStatement();
             XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
             audit.updateAuditTrail("xinco_core_ace", new String[]{"id =" + attrCACE.getId()},
                     DBM, "audit.general.delete", userID);
-            stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE id=" + attrCACE.getId());
-            stmt.close();
-
+            DBM.executeUpdate("DELETE FROM xinco_core_ace WHERE id=" + attrCACE.getId());
             DBM.getConnection().commit();
-
-        } catch (Exception e) {
+        } catch (Throwable e) {
             try {
                 DBM.getConnection().rollback();
             } catch (Exception erollback) {
@@ -201,9 +181,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
             e.printStackTrace();
             throw new XincoException();
         }
-
         return 0;
-
     }
 
     //create complete ACL for node or data
@@ -212,18 +190,13 @@ public class XincoCoreACEServer extends XincoCoreACE {
         Vector core_acl = new Vector();
 
         try {
-            Statement stmt = DBM.getConnection().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_ace WHERE " + attrT + "=" + attrID + " ORDER BY xinco_core_user_id, xinco_core_group_id, xinco_core_node_id, xinco_core_data_id");
-
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_ace WHERE " + attrT + "=" + attrID + " ORDER BY xinco_core_user_id, xinco_core_group_id, xinco_core_node_id, xinco_core_data_id");
             while (rs.next()) {
                 core_acl.addElement(new XincoCoreACEServer(rs.getInt("id"), rs.getInt("xinco_core_user_id"), rs.getInt("xinco_core_group_id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_data_id"), rs.getBoolean("read_permission"), rs.getBoolean("write_permission"), rs.getBoolean("execute_permission"), rs.getBoolean("admin_permission")));
             }
-
-            stmt.close();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             core_acl.removeAllElements();
         }
-
         return core_acl;
     }
 

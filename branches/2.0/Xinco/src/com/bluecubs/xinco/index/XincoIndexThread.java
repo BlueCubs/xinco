@@ -43,7 +43,6 @@ import com.bluecubs.xinco.core.server.XincoDBManager;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Vector;
 
 /**
@@ -62,7 +61,7 @@ public class XincoIndexThread extends Thread {
         XincoIndexer.indexXincoCoreData(d, index_content, DBM);
         try {
             DBM.getConnection().close();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             //do nothing
         }
     }
@@ -136,26 +135,22 @@ public class XincoIndexThread extends Thread {
         //select all data
         XincoCoreDataServer xdata_temp = null;
         try {
-            Statement stmt = dbm.getConnection().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT id FROM xinco_core_data ORDER BY designation");
+            ResultSet rs = DBM.executeQuery("SELECT id FROM xinco_core_data ORDER BY designation");
             while (rs.next()) {
                 xdata_temp = new XincoCoreDataServer(rs.getInt("id"), dbm);
                 index_result = XincoIndexer.indexXincoCoreData(xdata_temp, true, dbm);
             }
-            stmt.close();
-        } catch (XincoException ex) {
-            ex.printStackTrace();
-            return false;
-        } catch (SQLException ex) {
+            
+        } catch (Throwable ex) {
             ex.printStackTrace();
             return false;
         }
         return true;
     }
     
-    public synchronized boolean rebuildIndex(XincoDBManager dbm){
-        deleteIndex(dbm);
-        return buildIndex(dbm);
+    public synchronized boolean rebuildIndex(XincoDBManager DBM){
+        deleteIndex(DBM);
+        return buildIndex(DBM);
     }
     
     public boolean isIndex_directory_deleted() {

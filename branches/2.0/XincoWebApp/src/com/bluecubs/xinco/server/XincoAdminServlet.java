@@ -52,6 +52,8 @@ import java.sql.*;
 import java.io.*;
 import java.util.Vector;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -91,7 +93,7 @@ public class XincoAdminServlet extends HttpServlet {
      * @param response servlet response
      */
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, Exception {
         Locale loc = null;
         try {
             String list = request.getParameter("list");
@@ -110,7 +112,7 @@ public class XincoAdminServlet extends HttpServlet {
                 default:
                     loc = Locale.getDefault();
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             loc = Locale.getDefault();
         }
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
@@ -137,7 +139,7 @@ public class XincoAdminServlet extends HttpServlet {
         //connect to db
         try {
             DBM = new XincoDBManager();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             global_error_message = "" + e.toString() + rb.getString("error.configurationfile.incorrect.deployment");
             out.println(global_error_message);
             return;
@@ -189,39 +191,46 @@ public class XincoAdminServlet extends HttpServlet {
                     login_user = temp_user;
                 } catch (Exception loginex) {
                     //Wrong password or username
-                    Statement stmt = DBM.getConnection().createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT id FROM xinco_core_user WHERE username='" +
+                    ResultSet rs = DBM.executeQuery("SELECT id FROM xinco_core_user WHERE username='" +
                             request.getParameter("DialogLoginUsername") + "' AND status_number<>2");
                     //Check if the username is correct if not just throw the wrong login message
                     if (!rs.next()) {
                         throw new XincoException(rb.getString("password.login.fail"));
                     }
-                    rs = stmt.executeQuery("SELECT id FROM xinco_core_user WHERE username='" +
+                    rs = DBM.executeQuery("SELECT id FROM xinco_core_user WHERE username='" +
                             request.getParameter("DialogLoginUsername") + "'");
                     if (rs.next()) {
-                        temp_user = new XincoCoreUserServer(rs.getInt("id"), DBM);
-                        long attempts = DBM.getSetting("password.attempts").getInt_value();
-                        //If user exists increase the atempt tries in the db. If limit reached lock account
-                        if (temp_user.getAttempts() >= attempts && rs.getInt("id") != 1) {
-                            //The logged in admin does the locking
-                            int adminId = 1;
-                            //If no administrator is logged in change is made by default administrator.
-                            if (login_user != null) {
-                                adminId = login_user.getId();
+                        try {
+                            temp_user = new XincoCoreUserServer(rs.getInt("id"), DBM);
+                            long attempts = DBM.getSetting("password.attempts").getInt_value();
+                            //If user exists increase the atempt tries in the db. If limit reached lock account
+                            if (temp_user.getAttempts() >= attempts && rs.getInt("id") != 1) {
+                                try {
+
+                                    int adminId = 1;
+                                    //If no administrator is logged in change is made by default administrator.
+                                    if (login_user != null) {
+                                        adminId = login_user.getId();
+                                    }
+                                    temp_user.setChangerID(adminId);
+                                    temp_user.setWriteGroups(true);
+                                    //Register change in audit trail
+                                    temp_user.setChange(true);
+                                    //Reason for change
+                                    temp_user.setReason(rb.getString("password.attempt.limitReached"));
+                                    //the password retrieved when you logon is already hashed...
+                                    temp_user.setHashPassword(false);
+                                    temp_user.setIncreaseAttempts(true);
+                                    temp_user.write2DB(DBM);
+                                    throw new XincoException(rb.getString("password.attempt.limitReached"));
+                                } catch (Throwable ex) {
+                                    Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                             }
-                            temp_user.setChangerID(adminId);
-                            temp_user.setWriteGroups(true);
-                            //Register change in audit trail
-                            temp_user.setChange(true);
-                            //Reason for change
-                            temp_user.setReason(rb.getString("password.attempt.limitReached"));
-                            //the password retrieved when you logon is already hashed...
-                            temp_user.setHashPassword(false);
-                            temp_user.setIncreaseAttempts(true);
-                            temp_user.write2DB(DBM);
-                            throw new XincoException(rb.getString("password.attempt.limitReached"));
+                            throw new XincoException(rb.getString("password.login.fail"));
+                        } catch (Throwable ex) {
+                            Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        throw new XincoException(rb.getString("password.login.fail"));
                     }
                 }
                 //check for admin group
@@ -238,7 +247,6 @@ public class XincoAdminServlet extends HttpServlet {
                 status = 1;
                 //Check for password aging
                 if (temp_user.getStatus_number() == 3) {
-//                    status = 2;
                     session.setAttribute("XincoAdminServlet.status", new Integer(status - 1));
                 }
                 session.setAttribute("XincoAdminServlet.status", new Integer(status));
@@ -246,7 +254,7 @@ public class XincoAdminServlet extends HttpServlet {
                 session.setAttribute("XincoAdminServlet.current_location", current_location);
                 current_location_desc = rb.getString("message.location.desc.mainmenu");
                 session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
                 error_message = "[" + global_error_message + " | " + e.toString() + "]";
                 status = 0;
@@ -380,7 +388,7 @@ public class XincoAdminServlet extends HttpServlet {
                     //Reason for change
                     temp_user.setReason("audit.user.account.lock");
                     temp_user.write2DB(DBM);
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     e.printStackTrace();
                 }
             } else {
@@ -408,7 +416,7 @@ public class XincoAdminServlet extends HttpServlet {
                 //Reason for change
                 temp_user.setReason("audit.user.account.unlock");
                 temp_user.write2DB(DBM);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         }
@@ -432,7 +440,7 @@ public class XincoAdminServlet extends HttpServlet {
                 //Prompt for new password next login - 21 CFR related
                 temp_user.setStatus_number(3);
                 temp_user.write2DB(DBM);
-            } catch (Exception e) {
+            } catch (Throwable e) {
             }
         }
         //create new user
@@ -460,7 +468,7 @@ public class XincoAdminServlet extends HttpServlet {
                 //Reason for change
                 temp_user.setReason("audit.user.account.create");
                 temp_user.write2DB(DBM);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         }
@@ -470,7 +478,8 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_group = new XincoCoreGroupServer(0, request.getParameter("DialogNewGroupName"), 1);
                 temp_group.setChangerID(login_user.getId());
                 temp_group.write2DB(DBM);
-            } catch (Exception e) {
+            } catch (Throwable ex) {
+                Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         //modify group
@@ -480,7 +489,9 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_group.setDesignation(request.getParameter("DialogEditGroupName"));
                 temp_group.setChangerID(login_user.getId());
                 temp_group.write2DB(DBM);
-            } catch (Exception e) {
+
+            } catch (Throwable ex) {
+                Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         //remove user from group
@@ -488,15 +499,9 @@ public class XincoAdminServlet extends HttpServlet {
             //main admin always is admin and everyone is a regular user
             if (!(((current_group_selection == 1) && (Integer.parseInt(request.getParameter("DialogEditGroupRemoveUser")) == 1)) || (current_group_selection == 2))) {
                 try {
-                    Statement stmt = DBM.getConnection().createStatement();
-                    stmt.executeUpdate("DELETE FROM xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + Integer.parseInt(request.getParameter("DialogEditGroupRemoveUser")) + " AND xinco_core_group_id=" + current_group_selection);
-                    stmt.close();
-                    DBM.getConnection().commit();
-                } catch (Exception e) {
-                    try {
-                        DBM.getConnection().rollback();
-                    } catch (Exception rbe) {
-                    }
+                    DBM.executeUpdate("DELETE FROM xinco_core_user_has_xinco_core_group WHERE xinco_core_user_id=" + Integer.parseInt(request.getParameter("DialogEditGroupRemoveUser")) + " AND xinco_core_group_id=" + current_group_selection);
+                } catch (Throwable e) {
+                    Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, e);
                 }
             } else {
                 error_message = rb.getString("error.user.remove.mainUserGroup");
@@ -505,16 +510,9 @@ public class XincoAdminServlet extends HttpServlet {
         //add user to group
         if (request.getParameter("DialogEditGroupAddUser") != null) {
             try {
-                Statement stmt = DBM.getConnection().createStatement();
-                stmt.executeUpdate("INSERT INTO xinco_core_user_has_xinco_core_group VALUES (" + Integer.parseInt(request.getParameter("DialogEditGroupAddUser")) + ", " + current_group_selection + ", " + "1)");
-                stmt.close();
-                DBM.getConnection().commit();
-            } catch (Exception e) {
-                try {
-                    DBM.getConnection().rollback();
-                    e.printStackTrace();
-                } catch (Exception rbe) {
-                }
+                DBM.executeUpdate("INSERT INTO xinco_core_user_has_xinco_core_group VALUES (" + Integer.parseInt(request.getParameter("DialogEditGroupAddUser")) + ", " + current_group_selection + ", " + "1)");
+            } catch (Throwable e) {
+                Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, e);
             }
         }
         //modify user profile
@@ -541,8 +539,9 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_user.setReason("audit.user.account.modified");
                 temp_user.setHashPassword(true);
                 temp_user.write2DB(DBM);
-            } catch (Exception e) {
-                e.printStackTrace();
+
+            } catch (Throwable ex) {
+                Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         //create new language
@@ -552,7 +551,9 @@ public class XincoAdminServlet extends HttpServlet {
                         request.getParameter("DialogNewLanguageSign"),
                         request.getParameter("DialogNewLanguageDesignation"));
                 temp_language.write2DB(DBM);
-            } catch (Exception e) {
+
+            } catch (Throwable ex) {
+                Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         //delete language
@@ -560,7 +561,7 @@ public class XincoAdminServlet extends HttpServlet {
             try {
                 temp_language = new XincoCoreLanguageServer(Integer.parseInt(request.getParameter("DialogAdminLanguagesDelete")), DBM);
                 XincoCoreLanguageServer.deleteFromDB(temp_language, DBM, login_user.getId());
-            } catch (Exception e) {
+            } catch (Throwable e) {
             }
         }
         //switch to attributes modification
@@ -577,7 +578,9 @@ public class XincoAdminServlet extends HttpServlet {
             try {
                 temp_attribute = new XincoCoreDataTypeAttributeServer(current_datatype_selection, Integer.parseInt(request.getParameter("DialogNewAttributeAttributeId")), request.getParameter("DialogNewAttributeDesignation"), request.getParameter("DialogNewAttributeDataType"), Integer.parseInt(request.getParameter("DialogNewAttributeSize")));
                 temp_attribute.write2DB(DBM);
-            } catch (Exception e) {
+
+            } catch (Throwable ex) {
+                Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         //delete attribute and attribute values
@@ -585,21 +588,21 @@ public class XincoAdminServlet extends HttpServlet {
             try {
                 temp_attribute = new XincoCoreDataTypeAttributeServer(current_datatype_selection, Integer.parseInt(request.getParameter("DialogEditAttributesRemoveAttributeId")), DBM);
                 XincoCoreDataTypeAttributeServer.deleteFromDB(temp_attribute, DBM, login_user.getId());
-            } catch (Exception e) {
+            } catch (Throwable e) {
             }
         }
         //empty trash
         if (request.getParameter("MenuMainEmptyTrash") != null) {
             try {
                 (new XincoCoreNodeServer(2, DBM)).deleteFromDB(false, DBM, login_user.getId());
-            } catch (Exception e) {
+            } catch (Throwable e) {
             }
         }
         //Reset DB (keeping standard inserts
         if (request.getParameter("MenuMainResetDB") != null) {
             try {
                 (new XincoDBManager()).resetDB(this.login_user);
-            } catch (Exception e) {
+            } catch (Throwable e) {
             }
             out.println(rb.getString("message.location.desc.resetDBDone"));
         }
@@ -609,80 +612,80 @@ public class XincoAdminServlet extends HttpServlet {
                 session.removeAttribute("XincoAdminServlet.user");
                 status = 0;
                 session.setAttribute("XincoAdminServlet.status", new Integer(status));
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 status = 0;
                 session.setAttribute("XincoAdminServlet.status", new Integer(status));
             }
         }
         //Password changed due to aging
         if (request.getParameter("changePassword") != null) {
-            ResultSet rs = null;
-            String sql = null;
-            int id = 0;
-            DBM = null;
             try {
-                DBM = new XincoDBManager();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            try {
-                Statement stmt = DBM.getConnection().createStatement();
-                sql = "select id from xinco_core_user where username='" + request.getParameter("user").substring(0, request.getParameter("user").length() - 1) + "'";
-                rs = stmt.executeQuery(sql);
-                rs.next();
-                id = rs.getInt(1);
-                temp_user = new XincoCoreUserServer(id, DBM);
-            } catch (XincoException ex) {
-                ex.printStackTrace();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            boolean passwordIsUsable = temp_user.isPasswordUsable(request.getParameter("confirm"));
-            if (!request.getParameter("new").equals(request.getParameter("confirm"))) {
-                //show welcome message
-                out.println("<br><center><img src=\"blueCubs.gif\" border=\"0\"/>");
-                out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
-                out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
-                out.println(rb.getString("password.noMatch") + "<br><br>" +
-                        "<input type='submit' value='" + rb.getString("general.continue") + "' name='changePassword' />");
-                out.println("<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='user' value=" +
-                        request.getParameter("id") + "/>");
-                out.println("</form></center>");
-                return;
-            }
-            if (!passwordIsUsable) {
-                //show welcome message
-                out.println("<br><center><img src=\"blueCubs.gif\" border=\"0\"/>");
-                out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
-                out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
-                out.println(rb.getString("password.unusable") + "<br><br>" +
-                        "<input type='submit' value='" + rb.getString("general.continue") + "' name='changePassword' />");
-                out.println("<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='user' value=" +
-                        request.getParameter("user") + "/>");
-                out.println("</form></center>");
-                return;
-            } else {
+                ResultSet rs = null;
+                String sql = null;
+                int id = 0;
+                DBM = null;
                 try {
-                    temp_user = new XincoCoreUserServer(id, DBM);
-                    temp_user.setUserpassword(request.getParameter("new"));
-                    temp_user.setLastModified(new Timestamp(System.currentTimeMillis()));
-                    //The logged in admin does the locking if none loged in the default admin does the locking
-                    if (login_user == null) {
-                        temp_user.setChangerID(1);
-                    } else {
-                        temp_user.setChangerID(login_user.getId());
-                    }
-                    temp_user.setWriteGroups(true);
-                    //Register change in audit trail
-                    temp_user.setChange(true);
-                    //Reason for change
-                    temp_user.setReason("audit.user.account.password.change");
-                    temp_user.write2DB(DBM);
-                    out.println(rb.getString("password.changed"));
-                    status = 1;
-                } catch (XincoException ex) {
+                    DBM = new XincoDBManager();
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
+                try {
+                    sql = "select id from xinco_core_user where username='" + request.getParameter("user").substring(0, request.getParameter("user").length() - 1) + "'";
+                    rs = DBM.executeQuery(sql);
+                    rs.next();
+                    id = rs.getInt(1);
+                    temp_user = new XincoCoreUserServer(id, DBM);
+                } catch (XincoException ex) {
+                    ex.printStackTrace();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                boolean passwordIsUsable = temp_user.isPasswordUsable(request.getParameter("confirm"));
+                if (!request.getParameter("new").equals(request.getParameter("confirm"))) {
+                    //show welcome message
+                    out.println("<br><center><img src=\"blueCubs.gif\" border=\"0\"/>");
+                    out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
+                    out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
+                    out.println(rb.getString("password.noMatch") + "<br><br>" + "<input type='submit' value='" + rb.getString("general.continue") + "' name='changePassword' />");
+                    out.println("<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='user' value=" + request.getParameter("id") + "/>");
+                    out.println("</form></center>");
+                    return;
+                }
+                if (!passwordIsUsable) {
+                    //show welcome message
+                    out.println("<br><center><img src=\"blueCubs.gif\" border=\"0\"/>");
+                    out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
+                    out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
+                    out.println(rb.getString("password.unusable") + "<br><br>" + "<input type='submit' value='" + rb.getString("general.continue") + "' name='changePassword' />");
+                    out.println("<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='user' value=" + request.getParameter("user") + "/>");
+                    out.println("</form></center>");
+                    return;
+                } else {
+                    try {
+                        temp_user = new XincoCoreUserServer(id, DBM);
+                        temp_user.setUserpassword(request.getParameter("new"));
+                        temp_user.setLastModified(new Timestamp(System.currentTimeMillis()));
+                        //The logged in admin does the locking if none loged in the default admin does the locking
+                        if (login_user == null) {
+                            temp_user.setChangerID(1);
+                        } else {
+                            temp_user.setChangerID(login_user.getId());
+                        }
+                        temp_user.setWriteGroups(true);
+                        //Register change in audit trail
+                        temp_user.setChange(true);
+                        //Reason for change
+                        temp_user.setReason("audit.user.account.password.change");
+                        temp_user.write2DB(DBM);
+                        out.println(rb.getString("password.changed"));
+                        status = 1;
+                    } catch (XincoException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+            } catch (Throwable ex) {
+                Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -889,15 +892,15 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getFirstname() + "</td>");
                     out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getName() + "</td>");
                     out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getEmail() + "</td>");
-                    if (((XincoCoreUserServer) allusers.elementAt(i)).getStatus_number() == 1 ||
-                            ((XincoCoreUserServer) allusers.elementAt(i)).getStatus_number() == 3) {
-                        String temp = "<td class=\"text\"><a href=\"XincoAdmin?DialogAdminUsersLock=" +
-                                ((XincoCoreUserServer) allusers.elementAt(i)).getId() +
-                                "&list=" + request.getParameter("list") + "\" class=\"link\"  icon=\"xinco\">[";
+                    if (((XincoCoreUserServer) allusers.elementAt(i)).getStatus_number() <= 3) {
+                        String temp = "<td class=\"text\"><a href=\"XincoAdmin?DialogAdminUsers";
                         if (((XincoCoreUserServer) allusers.elementAt(i)).getStatus_number() == 2) {
-                            temp += rb.getString("general.unlock");
+                            temp += "Unlock=" +
+                                    ((XincoCoreUserServer) allusers.elementAt(i)).getId() +
+                                    "&list=" + request.getParameter("list") + "\" class=\"link\"  icon=\"xinco\">[" + rb.getString("general.unlock");
                         } else {
-                            temp += rb.getString("general.lock");
+                            temp += "Lock=" + ((XincoCoreUserServer) allusers.elementAt(i)).getId() +
+                                    "&list=" + request.getParameter("list") + "\" class=\"link\"  icon=\"xinco\">[" + rb.getString("general.lock");
                         }
                         temp += "]</a>&nbsp;<a href=\"XincoAdmin?DialogAdminUsersResetPW=" +
                                 ((XincoCoreUserServer) allusers.elementAt(i)).getId() +
@@ -984,7 +987,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("</tr>");
                     out.println("</table>");
                     out.println("</form>");
-                } catch (Exception e) {
+                } catch (Throwable e) {
                 }
 
                 //show user list
@@ -1106,7 +1109,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("</tr>");
                     out.println("</table>");
                     out.println("</form>");
-                } catch (Exception e) {
+                } catch (Throwable e) {
                 }
 
             }
@@ -1141,7 +1144,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("</tr>");
                     out.println("</table>");
                     out.println("</form>");
-                } catch (Exception e) {
+                } catch (Throwable e) {
                 }
 
             }
@@ -1222,8 +1225,8 @@ public class XincoAdminServlet extends HttpServlet {
                 for (i = 0; i < alldatatypes.size(); i++) {
                     out.println("<tr>");
                     out.println("<td class=\"text\">" + ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getId() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDesignation() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDescription() + "</td>");
+                    out.println("<td class=\"text\">" + DBM.localizeString(((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDesignation()) + "</td>");
+                    out.println("<td class=\"text\">" + DBM.localizeString(((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDescription()) + "</td>");
                     out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminDataTypeSelect=" +
                             ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getId() +
                             "&list=" + request.getParameter("list") + "\" class=\"link\"  icon=\"xinco\">[" + rb.getString("general.edit") + "]</a></td>");
@@ -1262,7 +1265,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("</table>");
                     out.println("</form>");
                     out.flush();
-                } catch (Exception e) {
+                } catch (Throwable e) {
                 }
 
                 //show attributes list
@@ -1308,7 +1311,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<td class=\"text\" colspan=\"5\">" + rb.getString("message.warning.attribute.remove") + "</td>");
                     out.println("</tr>");
                     out.println("</table>");
-                } catch (Exception e) {
+                } catch (Throwable e) {
                 }
             }
             if (current_location.compareTo("AuditTable") == 0) {
@@ -1344,7 +1347,7 @@ public class XincoAdminServlet extends HttpServlet {
                     if (request.getParameter("table").equals("xinco_core_data_type_attribute")) {
                         column = "xinco_core_data_type_id";
                     }
-                    rs = DBM.getConnection().createStatement().executeQuery("select * from " + request.getParameter("table") +
+                    rs = DBM.executeQuery("select * from " + request.getParameter("table") +
                             "_t a, (select a.firstname || ' ' || a.name as \"" +
                             rb.getString("general.user") + "\" , b.mod_time as \"" + rb.getString("general.audit.modtime") +
                             "\" ,b.mod_reason as \"" + rb.getString("general.reason") + "\" ,b.record_id " +
@@ -1355,12 +1358,11 @@ public class XincoAdminServlet extends HttpServlet {
                             "<center>" + rb.getString("general.audit.results").replaceAll("%i",
                             request.getParameter("id")).replaceAll("%t",
                             request.getParameter("table")) + "<br>", -1, false, -1);
-
                     out.write("\n");
                     out.write("        </center>\n");
                     out.write("    </body>\n");
                     out.write("</html>\n");
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     global_error_message = global_error_message + e.toString();
                     e.printStackTrace();
                 }
@@ -1398,12 +1400,12 @@ public class XincoAdminServlet extends HttpServlet {
                     if (request.getParameter("table").equals("xinco_core_data_type_attribute")) {
                         column = "xinco_core_data_type_id";
                     }
-                    rs = DBM.getConnection().createStatement().executeQuery("select distinct * from " + request.getParameter("table") +
+                    rs = DBM.executeQuery("select distinct * from " + request.getParameter("table") +
                             " where " + column + " in (select distinct " + column + " from " + request.getParameter("table") + "_t)");
                     DBM.drawTable(rs, response.getWriter(), DBM.getColumnNames(rs), "", -1, false, -1);
-                    rs = DBM.getConnection().createStatement().executeQuery("select distinct " + column + " from " + request.getParameter("table") + "_t");
+                    rs = DBM.executeQuery("select distinct " + column + " from " + request.getParameter("table") + "_t");
                     out.println("<form action='XincoAdmin?MenuAudit=AuditTable' method='POST'>");
-                    rs = DBM.getConnection().createStatement().executeQuery("select distinct " + column + " from " +
+                    rs = DBM.executeQuery("select distinct " + column + " from " +
                             request.getParameter("table") + "_t");
                     out.println("Select record id: ");
                     out.println("<select name='id'>");
@@ -1418,7 +1420,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("        </center>\n");
                     out.write("    </body>\n");
                     out.write("</html>\n");
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     global_error_message = global_error_message + e.toString();
                     e.printStackTrace();
                 }
@@ -1471,17 +1473,17 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("\n");
                     out.write("    </body>\n");
                     out.write("</html>\n");
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     global_error_message = global_error_message + e.toString();
                     e.printStackTrace();
                 }
             }
             if (current_location.compareTo("RebuildIndex") == 0) {
                 //rebuild index and list status
-                XincoSetting s = DBM.getSetting("general.setting.index.lock");
+                DBM = new XincoDBManager();
                 XincoSettingServer s2 = null;
                 try {
-                    s2 = new XincoSettingServer(s.getId(), DBM);
+                    s2 = new XincoSettingServer(DBM.getSetting("setting.index.lock").getId(), DBM);
                     out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
                     out.println("<tr>");
                     out.println("<td class=\"bigtext\" colspan=\"2\">" + rb.getString("message.index.rebuild") + "</td>");
@@ -1526,8 +1528,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("</tr>");
                     XincoCoreDataServer xdata_temp = null;
                     boolean index_result = false;
-                    Statement stmt = DBM.getConnection().createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT id FROM xinco_core_data ORDER BY designation");
+                    ResultSet rs = DBM.executeQuery("SELECT id FROM xinco_core_data ORDER BY designation");
                     while (rs.next()) {
                         xdata_temp = new XincoCoreDataServer(rs.getInt("id"), DBM);
                         index_result = XincoIndexer.indexXincoCoreData(xdata_temp, true, DBM);
@@ -1541,7 +1542,6 @@ public class XincoAdminServlet extends HttpServlet {
                         out.println("</tr>");
                         out.flush();
                     }
-                    stmt.close();
 
                     //optimize index
                     index_result = XincoIndexer.optimizeIndex(DBM);
@@ -1559,7 +1559,7 @@ public class XincoAdminServlet extends HttpServlet {
                     s2.setBool_value(false);
                     s2.setChangerID(login_user.getId());
                     s2.write2DB(DBM);
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     out.println("</table>");
                     if (s2 != null) {
                         s2.setBool_value(false);
@@ -1596,11 +1596,10 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("</html>");
 
         out.close();
-
         //close db connection
         try {
-            DBM.getConnection().close();
-        } catch (Exception e) {
+            DBM.finalize();
+        } catch (Throwable e) {
             global_error_message = global_error_message + e.toString();
         }
 
@@ -1613,7 +1612,11 @@ public class XincoAdminServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /** Handles the HTTP <code>POST</code> method.
@@ -1623,7 +1626,11 @@ public class XincoAdminServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /** Returns a short description of the servlet.

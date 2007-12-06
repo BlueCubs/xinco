@@ -63,7 +63,7 @@ public class XincoIndexOptimizeThread extends Thread {
 				lastRun = new GregorianCalendar();
 				DBM.getConnection().close();
 				DBM = null;
-			} catch (Exception e){
+			} catch (Throwable e){
 				//continue, wait and try again...
 			}
 			try {

@@ -163,7 +163,7 @@ public class XincoArchiver {
 
 			}
 			return true;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			try {
 				if (fcis != null) {
 					fcis.close();
