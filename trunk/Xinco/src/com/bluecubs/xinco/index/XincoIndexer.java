@@ -57,7 +57,7 @@ public class XincoIndexer {
         IndexWriter writer = null;
         try {
             //check if document exists in index and delete
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 System.out.println("Removing data from index if it exists...");
             XincoIndexer.removeXincoCoreData(d, DBM);
             //add document to index
@@ -66,7 +66,7 @@ public class XincoIndexer {
             } catch (Exception ie) {
                 writer = new IndexWriter(DBM.config.getFileIndexPath(), new StandardAnalyzer(), true);
             }
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 System.out.println("Indexing...");
             Document temp =XincoDocument.getXincoDocument(d, index_content, DBM);
             List l = temp.getFields();
@@ -76,7 +76,7 @@ public class XincoIndexer {
             writer.addDocument(temp);
             writer.flush();
             writer.close();
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 System.out.println("Indexing complete!");
         } catch (Exception e) {
             if (writer != null) {
@@ -99,7 +99,7 @@ public class XincoIndexer {
                 reader.close();
             }
         } catch (Exception re) {
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 re.printStackTrace();
             if (reader != null) {
                 try {
@@ -142,18 +142,18 @@ public class XincoIndexer {
             }
             QueryParser parser=new QueryParser("designation", analyzer);
             Query query = parser.parse(s);
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 System.out.println("Query: "+s);
             Hits hits = searcher.search(query);
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 System.out.println("Hits: "+hits.length());
             for (i=0;i<hits.length();i++) {
                 try {
-                    if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                         System.out.println("Document found: "+hits.doc(i).get("designation"));
                     v.addElement(new XincoCoreDataServer(Integer.parseInt(hits.doc(i).get("id")), DBM));
                 } catch (Exception xcde) {
-                    if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                    if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                         xcde.printStackTrace();
                 }
                 if (i >= DBM.config.getMaxSearchResult()) {
@@ -167,11 +167,11 @@ public class XincoIndexer {
                     searcher.close();
                 } catch (Exception se) {}
             }
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 e.printStackTrace();
             return null;
         }
-        if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+        if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 System.out.println("Returning "+v.size()+" results.");
         return v;
     }

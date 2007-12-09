@@ -83,7 +83,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
             stmt.close();
         } catch (Exception e) {
             getXinco_core_groups().removeAllElements();
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 e.printStackTrace();
             throw new XincoException();
         }
@@ -160,7 +160,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
             stmt = DBM.getStatement();
             String sql="SELECT * FROM xinco_core_user WHERE username='" +
                     attrUN + "' AND userpassword=MD5('" + attrUPW + "') AND status_number <> 2";
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 System.out.println(sql);
             rs = stmt.executeQuery(sql);
             //throw exception if no result found
@@ -197,7 +197,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
             if (RowCount < 1) {
                 sql="SELECT * FROM xinco_core_user WHERE username='" +
                         attrUN + "'";
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 rs = stmt.executeQuery(sql);
                 //The username is valid but wrong password. Increase the login attempts.
@@ -223,7 +223,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 String sql="SELECT * FROM xinco_core_user WHERE username='" +
                         attrUN + "' AND status_number <> 2";
                 stmt = DBM.getConnection().createStatement();
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 ResultSet rs2 = stmt.executeQuery(sql);
                 //increase number of attempts
@@ -244,10 +244,10 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     write2DB(dbm);
                 }
             } catch (SQLException ex) {
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                     ex.printStackTrace();
             }
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 e.printStackTrace();
             throw new XincoException();
         }
@@ -493,7 +493,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
             //Now check if password is not the same as the current password
             sql="select userpassword from xinco_core_user where id=" +
                     getId()+" and MD5('"+ newPass+"') =userpassword";
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 System.out.println(sql);
             rs=stmt.executeQuery(sql);
             //Here we'll catch if the password is the same as the actual
@@ -502,7 +502,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
             //End bug fix
             stmt.close();
         } catch (SQLException ex) {
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 System.out.println("Password different than actual");
             try{
                 //If password is not current then check against audit trail
@@ -510,7 +510,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                         getId()+" and DATEDIFF(NOW(),last_modified) <= "+
                         getSettings().getSetting("password.unusable_period").getInt_value() +
                         " and MD5('"+newPass+"') = userpassword";
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 rs=stmt.executeQuery(sql);
                 //Here we'll catch if the password have been used in the unusable period
@@ -518,7 +518,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 rs.getString(1);
                 stmt.close();
             }catch (Exception e) {
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 System.out.println("Password not used within the unusable period-"+
                         getSettings().getSetting("password.unusable_period").getInt_value());
                 passwordIsUsable=true;

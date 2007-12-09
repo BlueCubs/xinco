@@ -37,7 +37,7 @@
  * Created on September 25, 2006, 6:16 PM
  */
 
-package com.bluecubs.xinco.client.dialogs;
+package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.core.XincoCoreUser;

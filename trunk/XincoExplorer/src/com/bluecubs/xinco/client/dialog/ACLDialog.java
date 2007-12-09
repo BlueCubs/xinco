@@ -37,7 +37,7 @@
  * Created on October 31, 2006, 8:21 AM
  */
 
-package com.bluecubs.xinco.client.dialogs;
+package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.core.XincoCoreACE;
@@ -492,7 +492,7 @@ public class ACLDialog extends javax.swing.JDialog {
                 this.userList.clearSelection();
                 this.groupList.clearSelection();
             } catch (Exception xe) {
-                if(this.explorer.getSettings().getSetting("general.setting.enable.developermode").isBool_value())
+                if(this.explorer.getSettings().getSetting("setting.enable.developermode").isBool_value())
                     xe.printStackTrace();
                 JOptionPane.showMessageDialog(this, this.explorer.getResourceBundle().getString("window.acl.addacefailed") +
                         " " + this.explorer.getResourceBundle().getString("general.reason") +

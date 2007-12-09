@@ -154,7 +154,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                         ", xinco_core_data_id=" + xcdid + ", read_permission=" + rp +
                         ", write_permission=" + wp + ", execute_permission=" + xp +
                         ", admin_permission=" + ap +  " , owner=" + ow +" WHERE id=" + getId();
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 stmt.executeUpdate(sql);
                 stmt.close();
@@ -168,7 +168,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                         ", " + xcuid + ", " + xcgid + ", " + xcnid +
                         ", " + xcdid + ", " + rp + ", " + wp + ", " +
                         xp + ", " + ap + ", " + ow +")";
-                if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                     System.out.println(sql);
                 stmt.executeUpdate(sql);
                 stmt.close();
@@ -218,7 +218,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
             Statement stmt = DBM.getConnection().createStatement();
             String sql="SELECT * FROM xinco_core_ace WHERE " + attrT +
                     "=" + attrID + " ORDER BY xinco_core_user_id, xinco_core_group_id, xinco_core_node_id, xinco_core_data_id";
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 System.out.println(sql);
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
@@ -244,7 +244,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
         boolean match_ace = false;
         XincoCoreACE core_ace = new XincoCoreACE();
         try {
-            if(new XincoDBManager().getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(new XincoDBManager().getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 System.out.println("Checking access for user: "+attrU.getName());
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -257,7 +257,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 if (((XincoCoreACE)attrACL.elementAt(i)).getXinco_core_user_id() == attrU.getId()||
                         ((XincoCoreACE)attrACL.elementAt(i)).isOwner()) {
                     try {
-                        if(new XincoDBManager().getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                        if(new XincoDBManager().getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                             System.out.println("User mentioned in ACE's ("+attrU.getName()+")");
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -270,7 +270,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                         if (((XincoCoreACE)attrACL.elementAt(i)).getXinco_core_group_id() ==
                                 ((XincoCoreGroup)attrU.getXinco_core_groups().elementAt(j)).getId()) {
                             try {
-                                if(new XincoDBManager().getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                                if(new XincoDBManager().getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                                     System.out.println("User's group mentioned in ACE's ("+attrU.getName()+"- "+
                                             ((XincoCoreGroup)attrU.getXinco_core_groups().elementAt(j)).getDesignation()+")");
                             } catch (Exception ex) {
@@ -303,7 +303,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
             }
         }catch(Exception e){
             try {
-                if(new XincoDBManager().getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if(new XincoDBManager().getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                     e.printStackTrace();
             } catch (Exception ex) {
                 ex.printStackTrace();
