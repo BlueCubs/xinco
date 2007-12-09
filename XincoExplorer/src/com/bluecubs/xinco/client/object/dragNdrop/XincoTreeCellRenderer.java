@@ -41,7 +41,6 @@ import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.tools.XincoFileIconManager;
 import java.awt.Component;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -60,6 +59,7 @@ public class XincoTreeCellRenderer extends DefaultTreeCellRenderer{
         xfm = new XincoFileIconManager();
     }
     
+    @Override
     public Component getTreeCellRendererComponent(JTree tree,
             Object value, boolean sel, boolean expanded, boolean leaf,
             int row, boolean hasFocus) {

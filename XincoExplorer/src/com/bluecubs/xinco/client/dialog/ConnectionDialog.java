@@ -34,7 +34,7 @@
  *************************************************************
  */
 
-package com.bluecubs.xinco.client.dialogs;
+package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.*;
 import com.bluecubs.xinco.client.XincoClientConnectionProfile;

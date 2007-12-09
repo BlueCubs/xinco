@@ -50,7 +50,7 @@ public class XincoCoreDataServer extends XincoCoreData {
         try {
             Statement stmt = DBM.getConnection().createStatement();
             String sql="SELECT * FROM xinco_core_data WHERE id=" + attrID;
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 System.out.println(sql);
             ResultSet rs = stmt.executeQuery(sql);
                 
@@ -78,7 +78,7 @@ public class XincoCoreDataServer extends XincoCoreData {
         } catch (Exception e) {
             if(getXinco_core_acl()!=null)
                 getXinco_core_acl().removeAllElements();
-            if(DBM.getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+            if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                 e.printStackTrace();
             throw new XincoException();
         }

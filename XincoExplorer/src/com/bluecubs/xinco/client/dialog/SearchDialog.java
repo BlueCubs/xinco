@@ -37,7 +37,7 @@
  * Created on January 27, 2007, 8:45 AM
  */
 
-package com.bluecubs.xinco.client.dialogs;
+package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.XincoMutableTreeNode;
@@ -391,8 +391,8 @@ public class SearchDialog extends javax.swing.JDialog implements MouseListener{
             if (xmtn.getUserObject().getClass() == XincoCoreNode.class) {
                 if (((XincoCoreNode)xmtn.getUserObject()).getId() == ((XincoCoreNode)v.elementAt(1)).getId()) {
                     tp = new TreePath(xmtn.getPath());
-                    this.explorer.jTreeRepository.setSelectionPath(tp);
-                    this.explorer.jTreeRepository.expandPath(tp);
+                    this.explorer.getJTreeRepository().setSelectionPath(tp);
+                    this.explorer.getJTreeRepository().expandPath(tp);
                     j = -1;
                     //select data
                     if (1 == (v.size()-1)) {
@@ -400,7 +400,7 @@ public class SearchDialog extends javax.swing.JDialog implements MouseListener{
                             if (((XincoMutableTreeNode)xmtn.getChildAt(k)).getUserObject().getClass() == XincoCoreData.class) {
                                 if (((XincoCoreData)((XincoMutableTreeNode)xmtn.getChildAt(k)).getUserObject()).getId() == ((XincoCoreData)v.elementAt(0)).getId()) {
                                     tp = new TreePath(((XincoMutableTreeNode)xmtn.getChildAt(k)).getPath());
-                                    this.explorer.jTreeRepository.setSelectionPath(tp);
+                                    this.explorer.getJTreeRepository().setSelectionPath(tp);
                                 }
                             }
                         }
@@ -412,8 +412,8 @@ public class SearchDialog extends javax.swing.JDialog implements MouseListener{
                     if (((XincoMutableTreeNode)xmtn.getChildAt(j)).getUserObject().getClass() == XincoCoreNode.class) {
                         if (((XincoCoreNode)((XincoMutableTreeNode)xmtn.getChildAt(j)).getUserObject()).getId() == ((XincoCoreNode)v.elementAt(i)).getId()) {
                             tp = new TreePath(((XincoMutableTreeNode)xmtn.getChildAt(j)).getPath());
-                            this.explorer.jTreeRepository.setSelectionPath(tp);
-                            this.explorer.jTreeRepository.expandPath(tp);
+                            this.explorer.getJTreeRepository().setSelectionPath(tp);
+                            this.explorer.getJTreeRepository().expandPath(tp);
                             xmtn = (XincoMutableTreeNode)xmtn.getChildAt(j);
                             j = -1;
                             //select data
@@ -422,7 +422,7 @@ public class SearchDialog extends javax.swing.JDialog implements MouseListener{
                                     if (((XincoMutableTreeNode)xmtn.getChildAt(k)).getUserObject().getClass() == XincoCoreData.class) {
                                         if (((XincoCoreData)((XincoMutableTreeNode)xmtn.getChildAt(k)).getUserObject()).getId() == ((XincoCoreData)v.elementAt(0)).getId()) {
                                             tp = new TreePath(((XincoMutableTreeNode)xmtn.getChildAt(k)).getPath());
-                                            this.explorer.jTreeRepository.setSelectionPath(tp);
+                                            this.explorer.getJTreeRepository().setSelectionPath(tp);
                                         }
                                     }
                                 }
@@ -493,11 +493,11 @@ public class SearchDialog extends javax.swing.JDialog implements MouseListener{
                 }
             } catch (Exception rme) {
                 explorer.getSession().setCurrentSearchResult(new Vector());
-                if(explorer.getSettings().getSetting("general.setting.enable.developermode").isBool_value())
+                if(explorer.getSettings().getSetting("setting.enable.developermode").isBool_value())
                     rme.printStackTrace();
                 progressBar.hide();
             }
-            if(explorer.getSettings().getSetting("general.setting.enable.developermode").isBool_value())
+            if(explorer.getSettings().getSetting("setting.enable.developermode").isBool_value())
                 System.out.println(explorer.getSession().getCurrentSearchResult().size()+" results found!");
             //update search result
             String[] rdata = {"", ""};

@@ -38,7 +38,7 @@ package com.bluecubs.xinco.client.object;
 
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.XincoMutableTreeNode;
-import com.bluecubs.xinco.client.dialogs.ACLDialog;
+import com.bluecubs.xinco.client.dialog.ACLDialog;
 import com.bluecubs.xinco.client.object.thread.XincoImportThread;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreGroup;
@@ -472,12 +472,12 @@ public class XincoRepositoryActionHandler {
         int i;
         TreePath[] tps;
         //cut node
-        tps =explorer.jTreeRepository.getSelectionPaths();
+        tps =explorer.getJTreeRepository().getSelectionPaths();
         explorer.getSession().getClipboardTreeNodeSelection().removeAllElements();
-        for (i=0;i<explorer.jTreeRepository.getSelectionCount();i++) {
+        for (i=0;i<explorer.getJTreeRepository().getSelectionCount();i++) {
             explorer.getSession().getClipboardTreeNodeSelection().addElement(tps[i].getLastPathComponent());
         }
-        if(explorer.getSettings().getSetting("general.setting.enable.developermode").isBool_value()){
+        if(explorer.getSettings().getSetting("setting.enable.developermode").isBool_value()){
             System.out.println("Items copied to the clip board: "+(i));
         }
     }
@@ -526,7 +526,7 @@ public class XincoRepositoryActionHandler {
                             // update transaction info
                             explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movefoldersuccess"));
                         } catch (Exception rmie) {
-                            if(explorer.getSettings().getSetting("general.setting.enable.developermode").isBool_value())
+                            if(explorer.getSettings().getSetting("setting.enable.developermode").isBool_value())
                                 rmie.printStackTrace();
                             // undo modification
                             ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_node_id(old_parent_node_id);
@@ -598,13 +598,13 @@ public class XincoRepositoryActionHandler {
                                 newlog.setVersion(((XincoCoreLog) oldlogs.elementAt(oldlogs.size() - 1)).getVersion());
                                 explorer.getSession().getXinco().setXincoCoreLog(newlog, explorer.getSession().getUser());
                             } catch (Exception loge) {
-                                if(explorer.getSettings().getSetting("general.setting.enable.developermode").isBool_value())
+                                if(explorer.getSettings().getSetting("setting.enable.developermode").isBool_value())
                                     loge.printStackTrace();
                             }
                             // update transaction info
                             explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movedatasuccess"));
                         } catch (Exception rmie) {
-                            if(explorer.getSettings().getSetting("general.setting.enable.developermode").isBool_value())
+                            if(explorer.getSettings().getSetting("setting.enable.developermode").isBool_value())
                                 rmie.printStackTrace();
                             // undo modification
                             ((XincoCoreData) temp_node.getUserObject()).setXinco_core_node_id(old_parent_node_id);
@@ -626,7 +626,7 @@ public class XincoRepositoryActionHandler {
             
         }else{
             //Display only if in developer mode!
-            if(explorer.getSettings().getSetting("general.setting.enable.developermode").isBool_value()){
+            if(explorer.getSettings().getSetting("setting.enable.developermode").isBool_value()){
                 System.err.println("Don't execute change in DB!");
                 System.err.println(((explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) &&
                         dragNdrop));

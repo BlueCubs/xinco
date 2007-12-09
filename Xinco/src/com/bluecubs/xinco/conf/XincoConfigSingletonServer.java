@@ -116,7 +116,7 @@ public class XincoConfigSingletonServer {
             setAllowOutsideLinks(xss.getSetting("general.setting.allowoutsidelinks").isBool_value());
         } catch (Exception ex) {
             try {
-                if(new XincoDBManager().getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value())
+                if(new XincoDBManager().getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
                     ex.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();

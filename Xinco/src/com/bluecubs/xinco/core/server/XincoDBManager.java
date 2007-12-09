@@ -101,7 +101,7 @@ public class XincoDBManager {
             }
             stm.close();
             System.out.println("Settings loaded!");
-            if (getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value()) {
+            if (getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
                 System.out.println("Settings loaded!");
             }
         } catch (SQLException ex) {
@@ -172,7 +172,7 @@ public class XincoDBManager {
                         }
                         condition = column + " > " + number;
                         sql = "delete from " + rs.getString("TABLE_NAME") + " where " + condition;
-                        if (getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value()) {
+                        if (getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
                             System.out.println(sql);
                         }
                         s.executeUpdate(sql);
@@ -180,13 +180,13 @@ public class XincoDBManager {
                     if (rs.getString("TABLE_NAME").equals("xinco_id")) {
                         condition = " where last_id > 1000";
                         sql = "update " + rs.getString("TABLE_NAME") + " set last_id=1000" + condition;
-                        if (getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value()) {
+                        if (getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
                             System.out.println(sql);
                         }
                         s.executeUpdate(sql);
                         condition = " where last_id < 1000";
                         sql = "update " + rs.getString("TABLE_NAME") + " set last_id=0" + condition;
-                        if (getXincoSettingServer().getSetting("general.setting.enable.developermode").isBool_value()) {
+                        if (getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
                             System.out.println(sql);
                         }
                         s.executeUpdate(sql);

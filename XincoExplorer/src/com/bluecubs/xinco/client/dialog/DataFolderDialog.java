@@ -37,7 +37,7 @@
  * Created on November 21, 2006, 4:23 PM
  */
 
-package com.bluecubs.xinco.client.dialogs;
+package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.XincoMutableTreeNode;
@@ -238,7 +238,7 @@ public class DataFolderDialog extends javax.swing.JDialog {
         if (((XincoCoreNode)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId() == 0) {
             temp_node = explorer.getSession().getCurrentTreeNodeSelection();
             explorer.getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode) explorer.getSession().getCurrentTreeNodeSelection().getParent());
-            explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
+            explorer.getJTreeRepository().setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
             explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(temp_node);
         }
         setVisible(false);
@@ -272,14 +272,14 @@ public class DataFolderDialog extends javax.swing.JDialog {
             if (insertnewnode) {
                 explorer.getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode) explorer.getSession().getCurrentTreeNodeSelection().getParent());
             }
-            explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
+            explorer.getJTreeRepository().setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
             explorer.jLabelInternalFrameInformationText.setText(explorer.getResourceBundle().getString("window.folder.updatesuccess"));
         } catch (Exception rmie) {
             //remove new node in case off error
             if (insertnewnode) {
                 temp_node = explorer.getSession().getCurrentTreeNodeSelection();
                 explorer.getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode) explorer.getSession().getCurrentTreeNodeSelection().getParent());
-                explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
+                explorer.getJTreeRepository().setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
                 explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(temp_node);
             }
             JOptionPane.showMessageDialog(explorer, 

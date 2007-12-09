@@ -90,7 +90,7 @@ public class XincoImportThread extends Thread {
                                 new File(explorer.current_path));
                         this.sleep(10000);
                         // select current path
-                        explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
+                        explorer.getJTreeRepository().setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
                         // update transaction info
                         explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.importsuccess"));
                     } catch (Exception ie) {
@@ -105,7 +105,9 @@ public class XincoImportThread extends Thread {
             }
             try {
                 explorer.getSession().getXinco().indexFiles(explorer.getFilesToBeIndexed(), explorer.getSession().getUser());
-                System.err.println("Indexing complete!");
+                if (explorer.getSettings().getSetting("setting.enable.developermode").isBool_value()) {
+                    System.out.println("Indexing complete!");
+                }
             } catch (RemoteException ex) {
                 ex.printStackTrace();
                 explorer.getProgressBar().hide();
