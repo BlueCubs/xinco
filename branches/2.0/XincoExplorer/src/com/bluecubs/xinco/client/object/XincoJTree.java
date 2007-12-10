@@ -78,7 +78,7 @@ public class XincoJTree extends JTree {
     public XincoJTree(XincoExplorer explorer) {
         setExplorer(explorer);
         getSelectionModel().setSelectionMode(
-                TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
+                TreeSelectionModel.SINGLE_TREE_SELECTION);
         new XincoDefaultTreeTransferHandler(this, DnDConstants.ACTION_COPY_OR_MOVE);
         this.addMouseListener(new MouseInputListener() {
 
