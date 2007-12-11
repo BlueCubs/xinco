@@ -76,6 +76,8 @@ public class XincoAdminServlet extends HttpServlet {
     private XincoDBManager DBM = null;
 
     /** Initializes the servlet.
+     * @param config
+     * @throws javax.servlet.ServletException 
      */
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -91,7 +93,11 @@ public class XincoAdminServlet extends HttpServlet {
     /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
+     * @throws javax.servlet.ServletException
+     * @throws java.io.IOException
+     * @throws java.lang.Exception 
      */
+    @SuppressWarnings("unchecked")
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         Locale loc = null;
@@ -596,7 +602,7 @@ public class XincoAdminServlet extends HttpServlet {
             if (login_user != null) {
                 try {
                     DBM = new XincoDBManager();
-                    (new XincoCoreNodeServer(2, DBM)).deleteFromDB(false, DBM, login_user.getId());
+                    (new XincoCoreNodeServer(2, DBM)).removeFromDB(false, DBM, login_user.getId());
                     DBM.finalize();
                 } catch (Throwable e) {
                     e.printStackTrace();
@@ -1613,6 +1619,8 @@ public class XincoAdminServlet extends HttpServlet {
     /** Handles the HTTP <code>GET</code> method.
      * @param request servlet request
      * @param response servlet response
+     * @throws javax.servlet.ServletException
+     * @throws java.io.IOException 
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -1627,6 +1635,8 @@ public class XincoAdminServlet extends HttpServlet {
     /** Handles the HTTP <code>POST</code> method.
      * @param request servlet request
      * @param response servlet response
+     * @throws javax.servlet.ServletException
+     * @throws java.io.IOException 
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -1639,6 +1649,7 @@ public class XincoAdminServlet extends HttpServlet {
     }
 
     /** Returns a short description of the servlet.
+     * @return String
      */
     @Override
     public String getServletInfo() {
