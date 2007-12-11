@@ -36,7 +36,6 @@
 
 package com.bluecubs.xinco.client;
 
-import java.rmi.RemoteException;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.bluecubs.xinco.core.*;
@@ -45,14 +44,13 @@ public class XincoMutableTreeNode extends DefaultMutableTreeNode {
     private XincoExplorer explorer;
     public XincoMutableTreeNode(Object o, XincoExplorer e) {
         super(o);
-        setExplorer(e);
+        explorer=e;
     }
     
     @Override
     public String toString() {
-        String s = null,result="";
+        String s = null;
         String status = null;
-        
         if (this.getUserObject() != null) {
             if (this.getUserObject().getClass() == XincoCoreNode.class) {
                 s = ((XincoCoreNode)this.getUserObject()).getDesignation();
@@ -82,24 +80,10 @@ public class XincoMutableTreeNode extends DefaultMutableTreeNode {
                 if (((XincoCoreData)this.getUserObject()).getStatus_number() == 5) {
                     status = new String(" | WWW");
                 }
-                try {
-                    result="" + s + " (" + getExplorer().getSession().getXinco().localizeString(((XincoCoreData)this.getUserObject()).getXinco_core_data_type().getDesignation(),getExplorer().getLocale().toString()) +
-                            " | " + ((XincoCoreData)this.getUserObject()).getXinco_core_language().getSign() + status + ")";
-                } catch (RemoteException ex) {
-                    ex.printStackTrace();
-                }
-                return result;
+                return "" + s + " (" + explorer.getResourceBundle().getString(((XincoCoreData)this.getUserObject()).getXinco_core_data_type().getDesignation()) +
+                        " | " + ((XincoCoreData)this.getUserObject()).getXinco_core_language().getSign() + status + ")";
             }
         }
         return super.toString();
-    }
-
-    public XincoExplorer getExplorer() {
-        return explorer;
-    }
-
-    public void setExplorer(XincoExplorer explorer) {
-        this.explorer = explorer;
-    }
-    
+    } 
 }

@@ -29,11 +29,10 @@
  * Modifications:
  *
  * Who?             When?             What?
- * Javier A. Ortiz 02/20/2007        Add XincoSetting vector to client session
+ * -                -                 -
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.client;
 
 import java.util.Vector;
@@ -45,7 +44,7 @@ import com.bluecubs.xinco.service.*;
  * XincoClientSession
  */
 public class XincoClientSession {
-    private XincoExplorer explorer;
+
     /**
      * Service Endpoint
      */
@@ -77,14 +76,6 @@ public class XincoClientSession {
      */
     private Vector server_groups = null;
     /**
-     * Server users
-     */
-    private Vector server_users = null;
-    /**
-     * Server settings
-     */
-    private Vector server_settings = null;
-    /**
      * Server languages
      */
     private Vector server_languages = null;
@@ -104,11 +95,11 @@ public class XincoClientSession {
      * Current search result
      */
     private Vector currentSearchResult = null;
+
     /**
      * Status
      */
-    private int status = 0;	//0 = not connected
-    
+    private int status = 0;	
     /**
      * XincoClientSession
      * 1 = connecting...
@@ -116,44 +107,21 @@ public class XincoClientSession {
      * 3 = disconnecting
      */
     public XincoClientSession(XincoExplorer e) {
-        setExplorer(e);
-        setService_endpoint("");
-        setUser(new XincoCoreUser());
+        service_endpoint = "";
+        user = new XincoCoreUser();
         //init repository
-        setXincoClientRepository(new XincoClientRepository(getExplorer()));
-        setServer_version(new XincoVersion());
-        setServer_groups(new Vector());
-        setServer_users(new Vector());
-        setServer_languages(new Vector());
-        setServer_datatypes(new Vector());
-        setClipboardTreeNodeSelection(new Vector());
-        setCurrentSearchResult(new Vector());
-        setServer_settings(new Vector());
-        setStatus(0);
+        xincoClientRepository = new XincoClientRepository(e);
+        server_version = new XincoVersion();
+        server_groups = new Vector();
+        server_languages = new Vector();
+        server_datatypes = new Vector();
+        clipboardTreeNodeSelection = new Vector();
+        currentSearchResult = new Vector();
+        status = 0;
     }
     
-    public XincoClientSession() {
-        setService_endpoint("");
-        setUser(new XincoCoreUser());
-        //init repository
-        setXincoClientRepository(new XincoClientRepository(getExplorer()));
-        setServer_version(new XincoVersion());
-        setServer_groups(new Vector());
-        setServer_users(new Vector());
-        setServer_languages(new Vector());
-        setServer_datatypes(new Vector());
-        setClipboardTreeNodeSelection(new Vector());
-        setCurrentSearchResult(new Vector());
-        setServer_settings(new Vector());
-        setStatus(0);
-    }
-
-    public XincoExplorer getExplorer() {
-        return explorer;
-    }
-
-    public void setExplorer(XincoExplorer explorer) {
-        this.explorer = explorer;
+    protected XincoClientSession(){
+        
     }
 
     public String getService_endpoint() {
@@ -172,7 +140,11 @@ public class XincoClientSession {
         this.user = user;
     }
 
-    public XincoService getXinco_service() {
+    public //web service
+    /**
+     * Xinco Service
+     */
+    XincoService getXinco_service() {
         return xinco_service;
     }
 
@@ -196,7 +168,10 @@ public class XincoClientSession {
         this.xincoClientRepository = xincoClientRepository;
     }
 
-    public XincoVersion getServer_version() {
+    public /**
+     * Server version
+     */
+    XincoVersion getServer_version() {
         return server_version;
     }
 
@@ -210,22 +185,6 @@ public class XincoClientSession {
 
     public void setServer_groups(Vector server_groups) {
         this.server_groups = server_groups;
-    }
-
-    public Vector getServer_users() {
-        return server_users;
-    }
-
-    public void setServer_users(Vector server_users) {
-        this.server_users = server_users;
-    }
-
-    public Vector getServer_settings() {
-        return server_settings;
-    }
-
-    public void setServer_settings(Vector server_settings) {
-        this.server_settings = server_settings;
     }
 
     public Vector getServer_languages() {
@@ -275,5 +234,4 @@ public class XincoClientSession {
     public void setStatus(int status) {
         this.status = status;
     }
-    
 }

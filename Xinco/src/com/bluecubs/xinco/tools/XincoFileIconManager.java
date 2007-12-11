@@ -76,23 +76,4 @@ public class XincoFileIconManager {
         }
         return icon;
     }
-    
-    public Icon getIcon32(String extension){
-        if(extension.indexOf('.')>-1)
-            extension=extension.substring(extension.indexOf('.')+1,extension.length());
-        Icon icon=null;
-        try {
-            //Create a temporary file with the specified extension
-            file = File.createTempFile("icon", "." + extension);
-            
-            sun.awt.shell.ShellFolder shellFolder = sun.awt.shell.ShellFolder.getShellFolder(file);
-            icon = new ImageIcon(shellFolder.getIcon(true));
-            
-            //Delete the temporary file
-            file.delete();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        return icon;
-    }
 }

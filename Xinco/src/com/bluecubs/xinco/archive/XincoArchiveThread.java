@@ -21,19 +21,18 @@
  *
  * Name:            XincoArchiveThread
  *
- * Description:     handle document indexing in thread
+ * Description:     handle document indexing in thread 
  *
  * Original Author: Alexander Manes
  * Date:            2005/01/16
  *
  * Modifications:
- *
+ * 
  * Who?             When?             What?
  * -                -                 -
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.archive;
 
 import java.util.Calendar;
@@ -46,29 +45,29 @@ import com.bluecubs.xinco.core.server.XincoDBManager;
  * (only one archiving thread is allowed)
  */
 public class XincoArchiveThread extends Thread {
-    
+
     public static XincoArchiveThread instance = null;
-    
     public Calendar firstRun = null;
     public Calendar lastRun = null;
-    
+
+    @Override
     public void run() {
         long archive_period = 14400000;
         firstRun = new GregorianCalendar();
         while (true) {
             try {
-                XincoDBManager dbm = null;
-                dbm = new XincoDBManager();
-                archive_period = dbm.config.getFileArchivePeriod();
+                XincoDBManager DBM = null;
+                DBM = new XincoDBManager();
+                archive_period = DBM.config.getFileArchivePeriod();
                 //exit archiver if period = 0
                 if (archive_period == 0) {
                     break;
                 }
-                XincoArchiver.archiveData(dbm);
+                XincoArchiver.archiveData(DBM);
                 lastRun = new GregorianCalendar();
-                dbm.getConnection().close();
-                dbm = null;
-            } catch (Exception e){
+                DBM.getConnection().close();
+                DBM = null;
+            } catch (Throwable e) {
                 //continue, wait and try again...
                 archive_period = 14400000;
             }
@@ -79,15 +78,14 @@ public class XincoArchiveThread extends Thread {
             }
         }
     }
-    
+
     public static XincoArchiveThread getInstance() {
         if (instance == null) {
             instance = new XincoArchiveThread();
         }
         return instance;
     }
-    
+
     private XincoArchiveThread() {
     }
-    
 }

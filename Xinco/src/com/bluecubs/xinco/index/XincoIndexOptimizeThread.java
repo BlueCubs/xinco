@@ -21,25 +21,23 @@
  *
  * Name:            XincoIndexOptimizeThread
  *
- * Description:     handle optimizing in thread
+ * Description:     handle optimizing in thread 
  *
  * Original Author: Alexander Manes
  * Date:            2005/01/19
  *
  * Modifications:
- *
+ * 
  * Who?             When?             What?
  * -                -                 -
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.index;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import com.bluecubs.xinco.index.XincoIndexer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
 
 /**
@@ -47,24 +45,23 @@ import com.bluecubs.xinco.core.server.XincoDBManager;
  * (only one thread is allowed)
  */
 public class XincoIndexOptimizeThread extends Thread {
-    
+
     public static XincoIndexOptimizeThread instance = null;
-    
     public Calendar firstRun = null;
     public Calendar lastRun = null;
-    
+
+    @Override
     public void run() {
         firstRun = new GregorianCalendar();
         while (true) {
             try {
-                XincoDBManager dbm = null;
-                dbm = new XincoDBManager();
-                XincoIndexer.optimizeIndex(dbm);
+                XincoDBManager DBM = null;
+                DBM = new XincoDBManager();
+                XincoIndexer.optimizeIndex(DBM);
                 lastRun = new GregorianCalendar();
-                dbm.getConnection().close();
-                dbm = null;
-            } catch (Exception e){
-                //continue, wait and try again...
+                DBM.finalize();
+            } catch (Throwable e) {
+            //continue, wait and try again...
             }
             try {
                 Thread.sleep(14400000); //4 hours
@@ -73,15 +70,14 @@ public class XincoIndexOptimizeThread extends Thread {
             }
         }
     }
-    
+
     public static XincoIndexOptimizeThread getInstance() {
         if (instance == null) {
             instance = new XincoIndexOptimizeThread();
         }
         return instance;
     }
-    
+
     private XincoIndexOptimizeThread() {
     }
-    
 }

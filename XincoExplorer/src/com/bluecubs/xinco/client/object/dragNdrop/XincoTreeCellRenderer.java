@@ -32,7 +32,6 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.client.object.dragNdrop;
 
 import com.bluecubs.xinco.client.XincoExplorer;
@@ -50,15 +49,17 @@ import javax.swing.tree.DefaultTreeCellRenderer;
  *
  * @author javydreamercsw
  */
-public class XincoTreeCellRenderer extends DefaultTreeCellRenderer{
-    private XincoFileIconManager xfm=null;
+public class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
+
+    private XincoFileIconManager xfm = null;
     private XincoExplorer explorer;
+
     /** Creates a new instance of XincoTreeCellRenderer */
     public XincoTreeCellRenderer(XincoExplorer explorer) {
-        this.explorer=explorer;
+        this.explorer = explorer;
         xfm = new XincoFileIconManager();
     }
-    
+
     @Override
     public Component getTreeCellRendererComponent(JTree tree,
             Object value, boolean sel, boolean expanded, boolean leaf,
@@ -69,39 +70,45 @@ public class XincoTreeCellRenderer extends DefaultTreeCellRenderer{
                 hasFocus);
         if (leaf) {
             //Only attempt if connected!
-            if(explorer.getSession().getXinco()!=null){
-                if(!isFolder(value)){
+            if (explorer.getSession().getXinco() != null) {
+                if (!isFolder(value)) {
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-                    String ext=value.toString().substring(0,value.toString().indexOf("(")-1);
-                    switch(((XincoCoreData)(node.getUserObject())).getXinco_core_data_type().getId()){
-                        case 1:try{
-                            setIcon(xfm.getIcon16(ext));
-                        }catch (NullPointerException e){
+                    String ext = value.toString().substring(0, value.toString().indexOf("(") - 1);
+                    switch (((XincoCoreData) (node.getUserObject())).getXinco_core_data_type().getId()) {
+                        case 1:
+                            try {
+                                setIcon(xfm.getIcon16(ext));
+                            } catch (NullPointerException e) {
+                                setIcon(getLeafIcon());
+                            }
+                            break;
+                        case 2:
+                            try {
+                                setIcon(xfm.getIcon16(".txt"));
+                            } catch (NullPointerException e) {
+                                setIcon(getLeafIcon());
+                            }
+                            break;
+                        case 3:
+                            try {
+                                setIcon(xfm.getIcon16(".html"));
+                            } catch (NullPointerException e) {
+                                setIcon(getLeafIcon());
+                            }
+                            break;
+                        case 4:
+                            try {
+                                setIcon(new ImageIcon(XincoFileIconManager.class.getResource("contact.gif")));
+                            } catch (NullPointerException e) {
+                                setIcon(getLeafIcon());
+                            }
+                            break;
+                        default:
                             setIcon(getLeafIcon());
-                        }
-                        break;
-                        case 2:try{
-                            setIcon(xfm.getIcon16(".txt"));
-                        }catch (NullPointerException e){
-                            setIcon(getLeafIcon());
-                        }
-                        break;
-                        case 3:try{
-                            setIcon(xfm.getIcon16(".html"));
-                        }catch (NullPointerException e){
-                            setIcon(getLeafIcon());
-                        }
-                        break;
-                        case 4: try{
-                            setIcon(new ImageIcon(XincoFileIconManager.class.getResource("contact.gif")));
-                        }catch (NullPointerException e){
-                            setIcon(getLeafIcon());
-                        }
-                        break;
-                        default:setIcon(getLeafIcon());
                     }
-                    if(this.getIcon()==null)
+                    if (this.getIcon() == null) {
                         setIcon(getLeafIcon());
+                    }
                 }
             }
         } else {
@@ -110,10 +117,10 @@ public class XincoTreeCellRenderer extends DefaultTreeCellRenderer{
         }
         return this;
     }
-    
+
     protected boolean isFolder(Object value) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-        if (node!=null){
+        if (node != null) {
             if (node.getUserObject().getClass() == XincoCoreNode.class) {
                 return true;
             }

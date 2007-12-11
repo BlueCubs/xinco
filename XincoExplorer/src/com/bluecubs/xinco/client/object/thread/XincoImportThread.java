@@ -36,7 +36,6 @@
  *
  * Created on January 9, 2007, 3:52 PM
  */
-
 package com.bluecubs.xinco.client.object.thread;
 
 import com.bluecubs.xinco.client.XincoExplorer;
@@ -55,10 +54,12 @@ import javax.swing.tree.TreePath;
  * @author ortizbj
  */
 public class XincoImportThread extends Thread {
+
     private XincoExplorer explorer;
+
     @Override
     public void run() {
-        if(this.explorer!=null){
+        if (this.explorer != null) {
             explorer.setFilesToBeIndexed(null);
             ResourceBundle xerb = this.explorer.getResourceBundle();
             this.explorer.getJTreeRepository().setEnabled(false);
@@ -88,7 +89,7 @@ public class XincoImportThread extends Thread {
                         explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.progress"));
                         explorer.importContentOfFolder((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject(),
                                 new File(explorer.current_path));
-                        this.sleep(10000);
+                        XincoImportThread.sleep(10000);
                         // select current path
                         explorer.getJTreeRepository().setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
                         // update transaction info
@@ -121,8 +122,8 @@ public class XincoImportThread extends Thread {
         }
         this.explorer.getJTreeRepository().setEnabled(true);
     }
-    
-    public void setXincoExplorer(XincoExplorer e){
-        this.explorer=e;
+
+    public void setXincoExplorer(XincoExplorer e) {
+        this.explorer = e;
     }
 }

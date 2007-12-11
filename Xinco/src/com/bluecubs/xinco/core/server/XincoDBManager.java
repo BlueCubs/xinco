@@ -35,7 +35,10 @@
  */
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.XincoSettingException;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sql.DataSource;
 import javax.naming.InitialContext;
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
@@ -53,13 +56,16 @@ import org.apache.commons.dbcp.BasicDataSource;
 public class XincoDBManager {
 
     private Connection con = null;
-    public XincoConfigSingletonServer config=null;
+    public XincoConfigSingletonServer config;
     private int EmailLink = 1,  DataLink = 2;
     private ResourceBundle lrb = null;
     private Locale loc = null;
     private XincoSettingServer xss = null;
     private DataSource datasource = null;
     public static int count = 0;
+    private ResultSet rs = null;
+    private boolean settingsFilled = false;
+    private Statement stmt = null;
 
     public XincoDBManager() throws Exception {
         try {
@@ -67,46 +73,36 @@ public class XincoDBManager {
             //load connection configuartion
             config = XincoConfigSingletonServer.getInstance();
             setDatasource((DataSource) (new InitialContext()).lookup(config.getJNDIDB()));
+            //load configuration from database
+            fillSettings();
+            config.init(getXincoSettingServer());
             count++;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
 
-    private void load() {
-        //load configuration from database
-        fillSettings();
-        config.init(getXincoSettingServer());
-    }
-
     @SuppressWarnings("unchecked")
     protected void fillSettings() {
-        ResultSet rs = null;
         getXincoSettingServer().setXinco_settings(new Vector());
         String string_value = "";
-        System.out.println("Filling settings from DB...");
         try {
-            Statement stm = getConnection().createStatement();
-            rs = stm.executeQuery("select * from xinco_setting order by id");
+            rs = executeQuery("select * from xinco_setting order by id");
             while (rs.next()) {
                 if (rs.getString("string_value") == null) {
                     string_value = "";
                 } else {
                     string_value = rs.getString("string_value");
                 }
-                System.out.println("Adding "+rs.getString("description"));
                 getXincoSettingServer().getXinco_settings().addElement(new XincoSetting(rs.getInt("id"),
                         rs.getString("description"), rs.getInt("int_value"), string_value,
                         rs.getBoolean("bool_value"), 0, rs.getLong("long_value"), null));
             }
-            stm.close();
-            System.out.println("Settings loaded!");
-            if (getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
-                System.out.println("Settings loaded!");
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+            setSettingsFilled(true);
+        } catch (Throwable ex) {
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
             printStats();
+            setSettingsFilled(false);
         }
     }
 
@@ -122,12 +118,8 @@ public class XincoDBManager {
             }
         }
         if (isAdmin) {
-            ResultSet rs;
             String[] types = {"TABLE"};
-            Statement s = null;
-            String column = "id",
-             sql = null,
-             condition = null;
+            String column = "id", sql = null, condition = null;
             int number;
             DatabaseMetaData meta;
             try {
@@ -135,7 +127,6 @@ public class XincoDBManager {
                 //Get table names
                 rs = meta.getTables(null, null, null, types);
                 //Delete content of tables
-                s = getConnection().createStatement();
                 while (rs.next()) {
                     if (!rs.getString("TABLE_NAME").equals("xinco_id") &&
                             rs.getString("TABLE_NAME").contains("xinco")) {
@@ -172,33 +163,21 @@ public class XincoDBManager {
                         }
                         condition = column + " > " + number;
                         sql = "delete from " + rs.getString("TABLE_NAME") + " where " + condition;
-                        if (getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
-                            System.out.println(sql);
-                        }
-                        s.executeUpdate(sql);
+                        executeUpdate(sql);
                     }
                     if (rs.getString("TABLE_NAME").equals("xinco_id")) {
                         condition = " where last_id > 1000";
                         sql = "update " + rs.getString("TABLE_NAME") + " set last_id=1000" + condition;
-                        if (getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
-                            System.out.println(sql);
-                        }
-                        s.executeUpdate(sql);
+                        executeUpdate(sql);
                         condition = " where last_id < 1000";
                         sql = "update " + rs.getString("TABLE_NAME") + " set last_id=0" + condition;
-                        if (getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
-                            System.out.println(sql);
-                        }
-                        s.executeUpdate(sql);
+                        executeUpdate(sql);
                     }
                 }
-                s.close();
-                s = getConnection().createStatement();
-                s.executeUpdate("update xinco_id set last_id = 1000 where last_id >1000");
-                s.executeUpdate("update xinco_id set last_id = 0 where last_id < 1000");
-                s.executeUpdate("delete from xinco_core_user_modified_record");
+                executeUpdate("update xinco_id set last_id = 1000 where last_id >1000");
+                executeUpdate("update xinco_id set last_id = 0 where last_id < 1000");
+                executeUpdate("delete from xinco_core_user_modified_record");
                 getConnection().commit();
-                s.close();
                 rs = null;
             } catch (SQLException ex) {
                 try {
@@ -216,17 +195,21 @@ public class XincoDBManager {
 
     public XincoSettingServer getXincoSettingServer() {
         if (xss == null) {
-            System.out.println("Creating XincoSettingServer....");
             xss = new XincoSettingServer();
-            System.out.println("Loading settings...");
-            load();
-            System.out.println("Done!");
         }
         return xss;
     }
 
     public XincoSetting getSetting(String name) {
-        return getXincoSettingServer().getSetting(name);
+        if(!isSettingsFilled())
+            fillSettings();
+        try {
+            return getXincoSettingServer().getSetting(name);
+        } catch (XincoSettingException ex) {
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE,
+                    lrb.getString("menu.connection.error.settings").replace("%s", name), ex);
+        }
+        return null;
     }
 
     /**Draws a table with results of the query stored in the ResultSet rs in the PrintWriter out*/
@@ -272,7 +255,7 @@ public class XincoDBManager {
                 out.println("</tr><tr>");
             }
             out.println("</tr></table></center>");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             out.println(getResourceBundle().getString("general.nodata"));
             System.out.println("Exception drawing table: " + e.getMessage());
         }
@@ -295,12 +278,18 @@ public class XincoDBManager {
     }
 
     @Override
-    protected void finalize() throws Throwable {
+    public void finalize() throws Throwable {
         try {
             count--;
-            getConnection().close();
+            if (stmt != null) {
+                stmt.close();
+            }
+            if (rs != null) {
+                rs.close();
+            }
+            con.close();
         } finally {
-            if (!getConnection().isClosed()) {
+            if (!con.isClosed()) {
                 count++;
             }
             super.finalize();
@@ -354,32 +343,27 @@ public class XincoDBManager {
             con.setAutoCommit(false);
         } catch (SQLException ex) {
             ex.printStackTrace();
-            printStats();
         }
         return con;
     }
 
     public DataSource getDatasource() {
-        try {
-            datasource.getConnection().setAutoCommit(false);
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+//        try {
+//            datasource.getConnection().setAutoCommit(false);
+//        }  catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
         return datasource;
     }
 
     public int getNewID(String attrTN) throws Exception {
         int newID = 0;
-        Statement stmt;
-        stmt = getConnection().createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_id WHERE tablename='" + attrTN + "'");
+        rs = executeQuery("SELECT * FROM xinco_id WHERE tablename='" + attrTN + "'");
         while (rs.next()) {
             newID = rs.getInt("last_id") + 1;
         }
-        stmt.close();
-        stmt = getConnection().createStatement();
-        stmt.executeUpdate("UPDATE xinco_id SET last_id=last_id+1 WHERE tablename='" + attrTN + "'");
-        stmt.close();
+        rs.close();
+        executeUpdate("UPDATE xinco_id SET last_id=last_id+1 WHERE tablename='" + attrTN + "'");
         return newID;
     }
 
@@ -397,9 +381,15 @@ public class XincoDBManager {
     }
 
     public void printStats() {
-        System.out.println("Number Active: " + ((BasicDataSource) getDatasource()).getNumActive());
-        System.out.println("Number Idle: " + ((BasicDataSource) getDatasource()).getNumIdle());
-        System.out.println("--------------------------------------------------------------------");
+        try {
+            System.out.println("Number Active: " + ((BasicDataSource) getDatasource()).getNumActive());
+            System.out.println("Number Idle: " + ((BasicDataSource) getDatasource()).getNumIdle());
+            if (!getDatasource().getConnection().isClosed()) {
+                getDatasource().getConnection().close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void setConnection(Connection con) {
@@ -425,7 +415,7 @@ public class XincoDBManager {
         } else {
             try {
                 setResourceBundle(ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc));
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
                 printStats();
             }
@@ -450,7 +440,7 @@ public class XincoDBManager {
                 default:
                     temp = Locale.getDefault();
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             temp = Locale.getDefault();
         }
         setLocale(temp);
@@ -505,5 +495,45 @@ public class XincoDBManager {
                 "document.oncontextmenu=new Function('return false')/n" +
                 "// --> /n" +
                 "</script>";
+    }
+
+    public ResultSet executeQuery(String sql) {
+        try {
+            if (isSettingsFilled()) {
+                if (getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
+                    System.out.println(sql);
+                }
+            }
+            stmt = getConnection().createStatement();
+            rs = stmt.executeQuery(sql);
+        } catch (Throwable ex) {
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rs;
+    }
+
+    public boolean executeUpdate(String sql) throws XincoException {
+        try {
+            if (isSettingsFilled()) {
+                if (getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
+                    System.out.println(sql);
+                }
+            }
+            stmt = getConnection().createStatement();
+            stmt.executeUpdate(sql);
+            getConnection().commit();
+        } catch (Throwable ex) {
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+            throw new XincoException();
+        }
+        return true;
+    }
+
+    private boolean isSettingsFilled() {
+        return settingsFilled;
+    }
+
+    private void setSettingsFilled(boolean settingsFilled) {
+        this.settingsFilled = settingsFilled;
     }
 }

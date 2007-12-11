@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- *
+ * 
  *
  *************************************************************
  * SearchDialog.java
@@ -48,12 +48,9 @@ import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.XincoCoreLanguage;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoException;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Vector;
-import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.TreePath;
@@ -62,17 +59,15 @@ import javax.swing.tree.TreePath;
  *
  * @author  javydreamercsw
  */
-public class SearchDialog extends javax.swing.JDialog implements MouseListener{
+public class SearchDialog extends javax.swing.JDialog {
     private XincoExplorer explorer;
     private ResourceBundle xerb;
     /** Creates new form SearchDialog */
     public SearchDialog(java.awt.Frame parent, boolean modal,XincoExplorer e) {
         super(parent, modal);
-        this.explorer=e;
         initComponents();
-        setLocationRelativeTo(null);
         getRootPane().setDefaultButton(this.searchButton);
-        addMouseListener(this.explorer);
+        this.explorer=e;
         this.xerb=this.explorer.getResourceBundle();
         setTitle(xerb.getString("window.search"));
         this.queryLabel.setText(xerb.getString("window.search.query") + ":");
@@ -80,11 +75,13 @@ public class SearchDialog extends javax.swing.JDialog implements MouseListener{
         this.builderLabel.setText(xerb.getString("window.search.querybuilder") + ":");
         this.systemOptionsValueLabel.setText(xerb.getString("window.search.querybuilderhintslabel"));
         this.systemOptionsLabel.setText(xerb.getString("window.search.querybuilderhints"));
+        this.searchButton.setText(xerb.getString("window.search.addtoquery"));
         this.allLanguagesCheckBox.setText(xerb.getString("window.search.alllanguages"));
         this.searchButton.setText(xerb.getString("window.search"));
         this.goToSelectionButton.setText(xerb.getString("window.search.gotoselection"));
         this.addToQueryButton.setText(xerb.getString("window.search.addtoquery"));
         this.resetButton.setText(xerb.getString("general.reset"));
+        String[] cn = {xerb.getString("window.search.table.designation"),xerb.getString("window.search.table.path")};
         resultTable.setModel(new DefaultTableModel(new Object[][]{},
                 new String[]{xerb.getString("window.search.table.designation"),
                 xerb.getString("window.search.table.path")}) {
@@ -102,7 +99,7 @@ public class SearchDialog extends javax.swing.JDialog implements MouseListener{
         String text = "";
         int selection = -1;
         int alt_selection = 0;
-        ListModel dlm=null;
+        ListModel dlm;
         XincoCoreDataType xcdt = null;
         this.operatorComboBox.setSelectedIndex(0);
         //load fields
@@ -126,8 +123,7 @@ public class SearchDialog extends javax.swing.JDialog implements MouseListener{
         alt_selection = 0;
         text = "";
         for (i=0;i<explorer.getSession().getServer_languages().size();i++) {
-            text = ((XincoCoreLanguage)explorer.getSession().getServer_languages().elementAt(i)).getDesignation() +
-                    " (" + ((XincoCoreLanguage)explorer.getSession().getServer_languages().elementAt(i)).getSign() + ")";
+            text = ((XincoCoreLanguage)explorer.getSession().getServer_languages().elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage)explorer.getSession().getServer_languages().elementAt(i)).getSign() + ")";
             list.add(text);
             if (((XincoCoreLanguage)explorer.getSession().getServer_languages().elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
                 selection = i;
@@ -148,53 +144,10 @@ public class SearchDialog extends javax.swing.JDialog implements MouseListener{
         this.languageList.ensureIndexIsVisible(this.languageList.getSelectedIndex());
         this.setBounds(0, 0, (new Double(getToolkit().getScreenSize().getWidth())).intValue()-100,
                 (new Double(getToolkit().getScreenSize().getHeight())).intValue()-75);
-        //Disable if DB is locked (i.e. Index Rebuild)
-        setLockStatus(this.explorer.getSettings().getSetting("general.setting.index.lock").isBool_value());
     }
     
     public void clearResults(){
         this.resultTable.removeAll();
-    }
-    
-    private void setLockStatus(boolean status){
-        this.queryLabel.setEnabled(!status);
-        this.languageLabel.setEnabled(!status);
-        this.builderLabel.setEnabled(!status);
-        this.systemOptionsValueLabel.setEnabled(!status);
-        this.systemOptionsLabel.setEnabled(!status);
-        this.searchButton.setEnabled(!status);
-        this.allLanguagesCheckBox.setEnabled(!status);
-        this.searchButton.setEnabled(!status);
-        this.goToSelectionButton.setEnabled(!status);
-        this.addToQueryButton.setEnabled(!status);
-        this.resetButton.setEnabled(!status);
-        this.optionsComboBox.setEnabled(!status);
-        this.languageList.setEnabled(!status);
-        if(status){
-            JOptionPane optionPane = new JOptionPane(
-                    this.explorer.getResourceBundle().getString("general.setting.index.lock"),
-                    JOptionPane.WARNING_MESSAGE);
-        }
-    }
-    
-    public void mouseClicked(MouseEvent e) {
-        this.explorer.resetTimer();
-    }
-    
-    public void mousePressed(MouseEvent e) {
-        this.explorer.resetTimer();
-    }
-    
-    public void mouseReleased(MouseEvent e) {
-        this.explorer.resetTimer();
-    }
-    
-    public void mouseEntered(MouseEvent e) {
-        this.explorer.resetTimer();
-    }
-    
-    public void mouseExited(MouseEvent e) {
-        this.explorer.resetTimer();
     }
     
     /** This method is called from within the constructor to
@@ -263,6 +216,11 @@ public class SearchDialog extends javax.swing.JDialog implements MouseListener{
             }
         });
 
+        languageList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "x" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
         jScrollPane1.setViewportView(languageList);
 
         searchButton.setText("jButton1");
@@ -487,18 +445,13 @@ public class SearchDialog extends javax.swing.JDialog implements MouseListener{
                 lid = (XincoCoreLanguage)explorer.getSession().getServer_languages().elementAt(languageList.getSelectedIndex());
             }
             try {
-                explorer.getSession().setCurrentSearchResult(explorer.getSession().getXinco().findXincoCoreData(queryValueField.getText(), lid, explorer.getSession().getUser()));
-                if (explorer.getSession().getCurrentSearchResult() == null) {
+                explorer.getSession().setCurrentSearchResult(explorer.getSession().getXinco().findXincoCoreData(queryValueField.getText(), lid,explorer.getSession().getUser()));
+                if (explorer.getSession().getCurrentSearchResult()== null) {
                     throw new XincoException();
                 }
             } catch (Exception rme) {
                 explorer.getSession().setCurrentSearchResult(new Vector());
-                if(explorer.getSettings().getSetting("setting.enable.developermode").isBool_value())
-                    rme.printStackTrace();
-                progressBar.hide();
             }
-            if(explorer.getSettings().getSetting("setting.enable.developermode").isBool_value())
-                System.out.println(explorer.getSession().getCurrentSearchResult().size()+" results found!");
             //update search result
             String[] rdata = {"", ""};
             DefaultTableModel dtm = (DefaultTableModel)resultTable.getModel();
@@ -507,9 +460,7 @@ public class SearchDialog extends javax.swing.JDialog implements MouseListener{
                 dtm.removeRow(0);
             }
             for (i=0;i<explorer.getSession().getCurrentSearchResult().size();i++) {
-                rdata[0] = ((XincoCoreData)(((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getDesignation() + 
-                        " (" + ((XincoCoreData)(((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getXinco_core_data_type().getDesignation() + 
-                        " | " + ((XincoCoreData)(((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getXinco_core_language().getSign() + ")";
+                rdata[0] = ((XincoCoreData)(((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getDesignation() + " (" + ((XincoCoreData)(((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getXinco_core_data_type().getDesignation() + " | " + ((XincoCoreData)(((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getXinco_core_language().getSign() + ")";
                 rdata[1] = new String("");
                 for (j=1;j<((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).size();j++) {
                     rdata[1] = rdata[1] + ((XincoCoreNode)(((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(j))).getDesignation() + " / ";

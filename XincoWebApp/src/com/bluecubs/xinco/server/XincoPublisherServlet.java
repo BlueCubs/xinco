@@ -33,13 +33,13 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.server;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import java.io.*;
 import java.sql.ResultSet;
-import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import com.bluecubs.xinco.core.*;
@@ -52,6 +52,7 @@ public class XincoPublisherServlet extends HttpServlet {
 
     private ResourceBundle rb;
     private XincoDBManager DBM;
+
     /** Initializes the servlet.
      */
     @Override
@@ -88,7 +89,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 default:
                     loc = Locale.getDefault();
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             loc = Locale.getDefault();
         }
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
@@ -110,7 +111,7 @@ public class XincoPublisherServlet extends HttpServlet {
         //connect to db
         try {
             DBM = new XincoDBManager();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             //start output
             response.setContentType("text/html");
             PrintWriter out = response.getWriter();
@@ -145,7 +146,7 @@ public class XincoPublisherServlet extends HttpServlet {
                         if (!isPublic) {
                             core_data_id = -1;
                         }
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         core_data_id = -1;
                     }
                 }
@@ -183,11 +184,11 @@ public class XincoPublisherServlet extends HttpServlet {
                     out.write(buf, 0, len);
                 }
                 in.close();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 System.out.println(e);
             }
 
-            //end FILE output
+        //end FILE output
         } else {
             // begin HTML output
             //start output
@@ -233,15 +234,14 @@ public class XincoPublisherServlet extends HttpServlet {
                 if (printList) {
                     try {
                         XincoCoreDataServer xdata_temp = null;
-                        Statement stmt = DBM.getConnection().createStatement();
-                        ResultSet rs = stmt.executeQuery("SELECT DISTINCT xcd.id, xcd.designation FROM xinco_core_data xcd, " + "xinco_core_ace xca WHERE xcd.id=xca.xinco_core_data_id AND (xcd.status_number=5 OR " + "(xca.xinco_core_group_id=3 AND xca.read_permission=1)) ORDER BY xcd.designation");
+                        ResultSet rs = DBM.executeQuery("SELECT DISTINCT xcd.id, xcd.designation FROM xinco_core_data xcd, " + "xinco_core_ace xca WHERE xcd.id=xca.xinco_core_data_id AND (xcd.status_number=5 OR " + "(xca.xinco_core_group_id=3 AND xca.read_permission=1)) ORDER BY xcd.designation");
                         while (rs.next()) {
                             xdata_temp = new XincoCoreDataServer(rs.getInt("id"), DBM);
                             temp_server_url = request.getRequestURL().toString();
                             temp_url = "";
                             //file = 1
                             if (xdata_temp.getXinco_core_data_type().getId() == 1) {
-                                temp_url = ((XincoAddAttribute) xdata_temp.getXinco_add_attributes().elementAt(0)).getAttribVarchar();
+                                temp_url = ((XincoAddAttribute) xdata_temp.getXinco_add_attributes().elementAt(0)).getAttrib_varchar();
                             } else {
                                 temp_url = xdata_temp.getDesignation();
                             }
@@ -251,8 +251,14 @@ public class XincoPublisherServlet extends HttpServlet {
                             out.println("</tr>");
                             out.flush();
                         }
-                        stmt.close();
-                    } catch (Exception sqle) {
+                    } catch (Throwable sqle) {
+                        try {
+                            if (DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
+                                sqle.printStackTrace();
+                            }
+                        } catch (XincoSettingException ex) {
+                            Logger.getLogger(XincoPublisherServlet.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 } else if (browseFolder) {
                     try {
@@ -350,7 +356,7 @@ public class XincoPublisherServlet extends HttpServlet {
                                         temp_url = "";
                                         //file = 1
                                         if (xdata_temp.getXinco_core_data_type().getId() == 1) {
-                                            temp_url = ((XincoAddAttribute) xdata_temp.getXinco_add_attributes().elementAt(0)).getAttribVarchar();
+                                            temp_url = ((XincoAddAttribute) xdata_temp.getXinco_add_attributes().elementAt(0)).getAttrib_varchar();
                                         } else {
                                             temp_url = xdata_temp.getDesignation();
                                         }
@@ -400,22 +406,22 @@ public class XincoPublisherServlet extends HttpServlet {
                     out.println("<tr>");
                     out.println("<td class=\"text\" valign=\"top\"><b>" + xcdta.getDesignation() + ":</b></td>");
                     if (xcdta.getData_type().toLowerCase().compareTo("int") == 0) {
-                        out.println("<td class=\"text\"><pre>" + xaa.getAttribInt() + "</pre></td>");
+                        out.println("<td class=\"text\"><pre>" + xaa.getAttrib_int() + "</pre></td>");
                     }
                     if (xcdta.getData_type().toLowerCase().compareTo("unsignedint") == 0) {
-                        out.println("<td class=\"text\"><pre>" + xaa.getAttribUnsignedint() + "</pre></td>");
+                        out.println("<td class=\"text\"><pre>" + xaa.getAttrib_unsignedint() + "</pre></td>");
                     }
                     if (xcdta.getData_type().toLowerCase().compareTo("double") == 0) {
-                        out.println("<td class=\"text\"><pre>" + xaa.getAttribDouble() + "</pre></td>");
+                        out.println("<td class=\"text\"><pre>" + xaa.getAttrib_double() + "</pre></td>");
                     }
                     if (xcdta.getData_type().toLowerCase().compareTo("varchar") == 0) {
-                        out.println("<td class=\"text\"><pre>" + xaa.getAttribVarchar() + "</pre></td>");
+                        out.println("<td class=\"text\"><pre>" + xaa.getAttrib_varchar() + "</pre></td>");
                     }
                     if (xcdta.getData_type().toLowerCase().compareTo("text") == 0) {
-                        out.println("<td class=\"text\"><pre>" + xaa.getAttribText() + "</pre></td>");
+                        out.println("<td class=\"text\"><pre>" + xaa.getAttrib_text() + "</pre></td>");
                     }
                     if (xcdta.getData_type().toLowerCase().compareTo("datetime") == 0) {
-                        out.println("<td class=\"text\"><pre>" + xaa.getAttribDatetime() + "</pre></td>");
+                        out.println("<td class=\"text\"><pre>" + xaa.getAttrib_datetime() + "</pre></td>");
                     }
                     out.println("</tr>");
                 }
@@ -429,7 +435,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
                 out.println("<tr>");
                 out.println("<td class=\"text\">&nbsp;</td>");
-                out.println("<td class=\"text\">&copy; " + DBM.getSetting("general.copyright.date").getStringValue() + ", " + (DBM.config.isAllowOutsideLinks() ? rb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
+                out.println("<td class=\"text\">&copy; " + DBM.getSetting("general.copyright.date").getString_value() + ", " + (DBM.config.isAllowOutsideLinks() ? rb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
                 out.println("</tr>");
                 out.println("</table><tr><form action='menu.jsp'><input type='submit' value='" + rb.getString("message.admin.main.backtomain") + "' />" + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></form></tr>" + "<tr><FORM><INPUT TYPE='button' VALUE='" + rb.getString("message.admin.main.back") + "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value='" + request.getParameter("list") + "'/></FORM></tr>");
             }
@@ -443,8 +449,8 @@ public class XincoPublisherServlet extends HttpServlet {
         } //end HTML output
         //close db connection
         try {
-            DBM.getConnection().close();
-        } catch (Exception e) {
+            DBM.finalize();
+        } catch (Throwable e) {
         }
     }
 

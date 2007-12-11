@@ -10,7 +10,6 @@
             </source-roots>
             <test-roots/>
         </data>
-        <data xmlns="http://www.netbeans.org/ns/jmx/1" version="0.4"/>
         <references xmlns="http://www.netbeans.org/ns/ant-project-references/1">
             <reference>
                 <foreign-project>Xinco</foreign-project>

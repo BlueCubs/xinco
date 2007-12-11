@@ -67,7 +67,7 @@ public class XincoIndexMicrosoftPowerpoint implements XincoIndexFileType {
 			r.registerListener(ximpprl);
 	        r.read(new FileInputStream(f));
 	        text = ximpprl.getEventText();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			text = null;
 		}
 		return text;

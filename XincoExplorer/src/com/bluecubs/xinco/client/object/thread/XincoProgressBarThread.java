@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- *
+ * 
  *
  *************************************************************
  * XincoProgressBarThread.java
@@ -39,8 +39,8 @@
 
 package com.bluecubs.xinco.client.object.thread;
 
-import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.*;
+import com.bluecubs.xinco.client.XincoExplorer;
 
 /**
  *
@@ -59,21 +59,14 @@ public class XincoProgressBarThread extends Thread{
     public XincoProgressBarThread(XincoExplorer e) {
         this.explorer=e;
     }
-    
     public void hide() {
-        if(progressBar!=null)
-            progressBar.setVisible(false);
+        progressBar.setVisible(false);
     }
-    
     public void show() {
-        if(progressBar!=null){
-            progressBar.setVisible(true);
-            progressBar.repaint();
-        }
+        progressBar.setVisible(true);
+        progressBar.repaint();
     }
-    
     public void setTitle(String t){
-        if(progressBar!=null)
-            progressBar.setTitle(t);
+        progressBar.setTitle(t);
     }
 }

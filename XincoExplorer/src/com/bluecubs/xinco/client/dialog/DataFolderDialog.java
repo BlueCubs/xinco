@@ -68,7 +68,6 @@ public class DataFolderDialog extends javax.swing.JDialog {
         initComponents();
         setLocationRelativeTo(null);
         this.explorer=explorer;
-        addMouseListener(this.explorer);
         setTitle(explorer.getResourceBundle().getString("window.folder"));
         this.save.setText(explorer.getResourceBundle().getString("general.save")+"!");
         this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
@@ -261,7 +260,7 @@ public class DataFolderDialog extends javax.swing.JDialog {
             // optimize node size
             newnode.setXinco_core_nodes(new Vector());
             newnode.setXinco_core_data(new Vector());
-            if ((newnode = explorer.getSession().getXinco().setXincoCoreNode(newnode, explorer.getSession().getUser())) ==
+            if ((newnode = explorer.getSession().getXinco().setXincoCoreNode(newnode,explorer.getSession().getUser())) ==
             null) {
                 throw new XincoException(explorer.getResourceBundle().getString("error.nowritepermission"));
             }
