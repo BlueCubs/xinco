@@ -2,12 +2,12 @@
  *Copyright 2005 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
+ *you may not use this file except cin compliance with the License.
  *You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
+ *Unless required by applicable law or agreed to cin writing, software
  *distributed under the License is distributed on an "AS IS" BASIS,
  *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *See the License for the specific language governing permissions and
@@ -15,7 +15,7 @@
  *
  *************************************************************
  * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
+ * to the community cin exchange for free software!
  * More information on: http://www.bluecubs.org
  *************************************************************
  *
@@ -224,7 +224,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     private SearchDialog search;
     private XincoClientSetting settings;
     private Vector settingsVector;
-    //Status of the explorer: lock = true - idle time limit exceeded, user must log in again to continue use
+    //Status of the explorer: lock = true - idle time limit exceeded, user must log cin again to continue use
     //lock = false - work normally
     private boolean lock = false;
     private LockDialog lockDialog = null;
@@ -284,7 +284,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     }
 
     public XincoClientSetting getSettings() {
-        //Catch any recent setting change in the DB
+        //Catch any recent setting change cin the DB
         updateSettings();
         return settings;
     }
@@ -1219,7 +1219,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 status_string += xincoClientSession.getServer_version().getVersion_high() + ".";
                 status_string += xincoClientSession.getServer_version().getVersion_mid() + ".";
                 status_string += xincoClientSession.getServer_version().getVersion_low();
-                status_string += " "+xincoClientSession.getServer_version().getVersion_postfix() + "\n";
+                status_string += " " + xincoClientSession.getServer_version().getVersion_postfix() + "\n";
                 status_string += "\n";
                 status_string += xerb.getString("general.user") + ": " + xincoClientSession.getUser().getFirstname() + " " + xincoClientSession.getUser().getName() + " <" + xincoClientSession.getUser().getEmail() + ">\n";
                 status_string += xerb.getString("general.memberof") + ":\n";
@@ -1624,7 +1624,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     /**
      * This method imports files + subfolders of a folder into node
      * @param node
-     * @param folder 
+     * @param folder
+     * @throws java.lang.Exception 
      */
     @SuppressWarnings("unchecked")
     public void importContentOfFolder(XincoCoreNode node, File folder) throws Exception {
@@ -1727,12 +1728,12 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 } else {
                     useSAAJ = false;
                 }
-                CheckedInputStream in = null;
+                CheckedInputStream cin = null;
                 ByteArrayOutputStream out = null;
 
                 byte_array = null;
                 try {
-                    in = new CheckedInputStream(new FileInputStream(folder_list[i]),
+                    cin = new CheckedInputStream(new FileInputStream(folder_list[i]),
                             new CRC32());
                     if (useSAAJ) {
                         total_len = folder_list[i].length();
@@ -1742,7 +1743,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         int len = 0;
 
                         total_len = 0;
-                        while ((len = in.read(buf)) > 0) {
+                        while ((len = cin.read(buf)) > 0) {
                             out.write(buf, 0, len);
                             total_len = total_len + len;
                         }
@@ -1753,11 +1754,11 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(0)).setAttrib_varchar(folder_list[i].getName());
                     ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(1)).setAttrib_unsignedint(total_len);
                     ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(2)).setAttrib_varchar("" +
-                            in.getChecksum().getValue());
+                            cin.getChecksum().getValue());
                     ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(1);
                     ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(4)).setAttrib_unsignedint(0);
                     if (!useSAAJ) {
-                        in.close();
+                        cin.close();
                     }
                 } catch (Exception fe) {
                     if (getSettings().getSetting("setting.enable.developermode").isBool_value()) {
@@ -1771,7 +1772,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     throw new XincoException(xerb.getString("datawizard.unabletosavedatatoserver"));
                 }
                 newnode.setUserObject(getXdata());
-                // update id in log
+                // update id cin log
                 newlog.setXinco_core_data_id(((XincoCoreData) newnode.getUserObject()).getId());
                 // save log to server
                 newlog = xincoClientSession.getXinco().setXincoCoreLog(newlog, xincoClientSession.getUser());
@@ -1781,7 +1782,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 if (useSAAJ) {
                     AttachmentPart ap = null;
                     ap = new AttachmentPart();
-                    ap.setContent(in, "unknown/unknown");
+                    ap.setContent(cin, "unknown/unknown");
                     ((XincoSoapBindingStub) xincoClientSession.getXinco()).addAttachment(ap);
                 }
                 if (this.getFilesToBeIndexed() == null) {
@@ -1792,11 +1793,11 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 if (xincoClientSession.getXinco().uploadXincoCoreData((XincoCoreData) newnode.getUserObject(),
                         byte_array, xincoClientSession.getUser()) != total_len) {
                     ((XincoSoapBindingStub) xincoClientSession.getXinco()).clearAttachments();
-                    in.close();
+                    cin.close();
                     throw new XincoException(xerb.getString("datawizard.fileuploadfailed"));
                 }
                 ((XincoSoapBindingStub) xincoClientSession.getXinco()).clearAttachments();
-                in.close();
+                cin.close();
                 // update treemodel
                 xincoClientSession.getXincoClientRepository().treemodel.reload(newnode);
                 xincoClientSession.getXincoClientRepository().treemodel.nodeChanged(newnode);
@@ -1861,7 +1862,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 if (newnode.getParent() != null) {
                     xincoClientSession.setCurrentTreeNodeSelection((XincoMutableTreeNode) newnode.getParent());
                 }
-                //End bug fix
+            //End bug fix
             }
         }
         getProgressBar().hide();
