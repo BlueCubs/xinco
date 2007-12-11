@@ -83,6 +83,14 @@ UPDATE XINCO_CORE_DATA_TYPE SET DESIGNATION = 'general.data.type.URL' WHERE ID =
 
 UPDATE XINCO_CORE_DATA_TYPE SET DESIGNATION = 'general.data.type.contact' WHERE ID =4;
 
+UPDATE XINCO_CORE_DATA_TYPE SET description = 'general.data.type.file.description' WHERE ID =1;
+
+UPDATE XINCO_CORE_DATA_TYPE SET description = 'general.data.type.text.description' WHERE ID =2;
+
+UPDATE XINCO_CORE_DATA_TYPE SET description = 'general.data.type.URL.description' WHERE ID =3;
+
+UPDATE XINCO_CORE_DATA_TYPE SET description = 'general.data.type.contact.description' WHERE ID =4;
+
 UPDATE XINCO_CORE_group SET DESIGNATION = 'general.group.admin' WHERE ID =1;
 
 UPDATE XINCO_CORE_group SET DESIGNATION = 'general.group.allusers' WHERE ID =2;
