@@ -1298,7 +1298,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     /**
      * This method marks menues, etc. according to connection status
      *
-     * @return void
      */
     public void markConnectionStatus() {
         int i = 0, j = 0;
@@ -1625,7 +1624,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     /**
      * This method imports files + subfolders of a folder into node
      *
-     * @return void
+     * @param node 
      */
     @SuppressWarnings("unchecked")
     public void importContentOfFolder(XincoCoreNode node, File folder) throws Exception {
@@ -1871,7 +1870,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     /**
      * This method leads through data adding/editing
      *
-     * @return void
+     * @param wizard_type 
      */
     @SuppressWarnings("unchecked")
     public void doDataWizard(final int wizard_type) {
@@ -2531,7 +2530,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     /**
      * This method sets current path and filename
      *
-     * @return void
+     * @param s 
      */
     public void setCurrentPathFilename(String s) {
         int i = 0, j = 0;
@@ -2566,7 +2565,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     /**
      * This method sets current path and filename
      *
-     * @return void
+     * @param s 
      */
     public void setCurrentPath(String s) {
         if (!(s.substring(s.length() - 1).equals(System.getProperty("file.separator")))) {
