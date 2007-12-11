@@ -1219,7 +1219,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 status_string += xincoClientSession.getServer_version().getVersion_high() + ".";
                 status_string += xincoClientSession.getServer_version().getVersion_mid() + ".";
                 status_string += xincoClientSession.getServer_version().getVersion_low();
-                status_string += xincoClientSession.getServer_version().getVersion_postfix() + "\n";
+                status_string += " "+xincoClientSession.getServer_version().getVersion_postfix() + "\n";
                 status_string += "\n";
                 status_string += xerb.getString("general.user") + ": " + xincoClientSession.getUser().getFirstname() + " " + xincoClientSession.getUser().getName() + " <" + xincoClientSession.getUser().getEmail() + ">\n";
                 status_string += xerb.getString("general.memberof") + ":\n";
@@ -1623,8 +1623,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
 
     /**
      * This method imports files + subfolders of a folder into node
-     *
-     * @param node 
+     * @param node
+     * @param folder 
      */
     @SuppressWarnings("unchecked")
     public void importContentOfFolder(XincoCoreNode node, File folder) throws Exception {
