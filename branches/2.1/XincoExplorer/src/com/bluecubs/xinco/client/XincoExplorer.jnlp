@@ -40,9 +40,9 @@
         <jar href="substance.jar"/>
         <jar href="swing-layout-1.0.jar"/>
         <jar href="wsdl4j.jar"/>
-        <jar href="xercesImpl-2.6.2.jar"/>
+        <jar href="xercesImpl.jar"/>
         <jar href="Xinco.jar"/>
-        <jar href="xmlParserAPIs.jar"/>
+        <jar href="xmlParserAPIs-2.6.2.jar"/>
     </resources>
     <security>
         <!-- all permissions required on Client-Computer -->
