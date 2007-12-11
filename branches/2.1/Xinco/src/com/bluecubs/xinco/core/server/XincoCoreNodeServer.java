@@ -62,7 +62,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 //load acl for this object
                 setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(rs.getInt("id"), "xinco_core_node_id", DBM));
             }
-            
+
             if (RowCount < 1) {
                 throw new XincoException();
             }
@@ -131,7 +131,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
     }
 
     //delete from db
-    public void deleteFromDB(boolean delete_this, XincoDBManager DBM, int userID) throws XincoException {
+    public void removeFromDB(boolean delete_this, XincoDBManager DBM, int userID) throws XincoException {
         int i = 0;
         try {
             //fill nodes and data
@@ -139,7 +139,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             fillXincoCoreData(DBM);
             //start recursive deletion
             for (i = 0; i < getXinco_core_nodes().size(); i++) {
-                ((XincoCoreNodeServer) getXinco_core_nodes().elementAt(i)).deleteFromDB(true, DBM, userID);
+                ((XincoCoreNodeServer) getXinco_core_nodes().elementAt(i)).removeFromDB(true, DBM, userID);
             }
             for (i = 0; i < getXinco_core_data().size(); i++) {
                 XincoIndexer.removeXincoCoreData((XincoCoreDataServer) getXinco_core_data().elementAt(i), DBM);
@@ -150,11 +150,10 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             }
             if (delete_this) {
                 XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
-                /*
-                 * Aduit Trail Table (*_t) cannot handle multiple row changes!!!
-                audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+getId()},
-                DBM,"audit.general.delete",userID);
-                 */
+                ResultSet rs = DBM.executeQuery("DELETE FROM xinco_core_ace WHERE xinco_core_node_id=" + getId());
+                while (rs.next()) {
+                    XincoCoreACEServer.removeFromDB((XincoCoreACE) new XincoCoreACEServer(rs.getInt(1), DBM), DBM, userID);
+                }
                 DBM.executeUpdate("DELETE FROM xinco_core_ace WHERE xinco_core_node_id=" + getId());
                 audit.updateAuditTrail("xinco_core_node", new String[]{"id =" + getId()},
                         DBM, "audit.general.delete", userID);
@@ -166,18 +165,20 @@ public class XincoCoreNodeServer extends XincoCoreNode {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void fillXincoCoreNodes(XincoDBManager DBM) {
         try {
             ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_node WHERE xinco_core_node_id = " + getId() + " ORDER BY designation");
             while (rs.next()) {
                 getXinco_core_nodes().addElement(new XincoCoreNodeServer(rs.getInt("id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_language_id"), rs.getString("designation"), rs.getInt("status_number"), DBM));
             }
-            
+
         } catch (Throwable e) {
             getXinco_core_nodes().removeAllElements();
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void fillXincoCoreData(XincoDBManager DBM) {
         try {
             ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_data WHERE xinco_core_node_id = " + getId() + " ORDER BY designation");
@@ -185,12 +186,13 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             while (rs.next()) {
                 getXinco_core_data().addElement(new XincoCoreDataServer(rs.getInt("id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_language_id"), rs.getInt("xinco_core_data_type_id"), rs.getString("designation"), rs.getInt("status_number"), DBM));
             }
-            
+
         } catch (Throwable e) {
             getXinco_core_data().removeAllElements();
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static Vector findXincoCoreNodes(String attrS, int attrLID, XincoDBManager DBM) {
         Vector nodes = null;
         try {
@@ -203,13 +205,14 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                     break;
                 }
             }
-            
+
         } catch (Throwable e) {
             nodes.removeAllElements();
         }
         return nodes;
     }
 
+    @SuppressWarnings("unchecked")
     public static Vector getXincoCoreNodeParents(int attrID, XincoDBManager DBM) {
         Vector nodes = new Vector();
         int id;
@@ -228,7 +231,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 }
             }
             if (rs != null) {
-                
+
             }
         } catch (Throwable e) {
             nodes.removeAllElements();
