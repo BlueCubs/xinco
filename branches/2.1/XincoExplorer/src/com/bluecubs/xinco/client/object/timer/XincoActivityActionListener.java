@@ -33,7 +33,6 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.client.object.timer;
 
 import com.bluecubs.xinco.client.XincoExplorer;
@@ -44,19 +43,23 @@ import java.awt.event.ActionListener;
  *
  * @author Javier A. Ortiz
  */
-public class XincoActivityActionListener implements ActionListener{
-    private XincoExplorer explorer=null;
-    private XincoActivityTimer xat=null;
-    /** Creates a new instance of XincoActivityActionListener */
+public class XincoActivityActionListener implements ActionListener {
+
+    private XincoExplorer explorer = null;
+    private XincoActivityTimer xat = null;
+
+    /** Creates a new instance of XincoActivityActionListener
+     * @param e
+     * @param xat 
+     */
     public XincoActivityActionListener(XincoExplorer e, XincoActivityTimer xat) {
-        this.explorer=e;
-        this.xat=xat;
+        this.explorer = e;
+        this.xat = xat;
     }
 
     public void actionPerformed(ActionEvent e) {
-        if(this.explorer.getSettings().getSetting("general.setting.enable.lockidle").isBool_value()){
+        if (this.explorer.getSettings().getSetting("general.setting.enable.lockidle").isBool_value()) {
             this.explorer.setLock(true);
         }
     }
-    
 }

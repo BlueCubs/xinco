@@ -35,7 +35,6 @@
  * Alexander Manes 11/12/2006         Moved the new user features to core class
  * Javier A. Ortiz 11/20/2006         Undo previous changes and corrected a bug that increased twice
  *                                    the attempts in the DB when wrong password was used
- * Javier A. Ortiz 01/08/2007
  *************************************************************
  */
 package com.bluecubs.xinco.core.server;
@@ -47,13 +46,18 @@ import com.bluecubs.xinco.core.*;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-//Status list (in DB)
-//1 = unlocked
-//2 = locked
-//3 = aged password
-//Temporary statuses
-//-1 = aged password modified, ready to turn unlocked
+/**
+ * Status list (in DB)
+ * 1 = unlocked
+ * 2 = locked
+ * 3 = aged password
+ * Temporary statuses
+ * -1 = aged password modified, ready to turn unlocked
+ * @author Alexander Manes
+ */
 public class XincoCoreUserServer extends XincoCoreUser {
 
     private String sql;
@@ -122,7 +126,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 found = false;
                 place = 0;
             }
-            
         } catch (Throwable e) {
             if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
                 e.printStackTrace();
@@ -131,13 +134,22 @@ public class XincoCoreUserServer extends XincoCoreUser {
         }
     }
 
-    //create user object and login
-    public XincoCoreUserServer(String attrUN, String attrUPW, XincoDBManager DBM) throws XincoException {
+    /**
+     * Create user object and login
+     * @param username
+     * @param password
+     * @param DBM
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
+    public XincoCoreUserServer(String username, String password, XincoDBManager DBM) throws XincoException {
         rs = null;
         GregorianCalendar cal = null;
         try {
+            if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.WARNING, "Logging as user: " + username + ", password: " + password);
+            }
             sql = "SELECT * FROM xinco_core_user WHERE username='" +
-                    attrUN + "' AND userpassword=MD5('" + attrUPW + "') AND status_number <> 2";
+                    username + "' AND userpassword=MD5('" + password + "') AND status_number <> 2";
             rs = DBM.executeQuery(sql);
             //throw exception if no result found
             int RowCount = 0;
@@ -145,9 +157,9 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 RowCount++;
                 setId(rs.getInt("id"));
                 setUsername(rs.getString("username"));
-                //previously hashing the already hashed password
+                //bug fix: previously hashing the already hashed password
                 hashPassword = true;
-                setUserpassword(attrUPW);
+                setUserpassword(password);
                 setName(rs.getString("name"));
                 setFirstname(rs.getString("firstname"));
                 setEmail(rs.getString("email"));
@@ -173,19 +185,23 @@ public class XincoCoreUserServer extends XincoCoreUser {
             }
             if (RowCount < 1) {
                 sql = "SELECT * FROM xinco_core_user WHERE username='" +
-                        attrUN + "'";
+                        username + "'";
                 rs = DBM.executeQuery(sql);
                 //The username is valid but wrong password. Increase the login attempts.
                 if (rs.next()) {
                     increaseAttempts = true;
                     setAttempts(rs.getInt("attempts"));
+                    if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
+                        Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.WARNING, "Username exists but wrong password.");
+                    }
                 }
                 throw new XincoException();
             }
             fillXincoCoreGroups(DBM);
-            
         } catch (Throwable e) {
-            e.printStackTrace();
+            if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
+            }
             if (getXinco_core_groups() != null) {
                 getXinco_core_groups().removeAllElements();
             }
@@ -193,16 +209,16 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 try {
                     DBM = new XincoDBManager();
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 sql = "SELECT * FROM xinco_core_user WHERE username='" +
-                        attrUN + "' AND status_number <> 2";
+                        username + "' AND status_number <> 2";
                 ResultSet rs2 = DBM.executeQuery(sql);
                 //increase number of attempts
                 if (rs2.next()) {
                     setId(rs2.getInt("id"));
                     setUsername(rs2.getString("username"));
-                    //Don't rehash the pasword!
+                    //bug fix: Don't rehash the pasword!
                     hashPassword = false;
                     setUserpassword(rs2.getString("userpassword"));
                     setName(rs2.getString("name"));
@@ -218,17 +234,22 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 rs2.close();
             } catch (SQLException ex) {
                 if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
-                    ex.printStackTrace();
+                    Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
-                e.printStackTrace();
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
             }
             throw new XincoException();
         }
     }
 
-    //create user object for data structures
+    /**
+     * Create user object for data structures
+     * @param attrID
+     * @param DBM
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
     public XincoCoreUserServer(int attrID, XincoDBManager DBM) throws XincoException {
         GregorianCalendar cal = null;
         try {
@@ -247,7 +268,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 setAttempts(rs.getInt("attempts"));
                 setLastModified(rs.getTimestamp("last_modified"));
             }
-            
             if (RowCount < 1) {
                 throw new XincoException();
             }
@@ -258,7 +278,20 @@ public class XincoCoreUserServer extends XincoCoreUser {
         }
     }
 
-    //create user object
+    /**
+     * Create user object for data structures
+     * @param attrID
+     * @param attrUN
+     * @param attrUPW
+     * @param attrN
+     * @param attrFN
+     * @param attrE
+     * @param attrSN
+     * @param attrAN
+     * @param attrTS
+     * @param DBM
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
     public XincoCoreUserServer(int attrID, String attrUN, String attrUPW, String attrN,
             String attrFN, String attrE, int attrSN, int attrAN, java.sql.Timestamp attrTS,
             XincoDBManager DBM) throws XincoException {
@@ -315,7 +348,12 @@ public class XincoCoreUserServer extends XincoCoreUser {
         return lastModified;
     }
 
-    //write to db
+    /**
+     * Write to DB
+     * @param DBM
+     * @return int
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
     public int write2DB(XincoDBManager DBM) throws XincoException {
         sql = "";
         xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
@@ -404,7 +442,12 @@ public class XincoCoreUserServer extends XincoCoreUser {
         return getId();
     }
 
-    //create complete list of users
+    /**
+     * Create complete list of users
+     * @param DBM
+     * @return Vector
+     */
+    @SuppressWarnings("unchecked")
     public static Vector getXincoCoreUsers(XincoDBManager DBM) {
         Vector coreUsers = new Vector();
         GregorianCalendar cal = null;
@@ -417,29 +460,50 @@ public class XincoCoreUserServer extends XincoCoreUser {
                         rs.getString("email"), rs.getInt("status_number"),
                         rs.getInt("attempts"), rs.getTimestamp("last_modified"), DBM));
             }
-            
+
         } catch (Throwable e) {
             coreUsers.removeAllElements();
         }
         return coreUsers;
     }
 
+    /**
+     * 
+     * @return boolean
+     */
     public boolean isHashPassword() {
         return hashPassword;
     }
 
+    /**
+     * SetHashPassword
+     * @param hashPassword
+     */
     public void setHashPassword(boolean hashPassword) {
         this.hashPassword = hashPassword;
     }
 
+    /**
+     * 
+     * @return boolean
+     */
     public boolean isIncreaseAttempts() {
         return increaseAttempts;
     }
 
+    /**
+     * SetIncreaseAttempts
+     * @param increaseAttempts
+     */
     public void setIncreaseAttempts(boolean increaseAttempts) {
         this.increaseAttempts = increaseAttempts;
     }
 
+    /**
+     * Checks if password is usable based on the password rules defined in the DB
+     * @param newPass
+     * @return boolean
+     */
     public boolean isPasswordUsable(String newPass) {
         rs = null;
         XincoDBManager DBM = null;
@@ -462,8 +526,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
             //Here we'll catch if the password is the same as the actual
             rs.next();
             rs.getString(1);
-            //End bug fix
-            
+        //End bug fix
         } catch (Throwable ex) {
             if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
                 System.out.println("Password different than actual");
@@ -478,7 +541,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 //Here we'll catch if the password have been used in the unusable period
                 rs.next();
                 rs.getString(1);
-                
+
             } catch (Throwable e) {
                 if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
                     System.out.println("Password not used within the unusable period-" +

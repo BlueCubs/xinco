@@ -79,13 +79,13 @@ public class XincoIndexThread extends Thread {
     /**
      * Constructor
      *
-     * @param d Data to index
+     * @param xinco_core_data Data to index
      * @param index_content Should index content?
-     * @param DBM XincoDatabaseManger
      */
-    public XincoIndexThread(XincoCoreData d, boolean index_content) {
+    @SuppressWarnings("unchecked")
+    public XincoIndexThread(XincoCoreData xinco_core_data, boolean index_content) {
         nodes = new Vector();
-        nodes.add(d);
+        nodes.add(xinco_core_data);
         this.index_content = index_content;
     }
 
@@ -97,13 +97,14 @@ public class XincoIndexThread extends Thread {
 
     /**
      * Allows for adding a data element to the queue if there's a thread already running
-     * @param d XincoCoreData
+     * @param xinco_core_data XincoCoreData
      */
-    public void addData(XincoCoreData d) {
+    @SuppressWarnings("unchecked")
+    public void addData(XincoCoreData xinco_core_data) {
         if (nodes == null) {
             nodes = new Vector();
         }
-        nodes.add(d);
+        nodes.add(xinco_core_data);
         if (!this.isAlive()) {
             start();
         }
@@ -117,10 +118,19 @@ public class XincoIndexThread extends Thread {
         this.nodes = n;
     }
 
+    /**
+     * Get XIncoDBManager
+     * @return
+     */
     public XincoDBManager getXincoDBManager() {
         return DBM;
     }
 
+    /**
+     * Delete Lucene Index
+     * @param DBM
+     * @return boolean
+     */
     public synchronized static boolean deleteIndex(XincoDBManager DBM) {
         try {
             DBM = new XincoDBManager();
@@ -145,17 +155,26 @@ public class XincoIndexThread extends Thread {
         return index_directory_deleted;
     }
 
+    /**
+     * Get nodes
+     * @return Vector
+     */
     public Vector getNodes() {
         return nodes;
     }
 
-    public synchronized boolean buildIndex(XincoDBManager dbm) {
+    /**
+     * Build Lucene Index
+     * @param DBM
+     * @return boolean
+     */
+    public synchronized boolean buildIndex(XincoDBManager DBM) {
         //select all data
         try {
-            ResultSet rs = dbm.executeQuery("SELECT id FROM xinco_core_data ORDER BY designation");
+            ResultSet rs = DBM.executeQuery("SELECT id FROM xinco_core_data ORDER BY designation");
             nodes = null;
             while (rs.next()) {
-                addData(new XincoCoreDataServer(rs.getInt("id"), dbm));
+                addData(new XincoCoreDataServer(rs.getInt("id"), DBM));
             }
             if (!this.isAlive()) {
                 start();
@@ -167,6 +186,10 @@ public class XincoIndexThread extends Thread {
         return true;
     }
 
+    /**
+     * Rebuild Index
+     * @return boolean
+     */
     public synchronized boolean rebuildIndex() {
         boolean result = false;
         try {
@@ -178,13 +201,5 @@ public class XincoIndexThread extends Thread {
             Logger.getLogger(XincoIndexThread.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
-    }
-
-    public boolean isIndex_directory_deleted() {
-        return index_directory_deleted;
-    }
-
-    public boolean isIndex_result() {
-        return index_result;
     }
 }

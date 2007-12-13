@@ -33,11 +33,11 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.conf;
 
 import com.bluecubs.xinco.core.XincoSetting;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
+import java.util.StringTokenizer;
 import java.util.Vector;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -47,7 +47,7 @@ import javax.naming.NamingException;
  * Edit values in context.xml
  */
 public class XincoConfigSingletonServer {
-    
+
     private String FileRepositoryPath = null;
     private String FileIndexPath = null;
     private String FileArchivePath = null;
@@ -59,59 +59,82 @@ public class XincoConfigSingletonServer {
     private String JNDIDB = null;
     private int MaxSearchResult = 0;
     private boolean allowOutsideLinks;
-    private static XincoConfigSingletonServer  instance = null;
-    
+    private static XincoConfigSingletonServer instance = null;
+
+    /**
+     * Gets a singleton instance. Creates one if needed.
+     * @return
+     */
     public static XincoConfigSingletonServer getInstance() {
         if (instance == null) {
             instance = new XincoConfigSingletonServer();
         }
         return instance;
     }
-    
-    //private constructor to avoid instance generation with new-operator!
+
+    /**
+     * private constructor to avoid instance generation with new-operator!
+     */
     protected XincoConfigSingletonServer() {
         try {
-            JNDIDB = (String)(new InitialContext()).lookup("xinco/JNDIDB");
+            JNDIDB = (String) (new InitialContext()).lookup("xinco/JNDIDB");
         } catch (NamingException ex) {
             JNDIDB = "java:comp/env/jdbc/XincoDB";
         }
     }
-    
+
+    /**
+     * Initializes this singleton from a XincoSettingServer object
+     * @param xss XincoSettingServer
+     */
     @SuppressWarnings("unchecked")
-    public void init(XincoSettingServer xss){
-        try{
-            FileRepositoryPath=xss.getSetting("xinco/FileRepositoryPath").getString_value();
-            if (!(getFileRepositoryPath().substring(getFileRepositoryPath().length()-1).equals(System.getProperty("file.separator")))) {
+    public void init(XincoSettingServer xss) {
+        try {
+            FileRepositoryPath = xss.getSetting("xinco/FileRepositoryPath").getString_value();
+            if (!(getFileRepositoryPath().substring(getFileRepositoryPath().length() - 1).equals(System.getProperty("file.separator")))) {
                 FileRepositoryPath = getFileRepositoryPath() + System.getProperty("file.separator");
             }
-            MaxSearchResult=xss.getSetting("xinco/MaxSearchResult").getInt_value();
-            FileIndexPath=xss.getSetting("xinco/FileIndexPath").getString_value();
-            if(getFileIndexPath().equals(""))
+            MaxSearchResult = xss.getSetting("xinco/MaxSearchResult").getInt_value();
+            FileIndexPath = xss.getSetting("xinco/FileIndexPath").getString_value();
+            if (getFileIndexPath().equals("")) {
                 FileIndexPath = getFileRepositoryPath() + "index";
-            if (!(getFileIndexPath().substring(getFileIndexPath().length()-1).equals(System.getProperty("file.separator")))) {
+            }
+            if (!(getFileIndexPath().substring(getFileIndexPath().length() - 1).equals(System.getProperty("file.separator")))) {
                 FileIndexPath += System.getProperty("file.separator");
             }
-            FileArchivePath=xss.getSetting("xinco/FileArchivePath").getString_value();
-            if (!(getFileArchivePath().substring(getFileArchivePath().length()-1).equals(System.getProperty("file.separator")))) {
+            FileArchivePath = xss.getSetting("xinco/FileArchivePath").getString_value();
+            if (!(getFileArchivePath().substring(getFileArchivePath().length() - 1).equals(System.getProperty("file.separator")))) {
                 FileArchivePath += System.getProperty("file.separator");
             }
-            FileArchivePeriod=xss.getSetting("xinco/FileArchivePeriod").getLong_value();
-            Vector s=xss.getXinco_settings();
-            for(int i=0;i<s.size();i++){
-                if(((XincoSetting)s.get(i)).getDescription().startsWith("xinco/FileIndexer") &&
-                        ((XincoSetting)s.get(i)).getDescription().endsWith("Class") ){
-                    if(getIndexFileTypesClass() ==null)
+            FileArchivePeriod = xss.getSetting("xinco/FileArchivePeriod").getLong_value();
+            Vector s = xss.getXinco_settings();
+            StringTokenizer st;
+            String [] temp;
+            for (int i = 0; i < s.size(); i++) {
+                if (((XincoSetting) s.get(i)).getDescription().startsWith("xinco/FileIndexer") &&
+                        ((XincoSetting) s.get(i)).getDescription().endsWith("Class")) {
+                    if (getIndexFileTypesClass() == null) {
                         IndexFileTypesClass = new Vector();
-                    getIndexFileTypesClass().add(((XincoSetting)s.get(i)).getString_value());
+                    }
+                    getIndexFileTypesClass().add(((XincoSetting) s.get(i)).getString_value());
+                    FileIndexerCount++;
                 }
-                if(((XincoSetting)s.get(i)).getDescription().startsWith("xinco/FileIndexer") &&
-                        ((XincoSetting)s.get(i)).getDescription().endsWith("Ext") ){
-                    if(getIndexFileTypesExt() ==null)
+                if (((XincoSetting) s.get(i)).getDescription().startsWith("xinco/FileIndexer") &&
+                        ((XincoSetting) s.get(i)).getDescription().endsWith("Ext")) {
+                    if (getIndexFileTypesExt() == null) {
                         IndexFileTypesExt = new Vector();
-                    getIndexFileTypesExt().add(((XincoSetting)s.get(i)).getString_value());
+                    }
+                    getIndexFileTypesExt().add(((XincoSetting) s.get(i)).getString_value());
                 }
             }
-            getIndexFileTypesExt().add(xss.getSetting("xinco/IndexNoIndex").getString_value());
+            st= new StringTokenizer(xss.getSetting("xinco/IndexNoIndex").getString_value(),";");
+            temp = new String[st.countTokens()];
+            int i=0;
+            while(st.hasMoreTokens()){
+                temp[i]=st.nextElement().toString();
+                i++;
+            }
+            setIndexNoIndex(temp);
             setAllowOutsideLinks(xss.getSetting("setting.allowoutsidelinks").isBool_value());
         } catch (Exception ex) {
             //Default values
@@ -148,91 +171,179 @@ public class XincoConfigSingletonServer {
             setMaxSearchResult(30);
         }
     }
-    
+
+    /**
+     * Get FileArchivePath
+     * @return String
+     */
     public String getFileArchivePath() {
         return FileArchivePath;
     }
-    
+
+    /**
+     * Get FileRepositoryPath
+     * @return String
+     */
     public String getFileRepositoryPath() {
         return FileRepositoryPath;
     }
-    
+
+    /**
+     * Set FileRepositoryPath
+     * @param FileRepositoryPath
+     */
     public void setFileRepositoryPath(String FileRepositoryPath) {
         this.FileRepositoryPath = FileRepositoryPath;
     }
-    
+
+    /**
+     * Get FileIndexPath
+     * @return String
+     */
     public String getFileIndexPath() {
         return FileIndexPath;
     }
-    
+
+    /**
+     * Set FileIndexPath
+     * @param FileIndexPath
+     */
     public void setFileIndexPath(String FileIndexPath) {
         this.FileIndexPath = FileIndexPath;
     }
-    
+
+    /**
+     * Set FileArchivePath
+     * @param FileArchivePath
+     */
     public void setFileArchivePath(String FileArchivePath) {
         this.FileArchivePath = FileArchivePath;
     }
-    
+
+    /**
+     * Get FileArchivePeriod
+     * @return long
+     */
     public long getFileArchivePeriod() {
         return FileArchivePeriod;
     }
-    
+
+    /**
+     * Set FileArchivePeriod
+     * @param FileArchivePeriod
+     */
     public void setFileArchivePeriod(long FileArchivePeriod) {
         this.FileArchivePeriod = FileArchivePeriod;
     }
-    
+
+    /**
+     * Get FileIndexerCount
+     * @return int
+     */
     public int getFileIndexerCount() {
         return FileIndexerCount;
     }
-    
+
+    /**
+     * Set FileIndexerCount
+     * @param FileIndexerCount
+     */
     public void setFileIndexerCount(int FileIndexerCount) {
         this.FileIndexerCount = FileIndexerCount;
     }
-    
+
+    /**
+     * Get IndexFileTypesClass
+     * @return Vector
+     */
     public Vector getIndexFileTypesClass() {
         return IndexFileTypesClass;
     }
-    
+
+    /**
+     * Set IndexFileTypesClass
+     * @param IndexFileTypesClass
+     */
     public void setIndexFileTypesClass(Vector IndexFileTypesClass) {
         this.IndexFileTypesClass = IndexFileTypesClass;
     }
-    
+
+    /**
+     * Get IndexFileTypesExt
+     * @return Vector
+     */
     public Vector getIndexFileTypesExt() {
         return IndexFileTypesExt;
     }
-    
+
+    /**
+     * Set IndexFileTypesExt
+     * @param IndexFileTypesExt
+     */
     public void setIndexFileTypesExt(Vector IndexFileTypesExt) {
         this.IndexFileTypesExt = IndexFileTypesExt;
     }
-    
+
+    /**
+     * Get IndexNoIndex
+     * @return String[]
+     */
     public String[] getIndexNoIndex() {
         return IndexNoIndex;
     }
-    
+
+    /**
+     * Set IndexNoIndex
+     * @param IndexNoIndex
+     */
     public void setIndexNoIndex(String[] IndexNoIndex) {
         this.IndexNoIndex = IndexNoIndex;
     }
-    
+
+    /**
+     * Get JNDIDB
+     * @return String
+     */
     public String getJNDIDB() {
         return JNDIDB;
     }
-    
+
+    /**
+     * Set JNDIDB
+     * @param JNDIDB
+     */
     public void setJNDIDB(String JNDIDB) {
         this.JNDIDB = JNDIDB;
     }
-    
+
+    /**
+     * Get MaxSearchResult
+     * @return int
+     */
     public int getMaxSearchResult() {
         return MaxSearchResult;
     }
-    
+
+    /**
+     * Set MaxSearchResult
+     * @param MaxSearchResult
+     */
     public void setMaxSearchResult(int MaxSearchResult) {
         this.MaxSearchResult = MaxSearchResult;
     }
-    
+
+    /**
+     * Is outside links allowed?
+     * @return boolean
+     */
     public boolean isAllowOutsideLinks() {
         return allowOutsideLinks;
     }
-    
+
+    /**
+     * Set allowOutsideLinks
+     * @param allowOutsideLinks
+     */
     public void setAllowOutsideLinks(boolean allowOutsideLinks) {
         this.allowOutsideLinks = allowOutsideLinks;
     }

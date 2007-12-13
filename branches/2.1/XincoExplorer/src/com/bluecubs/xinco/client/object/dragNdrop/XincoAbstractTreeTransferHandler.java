@@ -23,7 +23,7 @@
  *
  * Description:     XincoAbstractTreeTransferHandler
  *
- * Original Author: Javier Ortiz
+ * Original Author: Javier A. Ortiz
  * Date:            May 18, 2007, 2:21 PM
  *
  * Modifications:
@@ -35,7 +35,7 @@
 
 package com.bluecubs.xinco.client.object.dragNdrop;
 
-import com.bluecubs.xinco.client.XincoMutableTreeNode;
+import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.object.XincoJTree;
 import com.bluecubs.xinco.core.XincoCoreACE;
 import com.bluecubs.xinco.core.XincoCoreData;
@@ -67,7 +67,7 @@ import javax.swing.tree.TreePath;
 
 /**
  *
- * @author ortizbj
+ * @author Javier A. Ortiz
  */
 public abstract class XincoAbstractTreeTransferHandler implements DragGestureListener, DragSourceListener, DropTargetListener {
     

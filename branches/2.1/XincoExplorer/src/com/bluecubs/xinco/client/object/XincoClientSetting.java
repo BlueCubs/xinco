@@ -33,29 +33,34 @@
  *
  *************************************************************
  */
-
-package com.bluecubs.xinco.client;
+package com.bluecubs.xinco.client.object;
 
 import com.bluecubs.xinco.core.XincoSetting;
 
 /**
  *
- * @author ortizbj
+ * @author Javier A. Ortiz
  */
-public class XincoClientSetting extends XincoSetting{
-    
+public class XincoClientSetting extends XincoSetting {
+
     /** Creates a new instance of XincoClientSetting */
     public XincoClientSetting() {
     }
-    
-    private XincoSetting getSetting(int i){
-        return (XincoSetting)getXinco_settings().get(i);
+
+    private XincoSetting getSetting(int i) {
+        return (XincoSetting) getXinco_settings().get(i);
     }
-    
-    public XincoSetting getSetting(String s){
-        for(int i=0;i<getXinco_settings().size();i++){
-            if(((XincoSetting)getXinco_settings().get(i)).getDescription().equals(s))
-                return (XincoSetting)getXinco_settings().get(i);
+
+    /**
+     * Get Setting
+     * @param setting_name
+     * @return XincoSetting
+     */
+    public XincoSetting getSetting(String setting_name) {
+        for (int i = 0; i < getXinco_settings().size(); i++) {
+            if (((XincoSetting) getXinco_settings().get(i)).getDescription().equals(setting_name)) {
+                return (XincoSetting) getXinco_settings().get(i);
+            }
         }
         return null;
     }

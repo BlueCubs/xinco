@@ -36,7 +36,6 @@
  *
  * Created on December 19, 2006, 4:16 PM
  */
-
 package com.bluecubs.xinco.client.object;
 
 import com.bluecubs.xinco.client.XincoExplorer;
@@ -50,48 +49,57 @@ import javax.swing.JProgressBar;
 
 /**
  *
- * @author ortizbj
+ * @author Javier A. Ortiz
  */
-public class XincoProgressBar extends JFrame{
-    private	JProgressBar    progress;
-    private	JPanel          topPanel;
+public class XincoProgressBar extends JFrame {
+
+    private JProgressBar progress;
+    private JPanel topPanel;
     private XincoExplorer explorer;
-    
+
     public XincoProgressBar(XincoExplorer explorer) {
         this.setAlwaysOnTop(true);
-        this.explorer=explorer;
+        this.explorer = explorer;
         ResourceBundle xerb = this.explorer.getResourceBundle();
         setTitle(xerb.getString("message.progressbar.title"));
-        setSize( 700, 65 );
-        setBackground( Color.gray );      
+        setSize(700, 65);
+        setBackground(Color.gray);
         topPanel = new JPanel();
-        topPanel.setPreferredSize( new Dimension( 700, 40 ) );
-        getContentPane().add( topPanel );
-        
+        topPanel.setPreferredSize(new Dimension(700, 40));
+        getContentPane().add(topPanel);
+
         // Create progress bar
-        
+
         progress = new JProgressBar();
-        progress.setPreferredSize( new Dimension(700, 20 ) );
-        progress.setMinimum( 0 );
-        progress.setMaximum( 100 );
-        progress.setValue( 0 );
-        progress.setBounds( 20, 35, 260, 20 );
-        progress.setIndeterminate(true);
-        topPanel.add( progress );
+        progress.setPreferredSize(new Dimension(700, 20));
+        progress.setMinimum(0);
+        progress.setMaximum(100);
+        progress.setValue(0);
+        progress.setBounds(20, 35, 260, 20);
+        setIndeterminated(true);
+        topPanel.add(progress);
     }
-    
-    
-    private void setProgress(int p){
+
+    /**
+     * Set Indeterminated
+     * @param set
+     */
+    public void setIndeterminated(boolean set) {
+        progress.setIndeterminate(set);
+    }
+
+    private void setProgress(int p) {
         // Update the progress indicator 
-        
-        progress.setValue( p );
+        setIndeterminated(false);
+        progress.setValue(p);
         progress.setStringPainted(true);
         progress.setString(p + "%");
         Rectangle progressRect = progress.getBounds();
         progressRect.x = 0;
         progressRect.y = 0;
-        progress.paintImmediately( progressRect );
-        if(p==progress.getMaximum())
+        progress.paintImmediately(progressRect);
+        if (p == progress.getMaximum()) {
             this.setVisible(false);
+        }
     }
 }

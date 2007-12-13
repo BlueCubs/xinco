@@ -47,6 +47,10 @@ import com.bluecubs.xinco.core.server.XincoDBManager;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * 
+ * @author Alexander Manes
+ */
 public class XincoCronServlet extends HttpServlet {
 
     ResourceBundle lrb;
@@ -56,7 +60,10 @@ public class XincoCronServlet extends HttpServlet {
     XincoIndexOptimizeThread xiot = null;
 
     /** Initializes the servlet.
+     * @param config
+     * @throws javax.servlet.ServletException 
      */
+    @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         //init archiving thread
@@ -70,12 +77,15 @@ public class XincoCronServlet extends HttpServlet {
 
     /** Destroys the servlet.
      */
+    @Override
     public void destroy() {
     }
 
     /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
+     * @throws javax.servlet.ServletException
+     * @throws java.io.IOException 
      */
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -227,6 +237,8 @@ public class XincoCronServlet extends HttpServlet {
     /** Handles the HTTP <code>GET</code> method.
      * @param request servlet request
      * @param response servlet response
+     * @throws javax.servlet.ServletException
+     * @throws java.io.IOException 
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -237,6 +249,8 @@ public class XincoCronServlet extends HttpServlet {
     /** Handles the HTTP <code>POST</code> method.
      * @param request servlet request
      * @param response servlet response
+     * @throws javax.servlet.ServletException
+     * @throws java.io.IOException 
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -245,6 +259,7 @@ public class XincoCronServlet extends HttpServlet {
     }
 
     /** Returns a short description of the servlet.
+     * @return 
      */
     @Override
     public String getServletInfo() {

@@ -65,8 +65,8 @@
     <target name="-pre-dist">
         <signjar jar="${build.dir}/web/client/activation.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/axis.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/commons-discovery-0.4.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/commons-logging-1.1.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
+        <signjar jar="${build.dir}/web/client/commons-discovery-0.2.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
+        <signjar jar="${build.dir}/web/client/commons-logging-1.0.4.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/jcalendar-1.3.2.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/jaxrpc.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/liquidlnf.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
@@ -75,10 +75,10 @@
         <signjar jar="${build.dir}/web/client/saaj.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/substance.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/swing-layout-1.0.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/wsdl4j.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
+        <signjar jar="${build.dir}/web/client/wsdl4j-1.5.1.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/xercesImpl.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/Xinco.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
         <signjar jar="${build.dir}/web/client/XincoExplorer.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/xmlParserAPIs-2.6.2.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
+        <signjar jar="${build.dir}/web/client/xmlParserAPIs.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
     </target>
 </project>

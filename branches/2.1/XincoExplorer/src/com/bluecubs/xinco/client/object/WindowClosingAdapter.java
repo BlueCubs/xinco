@@ -19,9 +19,9 @@
  * More information on: http://www.bluecubs.org
  *************************************************************
  *
- * Name:            XincoClientConnectionProfile
+ * Name:            WindowClosingAdapter
  *
- * Description:     connection profiles for client 
+ * Description:     exits the program correctly 
  *
  * Original Author: Alexander Manes
  * Date:            2004
@@ -33,53 +33,40 @@
  *
  *************************************************************
  */
+package com.bluecubs.xinco.client.object;
 
-package com.bluecubs.xinco.client;
+import java.awt.event.*;
 
 /**
- * XincoClientConnectionProfile
+ * 
+ * @author Alexander Manes
  */
-public class XincoClientConnectionProfile implements java.io.Serializable {
-	
-    /**
-     * Profile's name
-     */
-	public String profile_name = null;
-    /**
-     * Service Endpoint
-     */
-	public String service_endpoint = null;
-    /**
-     * Username
-     */
-	public String username = null;
-    /**
-     * Password
-     */
-	public String password = null;
-    /**
-     * Save password?
-     */
-	public boolean save_password = false;
-	
-    /**
-     * XincoClientProfile
-     */
-	public XincoClientConnectionProfile() {
-		profile_name  = "";
-		service_endpoint  = "";
-		username  = "";
-		password  = "";
-		save_password = false;
-	}
-	
-    /**
-     * XincoClientConnectionProfile string representation
-     * @return Profile Name.
-     */
-	@Override
-         public String toString() {
-		return profile_name;
-	}
+public class WindowClosingAdapter
+        extends WindowAdapter {
 
+    private boolean exitSystem;
+
+    /**
+     * Constructor
+     * @param exitSystem
+     */
+    public WindowClosingAdapter(boolean exitSystem) {
+        this.exitSystem = exitSystem;
+    }
+
+    /**
+     * Constructor
+     */
+    public WindowClosingAdapter() {
+        this(false);
+    }
+
+    @Override
+    public void windowClosing(WindowEvent event) {
+        event.getWindow().setVisible(false);
+        event.getWindow().dispose();
+        if (exitSystem) {
+            System.exit(0);
+        }
+    }
 }

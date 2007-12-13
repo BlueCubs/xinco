@@ -23,7 +23,7 @@
  *
  * Description:     XincoDefaultTreeTransferHandler
  *
- * Original Author: Javier Ortiz
+ * Original Author: Javier A. Ortiz
  * Date:            May 18, 2007, 2:24 PM
  *
  * Modifications:
@@ -44,7 +44,7 @@ import javax.swing.tree.TreePath;
 
 /**
  *
- * @author ortizbj
+ * @author Javier A. Ortiz
  */
 public class XincoDefaultTreeTransferHandler extends XincoAbstractTreeTransferHandler {
 

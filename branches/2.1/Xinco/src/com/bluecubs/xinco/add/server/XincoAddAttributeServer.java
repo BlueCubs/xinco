@@ -44,8 +44,21 @@ import java.sql.*;
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.server.*;
 
+/**
+ * Create add attribute object for data structures
+ * @author Alexander Manes
+ */
 public class XincoAddAttributeServer extends XincoAddAttribute {
-    //create add attribute object for data structures
+
+    /**
+     * Create add attribute object for data structures
+     * @param attrID1 xinco_core_data_id
+     * @param attrID2 attribute_id
+     * @param DBM XincoDBManager
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
+    private static int changerID;
+
     public XincoAddAttributeServer(int attrID1, int attrID2, XincoDBManager DBM) throws XincoException {
         try {
             Statement stmt = DBM.getConnection().createStatement();
@@ -68,7 +81,18 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
         }
     }
 
-    //create add attribute object for data structures
+    /**
+     * Create add attribute object for data structures
+     * @param attrID1 xinco_core_data_id
+     * @param attrID2 attribute_id
+     * @param attrI int attribute
+     * @param attrUI long attribute
+     * @param attrD double attribute
+     * @param attrVC varchar attribute
+     * @param attrT string attribute
+     * @param attrDT date time attribute
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
     public XincoAddAttributeServer(int attrID1, int attrID2, int attrI, long attrUI, double attrD, String attrVC, String attrT, Calendar attrDT) throws XincoException {
         setXinco_core_data_id(attrID1);
         setAttribute_id(attrID2);
@@ -80,12 +104,15 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
         setAttrib_datetime(attrDT);
     }
 
-    //write to db
+    /**
+     * Persists object to database
+     * @param DBM
+     * @return int
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
     public int write2DB(XincoDBManager DBM) throws XincoException {
-
         try {
-
-            Statement stmt;
+            XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
             String attrT = "";
             String attrVC = "";
             String attrDT = "";
@@ -110,17 +137,46 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
             } else {
                 attrDT = "NULL";
             }
-
-            stmt = DBM.getConnection().createStatement();
-            stmt.executeUpdate("INSERT INTO xinco_add_attribute VALUES (" + getXinco_core_data_id() + ", " + getAttribute_id() + ", " + getAttrib_int() + ", " + getAttrib_unsignedint() + ", " + getAttrib_double() + ", '" + attrVC + "', '" + attrT + "', '" + attrDT + "')");
-            stmt.close();
+            audit.updateAuditTrail("xinco_add_attribute", new String[]{"attribute_id =" + getAttribute_id(), "xinco_core_data_id=" + getXinco_core_data_id()},
+                    DBM, "audit.general.create", getChangerID());
+            DBM.executeUpdate("INSERT INTO xinco_add_attribute VALUES (" + getXinco_core_data_id() + ", " + getAttribute_id() + ", " + getAttrib_int() + ", " + getAttrib_unsignedint() + ", " + getAttrib_double() + ", '" + attrVC + "', '" + attrT + "', '" + attrDT + "')");
         } catch (Throwable e) {
             //no commit or rollback -> CoreData manages exceptions!
             throw new XincoException();
         }
         return 1;
     }
-    //create complete list of add attributes
+
+    /**
+     * Remove object from DB
+     * @param id 
+     * @param data_id 
+     * @param DBM
+     * @throws com.bluecubs.xinco.core.XincoException 
+     */
+    public static void removeFromDB(int id, int data_id, XincoDBManager DBM) throws XincoException {
+        try {
+            XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
+            audit.updateAuditTrail("xinco_add_attribute", new String[]{"attribute_id =" + id, "xinco_core_data_id=" + data_id},
+                    DBM, "audit.general.delete", getChangerID());
+            DBM.executeUpdate("DELETE FROM xinco_add_attribute WHERE attribute_id=" + id + " and xinco_core_data_id=" + data_id);
+        } catch (Throwable e) {
+            try {
+                DBM.getConnection().rollback();
+            } catch (Exception erollback) {
+            }
+            e.printStackTrace();
+            throw new XincoException();
+        }
+    }
+
+    /**
+     * create complete list of add attributes
+     * @param attrID xinco_core_data_id
+     * @param DBM XincoDBManager
+     * @return vector containing attributes
+     */
+    @SuppressWarnings("unchecked")
     public static Vector getXincoAddAttributes(int attrID, XincoDBManager DBM) {
         Vector addAttributes = new Vector();
         try {
@@ -139,5 +195,21 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
             addAttributes.removeAllElements();
         }
         return addAttributes;
+    }
+
+    /**
+     * Get changerID
+     * @return int
+     */
+    public static int getChangerID() {
+        return changerID;
+    }
+
+    /**
+     * Set changerID
+     * @param changerID
+     */
+    public void setChangerID(int changerID) {
+        this.changerID = changerID;
     }
 }

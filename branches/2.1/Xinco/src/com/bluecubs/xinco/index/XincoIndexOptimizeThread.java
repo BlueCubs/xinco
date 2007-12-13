@@ -71,6 +71,10 @@ public class XincoIndexOptimizeThread extends Thread {
         }
     }
 
+    /**
+     * Get thread instance
+     * @return
+     */
     public static XincoIndexOptimizeThread getInstance() {
         if (instance == null) {
             instance = new XincoIndexOptimizeThread();

@@ -36,7 +36,7 @@
 package com.bluecubs.xinco.client.object;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.client.XincoMutableTreeNode;
+import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.dialog.ACLDialog;
 import com.bluecubs.xinco.client.object.thread.XincoImportThread;
 import com.bluecubs.xinco.core.XincoCoreData;
@@ -68,7 +68,9 @@ public class XincoRepositoryActionHandler {
     private int count = 0;
     private Action[] actions = null;
 
-    /** Creates a new instance of XincoActionHandler */
+    /** Creates a new instance of XincoActionHandler
+     * @param e 
+     */
     public XincoRepositoryActionHandler(XincoExplorer e) {
         this.explorer = e;
         this.xerb = e.getResourceBundle();
@@ -217,9 +219,7 @@ public class XincoRepositoryActionHandler {
         }
 
         public void actionPerformed(ActionEvent e) {
-
             XincoMutableTreeNode newnode;
-
             //open folder dialog
             if (explorer.getSession().getCurrentTreeNodeSelection() != null) {
                 if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
@@ -527,6 +527,7 @@ public class XincoRepositoryActionHandler {
         return actions;
     }
 
+    @SuppressWarnings("unchecked")
     public void moveToClipboard() {
         int i;
         TreePath[] tps;
@@ -538,6 +539,10 @@ public class XincoRepositoryActionHandler {
         }
     }
 
+    /**
+     * Insert Node
+     * @param dragNdrop
+     */
     public void insertNode(boolean dragNdrop) {
         if (((explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) &&
                 !dragNdrop) ||
@@ -687,7 +692,6 @@ public class XincoRepositoryActionHandler {
                 // remove moved element from clipboard
                 explorer.getSession().getClipboardTreeNodeSelection().removeElementAt(0);
             }
-
         } else {
             //Display only if in developer mode!
             if (explorer.getSettings().getSetting("setting.enable.developermode").isBool_value()) {

@@ -33,14 +33,20 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.core.client;
 
 import com.bluecubs.xinco.core.*;
 
+/**
+ * XincoCoreLogClient
+ * @author Alexander Manes
+ */
 public class XincoCoreLogClient extends XincoCoreLog {
 
-	public XincoCoreLogClient() throws XincoException {
-	}
-    
+    /**
+     * Constructor
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
+    public XincoCoreLogClient() throws XincoException {
+    }
 }

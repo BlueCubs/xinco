@@ -23,7 +23,7 @@
  *
  * Description:     Xinco JTree
  *
- * Original Author: Javier Ortiz
+ * Original Author: Javier A. Ortiz
  * Date:            May 18, 2007, 9:34 AM
  *
  * Modifications:
@@ -36,7 +36,6 @@ package com.bluecubs.xinco.client.object;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.client.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.object.dragNdrop.XincoDefaultTreeTransferHandler;
 import com.bluecubs.xinco.client.object.menu.XincoMenuRepository;
 import com.bluecubs.xinco.client.object.menu.XincoPopUpMenuRepository;
@@ -51,7 +50,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.dnd.DnDConstants;
 import java.awt.event.MouseEvent;
-import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
@@ -65,7 +63,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 /**
  *
- * @author ortizbj
+ * @author Javier A. Ortiz
  */
 public class XincoJTree extends JTree {
 
@@ -74,7 +72,9 @@ public class XincoJTree extends JTree {
     //Drag and Drop variables
     private Insets autoscrollInsets = new Insets(20, 20, 20, 20); // insets
 
-    /** Creates a new instance of XincoJTree */
+    /** Creates a new instance of XincoJTree
+     * @param explorer 
+     */
     public XincoJTree(XincoExplorer explorer) {
         setExplorer(explorer);
         getSelectionModel().setSelectionMode(
@@ -398,13 +398,9 @@ public class XincoJTree extends JTree {
                             ")";
                     dtm.addRow(rdata);
                     rdata[0] = getExplorer().getResourceBundle().getString("general.datatype");
-                    try {
-                        rdata[1] = getExplorer().getSession().getXinco().localizeString(getExplorer().getXdata().getXinco_core_data_type().getDesignation(), getExplorer().getLocale().toString()) +
-                                " (" + getExplorer().getSession().getXinco().localizeString(getExplorer().getXdata().getXinco_core_data_type().getDescription(), getExplorer().getLocale().toString()) +
-                                ")";
-                    } catch (RemoteException ex) {
-                        ex.printStackTrace();
-                    }
+                    rdata[1] = getExplorer().getResourceBundle().getString(getExplorer().getXdata().getXinco_core_data_type().getDesignation()) +
+                            " (" + getExplorer().getResourceBundle().getString(getExplorer().getXdata().getXinco_core_data_type().getDescription()) +
+                            ")";
                     dtm.addRow(rdata);
                     rdata[0] = "";
                     rdata[1] = "";
@@ -604,18 +600,18 @@ public class XincoJTree extends JTree {
                     if (e.getClickCount() == 1) {
                     } else if (e.getClickCount() == 2) {
                         // double-click -> preview file
-                        // setSelectionPath(selPath);
+                        setSelectionPath(selPath);
                         if (getExplorer().getSession().getCurrentTreeNodeSelection().getUserObject().getClass() ==
                                 XincoCoreData.class) {
                             // file = 1
                             if (((XincoCoreData) getExplorer().getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId() == 1) {
                                 getExplorer().doDataWizard(14);
-                                getExplorer().setCurrentPathFilename(getExplorer().getPrevious_fullpath());
+                                getExplorer().setCurrentPathFilename(getExplorer().getPreviousFullpath());
                             }
                             // text = 2
                             if (((XincoCoreData) getExplorer().getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId() == 2) {
-                                getExplorer().getJDialogAddAttributesText().setViewOnly(true);
-                                getExplorer().getJDialogAddAttributesText().showMe();
+                                getExplorer().viewOnly=true;
+                                getExplorer().getJDialogAddAttributesText();
                             }
                         }
                     }
@@ -625,14 +621,25 @@ public class XincoJTree extends JTree {
         addMouseListener(ml);
     }
 
+    /**
+     * 
+     * @return XincoExplorer
+     */
     public XincoExplorer getExplorer() {
         return explorer;
     }
 
+    /**
+     * 
+     * @param explorer
+     */
     protected void setExplorer(XincoExplorer explorer) {
         this.explorer = explorer;
     }
 
+    /**
+     * Collapse all nodes
+     */
     public void collapseAllNodes() {
         int row = getRowCount() - 1;
         while (row >= 0) {
@@ -642,11 +649,11 @@ public class XincoJTree extends JTree {
         expandRow(0);
     }
 
-    private boolean isLeaf() {
-        return getExplorer().getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class;
-    }
-
     //Drag and Drop functionality methods
+    /**
+     * Auto Scroll
+     * @param cursorLocation
+     */
     public void autoscroll(Point cursorLocation) {
         Insets insets = getAutoscrollInsets();
         Rectangle outer = getVisibleRect();
@@ -657,18 +664,31 @@ public class XincoJTree extends JTree {
         }
     }
 
+    /**
+     * 
+     * @return Insets
+     */
     protected Insets getAutoscrollInsets() {
-        return (autoscrollInsets);
+        return autoscrollInsets;
     }
 
+    /**
+     * 
+     * @param node
+     * @return DefaultMutableTreeNode
+     */
     public static DefaultMutableTreeNode makeDeepCopy(DefaultMutableTreeNode node) {
         DefaultMutableTreeNode copy = new DefaultMutableTreeNode(node.getUserObject());
         for (Enumeration e = node.children(); e.hasMoreElements();) {
             copy.add(makeDeepCopy((DefaultMutableTreeNode) e.nextElement()));
         }
-        return (copy);
+        return copy;
     }
 
+    /**
+     * 
+     * @return XincoMutableTreeNode
+     */
     public XincoMutableTreeNode getPreviousTreeNodeSelection() {
         return previousTreeNodeSelection;
     }
@@ -678,14 +698,26 @@ public class XincoJTree extends JTree {
         getExplorer().getSession().setCurrentTreeNodeSelection(current);
     }
 
+    /**
+     * 
+     * @param previousTreeNodeSelection
+     */
     protected void setPreviousTreeNodeSelection(XincoMutableTreeNode previousTreeNodeSelection) {
         this.previousTreeNodeSelection = previousTreeNodeSelection;
     }
 
+    /**
+     * 
+     * @return XincoMutableTreeNode
+     */
     public XincoMutableTreeNode getTargetTreeNode() {
         return targetTreeNode;
     }
 
+    /**
+     * 
+     * @param targetTreeNode
+     */
     public void setTargetTreeNode(XincoMutableTreeNode targetTreeNode) {
         this.targetTreeNode = targetTreeNode;
     }

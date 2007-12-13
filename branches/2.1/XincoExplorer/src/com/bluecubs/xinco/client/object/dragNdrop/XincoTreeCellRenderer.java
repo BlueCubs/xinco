@@ -23,7 +23,7 @@
  *
  * Description:     XincoTreeCellRenderer
  *
- * Original Author: Javier Ortiz
+ * Original Author: Javier A. Ortiz
  * Date:            May 25, 2007, 10:01 AM
  *
  * Modifications:
@@ -47,7 +47,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 
 /**
  *
- * @author javydreamercsw
+ * @author Javier A. Ortiz
  */
 public class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
 

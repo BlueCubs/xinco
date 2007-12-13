@@ -33,14 +33,20 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.core.client;
 
 import com.bluecubs.xinco.core.*;
 
+/**
+ * XincoCoreGroupClient
+ * @author Javier A. Ortiz
+ */
 public class XincoCoreGroupClient extends XincoCoreGroup {
-    
-	public XincoCoreGroupClient() throws XincoException {
-	}
-    
+
+    /**
+     * Contructor
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
+    public XincoCoreGroupClient() throws XincoException {
+    }
 }

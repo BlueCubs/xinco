@@ -40,6 +40,8 @@ import com.bluecubs.xinco.add.XincoAddAttribute;
 import java.io.File;
 import java.io.Reader;
 import java.io.FileInputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import com.bluecubs.xinco.core.*;
@@ -49,8 +51,15 @@ import com.bluecubs.xinco.index.filetypes.*;
 /** A utility for making Lucene Documents from a File. */
 public class XincoDocument {
 
+    /**
+     * Get Xinco Document
+     * @param d
+     * @param index_content
+     * @param DBM
+     * @return
+     * @throws java.io.FileNotFoundException
+     */
     public static Document getXincoDocument(XincoCoreData d, boolean index_content, XincoDBManager DBM) throws java.io.FileNotFoundException {
-
         int i, j, l;
         int i2, j2;
         short k, k2;
@@ -60,9 +69,7 @@ public class XincoDocument {
         int file_type = 0;
         int file_ext_index = 0;
         String file_ext = "";
-
         doc = new Document();
-
         //add XincoCoreData information
         doc.add(new Field("id", (new Integer(d.getId())).toString(),
                 Field.Store.COMPRESS, Field.Index.TOKENIZED));
@@ -86,11 +93,9 @@ public class XincoDocument {
                 //check which indexer to use for file extension
                 file_type = 0; // default: index as TEXT
                 for (l = 0; l < DBM.config.getFileIndexerCount(); l++) {
-                    for (i = 0; i < ((String[]) DBM.config.getIndexFileTypesExt().elementAt(l)).length; i++) {
-                        if (((String[]) DBM.config.getIndexFileTypesExt().elementAt(l))[i].compareTo(file_ext) == 0) {
+                        if (((String) DBM.config.getIndexFileTypesExt().elementAt(l)).compareTo(file_ext) == 0) {
                             file_type = l + 1; // file-type specific indexing
                             break;
-                        }
                     }
                     if (file_type > 0) {
                         break;
@@ -113,7 +118,6 @@ public class XincoDocument {
                     xift = new XincoIndexText();
                     doc.add(new Field("file", xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), d.getId(), "" + d.getId())))));
                 } else if (file_type > 0) {
-                    // file-type specific indexing
                     try {
                         xift = (XincoIndexFileType) Class.forName((String) DBM.config.getIndexFileTypesClass().elementAt(file_type - 1)).newInstance();
                         ContentReader = xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), d.getId(), "" + d.getId())));
@@ -125,12 +129,12 @@ public class XincoDocument {
                                 doc.add(new Field("file", ContentString, Field.Store.COMPRESS, Field.Index.TOKENIZED));
                             }
                         }
-                    } catch (Exception ie) {
+                    } catch (Throwable ex) {
+                        Logger.getLogger(XincoDocument.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
         }
-
         //add attributes
         for (i = 0; i < d.getXinco_add_attributes().size(); i++) {
             if (((XincoCoreDataTypeAttribute) d.getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().toLowerCase().compareTo("int") == 0) {

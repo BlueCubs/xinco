@@ -33,7 +33,6 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.core.server;
 
 import java.util.Vector;
@@ -41,12 +40,21 @@ import java.sql.*;
 
 import com.bluecubs.xinco.core.*;
 
+/**
+ * Create group object for data structures
+ * @author Alexander Manes
+ */
 public class XincoCoreGroupServer extends XincoCoreGroup {
-    
-    //create group object for data structures
-    public XincoCoreGroupServer(int attrID, XincoDBManager DBM) throws XincoException {
+
+    /**
+     * Create group object for data structures
+     * @param id
+     * @param DBM
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
+    public XincoCoreGroupServer(int id, XincoDBManager DBM) throws XincoException {
         try {
-            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_group WHERE id=" + attrID);
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_group WHERE id=" + id);
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {
@@ -62,25 +70,36 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
             throw new XincoException(e.getMessage());
         }
     }
-    
-    //create group object for data structures
-    public XincoCoreGroupServer(int attrID, String attrD, int attrSN) throws XincoException {
-        setId(attrID);
-        setDesignation(attrD);
-        setStatus_number(attrSN);
+
+    /**
+     * Create group object for data structures
+     * @param id
+     * @param designation
+     * @param status
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
+    public XincoCoreGroupServer(int id, String designation, int status) throws XincoException {
+        setId(id);
+        setDesignation(designation);
+        setStatus_number(status);
     }
-    
-    //write to db
-    public int write2DB(XincoDBManager DBM) throws XincoException{
+
+    /**
+     * Persist object
+     * @param DBM
+     * @return
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
+    public int write2DB(XincoDBManager DBM) throws XincoException {
         try {
             if (getId() > 0) {
-                XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
-                audit.updateAuditTrail("xinco_core_group",new String [] {"id ="+getId()},
-                        DBM,"audit.coregroup.change",this.getChangerID());
-                DBM.executeUpdate("UPDATE xinco_core_group SET designation='" + getDesignation().replaceAll("'","\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
+                XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
+                audit.updateAuditTrail("xinco_core_group", new String[]{"id =" + getId()},
+                        DBM, "audit.coregroup.change", this.getChangerID());
+                DBM.executeUpdate("UPDATE xinco_core_group SET designation='" + getDesignation().replaceAll("'", "\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
             } else {
                 setId(DBM.getNewID("xinco_core_group"));
-                DBM.executeUpdate("INSERT INTO xinco_core_group VALUES (" + getId() + ", '" + getDesignation().replaceAll("'","\\\\'") + "', " + getStatus_number() + ")");
+                DBM.executeUpdate("INSERT INTO xinco_core_group VALUES (" + getId() + ", '" + getDesignation().replaceAll("'", "\\\\'") + "', " + getStatus_number() + ")");
             }
             DBM.getConnection().commit();
         } catch (Throwable e) {
@@ -92,16 +111,20 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
         }
         return getId();
     }
-    
-    //create complete list of groups
+
+    /**
+     * Create complete list of groups
+     * @param DBM
+     * @return Vector
+     */
+    @SuppressWarnings("unchecked")
     public static Vector getXincoCoreGroups(XincoDBManager DBM) {
         Vector coreGroups = new Vector();
         try {
             ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_group ORDER BY designation");
             while (rs.next()) {
-                coreGroups.addElement(new XincoCoreGroupServer(rs.getInt("id"), rs.getString("designation"), rs.getInt("status_number")));
+                coreGroups.add(new XincoCoreGroupServer(rs.getInt("id"), rs.getString("designation"), rs.getInt("status_number")));
             }
-            
         } catch (Throwable e) {
             coreGroups.removeAllElements();
         }

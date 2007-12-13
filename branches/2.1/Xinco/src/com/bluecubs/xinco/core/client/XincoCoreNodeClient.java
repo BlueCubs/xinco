@@ -33,18 +33,25 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.core.client;
 
 import com.bluecubs.xinco.core.*;
 
+/**
+ * XincoCoreNodeClient
+ * @author Alexander Manes
+ */
 public class XincoCoreNodeClient extends XincoCoreNode {
-    
-	public XincoCoreNodeClient() throws XincoException {
-	}
-	
-	public String toString() {
-		return this.getDesignation();
-	}
-    
+
+    /**
+     * Constructor
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
+    public XincoCoreNodeClient() throws XincoException {
+    }
+
+    @Override
+    public String toString() {
+        return this.getDesignation();
+    }
 }

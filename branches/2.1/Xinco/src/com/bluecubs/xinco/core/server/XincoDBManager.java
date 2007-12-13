@@ -53,6 +53,10 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import org.apache.commons.dbcp.BasicDataSource;
 
+/**
+ * Server-side database manager
+ * @author XincoDBManager
+ */
 public class XincoDBManager {
 
     private Connection con = null;
@@ -67,6 +71,10 @@ public class XincoDBManager {
     private boolean settingsFilled = false;
     private Statement stmt = null;
 
+    /**
+     * Server-side database manager
+     * @throws java.lang.Exception
+     */
     public XincoDBManager() throws Exception {
         try {
             setResourceBundle(ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages"));
@@ -82,6 +90,9 @@ public class XincoDBManager {
         }
     }
 
+    /**
+     * Fills setting vector from DB.
+     */
     @SuppressWarnings("unchecked")
     protected void fillSettings() {
         getXincoSettingServer().setXinco_settings(new Vector());
@@ -106,8 +117,10 @@ public class XincoDBManager {
         }
     }
 
-    /*
-     *Reset database tables keeping the standard inserts (assuming those inserts have id's greater than the ones specified in the xinco_id table
+    /**
+     * Reset database tables keeping the standard inserts (assuming those inserts have id's greater than the ones specified in the xinco_id table
+     * @param user
+     * @throws com.bluecubs.xinco.core.XincoException
      */
     public void resetDB(XincoCoreUserServer user) throws XincoException {
         Vector groups = user.getXinco_core_groups();
@@ -193,6 +206,10 @@ public class XincoDBManager {
         }
     }
 
+    /**
+     * Get XincoSettingServer
+     * @return XincoSettingServer
+     */
     public XincoSettingServer getXincoSettingServer() {
         if (xss == null) {
             xss = new XincoSettingServer();
@@ -200,9 +217,15 @@ public class XincoDBManager {
         return xss;
     }
 
+    /**
+     * Get setting value
+     * @param name
+     * @return XincoSetting
+     */
     public XincoSetting getSetting(String name) {
-        if(!isSettingsFilled())
+        if (!isSettingsFilled()) {
             fillSettings();
+        }
         try {
             return getXincoSettingServer().getSetting(name);
         } catch (XincoSettingException ex) {
@@ -212,7 +235,16 @@ public class XincoDBManager {
         return null;
     }
 
-    /**Draws a table with results of the query stored in the ResultSet rs in the PrintWriter out*/
+    /**
+     * Draws a table with results of the query stored in the ResultSet rs in the PrintWriter out
+     * @param rs
+     * @param out
+     * @param header
+     * @param title
+     * @param columnAsLink
+     * @param details
+     * @param linkType
+     */
     public void drawTable(ResultSet rs, PrintWriter out, String header, String title, int columnAsLink, boolean details, int linkType) {
         try {
             int size = rs.getMetaData().getColumnCount();
@@ -261,9 +293,11 @@ public class XincoDBManager {
         }
     }
 
-    /*
-     *Replace a string with contents of resource bundle is applicable
-     *Used to transform db contents to human readable form.
+    /**
+     * Replace a string with contents of resource bundle is applicable
+     * Used to transform db contents to human readable form.
+     * @param s
+     * @return String
      */
     public String localizeString(String s) {
         if (s == null) {
@@ -296,8 +330,12 @@ public class XincoDBManager {
         }
     }
 
-    /** Returns the column names of the query in an HTML table format for use
-     * as header for a table produced by the drawTable method.*/
+    /**
+     * Returns the column names of the query in an HTML table format for use
+     * as header for a table produced by the drawTable method
+     * @param rs
+     * @return String
+     */
     public String getColumnNames(ResultSet rs) {
         String header = "";
         try {
@@ -315,15 +353,18 @@ public class XincoDBManager {
         return header;
     }
 
-    /** Returns the column names of the query in an HTML table format for use
-     * as header for a table produced by the drawTable method.*/
+    /**
+     * Returns the column names of the query in an HTML table format for use
+     * as header for a table produced by the drawTable method.
+     * @param rs
+     * @return StringTokenizer
+     */
     public StringTokenizer getColumnNamesList(ResultSet rs) {
         String list = "";
         StringTokenizer t;
         try {
             ResultSetMetaData rsmd = rs.getMetaData();
             int numColumns = rsmd.getColumnCount();
-
             // Get the column names; column indices start from 1
             for (int i = 1; i < numColumns + 1; i++) {
                 list += rsmd.getColumnName(i) + ",";
@@ -335,6 +376,10 @@ public class XincoDBManager {
         return t;
     }
 
+    /**
+     * Get DB connection
+     * @return Connection
+     */
     public Connection getConnection() {
         try {
             if (con == null || con.isClosed()) {
@@ -347,39 +392,42 @@ public class XincoDBManager {
         return con;
     }
 
+    /**
+     * Get Data source
+     * @return DataSource
+     */
     public DataSource getDatasource() {
-//        try {
-//            datasource.getConnection().setAutoCommit(false);
-//        }  catch (SQLException ex) {
-//            ex.printStackTrace();
-//        }
         return datasource;
     }
 
-    public int getNewID(String attrTN) throws Exception {
+    /**
+     * Get a new id
+     * @param table_name
+     * @return
+     * @throws java.lang.Exception
+     */
+    public int getNewID(String table_name) throws Exception {
         int newID = 0;
-        rs = executeQuery("SELECT * FROM xinco_id WHERE tablename='" + attrTN + "'");
+        rs = executeQuery("SELECT * FROM xinco_id WHERE tablename='" + table_name + "'");
         while (rs.next()) {
             newID = rs.getInt("last_id") + 1;
         }
         rs.close();
-        executeUpdate("UPDATE xinco_id SET last_id=last_id+1 WHERE tablename='" + attrTN + "'");
+        executeUpdate("UPDATE xinco_id SET last_id=last_id+1 WHERE tablename='" + table_name + "'");
         return newID;
     }
 
+    /**
+     * Get Resource bundle
+     * @return ResourceBundle
+     */
     public ResourceBundle getResourceBundle() {
         return lrb;
     }
 
-    public Statement getStatement() {
-        try {
-            return getDatasource().getConnection().createStatement();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
-
+    /**
+     * Print connection stats
+     */
     public void printStats() {
         try {
             System.out.println("Number Active: " + ((BasicDataSource) getDatasource()).getNumActive());
@@ -392,6 +440,10 @@ public class XincoDBManager {
         }
     }
 
+    /**
+     * Set Connection
+     * @param con
+     */
     public void setConnection(Connection con) {
         if (con == null) {
             getConnection();
@@ -404,10 +456,18 @@ public class XincoDBManager {
         }
     }
 
+    /**
+     * Set data source
+     * @param datasource
+     */
     public void setDatasource(DataSource datasource) {
         this.datasource = datasource;
     }
 
+    /**
+     * Set locale
+     * @param loc
+     */
     public void setLocale(Locale loc) {
         this.loc = loc;
         if (loc == null) {
@@ -422,6 +482,10 @@ public class XincoDBManager {
         }
     }
 
+    /**
+     * Create locale from string
+     * @param locale
+     */
     public void createAndLoadLocale(String locale) {
         Locale temp = null;
         try {
@@ -446,6 +510,10 @@ public class XincoDBManager {
         setLocale(temp);
     }
 
+    /**
+     * Set Resource bundle
+     * @param lrb
+     */
     public void setResourceBundle(ResourceBundle lrb) {
         this.lrb = lrb;
     }
@@ -474,6 +542,10 @@ public class XincoDBManager {
         return rowCount;
     }
 
+    /**
+     * Get locale
+     * @return
+     */
     public Locale getLocale() {
         if (loc == null) {
             loc = Locale.getDefault();
@@ -481,6 +553,10 @@ public class XincoDBManager {
         return loc;
     }
 
+    /**
+     * Script for removing right click functionality in web pages.
+     * @return String
+     */
     public String getWebBlockRightClickScript() {
         return "<script language=JavaScript> /n" +
                 "<!--/n" +
@@ -497,6 +573,11 @@ public class XincoDBManager {
                 "</script>";
     }
 
+    /**
+     * Execute query
+     * @param sql
+     * @return ResultSet
+     */
     public ResultSet executeQuery(String sql) {
         try {
             if (isSettingsFilled()) {
@@ -512,6 +593,12 @@ public class XincoDBManager {
         return rs;
     }
 
+    /**
+     * Execute update
+     * @param sql
+     * @return boolean
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
     public boolean executeUpdate(String sql) throws XincoException {
         try {
             if (isSettingsFilled()) {

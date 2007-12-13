@@ -47,6 +47,12 @@ import java.util.logging.Logger;
 /**
  * Create data object for data structures
  * @author Alexander Manes
+ * Statuses:
+ * 1 => Open
+ * 2 => Locked
+ * 3 => Archived
+ * 4 => Checked Out
+ * 5 => Published
  */
 public class XincoCoreDataServer extends XincoCoreData {
 
@@ -61,7 +67,6 @@ public class XincoCoreDataServer extends XincoCoreData {
     public XincoCoreDataServer(int attrID, XincoDBManager DBM) throws XincoException {
         try {
             ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_data WHERE id=" + attrID);
-
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {

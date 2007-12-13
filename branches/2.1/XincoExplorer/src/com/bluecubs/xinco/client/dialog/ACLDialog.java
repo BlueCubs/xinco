@@ -51,7 +51,7 @@ import javax.swing.ListModel;
 
 /**
  * ACL Dialog
- * @author ortizbj
+ * @author Javier A. Ortiz
  */
 public class ACLDialog extends javax.swing.JDialog {
 
@@ -174,7 +174,7 @@ public class ACLDialog extends javax.swing.JDialog {
 
             String[] strings = list;
 
-            public int getSize()  {
+            public int getSize() {
                 return strings.length;
             }
 
@@ -188,10 +188,11 @@ public class ACLDialog extends javax.swing.JDialog {
             }
             });
     }
-        /**
-                 * Sets ACL list model.
-                 * @param list String array containing the list.
-                 */
+
+    /**
+     * Sets ACL list model.
+     * @param list String array containing the list.
+     */
     protected void setACLListModel(final String[] list) {
         currentACLList.setModel(new javax.swing.AbstractListModel() {
 
@@ -401,6 +402,7 @@ public class ACLDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_RemoveACEActionPerformed
 
+    @SuppressWarnings("unchecked")
     private void AddACEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddACEActionPerformed
         int i = 0;
         temp_acl = new Vector();

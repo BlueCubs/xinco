@@ -66,7 +66,7 @@ import java.util.ResourceBundle;
 
 /**
  * 
- * @author javydreamercsw
+ * @author Alexander Manes
  */
 public class XincoAdminServlet extends HttpServlet {
 
@@ -545,7 +545,8 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_user.setReason("audit.user.account.modified");
                 temp_user.setHashPassword(true);
                 temp_user.write2DB(DBM);
-
+                //return to same screen
+                current_location="AdminUserProfileEdit";
             } catch (Throwable ex) {
                 Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -566,7 +567,7 @@ public class XincoAdminServlet extends HttpServlet {
         if (request.getParameter("DialogAdminLanguagesDelete") != null) {
             try {
                 temp_language = new XincoCoreLanguageServer(Integer.parseInt(request.getParameter("DialogAdminLanguagesDelete")), DBM);
-                XincoCoreLanguageServer.deleteFromDB(temp_language, DBM, login_user.getId());
+                XincoCoreLanguageServer.removeFromDB(temp_language, DBM, login_user.getId());
             } catch (Throwable e) {
             }
         }
@@ -593,7 +594,7 @@ public class XincoAdminServlet extends HttpServlet {
         if (request.getParameter("DialogEditAttributesRemoveAttributeId") != null) {
             try {
                 temp_attribute = new XincoCoreDataTypeAttributeServer(current_datatype_selection, Integer.parseInt(request.getParameter("DialogEditAttributesRemoveAttributeId")), DBM);
-                XincoCoreDataTypeAttributeServer.deleteFromDB(temp_attribute, DBM, login_user.getId());
+                XincoCoreDataTypeAttributeServer.removeFromDB(temp_attribute, DBM, login_user.getId());
             } catch (Throwable e) {
             }
         }
@@ -989,7 +990,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
                     out.println("<tr>");
                     out.println("<td class=\"text\">" + rb.getString("general.name") + ":</td>");
-                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditGroupName\" size=\"40\" value=\"" + temp_group.getDesignation() + "\"/></td>");
+                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditGroupName\" size=\"40\" value=\"" + DBM.localizeString(temp_group.getDesignation()) + "\"/></td>");
                     out.println("</tr>");
                     out.println("<tr>");
                     out.println("<td class=\"text\">&nbsp;</td>");
@@ -1150,7 +1151,8 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("</tr>");
                     out.println("<tr>");
                     out.println("<td class=\"text\">&nbsp;</td>");
-                    out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogAdminUsersEdit\" value=\"" +//DialogEditUserProfileID
+                    out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogEditUserProfileID\" value=\"" +//
+                            request.getParameter("DialogAdminUsersEdit") + "\"/><input type=\"hidden\" name=\"DialogAdminUsersEdit\" value=\"" +//
                             request.getParameter("DialogAdminUsersEdit") + "\"/><input type=\"submit\" name=\"DialogEditUserProfileSubmit\" value=\"" + rb.getString("general.save") + "!\"/></td>");
                     out.println("</tr>");
                     out.println("</table>");
@@ -1491,7 +1493,6 @@ public class XincoAdminServlet extends HttpServlet {
             }
             if (current_location.compareTo("RebuildIndex") == 0) {
                 //rebuild index and list status
-                DBM = new XincoDBManager();
                 XincoSettingServer s2 = null;
                 try {
                     s2 = new XincoSettingServer(DBM.getSetting("setting.index.lock").getId(), DBM);
@@ -1510,8 +1511,6 @@ public class XincoAdminServlet extends HttpServlet {
                     s2.write2DB(DBM);
                     //delete existing index
                     File indexDirectory = null;
-                    File indexDirectoryFile = null;
-                    String[] indexDirectoryFileList = null;
                     boolean index_directory_deleted = false;
                     indexDirectory = new File(DBM.config.getFileIndexPath());
                     if (indexDirectory.exists()) {

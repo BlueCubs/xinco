@@ -37,7 +37,7 @@ package com.bluecubs.xinco.core;
 
 /**
  * 
- * @author javydreamercsw
+ * @author Javier A. Ortiz
  */
 public class XincoSettingException extends XincoException {
 

@@ -41,12 +41,21 @@ import java.util.Vector;
 import com.bluecubs.xinco.core.*;
 import java.util.ResourceBundle;
 
+/**
+ * Create language object for data structures
+ * @author Alexander Manes
+ */
 public class XincoCoreLanguageServer extends XincoCoreLanguage {
 
-    //create language object for data structures
-    public XincoCoreLanguageServer(int attrID, XincoDBManager DBM) throws XincoException {
+    /**
+     * Create language object for data structures
+     * @param id
+     * @param DBM
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
+    public XincoCoreLanguageServer(int id, XincoDBManager DBM) throws XincoException {
         try {
-            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_language WHERE id=" + attrID);
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_language WHERE id=" + id);
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {
@@ -63,14 +72,25 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
         }
     }
 
-    //create language object for data structures
-    public XincoCoreLanguageServer(int attrID, String attrS, String attrD) throws XincoException {
-        setId(attrID);
-        setSign(attrS);
-        setDesignation(attrD);
+    /**
+     * Create language object for data structures
+     * @param id
+     * @param sign
+     * @param designation
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
+    public XincoCoreLanguageServer(int id, String sign, String designation) throws XincoException {
+        setId(id);
+        setSign(sign);
+        setDesignation(designation);
     }
 
-    //write to db
+    /**
+     * Write to DB
+     * @param DBM
+     * @return int
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
     public int write2DB(XincoDBManager DBM) throws XincoException {
         try {
             if (getId() > 0) {
@@ -89,40 +109,53 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
         return getId();
     }
 
-    //delete from db
-    public static int deleteFromDB(XincoCoreLanguage attrCL, XincoDBManager DBM, int userID) throws XincoException {
-
+    /**
+     * Remove from DB
+     * @param xinco_core_language
+     * @param DBM
+     * @param userID
+     * @return
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
+    public static int removeFromDB(XincoCoreLanguage xinco_core_language, XincoDBManager DBM, int userID) throws XincoException {
         try {
             XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
-            audit.updateAuditTrail("xinco_core_language", new String[]{"id =" + attrCL.getId()},
+            audit.updateAuditTrail("xinco_core_language", new String[]{"id =" + xinco_core_language.getId()},
                     DBM, "audit.general.delete", userID);
-            DBM.executeUpdate("DELETE FROM xinco_core_language WHERE id=" + attrCL.getId());
+            DBM.executeUpdate("DELETE FROM xinco_core_language WHERE id=" + xinco_core_language.getId());
         } catch (Throwable e) {
             throw new XincoException();
         }
         return 0;
     }
 
-    //create complete list of languages
+    /**
+     * Create language object for data structures
+     * @param DBM
+     * @return Vector
+     */
+    @SuppressWarnings("unchecked")
     public static Vector getXincoCoreLanguages(XincoDBManager DBM) {
         Vector coreLanguages = new Vector();
         try {
             ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_language ORDER BY designation");
             while (rs.next()) {
-                coreLanguages.addElement(new XincoCoreLanguageServer(rs.getInt("id"), rs.getString("sign"), rs.getString("designation")));
+                coreLanguages.add(new XincoCoreLanguageServer(rs.getInt("id"), rs.getString("sign"), rs.getString("designation")));
             }
         } catch (Throwable e) {
             coreLanguages.removeAllElements();
         }
-
         return coreLanguages;
     }
 
-    //check if language is in use by other objects
+    /**
+     * Check if language is in use by other objects
+     * @param xcl
+     * @param DBM
+     * @return boolean
+     */
     public static boolean isLanguageUsed(XincoCoreLanguage xcl, XincoDBManager DBM) {
-
         boolean is_used = false;
-
         try {
             ResultSet rs = null;
             rs = DBM.executeQuery("SELECT 1 FROM xinco_core_node WHERE xinco_core_language_id = " + xcl.getId());

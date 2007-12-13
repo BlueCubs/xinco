@@ -33,15 +33,21 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.add.client;
 
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.add.*;
 
+/**
+ * Client version of XincoAddAttribute
+ * @author Alexander Manes
+ */
 public class XincoAddAttributeClient extends XincoAddAttribute {
-    
-	public XincoAddAttributeClient() throws XincoException {
-	}
 
+    /**
+     * Constructor
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
+    public XincoAddAttributeClient() throws XincoException {
+    }
 }

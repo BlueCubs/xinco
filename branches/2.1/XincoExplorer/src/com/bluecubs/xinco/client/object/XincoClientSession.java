@@ -33,8 +33,9 @@
  *
  *************************************************************
  */
-package com.bluecubs.xinco.client;
+package com.bluecubs.xinco.client.object;
 
+import com.bluecubs.xinco.client.*;
 import java.util.Vector;
 
 import com.bluecubs.xinco.core.*;
@@ -95,16 +96,17 @@ public class XincoClientSession {
      * Current search result
      */
     private Vector currentSearchResult = null;
-
     /**
      * Status
      */
-    private int status = 0;	
+    private int status = 0;
+
     /**
      * XincoClientSession
      * 1 = connecting...
      * 2 = connected
      * 3 = disconnecting
+     * @param e 
      */
     public XincoClientSession(XincoExplorer e) {
         service_endpoint = "";
@@ -119,118 +121,218 @@ public class XincoClientSession {
         currentSearchResult = new Vector();
         status = 0;
     }
-    
-    protected XincoClientSession(){
-        
+
+    /**
+     * Constructor
+     */
+    protected XincoClientSession() {
+
     }
 
+    /**
+     * 
+     * @return String
+     */
     public String getService_endpoint() {
         return service_endpoint;
     }
 
+    /**
+     * 
+     * @param service_endpoint
+     */
     public void setService_endpoint(String service_endpoint) {
         this.service_endpoint = service_endpoint;
     }
 
+    /**
+     * 
+     * @return XincoCoreUser
+     */
     public XincoCoreUser getUser() {
         return user;
     }
 
+    /**
+     * 
+     * @param user
+     */
     public void setUser(XincoCoreUser user) {
         this.user = user;
     }
 
-    public //web service
     /**
      * Xinco Service
+     * @return XincoService
      */
-    XincoService getXinco_service() {
+    public XincoService getXinco_service() {
         return xinco_service;
     }
 
+    /**
+     * 
+     * @param xinco_service
+     */
     public void setXinco_service(XincoService xinco_service) {
         this.xinco_service = xinco_service;
     }
 
+    /**
+     * 
+     * @return Xinco
+     */
     public Xinco getXinco() {
         return xinco;
     }
 
+    /**
+     * 
+     * @param xinco
+     */
     public void setXinco(Xinco xinco) {
         this.xinco = xinco;
     }
 
+    /**
+     * 
+     * @return XincoClientRepository
+     */
     public XincoClientRepository getXincoClientRepository() {
         return xincoClientRepository;
     }
 
+    /**
+     * 
+     * @param xincoClientRepository
+     */
     public void setXincoClientRepository(XincoClientRepository xincoClientRepository) {
         this.xincoClientRepository = xincoClientRepository;
     }
 
-    public /**
+    /**
      * Server version
+     * @return XincoVersion
      */
-    XincoVersion getServer_version() {
+    public XincoVersion getServer_version() {
         return server_version;
     }
 
+    /**
+     * 
+     * @param server_version
+     */
     public void setServer_version(XincoVersion server_version) {
         this.server_version = server_version;
     }
 
+    /**
+     * 
+     * @return Vector
+     */
     public Vector getServer_groups() {
         return server_groups;
     }
 
+    /**
+     * 
+     * @param server_groups
+     */
     public void setServer_groups(Vector server_groups) {
         this.server_groups = server_groups;
     }
 
+    /**
+     * 
+     * @return Vector
+     */
     public Vector getServer_languages() {
         return server_languages;
     }
 
+    /**
+     * 
+     * @param server_languages
+     */
     public void setServer_languages(Vector server_languages) {
         this.server_languages = server_languages;
     }
 
+    /**
+     * 
+     * @return Vector
+     */
     public Vector getServer_datatypes() {
         return server_datatypes;
     }
 
+    /**
+     * 
+     * @param server_datatypes
+     */
     public void setServer_datatypes(Vector server_datatypes) {
         this.server_datatypes = server_datatypes;
     }
 
+    /**
+     * 
+     * @return XincoMutableTreeNode
+     */
     public XincoMutableTreeNode getCurrentTreeNodeSelection() {
         return currentTreeNodeSelection;
     }
 
+    /**
+     * 
+     * @param currentTreeNodeSelection
+     */
     public void setCurrentTreeNodeSelection(XincoMutableTreeNode currentTreeNodeSelection) {
         this.currentTreeNodeSelection = currentTreeNodeSelection;
     }
 
+    /**
+     * 
+     * @return Vector
+     */
     public Vector getClipboardTreeNodeSelection() {
         return clipboardTreeNodeSelection;
     }
 
+    /**
+     * 
+     * @param clipboardTreeNodeSelection
+     */
     public void setClipboardTreeNodeSelection(Vector clipboardTreeNodeSelection) {
         this.clipboardTreeNodeSelection = clipboardTreeNodeSelection;
     }
 
+    /**
+     * 
+     * @return Vector
+     */
     public Vector getCurrentSearchResult() {
         return currentSearchResult;
     }
 
+    /**
+     * 
+     * @param currentSearchResult
+     */
     public void setCurrentSearchResult(Vector currentSearchResult) {
         this.currentSearchResult = currentSearchResult;
     }
 
+    /**
+     * 
+     * @return int
+     */
     public int getStatus() {
         return status;
     }
 
+    /**
+     * 
+     * @param status
+     */
     public void setStatus(int status) {
         this.status = status;
     }

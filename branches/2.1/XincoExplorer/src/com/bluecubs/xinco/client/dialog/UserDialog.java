@@ -44,7 +44,7 @@ import javax.swing.JOptionPane;
 
 /**
  * User Dialog
- * @author ortizbj
+ * @author Javier A. Ortiz
  */
 public class UserDialog extends javax.swing.JDialog {
 

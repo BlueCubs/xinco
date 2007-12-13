@@ -40,13 +40,21 @@ import java.sql.*;
 
 import com.bluecubs.xinco.core.*;
 
+/**
+ * Create data type object for data structures
+ * @author Alexander Manes
+ */
 public class XincoCoreDataTypeServer extends XincoCoreDataType {
 
-    //create data type object for data structures
+    /**
+     * Create data type object for data structures
+     * @param id
+     * @param DBM
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
     public XincoCoreDataTypeServer(int attrID, XincoDBManager DBM) throws XincoException {
         try {
             ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_data_type WHERE id=" + attrID);
-
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {
@@ -64,21 +72,33 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
         }
     }
 
-    //create data type object for data structures
-    public XincoCoreDataTypeServer(int attrID, String attrD, String attrDESC, Vector attrA) throws XincoException {
-        setId(attrID);
+    /**
+     * Create data type object for data structures
+     * @param id
+     * @param attrD
+     * @param attrDESC
+     * @param attrA
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
+    public XincoCoreDataTypeServer(int id, String attrD, String attrDESC, Vector attrA) throws XincoException {
+        setId(id);
         setDesignation(attrD);
         setDescription(attrDESC);
         setXinco_core_data_type_attributes(attrA);
     }
 
-    //create complete list of data types
+    /**
+     * Create complete list of data types
+     * @param DBM
+     * @return Vector
+     */
+    @SuppressWarnings("unchecked")
     public static Vector getXincoCoreDataTypes(XincoDBManager DBM) {
         Vector coreDataTypes = new Vector();
         try {
             ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_data_type ORDER BY designation");
             while (rs.next()) {
-                coreDataTypes.addElement(new XincoCoreDataTypeServer(rs.getInt("id"), rs.getString("designation"), rs.getString("description"), XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(rs.getInt("id"), DBM)));
+                coreDataTypes.add(new XincoCoreDataTypeServer(rs.getInt("id"), rs.getString("designation"), rs.getString("description"), XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(rs.getInt("id"), DBM)));
             }
         } catch (Throwable e) {
             coreDataTypes.removeAllElements();

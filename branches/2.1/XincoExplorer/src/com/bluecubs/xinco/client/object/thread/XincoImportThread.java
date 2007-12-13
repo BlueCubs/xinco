@@ -51,7 +51,7 @@ import javax.swing.tree.TreePath;
 
 /**
  *
- * @author ortizbj
+ * @author Javier A. Ortiz
  */
 public class XincoImportThread extends Thread {
 
@@ -123,6 +123,10 @@ public class XincoImportThread extends Thread {
         this.explorer.getJTreeRepository().setEnabled(true);
     }
 
+    /**
+     * 
+     * @param e
+     */
     public void setXincoExplorer(XincoExplorer e) {
         this.explorer = e;
     }

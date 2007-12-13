@@ -36,7 +36,6 @@
  *
  * Created on January 22, 2007, 3:31 PM
  */
-
 package com.bluecubs.xinco.client.object.thread;
 
 import com.bluecubs.xinco.client.object.*;
@@ -44,29 +43,47 @@ import com.bluecubs.xinco.client.XincoExplorer;
 
 /**
  *
- * @author javydreamercsw
+ * @author Javier A. Ortiz
  */
-public class XincoProgressBarThread extends Thread{
+public class XincoProgressBarThread extends Thread {
+
     private XincoExplorer explorer;
     private XincoProgressBar progressBar;
+
     @Override
     public void run() {
-        progressBar=new XincoProgressBar(this.explorer);
+        progressBar = new XincoProgressBar(this.explorer);
         progressBar.pack();
         progressBar.setVisible(true);
     }
-    /** Creates a new instance of XincoProgressBarThread */
+
+    /** Creates a new instance of XincoProgressBarThread
+     * @param e 
+     */
     public XincoProgressBarThread(XincoExplorer e) {
-        this.explorer=e;
+        this.explorer = e;
     }
+
+    /**
+     * Hide XincoProgressBarThread
+     */
     public void hide() {
         progressBar.setVisible(false);
     }
+
+    /**
+     * Show XincoProgressBarThread
+     */
     public void show() {
         progressBar.setVisible(true);
         progressBar.repaint();
     }
-    public void setTitle(String t){
+
+    /**
+     * Set Title
+     * @param t
+     */
+    public void setTitle(String t) {
         progressBar.setTitle(t);
     }
 }

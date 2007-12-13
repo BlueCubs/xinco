@@ -48,12 +48,18 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import org.apache.axis.encoding.Base64;
 
+/**
+ * 
+ * @author Alexander Manes
+ */
 public class XincoPublisherServlet extends HttpServlet {
 
     private ResourceBundle rb;
     private XincoDBManager DBM;
 
     /** Initializes the servlet.
+     * @param config
+     * @throws javax.servlet.ServletException 
      */
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -69,6 +75,8 @@ public class XincoPublisherServlet extends HttpServlet {
     /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
+     * @throws javax.servlet.ServletException
+     * @throws java.io.IOException 
      */
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Locale loc = null;
@@ -457,6 +465,8 @@ public class XincoPublisherServlet extends HttpServlet {
     /** Handles the HTTP <code>GET</code> method.
      * @param request servlet request
      * @param response servlet response
+     * @throws javax.servlet.ServletException
+     * @throws java.io.IOException 
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -466,6 +476,8 @@ public class XincoPublisherServlet extends HttpServlet {
     /** Handles the HTTP <code>POST</code> method.
      * @param request servlet request
      * @param response servlet response
+     * @throws javax.servlet.ServletException
+     * @throws java.io.IOException 
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -473,6 +485,7 @@ public class XincoPublisherServlet extends HttpServlet {
     }
 
     /** Returns a short description of the servlet.
+     * @return String
      */
     @Override
     public String getServletInfo() {

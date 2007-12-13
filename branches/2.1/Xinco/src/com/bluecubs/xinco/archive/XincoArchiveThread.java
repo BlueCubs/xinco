@@ -79,6 +79,10 @@ public class XincoArchiveThread extends Thread {
         }
     }
 
+    /**
+     * Gets an archive thread instance. Creates one if not existent.
+     * @return
+     */
     public static XincoArchiveThread getInstance() {
         if (instance == null) {
             instance = new XincoArchiveThread();

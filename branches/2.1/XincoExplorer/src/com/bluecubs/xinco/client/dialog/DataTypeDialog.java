@@ -45,7 +45,7 @@ import javax.swing.DefaultListModel;
 
 /**
  * Data Type Dialog
- * @author ortizbj
+ * @author Javier A. Ortiz
  */
 public class DataTypeDialog extends javax.swing.JDialog {
 
@@ -72,7 +72,7 @@ public class DataTypeDialog extends javax.swing.JDialog {
             DefaultListModel dlm = new DefaultListModel();
             dlm.removeAllElements();
             for (i = 0; i < explorer.getSession().getServer_datatypes().size(); i++) {
-                text = explorer.getResourceBundle().getString(((XincoCoreDataType) explorer.getSession().getServer_datatypes().elementAt(i)).getDesignation()) + 
+                text = explorer.getResourceBundle().getString(((XincoCoreDataType) explorer.getSession().getServer_datatypes().elementAt(i)).getDesignation()) +
                         " (" + explorer.getResourceBundle().getString(((XincoCoreDataType) explorer.getSession().getServer_datatypes().elementAt(i)).getDescription()) + ")";
                 dlm.addElement(text);
                 if (((XincoCoreDataType) explorer.getSession().getServer_datatypes().elementAt(i)).getId() == ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId()) {
@@ -157,7 +157,7 @@ public class DataTypeDialog extends javax.swing.JDialog {
 
     private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
         ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).setXinco_core_data_type((XincoCoreDataType) explorer.getSession().getServer_datatypes().elementAt(this.dataType.getSelectedIndex()));
-        explorer.set_global_dialog_return_value(1);
+        explorer.setGlobalDialogReturnValue(1);
         setVisible(false);
     }//GEN-LAST:event_continueButtonActionPerformed
 

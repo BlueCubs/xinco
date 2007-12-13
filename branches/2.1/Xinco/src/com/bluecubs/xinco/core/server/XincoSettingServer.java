@@ -39,14 +39,13 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoSetting;
 import com.bluecubs.xinco.core.XincoSettingException;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Server-side XincoSetting logic
  * @author Javier A. Ortiz
  */
 public class XincoSettingServer extends XincoSetting {
@@ -55,7 +54,16 @@ public class XincoSettingServer extends XincoSetting {
     private XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
     private ResourceBundle rb;
 
-    /** Creates a new instance of XincoSettingServer */
+    /** Creates a new instance of XincoSettingServer
+     * @param id
+     * @param description
+     * @param int_value
+     * @param string_value
+     * @param bool_value
+     * @param long_value
+     * @param changerID
+     * @throws com.bluecubs.xinco.core.XincoException 
+     */
     public XincoSettingServer(int id, java.lang.String description, int int_value,
             java.lang.String string_value, boolean bool_value, long long_value, int changerID) throws XincoException {
         this.setId(id);
@@ -75,6 +83,12 @@ public class XincoSettingServer extends XincoSetting {
         }
     }
 
+    /**
+     * Creates a new instance of XincoSettingServer
+     * @param id
+     * @param DBM
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
     public XincoSettingServer(int id, XincoDBManager DBM) throws XincoException {
         try {
             String sql = "select * from xinco_setting where id=" + id;
@@ -92,10 +106,18 @@ public class XincoSettingServer extends XincoSetting {
         }
     }
 
+    /**
+     * Constructor
+     */
     public XincoSettingServer() {
     }
 
-    //write to db
+    /**
+     * Write to DB
+     * @param DBM
+     * @return
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
     public int write2DB(XincoDBManager DBM) throws XincoException {
         try {
             String sql = "";
@@ -124,10 +146,21 @@ public class XincoSettingServer extends XincoSetting {
         return this.getId();
     }
 
+    /**
+     * Get setting
+     * @param i
+     * @return @link XincoSetting
+     */
     public XincoSetting getSetting(int i) {
         return (XincoSetting) getXinco_settings().get(i);
     }
 
+    /**
+     * Get setting
+     * @param s
+     * @return @link XincoSetting
+     * @throws com.bluecubs.xinco.core.XincoSettingException
+     */
     public XincoSetting getSetting(String s) throws XincoSettingException {
         for (int i = 0; i < getXinco_settings().size(); i++) {
             if (((XincoSetting) getXinco_settings().get(i)).getDescription().equals(s)) {

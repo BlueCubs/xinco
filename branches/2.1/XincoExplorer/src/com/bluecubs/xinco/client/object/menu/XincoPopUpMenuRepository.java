@@ -48,7 +48,7 @@ import javax.swing.JPopupMenu;
 
 /**
  *
- * @author ortizbj
+ * @author Javier A. Ortiz
  */
 public class XincoPopUpMenuRepository extends JPopupMenu{
     public JMenuItem tmi = null;

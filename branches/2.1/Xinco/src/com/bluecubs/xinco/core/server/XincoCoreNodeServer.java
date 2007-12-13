@@ -40,14 +40,24 @@ import java.util.Vector;
 
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.index.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+/**
+ * Create node object for data structures
+ * @author Alexander Manes
+ */
 public class XincoCoreNodeServer extends XincoCoreNode {
 
-    //create node object for data structures
+    /**
+     * Create node object for data structures
+     * @param attrID
+     * @param DBM
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
     public XincoCoreNodeServer(int attrID, XincoDBManager DBM) throws XincoException {
         try {
             ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_node WHERE id=" + attrID);
-
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {
@@ -62,7 +72,6 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 //load acl for this object
                 setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(rs.getInt("id"), "xinco_core_node_id", DBM));
             }
-
             if (RowCount < 1) {
                 throw new XincoException();
             }
@@ -76,9 +85,17 @@ public class XincoCoreNodeServer extends XincoCoreNode {
         }
     }
 
-    //create node object for data structures
+    /**
+     * Create node object for data structures
+     * @param attrID
+     * @param attrCNID
+     * @param attrLID 
+     * @param attrD 
+     * @param attrSN
+     * @param DBM
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
     public XincoCoreNodeServer(int attrID, int attrCNID, int attrLID, String attrD, int attrSN, XincoDBManager DBM) throws XincoException {
-
         try {
             setId(attrID);
             setXinco_core_node_id(attrCNID);
@@ -94,12 +111,19 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             getXinco_core_acl().removeAllElements();
             getXinco_core_nodes().removeAllElements();
             getXinco_core_data().removeAllElements();
+            if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
+                Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.WARNING, "Error creating node.",e);
+            }
             throw new XincoException();
         }
-
     }
 
-    //write to db
+    /**
+     * Write to DB
+     * @param DBM
+     * @return int
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
     public int write2DB(XincoDBManager DBM) throws XincoException {
         try {
             String xcnid = "";
@@ -130,7 +154,14 @@ public class XincoCoreNodeServer extends XincoCoreNode {
         return getId();
     }
 
-    //delete from db
+    /**
+     * Remove from DB
+     * @param delete_this
+     * @param DBM
+     * @param userID
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
+    @SuppressWarnings("static-access")
     public void removeFromDB(boolean delete_this, XincoDBManager DBM, int userID) throws XincoException {
         int i = 0;
         try {
@@ -143,18 +174,17 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             }
             for (i = 0; i < getXinco_core_data().size(); i++) {
                 XincoIndexer.removeXincoCoreData((XincoCoreDataServer) getXinco_core_data().elementAt(i), DBM);
-                XincoCoreDataServer.removeFromDB(DBM, userID,
-                        ((XincoCoreDataServer) getXinco_core_data().elementAt(i)).getId());
                 ((XincoCoreDataServer) getXinco_core_data().elementAt(i)).setChangerID(userID);
-                ((XincoCoreDataServer) getXinco_core_data().elementAt(i)).deleteFromDB(DBM);
+                ((XincoCoreDataServer) getXinco_core_data().elementAt(i)).removeFromDB(DBM, userID,
+                        ((XincoCoreDataServer) getXinco_core_data().elementAt(i)).getId());
             }
             if (delete_this) {
                 XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
-                ResultSet rs = DBM.executeQuery("DELETE FROM xinco_core_ace WHERE xinco_core_node_id=" + getId());
+                ResultSet rs = DBM.executeQuery("select id FROM xinco_core_ace WHERE xinco_core_node_id=" + getId());
                 while (rs.next()) {
-                    XincoCoreACEServer.removeFromDB((XincoCoreACE) new XincoCoreACEServer(rs.getInt(1), DBM), DBM, userID);
+                    XincoCoreACEServer temp = new XincoCoreACEServer(rs.getInt(1), DBM);
+                    temp.removeFromDB(temp, DBM, userID);
                 }
-                DBM.executeUpdate("DELETE FROM xinco_core_ace WHERE xinco_core_node_id=" + getId());
                 audit.updateAuditTrail("xinco_core_node", new String[]{"id =" + getId()},
                         DBM, "audit.general.delete", userID);
                 DBM.executeUpdate("DELETE FROM xinco_core_node WHERE id=" + getId());
@@ -165,59 +195,74 @@ public class XincoCoreNodeServer extends XincoCoreNode {
         }
     }
 
+    /**
+     * Fill XIncoCoreNodes vector for this Node
+     * @param DBM
+     */
     @SuppressWarnings("unchecked")
     public void fillXincoCoreNodes(XincoDBManager DBM) {
         try {
             ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_node WHERE xinco_core_node_id = " + getId() + " ORDER BY designation");
             while (rs.next()) {
-                getXinco_core_nodes().addElement(new XincoCoreNodeServer(rs.getInt("id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_language_id"), rs.getString("designation"), rs.getInt("status_number"), DBM));
+                getXinco_core_nodes().add(new XincoCoreNodeServer(rs.getInt("id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_language_id"), rs.getString("designation"), rs.getInt("status_number"), DBM));
             }
-
         } catch (Throwable e) {
             getXinco_core_nodes().removeAllElements();
         }
     }
 
+    /**
+     * Fill XIncoCoreData vector for this Node
+     * @param DBM
+     */
     @SuppressWarnings("unchecked")
     public void fillXincoCoreData(XincoDBManager DBM) {
         try {
             ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_data WHERE xinco_core_node_id = " + getId() + " ORDER BY designation");
-
             while (rs.next()) {
-                getXinco_core_data().addElement(new XincoCoreDataServer(rs.getInt("id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_language_id"), rs.getInt("xinco_core_data_type_id"), rs.getString("designation"), rs.getInt("status_number"), DBM));
+                getXinco_core_data().add(new XincoCoreDataServer(rs.getInt("id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_language_id"), rs.getInt("xinco_core_data_type_id"), rs.getString("designation"), rs.getInt("status_number"), DBM));
             }
-
         } catch (Throwable e) {
             getXinco_core_data().removeAllElements();
         }
     }
 
+    /**
+     * Find XincoCoreNodes based on parameters
+     * @param designation
+     * @param language_id
+     * @param DBM
+     * @return
+     */
     @SuppressWarnings("unchecked")
-    public static Vector findXincoCoreNodes(String attrS, int attrLID, XincoDBManager DBM) {
+    public static Vector findXincoCoreNodes(String designation, int language_id, XincoDBManager DBM) {
         Vector nodes = null;
         try {
-            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_node WHERE xinco_core_language_id = " + attrLID + " AND designation LIKE '" + attrS + "%' ORDER BY designation, xinco_core_language_id");
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_node WHERE xinco_core_language_id = " + language_id + " AND designation LIKE '" + designation + "%' ORDER BY designation, xinco_core_language_id");
             int i = 0;
             while (rs.next()) {
-                nodes.addElement(new XincoCoreNodeServer(rs.getInt("id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_language_id"), rs.getString("designation"), rs.getInt("status_number"), DBM));
+                nodes.add(new XincoCoreNodeServer(rs.getInt("id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_language_id"), rs.getString("designation"), rs.getInt("status_number"), DBM));
                 i++;
                 if (i >= DBM.config.getMaxSearchResult()) {
                     break;
                 }
             }
-
         } catch (Throwable e) {
             nodes.removeAllElements();
         }
         return nodes;
     }
 
+    /**
+     * Get parents of this node
+     * @param id 
+     * @param DBM
+     * @return
+     */
     @SuppressWarnings("unchecked")
-    public static Vector getXincoCoreNodeParents(int attrID, XincoDBManager DBM) {
+    public static Vector getXincoCoreNodeParents(int id, XincoDBManager DBM) {
         Vector nodes = new Vector();
-        int id;
         try {
-            id = attrID;
             ResultSet rs = null;
             while (id > 0) {
                 rs = DBM.executeQuery("SELECT * FROM xinco_core_node WHERE id = " + id);
@@ -229,9 +274,6 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                         id = 0;
                     }
                 }
-            }
-            if (rs != null) {
-
             }
         } catch (Throwable e) {
             nodes.removeAllElements();

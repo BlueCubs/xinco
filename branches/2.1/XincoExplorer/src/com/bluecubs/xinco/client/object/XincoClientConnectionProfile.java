@@ -19,9 +19,9 @@
  * More information on: http://www.bluecubs.org
  *************************************************************
  *
- * Name:            WindowClosingAdapter
+ * Name:            XincoClientConnectionProfile
  *
- * Description:     exits the program correctly 
+ * Description:     connection profiles for client 
  *
  * Original Author: Alexander Manes
  * Date:            2004
@@ -33,30 +33,51 @@
  *
  *************************************************************
  */
+package com.bluecubs.xinco.client.object;
 
-package com.bluecubs.xinco.client;
+/**
+ * XincoClientConnectionProfile
+ */
+public class XincoClientConnectionProfile implements java.io.Serializable {
 
-import java.awt.event.*;
+    /**
+     * Profile's name
+     */
+    public String profile_name = null;
+    /**
+     * Service Endpoint
+     */
+    public String service_endpoint = null;
+    /**
+     * Username
+     */
+    public String username = null;
+    /**
+     * Password
+     */
+    public String password = null;
+    /**
+     * Save password?
+     */
+    public boolean save_password = false;
 
-public class WindowClosingAdapter
-extends WindowAdapter
-{
- private boolean exitSystem;
-  public WindowClosingAdapter(boolean exitSystem)
-  {
-    this.exitSystem = exitSystem;
-  }
- public WindowClosingAdapter()
- {
-   this(false);
- }
- @Override
- public void windowClosing(WindowEvent event)
- {
-   event.getWindow().setVisible(false);
-   event.getWindow().dispose();
-   if (exitSystem) {
-     System.exit(0);
-   }
- }
+    /**
+     * XincoClientProfile
+     */
+    public XincoClientConnectionProfile() {
+        profile_name = "";
+        service_endpoint = "";
+        username = "";
+        password = "";
+        save_password = false;
+    }
+
+    /**
+     * XincoClientConnectionProfile string representation
+     * @return Profile Name.
+     */
+    @Override
+    public String toString() {
+        return profile_name;
+    }
 }

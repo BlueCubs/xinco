@@ -32,11 +32,10 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.client.XincoMutableTreeNode;
+import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoCoreUser;
 import java.rmi.RemoteException;
@@ -47,13 +46,18 @@ import javax.swing.JOptionPane;
  * @author  Javier A. Ortiz
  */
 public class LockDialog extends javax.swing.JDialog {
-    private XincoExplorer explorer=null;
+
+    private XincoExplorer explorer = null;
+
     /**
      * Creates new form LockDialog
+     * @param parent
+     * @param modal
+     * @param e
      */
-    public LockDialog(java.awt.Frame parent, boolean modal,XincoExplorer e) {
+    public LockDialog(java.awt.Frame parent, boolean modal, XincoExplorer e) {
         super(parent, modal);
-        this.explorer=e;
+        this.explorer = e;
         setLocationRelativeTo(null);
         initComponents();
         this.passwordLabel.setText(explorer.getResourceBundle().getString("general.password"));
@@ -63,7 +67,7 @@ public class LockDialog extends javax.swing.JDialog {
         this.passwordLabel.setText(explorer.getResourceBundle().getString("general.password"));
         this.usernameLabel.setText(explorer.getResourceBundle().getString("general.username"));
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -137,19 +141,18 @@ public class LockDialog extends javax.swing.JDialog {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
     private void connectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectActionPerformed
         try {
             //User might be locked by any user attempting to log in incorrectly
-            XincoCoreUser temp=temp = this.explorer.getSession().getXinco().getCurrentXincoCoreUser(this.username.getText(),
+            XincoCoreUser temp = temp = this.explorer.getSession().getXinco().getCurrentXincoCoreUser(this.username.getText(),
                     new String(this.password.getPassword()));
-            if (temp == null){
+            if (temp == null) {
                 JOptionPane.showMessageDialog(this.explorer,
                         explorer.getResourceBundle().getString("menu.connection.error.user"),
                         explorer.getResourceBundle().getString("password.login.fail"),
                         JOptionPane.INFORMATION_MESSAGE);
-            } else{
-                if(!temp.getUsername().equals(this.explorer.getSession().getUser().getUsername())) {
+            } else {
+                if (!temp.getUsername().equals(this.explorer.getSession().getUser().getUsername())) {
                     JOptionPane.showMessageDialog(this.explorer,
                             explorer.getResourceBundle().getString("password.unlock.differentuser"),
                             explorer.getResourceBundle().getString("password.unlock.differentuser.detail"),
@@ -166,7 +169,7 @@ public class LockDialog extends javax.swing.JDialog {
                     xnode = this.explorer.getSession().getXinco().getXincoCoreNode(xnode, this.explorer.getSession().getUser());
                     this.explorer.getSession().getXincoClientRepository().assignObject2TreeNode((XincoMutableTreeNode) (this.explorer.getSession().getXincoClientRepository().treemodel).getRoot(),
                             xnode,
-this.explorer.getSession().getXinco(), this.explorer.getSession().getUser(),                             2);
+                            this.explorer.getSession().getXinco(), this.explorer.getSession().getUser(), 2);
                     this.explorer.refreshJTree();
                     this.explorer.markConnectionStatus();
                     this.setVisible(false);
@@ -179,7 +182,7 @@ this.explorer.getSession().getXinco(), this.explorer.getSession().getUser(),    
         this.username.setText("");
         this.setVisible(false);
     }//GEN-LAST:event_connectActionPerformed
-    
+
     private void disconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disconnectActionPerformed
         this.setVisible(false);
         this.explorer.setLock(false);
@@ -189,7 +192,6 @@ this.explorer.getSession().getXinco(), this.explorer.getSession().getUser(),    
         this.explorer.collapseAllNodes();
         this.password.setText("");
     }//GEN-LAST:event_disconnectActionPerformed
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton connect;
     private javax.swing.JButton disconnect;
@@ -199,5 +201,4 @@ this.explorer.getSession().getXinco(), this.explorer.getSession().getUser(),    
     private javax.swing.JTextField username;
     private javax.swing.JLabel usernameLabel;
     // End of variables declaration//GEN-END:variables
-    
 }

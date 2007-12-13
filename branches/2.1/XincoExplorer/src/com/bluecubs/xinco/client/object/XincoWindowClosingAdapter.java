@@ -33,30 +33,40 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.client.object;
 
 import java.awt.event.*;
 
+/**
+ * 
+ * @author Alexander Manes
+ */
 public class XincoWindowClosingAdapter
-extends WindowAdapter
-{
- private boolean exitSystem;
-  public XincoWindowClosingAdapter(boolean exitSystem)
-  {
-    this.exitSystem = exitSystem;
-  }
- public XincoWindowClosingAdapter()
- {
-   this(false);
- }
- @Override
- public void windowClosing(WindowEvent event)
- {
-   event.getWindow().setVisible(false);
-   event.getWindow().dispose();
-   if (exitSystem) {
-     System.exit(0);
-   }
- }
+        extends WindowAdapter {
+
+    private boolean exitSystem;
+
+    /**
+     * 
+     * @param exitSystem
+     */
+    public XincoWindowClosingAdapter(boolean exitSystem) {
+        this.exitSystem = exitSystem;
+    }
+
+    /**
+     * 
+     */
+    public XincoWindowClosingAdapter() {
+        this(false);
+    }
+
+    @Override
+    public void windowClosing(WindowEvent event) {
+        event.getWindow().setVisible(false);
+        event.getWindow().dispose();
+        if (exitSystem) {
+            System.exit(0);
+        }
+    }
 }

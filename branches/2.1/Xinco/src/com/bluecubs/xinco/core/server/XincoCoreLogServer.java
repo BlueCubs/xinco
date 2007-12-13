@@ -33,7 +33,6 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.core.server;
 
 import java.util.Vector;
@@ -43,13 +42,26 @@ import java.sql.*;
 
 import com.bluecubs.xinco.core.*;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+/**
+ * Create single log object for data structures
+ * @author Alexander Manes
+ */
 public class XincoCoreLogServer extends XincoCoreLog {
+
     private XincoCoreUser user;
-    //create single log object for data structures
-    public XincoCoreLogServer(int attrID, XincoDBManager DBM) throws XincoException {     
+
+    /**
+     * Create single log object for data structures
+     * @param id
+     * @param DBM
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
+    public XincoCoreLogServer(int id, XincoDBManager DBM) throws XincoException {
         try {
-            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_log WHERE id=" + attrID);   
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_log WHERE id=" + id);
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {
@@ -67,23 +79,37 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 getVersion().setVersion_low(rs.getInt("version_low"));
                 getVersion().setVersion_postfix(rs.getString("version_postfix"));
             }
-            
             if (RowCount < 1) {
                 throw new XincoException();
             }
         } catch (Throwable e) {
             throw new XincoException();
         }
-        
     }
-    
-    public void setUser(XincoCoreUserServer user){
-        this.user=user;
+
+    /**
+     * Set user
+     * @param user
+     */
+    public void setUser(XincoCoreUserServer user) {
+        this.user = user;
     }
-    
-    //create single log object for data structures
-    public XincoCoreLogServer(int attrID, int attrCDID, int attrUID, int attrOC, Calendar attrODT,  String attrOD, int attrVH, int attrVM, int attrVL, String attrVP) throws XincoException {
-        
+
+    /**
+     * Create single log object for data structures
+     * @param attrID
+     * @param attrCDID
+     * @param attrUID
+     * @param attrOC
+     * @param attrODT
+     * @param attrOD
+     * @param attrVH
+     * @param attrVM
+     * @param attrVL
+     * @param attrVP
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
+    public XincoCoreLogServer(int attrID, int attrCDID, int attrUID, int attrOC, Calendar attrODT, String attrOD, int attrVH, int attrVM, int attrVL, String attrVP) throws XincoException {
         setId(attrID);
         setXinco_core_data_id(attrCDID);
         setXinco_core_user_id(attrUID);
@@ -95,27 +121,27 @@ public class XincoCoreLogServer extends XincoCoreLog {
         getVersion().setVersion_mid(attrVM);
         getVersion().setVersion_low(attrVL);
         getVersion().setVersion_postfix(attrVP);
-        
     }
-    
-    //write to db
+
+    /**
+     * Write to DB
+     * @param DBM
+     * @return int
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
     public int write2DB(XincoDBManager DBM) throws XincoException {
-        
         try {
-            
             if (getId() > 0) {
-                XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
+                XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
                 ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
-                audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+getId()},
-                        DBM,xerb.getString("audit.log.change"),this.getChangerID());
-                DBM.executeUpdate("UPDATE xinco_core_log SET xinco_core_data_id=" + getXinco_core_data_id() + ", xinco_core_user_id=" + getXinco_core_user_id() + ", op_code=" + getOp_code() + ", op_datetime=now(), op_description='" + getOp_description().replaceAll("'","\\\\'") + "', version_high=" + getVersion().getVersion_high() + ", version_mid=" + getVersion().getVersion_mid() + ", version_low=" + getVersion().getVersion_low() + ", version_postfix='" + getVersion().getVersion_postfix().replaceAll("'","\\\\'") + "' WHERE id=" + getId());
+                audit.updateAuditTrail("xinco_core_log", new String[]{"id =" + getId()},
+                        DBM, xerb.getString("audit.log.change"), this.getChangerID());
+                DBM.executeUpdate("UPDATE xinco_core_log SET xinco_core_data_id=" + getXinco_core_data_id() + ", xinco_core_user_id=" + getXinco_core_user_id() + ", op_code=" + getOp_code() + ", op_datetime=now(), op_description='" + getOp_description().replaceAll("'", "\\\\'") + "', version_high=" + getVersion().getVersion_high() + ", version_mid=" + getVersion().getVersion_mid() + ", version_low=" + getVersion().getVersion_low() + ", version_postfix='" + getVersion().getVersion_postfix().replaceAll("'", "\\\\'") + "' WHERE id=" + getId());
             } else {
                 setId(DBM.getNewID("xinco_core_log"));
-                DBM.executeUpdate("INSERT INTO xinco_core_log VALUES (" + getId() + ", " + getXinco_core_data_id() + ", " + getXinco_core_user_id() + ", " + getOp_code() + ", now(), '" + getOp_description().replaceAll("'","\\\\'") + "', " + getVersion().getVersion_high() + ", " + getVersion().getVersion_mid() + ", " + getVersion().getVersion_low() + ", '" + getVersion().getVersion_postfix().replaceAll("'","\\\\'") + "')");
+                DBM.executeUpdate("INSERT INTO xinco_core_log VALUES (" + getId() + ", " + getXinco_core_data_id() + ", " + getXinco_core_user_id() + ", " + getOp_code() + ", now(), '" + getOp_description().replaceAll("'", "\\\\'") + "', " + getVersion().getVersion_high() + ", " + getVersion().getVersion_mid() + ", " + getVersion().getVersion_low() + ", '" + getVersion().getVersion_postfix().replaceAll("'", "\\\\'") + "')");
             }
-            
             DBM.getConnection().commit();
-            
         } catch (Throwable e) {
             try {
                 DBM.getConnection().rollback();
@@ -123,26 +149,43 @@ public class XincoCoreLogServer extends XincoCoreLog {
             }
             throw new XincoException();
         }
-        
         return getId();
-        
     }
-    
-    //create complete log list for data
+
+    /**
+     * Remove from DB
+     * @param DBM
+     */
+    public void removeFromDB(XincoDBManager DBM) {
+        try {
+            XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
+            ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+            DBM.executeUpdate("DELETE FROM xinco_core_log WHERE xinco_core_data_id=" + getId());
+        } catch (XincoException ex) {
+            Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Create complete log list for data
+     * @param attrID
+     * @param DBM
+     * @return
+     */
     @SuppressWarnings("unchecked")
-    public static Vector getXincoCoreLogs(int attrID, XincoDBManager DBM) {   
+    public static Vector getXincoCoreLogs(int attrID, XincoDBManager DBM) {
         Vector core_log = new Vector();
         GregorianCalendar cal = new GregorianCalendar();
         try {
             ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_log WHERE xinco_core_data_id=" + attrID);
             while (rs.next()) {
                 cal = new GregorianCalendar();
-                cal.setTime( rs.getTimestamp("op_datetime"));
+                cal.setTime(rs.getTimestamp("op_datetime"));
                 core_log.addElement(new XincoCoreLogServer(rs.getInt("id"), rs.getInt("xinco_core_data_id"), rs.getInt("xinco_core_user_id"), rs.getInt("op_code"), cal, rs.getString("op_description"), rs.getInt("version_high"), rs.getInt("version_mid"), rs.getInt("version_low"), rs.getString("version_postfix")));
             }
         } catch (Throwable e) {
             core_log.removeAllElements();
-        }   
+        }
         return core_log;
-    }   
+    }
 }

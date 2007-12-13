@@ -36,11 +36,10 @@
  *
  * Created on January 27, 2007, 8:45 AM
  */
-
 package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.client.XincoMutableTreeNode;
+import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.object.thread.XincoProgressBarThread;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataType;
@@ -56,19 +55,27 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.TreePath;
 
 /**
- *
- * @author  javydreamercsw
+ * SearchDialog
+ * @author  Javier A. Ortiz
  */
 public class SearchDialog extends javax.swing.JDialog {
+
     private XincoExplorer explorer;
     private ResourceBundle xerb;
-    /** Creates new form SearchDialog */
-    public SearchDialog(java.awt.Frame parent, boolean modal,XincoExplorer e) {
+
+    /**
+     * Creates new form SearchDialog
+     * @param parent
+     * @param modal
+     * @param e
+     */
+    @SuppressWarnings("unchecked")
+    public SearchDialog(java.awt.Frame parent, boolean modal, XincoExplorer e) {
         super(parent, modal);
         initComponents();
         getRootPane().setDefaultButton(this.searchButton);
-        this.explorer=e;
-        this.xerb=this.explorer.getResourceBundle();
+        this.explorer = e;
+        this.xerb = this.explorer.getResourceBundle();
         setTitle(xerb.getString("window.search"));
         this.queryLabel.setText(xerb.getString("window.search.query") + ":");
         this.languageLabel.setText(xerb.getString("general.language") + ":");
@@ -81,12 +88,14 @@ public class SearchDialog extends javax.swing.JDialog {
         this.goToSelectionButton.setText(xerb.getString("window.search.gotoselection"));
         this.addToQueryButton.setText(xerb.getString("window.search.addtoquery"));
         this.resetButton.setText(xerb.getString("general.reset"));
-        String[] cn = {xerb.getString("window.search.table.designation"),xerb.getString("window.search.table.path")};
+        String[] cn = {xerb.getString("window.search.table.designation"), xerb.getString("window.search.table.path")};
         resultTable.setModel(new DefaultTableModel(new Object[][]{},
                 new String[]{xerb.getString("window.search.table.designation"),
-                xerb.getString("window.search.table.path")}) {
+            xerb.getString("window.search.table.path")
+        }) {
+
             boolean[] canEdit = new boolean[]{false, false};
-            
+
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit[columnIndex];
@@ -107,10 +116,10 @@ public class SearchDialog extends javax.swing.JDialog {
         this.optionsComboBox.addItem(" ");
         this.optionsComboBox.addItem(xerb.getString("window.search.filecontent") + " (file)");
         text = "";
-        for (i=0;i<explorer.getSession().getServer_datatypes().size();i++) {
-            xcdt = (XincoCoreDataType)explorer.getSession().getServer_datatypes().elementAt(i);
-            for (j=0;j<xcdt.getXinco_core_data_type_attributes().size();j++) {
-                text = ((XincoCoreDataTypeAttribute)xcdt.getXinco_core_data_type_attributes().elementAt(j)).getDesignation();
+        for (i = 0; i < explorer.getSession().getServer_datatypes().size(); i++) {
+            xcdt = (XincoCoreDataType) explorer.getSession().getServer_datatypes().elementAt(i);
+            for (j = 0; j < xcdt.getXinco_core_data_type_attributes().size(); j++) {
+                text = ((XincoCoreDataTypeAttribute) xcdt.getXinco_core_data_type_attributes().elementAt(j)).getDesignation();
                 this.optionsComboBox.addItem(text);
             }
         }
@@ -118,38 +127,45 @@ public class SearchDialog extends javax.swing.JDialog {
         //load languages
         dlm = this.languageList.getModel();
         this.languageList.removeAll();
-        final Vector list=new Vector();
+        final Vector list = new Vector();
         selection = -1;
         alt_selection = 0;
         text = "";
-        for (i=0;i<explorer.getSession().getServer_languages().size();i++) {
-            text = ((XincoCoreLanguage)explorer.getSession().getServer_languages().elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage)explorer.getSession().getServer_languages().elementAt(i)).getSign() + ")";
+        for (i = 0; i < explorer.getSession().getServer_languages().size(); i++) {
+            text = ((XincoCoreLanguage) explorer.getSession().getServer_languages().elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage) explorer.getSession().getServer_languages().elementAt(i)).getSign() + ")";
             list.add(text);
-            if (((XincoCoreLanguage)explorer.getSession().getServer_languages().elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
+            if (((XincoCoreLanguage) explorer.getSession().getServer_languages().elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
                 selection = i;
             }
-            if (((XincoCoreLanguage)explorer.getSession().getServer_languages().elementAt(i)).getId() == 1) {
+            if (((XincoCoreLanguage) explorer.getSession().getServer_languages().elementAt(i)).getId() == 1) {
                 alt_selection = i;
             }
         }
         if (selection == -1) {
             selection = alt_selection;
         }
-        this.languageList.setModel(new javax.swing.AbstractListModel() {
+        languageList.setModel(new javax.swing.AbstractListModel() {
+
             Vector strings = list;
-            public int getSize() { return strings.size(); }
-            public Object getElementAt(int i) { return strings.get(i); }
+
+            public int getSize() {
+                return strings.size();
+            }
+
+            public Object getElementAt(int i) {
+                return strings.get(i);
+            }
         });
         this.languageList.setSelectedIndex(selection);
         this.languageList.ensureIndexIsVisible(this.languageList.getSelectedIndex());
-        this.setBounds(0, 0, (new Double(getToolkit().getScreenSize().getWidth())).intValue()-100,
-                (new Double(getToolkit().getScreenSize().getHeight())).intValue()-75);
+        this.setBounds(0, 0, (new Double(getToolkit().getScreenSize().getWidth())).intValue() - 100,
+                (new Double(getToolkit().getScreenSize().getHeight())).intValue() - 75);
     }
-    
-    public void clearResults(){
+
+    public void clearResults() {
         this.resultTable.removeAll();
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -333,31 +349,30 @@ public class SearchDialog extends javax.swing.JDialog {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
     private void goToSelectionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goToSelectionButtonActionPerformed
         if (this.resultTable.getSelectedRow() < 0) {
             return;
         }
-        Vector v = (Vector)explorer.getSession().getCurrentSearchResult().elementAt(this.resultTable.getSelectedRow());
+        Vector v = (Vector) explorer.getSession().getCurrentSearchResult().elementAt(this.resultTable.getSelectedRow());
         int i = 0;
         int j = 0;
         int k = 0;
         TreePath tp = null;
         try {
             //expand tree to selected result (check root items first, then check all sub-folders)
-            XincoMutableTreeNode xmtn = (XincoMutableTreeNode)explorer.getSession().getXincoClientRepository().treemodel.getRoot();
+            XincoMutableTreeNode xmtn = (XincoMutableTreeNode) explorer.getSession().getXincoClientRepository().treemodel.getRoot();
             if (xmtn.getUserObject().getClass() == XincoCoreNode.class) {
-                if (((XincoCoreNode)xmtn.getUserObject()).getId() == ((XincoCoreNode)v.elementAt(1)).getId()) {
+                if (((XincoCoreNode) xmtn.getUserObject()).getId() == ((XincoCoreNode) v.elementAt(1)).getId()) {
                     tp = new TreePath(xmtn.getPath());
                     this.explorer.getJTreeRepository().setSelectionPath(tp);
                     this.explorer.getJTreeRepository().expandPath(tp);
                     j = -1;
                     //select data
-                    if (1 == (v.size()-1)) {
-                        for (k=0;k<xmtn.getChildCount();k++) {
-                            if (((XincoMutableTreeNode)xmtn.getChildAt(k)).getUserObject().getClass() == XincoCoreData.class) {
-                                if (((XincoCoreData)((XincoMutableTreeNode)xmtn.getChildAt(k)).getUserObject()).getId() == ((XincoCoreData)v.elementAt(0)).getId()) {
-                                    tp = new TreePath(((XincoMutableTreeNode)xmtn.getChildAt(k)).getPath());
+                    if (1 == (v.size() - 1)) {
+                        for (k = 0; k < xmtn.getChildCount(); k++) {
+                            if (((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject().getClass() == XincoCoreData.class) {
+                                if (((XincoCoreData) ((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject()).getId() == ((XincoCoreData) v.elementAt(0)).getId()) {
+                                    tp = new TreePath(((XincoMutableTreeNode) xmtn.getChildAt(k)).getPath());
                                     this.explorer.getJTreeRepository().setSelectionPath(tp);
                                 }
                             }
@@ -365,21 +380,21 @@ public class SearchDialog extends javax.swing.JDialog {
                     }
                 }
             }
-            for (i=2;i<v.size();i++) {
-                for (j=0;j<xmtn.getChildCount();j++) {
-                    if (((XincoMutableTreeNode)xmtn.getChildAt(j)).getUserObject().getClass() == XincoCoreNode.class) {
-                        if (((XincoCoreNode)((XincoMutableTreeNode)xmtn.getChildAt(j)).getUserObject()).getId() == ((XincoCoreNode)v.elementAt(i)).getId()) {
-                            tp = new TreePath(((XincoMutableTreeNode)xmtn.getChildAt(j)).getPath());
+            for (i = 2; i < v.size(); i++) {
+                for (j = 0; j < xmtn.getChildCount(); j++) {
+                    if (((XincoMutableTreeNode) xmtn.getChildAt(j)).getUserObject().getClass() == XincoCoreNode.class) {
+                        if (((XincoCoreNode) ((XincoMutableTreeNode) xmtn.getChildAt(j)).getUserObject()).getId() == ((XincoCoreNode) v.elementAt(i)).getId()) {
+                            tp = new TreePath(((XincoMutableTreeNode) xmtn.getChildAt(j)).getPath());
                             this.explorer.getJTreeRepository().setSelectionPath(tp);
                             this.explorer.getJTreeRepository().expandPath(tp);
-                            xmtn = (XincoMutableTreeNode)xmtn.getChildAt(j);
+                            xmtn = (XincoMutableTreeNode) xmtn.getChildAt(j);
                             j = -1;
                             //select data
-                            if (i == (v.size()-1)) {
-                                for (k=0;k<xmtn.getChildCount();k++) {
-                                    if (((XincoMutableTreeNode)xmtn.getChildAt(k)).getUserObject().getClass() == XincoCoreData.class) {
-                                        if (((XincoCoreData)((XincoMutableTreeNode)xmtn.getChildAt(k)).getUserObject()).getId() == ((XincoCoreData)v.elementAt(0)).getId()) {
-                                            tp = new TreePath(((XincoMutableTreeNode)xmtn.getChildAt(k)).getPath());
+                            if (i == (v.size() - 1)) {
+                                for (k = 0; k < xmtn.getChildCount(); k++) {
+                                    if (((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject().getClass() == XincoCoreData.class) {
+                                        if (((XincoCoreData) ((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject()).getId() == ((XincoCoreData) v.elementAt(0)).getId()) {
+                                            tp = new TreePath(((XincoMutableTreeNode) xmtn.getChildAt(k)).getPath());
                                             this.explorer.getJTreeRepository().setSelectionPath(tp);
                                         }
                                     }
@@ -394,28 +409,28 @@ public class SearchDialog extends javax.swing.JDialog {
         }
         this.setVisible(false);
     }//GEN-LAST:event_goToSelectionButtonActionPerformed
-    
+
     private void allLanguagesCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_allLanguagesCheckBoxItemStateChanged
         this.languageList.setEnabled(!this.allLanguagesCheckBox.isSelected());
     }//GEN-LAST:event_allLanguagesCheckBoxItemStateChanged
-    
+
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
         this.queryValueField.setText("");
     }//GEN-LAST:event_resetButtonActionPerformed
-    
+
     private void addToQueryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addToQueryButtonActionPerformed
         String operator = "";
         String field = "";
         //create operator string
         if (this.operatorComboBox.getSelectedIndex() != 0) {
-            operator = (String)this.operatorComboBox.getSelectedItem();
+            operator = (String) this.operatorComboBox.getSelectedItem();
             operator = operator + " ";
         } else {
             operator = "";
         }
         //create field string
         if (this.optionsComboBox.getSelectedIndex() > 1) {
-            field = ((String)this.optionsComboBox.getSelectedItem()) + ":";
+            field = ((String) this.optionsComboBox.getSelectedItem()) + ":";
         } else if (this.optionsComboBox.getSelectedIndex() == 1) {
             field = "file:";
         } else {
@@ -425,28 +440,30 @@ public class SearchDialog extends javax.swing.JDialog {
         this.queryValueField.setText(this.queryValueField.getText() + operator + field + this.variableField.getText() + " ");
         this.variableField.setText("");
     }//GEN-LAST:event_addToQueryButtonActionPerformed
-    
+
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         searchThread search = new searchThread();
         search.start();
     }//GEN-LAST:event_searchButtonActionPerformed
-    private class searchThread extends Thread{
+
+    private class searchThread extends Thread {
+
         @Override
         public void run() {
             XincoProgressBarThread progressBar = new XincoProgressBarThread(explorer);
             progressBar.run();
             progressBar.setTitle(xerb.getString("message.search.progressbar"));
             progressBar.show();
-            int i=0, j=0;
+            int i = 0, j = 0;
             //select language OR all languages!
             XincoCoreLanguage lid = new XincoCoreLanguage();
             lid.setId(0);
             if ((!allLanguagesCheckBox.isSelected()) && (languageList.getSelectedIndex() >= 0)) {
-                lid = (XincoCoreLanguage)explorer.getSession().getServer_languages().elementAt(languageList.getSelectedIndex());
+                lid = (XincoCoreLanguage) explorer.getSession().getServer_languages().elementAt(languageList.getSelectedIndex());
             }
             try {
-                explorer.getSession().setCurrentSearchResult(explorer.getSession().getXinco().findXincoCoreData(queryValueField.getText(), lid,explorer.getSession().getUser()));
-                if (explorer.getSession().getCurrentSearchResult()== null) {
+                explorer.getSession().setCurrentSearchResult(explorer.getSession().getXinco().findXincoCoreData(queryValueField.getText(), lid, explorer.getSession().getUser()));
+                if (explorer.getSession().getCurrentSearchResult() == null) {
                     throw new XincoException();
                 }
             } catch (Exception rme) {
@@ -454,16 +471,16 @@ public class SearchDialog extends javax.swing.JDialog {
             }
             //update search result
             String[] rdata = {"", ""};
-            DefaultTableModel dtm = (DefaultTableModel)resultTable.getModel();
+            DefaultTableModel dtm = (DefaultTableModel) resultTable.getModel();
             j = dtm.getRowCount();
-            for (i=0;i<j;i++) {
+            for (i = 0; i < j; i++) {
                 dtm.removeRow(0);
             }
-            for (i=0;i<explorer.getSession().getCurrentSearchResult().size();i++) {
-                rdata[0] = ((XincoCoreData)(((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getDesignation() + " (" + ((XincoCoreData)(((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getXinco_core_data_type().getDesignation() + " | " + ((XincoCoreData)(((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getXinco_core_language().getSign() + ")";
+            for (i = 0; i < explorer.getSession().getCurrentSearchResult().size(); i++) {
+                rdata[0] = ((XincoCoreData) (((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getDesignation() + " (" + ((XincoCoreData) (((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getXinco_core_data_type().getDesignation() + " | " + ((XincoCoreData) (((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getXinco_core_language().getSign() + ")";
                 rdata[1] = new String("");
-                for (j=1;j<((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).size();j++) {
-                    rdata[1] = rdata[1] + ((XincoCoreNode)(((Vector)explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(j))).getDesignation() + " / ";
+                for (j = 1; j < ((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).size(); j++) {
+                    rdata[1] = rdata[1] + ((XincoCoreNode) (((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(j))).getDesignation() + " / ";
                 }
                 dtm.addRow(rdata);
             }
@@ -471,7 +488,6 @@ public class SearchDialog extends javax.swing.JDialog {
             progressBar.hide();
         }
     }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addToQueryButton;
     private javax.swing.JCheckBox allLanguagesCheckBox;
@@ -492,5 +508,4 @@ public class SearchDialog extends javax.swing.JDialog {
     private javax.swing.JLabel systemOptionsValueLabel;
     private javax.swing.JTextField variableField;
     // End of variables declaration//GEN-END:variables
-    
 }

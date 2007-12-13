@@ -47,7 +47,7 @@ import javax.swing.JMenuItem;
 
 /**
  *
- * @author ortizbj
+ * @author Javier A. Ortiz
  */
 public class XincoMenuRepository extends JMenu{
     private JMenuItem tmi = null;

@@ -40,12 +40,21 @@ import java.sql.*;
 
 import com.bluecubs.xinco.core.*;
 
+/**
+ * Single ace object for data structures
+ * @author Alexander Manes
+ */
 public class XincoCoreACEServer extends XincoCoreACE {
 
     private int userID = 1;
-    //create single ace object for data structures
-    public XincoCoreACEServer(int attrID, XincoDBManager DBM) throws XincoException {
 
+    /**
+     * create single ace object for data structures
+     * @param attrID xinco_core_ace id
+     * @param DBM XincoDBManager
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
+    public XincoCoreACEServer(int attrID, XincoDBManager DBM) throws XincoException {
         try {
             ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_ace WHERE id=" + attrID);
             //throw exception if no result found
@@ -65,16 +74,25 @@ public class XincoCoreACEServer extends XincoCoreACE {
             if (RowCount < 1) {
                 throw new XincoException();
             }
-            
         } catch (Throwable e) {
             throw new XincoException();
         }
-
     }
 
-    //create single ace object for data structures
+    /**
+     * create single ace object for data structures
+     * @param attrID Xinco_core_user_id
+     * @param attrUID Attribute id
+     * @param attrGID Xinco_core_group_id
+     * @param attrNID Xinco_core_node_id
+     * @param attrDID Xinco_core_data_id
+     * @param attrRP Read_permission
+     * @param attrWP Write_permission
+     * @param attrEP Execute_permission
+     * @param attrAP Admin_permission
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
     public XincoCoreACEServer(int attrID, int attrUID, int attrGID, int attrNID, int attrDID, boolean attrRP, boolean attrWP, boolean attrEP, boolean attrAP) throws XincoException {
-
         setId(attrID);
         setXinco_core_user_id(attrUID);
         setXinco_core_group_id(attrGID);
@@ -84,25 +102,25 @@ public class XincoCoreACEServer extends XincoCoreACE {
         setWrite_permission(attrWP);
         setExecute_permission(attrEP);
         setAdmin_permission(attrAP);
-
     }
 
-    //write to db
+    /**
+     * Persist Object in DB
+     * @param DBM
+     * @return int
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
     public int write2DB(XincoDBManager DBM) throws XincoException {
-
         try {
-
             String xcuid = "";
             String xcgid = "";
             String xcnid = "";
             String xcdid = "";
-
             int rp = 0;
             int wp = 0;
             int xp = 0;
             int ap = 0;
             int op = 0;
-
             //set values of nullable attributes
             if (getXinco_core_user_id() == 0) {
                 xcuid = "NULL";
@@ -124,7 +142,6 @@ public class XincoCoreACEServer extends XincoCoreACE {
             } else {
                 xcdid = "" + getXinco_core_data_id();
             }
-
             //convert boolean to 0/1
             if (isRead_permission()) {
                 rp = 1;
@@ -138,9 +155,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
             if (isAdmin_permission()) {
                 ap = 1;
             }
-
             XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
-
             if (getId() > 0) {
                 audit.updateAuditTrail("xinco_core_ace", new String[]{"id =" + getId()},
                         DBM, "window.acl", this.getChangerID());
@@ -165,14 +180,20 @@ public class XincoCoreACEServer extends XincoCoreACE {
         return getId();
     }
 
-    //remove from db
+    /**
+     * Remove from DB
+     * @param attrCACE XincoCoreACE
+     * @param DBM XincoDBManager
+     * @param userID User ID
+     * @return int
+     * @throws com.bluecubs.xinco.core.XincoException
+     */
     public static int removeFromDB(XincoCoreACE attrCACE, XincoDBManager DBM, int userID) throws XincoException {
         try {
             XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
             audit.updateAuditTrail("xinco_core_ace", new String[]{"id =" + attrCACE.getId()},
                     DBM, "audit.general.delete", userID);
             DBM.executeUpdate("DELETE FROM xinco_core_ace WHERE id=" + attrCACE.getId());
-            DBM.getConnection().commit();
         } catch (Throwable e) {
             try {
                 DBM.getConnection().rollback();
@@ -184,11 +205,16 @@ public class XincoCoreACEServer extends XincoCoreACE {
         return 0;
     }
 
-    //create complete ACL for node or data
+    /**
+     * create complete ACL for node or data
+     * @param attrID Attribute id
+     * @param attrT Attribute name (String)
+     * @param DBM XincoDBManager
+     * @return Vector
+     */
+    @SuppressWarnings("unchecked")
     public static Vector getXincoCoreACL(int attrID, String attrT, XincoDBManager DBM) {
-
         Vector core_acl = new Vector();
-
         try {
             ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_ace WHERE " + attrT + "=" + attrID + " ORDER BY xinco_core_user_id, xinco_core_group_id, xinco_core_node_id, xinco_core_data_id");
             while (rs.next()) {
@@ -200,14 +226,17 @@ public class XincoCoreACEServer extends XincoCoreACE {
         return core_acl;
     }
 
-    //check access by comparing user / user groups to ACL and return permissions
+    /**
+     * check access by comparing user / user groups to ACL and return permissions
+     * @param attrU XincoCoreUser
+     * @param attrACL ACL
+     * @return
+     */
     public static XincoCoreACE checkAccess(XincoCoreUser attrU, Vector attrACL) {
-
         int i = 0;
         int j = 0;
         boolean match_ace = false;
         XincoCoreACE core_ace = new XincoCoreACE();
-
         for (i = 0; i < attrACL.size(); i++) {
             //reset match_ace
             match_ace = false;
@@ -247,6 +276,10 @@ public class XincoCoreACEServer extends XincoCoreACE {
         return core_ace;
     }
 
+    /**
+     * Set user id
+     * @param i
+     */
     public void setUserId(int i) {
         this.userID = i;
     }
