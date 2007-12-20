@@ -436,6 +436,7 @@ public class ACLDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_RemoveACEActionPerformed
     
+    @SuppressWarnings("unchecked")
     private void AddACEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddACEActionPerformed
         int i = 0, old=-1;
         temp_acl = new Vector();
