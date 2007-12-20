@@ -242,7 +242,9 @@ public class XincoPublisherServlet extends HttpServlet {
                 if (printList) {
                     try {
                         XincoCoreDataServer xdata_temp = null;
-                        ResultSet rs = DBM.executeQuery("SELECT DISTINCT xcd.id, xcd.designation FROM xinco_core_data xcd, " + "xinco_core_ace xca WHERE xcd.id=xca.xinco_core_data_id AND (xcd.status_number=5 OR " + "(xca.xinco_core_group_id=3 AND xca.read_permission=1)) ORDER BY xcd.designation");
+                        ResultSet rs = DBM.executeQuery("SELECT DISTINCT xcd.id, xcd.designation FROM xinco_core_data xcd, " + 
+                                "xinco_core_ace xca WHERE xcd.id=xca.xinco_core_data_id AND (xcd.status_number=5 OR " + 
+                                "(xca.xinco_core_group_id=3 AND xca.read_permission=1)) ORDER BY xcd.designation");
                         while (rs.next()) {
                             xdata_temp = new XincoCoreDataServer(rs.getInt("id"), DBM);
                             temp_server_url = request.getRequestURL().toString();
@@ -254,7 +256,7 @@ public class XincoPublisherServlet extends HttpServlet {
                                 temp_url = xdata_temp.getDesignation();
                             }
                             out.println("<tr>");
-                            out.println("<td class=\"text\">" + xdata_temp.getDesignation() + " (" + xdata_temp.getXinco_core_data_type().getDesignation() + " | " + xdata_temp.getXinco_core_language().getSign() + ")" + "</td>");
+                            out.println("<td class=\"text\">" + xdata_temp.getDesignation() + " (" + rb.getString(xdata_temp.getXinco_core_data_type().getDesignation()) + " | " + xdata_temp.getXinco_core_language().getSign() + ")" + "</td>");
                             out.println("<td class=\"text\"><a href=\"" + "XincoPublisher/" + xdata_temp.getId() + "/" + temp_url + "?list=" + request.getParameter("list") + " target='_blank'\">" + temp_server_url + "/" + xdata_temp.getId() + "/" + temp_url + "</a></td>");
                             out.println("</tr>");
                             out.flush();

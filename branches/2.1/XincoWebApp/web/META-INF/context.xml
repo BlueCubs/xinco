@@ -15,9 +15,9 @@
   <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" 
   factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="100" 
   maxIdle="30" maxWait="10000" name="jdbc/XincoDB"  
-  removeAbandoned="true" type="javax.sql.DataSource" 
-  url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true" username="root"
-  password=""/>
+  removeAbandoned="true" removeAbandonedTimeout = "60" type="javax.sql.DataSource" 
+  url="jdbc:mysql://localhost:3307/xinco?autoReconnect=true" username="root"
+  password="lyjx100pre"/>
   <!-- #################### ################ ####################-->
   <ResourceParams name="jdbc/XincoDB">
     <parameter>
@@ -25,6 +25,10 @@
       <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
     </parameter>
   </ResourceParams>
+  <parameter>
+          <name>defaultAutoCommit</name>
+          <value>true</value>
+      </parameter>
   <!-- Database JNDI Name -->
   <Environment name="xinco/JNDIDB" override="false" type="java.lang.String" value="java:comp/env/jdbc/XincoDB"/>
 </Context>
