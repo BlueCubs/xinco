@@ -46,13 +46,14 @@ public class XincoAuditingDAOHelper {
             XincoAbstractAuditableObject value) {
         value.setTransactionTime(DateRange.startingNow());
         value.setCreated(true);
-        value.setRecordId(xis.getNewID());
-        xcumr = new XincoCoreUserModifiedRecord(new XincoCoreUserModifiedRecordPK(value.getChangerID(), value.getRecordId()));
+        value.setRecordId(dao.getNewID());
+        xcumr = new XincoCoreUserModifiedRecord(new XincoCoreUserModifiedRecordPK(value.getChangerID(), xis.getNewID()));
         xcumr.setModReason(value.getReason());
         xcumr.setModTime(DateRange.startingNow().getStart().getTime());
         XincoAbstractAuditableObject newValue = dao.create(value);
         newValue.setXincoCoreUserModifiedRecord(xcumr);
         newValue.setReason("audit.general.create");
+        newValue.setCreated(false);
         dao.update(newValue);
         return newValue;
     }
@@ -87,6 +88,7 @@ public class XincoAuditingDAOHelper {
         xcumr.setModReason(newValue.getReason());
         xcumr.setModTime(range.getEnd().getTime());
         newValue.setModified(true);
+        newValue.setCreated(false);
         newValue.setXincoCoreUserModifiedRecord(xcumr);
         newValue.setChangerID(value.getChangerID());
         return dao.create(newValue);

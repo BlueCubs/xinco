@@ -74,6 +74,21 @@ public class XincoPersistanceManager {
         }
         return null;
     }
+    
+    public List createdQuery(String createdQuery, HashMap parameters) {
+        Query q = getEntityManager().createQuery(createdQuery);
+        try {
+            Set keys = parameters.keySet();
+            for (Iterator iter = keys.iterator(); iter.hasNext();) {
+                String key = iter.next().toString();
+                q.setParameter(key, parameters.get(key));
+            }
+            return q.getResultList();
+        } catch (Exception e) {
+            Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return null;
+    }
 
     public List namedQuery(String namedQuery, HashMap parameters) {
         Query q = getEntityManager().createNamedQuery(namedQuery);

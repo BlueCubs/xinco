@@ -195,7 +195,6 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
                 temp.setIntValue(getIntValue());
                 temp.setLongValue(getLongValue());
                 temp.setStringValue(getStringValue());
-                temp.setCreated(isCreated());
                 temp.setChangerID(getChangerID());
                 XincoAuditingDAOHelper.create(this, temp);
             }
@@ -243,7 +242,7 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
         newValue.setCreated(temp.isCreated());
         newValue.setChangerID(temp.getChangerID());
         if (!value.isCreated()) {
-            if (((XincoSetting) value).getId() != 0) {
+            if (newValue.getId() != 0) {
                 //An object for updating
                 exists = true;
             } else {
@@ -307,5 +306,9 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
         HashMap temp = new HashMap();
         temp.put("id", getId());
         return temp;
+    }
+
+    public int getNewID() {
+        return new XincoIDServer("xinco_setting").getNewID();
     }
 }

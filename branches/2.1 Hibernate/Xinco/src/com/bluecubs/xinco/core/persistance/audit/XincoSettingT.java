@@ -125,4 +125,12 @@ public class XincoSettingT extends XincoAbstractAuditableObject implements Seria
     public String toString() {
         return "com.bluecubs.xinco.add.XincoSettingT[recordId=" + recordId + "]";
     }
+
+    public Integer getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(Integer recordId) {
+        this.recordId = recordId;
+    }
 }

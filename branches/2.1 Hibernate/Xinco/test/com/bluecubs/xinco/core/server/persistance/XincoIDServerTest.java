@@ -46,7 +46,6 @@ public class XincoIDServerTest {
         String table_name = "xinco_core_user";
         XincoIDServer instance = new XincoIDServer(table_name);
         int expResult = instance.getLastId() + 1;
-        System.err.println("Expected result: " + expResult);
         int result = instance.getNewID();
         System.out.println("undo");
         instance.setLastId(result - 1);

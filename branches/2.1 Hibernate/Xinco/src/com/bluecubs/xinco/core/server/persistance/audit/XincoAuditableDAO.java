@@ -74,4 +74,10 @@ public interface XincoAuditableDAO {
      * @return The parameters in a HashMap
      */
     public HashMap getParameters();
+    
+    /**
+     * Gets a new id for this DAO object by calling XincoIDServer(<correct table name>).getNewID();
+     * @return New id
+     */
+    public int getNewID();
 }

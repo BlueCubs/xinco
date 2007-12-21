@@ -8,7 +8,6 @@ package com.bluecubs.xinco.core.persistance.audit;
 import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -17,8 +16,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import org.springframework.dao.DataRetrievalFailureException;
-import org.springframework.dao.OptimisticLockingFailureException;
 
 /**
  *
@@ -167,5 +164,13 @@ public class XincoCoreUserT extends XincoAbstractAuditableObject implements Seri
     @Override
     public String toString() {
         return "com.bluecubs.xinco.add.XincoCoreUserT[recordId=" + recordId + "]";
+    }
+
+    public Integer getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(Integer recordId) {
+        this.recordId = recordId;
     }
 }

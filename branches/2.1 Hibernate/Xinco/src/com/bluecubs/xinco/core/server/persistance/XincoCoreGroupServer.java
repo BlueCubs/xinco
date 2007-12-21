@@ -253,4 +253,8 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
         temp.put("id", getId());
         return temp;
     }
+
+    public int getNewID() {
+        return new XincoIDServer("xinco_core_group").getNewID();
+    }
 }
