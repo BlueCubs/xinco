@@ -38,8 +38,8 @@
  */
 package com.bluecubs.xinco.client.dialog;
 
+import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.XincoClientConnectionProfile;
-import com.bluecubs.xinco.client.*;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;

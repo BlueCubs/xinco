@@ -127,14 +127,14 @@ public class XincoConfigSingletonServer {
                     getIndexFileTypesExt().add(((XincoSetting) s.get(i)).getString_value());
                 }
                 if(((XincoSetting)s.get(i)).getDescription().startsWith("xinco/IndexNoIndex")){
-                    StringTokenizer st= new StringTokenizer(((XincoSetting)s.get(i)).getString_value(),";");
-                    String [] exts= new String[st.countTokens()];
+                    st= new StringTokenizer(((XincoSetting)s.get(i)).getString_value(),";");
+                    temp= new String[st.countTokens()];
                     int j=0;
                     while(st.hasMoreTokens()){
-                        exts[j]=st.nextToken();
+                        temp[j]=st.nextToken();
                         j++;
                     }
-                    setIndexNoIndex(exts);
+                    setIndexNoIndex(temp);
                 }
             }
             setAllowOutsideLinks(xss.getSetting("setting.allowoutsidelinks").isBool_value());

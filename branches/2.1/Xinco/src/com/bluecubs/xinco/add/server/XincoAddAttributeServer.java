@@ -173,7 +173,6 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
      * @return vector containing attributes
      */
     @SuppressWarnings("unchecked")
-    @SuppressWarnings("unchecked")
     public static Vector getXincoAddAttributes(int attrID, XincoDBManager DBM) {
         Vector addAttributes = new Vector();
         try {

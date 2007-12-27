@@ -66,7 +66,7 @@
 //            writer.close();
 //        } catch (Throwable e) {
 //            if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
-//                e.printStackTrace();
+//                Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.SEVERE, null, e);
 //            }
 //            if (writer != null) {
 //                try {
@@ -117,7 +117,7 @@
 //        return true;
 //    }
 //
-//    public static synchronized Vector findXincoCoreData(String s, int l, XincoDBManager dbm) {
+//    public static synchronized Vector findXincoCoreData(String designation, int l, XincoDBManager dbm) {
 //        int i = 0;
 //        Vector v = new Vector();
 //        Searcher searcher = null;
@@ -126,9 +126,9 @@
 //            Analyzer analyzer = new StandardAnalyzer();
 //            //add language to query
 //            if (l != 0) {
-//                s = s + " AND language:" + l;
+//                designation = designation + " AND language:" + l;
 //            }
-//            Query query = QueryParser.parse(s, "designation", analyzer);
+//            Query query = QueryParser.parse(designation, "designation", analyzer);
 //
 //            Hits hits = searcher.search(query);
 //            for (i = 0; i < hits.length(); i++) {
@@ -271,7 +271,7 @@ public class XincoIndexer {
         } catch (Exception re) {
             try {
                 if (DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
-                    re.printStackTrace();
+                    Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.SEVERE, null, re);
                 }
                 if (reader != null) {
                     try {
@@ -307,7 +307,7 @@ public class XincoIndexer {
     }
 
     @SuppressWarnings("unchecked")
-    public static synchronized Vector findXincoCoreData(String s, int l, XincoDBManager DBM) {
+    public static synchronized Vector findXincoCoreData(String designation, int l, XincoDBManager DBM) {
         Vector v = new Vector();
         try {
             int i = 0;
@@ -317,7 +317,7 @@ public class XincoIndexer {
                 Analyzer analyzer = new StandardAnalyzer();
 
                 if (l != 0) {
-                    s += " AND language:" + l;
+                    designation += " AND language:" + l;
                 }
                 QueryParser parser = new QueryParser("designation", analyzer);
                 Query query = parser.parse(designation);
@@ -336,7 +336,7 @@ public class XincoIndexer {
                         v.addElement(new XincoCoreDataServer(Integer.parseInt(hits.doc(i).get("id")), DBM));
                     } catch (Exception xcde) {
                         if (DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
-                            xcde.printStackTrace();
+                            Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.SEVERE, null, xcde);
                         }
                     }
                     if (i >= DBM.config.getMaxSearchResult()) {
@@ -353,7 +353,7 @@ public class XincoIndexer {
                         }
                     }
                     if (DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
-                        e.printStackTrace();
+                        Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.SEVERE, null, e);
                     }
                     return null;
                 } catch (XincoSettingException ex) {

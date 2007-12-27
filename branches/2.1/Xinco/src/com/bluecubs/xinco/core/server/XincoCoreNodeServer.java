@@ -76,11 +76,12 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 throw new XincoException();
             }
         } catch (Throwable e) {
+            Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.SEVERE, null, e);
             setXinco_core_language(null);
             getXinco_core_acl().removeAllElements();
             getXinco_core_nodes().removeAllElements();
             getXinco_core_data().removeAllElements();
-            e.printStackTrace();
+            Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.SEVERE, null, e);
             throw new XincoException();
         }
     }
@@ -107,6 +108,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             //load acl for this object
             setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(getId(), "xinco_core_node_id", DBM));
         } catch (Throwable e) {
+            Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.SEVERE, null, e);
             setXinco_core_language(null);
             getXinco_core_acl().removeAllElements();
             getXinco_core_nodes().removeAllElements();
@@ -149,6 +151,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 DBM.executeUpdate("INSERT INTO xinco_core_node VALUES (" + getId() + ", " + getXinco_core_node_id() + ", " + getXinco_core_language().getId() + ", '" + getDesignation().replaceAll("'", "\\\\'") + "', " + getStatus_number() + ")");
             }
         } catch (Throwable e) {
+            Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.SEVERE, null, e);
             throw new XincoException();
         }
         return getId();
@@ -161,7 +164,6 @@ public class XincoCoreNodeServer extends XincoCoreNode {
      * @param userID
      * @throws com.bluecubs.xinco.core.XincoException
      */
-    @SuppressWarnings("static-access")
     @SuppressWarnings("static-access")
     public void removeFromDB(boolean delete_this, XincoDBManager DBM, int userID) throws XincoException {
         int i = 0;
@@ -191,7 +193,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 DBM.executeUpdate("DELETE FROM xinco_core_node WHERE id=" + getId());
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.SEVERE, null, e);
             throw new XincoException();
         }
     }

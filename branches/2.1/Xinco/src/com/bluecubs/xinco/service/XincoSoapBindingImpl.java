@@ -374,7 +374,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
             }
         } catch (Throwable ex) {
             Logger.getLogger(XincoSoapBindingImpl.class.getName()).log(Level.SEVERE, null, ex);
-            Logger.getLogger(XincoSoapBindingImpl.class.getName()).log(Level.SEVERE, null, e);
             return 0;
         }
     }

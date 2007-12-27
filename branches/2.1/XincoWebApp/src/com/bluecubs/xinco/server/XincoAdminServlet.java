@@ -261,7 +261,7 @@ public class XincoAdminServlet extends HttpServlet {
                 current_location_desc = rb.getString("message.location.desc.mainmenu");
                 session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, e);
                 error_message = "[" + global_error_message + " | " + e.toString() + "]";
                 status = 0;
                 session.setAttribute("XincoAdminServlet.status", new Integer(status));
@@ -395,7 +395,7 @@ public class XincoAdminServlet extends HttpServlet {
                     temp_user.setReason("audit.user.account.lock");
                     temp_user.write2DB(DBM);
                 } catch (Throwable e) {
-                    e.printStackTrace();
+                    Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, e);
                 }
             } else {
                 error_message = rb.getString("error.user.account.lock");
@@ -423,7 +423,7 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_user.setReason("audit.user.account.unlock");
                 temp_user.write2DB(DBM);
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, e);
             }
         }
         //reset user's password
@@ -475,7 +475,7 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_user.setReason("audit.user.account.create");
                 temp_user.write2DB(DBM);
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, e);
             }
         }
         //create new group
@@ -606,7 +606,7 @@ public class XincoAdminServlet extends HttpServlet {
                     (new XincoCoreNodeServer(2, DBM)).removeFromDB(false, DBM, login_user.getId());
                     DBM.finalize();
                 } catch (Throwable e) {
-                    e.printStackTrace();
+                    Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, e);
                 }
             }
         }
@@ -1377,7 +1377,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("</html>\n");
                 } catch (Throwable e) {
                     global_error_message = global_error_message + e.toString();
-                    e.printStackTrace();
+                    Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, e);
                 }
             }
             if (current_location.compareTo("AuditQuery") == 0) {
@@ -1435,7 +1435,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("</html>\n");
                 } catch (Throwable e) {
                     global_error_message = global_error_message + e.toString();
-                    e.printStackTrace();
+                    Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, e);
                 }
             }
             if (current_location.compareTo("AuditMenu") == 0) {
@@ -1488,7 +1488,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("</html>\n");
                 } catch (Throwable e) {
                     global_error_message = global_error_message + e.toString();
-                    e.printStackTrace();
+                    Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, e);
                 }
             }
             if (current_location.compareTo("RebuildIndex") == 0) {

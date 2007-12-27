@@ -2901,7 +2901,13 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
 
         } catch (Exception ioe) {
             //error handling
-            //create config
+            createDefaultConfig(tmp_vector_old);
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private boolean createDefaultConfig(Vector tmp_vector_old){
+        //create config
             xincoClientConfig = new Vector();
             //add connection profiles
             xincoClientConfig.addElement(new Vector());
@@ -2947,7 +2953,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             xincoClientConfig.addElement(new String("javax.swing.plaf.metal.MetalLookAndFeel"));
             //add locale
             xincoClientConfig.addElement(Locale.getDefault());
-        }
+        return true;
     }
 
     /**
