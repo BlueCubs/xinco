@@ -39,8 +39,10 @@ public class XincoIndexer {
             }
             Document temp = XincoDocument.getXincoDocument(d, index_content, DBM);
             List l = temp.getFields();
-            for (int i = 0; i < l.size(); i++) {
-                System.out.println(((Field) l.get(i)).toString());
+            if (DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
+                for (int i = 0; i < l.size(); i++) {
+                    System.out.println(((Field) l.get(i)).toString());
+                }
             }
             writer.addDocument(temp);
             writer.flush();
@@ -49,7 +51,7 @@ public class XincoIndexer {
                 System.out.println("Indexing complete!");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, e);
             if (writer != null) {
                 try {
                     writer.close();
@@ -79,7 +81,7 @@ public class XincoIndexer {
         } catch (Exception re) {
             try {
                 if (DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
-                    re.printStackTrace();
+                    Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, re);
                 }
                 if (reader != null) {
                     try {
@@ -108,6 +110,7 @@ public class XincoIndexer {
             writer.optimize();
             writer.close();
         } catch (Exception e) {
+            Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, e);
             if (writer != null) {
                 try {
                     writer.close();
@@ -165,6 +168,7 @@ public class XincoIndexer {
                 }
                 searcher.close();
             } catch (Exception e) {
+                Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, e);
                 try {
                     if (searcher != null) {
                         try {
@@ -173,7 +177,7 @@ public class XincoIndexer {
                         }
                     }
                     if (DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
-                        e.printStackTrace();
+                        Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, e);
                     }
                     return null;
                 } catch (XincoSettingException ex) {
