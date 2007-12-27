@@ -2356,6 +2356,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                 in = new ByteArrayInputStream(byte_array);
                             }
                         } catch (Exception ce) {
+                            Logger.getLogger(XincoExplorer.class.getName()).log(Level.SEVERE, null, ce);
                             //reassign log vector
                             if (wizard_type == 11) {
                                 ((XincoCoreData) newnode.getUserObject()).setXinco_core_logs(DataLogVector);

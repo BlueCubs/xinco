@@ -14,7 +14,6 @@ import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoCoreUser;
-import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoSetting;
 import com.bluecubs.xinco.core.XincoSettingException;
 import com.bluecubs.xinco.core.XincoVersion;
@@ -286,8 +285,9 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
             }
         } catch (Throwable ex) {
             Logger.getLogger(XincoSoapBindingImpl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-        return null;
+
     }
 
     public int uploadXincoCoreData(com.bluecubs.xinco.core.XincoCoreData in0, byte[] in1, com.bluecubs.xinco.core.XincoCoreUser in2) throws java.rmi.RemoteException {
@@ -308,7 +308,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
             data = new XincoCoreDataServer(in0.getId(), DBM);
             ace = XincoCoreACEServer.checkAccess(user, data.getXinco_core_acl());
             if (ace.isWrite_permission()) {
-
                 // decide whether to read from SOAP attachments or byte array
                 mc = MessageContext.getCurrentContext();
                 m = mc.getCurrentMessage();
@@ -333,7 +332,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
                 }
                 in.close();
                 out.close();
-
                 //dupicate file to preserve current revision
                 if (((XincoAddAttribute) data.getXinco_add_attributes().elementAt(3)).getAttrib_unsignedint() == 1) {
                     //find id of latest log
@@ -356,7 +354,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
                         fcos.close();
                     }
                 }
-
                 //index data and file content
                 boolean index_success = false;
                 try {
@@ -366,7 +363,6 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
                 } catch (Exception xite) {
                     index_success = false;
                 }
-
                 //close connection if indexing thread failed
                 if (!index_success) {
                     DBM.finalize();
@@ -378,6 +374,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
             }
         } catch (Throwable ex) {
             Logger.getLogger(XincoSoapBindingImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoSoapBindingImpl.class.getName()).log(Level.SEVERE, null, e);
             return 0;
         }
     }
@@ -565,7 +562,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
 
                 //index data (not on checkout, only when status = open = 1)
                 if (data.getStatus_number() == 1) {
-                    boolean index_success = XincoIndexer.indexXincoCoreData(data, false, DBM);
+                    XincoIndexer.indexXincoCoreData(data, false, DBM);
                 }
 
                 //insert default ACL when inserting new node
@@ -760,10 +757,8 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
         try {
             DBM = new XincoDBManager();
             user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword(), DBM);
-        } catch (XincoException ex) {
-            ex.printStackTrace();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Throwable e) {
+            Logger.getLogger(XincoSoapBindingImpl.class.getName()).log(Level.SEVERE, null, e);
         }
         return user.isPasswordUsable(in0);
     }
@@ -815,6 +810,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
             xit.start();
             DBM.finalize();
         } catch (Throwable ex) {
+            Logger.getLogger(XincoSoapBindingImpl.class.getName()).log(Level.SEVERE, null, ex);
             try {
                 if (DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
                     Logger.getLogger(XincoSoapBindingImpl.class.getName()).log(Level.SEVERE, null, ex);

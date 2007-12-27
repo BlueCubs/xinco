@@ -43,6 +43,8 @@ import java.sql.*;
 
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.server.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Create add attribute object for data structures
@@ -50,15 +52,8 @@ import com.bluecubs.xinco.core.server.*;
  */
 public class XincoAddAttributeServer extends XincoAddAttribute {
 
-    /**
-     * Create add attribute object for data structures
-     * @param attrID1 xinco_core_data_id
-     * @param attrID2 attribute_id
-     * @param DBM XincoDBManager
-     * @throws com.bluecubs.xinco.core.XincoException
-     */
     private static int changerID;
-
+    //create add attribute object for data structures
     public XincoAddAttributeServer(int attrID1, int attrID2, XincoDBManager DBM) throws XincoException {
         try {
             Statement stmt = DBM.getConnection().createStatement();
@@ -142,6 +137,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
             DBM.executeUpdate("INSERT INTO xinco_add_attribute VALUES (" + getXinco_core_data_id() + ", " + getAttribute_id() + ", " + getAttrib_int() + ", " + getAttrib_unsignedint() + ", " + getAttrib_double() + ", '" + attrVC + "', '" + attrT + "', '" + attrDT + "')");
         } catch (Throwable e) {
             //no commit or rollback -> CoreData manages exceptions!
+            Logger.getLogger(XincoAddAttributeServer.class.getName()).log(Level.SEVERE, null, e);
             throw new XincoException();
         }
         return 1;
@@ -177,6 +173,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
      * @return vector containing attributes
      */
     @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     public static Vector getXincoAddAttributes(int attrID, XincoDBManager DBM) {
         Vector addAttributes = new Vector();
         try {
@@ -197,19 +194,29 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
         return addAttributes;
     }
 
-    /**
-     * Get changerID
-     * @return int
-     */
     public static int getChangerID() {
         return changerID;
     }
 
-    /**
-     * Set changerID
-     * @param changerID
-     */
     public void setChangerID(int changerID) {
         this.changerID = changerID;
+    }
+
+    public static void removeFromDB(int attribute_id, int xinco_core_data_id, int userID, XincoDBManager DBM) {
+        try {
+            Statement stmt = DBM.getConnection().createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_add_attribute WHERE xinco_core_data_id=" + xinco_core_data_id + " AND attribute_id=" + attribute_id);
+            XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
+            while (rs.next()) {
+                audit.updateAuditTrail("xinco_add_atribute", new String[]{"xinco_core_data_id =" + rs.getString("xinco_core_data_id"),
+                    "attribute_id=" + rs.getString("attribute_id")
+                }, DBM, "audit.general.delete", userID);
+                DBM.executeUpdate("delete from xinco_add_attribute where xinco_core_data_id =" + rs.getString("xinco_core_data_id") + " and attribute_id=" + attribute_id);
+            }
+            rs.close();
+            stmt.close();
+        } catch (Throwable ex) {
+            Logger.getLogger(XincoAddAttributeServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

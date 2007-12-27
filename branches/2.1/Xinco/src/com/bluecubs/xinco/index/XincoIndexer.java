@@ -1,3 +1,198 @@
+///**
+// *Copyright 2005 blueCubs.com
+// *
+// *Licensed under the Apache License, Version 2.0 (the "License");
+// *you may not use this file except in compliance with the License.
+// *You may obtain a copy of the License at
+// *
+// *   http://www.apache.org/licenses/LICENSE-2.0
+// *
+// *Unless required by applicable law or agreed to in writing, software
+// *distributed under the License is distributed on an "AS IS" BASIS,
+// *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// *See the License for the specific language governing permissions and
+// *limitations under the License.
+// *
+// *************************************************************
+// * This project supports the blueCubs vision of giving back
+// * to the community in exchange for free software!
+// * More information on: http://www.bluecubs.org
+// *************************************************************
+// *
+// * Name:            XincoIndexer
+// *
+// * Description:     handle document indexing 
+// *
+// * Original Author: Alexander Manes
+// * Date:            2004/10/31
+// *
+// * Modifications:
+// * 
+// * Who?             When?             What?
+// * -                -                 -
+// *
+// *************************************************************
+// */
+//package com.bluecubs.xinco.index;
+//
+//import java.util.Vector;
+//import org.apache.lucene.analysis.standard.StandardAnalyzer;
+//import org.apache.lucene.index.*;
+//import org.apache.lucene.search.*;
+//import org.apache.lucene.queryParser.QueryParser;
+//import org.apache.lucene.analysis.*;
+//import com.bluecubs.xinco.core.*;
+//import com.bluecubs.xinco.core.server.*;
+//
+///**
+// * This class handles document indexing for xinco.
+// * Edit configuration values in context.xml
+// */
+//public class XincoIndexer {
+//
+//    public static synchronized boolean indexXincoCoreData(XincoCoreData d, boolean index_content, XincoDBManager DBM) {
+//        IndexWriter writer = null;
+//        try {
+//            //check if document exists in index and delete
+//            XincoIndexer.removeXincoCoreData(d, DBM);
+//            //add document to index
+//            try {
+//                writer = new IndexWriter(DBM.config.getFileIndexPath(), new StandardAnalyzer(), false);
+//            } catch (Exception ie) {
+//                writer = new IndexWriter(DBM.config.getFileIndexPath(), new StandardAnalyzer(), true);
+//            }
+//            writer.addDocument(XincoDocument.getXincoDocument(d, index_content, DBM));
+//            //writer.optimize();
+//            writer.close();
+//        } catch (Throwable e) {
+//            if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
+//                e.printStackTrace();
+//            }
+//            if (writer != null) {
+//                try {
+//                    writer.close();
+//                } catch (Exception we) {
+//                }
+//            }
+//            return false;
+//        }
+//        return true;
+//    }
+//
+//    public static synchronized boolean removeXincoCoreData(XincoCoreData d, XincoDBManager DBM) {
+//        IndexReader reader = null;
+//        //check if document exists in index and delete
+//        try {
+//            reader = IndexReader.open(DBM.config.getFileIndexPath());
+//            reader.delete(new Term("id", "" + d.getId()));
+//            reader.close();
+//        } catch (Exception re) {
+//            if (reader != null) {
+//                try {
+//                    reader.close();
+//                } catch (Exception re2) {
+//                }
+//            }
+//            return false;
+//        }
+//        return true;
+//    }
+//
+//    public static synchronized boolean optimizeIndex(XincoDBManager dbm) {
+//        IndexWriter writer = null;
+//        try {
+//            //optimize index
+//            writer = new IndexWriter(dbm.config.getFileIndexPath(), new StandardAnalyzer(), false);
+//            writer.optimize();
+//            writer.close();
+//        } catch (Throwable e) {
+//            if (writer != null) {
+//                try {
+//                    writer.close();
+//                } catch (Exception we) {
+//                }
+//            }
+//            return false;
+//        }
+//        return true;
+//    }
+//
+//    public static synchronized Vector findXincoCoreData(String s, int l, XincoDBManager dbm) {
+//        int i = 0;
+//        Vector v = new Vector();
+//        Searcher searcher = null;
+//        try {
+//            searcher = new IndexSearcher(dbm.config.getFileIndexPath());
+//            Analyzer analyzer = new StandardAnalyzer();
+//            //add language to query
+//            if (l != 0) {
+//                s = s + " AND language:" + l;
+//            }
+//            Query query = QueryParser.parse(s, "designation", analyzer);
+//
+//            Hits hits = searcher.search(query);
+//            for (i = 0; i < hits.length(); i++) {
+//                try {
+//                    v.addElement(new XincoCoreDataServer(Integer.parseInt(hits.doc(i).get("id")), dbm));
+//                } catch (Exception xcde) {
+//                // don't add non-existing data
+//                }
+//                if (i >= dbm.config.getMaxSearchResult()) {
+//                    break;
+//                }
+//            }
+//            searcher.close();
+//        } catch (Throwable e) {
+//            if (searcher != null) {
+//                try {
+//                    searcher.close();
+//                } catch (Exception se) {
+//                }
+//            }
+//            return null;
+//        }
+//        return v;
+//    }
+//
+//    //private constructor to avoid instance generation with new-operator!
+//    private XincoIndexer() {
+//    }
+//}
+/**
+ *Copyright 2005 blueCubs.com
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License");
+ *you may not use this file except in compliance with the License.
+ *You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *Unless required by applicable law or agreed to in writing, software
+ *distributed under the License is distributed on an "AS IS" BASIS,
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *See the License for the specific language governing permissions and
+ *limitations under the License.
+ *
+ *************************************************************
+ * This project supports the blueCubs vision of giving back
+ * to the community in exchange for free software!
+ * More information on: http://www.bluecubs.org
+ *************************************************************
+ *
+ * Name:            XincoIndexer
+ *
+ * Description:     handle document indexing
+ *
+ * Original Author: Alexander Manes
+ * Date:            2004/10/31
+ *
+ * Modifications:
+ *
+ * Who?             When?             What?
+ * -                -                 -
+ *
+ *************************************************************
+ */
 package com.bluecubs.xinco.index;
 
 import java.util.Vector;
@@ -39,8 +234,10 @@ public class XincoIndexer {
             }
             Document temp = XincoDocument.getXincoDocument(d, index_content, DBM);
             List l = temp.getFields();
-            for (int i = 0; i < l.size(); i++) {
-                System.out.println(((Field) l.get(i)).toString());
+            if (DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value()) {
+                for (int i = 0; i < l.size(); i++) {
+                    System.out.println(((Field) l.get(i)).toString());
+                }
             }
             writer.addDocument(temp);
             writer.flush();
@@ -49,11 +246,12 @@ public class XincoIndexer {
                 System.out.println("Indexing complete!");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, e);
             if (writer != null) {
                 try {
                     writer.close();
                 } catch (Exception we) {
+                    Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, we);
                 }
             }
             return false;
@@ -61,12 +259,6 @@ public class XincoIndexer {
         return true;
     }
 
-    /**
-     * Remove XIncoCoreData from index
-     * @param d
-     * @param DBM
-     * @return boolean
-     */
     public static synchronized boolean removeXincoCoreData(XincoCoreData d, XincoDBManager DBM) {
         IndexReader reader = null;
         //check if document exists in index and delete
@@ -95,11 +287,6 @@ public class XincoIndexer {
         return true;
     }
 
-    /**
-     * Optimize Lucene index
-     * @param DBM
-     * @return boolean
-     */
     public static synchronized boolean optimizeIndex(XincoDBManager DBM) {
         IndexWriter writer = null;
         try {
@@ -119,15 +306,8 @@ public class XincoIndexer {
         return true;
     }
 
-    /**
-     * FInd XincoCoreData in the index
-     * @param designation
-     * @param language_id
-     * @param DBM
-     * @return
-     */
     @SuppressWarnings("unchecked")
-    public static synchronized Vector findXincoCoreData(String designation, int language_id, XincoDBManager DBM) {
+    public static synchronized Vector findXincoCoreData(String s, int l, XincoDBManager DBM) {
         Vector v = new Vector();
         try {
             int i = 0;
@@ -136,8 +316,8 @@ public class XincoIndexer {
                 searcher = new IndexSearcher(DBM.config.getFileIndexPath());
                 Analyzer analyzer = new StandardAnalyzer();
 
-                if (language_id != 0) {
-                    designation += " AND language:" + language_id;
+                if (l != 0) {
+                    s += " AND language:" + l;
                 }
                 QueryParser parser = new QueryParser("designation", analyzer);
                 Query query = parser.parse(designation);

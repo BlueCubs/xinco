@@ -12,7 +12,7 @@
             <minimum-ant-version>1.6</minimum-ant-version>
             <web-module-libraries>
                 <library files="21">
-                    <file>${libs.XincoLibs.classpath}</file>
+                    <file>${libs.XincoLibs2.1RC1.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library files="1">
@@ -33,8 +33,8 @@
                     <file>${file.reference.blueCubsIcon.gif-1}</file>
                     <path-in-war>client</path-in-war>
                 </library>
-                <library files="15">
-                    <file>${libs.XincoLibsClient.classpath}</file>
+                <library files="14">
+                    <file>${libs.XincoLibsClient2.1RC1.classpath}</file>
                     <path-in-war>client</path-in-war>
                 </library>
                 <library files="1">

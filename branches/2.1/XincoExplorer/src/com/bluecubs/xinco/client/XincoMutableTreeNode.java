@@ -48,6 +48,7 @@ public class XincoMutableTreeNode extends DefaultMutableTreeNode {
     }
     
     @Override
+    @SuppressWarnings("static-access")
     public String toString() {
         String s = null;
         String status = null;

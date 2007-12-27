@@ -165,6 +165,7 @@ public class XincoCoreDataServer extends XincoCoreData {
             }
             DBM.getConnection().commit();
         } catch (Throwable e) {
+            Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, e);
             try {
                 DBM.getConnection().rollback();
             } catch (Exception erollback) {
@@ -181,7 +182,7 @@ public class XincoCoreDataServer extends XincoCoreData {
      * @param id 
      * @throws com.bluecubs.xinco.core.XincoException
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "static-access"})
     public void removeFromDB(XincoDBManager DBM, int userID, int id) throws XincoException {
         try {
             ResultSet rs;
@@ -195,7 +196,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                 objects.add(temp);
             }
             while (!objects.isEmpty()) {
-                ((XincoCoreLogServer) objects.get(0)).removeFromDB(DBM);
+                ((XincoCoreLogServer) objects.get(0)).removeFromDB(((XincoCoreLogServer) objects.get(0)).getId(),userID,DBM);
                 objects.remove(0);
             }
             objects.removeAllElements();
@@ -222,7 +223,7 @@ public class XincoCoreDataServer extends XincoCoreData {
             }
             while (!objects.isEmpty()) {
                 XincoAddAttributeServer.removeFromDB(((XincoAddAttributeServer) objects.get(0)).getAttribute_id(),
-                        ((XincoAddAttributeServer) objects.get(0)).getXinco_core_data_id(), DBM);
+                        ((XincoAddAttributeServer) objects.get(0)).getXinco_core_data_id(), userID, DBM);
                 objects.remove(0);
             }
             objects.removeAllElements();
@@ -232,25 +233,26 @@ public class XincoCoreDataServer extends XincoCoreData {
             //delete file / file = 1
             if (getXinco_core_data_type().getId() == 1) {
                 try {
-                    (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), getId(), "" + getId()))).delete();
+                    (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), id, "" + id))).delete();
                 } catch (Exception dfe) {
                 // continue, file might not exists
                 }
                 // delete revisions created upon creation or checkin
-                for (i = 0; i < this.getXinco_core_logs().size(); i++) {
+                for (i = 0; i < getXinco_core_logs().size(); i++) {
                     if ((((XincoCoreLog) getXinco_core_logs().elementAt(i)).getOp_code() == 1) || (((XincoCoreLog) getXinco_core_logs().elementAt(i)).getOp_code() == 5)) {
                         try {
-                            (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), getId(), getId() + "-" + ((XincoCoreLog) getXinco_core_logs().elementAt(i)).getId()))).delete();
+                            (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), id, id + "-" + ((XincoCoreLog) getXinco_core_logs().elementAt(i)).getId()))).delete();
                         } catch (Exception drfe) {
                         // continue, delete next revision
                         }
                     }
                 }
             }
-            audit.updateAuditTrail("xinco_core_data", new String[]{"id =" + getId()},
-                    DBM, "audit.general.delete", this.getChangerID());
-            DBM.executeUpdate("DELETE FROM xinco_core_data WHERE id=" + getId());
+            audit.updateAuditTrail("xinco_core_data", new String[]{"id =" + id},
+                    DBM, "audit.general.delete", userID);
+            DBM.executeUpdate("DELETE FROM xinco_core_data WHERE id=" + id);
         } catch (Throwable e) {
+            Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, e);
             try {
                 DBM.getConnection().rollback();
             } catch (Exception erollback) {

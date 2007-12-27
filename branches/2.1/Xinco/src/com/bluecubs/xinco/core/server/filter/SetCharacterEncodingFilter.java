@@ -80,14 +80,16 @@ public class SetCharacterEncodingFilter implements Filter {
      * interpret request parameters for this request.
      *
      * @param request The servlet request we are processing
-     * @param response 
-     * @param chain
+     * @param response The servlet response we are creating
+     * @param chain The filter chain we are processing
+     *
      * @exception IOException if an input/output error occurs
      * @exception ServletException if a servlet error occurs
      */
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
+
         // Conditionally select and set the character encoding to be used
         if (ignore || (request.getCharacterEncoding() == null)) {
             encoding = selectEncoding(request);
@@ -95,8 +97,10 @@ public class SetCharacterEncodingFilter implements Filter {
                 request.setCharacterEncoding(encoding);
             }
         }
+
         // Pass control on to the next filter
         chain.doFilter(request, response);
+
     }
 
     /**
@@ -106,6 +110,7 @@ public class SetCharacterEncodingFilter implements Filter {
      * @throws javax.servlet.ServletException 
      */
     public void init(FilterConfig filterConfig) throws ServletException {
+
         this.filterConfig = filterConfig;
         this.encoding = filterConfig.getInitParameter("encoding");
         String value = filterConfig.getInitParameter("ignore");
@@ -118,6 +123,7 @@ public class SetCharacterEncodingFilter implements Filter {
         } else {
             this.ignore = false;
         }
+
     }
 
     // ------------------------------------------------------ Protected Methods
@@ -132,10 +138,10 @@ public class SetCharacterEncodingFilter implements Filter {
      * filter.
      *
      * @param request The servlet request we are processing
-     * @return String
+     * @return 
      */
     protected String selectEncoding(ServletRequest request) {
-        return this.encoding;
+        return (this.encoding);
     }
 }
 

@@ -52,16 +52,10 @@ import java.util.logging.Logger;
 public class XincoCoreLogServer extends XincoCoreLog {
 
     private XincoCoreUser user;
-
-    /**
-     * Create single log object for data structures
-     * @param id
-     * @param DBM
-     * @throws com.bluecubs.xinco.core.XincoException
-     */
-    public XincoCoreLogServer(int id, XincoDBManager DBM) throws XincoException {
+    //create single log object for data structures
+    public XincoCoreLogServer(int attrID, XincoDBManager DBM) throws XincoException {
         try {
-            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_log WHERE id=" + id);
+            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_log WHERE id=" + attrID);
             //throw exception if no result found
             int RowCount = 0;
             while (rs.next()) {
@@ -79,37 +73,23 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 getVersion().setVersion_low(rs.getInt("version_low"));
                 getVersion().setVersion_postfix(rs.getString("version_postfix"));
             }
+
             if (RowCount < 1) {
                 throw new XincoException();
             }
         } catch (Throwable e) {
             throw new XincoException();
         }
+
     }
 
-    /**
-     * Set user
-     * @param user
-     */
     public void setUser(XincoCoreUserServer user) {
         this.user = user;
     }
 
-    /**
-     * Create single log object for data structures
-     * @param attrID
-     * @param attrCDID
-     * @param attrUID
-     * @param attrOC
-     * @param attrODT
-     * @param attrOD
-     * @param attrVH
-     * @param attrVM
-     * @param attrVL
-     * @param attrVP
-     * @throws com.bluecubs.xinco.core.XincoException
-     */
+    //create single log object for data structures
     public XincoCoreLogServer(int attrID, int attrCDID, int attrUID, int attrOC, Calendar attrODT, String attrOD, int attrVH, int attrVM, int attrVL, String attrVP) throws XincoException {
+
         setId(attrID);
         setXinco_core_data_id(attrCDID);
         setXinco_core_user_id(attrUID);
@@ -121,16 +101,14 @@ public class XincoCoreLogServer extends XincoCoreLog {
         getVersion().setVersion_mid(attrVM);
         getVersion().setVersion_low(attrVL);
         getVersion().setVersion_postfix(attrVP);
+
     }
 
-    /**
-     * Write to DB
-     * @param DBM
-     * @return int
-     * @throws com.bluecubs.xinco.core.XincoException
-     */
+    //write to db
     public int write2DB(XincoDBManager DBM) throws XincoException {
+
         try {
+
             if (getId() > 0) {
                 XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
                 ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
@@ -141,7 +119,9 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 setId(DBM.getNewID("xinco_core_log"));
                 DBM.executeUpdate("INSERT INTO xinco_core_log VALUES (" + getId() + ", " + getXinco_core_data_id() + ", " + getXinco_core_user_id() + ", " + getOp_code() + ", now(), '" + getOp_description().replaceAll("'", "\\\\'") + "', " + getVersion().getVersion_high() + ", " + getVersion().getVersion_mid() + ", " + getVersion().getVersion_low() + ", '" + getVersion().getVersion_postfix().replaceAll("'", "\\\\'") + "')");
             }
+
             DBM.getConnection().commit();
+
         } catch (Throwable e) {
             try {
                 DBM.getConnection().rollback();
@@ -149,29 +129,12 @@ public class XincoCoreLogServer extends XincoCoreLog {
             }
             throw new XincoException();
         }
+
         return getId();
+
     }
 
-    /**
-     * Remove from DB
-     * @param DBM
-     */
-    public void removeFromDB(XincoDBManager DBM) {
-        try {
-            XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
-            ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
-            DBM.executeUpdate("DELETE FROM xinco_core_log WHERE xinco_core_data_id=" + getId());
-        } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    /**
-     * Create complete log list for data
-     * @param attrID
-     * @param DBM
-     * @return
-     */
+    //create complete log list for data
     @SuppressWarnings("unchecked")
     public static Vector getXincoCoreLogs(int attrID, XincoDBManager DBM) {
         Vector core_log = new Vector();
@@ -187,5 +150,14 @@ public class XincoCoreLogServer extends XincoCoreLog {
             core_log.removeAllElements();
         }
         return core_log;
+    }
+
+    public static void removeFromDB(int id,int user,XincoDBManager DBM) {
+        try {
+            XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
+            DBM.executeUpdate("DELETE FROM xinco_core_data WHERE id=" + id);
+        } catch (XincoException ex) {
+            Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

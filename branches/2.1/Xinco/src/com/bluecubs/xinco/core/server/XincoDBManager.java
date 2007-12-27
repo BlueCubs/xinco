@@ -330,11 +330,10 @@ public class XincoDBManager {
         }
     }
 
-    /**
-     * Returns the column names of the query in an HTML table format for use
-     * as header for a table produced by the drawTable method
+    /** Returns the column names of the query in an HTML table format for use
+     * as header for a table produced by the drawTable method.
      * @param rs
-     * @return String
+     * @return 
      */
     public String getColumnNames(ResultSet rs) {
         String header = "";
@@ -353,8 +352,7 @@ public class XincoDBManager {
         return header;
     }
 
-    /**
-     * Returns the column names of the query in an HTML table format for use
+    /** Returns the column names of the query in an HTML table format for use
      * as header for a table produced by the drawTable method.
      * @param rs
      * @return StringTokenizer

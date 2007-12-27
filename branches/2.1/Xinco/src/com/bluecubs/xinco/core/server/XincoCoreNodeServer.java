@@ -162,6 +162,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
      * @throws com.bluecubs.xinco.core.XincoException
      */
     @SuppressWarnings("static-access")
+    @SuppressWarnings("static-access")
     public void removeFromDB(boolean delete_this, XincoDBManager DBM, int userID) throws XincoException {
         int i = 0;
         try {

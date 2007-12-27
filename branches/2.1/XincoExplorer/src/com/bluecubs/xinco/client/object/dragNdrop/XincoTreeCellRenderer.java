@@ -54,13 +54,16 @@ public class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
     private XincoFileIconManager xfm = null;
     private XincoExplorer explorer;
 
-    /** Creates a new instance of XincoTreeCellRenderer */
+    /** Creates a new instance of XincoTreeCellRenderer
+     * @param explorer 
+     */
     public XincoTreeCellRenderer(XincoExplorer explorer) {
         this.explorer = explorer;
         xfm = new XincoFileIconManager();
     }
 
     @Override
+    @SuppressWarnings("static-access")
     public Component getTreeCellRendererComponent(JTree tree,
             Object value, boolean sel, boolean expanded, boolean leaf,
             int row, boolean hasFocus) {

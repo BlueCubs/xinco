@@ -131,6 +131,7 @@ public class XincoJTree extends JTree {
         });
         addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
 
+            @SuppressWarnings("static-access")
             public void valueChanged(javax.swing.event.TreeSelectionEvent e) {
                 getExplorer().getProgressBar().setTitle(getExplorer().getResourceBundle().getString("message.explorer.verifyingcredentials"));
                 getExplorer().resetTimer();
