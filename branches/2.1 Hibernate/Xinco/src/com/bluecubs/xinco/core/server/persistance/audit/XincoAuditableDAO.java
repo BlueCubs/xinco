@@ -32,11 +32,12 @@ public interface XincoAuditableDAO {
      * Find an object and all related entities by its identifier.
      * 
      * @param parameters in order to locate the specific record
-     * @return the value with that id and all properties initialized
+     * @return the values with that id and all properties initialized
      * @throws org.springframework.dao.DataRetrievalFailureException
      *             if an object with that id doesn't exist
      */
-    public XincoAbstractAuditableObject findWithDetails(HashMap parameters) throws DataRetrievalFailureException;
+    @SuppressWarnings("unchecked")
+    public XincoAbstractAuditableObject [] findWithDetails(HashMap parameters) throws DataRetrievalFailureException;
 
     /**
      * Create a new object, the id value will be ignored
@@ -71,8 +72,9 @@ public interface XincoAuditableDAO {
     /**
      * Get all parameters in order to get find this record
      * 
-     * @return The parameters in a HashMap
+     * @return The key parameters in a HashMap
      */
+    @SuppressWarnings("unchecked")
     public HashMap getParameters();
     
     /**

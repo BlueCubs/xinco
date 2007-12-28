@@ -9,13 +9,10 @@ import com.bluecubs.xinco.core.persistance.XincoCoreUserModifiedRecordPK;
 import com.bluecubs.xinco.core.server.persistance.XincoIDServer;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import net.sf.oness.common.model.dao.AuditingDaoHelper;
 import net.sf.oness.common.model.temporal.DateRange;
 import net.sf.oness.common.model.util.CollectionCloneConverter;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.mapping.Collection;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -26,7 +23,6 @@ import org.springframework.dao.OptimisticLockingFailureException;
  */
 public class XincoAuditingDAOHelper {
 
-    private static Log log = LogFactory.getLog(AuditingDaoHelper.class);
     private static XincoCoreUserModifiedRecord xcumr;
     private static XincoIDServer xis = new XincoIDServer("xinco_core_user_modified_record");
 
@@ -48,7 +44,7 @@ public class XincoAuditingDAOHelper {
         value.setCreated(true);
         value.setRecordId(dao.getNewID());
         xcumr = new XincoCoreUserModifiedRecord(new XincoCoreUserModifiedRecordPK(value.getChangerID(), xis.getNewID()));
-        xcumr.setModReason(value.getReason());
+        xcumr.setModReason("audit.general.create");
         xcumr.setModTime(DateRange.startingNow().getStart().getTime());
         XincoAbstractAuditableObject newValue = dao.create(value);
         newValue.setXincoCoreUserModifiedRecord(xcumr);
@@ -82,7 +78,6 @@ public class XincoAuditingDAOHelper {
         XincoAbstractAuditableObject newValue = clone(oldValue);
         newValue.setTransactionTime(DateRange.startingOn(range.getEnd()));
         newValue.setReason("audit.general.modified");
-        newValue.setRecordId(xis.getNewID());
         newValue.setChangerID(value.getChangerID());
         xcumr = new XincoCoreUserModifiedRecord(new XincoCoreUserModifiedRecordPK(newValue.getChangerID(), newValue.getRecordId()));
         xcumr.setModReason(newValue.getReason());

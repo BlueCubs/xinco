@@ -323,7 +323,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
             }
             setId(((XincoCoreUser) XincoAuditingDAOHelper.update(this, temp)).getId());
         } else {
-            temp.setId(getId());
+            temp.setId(getNewID());
             temp.setLastModified(new Timestamp(System.currentTimeMillis()));
             setId(((XincoCoreUser) XincoAuditingDAOHelper.create(this, temp)).getId());
         }
@@ -428,11 +428,10 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
                 //If password is not current then check against audit trail
                 // compute max mod date
                 Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.DAY_OF_YEAR, - 
-                        new XincoSettingServer("password.unusable_period").getIntValue());
-                HashMap parameters= new HashMap();
+                cal.add(Calendar.DAY_OF_YEAR, -new XincoSettingServer("password.unusable_period").getIntValue());
+                HashMap parameters = new HashMap();
                 parameters.put("maxModDate", cal.getTime());
-                result=pm.createdQuery("from XincoCoreUserT p where p.id=" +
+                result = pm.createdQuery("from XincoCoreUserT p where p.id=" +
                         getId() + " and p.lastModified >= :maxModDate", parameters);
                 //Here we'll catch if the password have been used in the unusable period
                 if (result.size() == 0) {
@@ -484,12 +483,11 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         return temp;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public XincoAbstractAuditableObject findWithDetails(HashMap parameters) {
+    public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters) {
         result = pm.namedQuery("XincoCoreUser.findByUsername", parameters);
-        XincoCoreUser temp = (XincoCoreUser) result.get(0);
-        temp.setTransactionTime(getTransactionTime());
+        XincoCoreUser temp[] = new XincoCoreUser[1];
+        temp[0] = (XincoCoreUser) result.get(0);
+        temp[0].setTransactionTime(getTransactionTime());
         return temp;
     }
 

@@ -107,9 +107,8 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
             if (getId() > 0) {
                 XincoAuditingDAOHelper.update(this, new XincoCoreGroup(getId()));
             } else {
-                XincoCoreGroup temp = new XincoCoreGroup(getId());
-                temp.setId(getId());
-                temp.setCreated(true);
+                XincoCoreGroup temp = new XincoCoreGroup();
+                temp.setId(getNewID());
                 temp.setChangerID(getChangerID());
                 temp.setCreated(isCreated());
                 temp.setDesignation(getDesignation());
@@ -127,7 +126,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
 
     /**
      * Create complete list of groups
-     * @return 
+     * @return A vector containing all Core Groups
      */
     @SuppressWarnings("unchecked")
     public static Vector getXincoCoreGroups() {
@@ -160,7 +159,6 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
         }
     }
 
-    @Override
     public XincoAbstractAuditableObject findById(HashMap parameters) throws DataRetrievalFailureException {
         result = pm.namedQuery("XincoCoreGroup.findById", parameters);
         XincoCoreGroup temp = (XincoCoreGroup) result.get(0);
@@ -169,15 +167,14 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
         return temp;
     }
 
-    @Override
-    public XincoAbstractAuditableObject findWithDetails(HashMap parameters) throws DataRetrievalFailureException {
+    public XincoAbstractAuditableObject [] findWithDetails(HashMap parameters) throws DataRetrievalFailureException {
         result = pm.namedQuery("XincoCoreGroup.findByDesignation", parameters);
-        XincoCoreGroup temp = (XincoCoreGroup) result.get(0);
-        temp.setTransactionTime(getTransactionTime());
+        XincoCoreGroup temp[] = new XincoCoreGroup[1];
+        temp[0] = (XincoCoreGroup) result.get(0);
+        temp[0].setTransactionTime(getTransactionTime());
         return temp;
     }
 
-    @Override
     public XincoAbstractAuditableObject create(XincoAbstractAuditableObject value) {
         XincoCoreGroup temp, newValue = new XincoCoreGroup();
         boolean exists = false;
@@ -207,7 +204,6 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
         return newValue;
     }
 
-    @Override
     public XincoAbstractAuditableObject update(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
         XincoCoreGroup val = (XincoCoreGroup) value;
         XincoCoreGroupT temp = new XincoCoreGroupT();
@@ -229,7 +225,6 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
         return val;
     }
 
-    @Override
     public void delete(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
         XincoCoreGroup val = (XincoCoreGroup) value;
         XincoCoreGroupT temp = new XincoCoreGroupT();
@@ -246,7 +241,6 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
         pm.commitAndClose();
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public HashMap getParameters() {
         HashMap temp = new HashMap();

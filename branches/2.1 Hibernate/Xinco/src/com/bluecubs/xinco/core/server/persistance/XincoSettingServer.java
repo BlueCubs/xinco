@@ -18,6 +18,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.oness.common.model.temporal.DateRange;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.dao.OptimisticLockingFailureException;
 
 /**
@@ -188,7 +189,8 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
             if (getId() != null) {
                 XincoAuditingDAOHelper.update(this, new XincoSetting(getId()));
             } else {
-                XincoSetting temp = new XincoSetting(getId());
+                XincoSetting temp = new XincoSetting();
+                temp.setId(getNewID());
                 temp.setBoolValue(getBoolValue());
                 temp.setDescription(getDescription());
                 temp.setId(getId());
@@ -213,13 +215,12 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
         temp.setChangerID(getChangerID());
         return temp;
     }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public XincoAbstractAuditableObject findWithDetails(HashMap parameters) {
+    
+    public XincoAbstractAuditableObject [] findWithDetails(HashMap parameters) throws DataRetrievalFailureException{
         result = pm.namedQuery("XincoSetting.findByDescription", parameters);
-        XincoSetting temp = (XincoSetting) result.get(0);
-        temp.setTransactionTime(getTransactionTime());
+        XincoSetting temp[] = new XincoSetting[1];
+        temp[0] = (XincoSetting) result.get(0);
+        temp[0].setTransactionTime(getTransactionTime());
         return temp;
     }
 
@@ -232,7 +233,7 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
             newValue.setId(temp.getId());
             newValue.setRecordId(temp.getRecordId());
         } else {
-            newValue.setId(new XincoIDServer("xinco_setting").getNewID());
+            newValue.setId(getNewID());
         }
         newValue.setBoolValue(temp.getBoolValue());
         newValue.setDescription(temp.getDescription());

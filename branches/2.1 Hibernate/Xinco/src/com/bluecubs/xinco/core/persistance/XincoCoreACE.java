@@ -5,6 +5,7 @@
 
 package com.bluecubs.xinco.core.persistance;
 
+import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +21,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "xinco_core_ace")
 @NamedQueries({@NamedQuery(name = "XincoCoreACE.findById", query = "SELECT x FROM XincoCoreACE x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreACE.findByXincoCoreUserId", query = "SELECT x FROM XincoCoreACE x WHERE x.xincoCoreUserId = :xincoCoreUserId"), @NamedQuery(name = "XincoCoreACE.findByXincoCoreGroupId", query = "SELECT x FROM XincoCoreACE x WHERE x.xincoCoreGroupId = :xincoCoreGroupId"), @NamedQuery(name = "XincoCoreACE.findByXincoCoreNodeId", query = "SELECT x FROM XincoCoreACE x WHERE x.xincoCoreNodeId = :xincoCoreNodeId"), @NamedQuery(name = "XincoCoreACE.findByXincoCoreDataId", query = "SELECT x FROM XincoCoreACE x WHERE x.xincoCoreDataId = :xincoCoreDataId"), @NamedQuery(name = "XincoCoreACE.findByReadPermission", query = "SELECT x FROM XincoCoreACE x WHERE x.readPermission = :readPermission"), @NamedQuery(name = "XincoCoreACE.findByWritePermission", query = "SELECT x FROM XincoCoreACE x WHERE x.writePermission = :writePermission"), @NamedQuery(name = "XincoCoreACE.findByExecutePermission", query = "SELECT x FROM XincoCoreACE x WHERE x.executePermission = :executePermission"), @NamedQuery(name = "XincoCoreACE.findByAdminPermission", query = "SELECT x FROM XincoCoreACE x WHERE x.adminPermission = :adminPermission")})
-public class XincoCoreACE implements Serializable {
+public class XincoCoreACE extends XincoAbstractAuditableObject implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "id", nullable = false)

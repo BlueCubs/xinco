@@ -5,6 +5,7 @@
 
 package com.bluecubs.xinco.core.persistance;
 
+import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +21,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "xinco_core_node")
 @NamedQueries({@NamedQuery(name = "XincoCoreNode.findById", query = "SELECT x FROM XincoCoreNode x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreNode.findByXincoCoreNodeId", query = "SELECT x FROM XincoCoreNode x WHERE x.xincoCoreNodeId = :xincoCoreNodeId"), @NamedQuery(name = "XincoCoreNode.findByXincoCoreLanguageId", query = "SELECT x FROM XincoCoreNode x WHERE x.xincoCoreLanguageId = :xincoCoreLanguageId"), @NamedQuery(name = "XincoCoreNode.findByDesignation", query = "SELECT x FROM XincoCoreNode x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreNode.findByStatusNumber", query = "SELECT x FROM XincoCoreNode x WHERE x.statusNumber = :statusNumber")})
-public class XincoCoreNode implements Serializable {
+public class XincoCoreNode extends XincoAbstractAuditableObject implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "id", nullable = false)

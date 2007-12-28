@@ -125,28 +125,4 @@ public class XincoSetting extends XincoAbstractAuditableObject implements Serial
     public String toString() {
         return "com.bluecubs.xinco.add.XincoSetting[id=" + id + "]";
     }
-
-    public XincoAbstractAuditableObject findById(HashMap paramaters) throws DataRetrievalFailureException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public XincoAbstractAuditableObject findWithDetails(HashMap paramaters) throws DataRetrievalFailureException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public XincoAbstractAuditableObject create(XincoAbstractAuditableObject value) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public XincoAbstractAuditableObject update(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void delete(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public HashMap getParameters() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }
