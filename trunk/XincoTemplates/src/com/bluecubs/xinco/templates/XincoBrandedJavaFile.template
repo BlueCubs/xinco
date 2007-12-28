@@ -9,7 +9,6 @@ package ${package};
 </#if>
 /**
  *
- * @author ${user}
  *************************************************************
  * This project supports the blueCubs vision of giving back
  * to the community in exchange for free software!
