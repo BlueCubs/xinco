@@ -24,7 +24,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 
 /**
  *
- * @author javydreamercsw
+ * @author Javier A. Ortiz
  */
 public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditableDAO, XincoPersistanceServerObject {
 

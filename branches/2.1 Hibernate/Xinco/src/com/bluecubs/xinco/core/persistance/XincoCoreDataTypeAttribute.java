@@ -5,6 +5,7 @@
 
 package com.bluecubs.xinco.core.persistance;
 
+import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -20,7 +21,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "xinco_core_data_type_attribute")
 @NamedQueries({@NamedQuery(name = "XincoCoreDataTypeAttribute.findByXincoCoreDataTypeId", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId = :xincoCoreDataTypeId"), @NamedQuery(name = "XincoCoreDataTypeAttribute.findByAttributeId", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.xincoCoreDataTypeAttributePK.attributeId = :attributeId"), @NamedQuery(name = "XincoCoreDataTypeAttribute.findByDesignation", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreDataTypeAttribute.findByDataType", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.dataType = :dataType"), @NamedQuery(name = "XincoCoreDataTypeAttribute.findBySize", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.size = :size")})
-public class XincoCoreDataTypeAttribute implements Serializable {
+public class XincoCoreDataTypeAttribute extends XincoAbstractAuditableObject implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected XincoCoreDataTypeAttributePK xincoCoreDataTypeAttributePK;

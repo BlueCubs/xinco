@@ -108,12 +108,13 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
                 XincoAuditingDAOHelper.update(this, new XincoCoreGroup(getId()));
             } else {
                 XincoCoreGroup temp = new XincoCoreGroup();
-                temp.setId(getNewID());
+                temp.setId(getId());
                 temp.setChangerID(getChangerID());
-                temp.setCreated(isCreated());
+                temp.setCreated(true);
                 temp.setDesignation(getDesignation());
                 temp.setStatusNumber(getStatusNumber());
-                XincoAuditingDAOHelper.create(this, temp);
+                temp=(XincoCoreGroup)XincoAuditingDAOHelper.create(this, temp);
+                setId(temp.getId());
             }
         } catch (Throwable e) {
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
@@ -139,7 +140,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
             }
         } catch (Throwable e) {
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.WARNING, null, e);
+                Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.INFO, null, e);
             }
             coreGroups.removeAllElements();
         }

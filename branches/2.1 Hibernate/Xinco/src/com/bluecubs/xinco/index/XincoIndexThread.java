@@ -67,7 +67,7 @@ public class XincoIndexThread extends Thread {
                 if (XincoIndexer.indexXincoCoreData(d, index_content, DBM)) {  
                     nodes.remove(0);
                 } else {
-                    Logger.getLogger(XincoIndexThread.class.getName()).log(Level.WARNING, "Couldn't index " + d.getDesignation()+". Verify if there's a indexer for this file type.");
+                    Logger.getLogger(XincoIndexThread.class.getName()).log(Level.INFO, "Couldn't index " + d.getDesignation()+". Verify if there's a indexer for this file type.");
                 }
                 DBM.finalize();
             } catch (Throwable ex) {

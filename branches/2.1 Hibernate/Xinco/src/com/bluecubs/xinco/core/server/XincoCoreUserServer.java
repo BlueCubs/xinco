@@ -146,7 +146,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
         GregorianCalendar cal = null;
         try {
             if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
-                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.WARNING, "Logging as user: " + username + ", password: " + password);
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO, "Logging as user: " + username + ", password: " + password);
             }
             sql = "SELECT * FROM xinco_core_user WHERE username='" +
                     username + "' AND userpassword=MD5('" + password + "') AND status_number <> 2";
@@ -192,7 +192,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     increaseAttempts = true;
                     setAttempts(rs.getInt("attempts"));
                     if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
-                        Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.WARNING, "Username exists but wrong password.");
+                        Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO, "Username exists but wrong password.");
                     }
                 }
                 throw new XincoException();

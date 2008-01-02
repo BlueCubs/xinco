@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author javydreamercsw
+ * @author Javier A. Ortiz
  */
 public class XincoCoreGroupServerTest {
 
@@ -99,8 +99,8 @@ public class XincoCoreGroupServerTest {
             HashMap parameters = new HashMap();
             parameters.put("designation", "general.group.admin");
             XincoCoreGroupServer instance = new XincoCoreGroupServer(1);
-            XincoAbstractAuditableObject result = instance.findWithDetails(parameters);
-            assertTrue(((XincoCoreGroup) result).getDesignation().equals("general.group.admin"));
+            XincoAbstractAuditableObject[] result = instance.findWithDetails(parameters);
+            assertTrue(((XincoCoreGroup) result[0]).getDesignation().equals("general.group.admin"));
         } catch (XincoException ex) {
             Logger.getLogger(XincoCoreGroupServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail("Something went wrong.");

@@ -74,7 +74,7 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
             setBoolValue(temp.getBoolValue());
             setLongValue(temp.getLongValue());
         } else {
-            Logger.getLogger(XincoSettingServer.class.getName()).log(Level.WARNING, "Setting not found");
+            Logger.getLogger(XincoSettingServer.class.getName()).log(Level.INFO, "Setting not found");
         }
     }
 
@@ -97,7 +97,7 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
             setBoolValue(temp.getBoolValue());
             setLongValue(temp.getLongValue());
         } else {
-            Logger.getLogger(XincoSettingServer.class.getName()).log(Level.WARNING, "Setting not found");
+            Logger.getLogger(XincoSettingServer.class.getName()).log(Level.INFO, "Setting not found");
         }
     }
 

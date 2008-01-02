@@ -52,7 +52,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 
 /**
  *
- * @author javydreamercsw
+ * @author Javier A. Ortiz
  */
 public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoAuditableDAO, XincoPersistanceServerObject {
 
@@ -87,12 +87,12 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
             throw new XincoException();
         }
     }
-    
+
     /**
      * Create language object for data structures
      */
-    public XincoCoreLanguageServer(){
-        
+    public XincoCoreLanguageServer() {
+
     }
 
     /**
@@ -159,16 +159,20 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
 
     public XincoAbstractAuditableObject findById(
             HashMap parameters) throws DataRetrievalFailureException {
-        result = pm.namedQuery("XincoCoreLanguage.findById", parameters);
-        XincoCoreLanguage temp = (XincoCoreLanguage) result.get(0);
-        temp.setTransactionTime(getTransactionTime());
-        temp.setChangerID(getChangerID());
-        return temp;
+        try {
+            result = pm.namedQuery("XincoCoreLanguage.findById", parameters);
+            XincoCoreLanguage temp = (XincoCoreLanguage) result.get(0);
+            temp.setTransactionTime(getTransactionTime());
+            temp.setChangerID(getChangerID());
+            return temp;
+        } catch (Throwable e) {
+            return null;
+        }
     }
 
     @SuppressWarnings("unchecked")
     public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters) throws DataRetrievalFailureException {
-        result=pm.namedQuery("XincoCoreLanguage.findByDesignation", parameters);
+        result = pm.namedQuery("XincoCoreLanguage.findByDesignation", parameters);
         XincoCoreLanguage temp[] = new XincoCoreLanguage[1];
         temp[0] = (XincoCoreLanguage) result.get(0);
         temp[0].setTransactionTime(getTransactionTime());
@@ -199,7 +203,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
                 exists = false;
             }
         }
-        System.out.println("Creating with id: "+newValue.getId());
+        System.out.println("Creating with id: " + newValue.getId());
         newValue.setTransactionTime(getTransactionTime());
         pm.persist(newValue, exists, true);
         return newValue;
@@ -239,8 +243,8 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
         temp.setSign(val.getSign());
         temp.setDesignation(val.getDesignation());
         pm.startTransaction();
-        pm.delete(temp, false);
-        pm.persist(val, true, false);
+        pm.persist(temp, false, false);
+        pm.delete(val, false);
         val.saveAuditData(pm);
         pm.commitAndClose();
     }
@@ -275,9 +279,9 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
                 XincoAuditingDAOHelper.update(this, new XincoCoreLanguage(getId()));
             } else {
                 XincoCoreLanguage temp = new XincoCoreLanguage();
-                temp.setId(getNewID());
+                temp.setId(getId());
                 temp.setChangerID(getChangerID());
-                temp.setCreated(isCreated());
+                temp.setCreated(true);
                 temp.setSign(getSign());
                 temp.setDesignation(getDesignation());
                 XincoAuditingDAOHelper.create(this, temp);

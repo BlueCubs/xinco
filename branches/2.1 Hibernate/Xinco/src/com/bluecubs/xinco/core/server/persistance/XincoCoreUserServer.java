@@ -56,7 +56,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         GregorianCalendar cal = null;
         try {
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.WARNING, "Logging as user: " + username + ", password: " + password);
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO, "Logging as user: " + username + ", password: " + password);
             }
             result = pm.executeQuery("SELECT p FROM XincoCoreUser p WHERE p.username='" +
                     username + "' AND p.userpassword='" + MD5.encrypt(password) + "' AND p.statusNumber <> 2");
@@ -100,7 +100,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
                     increaseAttempts = true;
                     setAttempts(((XincoCoreUser) result.get(0)).getAttempts());
                     if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
-                        Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.WARNING, "Username exists but wrong password.");
+                        Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO, "Username exists but wrong password.");
                     }
                 }
                 throw new XincoException();

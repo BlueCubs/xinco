@@ -2411,7 +2411,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                     String[] cmd = {"open", current_fullpath};
                                     process = Runtime.getRuntime().exec(cmd);
                                 } catch (Throwable t) {
-                                    Logger.getLogger(XincoExplorer.class.getName()).log(Level.WARNING, null, t);
+                                    Logger.getLogger(XincoExplorer.class.getName()).log(Level.INFO, null, t);
                                 }
                             }
                         } else if (System.getProperty("os.name").toLowerCase().indexOf("windows") > -1) {
@@ -2427,7 +2427,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                     String cmd = "rundll32 url.dll,FileProtocolHandler" + " \"" + current_fullpath + "\"";
                                     process = Runtime.getRuntime().exec(cmd);
                                 } catch (Throwable t) {
-                                    Logger.getLogger(XincoExplorer.class.getName()).log(Level.WARNING, null, t);
+                                    Logger.getLogger(XincoExplorer.class.getName()).log(Level.INFO, null, t);
                                 }
                             }
                         }
@@ -2444,14 +2444,14 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                 String[] cmd = {"open", temp_url};
                                 process = Runtime.getRuntime().exec(cmd);
                             } catch (Throwable t) {
-                                Logger.getLogger(XincoExplorer.class.getName()).log(Level.WARNING, null, t);
+                                Logger.getLogger(XincoExplorer.class.getName()).log(Level.INFO, null, t);
                             }
                         } else if (System.getProperty("os.name").toLowerCase().indexOf("windows") > -1) {
                             try {
                                 String cmd = "rundll32 url.dll,FileProtocolHandler" + " \"" + temp_url + "\"";
                                 process = Runtime.getRuntime().exec(cmd);
                             } catch (Throwable t) {
-                                Logger.getLogger(XincoExplorer.class.getName()).log(Level.WARNING, null, t);
+                                Logger.getLogger(XincoExplorer.class.getName()).log(Level.INFO, null, t);
                             }
                         }
                     }
@@ -2466,14 +2466,14 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                 String[] cmd = {"open", "mailto:" + temp_email};
                                 process = Runtime.getRuntime().exec(cmd);
                             } catch (Throwable t) {
-                                Logger.getLogger(XincoExplorer.class.getName()).log(Level.WARNING, null, t);
+                                Logger.getLogger(XincoExplorer.class.getName()).log(Level.INFO, null, t);
                             }
                         } else if (System.getProperty("os.name").toLowerCase().indexOf("windows") > -1) {
                             try {
                                 String cmd = "rundll32 url.dll,FileProtocolHandler" + " \"" + "mailto:" + temp_email + "\"";
                                 process = Runtime.getRuntime().exec(cmd);
                             } catch (Throwable t) {
-                                Logger.getLogger(XincoExplorer.class.getName()).log(Level.WARNING, null, t);
+                                Logger.getLogger(XincoExplorer.class.getName()).log(Level.INFO, null, t);
                             }
                         }
                     }
@@ -2898,7 +2898,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             (new File("xincoClientConnectionProfiles.dat")).delete();
 
         } catch (Exception ioe) {
-            Logger.getLogger(XincoExplorer.class.getName()).log(Level.WARNING, "Creating new file.",ioe);
+            Logger.getLogger(XincoExplorer.class.getName()).log(Level.INFO, "Creating new file.",ioe);
             //error handling
             //create config
             xincoClientConfig = new Vector();

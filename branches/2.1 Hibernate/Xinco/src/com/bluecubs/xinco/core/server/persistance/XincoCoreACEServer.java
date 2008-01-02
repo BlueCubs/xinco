@@ -81,16 +81,21 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
                 setExecutePermission(temp.getExecutePermission());
                 setAdminPermission(temp.getAdminPermission());
             } else {
+                if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                    Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Error looking for ACE with id: " + attrID);
+                }
                 throw new XincoException();
             }
         } catch (Throwable e) {
-            Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, e);
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, e);
+            }
             throw new XincoException();
         }
     }
 
     /**
-     * create single ace object for data structures
+     * Create single ace object for data structures
      * @param attrID XincoCoreUserid
      * @param attrUID Attribute id
      * @param attrGID XincoCoregroupId
@@ -115,6 +120,13 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
     }
 
     /**
+     * Create single ace object for data structures
+     */
+    public XincoCoreACEServer() {
+
+    }
+
+    /**
      * create complete ACL for node or data
      * @param attrID Attribute id
      * @param attrT Attribute name (String)
@@ -124,7 +136,13 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
     public static Vector getXincoCoreACL(int attrID, String attrT) {
         Vector core_acl = new Vector();
         try {
-            result = pm.createdQuery("SELECT p FROM XincoCoreACE p WHERE p." + attrT + "=" + attrID +
+            if (parameters == null) {
+                parameters = new HashMap();
+            } else {
+                parameters.clear();
+            }
+            parameters.put("id", attrID);
+            result = pm.createdQuery("SELECT p FROM XincoCoreACE p WHERE p." + attrT + "= :id" +
                     " ORDER BY xincoCoreUserId, xincoCoreGroupId, xincoCoreNodeId, xincoCoreDataId", parameters);
             while (!result.isEmpty()) {
                 core_acl.add(new XincoCoreACEServer(((XincoCoreACE) result.get(0)).getId()));
@@ -132,7 +150,8 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
             }
         } catch (Throwable e) {
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.WARNING, "Error getting ACL's...", e);
+                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Error getting ACL's. (" +
+                        attrT + "=" + attrID + ")", e);
             }
             core_acl.removeAllElements();
         }
@@ -200,24 +219,72 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
     @SuppressWarnings("unchecked")
     public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters) throws DataRetrievalFailureException {
         result.clear();
-        if (parameters.containsValue("xincoCoreDataId")) {
-            result.addAll(pm.namedQuery("XincoCoreACE.findByXincoCoreDataId", parameters));
+        int counter = 0;
+        String sql = "SELECT x FROM XincoCoreACE x WHERE ";
+        if (parameters.containsKey("id")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Searching by id");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.id = :id";
+            counter++;
         }
-        if (parameters.containsValue("xincoCoreNodeId")) {
-            result.addAll(pm.namedQuery("XincoCoreACE.findByXincoCoreNodeId", parameters));
+        if (parameters.containsKey("xincoCoreUserId")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Searching by xincoCoreUserId");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.xincoCoreUserId = :xincoCoreUserId";
+            counter++;
         }
-        if (parameters.containsValue("xincoCoreUserId")) {
-            result.addAll(pm.namedQuery("XincoCoreACE.findByXincoCoreUserId", parameters));
+        if (parameters.containsKey("xincoCoreGroupId")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Searching by xincoCoreGroupId");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.xincoCoreGroupId = :xincoCoreGroupId";
+            counter++;
         }
-        XincoCoreACE temp[] = new XincoCoreACE[result.size()];
-        int i = 0;
-        while (!result.isEmpty()) {
-            temp[i] = (XincoCoreACE) result.get(0);
-            temp[i].setTransactionTime(getTransactionTime());
-            i++;
-            result.remove(0);
+        if (parameters.containsKey("xincoCoreNodeId")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Searching by xincoCoreNodeId");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.xincoCoreNodeId = :xincoCoreNodeId";
+            counter++;
         }
-        return temp;
+        if (parameters.containsKey("xincoCoreDataId")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Searching by xincoCoreDataId");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.xincoCoreDataId = :xincoCoreDataId";
+            counter++;
+        }
+        result = pm.createdQuery(sql, parameters);
+        if (result.size() > 0) {
+            XincoCoreACE temp[] = new XincoCoreACE[result.size()];
+            int i = 0;
+            while (!result.isEmpty()) {
+                temp[i] = (XincoCoreACE) result.get(0);
+                temp[i].setTransactionTime(getTransactionTime());
+                i++;
+                result.remove(0);
+            }
+            return temp;
+        } else {
+            return null;
+        }
     }
 
     public XincoAbstractAuditableObject create(XincoAbstractAuditableObject value) {
@@ -230,7 +297,9 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
         } else {
             newValue.setId(getNewID());
         }
-        newValue.setId(temp.getId());
+        if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+            Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Creating with new id: " + newValue.getId());
+        }
         newValue.setXincoCoreUserId(temp.getXincoCoreUserId());
         newValue.setXincoCoreGroupId(temp.getXincoCoreGroupId());
         newValue.setXincoCoreNodeId(temp.getXincoCoreNodeId());
@@ -285,18 +354,18 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
         XincoCoreACE val = (XincoCoreACE) value;
         XincoCoreACET temp = new XincoCoreACET();
         temp.setRecordId(val.getRecordId());
-        val.setId(val.getId());
-        val.setXincoCoreUserId(val.getXincoCoreUserId());
-        val.setXincoCoreGroupId(val.getXincoCoreGroupId());
-        val.setXincoCoreNodeId(val.getXincoCoreNodeId());
-        val.setXincoCoreDataId(val.getXincoCoreDataId());
-        val.setReadPermission(val.getReadPermission());
-        val.setWritePermission(val.getWritePermission());
-        val.setExecutePermission(val.getExecutePermission());
-        val.setAdminPermission(val.getAdminPermission());
+        temp.setId(val.getId());
+        temp.setXincoCoreUserId(val.getXincoCoreUserId());
+        temp.setXincoCoreGroupId(val.getXincoCoreGroupId());
+        temp.setXincoCoreNodeId(val.getXincoCoreNodeId());
+        temp.setXincoCoreDataId(val.getXincoCoreDataId());
+        temp.setReadPermission(val.getReadPermission());
+        temp.setWritePermission(val.getWritePermission());
+        temp.setExecutePermission(val.getExecutePermission());
+        temp.setAdminPermission(val.getAdminPermission());
         pm.startTransaction();
         pm.persist(temp, false, false);
-        pm.persist(val, true, false);
+        pm.delete(val, false);
         val.saveAuditData(pm);
         pm.commitAndClose();
     }
@@ -331,9 +400,9 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
                 XincoAuditingDAOHelper.update(this, new XincoCoreACE(getId()));
             } else {
                 XincoCoreACE temp = new XincoCoreACE();
-                temp.setId(getNewID());
+                temp.setId(getId());
                 temp.setChangerID(getChangerID());
-                temp.setCreated(isCreated());
+                temp.setCreated(true);
                 temp.setXincoCoreUserId(getXincoCoreUserId());
                 temp.setXincoCoreGroupId(getXincoCoreGroupId());
                 temp.setXincoCoreNodeId(getXincoCoreNodeId());
@@ -342,7 +411,11 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
                 temp.setWritePermission(getWritePermission());
                 temp.setExecutePermission(getExecutePermission());
                 temp.setAdminPermission(getAdminPermission());
-                XincoAuditingDAOHelper.create(this, temp);
+                temp = (XincoCoreACE) XincoAuditingDAOHelper.create(this, temp);
+                setId(temp.getId());
+                if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                    Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Assigned id: " + getId());
+                }
             }
         } catch (Throwable e) {
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {

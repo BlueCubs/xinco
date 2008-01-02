@@ -59,7 +59,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
     public XincoCoreACEServer(int attrID, XincoDBManager DBM) throws XincoException {
         try {
             if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
-                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.WARNING, "Creating ACE from id...");
+                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Creating ACE from id...");
             }
             ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_ace WHERE id=" + attrID);
             //throw exception if no result found
@@ -77,7 +77,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 setAdmin_permission(rs.getBoolean("admin_permission"));
             }
             if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
-                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.WARNING, "Done!");
+                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Done!");
             }
             if (RowCount < 1) {
                 throw new XincoException();
@@ -231,7 +231,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
             }
         } catch (Throwable e) {
             if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
-                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.WARNING, "Error getting ACL's...");
+                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Error getting ACL's...");
             }
             core_acl.removeAllElements();
         }

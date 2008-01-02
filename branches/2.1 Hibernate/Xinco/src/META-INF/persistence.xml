@@ -25,6 +25,7 @@
     <class>com.bluecubs.xinco.core.persistance.XincoCoreUserHasXincoCoreGroup</class>
     <class>com.bluecubs.xinco.core.persistance.XincoCoreLanguage</class>
     <class>com.bluecubs.xinco.core.persistance.audit.XincoCoreLanguageT</class>
+    <class>com.bluecubs.xinco.core.persistance.XincoCoreDataType</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
