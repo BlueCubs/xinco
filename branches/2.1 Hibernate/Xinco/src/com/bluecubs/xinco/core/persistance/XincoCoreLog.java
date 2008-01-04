@@ -5,6 +5,7 @@
 
 package com.bluecubs.xinco.core.persistance;
 
+import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -23,7 +24,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "xinco_core_log")
 @NamedQueries({@NamedQuery(name = "XincoCoreLog.findById", query = "SELECT x FROM XincoCoreLog x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreLog.findByXincoCoreDataId", query = "SELECT x FROM XincoCoreLog x WHERE x.xincoCoreDataId = :xincoCoreDataId"), @NamedQuery(name = "XincoCoreLog.findByXincoCoreUserId", query = "SELECT x FROM XincoCoreLog x WHERE x.xincoCoreUserId = :xincoCoreUserId"), @NamedQuery(name = "XincoCoreLog.findByOpCode", query = "SELECT x FROM XincoCoreLog x WHERE x.opCode = :opCode"), @NamedQuery(name = "XincoCoreLog.findByOpDatetime", query = "SELECT x FROM XincoCoreLog x WHERE x.opDatetime = :opDatetime"), @NamedQuery(name = "XincoCoreLog.findByOpDescription", query = "SELECT x FROM XincoCoreLog x WHERE x.opDescription = :opDescription"), @NamedQuery(name = "XincoCoreLog.findByVersionHigh", query = "SELECT x FROM XincoCoreLog x WHERE x.versionHigh = :versionHigh"), @NamedQuery(name = "XincoCoreLog.findByVersionMid", query = "SELECT x FROM XincoCoreLog x WHERE x.versionMid = :versionMid"), @NamedQuery(name = "XincoCoreLog.findByVersionLow", query = "SELECT x FROM XincoCoreLog x WHERE x.versionLow = :versionLow"), @NamedQuery(name = "XincoCoreLog.findByVersionPostfix", query = "SELECT x FROM XincoCoreLog x WHERE x.versionPostfix = :versionPostfix")})
-public class XincoCoreLog implements Serializable {
+public class XincoCoreLog extends XincoAbstractAuditableObject implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "id", nullable = false)

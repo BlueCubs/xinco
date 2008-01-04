@@ -13,16 +13,17 @@ import com.bluecubs.xinco.core.XincoException;
  */
 public interface XincoPersistanceServerObject {
     /**
+     * Writes a record on the DB.
+     * @return True if write was successful
+     * @throws com.bluecubs.xinco.core.XincoException 
+     */
+    public boolean write2DB() throws XincoException;
+    
+    /**
      * Deletes a record on the DB.
      * @return True if deletion was successful
      * @throws com.bluecubs.xinco.core.XincoException 
      */
     public boolean deleteFromDB() throws XincoException;
 
-    /**
-     * Writes a record on the DB.
-     * @return True if write was successful
-     * @throws com.bluecubs.xinco.core.XincoException 
-     */
-    public boolean write2DB() throws XincoException;
 }

@@ -4,6 +4,7 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
+import com.bluecubs.xinco.conf.persistance.XincoConfigSingletonServer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +26,11 @@ public class XincoPersistanceManager {
     private EntityManager em = null;
     private TransactionImpl transaction;
     private boolean transactionOk = false;
+    public static XincoConfigSingletonServer config;
+    
+    public XincoPersistanceManager(){
+        config = XincoConfigSingletonServer.getInstance();
+    }
 
     public boolean persist(Object object, boolean exists, boolean atomic) {
         try {

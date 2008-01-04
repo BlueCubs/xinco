@@ -51,6 +51,10 @@ import net.sf.oness.common.model.temporal.DateRange;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.dao.OptimisticLockingFailureException;
 
+/**
+ * 
+ * @author Javier A. Ortiz
+ */
 public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDAO, XincoPersistanceServerObject {
 
     private static XincoPersistanceManager pm = new XincoPersistanceManager();
@@ -59,7 +63,7 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
 
     /**
      * create single ace object for data structures
-     * @param attrID XincoCoreace id
+     * @param attrID XincoCoreACE id
      * @throws com.bluecubs.xinco.core.XincoException
      */
     @SuppressWarnings("unchecked")
@@ -218,19 +222,8 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
 
     @SuppressWarnings("unchecked")
     public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters) throws DataRetrievalFailureException {
-        result.clear();
         int counter = 0;
         String sql = "SELECT x FROM XincoCoreACE x WHERE ";
-        if (parameters.containsKey("id")) {
-            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Searching by id");
-            }
-            if (counter > 0) {
-                sql += " and ";
-            }
-            sql += "x.id = :id";
-            counter++;
-        }
         if (parameters.containsKey("xincoCoreUserId")) {
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Searching by xincoCoreUserId");
@@ -289,7 +282,6 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
 
     public XincoAbstractAuditableObject create(XincoAbstractAuditableObject value) {
         XincoCoreACE temp, newValue = new XincoCoreACE();
-        boolean exists = false;
         temp = (XincoCoreACE) value;
         if (!value.isCreated()) {
             newValue.setId(temp.getId());
@@ -310,17 +302,8 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
         newValue.setAdminPermission(temp.getAdminPermission());
         newValue.setCreated(temp.isCreated());
         newValue.setChangerID(temp.getChangerID());
-        if (!value.isCreated()) {
-            if (newValue.getId() != 0) {
-                //An object for updating
-                exists = true;
-            } else {
-                //A new object
-                exists = false;
-            }
-        }
         newValue.setTransactionTime(getTransactionTime());
-        pm.persist(newValue, exists, true);
+        pm.persist(newValue, false, true);
         return newValue;
     }
 
@@ -333,7 +316,6 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
         } else {
             temp.setId(val.getRecordId());
         }
-        temp.setId(val.getId());
         temp.setXincoCoreUserId(val.getXincoCoreUserId());
         temp.setXincoCoreGroupId(val.getXincoCoreGroupId());
         temp.setXincoCoreNodeId(val.getXincoCoreNodeId());
@@ -417,12 +399,13 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
                     Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Assigned id: " + getId());
                 }
             }
+            return true;
         } catch (Throwable e) {
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, e);
             }
             throw new XincoException();
         }
-        return true;
+
     }
 }

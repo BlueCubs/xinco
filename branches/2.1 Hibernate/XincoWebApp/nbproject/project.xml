@@ -11,7 +11,7 @@
             <name>xinco</name>
             <minimum-ant-version>1.6</minimum-ant-version>
             <web-module-libraries>
-                <library files="35">
+                <library files="37">
                     <file>${libs.XincoLibs.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>

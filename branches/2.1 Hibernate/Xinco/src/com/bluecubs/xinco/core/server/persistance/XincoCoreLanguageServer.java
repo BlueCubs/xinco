@@ -284,14 +284,15 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
                 temp.setCreated(true);
                 temp.setSign(getSign());
                 temp.setDesignation(getDesignation());
-                XincoAuditingDAOHelper.create(this, temp);
+                temp = (XincoCoreLanguage) XincoAuditingDAOHelper.create(this, temp);
+                setId(temp.getId());
             }
+            return true;
         } catch (Throwable e) {
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.SEVERE, null, e);
             }
             throw new XincoException();
         }
-        return true;
     }
 }

@@ -5,6 +5,7 @@
 
 package com.bluecubs.xinco.core.persistance;
 
+import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +21,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "xinco_core_data")
 @NamedQueries({@NamedQuery(name = "XincoCoreData.findById", query = "SELECT x FROM XincoCoreData x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreData.findByXincoCoreNodeId", query = "SELECT x FROM XincoCoreData x WHERE x.xincoCoreNodeId = :xincoCoreNodeId"), @NamedQuery(name = "XincoCoreData.findByXincoCoreLanguageId", query = "SELECT x FROM XincoCoreData x WHERE x.xincoCoreLanguageId = :xincoCoreLanguageId"), @NamedQuery(name = "XincoCoreData.findByXincoCoreDataTypeId", query = "SELECT x FROM XincoCoreData x WHERE x.xincoCoreDataTypeId = :xincoCoreDataTypeId"), @NamedQuery(name = "XincoCoreData.findByDesignation", query = "SELECT x FROM XincoCoreData x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreData.findByStatusNumber", query = "SELECT x FROM XincoCoreData x WHERE x.statusNumber = :statusNumber")})
-public class XincoCoreData implements Serializable {
+public class XincoCoreData extends XincoAbstractAuditableObject implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "id", nullable = false)

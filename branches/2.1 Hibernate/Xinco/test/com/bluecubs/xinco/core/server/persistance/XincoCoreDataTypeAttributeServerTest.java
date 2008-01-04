@@ -7,7 +7,6 @@ package com.bluecubs.xinco.core.server.persistance;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.persistance.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.persistance.XincoCoreDataTypeAttributePK;
-import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -144,8 +143,9 @@ public class XincoCoreDataTypeAttributeServerTest {
             HashMap parameters = new HashMap();
             parameters.put("xincoCoreDataTypeId", instance.getXincoCoreDataTypeAttributePK().getXincoCoreDataTypeId());
             parameters.put("attributeId", instance.getXincoCoreDataTypeAttributePK().getAttributeId());
+            System.out.println("Searching with parameters: "+parameters);
             result = (XincoCoreDataTypeAttribute) instance.findById(parameters);
-            assertTrue(result.getXincoCoreDataTypeAttributePK() == instance.getXincoCoreDataTypeAttributePK());
+            assertTrue(result.getXincoCoreDataTypeAttributePK().getAttributeId() == instance.getXincoCoreDataTypeAttributePK().getAttributeId());
         } catch (Throwable ex) {
             Logger.getLogger(XincoCoreDataTypeAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail("Something went wrong.");

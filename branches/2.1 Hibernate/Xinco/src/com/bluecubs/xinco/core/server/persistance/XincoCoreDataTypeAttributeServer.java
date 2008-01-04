@@ -225,7 +225,6 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
 
     public XincoAbstractAuditableObject create(XincoAbstractAuditableObject value) {
         XincoCoreDataTypeAttribute temp, newValue = new XincoCoreDataTypeAttribute();
-        boolean exists = false;
         temp = (XincoCoreDataTypeAttribute) value;
         if (!value.isCreated()) {
             newValue.setXincoCoreDataTypeAttributePK(temp.getXincoCoreDataTypeAttributePK());
@@ -234,24 +233,15 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             newValue.setXincoCoreDataTypeAttributePK(new XincoCoreDataTypeAttributePK(temp.getXincoCoreDataTypeAttributePK().getXincoCoreDataTypeId(), getNewID()));
         }
         if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
-            Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Creating with new id: " + newValue.getXincoCoreDataTypeAttributePK().getAttributeId());
+            Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Creating with new id: " + newValue.getXincoCoreDataTypeAttributePK());
         }
         newValue.setDataType(temp.getDataType());
         newValue.setDesignation(temp.getDesignation());
         newValue.setSize(temp.getSize());
         newValue.setCreated(temp.isCreated());
         newValue.setChangerID(temp.getChangerID());
-        if (!value.isCreated()) {
-            if (newValue.getXincoCoreDataTypeAttributePK().getAttributeId() != 0) {
-                //An object for updating
-                exists = true;
-            } else {
-                //A new object
-                exists = false;
-            }
-        }
         newValue.setTransactionTime(getTransactionTime());
-        pm.persist(newValue, exists, true);
+        pm.persist(newValue, false, true);
         return newValue;
     }
 
@@ -272,7 +262,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
         temp.setSize(val.getSize());
         pm.startTransaction();
         pm.persist(temp, false, false);
-        pm.delete(val, false);
+        pm.persist(val, true, false);
         val.saveAuditData(pm);
         pm.commitAndClose();
         return val;
@@ -334,9 +324,15 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     public boolean write2DB() throws XincoException {
         try {
             if (getXincoCoreDataTypeAttributePK().getAttributeId() > 0) {
+                if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                    Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Updating: " + getXincoCoreDataTypeAttributePK());
+                }
                 XincoAuditingDAOHelper.update(this, new XincoCoreDataTypeAttribute(getXincoCoreDataTypeAttributePK().getXincoCoreDataTypeId(),
                         getXincoCoreDataTypeAttributePK().getAttributeId()));
             } else {
+                if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                    Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Creating: " + getXincoCoreDataTypeAttributePK());
+                }
                 XincoCoreDataTypeAttribute temp = new XincoCoreDataTypeAttribute();
                 temp.setXincoCoreDataTypeAttributePK(getXincoCoreDataTypeAttributePK());
                 temp.setChangerID(getChangerID());
@@ -347,12 +343,12 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
                 temp = (XincoCoreDataTypeAttribute) XincoAuditingDAOHelper.create(this, temp);
                 setXincoCoreDataTypeAttributePK(temp.getXincoCoreDataTypeAttributePK());
             }
+            return true;
         } catch (Throwable e) {
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, e);
             }
             throw new XincoException();
         }
-        return true;
     }
 }
