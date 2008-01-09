@@ -33,60 +33,63 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.core.server.persistance;
 
 import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.XincoVersion;
 import com.bluecubs.xinco.core.persistance.XincoCoreLog;
 import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
 import com.bluecubs.xinco.core.server.persistance.audit.XincoAuditableDAO;
+import com.bluecubs.xinco.core.server.persistance.audit.XincoAuditingDAOHelper;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import net.sf.oness.common.model.temporal.DateRange;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.dao.OptimisticLockingFailureException;
 
-public class XincoCoreLogServer extends XincoCoreLog implements XincoAuditableDAO, XincoPersistanceServerObject{
+public class XincoCoreLogServer extends XincoCoreLog implements XincoAuditableDAO, XincoPersistanceServerObject {
+
+    private static XincoPersistanceManager pm = new XincoPersistanceManager();
+    private static List result;
+    private static HashMap parameters;
 
     /**
      * Create single log object for data structures
      * @param id
-     * @param DBM
      * @throws com.bluecubs.xinco.core.XincoException
      */
+    @SuppressWarnings("unchecked")
     public XincoCoreLogServer(int id) throws XincoException {
         try {
-            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_log WHERE id=" + id);
+            parameters = new HashMap();
+            parameters.put("id", id);
+            result = pm.namedQuery("XincoCoreLog.findById", parameters);
             //throw exception if no result found
-            int RowCount = 0;
-            while (rs.next()) {
-                RowCount++;
-                setId(rs.getInt("id"));
-                setXinco_core_data_id(rs.getInt("xinco_core_data_id"));
-                setXinco_core_user_id(rs.getInt("xinco_core_user_id"));
-                setOp_code(rs.getInt("op_code"));
-                setOp_datetime(new GregorianCalendar());
-                getOp_datetime().setTime(rs.getTimestamp("op_datetime"));
-                setOp_description(rs.getString("op_description"));
-                setVersion(new XincoVersion());
-                getVersion().setVersion_high(rs.getInt("version_high"));
-                getVersion().setVersion_mid(rs.getInt("version_mid"));
-                getVersion().setVersion_low(rs.getInt("version_low"));
-                getVersion().setVersion_postfix(rs.getString("version_postfix"));
-            }
-            if (RowCount < 1) {
+            if (result.size() > 0) {
+                XincoCoreLog temp = (XincoCoreLog) result.get(0);
+                setId(temp.getId());
+                setXincoCoreDataId(temp.getXincoCoreDataId());
+                setXincoCoreUserId(temp.getXincoCoreUserId());
+                setOpCode(temp.getOpCode());
+                setOpDatetime(temp.getOpDatetime());
+                setOpDescription(temp.getOpDescription());
+                setVersionHigh(temp.getVersionHigh());
+                setVersionMid(temp.getVersionMid());
+                setVersionLow(temp.getVersionLow());
+                setVersionPostfix(temp.getVersionPostfix());
+            } else {
                 throw new XincoException();
             }
         } catch (Throwable e) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.INFO, null, e);
+            }
             throw new XincoException();
         }
-    }
-
-    /**
-     * Set user
-     * @param user
-     */
-    public void setUser(XincoCoreUserServer user) {
-        this.user = user;
     }
 
     /**
@@ -103,77 +106,242 @@ public class XincoCoreLogServer extends XincoCoreLog implements XincoAuditableDA
      * @param attrVP
      * @throws com.bluecubs.xinco.core.XincoException
      */
-    public XincoCoreLogServer(int attrID, int attrCDID, int attrUID, int attrOC, Calendar attrODT, String attrOD, int attrVH, int attrVM, int attrVL, String attrVP) throws XincoException {
+    public XincoCoreLogServer(int attrID, int attrCDID, int attrUID, int attrOC, Date attrODT, String attrOD, int attrVH, int attrVM, int attrVL, String attrVP) throws XincoException {
         setId(attrID);
-        setXinco_core_data_id(attrCDID);
-        setXinco_core_user_id(attrUID);
-        setOp_code(attrOC);
-        setOp_datetime(attrODT);
-        setOp_description(attrOD);
-        setVersion(new XincoVersion());
-        getVersion().setVersion_high(attrVH);
-        getVersion().setVersion_mid(attrVM);
-        getVersion().setVersion_low(attrVL);
-        getVersion().setVersion_postfix(attrVP);
+        setXincoCoreDataId(attrCDID);
+        setXincoCoreUserId(attrUID);
+        setOpCode(attrOC);
+        setOpDatetime(attrODT);
+        setOpDescription(attrOD);
+        setVersionHigh(attrVH);
+        setVersionMid(attrVM);
+        setVersionLow(attrVL);
+        setVersionPostfix(attrVP);
     }
-    
+
     /**
      * Create complete log list for data
-     * @param attrID
-     * @param DBM
-     * @return
+     * @param id
+     * @return Vector containing all XincoCoreLogs for the specified id.
      */
     @SuppressWarnings("unchecked")
-    public static Vector getXincoCoreLogs(int attrID) {
-        Vector core_log = new Vector();
-        GregorianCalendar cal = new GregorianCalendar();
+    public static Vector getXincoCoreLogs(int id) {
+        Vector coreLog = new Vector();
         try {
-            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_log WHERE xinco_core_data_id=" + attrID);
-            while (rs.next()) {
-                cal = new GregorianCalendar();
-                cal.setTime(rs.getTimestamp("op_datetime"));
-                core_log.addElement(new XincoCoreLogServer(rs.getInt("id"), rs.getInt("xinco_core_data_id"), rs.getInt("xinco_core_user_id"), rs.getInt("op_code"), cal, rs.getString("op_description"), rs.getInt("version_high"), rs.getInt("version_mid"), rs.getInt("version_low"), rs.getString("version_postfix")));
+            parameters = new HashMap();
+            parameters.put("id", id);
+            result = pm.namedQuery("XincoCoreLog.findById", parameters);
+            while (!result.isEmpty()) {
+                XincoCoreLog temp = (XincoCoreLog) result.get(0);
+                coreLog.addElement(new XincoCoreLogServer(temp.getId(),
+                        temp.getXincoCoreDataId(), temp.getXincoCoreUserId(),
+                        temp.getOpCode(), temp.getOpDatetime(), temp.getOpDescription(),
+                        temp.getVersionHigh(), temp.getVersionMid(), temp.getVersionLow(),
+                        temp.getVersionPostfix()));
+                result.remove(0);
             }
         } catch (Throwable e) {
-            core_log.removeAllElements();
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.INFO, null, e);
+            }
+            coreLog.removeAllElements();
         }
-        return core_log;
+        return coreLog;
     }
-    
+
+    /**
+     * Get Version
+     * @return XincoVersion
+     */
+    public XincoVersion getVersion() {
+        XincoVersion temp = new XincoVersion();
+        temp.setVersion_high(getVersionHigh());
+        temp.setVersion_mid(getVersionMid());
+        temp.setVersion_low(getVersionLow());
+        temp.setVersion_postfix(getVersionPostfix());
+        return temp;
+    }
+
     public XincoAbstractAuditableObject findById(HashMap parameters) throws DataRetrievalFailureException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        result = pm.namedQuery("XincoCoreLog.findById", parameters);
+        if (result.size() > 0) {
+            XincoCoreLog temp = (XincoCoreLog) result.get(0);
+            temp.setTransactionTime(getTransactionTime());
+            temp.setChangerID(getChangerID());
+            return temp;
+        } else {
+            return null;
+        }
     }
 
     public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters) throws DataRetrievalFailureException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        int counter = 0;
+        String sql = "SELECT x FROM XincoCoreLog x WHERE ";
+        if (parameters.containsKey("xincoCoreUserId")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.INFO, "Searching by xincoCoreUserId");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.xincoCoreUserId = :xincoCoreUserId";
+            counter++;
+        }
+        if (parameters.containsKey("xincoCoreDataId")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.INFO, "Searching by xincoCoreDataId");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.xincoCoreDataId = :xincoCoreDataId";
+            counter++;
+        }
+        if (parameters.containsKey("opCode")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.INFO, "Searching by opCode");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.opCode = :opCode";
+            counter++;
+        }
+        if (parameters.containsKey("opDatetime")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.INFO, "Searching by opDatetime");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.opDatetime = :opDatetime";
+            counter++;
+        }
+        if (parameters.containsKey("opDescription")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.INFO, "Searching by opDescription");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.opDescription = :opDescription";
+            counter++;
+        }
+        result = pm.createdQuery(sql, parameters);
+        if (result.size() > 0) {
+            XincoCoreLog temp[] = new XincoCoreLog[result.size()];
+            int i = 0;
+            while (!result.isEmpty()) {
+                temp[i] = (XincoCoreLog) result.get(0);
+                temp[i].setTransactionTime(getTransactionTime());
+                i++;
+                result.remove(0);
+            }
+            return temp;
+        } else {
+            return null;
+        }
     }
 
     public XincoAbstractAuditableObject create(XincoAbstractAuditableObject value) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        XincoCoreLog temp, newValue = new XincoCoreLog();
+        temp = (XincoCoreLog) value;
+        if (!value.isCreated()) {
+            newValue.setId(temp.getId());
+            newValue.setRecordId(temp.getRecordId());
+        } else {
+            newValue.setId(getNewID());
+        }
+        if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+            Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.INFO, "Creating with new id: " + newValue.getId());
+        }
+        newValue.setXincoCoreUserId(temp.getXincoCoreUserId());
+        newValue.setId(temp.getId());
+        newValue.setXincoCoreDataId(temp.getXincoCoreDataId());
+        newValue.setOpCode(temp.getOpCode());
+        newValue.setOpDatetime(temp.getOpDatetime());
+        newValue.setOpDescription(temp.getOpDescription());
+        newValue.setVersionHigh(temp.getVersionHigh());
+        newValue.setVersionMid(temp.getVersionMid());
+        newValue.setVersionLow(temp.getVersionLow());
+        newValue.setVersionPostfix(temp.getVersionPostfix());
+        newValue.setCreated(temp.isCreated());
+        newValue.setChangerID(temp.getChangerID());
+        newValue.setTransactionTime(getTransactionTime());
+        pm.persist(newValue, false, true);
+        return newValue;
     }
 
     public XincoAbstractAuditableObject update(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported. Won't update an audit trail record");
     }
 
     public void delete(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        XincoCoreLog val = (XincoCoreLog) value;
+        pm.startTransaction();
+        pm.delete(val, false);
+        val.saveAuditData(pm);
+        pm.commitAndClose();
     }
 
+    @SuppressWarnings("unchecked")
     public HashMap getParameters() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        HashMap temp = new HashMap();
+        temp.put("id", getId());
+        return temp;
     }
 
     public int getNewID() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new XincoIDServer("xinco_core_log").getNewTableID();
     }
 
     public boolean deleteFromDB() throws XincoException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        setTransactionTime(DateRange.startingNow());
+        try {
+            XincoAuditingDAOHelper.delete(this, getId());
+            return true;
+        } catch (Throwable e) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.SEVERE, null, e);
+            }
+            throw new XincoException();
+        }
     }
 
     public boolean write2DB() throws XincoException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            if (getId() > 0) {
+                XincoAuditingDAOHelper.update(this, new XincoCoreLog(getId()));
+            } else {
+                XincoCoreLog temp = new XincoCoreLog();
+                temp.setId(getId());
+                temp.setChangerID(getChangerID());
+                temp.setCreated(true);
+                temp.setXincoCoreUserId(temp.getXincoCoreUserId());
+                temp.setId(getId());
+                temp.setXincoCoreDataId(getXincoCoreDataId());
+                temp.setOpCode(getOpCode());
+                temp.setOpDatetime(getOpDatetime());
+                temp.setOpDescription(getOpDescription());
+                temp.setVersionHigh(getVersionHigh());
+                temp.setVersionMid(getVersionMid());
+                temp.setVersionLow(getVersionLow());
+                temp.setVersionPostfix(getVersionPostfix());
+                temp.setCreated(isCreated());
+                temp.setChangerID(getChangerID());
+                temp.setTransactionTime(getTransactionTime());
+                temp = (XincoCoreLog) XincoAuditingDAOHelper.create(this, temp);
+                setId(temp.getId());
+                if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                    Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.INFO, "Assigned id: " + getId());
+                }
+            }
+            return true;
+        } catch (Throwable e) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.SEVERE, null, e);
+            }
+            throw new XincoException();
+        }
     }
-
 }

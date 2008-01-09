@@ -1,6 +1,38 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *Copyright 2008 blueCubs.com
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License");
+ *you may not use this file except in compliance with the License.
+ *You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *Unless required by applicable law or agreed to in writing, software
+ *distributed under the License is distributed on an "AS IS" BASIS,
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *See the License for the specific language governing permissions and
+ *limitations under the License.
+ *
+ *************************************************************
+ * This project supports the blueCubs vision of giving back
+ * to the community in exchange for free software!
+ * More information on: http://www.bluecubs.org
+ *************************************************************
+ *
+ * Name:            XincoAuditable
+ *
+ * Description:     Helper for Auditable Data Access Objects. Adapted from 
+ *                  AbstractAuditableObject within oness package. 
+ *
+ * Original Author: Javier A. Ortiz
+ * Date:            2008
+ *
+ * Modifications:
+ *
+ * Who?             When?             What?
+ * -                -                 -
+ *
+ *************************************************************
  */
 package com.bluecubs.xinco.core.server.persistance.audit;
 
@@ -11,14 +43,14 @@ import net.sf.oness.common.model.temporal.DateRange;
 import net.sf.oness.common.all.BaseObject;
 
 /**
- *
+ * Based on @link net.sf.oness.common.model.auditing.AbstractAuditableObject
  * @author Javier A. Ortiz
  */
 public abstract class XincoAbstractAuditableObject extends BaseObject implements XincoAuditable {
 
     private DateRange transactionTime = DateRange.startingOn(null);
-    private boolean created=false,  deleted=false,  modified=false;
-    private int changerID,  id=0;
+    private boolean created = false,  deleted = false,  modified = false;
+    private int changerID,  id = 0;
     private String reason;
     private XincoCoreUserModifiedRecord xcumr;
 
@@ -26,18 +58,18 @@ public abstract class XincoAbstractAuditableObject extends BaseObject implements
      * @see net.sf.oness.common.model.auditing.Auditable#getRecordId()
      */
     public Integer getRecordId() {
-        if(id==0){
-            XincoIDServer xis= new XincoIDServer("xinco_core_user_modified_record");
-            this.id=xis.getNewID();
+        if (id == 0) {
+            XincoIDServer xis = new XincoIDServer("xinco_core_user_modified_record");
+            this.id = xis.getNewID();
         }
         return this.id;
     }
-    
+
     /**
      * @see net.sf.oness.common.model.auditing.Auditable#setRecordId()
      */
     public void setRecordId(Integer id) {
-        this.id=id;
+        this.id = id;
     }
 
     public void setTransactionTime(DateRange transactionTime) {
@@ -97,18 +129,18 @@ public abstract class XincoAbstractAuditableObject extends BaseObject implements
     public void setChangerID(int changerID) {
         this.changerID = changerID;
     }
-    
+
     /**
      * @see com.bluecubs.xinco.core.server.persistance.audit.XincoAuditable#setReason()
      */
-    public void setReason(String reason){
-        this.reason=reason;
+    public void setReason(String reason) {
+        this.reason = reason;
     }
-    
+
     /**
      * @see com.bluecubs.xinco.core.server.persistance.audit.XincoAuditable#getReason()
      */
-    public String getReason(){
+    public String getReason() {
         return this.reason;
     }
 
@@ -125,11 +157,11 @@ public abstract class XincoAbstractAuditableObject extends BaseObject implements
     public void setXincoCoreUserModifiedRecord(XincoCoreUserModifiedRecord xcumr) {
         this.xcumr = xcumr;
     }
-    
+
     /**
      * @see com.bluecubs.xinco.core.server.persistance.audit.XincoAuditable#saveAuditData()
      */
-    public boolean saveAuditData(XincoPersistanceManager pm){
+    public boolean saveAuditData(XincoPersistanceManager pm) {
         pm.persist(getXincoCoreUserModifiedRecord(), false, false);
         return pm.isTransactionOk();
     }

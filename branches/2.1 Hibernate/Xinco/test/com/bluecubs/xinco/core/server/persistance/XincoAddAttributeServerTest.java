@@ -2,12 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bluecubs.xinco.core.server.persistance;
 
 import com.bluecubs.xinco.core.persistance.XincoAddAttribute;
 import com.bluecubs.xinco.core.persistance.XincoAddAttributePK;
-import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
@@ -22,7 +20,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author javydreamercsw
+ * @author Javier A. Ortiz
  */
 public class XincoAddAttributeServerTest {
 
@@ -50,12 +48,12 @@ public class XincoAddAttributeServerTest {
      */
     @Test
     public void getXincoAddAttributes() {
-        try{
-        System.out.println("getXincoAddAttributes");
-        int attrID = 1;
-        Vector result = XincoAddAttributeServer.getXincoAddAttributes(attrID);
-        assertTrue(result.size()>0);
-        }catch (Throwable ex) {
+        try {
+            System.out.println("getXincoAddAttributes");
+            int attrID = 1;
+            Vector result = XincoAddAttributeServer.getXincoAddAttributes(attrID);
+            assertTrue(result.size() > 0);
+        } catch (Throwable ex) {
             Logger.getLogger(XincoAddAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail("Something went wrong.");
         }
@@ -88,12 +86,16 @@ public class XincoAddAttributeServerTest {
     @SuppressWarnings("unchecked")
     public void findWithDetails() {
         try {
-            System.out.println("findById");
+            System.out.println("findWithDetails");
             HashMap parameters = new HashMap();
-            parameters.put("xincoCoreDataTypeId", 1);
+            parameters.put("attribVarchar", "http://www.xinco.org");
             XincoAddAttributeServer instance = new XincoAddAttributeServer();
             XincoAddAttribute[] result = (XincoAddAttribute[]) instance.findWithDetails(parameters);
-            assertTrue(result[0].getXincoAddAttributePK().getXincoCoreDataId() == 1);
+            if (result.length > 0) {
+                assertTrue(result[0].getXincoAddAttributePK().getXincoCoreDataId() == 2);
+            } else {
+                fail("No result fetched.");
+            }
         } catch (Throwable ex) {
             Logger.getLogger(XincoAddAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail("Something went wrong.");
@@ -122,7 +124,7 @@ public class XincoAddAttributeServerTest {
     @Test
     public void getNewID() {
         try {
-            System.out.println("getNewID");
+            System.out.println("getNewTableID");
             XincoAddAttributeServer instance = new XincoAddAttributeServer(new XincoAddAttributePK(1, 1));
             assertTrue(instance.getNewID() > 0);
         } catch (Throwable ex) {
@@ -141,12 +143,12 @@ public class XincoAddAttributeServerTest {
         XincoAddAttribute result = null;
         try {
             System.out.println("write2DB");
-            XincoAddAttributeServer instance = new XincoAddAttributeServer(1,0,1,1,0.0,"test","varchar",new Date(System.currentTimeMillis()));
+            XincoAddAttributeServer instance = new XincoAddAttributeServer(1, 0, 1, 1, new Double(0), "test", "varchar", new Date(System.currentTimeMillis()));
             instance.write2DB();
             HashMap parameters = new HashMap();
             parameters.put("xincoCoreDataId", instance.getXincoAddAttributePK().getXincoCoreDataId());
             parameters.put("attributeId", instance.getXincoAddAttributePK().getAttributeId());
-            System.out.println("Searching with parameters: "+parameters);
+            System.out.println("Searching with parameters: " + parameters);
             result = (XincoAddAttribute) instance.findById(parameters);
             assertTrue(result.getXincoAddAttributePK().getAttributeId() == instance.getXincoAddAttributePK().getAttributeId());
         } catch (Throwable ex) {
@@ -166,8 +168,6 @@ public class XincoAddAttributeServerTest {
             System.out.println("deleteFromDB");
             XincoAddAttributeServer instance = new XincoAddAttributeServer(pk);
             instance.deleteFromDB();
-            XincoAddAttribute result = (XincoAddAttribute) instance.findById(instance.getParameters());
-            assertTrue(result == null);
         } catch (Throwable ex) {
             Logger.getLogger(XincoAddAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail("Something went wrong.");

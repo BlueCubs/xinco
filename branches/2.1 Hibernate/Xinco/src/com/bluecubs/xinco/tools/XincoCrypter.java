@@ -32,7 +32,7 @@
  * 
  *************************************************************
  */
-package com.bluecubs.xinco.core.server;
+package com.bluecubs.xinco.tools;
 
 import java.io.UnsupportedEncodingException;
 import java.security.spec.AlgorithmParameterSpec;

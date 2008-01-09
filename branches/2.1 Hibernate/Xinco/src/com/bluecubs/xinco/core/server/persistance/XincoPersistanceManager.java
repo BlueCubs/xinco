@@ -27,8 +27,8 @@ public class XincoPersistanceManager {
     private TransactionImpl transaction;
     private boolean transactionOk = false;
     public static XincoConfigSingletonServer config;
-    
-    public XincoPersistanceManager(){
+
+    public XincoPersistanceManager() {
         config = XincoConfigSingletonServer.getInstance();
     }
 
@@ -101,10 +101,12 @@ public class XincoPersistanceManager {
     public List namedQuery(String namedQuery, HashMap parameters) {
         Query q = getEntityManager().createNamedQuery(namedQuery);
         try {
-            Set keys = parameters.keySet();
-            for (Iterator iter = keys.iterator(); iter.hasNext();) {
-                String key = iter.next().toString();
-                q.setParameter(key, parameters.get(key));
+            if (parameters != null) {
+                Set keys = parameters.keySet();
+                for (Iterator iter = keys.iterator(); iter.hasNext();) {
+                    String key = iter.next().toString();
+                    q.setParameter(key, parameters.get(key));
+                }
             }
             return q.getResultList();
         } catch (Exception e) {

@@ -144,13 +144,13 @@ public class XincoCoreACEServerTest {
     }
 
     /**
-     * Test of getNewID method, of class XincoCoreACEServer.
+     * Test of getNewTableID method, of class XincoCoreACEServer.
      */
     @Test
-    public void getNewID() {
-        System.out.println("getNewID");
+    public void getNewTableID() {
+        System.out.println("getNewTableID");
         XincoCoreACEServer instance = new XincoCoreACEServer();
-        int result = instance.getNewID();
+        int result = instance.getNewTableID();
         assertTrue(result > 1000);
     }
 

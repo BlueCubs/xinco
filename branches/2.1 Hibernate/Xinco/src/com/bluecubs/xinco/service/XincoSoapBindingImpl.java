@@ -94,7 +94,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
                 DBM = new XincoDBManager();
             }
             //check if user exists
-            XincoCoreUserServer user = new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), DBM);
+            new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), DBM);
             java.util.Vector v = XincoCoreGroupServer.getXincoCoreGroups(DBM);
             DBM.finalize();
             return v;
@@ -110,7 +110,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
                 DBM = new XincoDBManager();
             }
             //check if user exists
-            XincoCoreUserServer user = new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), DBM);
+            new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), DBM);
             java.util.Vector v = XincoCoreLanguageServer.getXincoCoreLanguages(DBM);
             DBM.finalize();
             return v;
@@ -126,7 +126,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
                 DBM = new XincoDBManager();
             }
             //check if user exists
-            XincoCoreUserServer user = new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), DBM);
+            new XincoCoreUserServer(in0.getUsername(), in0.getUserpassword(), DBM);
             java.util.Vector v = XincoCoreDataTypeServer.getXincoCoreDataTypes(DBM);
             DBM.finalize();
             return v;

@@ -73,8 +73,8 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
             parameters = new HashMap();
             parameters.put("xincoCoreDataId", pk.getXincoCoreDataId());
             parameters.put("attributeId", pk.getAttributeId());
-            result = pm.createdQuery("SELECT p FROM XincoAddAttribute p" +
-                    "WHERE p.xincoCoreDataId= :xincoCoreDataId AND p.attributeId= :attributeId", parameters);
+            result = pm.createdQuery("SELECT p FROM XincoAddAttribute p " +
+                    "WHERE p.XincoAddAttributePK.xincoCoreDataId= :xincoCoreDataId AND p.XincoAddAttributePK.attributeId= :attributeId", parameters);
             if (!result.isEmpty()) {
                 XincoAddAttribute temp = (XincoAddAttribute) result.get(0);
                 setXincoAddAttributePK(temp.getXincoAddAttributePK());
@@ -105,8 +105,8 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
      * @param attrDT date time attribute
      * @throws com.bluecubs.xinco.core.XincoException
      */
-    public XincoAddAttributeServer(int xincoCoreDataId,int attributeId, int attrI, int attrUI, double attrD, String attrVC, String attrT, Date attrDT) throws XincoException {
-        setXincoAddAttributePK(new XincoAddAttributePK(xincoCoreDataId,attributeId));
+    public XincoAddAttributeServer(int xincoCoreDataId, int attributeId, int attrI, int attrUI, double attrD, String attrVC, String attrT, Date attrDT) throws XincoException {
+        setXincoAddAttributePK(new XincoAddAttributePK(xincoCoreDataId, attributeId));
         setAttribInt(attrI);
         setAttribUnsignedint(attrUI);
         setAttribDouble(attrD);
@@ -133,12 +133,17 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         try {
             parameters = new HashMap();
             parameters.put("xincoCoreDataId", attrID);
-            result = pm.createdQuery("SELECT p FROM XincoAddAttribute p WHERE p.xincoCoreDataId = :xincoCoreDataId ORDER BY p.attributeId", parameters);
+            result = pm.createdQuery("SELECT p FROM XincoAddAttribute p WHERE " +
+                    "p.XincoAddAttributePK.xincoCoreDataId = :xincoCoreDataId ORDER " +
+                    "BY p.XincoAddAttributePK.attributeId", parameters);
             while (!result.isEmpty()) {
                 XincoAddAttribute temp = (XincoAddAttribute) result.get(0);
                 addAttributes.addElement(new XincoAddAttributeServer(temp.getXincoAddAttributePK().getXincoCoreDataId(),
-                        temp.getXincoAddAttributePK().getAttributeId(), temp.getAttribInt(), 
-                        temp.getAttribUnsignedint(), temp.getAttribDouble(), temp.getAttribVarchar(), 
+                        temp.getXincoAddAttributePK().getAttributeId(),
+                        temp.getAttribInt() == null ? 0 : temp.getAttribInt(),
+                        temp.getAttribUnsignedint() == null ? 0 : temp.getAttribUnsignedint(),
+                        temp.getAttribDouble() == null ? new Double(0) : temp.getAttribDouble(),
+                        temp.getAttribVarchar(),
                         temp.getAttribText(), temp.getAttribDatetime()));
                 result.remove(0);
             }
@@ -152,11 +157,17 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
     }
 
     public XincoAbstractAuditableObject findById(HashMap parameters) throws DataRetrievalFailureException {
-        result = pm.namedQuery("XincoAddAttribute.findById", parameters);
-        XincoAddAttribute temp = (XincoAddAttribute) result.get(0);
-        temp.setTransactionTime(getTransactionTime());
-        temp.setChangerID(getChangerID());
-        return temp;
+        result = pm.createdQuery("SELECT x FROM XincoAddAttribute x WHERE " +
+                "x.XincoAddAttributePK.xincoCoreDataId = :xincoCoreDataId and " +
+                "x.XincoAddAttributePK.attributeId = :attributeId", parameters);
+        if (result.size() > 0) {
+            XincoAddAttribute temp = (XincoAddAttribute) result.get(0);
+            temp.setTransactionTime(getTransactionTime());
+            temp.setChangerID(getChangerID());
+            return temp;
+        } else {
+            return null;
+        }
     }
 
     public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters) throws DataRetrievalFailureException {
@@ -228,9 +239,11 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         }
     }
 
-    public XincoAbstractAuditableObject create(XincoAbstractAuditableObject value) {
+    public XincoAbstractAuditableObject create(
+            XincoAbstractAuditableObject value) {
         XincoAddAttribute temp, newValue = new XincoAddAttribute();
-        temp = (XincoAddAttribute) value;
+        temp =
+                (XincoAddAttribute) value;
         if (!value.isCreated()) {
             newValue.setXincoAddAttributePK(temp.getXincoAddAttributePK());
             newValue.setRecordId(temp.getRecordId());
@@ -253,7 +266,8 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         return newValue;
     }
 
-    public XincoAbstractAuditableObject update(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
+    public XincoAbstractAuditableObject update(
+            XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
         XincoAddAttribute val = (XincoAddAttribute) value;
         XincoAddAttributeT temp = new XincoAddAttributeT();
         temp.setRecordId(val.getRecordId());
@@ -311,7 +325,8 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         try {
             HashMap temp = new HashMap();
             temp.put("xincoCoreDataId", getXincoAddAttributePK().getXincoCoreDataId());
-            result = pm.createdQuery("select max(p.xincoAddAttributePK.attributeId) from XincoAddAttribute p where p.xincoAddAttributePK.xincoCoreDataId= :xincoCoreDataId", temp);
+            result =
+                    pm.createdQuery("select max(p.XincoAddAttributePK.attributeId) from XincoAddAttribute p where p.XincoAddAttributePK.xincoCoreDataId= :xincoCoreDataId", temp);
             int id = (Integer) result.get(0) + 1;
             return id;
         } catch (Throwable e) {

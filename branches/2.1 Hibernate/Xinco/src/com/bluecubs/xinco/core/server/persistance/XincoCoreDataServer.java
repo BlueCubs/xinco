@@ -41,7 +41,6 @@ import com.bluecubs.xinco.core.persistance.XincoCoreACE;
 import com.bluecubs.xinco.core.persistance.XincoCoreData;
 import com.bluecubs.xinco.core.persistance.XincoCoreLog;
 import com.bluecubs.xinco.core.persistance.audit.XincoCoreDataT;
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
 import com.bluecubs.xinco.core.server.persistance.audit.XincoAuditableDAO;
 import com.bluecubs.xinco.core.server.persistance.audit.XincoAuditingDAOHelper;
@@ -67,7 +66,6 @@ import org.springframework.dao.OptimisticLockingFailureException;
  */
 public class XincoCoreDataServer extends XincoCoreData implements XincoAuditableDAO, XincoPersistanceServerObject {
 
-    private XincoCoreUserServer user;
     private static XincoPersistanceManager pm = new XincoPersistanceManager();
     private static List result;
     private static HashMap parameters;
@@ -99,12 +97,14 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
                 setDesignation(temp.getDesignation());
                 setStatusNumber(temp.getStatusNumber());
                 //load acl for this object
-                setXincoCoreACL(XincoCoreACEServer.getXincoCoreACL(temp.getId(), "xincoCoredataId"));
+                setXincoCoreACL(XincoCoreACEServer.getXincoCoreACL(temp.getId(), "xincoCoreDataId"));
             } else {
                 throw new XincoException();
             }
         } catch (Throwable ex) {
-            Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, ex);
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
             getXincoCoreACL().removeAllElements();
             throw new XincoException();
         }
@@ -118,10 +118,9 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
      * @param attrDTID XincoCoreDataTypeId
      * @param attrD Designation
      * @param attrSN Status number
-     * @param DBM XincoDBManager
      * @throws com.bluecubs.xinco.core.XincoException
      */
-    public XincoCoreDataServer(int attrID, int attrCNID, int attrLID, int attrDTID, String attrD, int attrSN, XincoDBManager DBM) throws XincoException {
+    public XincoCoreDataServer(int attrID, int attrCNID, int attrLID, int attrDTID, String attrD, int attrSN) throws XincoException {
         setId(attrID);
         setXincoCoreNodeId(attrCNID);
         setXincoCoreLanguageId(attrLID);
@@ -134,25 +133,22 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
         setDesignation(attrD);
         setStatusNumber(attrSN);
         //load acl for this object
-        setXincoCoreACL(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoredataId"));
+        setXincoCoreACL(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreDataId"));
     }
 
-    /**
-     * Set XincoCoreuser
-     * @param user
-     */
-    public void setUser(XincoCoreUserServer user) {
-        this.user = user;
+    public XincoCoreDataServer() {
     }
 
-    /**
-     * Load binay data from XincoCoreData
-     * @param xincoCoredata
-     * @return
-     */
-    public static byte[] loadBinaryData(XincoCoreData xincoCoredata) {
-        byte[] binary_data = null;
-        return binary_data;
+    @SuppressWarnings("unchecked")
+    public XincoCoreDataTypeServer getXincoCoreDataType() {
+        try {
+            return new XincoCoreDataTypeServer(getId());
+        } catch (XincoException ex) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return null;
+        }
     }
 
     /**
@@ -160,12 +156,10 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
      * @param designation
      * @param attrLID
      * @param attrSA
-     * @param attrSFD
-     * @param DBM
      * @return Vector
      */
     @SuppressWarnings("unchecked")
-    public static Vector findXincoCoreData(String designation, int attrLID, boolean attrSA, boolean attrSFD, XincoDBManager DBM) {
+    public static Vector findXincoCoreData(String designation, int attrLID, boolean attrSA) {
         Vector data = new Vector();
         try {
             parameters = new HashMap();
@@ -176,13 +170,13 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
             }
             parameters.put("designation", designation);
             if (attrSA) {
-                result = pm.createdQuery("SELECT DISTINCT p FROM XincoCoreData p, XincoAddAttribute a WHERE p.id = a.XincoCoreDataId AND p.designation LIKE '" + designation + "%' OR a.attribVarchar LIKE :designation OR a.attribText LIKE :designation " + lang + " ORDER BY p.designation, p.XincoCoreLanguageId", parameters);
+                result = pm.createdQuery("SELECT DISTINCT p FROM XincoCoreData p, XincoAddAttribute a WHERE p.id = a.XincoCoreDataId AND p.designation LIKE '" + designation + "%' OR a.attribVarchar LIKE :designation OR a.attribText LIKE :designation " + lang + " ORDER BY p.designation, p.xincoCoreLanguageId", parameters);
             } else {
-                result = pm.createdQuery("SELECT DISTINCT p FROM XincoCoreData p WHERE p.designation LIKE :designation " + lang + " ORDER BY p.designation, p.XincoCoreLanguageId", parameters);
+                result = pm.createdQuery("SELECT DISTINCT p FROM XincoCoreData p WHERE p.designation LIKE :designation " + lang + " ORDER BY p.designation, p.xincoCoreLanguageId", parameters);
             }
             int i = 0;
             while (!result.isEmpty()) {
-                XincoCoreDataServer temp = (XincoCoreDataServer) result.get(0);
+                XincoCoreData temp = (XincoCoreData) result.get(0);
                 data.add(new XincoCoreDataServer(temp.getId()));
                 i++;
                 if (i >= XincoPersistanceManager.config.getMaxSearchResult()) {
@@ -191,14 +185,16 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
                 result.remove(0);
             }
         } catch (Throwable ex) {
-            Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, ex);
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
             data.removeAllElements();
         }
         return data;
     }
 
     /**
-     * Get XincoCOreData path
+     * Get XincoCoreData path
      * @param attrRP
      * @param attrID
      * @param attrFN
@@ -239,10 +235,14 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
 
     public XincoAbstractAuditableObject findById(HashMap parameters) throws DataRetrievalFailureException {
         result = pm.namedQuery("XincoCoreData.findById", parameters);
-        XincoCoreData temp = (XincoCoreData) result.get(0);
-        temp.setTransactionTime(getTransactionTime());
-        temp.setChangerID(getChangerID());
-        return temp;
+        if (result.size() > 0) {
+            XincoCoreData temp = (XincoCoreData) result.get(0);
+            temp.setTransactionTime(getTransactionTime());
+            temp.setChangerID(getChangerID());
+            return temp;
+        } else {
+            return null;
+        }
     }
 
     public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters) throws DataRetrievalFailureException {
@@ -385,7 +385,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
     }
 
     public int getNewID() {
-        return new XincoIDServer("xinco_core_data").getNewID();
+        return new XincoIDServer("xinco_core_data").getNewTableID();
     }
 
     @SuppressWarnings("unchecked")
@@ -396,7 +396,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
             Vector objects = new Vector();
             XincoCoreLogServer temp;
             // Get related logs
-            result = pm.createdQuery("select p FROM XincoCoreLog WHERE p.xincoCoreDataId= :id", getParameters());
+            result = pm.createdQuery("select p FROM XincoCoreLog p WHERE p.xincoCoreDataId= :id", getParameters());
             while (!result.isEmpty()) {
                 XincoCoreLog t = (XincoCoreLog) result.get(0);
                 temp = new XincoCoreLogServer(t.getId());
@@ -411,7 +411,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
             objects.removeAllElements();
             XincoCoreACEServer tempACE;
             // Get related ACE's
-            result = pm.createdQuery("select p FROM XincoCoreData WHERE p.xincoCoredataId= :id", getParameters());
+            result = pm.createdQuery("select p FROM XincoCoreData p WHERE p.id= :id", getParameters());
             while (!result.isEmpty()) {
                 XincoCoreACE t = (XincoCoreACE) result.get(0);
                 tempACE = new XincoCoreACEServer(t.getId());
@@ -425,7 +425,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
             objects.removeAllElements();
             XincoAddAttributeServer tempAdd;
             // Get related Attributes
-            result = pm.createdQuery("select p FROM XincoAddAttribute WHERE p.xincoCoredataId= :id", getParameters());
+            result = pm.createdQuery("select p FROM XincoAddAttribute p WHERE p.XincoAddAttributePK.xincoCoreDataId= :id", getParameters());
             while (!result.isEmpty()) {
                 XincoAddAttribute t = (XincoAddAttribute) result.get(0);
                 tempAdd = new XincoAddAttributeServer(t.getXincoAddAttributePK());
@@ -488,7 +488,8 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
             for (int i = 0; i < getXincoAddAttributes().size(); i++) {
                 ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getXincoAddAttributePK().setXincoCoreDataId(getId());
                 //copy fields from XincoAddAttribute to XincoAddAttributeServer
-                xaas = new XincoAddAttributeServer(((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getXincoAddAttributePK(),
+                xaas = new XincoAddAttributeServer(((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getXincoAddAttributePK().getXincoCoreDataId(),
+                        ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getXincoAddAttributePK().getAttributeId(),
                         ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribInt(),
                         ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribUnsignedint(),
                         ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribDouble(),

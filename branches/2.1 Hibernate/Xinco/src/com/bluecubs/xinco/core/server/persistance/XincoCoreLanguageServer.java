@@ -159,13 +159,13 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
 
     public XincoAbstractAuditableObject findById(
             HashMap parameters) throws DataRetrievalFailureException {
-        try {
-            result = pm.namedQuery("XincoCoreLanguage.findById", parameters);
+        result = pm.namedQuery("XincoCoreLanguage.findById", parameters);
+        if (result.size() > 0) {
             XincoCoreLanguage temp = (XincoCoreLanguage) result.get(0);
             temp.setTransactionTime(getTransactionTime());
             temp.setChangerID(getChangerID());
             return temp;
-        } catch (Throwable e) {
+        } else {
             return null;
         }
     }
@@ -188,7 +188,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
             newValue.setId(temp.getId());
             newValue.setRecordId(temp.getRecordId());
         } else {
-            newValue.setId(temp.getRecordId());
+            newValue.setId(getNewID());
         }
         newValue.setSign(temp.getSign());
         newValue.setDesignation(temp.getDesignation());
@@ -257,7 +257,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
     }
 
     public int getNewID() {
-        return new XincoIDServer("xinco_core_language").getNewID();
+        return new XincoIDServer("xinco_core_language").getNewTableID();
     }
 
     public boolean deleteFromDB() throws XincoException {

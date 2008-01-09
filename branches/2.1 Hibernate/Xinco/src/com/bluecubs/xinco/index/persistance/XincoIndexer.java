@@ -48,7 +48,7 @@ public class XincoIndexer {
             if (new XincoSettingServer().getSetting("setting.enable.developermode").getBoolValue()) {
                 System.out.println("Indexing...");
             }
-            Document temp = XincoDocument.getXincoDocument(d, index_content);
+            Document temp = XincoDocument.getXincoDocument(new XincoCoreDataServer(d.getId()), index_content);
             List l = temp.getFields();
             if (new XincoSettingServer().getSetting("setting.enable.developermode").getBoolValue()) {
                 for (int i = 0; i < l.size(); i++) {

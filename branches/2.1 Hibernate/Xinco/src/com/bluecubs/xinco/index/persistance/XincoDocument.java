@@ -1,4 +1,3 @@
-//
 /**
  *Copyright 2004 blueCubs.com
  *
@@ -36,9 +35,10 @@
  */
 package com.bluecubs.xinco.index.persistance;
 
-import com.bluecubs.xinco.add.XincoAddAttribute;
+import com.bluecubs.xinco.core.persistance.XincoAddAttribute;
 import com.bluecubs.xinco.core.persistance.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.server.persistance.XincoCoreDataServer;
+import com.bluecubs.xinco.core.server.persistance.XincoCoreDataTypeAttributeServer;
 import java.io.File;
 import java.io.Reader;
 import java.util.logging.Level;
@@ -63,7 +63,7 @@ public class XincoDocument {
         int i, l;
         Document doc = null;
         int fileType = 0;
-        int file_ext_index = 0;
+        int file_extIndex = 0;
         String file_ext = "";
         doc = new Document();
         //add XincoCoreData information
@@ -76,22 +76,22 @@ public class XincoDocument {
         if (indexContent) {
             if ((d.getXincoCoreDataTypeId() == 1) && (d.getStatusNumber() != 3)) { //process non-archived file
                 //extract file extension from file name
-                file_ext_index = ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(0)).getAttrib_varchar().lastIndexOf(".");
-                if (file_ext_index == -1) {
+                file_extIndex = ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(0)).getAttribVarchar().lastIndexOf(".");
+                if (file_extIndex == -1) {
                     file_ext = "";
                 } else {
-                    if (file_ext_index >= ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(0)).getAttrib_varchar().length() - 1) {
+                    if (file_extIndex >= ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(0)).getAttribVarchar().length() - 1) {
                         file_ext = "";
                     } else {
-                        file_ext = ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(0)).getAttrib_varchar().substring(file_ext_index + 1);
+                        file_ext = ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(0)).getAttribVarchar().substring(file_extIndex + 1);
                     }
                 }
                 //check which indexer to use for file extension
                 fileType = 0; // default: index as TEXT
                 for (l = 0; l < XincoPersistanceManager.config.getFileIndexerCount(); l++) {
-                        if (((String) XincoPersistanceManager.config.getIndexFileTypesExt().elementAt(l)).compareTo(file_ext) == 0) {
-                            fileType = l + 1; // file-type specific indexing
-                            break;
+                    if (((String) XincoPersistanceManager.config.getIndexFileTypesExt().elementAt(l)).compareTo(file_ext) == 0) {
+                        fileType = l + 1; // file-type specific indexing
+                        break;
                     }
                     if (fileType > 0) {
                         break;
@@ -133,12 +133,13 @@ public class XincoDocument {
         }
         //add attributes
         for (i = 0; i < d.getXincoAddAttributes().size(); i++) {
-            if (((XincoCoreDataTypeAttribute) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("int") == 0) {
+            if (((XincoCoreDataTypeAttributeServer) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("int") == 0) {
                 doc.add(new Field(((XincoCoreDataTypeAttribute) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(),
-                        "" + ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttrib_int(), Field.Store.COMPRESS, Field.Index.NO));
+                        "" + ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttribInt(), Field.Store.COMPRESS, Field.Index.NO));
             }
             if (((XincoCoreDataTypeAttribute) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("unsignedint") == 0) {
-                doc.add(new Field(((XincoCoreDataTypeAttribute) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(), "" + ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttrib_unsignedint(), Field.Store.COMPRESS, Field.Index.NO));
+                doc.add(new Field(((XincoCoreDataTypeAttribute) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(), "" +
+                        ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttribUnsignedint(), Field.Store.COMPRESS, Field.Index.NO));
             }
             if (((XincoCoreDataTypeAttribute) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("double") == 0) {
                 doc.add(new Field(((XincoCoreDataTypeAttribute) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(), "" +
@@ -146,7 +147,7 @@ public class XincoDocument {
             }
             if (((XincoCoreDataTypeAttribute) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("varchar") == 0) {
                 doc.add(new Field(((XincoCoreDataTypeAttribute) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(),
-                        ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttrib_varchar(), Field.Store.COMPRESS, Field.Index.NO));
+                        ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttribVarchar(), Field.Store.COMPRESS, Field.Index.NO));
             }
             if (((XincoCoreDataTypeAttribute) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("text") == 0) {
                 doc.add(new Field(((XincoCoreDataTypeAttribute) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(),

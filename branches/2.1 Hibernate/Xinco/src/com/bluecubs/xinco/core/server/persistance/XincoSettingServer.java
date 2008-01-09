@@ -190,7 +190,6 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
                 XincoAuditingDAOHelper.update(this, new XincoSetting(getId()));
             } else {
                 XincoSetting temp = new XincoSetting();
-                temp.setId(getNewID());
                 temp.setBoolValue(getBoolValue());
                 temp.setDescription(getDescription());
                 temp.setId(getId());
@@ -210,18 +209,26 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
     @Override
     public XincoAbstractAuditableObject findById(HashMap parameters) {
         result = pm.namedQuery("XincoSetting.findById", parameters);
-        XincoSetting temp = (XincoSetting) result.get(0);
-        temp.setTransactionTime(getTransactionTime());
-        temp.setChangerID(getChangerID());
-        return temp;
+        if (result.size() > 0) {
+            XincoSetting temp = (XincoSetting) result.get(0);
+            temp.setTransactionTime(getTransactionTime());
+            temp.setChangerID(getChangerID());
+            return temp;
+        } else {
+            return null;
+        }
     }
-    
-    public XincoAbstractAuditableObject [] findWithDetails(HashMap parameters) throws DataRetrievalFailureException{
+
+    public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters) throws DataRetrievalFailureException {
         result = pm.namedQuery("XincoSetting.findByDescription", parameters);
-        XincoSetting temp[] = new XincoSetting[1];
-        temp[0] = (XincoSetting) result.get(0);
-        temp[0].setTransactionTime(getTransactionTime());
-        return temp;
+        if (result.size() > 0) {
+            XincoSetting temp[] = new XincoSetting[1];
+            temp[0] = (XincoSetting) result.get(0);
+            temp[0].setTransactionTime(getTransactionTime());
+            return temp;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -310,6 +317,6 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
     }
 
     public int getNewID() {
-        return new XincoIDServer("xinco_setting").getNewID();
+        return new XincoIDServer("xinco_setting").getNewTableID();
     }
 }

@@ -1,5 +1,5 @@
 /**
- *Copyright 2007 blueCubs.com
+ *Copyright 2004 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@
  *
  * Name:            XincoCoreACEServer
  *
- * Description:     ACE
+ * Description:     access control entry
  *
- * Original Author: Javier A. Ortiz
- * Date:            2007
+ * Original Author: Alexander Manes
+ * Date:            2004
  *
  * Modifications:
  *
@@ -147,7 +147,7 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
             }
             parameters.put("id", attrID);
             result = pm.createdQuery("SELECT p FROM XincoCoreACE p WHERE p." + attrT + "= :id" +
-                    " ORDER BY xincoCoreUserId, xincoCoreGroupId, xincoCoreNodeId, xincoCoreDataId", parameters);
+                    " ORDER BY p.xincoCoreUserId, p.xincoCoreGroupId, p.xincoCoreNodeId, p.xincoCoreDataId", parameters);
             while (!result.isEmpty()) {
                 core_acl.add(new XincoCoreACEServer(((XincoCoreACE) result.get(0)).getId()));
                 result.remove(0);
@@ -214,10 +214,14 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
 
     public XincoAbstractAuditableObject findById(HashMap parameters) throws DataRetrievalFailureException {
         result = pm.namedQuery("XincoCoreACE.findById", parameters);
-        XincoCoreACE temp = (XincoCoreACE) result.get(0);
-        temp.setTransactionTime(getTransactionTime());
-        temp.setChangerID(getChangerID());
-        return temp;
+        if (result.size() > 0) {
+            XincoCoreACE temp = (XincoCoreACE) result.get(0);
+            temp.setTransactionTime(getTransactionTime());
+            temp.setChangerID(getChangerID());
+            return temp;
+        } else {
+            return null;
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -360,7 +364,7 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
     }
 
     public int getNewID() {
-        return new XincoIDServer("xinco_core_ace").getNewID();
+        return new XincoIDServer("xinco_core_ace").getNewTableID();
     }
 
     public boolean deleteFromDB() throws XincoException {
@@ -406,6 +410,5 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
             }
             throw new XincoException();
         }
-
     }
 }

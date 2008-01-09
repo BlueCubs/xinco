@@ -71,7 +71,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
         try {
             parameters = new HashMap();
             parameters.put("id", attrID);
-            result = pm.namedQuery("XincoCoreData.findById", parameters);
+            result = pm.namedQuery("XincoCoreDataType.findById", parameters);
             //throw exception if no result found
             if (result.size() > 0) {
                 XincoCoreDataType temp = (XincoCoreDataType) result.get(0);
@@ -130,10 +130,14 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
 
     public XincoAbstractAuditableObject findById(HashMap parameters) throws DataRetrievalFailureException {
         result = pm.namedQuery("XincoCoreDataType.findById", parameters);
-        XincoCoreDataType temp = (XincoCoreDataType) result.get(0);
-        temp.setTransactionTime(getTransactionTime());
-        temp.setChangerID(getChangerID());
-        return temp;
+        if (result.size() > 0) {
+            XincoCoreDataType temp = (XincoCoreDataType) result.get(0);
+            temp.setTransactionTime(getTransactionTime());
+            temp.setChangerID(getChangerID());
+            return temp;
+        } else {
+            return null;
+        }
     }
 
     public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters) throws DataRetrievalFailureException {
@@ -238,7 +242,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
     }
 
     public int getNewID() {
-        return new XincoIDServer("xinco_core_data_type").getNewID();
+        return new XincoIDServer("xinco_core_data_type").getNewTableID();
     }
 
     public boolean deleteFromDB() throws XincoException {

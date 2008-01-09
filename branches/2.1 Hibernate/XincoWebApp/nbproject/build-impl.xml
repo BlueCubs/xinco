@@ -538,62 +538,8 @@
         <copy-ear-war file="${reference.Xinco.jar}" propname="included.lib.reference.Xinco.jar.X"/>
         <basename file="${reference.XincoExplorer.jar}" property="included.lib.reference.XincoExplorer.jar"/>
         <copy-ear-war file="${reference.XincoExplorer.jar}" propname="included.lib.reference.XincoExplorer.jar.X"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.25}" property="included.lib.libs.spring-framework-2.5.classpath.25"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.24}" property="included.lib.libs.spring-framework-2.5.classpath.24"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.23}" property="included.lib.libs.spring-framework-2.5.classpath.23"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.22}" property="included.lib.libs.spring-framework-2.5.classpath.22"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.21}" property="included.lib.libs.spring-framework-2.5.classpath.21"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.20}" property="included.lib.libs.spring-framework-2.5.classpath.20"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.19}" property="included.lib.libs.spring-framework-2.5.classpath.19"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.18}" property="included.lib.libs.spring-framework-2.5.classpath.18"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.17}" property="included.lib.libs.spring-framework-2.5.classpath.17"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.16}" property="included.lib.libs.spring-framework-2.5.classpath.16"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.15}" property="included.lib.libs.spring-framework-2.5.classpath.15"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.14}" property="included.lib.libs.spring-framework-2.5.classpath.14"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.13}" property="included.lib.libs.spring-framework-2.5.classpath.13"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.12}" property="included.lib.libs.spring-framework-2.5.classpath.12"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.11}" property="included.lib.libs.spring-framework-2.5.classpath.11"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.10}" property="included.lib.libs.spring-framework-2.5.classpath.10"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.9}" property="included.lib.libs.spring-framework-2.5.classpath.9"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.8}" property="included.lib.libs.spring-framework-2.5.classpath.8"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.7}" property="included.lib.libs.spring-framework-2.5.classpath.7"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.6}" property="included.lib.libs.spring-framework-2.5.classpath.6"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.5}" property="included.lib.libs.spring-framework-2.5.classpath.5"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.4}" property="included.lib.libs.spring-framework-2.5.classpath.4"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.3}" property="included.lib.libs.spring-framework-2.5.classpath.3"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.2}" property="included.lib.libs.spring-framework-2.5.classpath.2"/>
-        <basename file="${libs.spring-framework-2.5.classpath.libfile.1}" property="included.lib.libs.spring-framework-2.5.classpath.1"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.25}" propname="included.lib.libs.spring-framework-2.5.classpath.25.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.24}" propname="included.lib.libs.spring-framework-2.5.classpath.24.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.23}" propname="included.lib.libs.spring-framework-2.5.classpath.23.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.22}" propname="included.lib.libs.spring-framework-2.5.classpath.22.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.21}" propname="included.lib.libs.spring-framework-2.5.classpath.21.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.20}" propname="included.lib.libs.spring-framework-2.5.classpath.20.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.19}" propname="included.lib.libs.spring-framework-2.5.classpath.19.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.18}" propname="included.lib.libs.spring-framework-2.5.classpath.18.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.17}" propname="included.lib.libs.spring-framework-2.5.classpath.17.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.16}" propname="included.lib.libs.spring-framework-2.5.classpath.16.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.15}" propname="included.lib.libs.spring-framework-2.5.classpath.15.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.14}" propname="included.lib.libs.spring-framework-2.5.classpath.14.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.13}" propname="included.lib.libs.spring-framework-2.5.classpath.13.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.12}" propname="included.lib.libs.spring-framework-2.5.classpath.12.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.11}" propname="included.lib.libs.spring-framework-2.5.classpath.11.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.10}" propname="included.lib.libs.spring-framework-2.5.classpath.10.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.9}" propname="included.lib.libs.spring-framework-2.5.classpath.9.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.8}" propname="included.lib.libs.spring-framework-2.5.classpath.8.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.7}" propname="included.lib.libs.spring-framework-2.5.classpath.7.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.6}" propname="included.lib.libs.spring-framework-2.5.classpath.6.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.5}" propname="included.lib.libs.spring-framework-2.5.classpath.5.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.4}" propname="included.lib.libs.spring-framework-2.5.classpath.4.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.3}" propname="included.lib.libs.spring-framework-2.5.classpath.3.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.2}" propname="included.lib.libs.spring-framework-2.5.classpath.2.X"/>
-        <copy-ear-war file="${libs.spring-framework-2.5.classpath.libfile.1}" propname="included.lib.libs.spring-framework-2.5.classpath.1.X"/>
         <basename file="${libs.junit_4.classpath}" property="included.lib.libs.junit_4.classpath"/>
         <copy-ear-war file="${libs.junit_4.classpath}" propname="included.lib.libs.junit_4.classpath.X"/>
-        <basename file="${file.reference.oness-common-0.2.jar}" property="included.lib.file.reference.oness-common-0.2.jar"/>
-        <copy-ear-war file="${file.reference.oness-common-0.2.jar}" propname="included.lib.file.reference.oness-common-0.2.jar.X"/>
-        <basename file="${file.reference.oness-common-model-0.4.jar}" property="included.lib.file.reference.oness-common-model-0.4.jar"/>
-        <copy-ear-war file="${file.reference.oness-common-model-0.4.jar}" propname="included.lib.file.reference.oness-common-model-0.4.jar.X"/>
         <basename file="${libs.MySQLDriver.classpath}" property="included.lib.libs.MySQLDriver.classpath"/>
         <copy-ear-war file="${libs.MySQLDriver.classpath}" propname="included.lib.libs.MySQLDriver.classpath.X"/>
         <basename file="${libs.PostgreSQLDriver.classpath}" property="included.lib.libs.PostgreSQLDriver.classpath"/>
@@ -619,7 +565,7 @@
         <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
         <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.libs.XincoLibs.classpath.1.X} ${included.lib.libs.XincoLibs.classpath.2.X} ${included.lib.libs.XincoLibs.classpath.3.X} ${included.lib.libs.XincoLibs.classpath.4.X} ${included.lib.libs.XincoLibs.classpath.5.X} ${included.lib.libs.XincoLibs.classpath.6.X} ${included.lib.libs.XincoLibs.classpath.7.X} ${included.lib.libs.XincoLibs.classpath.8.X} ${included.lib.libs.XincoLibs.classpath.9.X} ${included.lib.libs.XincoLibs.classpath.10.X} ${included.lib.libs.XincoLibs.classpath.11.X} ${included.lib.libs.XincoLibs.classpath.12.X} ${included.lib.libs.XincoLibs.classpath.13.X} ${included.lib.libs.XincoLibs.classpath.14.X} ${included.lib.libs.XincoLibs.classpath.15.X} ${included.lib.libs.XincoLibs.classpath.16.X} ${included.lib.libs.XincoLibs.classpath.17.X} ${included.lib.libs.XincoLibs.classpath.18.X} ${included.lib.libs.XincoLibs.classpath.19.X} ${included.lib.libs.XincoLibs.classpath.20.X} ${included.lib.libs.XincoLibs.classpath.21.X} ${included.lib.libs.XincoLibs.classpath.22.X} ${included.lib.libs.XincoLibs.classpath.23.X} ${included.lib.libs.XincoLibs.classpath.24.X} ${included.lib.libs.XincoLibs.classpath.25.X} ${included.lib.libs.XincoLibs.classpath.26.X} ${included.lib.libs.XincoLibs.classpath.27.X} ${included.lib.libs.XincoLibs.classpath.28.X} ${included.lib.libs.XincoLibs.classpath.29.X} ${included.lib.libs.XincoLibs.classpath.30.X} ${included.lib.libs.XincoLibs.classpath.31.X} ${included.lib.libs.XincoLibs.classpath.32.X} ${included.lib.libs.XincoLibs.classpath.33.X} ${included.lib.libs.XincoLibs.classpath.34.X} ${included.lib.libs.XincoLibs.classpath.35.X} ${included.lib.libs.XincoLibs.classpath.36.X} ${included.lib.libs.XincoLibs.classpath.37.X} ${included.lib.reference.Xinco.jar} ${included.lib.reference.XincoExplorer.jar} ${included.lib.libs.spring-framework-2.5.classpath.1.X} ${included.lib.libs.spring-framework-2.5.classpath.2.X} ${included.lib.libs.spring-framework-2.5.classpath.3.X} ${included.lib.libs.spring-framework-2.5.classpath.4.X} ${included.lib.libs.spring-framework-2.5.classpath.5.X} ${included.lib.libs.spring-framework-2.5.classpath.6.X} ${included.lib.libs.spring-framework-2.5.classpath.7.X} ${included.lib.libs.spring-framework-2.5.classpath.8.X} ${included.lib.libs.spring-framework-2.5.classpath.9.X} ${included.lib.libs.spring-framework-2.5.classpath.10.X} ${included.lib.libs.spring-framework-2.5.classpath.11.X} ${included.lib.libs.spring-framework-2.5.classpath.12.X} ${included.lib.libs.spring-framework-2.5.classpath.13.X} ${included.lib.libs.spring-framework-2.5.classpath.14.X} ${included.lib.libs.spring-framework-2.5.classpath.15.X} ${included.lib.libs.spring-framework-2.5.classpath.16.X} ${included.lib.libs.spring-framework-2.5.classpath.17.X} ${included.lib.libs.spring-framework-2.5.classpath.18.X} ${included.lib.libs.spring-framework-2.5.classpath.19.X} ${included.lib.libs.spring-framework-2.5.classpath.20.X} ${included.lib.libs.spring-framework-2.5.classpath.21.X} ${included.lib.libs.spring-framework-2.5.classpath.22.X} ${included.lib.libs.spring-framework-2.5.classpath.23.X} ${included.lib.libs.spring-framework-2.5.classpath.24.X} ${included.lib.libs.spring-framework-2.5.classpath.25.X} ${included.lib.libs.junit_4.classpath} ${included.lib.file.reference.oness-common-0.2.jar} ${included.lib.file.reference.oness-common-model-0.4.jar} ${included.lib.libs.MySQLDriver.classpath} ${included.lib.libs.PostgreSQLDriver.classpath} "/>
+            <attribute name="Class-Path" value="${included.lib.libs.XincoLibs.classpath.1.X} ${included.lib.libs.XincoLibs.classpath.2.X} ${included.lib.libs.XincoLibs.classpath.3.X} ${included.lib.libs.XincoLibs.classpath.4.X} ${included.lib.libs.XincoLibs.classpath.5.X} ${included.lib.libs.XincoLibs.classpath.6.X} ${included.lib.libs.XincoLibs.classpath.7.X} ${included.lib.libs.XincoLibs.classpath.8.X} ${included.lib.libs.XincoLibs.classpath.9.X} ${included.lib.libs.XincoLibs.classpath.10.X} ${included.lib.libs.XincoLibs.classpath.11.X} ${included.lib.libs.XincoLibs.classpath.12.X} ${included.lib.libs.XincoLibs.classpath.13.X} ${included.lib.libs.XincoLibs.classpath.14.X} ${included.lib.libs.XincoLibs.classpath.15.X} ${included.lib.libs.XincoLibs.classpath.16.X} ${included.lib.libs.XincoLibs.classpath.17.X} ${included.lib.libs.XincoLibs.classpath.18.X} ${included.lib.libs.XincoLibs.classpath.19.X} ${included.lib.libs.XincoLibs.classpath.20.X} ${included.lib.libs.XincoLibs.classpath.21.X} ${included.lib.libs.XincoLibs.classpath.22.X} ${included.lib.libs.XincoLibs.classpath.23.X} ${included.lib.libs.XincoLibs.classpath.24.X} ${included.lib.libs.XincoLibs.classpath.25.X} ${included.lib.libs.XincoLibs.classpath.26.X} ${included.lib.libs.XincoLibs.classpath.27.X} ${included.lib.libs.XincoLibs.classpath.28.X} ${included.lib.libs.XincoLibs.classpath.29.X} ${included.lib.libs.XincoLibs.classpath.30.X} ${included.lib.libs.XincoLibs.classpath.31.X} ${included.lib.libs.XincoLibs.classpath.32.X} ${included.lib.libs.XincoLibs.classpath.33.X} ${included.lib.libs.XincoLibs.classpath.34.X} ${included.lib.libs.XincoLibs.classpath.35.X} ${included.lib.libs.XincoLibs.classpath.36.X} ${included.lib.libs.XincoLibs.classpath.37.X} ${included.lib.reference.Xinco.jar} ${included.lib.reference.XincoExplorer.jar} ${included.lib.libs.junit_4.classpath} ${included.lib.libs.MySQLDriver.classpath} ${included.lib.libs.PostgreSQLDriver.classpath} "/>
         </manifest>
         <delete dir="${dist.ear.dir}/temp"/>
     </target>
@@ -663,34 +609,7 @@
         <copy file="${libs.XincoLibs.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${reference.Xinco.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.25}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.24}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.23}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.22}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.21}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.20}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.19}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.18}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.17}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.16}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.15}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.14}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.13}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.12}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.11}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.10}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.9}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.8}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.7}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.6}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.5}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.4}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.3}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.2}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.spring-framework-2.5.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.junit_4.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${file.reference.oness-common-0.2.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${file.reference.oness-common-model-0.4.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.MySQLDriver.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.PostgreSQLDriver.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir}/client"/>

@@ -3,9 +3,8 @@
  * and open the template in the editor.
  */
 
-package com.bluecubs.xinco.core.persistance;
+package com.bluecubs.xinco.core.persistance.audit;
 
-import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,26 +18,37 @@ import javax.persistence.Table;
  * @author Javier A. Ortiz
  */
 @Entity
-@Table(name = "xinco_id")
-@NamedQueries({@NamedQuery(name = "XincoId.findByTablename", query = "SELECT x FROM XincoId x WHERE x.tablename = :tablename"), @NamedQuery(name = "XincoId.findByLastId", query = "SELECT x FROM XincoId x WHERE x.lastId = :lastId")})
-public class XincoId extends XincoAbstractAuditableObject implements Serializable {
+@Table(name = "xinco_id_t")
+@NamedQueries({@NamedQuery(name = "XincoIdT.findByRecordId", query = "SELECT x FROM XincoIdT x WHERE x.recordId = :recordId"), @NamedQuery(name = "XincoIdT.findByTablename", query = "SELECT x FROM XincoIdT x WHERE x.tablename = :tablename"), @NamedQuery(name = "XincoIdT.findByLastId", query = "SELECT x FROM XincoIdT x WHERE x.lastId = :lastId")})
+public class XincoIdT implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
+    @Column(name = "record_id", nullable = false)
+    private Integer recordId;
     @Column(name = "tablename", nullable = false)
     private String tablename;
     @Column(name = "last_id", nullable = false)
     private int lastId;
 
-    public XincoId() {
+    public XincoIdT() {
     }
 
-    public XincoId(String tablename) {
-        this.tablename = tablename;
+    public XincoIdT(Integer recordId) {
+        this.recordId = recordId;
     }
 
-    public XincoId(String tablename, int lastId) {
+    public XincoIdT(Integer recordId, String tablename, int lastId) {
+        this.recordId = recordId;
         this.tablename = tablename;
         this.lastId = lastId;
+    }
+
+    public Integer getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(Integer recordId) {
+        this.recordId = recordId;
     }
 
     public String getTablename() {
@@ -60,18 +70,18 @@ public class XincoId extends XincoAbstractAuditableObject implements Serializabl
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (tablename != null ? tablename.hashCode() : 0);
+        hash += (recordId != null ? recordId.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof XincoId)) {
+        if (!(object instanceof XincoIdT)) {
             return false;
         }
-        XincoId other = (XincoId) object;
-        if ((this.tablename == null && other.tablename != null) || (this.tablename != null && !this.tablename.equals(other.tablename))) {
+        XincoIdT other = (XincoIdT) object;
+        if ((this.recordId == null && other.recordId != null) || (this.recordId != null && !this.recordId.equals(other.recordId))) {
             return false;
         }
         return true;
@@ -79,7 +89,7 @@ public class XincoId extends XincoAbstractAuditableObject implements Serializabl
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.persistance.XincoId[tablename=" + tablename + "]";
+        return "com.bluecubs.xinco.core.persistance.audit.XincoIdT[recordId=" + recordId + "]";
     }
 
 }

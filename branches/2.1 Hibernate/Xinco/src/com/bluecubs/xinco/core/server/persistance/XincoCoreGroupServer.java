@@ -84,6 +84,9 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
         }
     }
 
+    public XincoCoreGroupServer() {
+    }
+
     /**
      * Create group object for data structures
      * @param id
@@ -162,18 +165,53 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
 
     public XincoAbstractAuditableObject findById(HashMap parameters) throws DataRetrievalFailureException {
         result = pm.namedQuery("XincoCoreGroup.findById", parameters);
-        XincoCoreGroup temp = (XincoCoreGroup) result.get(0);
-        temp.setTransactionTime(getTransactionTime());
-        temp.setChangerID(getChangerID());
-        return temp;
+        if (result.size() > 0) {
+            XincoCoreGroup temp = (XincoCoreGroup) result.get(0);
+            temp.setTransactionTime(getTransactionTime());
+            temp.setChangerID(getChangerID());
+            return temp;
+        } else {
+            return null;
+        }
     }
 
     public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters) throws DataRetrievalFailureException {
-        result = pm.namedQuery("XincoCoreGroup.findByDesignation", parameters);
-        XincoCoreGroup temp[] = new XincoCoreGroup[1];
-        temp[0] = (XincoCoreGroup) result.get(0);
-        temp[0].setTransactionTime(getTransactionTime());
-        return temp;
+        int counter = 0;
+        String sql = "SELECT x FROM XincoCoreGroup x WHERE ";
+        if (parameters.containsKey("designation")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreDataTypeServer.class.getName()).log(Level.INFO, "Searching by designation");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.designation = :designation";
+            counter++;
+        }
+        if (parameters.containsKey("statusNumber")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreDataTypeServer.class.getName()).log(Level.INFO, "Searching by statusNumber");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.statusNumber = :statusNumber";
+            counter++;
+        }
+        result = pm.createdQuery(sql, parameters);
+        if (result.size() > 0) {
+            XincoCoreGroup temp[] = new XincoCoreGroup[result.size()];
+            int i = 0;
+            while (!result.isEmpty()) {
+                temp[i] = (XincoCoreGroup) result.get(0);
+                temp[i].setTransactionTime(getTransactionTime());
+                i++;
+                result.remove(0);
+            }
+            return temp;
+        } else {
+            return null;
+        }
     }
 
     public XincoAbstractAuditableObject create(XincoAbstractAuditableObject value) {
@@ -184,7 +222,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
             newValue.setId(temp.getId());
             newValue.setRecordId(temp.getRecordId());
         } else {
-            newValue.setId(new XincoIDServer("xinco_setting").getNewID());
+            newValue.setId(new XincoIDServer("xinco_setting").getNewTableID());
         }
         newValue.setId(temp.getId());
         newValue.setDesignation(temp.getDesignation());
@@ -250,6 +288,6 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
     }
 
     public int getNewID() {
-        return new XincoIDServer("xinco_core_group").getNewID();
+        return new XincoIDServer("xinco_core_group").getNewTableID();
     }
 }

@@ -881,6 +881,34 @@
 </INDEX>
 </INDICES>
 </TABLE>
+<TABLE ID="4638" Tablename="xinco_id_t" PrevTableName="Table_10" XPos="83" YPos="57" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_id VALUES (\axinco_core_language\a, 1000); \nINSERT INTO xinco_id VALUES (\axinco_core_data_type\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_user\a, 1000);  \nINSERT INTO xinco_id VALUES (\axinco_core_group\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_node\a, 1000); \nINSERT INTO xinco_id VALUES (\axinco_core_data\a, 1000);  \nINSERT INTO xinco_id VALUES (\axinco_core_ace\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_log\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_user_modified_record\a, 0);  \nINSERT INTO xinco_id (tablename, last_id) VALUES(\axinco_setting\a,1000);\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="9" >
+<COLUMNS>
+<COLUMN ID="4644" ColName="record_id" PrevColName="" Pos="2" idDatatype="5" DatatypeParams="(10)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="4639" ColName="tablename" PrevColName="" Pos="0" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="4640" ColName="last_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+</COLUMNS>
+<INDICES>
+<INDEX ID="4645" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="4644" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+</INDICES>
+</TABLE>
 </TABLES>
 <RELATIONS>
 <RELATION ID="3801" RelationName="modifies" Kind="1" SrcTable="3684" DestTable="3765" FKFields="id=id\n" FKFieldsComments="\n" relDirection="1" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=3\nOnUpdate=3\n" Comments="" FKRefDefIndex_Obj_id="-1" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="15" />

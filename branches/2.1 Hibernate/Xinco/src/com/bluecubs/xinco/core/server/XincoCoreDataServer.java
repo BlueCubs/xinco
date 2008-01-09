@@ -260,16 +260,6 @@ public class XincoCoreDataServer extends XincoCoreData {
     }
 
     /**
-     * Load binay data from XincoCoreData
-     * @param xinco_core_data
-     * @return
-     */
-    public static byte[] loadBinaryData(XincoCoreData xinco_core_data) {
-        byte[] binary_data = null;
-        return binary_data;
-    }
-
-    /**
      * Find XincoCoreData
      * @param designation
      * @param attrLID
