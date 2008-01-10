@@ -256,7 +256,6 @@ public class XincoCoreLogServer extends XincoCoreLog implements XincoAuditableDA
             Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.INFO, "Creating with new id: " + newValue.getId());
         }
         newValue.setXincoCoreUserId(temp.getXincoCoreUserId());
-        newValue.setId(temp.getId());
         newValue.setXincoCoreDataId(temp.getXincoCoreDataId());
         newValue.setOpCode(temp.getOpCode());
         newValue.setOpDatetime(temp.getOpDatetime());
@@ -273,7 +272,8 @@ public class XincoCoreLogServer extends XincoCoreLog implements XincoAuditableDA
     }
 
     public XincoAbstractAuditableObject update(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
-        throw new UnsupportedOperationException("Not supported. Won't update an audit trail record");
+        //XincoCoreLogs are an Audit table so can't be updated. Return same object.
+        return value;
     }
 
     public void delete(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {

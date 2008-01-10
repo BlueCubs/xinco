@@ -7,8 +7,6 @@ package com.bluecubs.xinco.core.server.persistance;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.persistance.XincoCoreData;
 import com.bluecubs.xinco.core.persistance.XincoCoreDataType;
-import com.bluecubs.xinco.core.server.XincoDBManager;
-import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -155,11 +153,11 @@ public class XincoCoreDataServerTest {
      * Test of getNewTableID method, of class XincoCoreDataServer.
      */
     @Test
-    public void getNewTableID() {
+    public void getNewID() {
         try {
             System.out.println("getNewTableID");
             XincoCoreDataServer instance = new XincoCoreDataServer(2);
-            assertTrue(instance.getNewTableID() > 1000);
+            assertTrue(instance.getNewID() > 1000);
         } catch (Throwable ex) {
             Logger.getLogger(XincoCoreDataServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail("Something went wrong.");

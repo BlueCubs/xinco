@@ -74,6 +74,7 @@ public class XincoPersistanceManager {
     public List executeQuery(String query) {
         try {
             Query q = getEntityManager().createQuery(query);
+            Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.INFO, "Executing: "+query);
             return q.getResultList();
         } catch (Throwable e) {
             Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);
@@ -91,6 +92,7 @@ public class XincoPersistanceManager {
                     q.setParameter(key, parameters.get(key));
                 }
             }
+            Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.INFO, "Executing: "+createdQuery);
             return q.getResultList();
         } catch (Exception e) {
             Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);
@@ -108,6 +110,7 @@ public class XincoPersistanceManager {
                     q.setParameter(key, parameters.get(key));
                 }
             }
+            Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.INFO, "Executing: "+namedQuery);
             return q.getResultList();
         } catch (Exception e) {
             Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);

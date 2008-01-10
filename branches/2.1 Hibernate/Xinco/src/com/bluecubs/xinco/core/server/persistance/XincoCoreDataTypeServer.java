@@ -104,6 +104,14 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
         setDescription(attrDESC);
         setXincoCoreDataTypeAttributes(attrA);
     }
+    
+    public Vector getXincoCoreDataTypeAttributes() {
+        return XincoCoreDataTypeAttributes;
+    }
+
+    public void setXincoCoreDataTypeAttributes(Vector XincoCoreDataTypeAttributes) {
+        this.XincoCoreDataTypeAttributes = XincoCoreDataTypeAttributes;
+    }
 
     /**
      * Create complete list of data types
@@ -282,13 +290,5 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
             }
             throw new XincoException();
         }
-    }
-
-    public Vector getXincoCoreDataTypeAttributes() {
-        return XincoCoreDataTypeAttributes;
-    }
-
-    public void setXincoCoreDataTypeAttributes(Vector XincoCoreDataTypeAttributes) {
-        this.XincoCoreDataTypeAttributes = XincoCoreDataTypeAttributes;
     }
 }

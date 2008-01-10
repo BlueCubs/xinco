@@ -33,7 +33,7 @@ public class XincoIDServerTest {
         try {
             XincoIDServer instance = new XincoIDServer("xinco_core_user");
             System.err.println("undo");
-            instance.setLastId(instance.getLastId() - 1);
+            instance.setLastId(1000);
             instance.write2DB();
         } catch (Throwable e) {
             Logger.getLogger(XincoIDServerTest.class.getName()).log(Level.SEVERE, null, e);
@@ -47,7 +47,6 @@ public class XincoIDServerTest {
 
     @After
     public void tearDown() {
-
     }
 
     /**
@@ -76,11 +75,14 @@ public class XincoIDServerTest {
         XincoIDServer instance = null;
         try {
             System.err.println("write2DB");
+            Logger.getLogger(XincoIDServerTest.class.getName()).log(Level.INFO, "Creating new XincoId...");
             instance = new XincoIDServer("test", 10);
+            Logger.getLogger(XincoIDServerTest.class.getName()).log(Level.INFO, "Writing new XincoId...");
             instance.write2DB();
             HashMap parameters = new HashMap();
             parameters.put("tablename", "test");
-            assertTrue(instance.findById(parameters) != null);
+            Logger.getLogger(XincoIDServerTest.class.getName()).log(Level.INFO, "Searching for created ID...");
+            assertTrue(((XincoId)instance.findById(parameters)).getLastId()==10);
             deleteFromDB("test");
         } catch (Throwable e) {
             Logger.getLogger(XincoIDServerTest.class.getName()).log(Level.SEVERE, null, e);

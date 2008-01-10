@@ -1,6 +1,41 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *Copyright 2004 blueCubs.com
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License");
+ *you may not use this file except in compliance with the License.
+ *You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *Unless required by applicable law or agreed to in writing, software
+ *distributed under the License is distributed on an "AS IS" BASIS,
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *See the License for the specific language governing permissions and
+ *limitations under the License.
+ *
+ *************************************************************
+ * This project supports the blueCubs vision of giving back
+ * to the community in exchange for free software!
+ * More information on: http://www.bluecubs.org
+ *************************************************************
+ *
+ * Name:            XincoCoreUserServer
+ *
+ * Description:     user
+ *
+ * Original Author: Alexander Manes
+ * Date:            2004
+ *
+ * Modifications:
+ *
+ * Who?             When?             What?
+ * Javier A. Ortiz 09/20/2006         Related changes made to XincoCoreUser (new fields) in the following methods:
+ *                                    write2DB, XincoCoreUserServer, XincoCoreUserServer (x 2), getXincoCoreUsers
+ * Javier A. Ortiz 11/06/2006         Moved the logic of locking an account due to login attempts from the XincoAdminServlet
+ * Alexander Manes 11/12/2006         Moved the new user features to core class
+ * Javier A. Ortiz 11/20/2006         Undo previous changes and corrected a bug that increased twice
+ *                                    the attempts in the DB when wrong password was used
+ *************************************************************
  */
 package com.bluecubs.xinco.core.server.persistance;
 
@@ -53,7 +88,6 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
     @SuppressWarnings("unchecked")
     public XincoCoreUserServer(String username, String password) throws XincoException {
         XincoCoreUser temp;
-        GregorianCalendar cal = null;
         try {
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO, "Logging as user: " + username + ", password: " + password);
@@ -366,6 +400,12 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
                                 new XincoSettingServer("password.unusable_period").getIntValue());
                     }
                     passwordIsUsable = true;
+                }else{
+                    if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                        System.out.println("Password used within the unusable period-" +
+                                new XincoSettingServer("password.unusable_period").getIntValue());
+                    }
+                    passwordIsUsable = false;
                 }
             //End bug fix
             }
@@ -541,12 +581,12 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
     public XincoAbstractAuditableObject update(XincoAbstractAuditableObject value) {
         XincoCoreUser val = (XincoCoreUser) value;
         XincoCoreUserT temp = new XincoCoreUserT();
-        temp.setRecordId(val.getRecordId());
         if (!value.isCreated()) {
             temp.setId(val.getId());
         } else {
             temp.setId(val.getRecordId());
         }
+        temp.setRecordId(val.getRecordId());
         temp.setAttempts(val.getAttempts());
         temp.setEmail(val.getEmail());
         temp.setFirstname(val.getFirstname());
@@ -560,7 +600,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         pm.startTransaction();
         pm.persist(temp, false, false);
         pm.persist(val, true, false);
-        if (val.getXincoCoreUserModifiedRecord() != null) {
+        if (value.isCreated()) {
             val.saveAuditData(pm);
         }
         pm.commitAndClose();
@@ -601,7 +641,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
     public int getNewID() {
         return new XincoIDServer("xinco_core_user").getNewTableID();
     }
-    
+
     /**
      * Write to DB
      * @throws com.bluecubs.xinco.core.XincoException

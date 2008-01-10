@@ -114,14 +114,14 @@ public class XincoCoreDataTypeAttributeServerTest {
     }
 
     /**
-     * Test of getNewTableID method, of class XincoCoreDataTypeAttributeServer.
+     * Test of getNewID method, of class XincoCoreDataTypeAttributeServer.
      */
     @Test
-    public void getNewTableID() {
+    public void getNewID() {
         try {
             System.out.println("getNewTableID");
             XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer(new XincoCoreDataTypeAttributePK(1, 1));
-            assertTrue(instance.getNewTableID() > 0);
+            assertTrue(instance.getNewID() > 0);
         } catch (Throwable ex) {
             Logger.getLogger(XincoCoreDataTypeAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail("Something went wrong.");

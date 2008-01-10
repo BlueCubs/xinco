@@ -37,7 +37,6 @@ package com.bluecubs.xinco.core.server.persistance;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.persistance.XincoCoreGroup;
-import com.bluecubs.xinco.core.persistance.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.core.persistance.XincoId;
 import com.bluecubs.xinco.core.persistance.audit.XincoIdT;
 import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
@@ -102,7 +101,7 @@ public class XincoIDServer extends XincoId implements XincoAuditableDAO, XincoPe
                 setLastId(temp.getLastId() + 1);
                 setTablename(temp.getTablename());
                 setTransactionTime(DateRange.startingNow());
-                pm.persist(new XincoId(getTablename(), getLastId()), !getTablename().equals(null), true);
+                pm.persist(new XincoId(getTablename(), getLastId()), true, true);
                 return getLastId();
             } catch (Throwable ex) {
                 Logger.getLogger(XincoIDServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -178,31 +177,33 @@ public class XincoIDServer extends XincoId implements XincoAuditableDAO, XincoPe
     @SuppressWarnings("unchecked")
     public void delete(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
         try {
-            XincoId temp = (XincoId) value;
+            XincoId tempId = (XincoId) value;
             XincoCoreGroupServer group = new XincoCoreGroupServer();
             XincoCoreGroup g;
             parameters = new HashMap();
             parameters.put("designation", "general.group.admin");
+            //Delete only if member of admin group
             if (group.findWithDetails(parameters).length > 0) {
                 g = (XincoCoreGroup) group.findWithDetails(parameters)[0];
                 parameters = new HashMap();
-                parameters.put("xincoCoreUserId", temp.getChangerID());
+                parameters.put("xincoCoreUserId", tempId.getChangerID());
                 parameters.put("xincoCoreGroupId", g.getId());
                 if (!pm.createdQuery("SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE " +
                         "x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreUserId = :xincoCoreUserId and " +
                         "x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreGroupId = :xincoCoreGroupId", parameters).isEmpty()) {
-                    setTransactionTime(DateRange.startingNow());
-                    try {
-                        XincoAuditingDAOHelper.delete(this, getTablename());
-                    } catch (Throwable e) {
-                        if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
-                            Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
-                        }
-                        throw new XincoException();
-                    }
+                    XincoId val = (XincoId) value;
+                    XincoIdT temp = new XincoIdT();
+                    temp.setRecordId(val.getRecordId());
+                    temp.setTablename(val.getTablename());
+                    temp.setLastId(val.getLastId());
+                    pm.startTransaction();
+                    pm.persist(temp, false, false);
+                    pm.delete(val, false);
+                    val.saveAuditData(pm);
+                    pm.commitAndClose();
                 }
             }
-        } catch (XincoException ex) {
+        } catch (Throwable ex) {
             Logger.getLogger(XincoIDServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -224,6 +225,7 @@ public class XincoIDServer extends XincoId implements XincoAuditableDAO, XincoPe
                 if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                     System.out.println("Updating table: " + getTablename());
                 }
+                setTransactionTime(DateRange.startingNow());
                 XincoAuditingDAOHelper.update(this, new XincoId(getTablename(), getLastId()));
             } else {
                 XincoId temp = new XincoId();
@@ -261,9 +263,9 @@ public class XincoIDServer extends XincoId implements XincoAuditableDAO, XincoPe
     @SuppressWarnings("unchecked")
     public int getNewID() {
         try {
-            result = pm.executeQuery("select max(p.xincoCoreUserModifiedRecordPK.recordId) from XincoCoreUserModifiedRecord p");
-            int id = (Integer) result.get(0) + 1;
-            return id;
+            result = pm.executeQuery("select count(p.xincoCoreUserModifiedRecordPK.recordId) from XincoCoreUserModifiedRecord p");
+            Long id = (Long) (result.get(0)) + 1;
+            return Integer.parseInt(id.toString());
         } catch (Throwable e) {
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, e);

@@ -88,7 +88,6 @@ public class XincoCoreACEServerTest {
         } catch (XincoException ex) {
             Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail("Something went wrong.");
-
         }
     }
 
@@ -144,14 +143,19 @@ public class XincoCoreACEServerTest {
     }
 
     /**
-     * Test of getNewTableID method, of class XincoCoreACEServer.
+     * Test of getNewID method, of class XincoCoreACEServer.
      */
     @Test
-    public void getNewTableID() {
-        System.out.println("getNewTableID");
-        XincoCoreACEServer instance = new XincoCoreACEServer();
-        int result = instance.getNewTableID();
-        assertTrue(result > 1000);
+    public void getNewID() {
+        try {
+            System.out.println("getNewTableID");
+            XincoCoreACEServer instance = new XincoCoreACEServer();
+            int result = instance.getNewID();
+            assertTrue(result > 1000);
+        } catch (Throwable ex) {
+            Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("Something went wrong.");
+        }
     }
 
     /**
@@ -160,10 +164,15 @@ public class XincoCoreACEServerTest {
      */
     @Test
     public void write2DB() throws Exception {
-        System.out.println("write2DB");
-        XincoCoreACEServer instance = new XincoCoreACEServer(0, 1, 1, 1, 1, true, true, true, true);
-        assertTrue(instance.write2DB());
-        deleteFromDB(instance.getId());
+        try {
+            System.out.println("write2DB");
+            XincoCoreACEServer instance = new XincoCoreACEServer(0, 1, 1, 1, 1, true, true, true, true);
+            assertTrue(instance.write2DB());
+            deleteFromDB(instance.getId());
+        } catch (Throwable ex) {
+            Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("Something went wrong.");
+        }
     }
 
     /**
@@ -172,8 +181,13 @@ public class XincoCoreACEServerTest {
      * @throws java.lang.Exception
      */
     public void deleteFromDB(int id) throws Exception {
-        System.out.println("deleteFromDB: "+id);
-        XincoCoreACEServer instance = new XincoCoreACEServer(id);
-        assertTrue(instance.deleteFromDB());
+        try {
+            System.out.println("deleteFromDB: " + id);
+            XincoCoreACEServer instance = new XincoCoreACEServer(id);
+            assertTrue(instance.deleteFromDB());
+        } catch (Throwable ex) {
+            Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("Something went wrong.");
+        }
     }
 }

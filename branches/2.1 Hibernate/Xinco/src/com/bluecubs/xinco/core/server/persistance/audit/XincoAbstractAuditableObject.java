@@ -48,9 +48,9 @@ import net.sf.oness.common.all.BaseObject;
  */
 public abstract class XincoAbstractAuditableObject extends BaseObject implements XincoAuditable {
 
-    private DateRange transactionTime = DateRange.startingOn(null);
+    private DateRange transactionTime = DateRange.startingNow();
     private boolean created = false,  deleted = false,  modified = false;
-    private int changerID,  id = 0;
+    private int changerID=0,  id = 0;
     private String reason;
     private XincoCoreUserModifiedRecord xcumr;
 
@@ -60,9 +60,9 @@ public abstract class XincoAbstractAuditableObject extends BaseObject implements
     public Integer getRecordId() {
         if (id == 0) {
             XincoIDServer xis = new XincoIDServer("xinco_core_user_modified_record");
-            this.id = xis.getNewID();
+            id = xis.getNewTableID();
         }
-        return this.id;
+        return id;
     }
 
     /**

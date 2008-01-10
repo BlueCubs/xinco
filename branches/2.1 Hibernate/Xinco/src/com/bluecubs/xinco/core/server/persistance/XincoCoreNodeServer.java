@@ -1,14 +1,46 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *Copyright 2004 blueCubs.com
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License");
+ *you may not use this file except in compliance with the License.
+ *You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *Unless required by applicable law or agreed to in writing, software
+ *distributed under the License is distributed on an "AS IS" BASIS,
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *See the License for the specific language governing permissions and
+ *limitations under the License.
+ *
+ *************************************************************
+ * This project supports the blueCubs vision of giving back
+ * to the community in exchange for free software!
+ * More information on: http://www.bluecubs.org
+ *************************************************************
+ *
+ * Name:            XincoCoreNodeServer
+ *
+ * Description:     node object
+ *
+ * Original Author: Alexander Manes
+ * Date:            2004
+ *
+ * Modifications:
+ *
+ * Who?             When?             What?
+ * -                -                 -
+ *
+ *************************************************************
  */
 package com.bluecubs.xinco.core.server.persistance;
 
 import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.persistance.XincoCoreACE;
+import com.bluecubs.xinco.core.persistance.XincoCoreNode;
 import com.bluecubs.xinco.core.persistance.XincoCoreData;
 import com.bluecubs.xinco.core.persistance.XincoCoreLanguage;
 import com.bluecubs.xinco.core.persistance.XincoCoreNode;
+import com.bluecubs.xinco.core.persistance.audit.XincoCoreNodeT;
 import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
 import com.bluecubs.xinco.core.server.persistance.audit.XincoAuditableDAO;
 import com.bluecubs.xinco.core.server.persistance.audit.XincoAuditingDAOHelper;
@@ -31,7 +63,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
     private static XincoPersistanceManager pm = new XincoPersistanceManager();
     private static List result;
     private static HashMap parameters;
-    private Vector xincoCoreNodes,  xincoCoreData,  xincoCoreACL;
+    private Vector xincoCoreNodes=null,  xincoCoreData=null,  xincoCoreACL=null;
     private XincoCoreLanguage xincoCoreLanguage;
     private boolean delete = false;
 
@@ -93,7 +125,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
             setXincoCoreNodes(new Vector());
             setXincoCoreData(new Vector());
             //load acl for this object
-            setXincoCoreACL(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCorenodeId"));
+            setXincoCoreACL(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreNodeId"));
         } catch (Throwable e) {
             setXincoCoreLanguage(null);
             getXincoCoreACL().removeAllElements();
@@ -105,6 +137,8 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
             throw new XincoException();
         }
     }
+    
+     public XincoCoreNodeServer(){}
 
     /**
      * Fill XincoCoreNodes vector for this Node
@@ -114,7 +148,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
         try {
             parameters = new HashMap();
             parameters.put("id", getId());
-            result = pm.createdQuery("SELECT x FROM XincoCoreNode x WHERE x.xincoCorenodeId = :id ORDER BY x.designation", parameters);
+            result = pm.createdQuery("SELECT x FROM XincoCoreNode x WHERE x.xincoCoreNodeId = :id ORDER BY x.designation", parameters);
             if (!result.isEmpty()) {
                 XincoCoreNode temp = (XincoCoreNode) result.get(0);
                 getXincoCoreNodes().add(new XincoCoreNodeServer(temp.getId(),
@@ -122,6 +156,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
                         temp.getDesignation(), temp.getStatusNumber()));
             }
         } catch (Throwable e) {
+            Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.SEVERE, "Error getting node.", e);
             getXincoCoreNodes().removeAllElements();
         }
     }
@@ -134,7 +169,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
         try {
             parameters = new HashMap();
             parameters.put("id", getId());
-            result = pm.createdQuery("SELECT x FROM XincoCoreData WHERE x.xincoCorenodeId = :id ORDER BY designation", parameters);
+            result = pm.createdQuery("SELECT x FROM XincoCoreData x WHERE x.xincoCoreNodeId = :id ORDER BY x.designation", parameters);
             if (!result.isEmpty()) {
                 XincoCoreData temp = (XincoCoreData) result.get(0);
                 getXincoCoreData().add(new XincoCoreDataServer((int) temp.getId(), temp.getXincoCoreNodeId(),
@@ -142,6 +177,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
                         temp.getDesignation(), temp.getStatusNumber()));
             }
         } catch (Throwable e) {
+            Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.SEVERE, "Error filling data.", e);
             getXincoCoreData().removeAllElements();
         }
     }
@@ -160,7 +196,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
             parameters = new HashMap();
             parameters.put("languageId", language_id);
             parameters.put("designation", designation);
-            result = pm.createdQuery("SELECT x FROM XincoCoreNode x WHERE x.xincoCoreLanguageId = :languageId  AND x.designation LIKE %:designation% ORDER BY x.designation, x.xincoCoreLanguageId", parameters);
+            result = pm.createdQuery("SELECT x FROM XincoCoreNode x WHERE x.xincoCoreLanguageId = :languageId  AND x.designation like %:designation% ORDER BY x.designation, x.xincoCoreLanguageId", parameters);
             int i = 0;
             while (!result.isEmpty()) {
                 XincoCoreNode temp = (XincoCoreNode) result.get(0);
@@ -173,6 +209,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
                 }
             }
         } catch (Throwable e) {
+            Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.SEVERE, "Error finding node. "+parameters, e);
             nodes.removeAllElements();
         }
         return nodes;
@@ -196,12 +233,15 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
                 result.remove(0);
             }
         } catch (Throwable e) {
+            Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.SEVERE, "Error getting node parents. "+parameters, e);
             nodes.removeAllElements();
         }
         return nodes;
     }
 
     public Vector getXincoCoreNodes() {
+        if(xincoCoreNodes==null)
+            xincoCoreNodes = new Vector();
         return xincoCoreNodes;
     }
 
@@ -210,6 +250,8 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
     }
 
     public Vector getXincoCoreData() {
+        if(xincoCoreData==null)
+            xincoCoreData = new Vector();
         return xincoCoreData;
     }
 
@@ -218,19 +260,13 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
     }
 
     public Vector getXincoCoreACL() {
+        if(xincoCoreACL==null)
+            xincoCoreACL = new Vector();
         return xincoCoreACL;
     }
 
     public void setXincoCoreACL(Vector xincoCoreACL) {
         this.xincoCoreACL = xincoCoreACL;
-    }
-
-    public XincoCoreLanguage getXincoCoreLanguage() {
-        return xincoCoreLanguage;
-    }
-
-    public void setXincoCoreLanguage(XincoCoreLanguage xincoCoreLanguage) {
-        this.xincoCoreLanguage = xincoCoreLanguage;
     }
 
     public boolean isDelete() {
@@ -325,7 +361,8 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
             Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.INFO, "Creating with new id: " + newValue.getId());
         }
         newValue.setStatusNumber(temp.getStatusNumber());
-        newValue.setStatusNumber(temp.getStatusNumber());
+        newValue.setXincoCoreLanguageId(temp.getXincoCoreLanguageId());
+        newValue.setXincoCoreNodeId(temp.getXincoCoreNodeId());
         newValue.setDesignation(temp.getDesignation());
         newValue.setCreated(temp.isCreated());
         newValue.setChangerID(temp.getChangerID());
@@ -335,7 +372,24 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
     }
 
     public XincoAbstractAuditableObject update(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        XincoCoreNode val = (XincoCoreNode) value;
+        XincoCoreNodeT temp = new XincoCoreNodeT();
+        temp.setRecordId(val.getRecordId());
+        if (!value.isCreated()) {
+            temp.setId(val.getId());
+        } else {
+            temp.setId(val.getRecordId());
+        }
+        temp.setStatusNumber(val.getStatusNumber());
+        temp.setXincoCoreLanguageId(val.getXincoCoreLanguageId());
+        temp.setXincoCoreNodeId(val.getXincoCoreNodeId());
+        temp.setDesignation(val.getDesignation());
+        pm.startTransaction();
+        pm.persist(temp, false, false);
+        pm.persist(val, true, false);
+        val.saveAuditData(pm);
+        pm.commitAndClose();
+        return val;
     }
 
     @SuppressWarnings("unchecked")
@@ -358,10 +412,10 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
             if (isDelete()) {
                 parameters = new HashMap();
                 parameters.put("id", getId());
-                result = pm.namedQuery("XincoCoreACE.findById", parameters);
+                result = pm.namedQuery("XincoCoreNode.findById", parameters);
                 while (!result.isEmpty()) {
-                    XincoCoreACE temp = (XincoCoreACE) result.get(0);
-                    XincoCoreACEServer temp2 = new XincoCoreACEServer(temp.getId());
+                    XincoCoreNode temp = (XincoCoreNode) result.get(0);
+                    XincoCoreNodeServer temp2 = new XincoCoreNodeServer(temp.getId());
                     temp2.deleteFromDB();
                     result.remove(0);
                 }
@@ -424,5 +478,13 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
             }
             throw new XincoException();
         }
+    }
+
+    public XincoCoreLanguage getXincoCoreLanguage() {
+        return xincoCoreLanguage;
+    }
+
+    public void setXincoCoreLanguage(XincoCoreLanguage xincoCoreLanguage) {
+        this.xincoCoreLanguage = xincoCoreLanguage;
     }
 }
