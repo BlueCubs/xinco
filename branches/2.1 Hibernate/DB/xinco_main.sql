@@ -396,8 +396,8 @@ CREATE TABLE xinco_core_log (
 )
 TYPE=InnoDB;
 
-INSERT INTO xinco_core_log VALUES (1, 1, 1, 1, now(), 'Creation!', 1, 0, 0, ''); 
-INSERT INTO xinco_core_log VALUES (2, 2, 1, 1, now(), 'Creation!', 1, 0, 0, ''); 
+INSERT INTO xinco_core_log VALUES (1, 1, 1, 1, now(), 'audit.general.create', 1, 0, 0, ''); 
+INSERT INTO xinco_core_log VALUES (2, 2, 1, 1, now(), 'audit.general.create', 1, 0, 0, ''); 
 
 
 CREATE TABLE xinco_core_node (
@@ -490,8 +490,8 @@ CREATE TABLE xinco_setting (
 TYPE=InnoDB;
 
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(1,'version.high', 2,null,null ); 
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(2,'version.med', 0,null ,null ); 
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(3,'version.low', 3,null,null ); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(2,'version.med', 1,null ,null ); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(3,'version.low', 0,null,null ); 
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(4,'version.postfix', null,null ,null ); 
  
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(5,'password.aging', 120,null,null ); 

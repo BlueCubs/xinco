@@ -396,8 +396,8 @@ CREATE TABLE xinco_core_log (
 )
 TYPE=InnoDB;
 
-INSERT INTO xinco_core_log VALUES (1, 1, 1, 1, now(), 'Creation!', 1, 0, 0, ''); 
-INSERT INTO xinco_core_log VALUES (2, 2, 1, 1, now(), 'Creation!', 1, 0, 0, ''); 
+INSERT INTO xinco_core_log VALUES (1, 1, 1, 1, now(), 'audit.general.create', 1, 0, 0, ''); 
+INSERT INTO xinco_core_log VALUES (2, 2, 1, 1, now(), 'audit.general.create', 1, 0, 0, ''); 
 
 
 CREATE TABLE xinco_core_node (

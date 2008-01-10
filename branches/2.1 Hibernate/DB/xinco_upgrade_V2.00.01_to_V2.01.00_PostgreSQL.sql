@@ -96,3 +96,5 @@ UPDATE XINCO_CORE_group SET DESIGNATION = 'general.group.admin' WHERE ID =1;
 UPDATE XINCO_CORE_group SET DESIGNATION = 'general.group.allusers' WHERE ID =2;
 
 UPDATE XINCO_CORE_group SET DESIGNATION = 'general.group.public' WHERE ID =3;
+
+update xinco_core_log set op_description= 'audit.general.create' where op_description='Creation!'
