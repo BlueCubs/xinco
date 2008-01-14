@@ -57,9 +57,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
  */
 public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDAO, XincoPersistanceServerObject {
 
-    private static XincoPersistanceManager pm = new XincoPersistanceManager();
     private static List result;
-    private static HashMap parameters;
 
     /**
      * create single ace object for data structures
@@ -68,8 +66,9 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
      */
     @SuppressWarnings("unchecked")
     public XincoCoreACEServer(int attrID) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         try {
-            parameters = new HashMap();
+            parameters.clear();
             parameters.put("id", attrID);
             result = pm.namedQuery("XincoCoreACE.findById", parameters);
             //throw exception if no result found
@@ -112,6 +111,7 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
      * @throws com.bluecubs.xinco.core.XincoException
      */
     public XincoCoreACEServer(int attrID, int attrUID, int attrGID, int attrNID, int attrDID, boolean attrRP, boolean attrWP, boolean attrEP, boolean attrAP) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         setId(attrID);
         setXincoCoreUserId(attrUID);
         setXincoCoreGroupId(attrGID);
@@ -127,7 +127,7 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
      * Create single ace object for data structures
      */
     public XincoCoreACEServer() {
-
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
     }
 
     /**
@@ -141,7 +141,7 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
         Vector core_acl = new Vector();
         try {
             if (parameters == null) {
-                parameters = new HashMap();
+                parameters.clear();
             } else {
                 parameters.clear();
             }

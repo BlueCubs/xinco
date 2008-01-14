@@ -56,9 +56,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
  */
 public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoAuditableDAO, XincoPersistanceServerObject {
 
-    private static XincoPersistanceManager pm = new XincoPersistanceManager();
     private static List result;
-    private static HashMap parameters;
 
     /**
      * Create language object for data structures
@@ -67,8 +65,9 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
      */
     @SuppressWarnings("unchecked")
     public XincoCoreLanguageServer(int id) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         try {
-            parameters = new HashMap();
+            parameters.clear();
             parameters.put("id", id);
             result = pm.namedQuery("XincoCoreLanguage.findById", parameters);
             //throw exception if no result found
@@ -92,7 +91,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
      * Create language object for data structures
      */
     public XincoCoreLanguageServer() {
-
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
     }
 
     /**
@@ -116,7 +115,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
     public static Vector getXincoCoreLanguages() {
         Vector coreLanguages = new Vector();
         try {
-            parameters = new HashMap();
+            parameters.clear();
             result = pm.createdQuery("SELECT p FROM XincoCoreLanguage p ORDER BY p.designation", parameters);
             while (!result.isEmpty()) {
                 XincoCoreLanguage temp = (XincoCoreLanguage) result.get(0);
@@ -138,7 +137,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
     public static boolean isLanguageUsed(XincoCoreLanguage xcl) {
         boolean is_used = false;
         try {
-            parameters = new HashMap();
+            parameters.clear();
             parameters.put("xincoCoreLanguageId", xcl.getId());
             result = pm.namedQuery("XincoCoreNode.findByXincoCoreLanguageId", parameters);
             if (result.size() > 0) {

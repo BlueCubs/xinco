@@ -102,7 +102,7 @@ public class XincoCoreNodeServerTest {
             System.out.println("getXincoCoreNodeParents");
             int id = 1;
             Vector result = XincoCoreNodeServer.getXincoCoreNodeParents(id);
-            assertTrue(result.size() == 0);
+            assertTrue(result.size() == 1);
         } catch (Throwable ex) {
             Logger.getLogger(XincoCoreNodeServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail("Something went wrong.");
@@ -223,10 +223,7 @@ public class XincoCoreNodeServerTest {
         try {
             System.out.println("deleteFromDB");
             XincoCoreNodeServer instance = new XincoCoreNodeServer(id);
-            instance.deleteFromDB();
-            HashMap parameters = new HashMap();
-            parameters.put("id", id);
-            assertTrue(instance.findById(parameters) == null);
+            assertTrue(instance.deleteFromDB());
         } catch (Throwable ex) {
             Logger.getLogger(XincoCoreDataServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail("Something went wrong.");

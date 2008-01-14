@@ -57,9 +57,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
  */
 public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute implements XincoAuditableDAO, XincoPersistanceServerObject {
 
-    private static XincoPersistanceManager pm = new XincoPersistanceManager();
     private static List result;
-    private static HashMap parameters;
 
     /**
      * Create data type attribute object for data structures
@@ -68,8 +66,9 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
      */
     @SuppressWarnings("unchecked")
     public XincoCoreDataTypeAttributeServer(XincoCoreDataTypeAttributePK pk) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         try {
-            parameters = new HashMap();
+            parameters.clear();
             parameters.put("xincoCoreDataTypeId", pk.getXincoCoreDataTypeId());
             parameters.put("attributeId", pk.getAttributeId());
             result = pm.createdQuery("SELECT p FROM XincoCoreDataTypeAttribute p " +
@@ -103,6 +102,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
      * @throws com.bluecubs.xinco.core.XincoException
      */
     public XincoCoreDataTypeAttributeServer(int xincoCoreDataTypeId, int attributeId, String designation, String dataType, int size) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         setXincoCoreDataTypeAttributePK(new XincoCoreDataTypeAttributePK(xincoCoreDataTypeId, attributeId));
         setDesignation(designation);
         setDataType(dataType);
@@ -111,10 +111,9 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
 
     /**
      * Create data type attribute object for data structures
-     * @throws com.bluecubs.xinco.core.XincoException 
      */
-    @SuppressWarnings("unchecked")
-    public XincoCoreDataTypeAttributeServer() throws XincoException {
+    public XincoCoreDataTypeAttributeServer() {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
     }
 
     /**
@@ -125,7 +124,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     @SuppressWarnings("unchecked")
     public static Vector getXincoCoreDataTypeAttributes(int xincoCoreDataTypeId) {
         Vector coreDataTypeAttributes = new Vector();
-        parameters = new HashMap();
+        parameters.clear();
         parameters.put("xincoCoreDataTypeId", xincoCoreDataTypeId);
         try {
             result = pm.createdQuery("SELECT p FROM XincoCoreDataTypeAttribute p WHERE p.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId= :xincoCoreDataTypeId ORDER BY p.xincoCoreDataTypeAttributePK.attributeId", parameters);

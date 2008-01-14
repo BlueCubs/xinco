@@ -56,9 +56,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
  */
 public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoAuditableDAO, XincoPersistanceServerObject {
 
-    private static XincoPersistanceManager pm = new XincoPersistanceManager();
     private static List result;
-    private static HashMap parameters;
     private Vector XincoCoreDataTypeAttributes;
 
     /**
@@ -68,8 +66,9 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
      */
     @SuppressWarnings("unchecked")
     public XincoCoreDataTypeServer(int attrID) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         try {
-            parameters = new HashMap();
+            parameters.clear();
             parameters.put("id", attrID);
             result = pm.namedQuery("XincoCoreDataType.findById", parameters);
             //throw exception if no result found
@@ -99,6 +98,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
      * @throws com.bluecubs.xinco.core.XincoException
      */
     public XincoCoreDataTypeServer(int id, String attrD, String attrDESC, Vector attrA) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         setId(id);
         setDesignation(attrD);
         setDescription(attrDESC);

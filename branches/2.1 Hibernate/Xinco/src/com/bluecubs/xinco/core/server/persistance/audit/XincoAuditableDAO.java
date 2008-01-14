@@ -35,6 +35,8 @@
  */
 package com.bluecubs.xinco.core.server.persistance.audit;
 
+import com.bluecubs.xinco.core.server.persistance.XincoPersistanceManager;
+import com.bluecubs.xinco.core.server.persistance.XincoSettingServer;
 import java.util.HashMap;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -45,6 +47,9 @@ import org.springframework.dao.OptimisticLockingFailureException;
  * @author Javier A. Ortiz
  */
 public interface XincoAuditableDAO {
+
+    XincoPersistanceManager pm = new XincoPersistanceManager();
+    static HashMap parameters= new HashMap();
 
     /**
      * Find an object by its identifier. This should return only the specified

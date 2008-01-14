@@ -29,7 +29,6 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
 
     private Vector xinco_settings = null;
     private int changerID;
-    private XincoPersistanceManager pm = new XincoPersistanceManager();
     private List result;
 
     /** Creates a new instance of XincoSettingServer

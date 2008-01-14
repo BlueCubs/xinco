@@ -56,7 +56,6 @@ import org.springframework.dao.OptimisticLockingFailureException;
  */
 public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditableDAO, XincoPersistanceServerObject {
 
-    private static XincoPersistanceManager pm = new XincoPersistanceManager();
     private static List result;
 
     /**
@@ -66,6 +65,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
      */
     @SuppressWarnings("unchecked")
     public XincoCoreGroupServer(int id) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         try {
             HashMap parameters = new HashMap();
             parameters.put("id", id);
@@ -85,6 +85,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
     }
 
     public XincoCoreGroupServer() {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
     }
 
     /**
@@ -95,6 +96,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
      * @throws com.bluecubs.xinco.core.XincoException
      */
     public XincoCoreGroupServer(int id, String designation, int status) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         setId(id);
         setDesignation(designation);
         setStatusNumber(status);

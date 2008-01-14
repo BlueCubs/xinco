@@ -75,8 +75,6 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
     private boolean increaseAttempts = false;
     private Vector xinco_core_groups;
     private boolean change = false,  writegroups = false;
-    //Persistance tools
-    private static XincoPersistanceManager pm = new XincoPersistanceManager();
     private static List result;
 
     /**
@@ -88,6 +86,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
     @SuppressWarnings("unchecked")
     public XincoCoreUserServer(String username, String password) throws XincoException {
         XincoCoreUser temp;
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         try {
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO, "Logging as user: " + username + ", password: " + password);
@@ -126,7 +125,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
                 setChange(false);
                 write2DB();
             } else {
-                HashMap parameters = new HashMap();
+                parameters.clear();
                 parameters.put("username", username);
                 result = pm.namedQuery("XincoCoreUser.findByUsername", parameters);
                 //The username is valid but wrong password. Increase the login attempts.
@@ -186,7 +185,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
      */
     @SuppressWarnings("unchecked")
     public XincoCoreUserServer(int attrID) throws XincoException {
-        GregorianCalendar cal = null;
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         try {
             HashMap temp = new HashMap();
             temp.put("id", attrID);
@@ -231,6 +230,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
      */
     public XincoCoreUserServer(int attrID, String attrUN, String attrUPW, String attrN,
             String attrFN, String attrE, int attrSN, int attrAN, Date attrTS) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         try {
             setId(attrID);
             setUsername(attrUN);
@@ -252,7 +252,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
     private void fillXincoCoreGroups() throws XincoException {
         setXincoCoreGroups(new Vector());
         try {
-            HashMap parameters = new HashMap();
+            parameters.clear();
             parameters.put("xincoCoreUserId", this.getId());
             result = pm.namedQuery("XincoCoreUserHasXincoCoreGroup.findByXincoCoreUserId", parameters);
             while (!result.isEmpty()) {
@@ -389,7 +389,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
                 // compute max mod date
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.DAY_OF_YEAR, -new XincoSettingServer("password.unusable_period").getIntValue());
-                HashMap parameters = new HashMap();
+                parameters.clear();
                 parameters.put("maxModDate", cal.getTime());
                 result = pm.createdQuery("from XincoCoreUserT p where p.id=" +
                         getId() + " and p.lastModified >= :maxModDate", parameters);
@@ -400,7 +400,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
                                 new XincoSettingServer("password.unusable_period").getIntValue());
                     }
                     passwordIsUsable = true;
-                }else{
+                } else {
                     if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                         System.out.println("Password used within the unusable period-" +
                                 new XincoSettingServer("password.unusable_period").getIntValue());

@@ -25,7 +25,7 @@ public class XincoPersistanceManager {
     private EntityManagerFactory emf = null;
     private EntityManager em = null;
     private TransactionImpl transaction;
-    private boolean transactionOk = false;
+    private boolean transactionOk = false,  developerMode = false;
     public static XincoConfigSingletonServer config;
 
     public XincoPersistanceManager() {
@@ -47,7 +47,9 @@ public class XincoPersistanceManager {
             }
             return updateTransactionStatus(true);
         } catch (Exception e) {
-            Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);
+            if (isDeveloperMode()) {
+                Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);
+            }
             getEntityManager().getTransaction().rollback();
             return updateTransactionStatus(false);
         }
@@ -65,7 +67,9 @@ public class XincoPersistanceManager {
             }
             return updateTransactionStatus(true);
         } catch (Exception e) {
-            Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);
+            if (isDeveloperMode()) {
+                Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);
+            }
             getEntityManager().getTransaction().rollback();
             return updateTransactionStatus(false);
         }
@@ -74,10 +78,15 @@ public class XincoPersistanceManager {
     public List executeQuery(String query) {
         try {
             Query q = getEntityManager().createQuery(query);
-            Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.INFO, "Executing: "+query);
+            if (isDeveloperMode()) {
+                Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.INFO, "Executing: " + query);
+                Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.INFO, "Result size: " + q.getResultList().size());
+            }
             return q.getResultList();
         } catch (Throwable e) {
-            Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);
+            if (isDeveloperMode()) {
+                Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);
+            }
         }
         return null;
     }
@@ -92,10 +101,15 @@ public class XincoPersistanceManager {
                     q.setParameter(key, parameters.get(key));
                 }
             }
-            Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.INFO, "Executing: "+createdQuery);
+            if (isDeveloperMode()) {
+                Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.INFO, "Executing: " + createdQuery);
+                Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.INFO, "Result size: " + q.getResultList().size());
+            }
             return q.getResultList();
         } catch (Exception e) {
-            Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);
+            if (isDeveloperMode()) {
+                Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);
+            }
         }
         return null;
     }
@@ -110,10 +124,15 @@ public class XincoPersistanceManager {
                     q.setParameter(key, parameters.get(key));
                 }
             }
-            Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.INFO, "Executing: "+namedQuery);
+            if (isDeveloperMode()) {
+                Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.INFO, "Executing: " + namedQuery);
+                Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.INFO, "Result size: " + q.getResultList().size());
+            }
             return q.getResultList();
         } catch (Exception e) {
-            Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);
+            if (isDeveloperMode()) {
+                Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);
+            }
         }
         return null;
     }
@@ -145,7 +164,9 @@ public class XincoPersistanceManager {
             getTransaction().begin();
             return true;
         } catch (Exception e) {
-            Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);
+            if (isDeveloperMode()) {
+                Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);
+            }
             return false;
         }
     }
@@ -159,7 +180,9 @@ public class XincoPersistanceManager {
             transaction = null;
             return updateTransactionStatus(true);
         } catch (Exception e) {
-            Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);
+            if (isDeveloperMode()) {
+                Logger.getLogger(XincoPersistanceManager.class.getName()).log(Level.SEVERE, null, e);
+            }
             getEntityManager().getTransaction().rollback();
             return updateTransactionStatus(false);
         }
@@ -178,5 +201,13 @@ public class XincoPersistanceManager {
 
     private void setTransactionOk(boolean transactionOk) {
         this.transactionOk = transactionOk;
+    }
+
+    public boolean isDeveloperMode() {
+        return developerMode;
+    }
+
+    public void setDeveloperMode(boolean developerMode) {
+        this.developerMode = developerMode;
     }
 }

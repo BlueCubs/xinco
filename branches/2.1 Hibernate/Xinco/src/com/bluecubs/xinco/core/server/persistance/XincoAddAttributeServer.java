@@ -58,9 +58,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
  */
 public class XincoAddAttributeServer extends XincoAddAttribute implements XincoAuditableDAO, XincoPersistanceServerObject {
 
-    private static XincoPersistanceManager pm = new XincoPersistanceManager();
     private static List result;
-    private static HashMap parameters;
 
     /**
      * Create add attribute object for data structures
@@ -69,8 +67,9 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
      */
     @SuppressWarnings("unchecked")
     public XincoAddAttributeServer(XincoAddAttributePK pk) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         try {
-            parameters = new HashMap();
+            parameters.clear();
             parameters.put("xincoCoreDataId", pk.getXincoCoreDataId());
             parameters.put("attributeId", pk.getAttributeId());
             result = pm.createdQuery("SELECT p FROM XincoAddAttribute p " +
@@ -106,6 +105,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
      * @throws com.bluecubs.xinco.core.XincoException
      */
     public XincoAddAttributeServer(int xincoCoreDataId, int attributeId, int attrI, int attrUI, double attrD, String attrVC, String attrT, Date attrDT) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         setXincoAddAttributePK(new XincoAddAttributePK(xincoCoreDataId, attributeId));
         setAttribInt(attrI);
         setAttribUnsignedint(attrUI);
@@ -119,7 +119,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
      * Create add attribute object for data structures
      */
     public XincoAddAttributeServer() {
-
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
     }
 
     /**
@@ -131,7 +131,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
     public static Vector getXincoAddAttributes(int attrID) {
         Vector addAttributes = new Vector();
         try {
-            parameters = new HashMap();
+            parameters.clear();
             parameters.put("xincoCoreDataId", attrID);
             result = pm.createdQuery("SELECT p FROM XincoAddAttribute p WHERE " +
                     "p.XincoAddAttributePK.xincoCoreDataId = :xincoCoreDataId ORDER " +

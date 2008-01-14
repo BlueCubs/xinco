@@ -56,12 +56,11 @@ import org.springframework.dao.OptimisticLockingFailureException;
  */
 public class XincoIDServer extends XincoId implements XincoAuditableDAO, XincoPersistanceServerObject {
 
-    private HashMap parameters;
-    private XincoPersistanceManager pm = new XincoPersistanceManager();
     private List result;
 
     @SuppressWarnings("unchecked")
     public XincoIDServer(String table) {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         XincoId temp;
         HashMap p = new HashMap();
         p.put("tablename", table);
@@ -76,11 +75,13 @@ public class XincoIDServer extends XincoId implements XincoAuditableDAO, XincoPe
     }
 
     public XincoIDServer(String table, int lastId) {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         setTablename(table);
         setLastId(lastId);
     }
 
     public XincoIDServer() {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
     }
 
     /**
@@ -180,12 +181,12 @@ public class XincoIDServer extends XincoId implements XincoAuditableDAO, XincoPe
             XincoId tempId = (XincoId) value;
             XincoCoreGroupServer group = new XincoCoreGroupServer();
             XincoCoreGroup g;
-            parameters = new HashMap();
+            parameters.clear();
             parameters.put("designation", "general.group.admin");
             //Delete only if member of admin group
             if (group.findWithDetails(parameters).length > 0) {
                 g = (XincoCoreGroup) group.findWithDetails(parameters)[0];
-                parameters = new HashMap();
+                parameters.clear();
                 parameters.put("xincoCoreUserId", tempId.getChangerID());
                 parameters.put("xincoCoreGroupId", g.getId());
                 if (!pm.createdQuery("SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE " +
@@ -218,7 +219,7 @@ public class XincoIDServer extends XincoId implements XincoAuditableDAO, XincoPe
     @SuppressWarnings("unchecked")
     public boolean write2DB() throws XincoException {
         try {
-            parameters = new HashMap();
+            parameters.clear();
             parameters.put("tablename", getTablename());
             result = pm.namedQuery("XincoId.findByTablename", parameters);
             if (result.size() > 0) {

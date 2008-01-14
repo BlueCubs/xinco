@@ -53,9 +53,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 
 public class XincoCoreLogServer extends XincoCoreLog implements XincoAuditableDAO, XincoPersistanceServerObject {
 
-    private static XincoPersistanceManager pm = new XincoPersistanceManager();
     private static List result;
-    private static HashMap parameters;
 
     /**
      * Create single log object for data structures
@@ -64,8 +62,9 @@ public class XincoCoreLogServer extends XincoCoreLog implements XincoAuditableDA
      */
     @SuppressWarnings("unchecked")
     public XincoCoreLogServer(int id) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         try {
-            parameters = new HashMap();
+            parameters.clear();
             parameters.put("id", id);
             result = pm.namedQuery("XincoCoreLog.findById", parameters);
             //throw exception if no result found
@@ -107,6 +106,7 @@ public class XincoCoreLogServer extends XincoCoreLog implements XincoAuditableDA
      * @throws com.bluecubs.xinco.core.XincoException
      */
     public XincoCoreLogServer(int attrID, int attrCDID, int attrUID, int attrOC, Date attrODT, String attrOD, int attrVH, int attrVM, int attrVL, String attrVP) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         setId(attrID);
         setXincoCoreDataId(attrCDID);
         setXincoCoreUserId(attrUID);
@@ -128,7 +128,7 @@ public class XincoCoreLogServer extends XincoCoreLog implements XincoAuditableDA
     public static Vector getXincoCoreLogs(int id) {
         Vector coreLog = new Vector();
         try {
-            parameters = new HashMap();
+            parameters.clear();
             parameters.put("id", id);
             result = pm.namedQuery("XincoCoreLog.findById", parameters);
             while (!result.isEmpty()) {
@@ -160,6 +160,17 @@ public class XincoCoreLogServer extends XincoCoreLog implements XincoAuditableDA
         temp.setVersion_low(getVersionLow());
         temp.setVersion_postfix(getVersionPostfix());
         return temp;
+    }
+    
+    /**
+     * Set Version
+     * @param version XincoVersion
+     */
+    public void setVersion(XincoVersion version) {
+        setVersionHigh(version.getVersion_high());
+        setVersionMid(version.getVersion_mid());
+        setVersionLow(version.getVersion_low());
+        setVersionPostfix(version.getVersion_postfix());
     }
 
     public XincoAbstractAuditableObject findById(HashMap parameters) throws DataRetrievalFailureException {

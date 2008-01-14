@@ -66,9 +66,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
  */
 public class XincoCoreDataServer extends XincoCoreData implements XincoAuditableDAO, XincoPersistanceServerObject {
 
-    private static XincoPersistanceManager pm = new XincoPersistanceManager();
     private static List result;
-    private static HashMap parameters;
     private Vector xinco_core_logs;
     private Vector xincoAddAttributes,  xincoCoreACL;
 
@@ -79,8 +77,9 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
      */
     @SuppressWarnings("unchecked")
     public XincoCoreDataServer(int attrID) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         try {
-            parameters = new HashMap();
+            parameters.clear();
             parameters.put("id", attrID);
             result = pm.namedQuery("XincoCoreData.findById", parameters);
             //throw exception if no result found
@@ -121,6 +120,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
      * @throws com.bluecubs.xinco.core.XincoException
      */
     public XincoCoreDataServer(int attrID, int attrCNID, int attrLID, int attrDTID, String attrD, int attrSN) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         setId(attrID);
         setXincoCoreNodeId(attrCNID);
         setXincoCoreLanguageId(attrLID);
@@ -137,6 +137,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
     }
 
     public XincoCoreDataServer() {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
     }
 
     @SuppressWarnings("unchecked")
@@ -162,7 +163,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
     public static Vector findXincoCoreData(String designation, int attrLID, boolean attrSA) {
         Vector data = new Vector();
         try {
-            parameters = new HashMap();
+            parameters.clear();
             String lang = "";
             if (attrLID != 0) {
                 lang = "AND p.xincoCorelanguageId = :attrLID";
