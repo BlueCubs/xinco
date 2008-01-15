@@ -35,7 +35,7 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
-import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.exception.XincoException;
 import com.bluecubs.xinco.core.persistance.XincoCoreDataType;
 import com.bluecubs.xinco.core.persistance.audit.XincoCoreDataTypeT;
 import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
@@ -62,7 +62,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
     /**
      * Create data type object for data structures
      * @param attrID 
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException
      */
     @SuppressWarnings("unchecked")
     public XincoCoreDataTypeServer(int attrID) throws XincoException {
@@ -95,7 +95,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
      * @param attrD
      * @param attrDESC
      * @param attrA
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException
      */
     public XincoCoreDataTypeServer(int id, String attrD, String attrDESC, Vector attrA) throws XincoException {
         pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
@@ -104,7 +104,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
         setDescription(attrDESC);
         setXincoCoreDataTypeAttributes(attrA);
     }
-    
+
     public Vector getXincoCoreDataTypeAttributes() {
         return XincoCoreDataTypeAttributes;
     }
@@ -253,7 +253,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
         return new XincoIDServer("xinco_core_data_type").getNewTableID();
     }
 
-    public boolean deleteFromDB() throws XincoException {
+    public boolean deleteFromDB() {
         setTransactionTime(DateRange.startingNow());
         try {
             XincoAuditingDAOHelper.delete(this, getId());
@@ -262,11 +262,11 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoCoreDataTypeServer.class.getName()).log(Level.SEVERE, null, e);
             }
-            throw new XincoException();
+            return false;
         }
     }
 
-    public boolean write2DB() throws XincoException {
+    public boolean write2DB() {
         try {
             if (getId() > 0) {
                 XincoAuditingDAOHelper.update(this, new XincoCoreDataType(getId()));
@@ -288,7 +288,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoCoreDataTypeServer.class.getName()).log(Level.SEVERE, null, e);
             }
-            throw new XincoException();
+            return false;
         }
     }
 }

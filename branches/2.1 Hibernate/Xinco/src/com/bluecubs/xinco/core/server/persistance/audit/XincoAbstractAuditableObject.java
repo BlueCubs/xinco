@@ -36,9 +36,8 @@
  */
 package com.bluecubs.xinco.core.server.persistance.audit;
 
-import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.exception.XincoException;
 import com.bluecubs.xinco.core.persistance.XincoCoreUserModifiedRecord;
-import com.bluecubs.xinco.core.server.persistance.XincoCoreACEServer;
 import com.bluecubs.xinco.core.server.persistance.XincoPersistanceManager;
 import com.bluecubs.xinco.core.server.persistance.XincoIDServer;
 import java.util.logging.Level;
@@ -54,7 +53,7 @@ public abstract class XincoAbstractAuditableObject extends BaseObject implements
 
     private DateRange transactionTime = DateRange.startingNow();
     private boolean created = false,  deleted = false,  modified = false;
-    private int changerID=0,  id = 0;
+    private int changerID = 0,  id = 0;
     private String reason;
     private XincoCoreUserModifiedRecord xcumr;
     private static XincoPersistanceManager pm;
@@ -170,21 +169,21 @@ public abstract class XincoAbstractAuditableObject extends BaseObject implements
         pm.persist(getXincoCoreUserModifiedRecord(), false, false);
         return pm.isTransactionOk();
     }
-    
+
     /**
      * Remove from DB (static)
      * @param o XincoAbstractAuditableObject
      * @param userID User ID
      * @return int
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException
      */
     public static boolean removeFromDB(XincoAbstractAuditableObject o, int userID) throws XincoException {
         try {
             o.setChangerID(userID);
             pm.delete(o, true);
         } catch (Throwable e) {
-                Logger.getLogger(XincoAbstractAuditableObject.class.getName()).log(Level.SEVERE, null, e);
-                throw new XincoException();
+            Logger.getLogger(XincoAbstractAuditableObject.class.getName()).log(Level.SEVERE, null, e);
+            throw new XincoException();
         }
         return true;
     }

@@ -35,7 +35,7 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
-import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.exception.XincoException;
 import com.bluecubs.xinco.core.persistance.XincoCoreGroup;
 import com.bluecubs.xinco.core.persistance.audit.XincoCoreGroupT;
 import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
@@ -61,13 +61,13 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
     /**
      * Create group object for data structures
      * @param id
-     * @throws com.bluecubs.xinco.core.XincoException 
+     * @throws com.bluecubs.xinco.core.exception.XincoException 
      */
     @SuppressWarnings("unchecked")
     public XincoCoreGroupServer(int id) throws XincoException {
         pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         try {
-            HashMap parameters = new HashMap();
+            parameters.clear();
             parameters.put("id", id);
             result = pm.namedQuery("XincoCoreGroup.findById", parameters);
             //throw exception if no result found
@@ -93,41 +93,13 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
      * @param id
      * @param designation
      * @param status
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException
      */
     public XincoCoreGroupServer(int id, String designation, int status) throws XincoException {
         pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         setId(id);
         setDesignation(designation);
         setStatusNumber(status);
-    }
-
-    /**
-     * Persist object
-     * @return 
-     * @throws com.bluecubs.xinco.core.XincoException
-     */
-    public boolean write2DB() throws XincoException {
-        try {
-            if (getId() > 0) {
-                XincoAuditingDAOHelper.update(this, new XincoCoreGroup(getId()));
-            } else {
-                XincoCoreGroup temp = new XincoCoreGroup();
-                temp.setId(getId());
-                temp.setChangerID(getChangerID());
-                temp.setCreated(true);
-                temp.setDesignation(getDesignation());
-                temp.setStatusNumber(getStatusNumber());
-                temp = (XincoCoreGroup) XincoAuditingDAOHelper.create(this, temp);
-                setId(temp.getId());
-            }
-            return true;
-        } catch (Throwable e) {
-            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.SEVERE, null, e);
-            }
-            throw new XincoException();
-        }
     }
 
     /**
@@ -150,19 +122,6 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
             coreGroups.removeAllElements();
         }
         return coreGroups;
-    }
-
-    public boolean deleteFromDB() throws XincoException {
-        setTransactionTime(DateRange.startingNow());
-        try {
-            XincoAuditingDAOHelper.delete(this, getId());
-            return true;
-        } catch (Throwable e) {
-            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
-            }
-            throw new XincoException();
-        }
     }
 
     public XincoAbstractAuditableObject findById(HashMap parameters) throws DataRetrievalFailureException {
@@ -291,5 +250,45 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
 
     public int getNewID() {
         return new XincoIDServer("xinco_core_group").getNewTableID();
+    }
+    
+    /**
+     * Persist object
+     * @return 
+     */
+    public boolean write2DB() {
+        try {
+            if (getId() > 0) {
+                XincoAuditingDAOHelper.update(this, new XincoCoreGroup(getId()));
+            } else {
+                XincoCoreGroup temp = new XincoCoreGroup();
+                temp.setId(getId());
+                temp.setChangerID(getChangerID());
+                temp.setCreated(true);
+                temp.setDesignation(getDesignation());
+                temp.setStatusNumber(getStatusNumber());
+                temp = (XincoCoreGroup) XincoAuditingDAOHelper.create(this, temp);
+                setId(temp.getId());
+            }
+            return true;
+        } catch (Throwable e) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.SEVERE, null, e);
+            }
+            return false;
+        }
+    }
+
+    public boolean deleteFromDB() {
+        setTransactionTime(DateRange.startingNow());
+        try {
+            XincoAuditingDAOHelper.delete(this, getId());
+            return true;
+        } catch (Throwable e) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
+            }
+            return false;
+        }
     }
 }

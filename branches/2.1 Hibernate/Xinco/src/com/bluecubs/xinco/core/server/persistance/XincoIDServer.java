@@ -35,7 +35,6 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
-import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.persistance.XincoCoreGroup;
 import com.bluecubs.xinco.core.persistance.XincoId;
 import com.bluecubs.xinco.core.persistance.audit.XincoIdT;
@@ -217,7 +216,7 @@ public class XincoIDServer extends XincoId implements XincoAuditableDAO, XincoPe
     }
 
     @SuppressWarnings("unchecked")
-    public boolean write2DB() throws XincoException {
+    public boolean write2DB(){
         try {
             parameters.clear();
             parameters.put("tablename", getTablename());
@@ -244,11 +243,11 @@ public class XincoIDServer extends XincoId implements XincoAuditableDAO, XincoPe
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoIDServer.class.getName()).log(Level.SEVERE, null, e);
             }
-            throw new XincoException();
+            return false;
         }
     }
 
-    public boolean deleteFromDB() throws XincoException {
+    public boolean deleteFromDB(){
         setTransactionTime(DateRange.startingNow());
         try {
             XincoAuditingDAOHelper.delete(this, getTablename());
@@ -257,7 +256,7 @@ public class XincoIDServer extends XincoId implements XincoAuditableDAO, XincoPe
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, e);
             }
-            throw new XincoException();
+            return false;
         }
     }
 

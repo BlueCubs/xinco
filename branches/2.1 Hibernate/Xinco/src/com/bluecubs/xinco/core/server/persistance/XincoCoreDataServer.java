@@ -35,7 +35,7 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
-import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.exception.XincoException;
 import com.bluecubs.xinco.core.persistance.XincoAddAttribute;
 import com.bluecubs.xinco.core.persistance.XincoCoreACE;
 import com.bluecubs.xinco.core.persistance.XincoCoreData;
@@ -73,7 +73,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
     /**
      * create data object for data structures
      * @param attrID Data id
-     * @throws com.bluecubs.xinco.core.XincoException 
+     * @throws com.bluecubs.xinco.core.exception.XincoException 
      */
     @SuppressWarnings("unchecked")
     public XincoCoreDataServer(int attrID) throws XincoException {
@@ -117,7 +117,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
      * @param attrDTID XincoCoreDataTypeId
      * @param attrD Designation
      * @param attrSN Status number
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException
      */
     public XincoCoreDataServer(int attrID, int attrCNID, int attrLID, int attrDTID, String attrD, int attrSN) throws XincoException {
         pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
@@ -390,7 +390,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
     }
 
     @SuppressWarnings("unchecked")
-    public boolean deleteFromDB() throws XincoException {
+    public boolean deleteFromDB(){
         setTransactionTime(DateRange.startingNow());
         try {
             XincoAuditingDAOHelper.delete(this, getId());
@@ -463,11 +463,11 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, e);
             }
-            throw new XincoException();
+            return false;
         }
     }
 
-    public boolean write2DB() throws XincoException {
+    public boolean write2DB(){
         try {
             if (getId() > 0) {
                 XincoAuditingDAOHelper.update(this, new XincoCoreData(getId()));
@@ -504,7 +504,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, e);
             }
-            throw new XincoException();
+            return false;
         }
     }
 

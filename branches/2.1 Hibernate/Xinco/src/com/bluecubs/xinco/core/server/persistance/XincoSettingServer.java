@@ -4,8 +4,8 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
-import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.XincoSettingException;
+import com.bluecubs.xinco.core.exception.XincoException;
+import com.bluecubs.xinco.core.exception.XincoSettingException;
 import com.bluecubs.xinco.core.persistance.XincoSetting;
 import com.bluecubs.xinco.core.persistance.audit.XincoSettingT;
 import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
@@ -39,7 +39,7 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
      * @param BoolValue
      * @param LongValue
      * @param changerID
-     * @throws com.bluecubs.xinco.core.XincoException 
+     * @throws com.bluecubs.xinco.core.exception.XincoException 
      */
     public XincoSettingServer(int id, java.lang.String description, int IntValue,
             java.lang.String StringValue, boolean BoolValue, BigInteger LongValue, int changerID) throws XincoException {
@@ -127,8 +127,8 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
     /**
      * Get setting
      * @param s
-     * @return @link XincoSetting
-     * @throws com.bluecubs.xinco.core.XincoSettingException
+     * @return @throws com.bluecubs.xinco.core.exception.XincoSettingException 
+     * @link XincoSetting
      */
     public XincoSetting getSetting(String s) throws XincoSettingException {
         for (int i = 0; i < getXinco_settings().size(); i++) {
@@ -170,18 +170,18 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
         this.changerID = changerID;
     }
 
-    public boolean deleteFromDB() throws XincoException {
+    public boolean deleteFromDB(){
         setTransactionTime(DateRange.startingNow());
         try {
             XincoAuditingDAOHelper.delete(this, getId());
             return true;
         } catch (Throwable e) {
             Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
-            throw new XincoException();
+            return false;
         }
     }
 
-    public boolean write2DB() throws XincoException {
+    public boolean write2DB(){
         setTransactionTime(DateRange.startingNow());
         try {
             //Object exists
@@ -201,7 +201,7 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
             return true;
         } catch (Throwable e) {
             Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
-            throw new XincoException();
+            return false;
         }
     }
 

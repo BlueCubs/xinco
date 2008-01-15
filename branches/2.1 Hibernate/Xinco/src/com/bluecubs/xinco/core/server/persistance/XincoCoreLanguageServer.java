@@ -35,7 +35,7 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
-import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.exception.XincoException;
 import com.bluecubs.xinco.core.persistance.XincoCoreLanguage;
 import com.bluecubs.xinco.core.persistance.audit.XincoCoreLanguageT;
 import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
@@ -61,7 +61,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
     /**
      * Create language object for data structures
      * @param id
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException
      */
     @SuppressWarnings("unchecked")
     public XincoCoreLanguageServer(int id) throws XincoException {
@@ -99,7 +99,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
      * @param id
      * @param sign
      * @param designation
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException
      */
     public XincoCoreLanguageServer(int id, String sign, String designation) throws XincoException {
         setId(id);
@@ -259,7 +259,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
         return new XincoIDServer("xinco_core_language").getNewTableID();
     }
 
-    public boolean deleteFromDB() throws XincoException {
+    public boolean deleteFromDB() {
         setTransactionTime(DateRange.startingNow());
         try {
             XincoAuditingDAOHelper.delete(this, getId());
@@ -268,11 +268,11 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, e);
             }
-            throw new XincoException();
+            return false;
         }
     }
 
-    public boolean write2DB() throws XincoException {
+    public boolean write2DB() {
         try {
             if (getId() > 0) {
                 XincoAuditingDAOHelper.update(this, new XincoCoreLanguage(getId()));
@@ -291,7 +291,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.SEVERE, null, e);
             }
-            throw new XincoException();
+            return false;
         }
     }
 }

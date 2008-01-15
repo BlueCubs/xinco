@@ -35,7 +35,7 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
-import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.exception.XincoException;
 import com.bluecubs.xinco.core.persistance.XincoAddAttribute;
 import com.bluecubs.xinco.core.persistance.XincoAddAttributePK;
 import com.bluecubs.xinco.core.persistance.audit.XincoAddAttributeT;
@@ -63,7 +63,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
     /**
      * Create add attribute object for data structures
      * @param pk XincoAddAttributePK
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException
      */
     @SuppressWarnings("unchecked")
     public XincoAddAttributeServer(XincoAddAttributePK pk) throws XincoException {
@@ -102,7 +102,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
      * @param attrVC varchar attribute
      * @param attrT string attribute
      * @param attrDT date time attribute
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException
      */
     public XincoAddAttributeServer(int xincoCoreDataId, int attributeId, int attrI, int attrUI, double attrD, String attrVC, String attrT, Date attrDT) throws XincoException {
         pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
@@ -337,7 +337,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         }
     }
 
-    public boolean deleteFromDB() throws XincoException {
+    public boolean deleteFromDB() {
         setTransactionTime(DateRange.startingNow());
         try {
             XincoAuditingDAOHelper.delete(this, getXincoAddAttributePK().getAttributeId());
@@ -346,11 +346,11 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoAddAttributeServer.class.getName()).log(Level.SEVERE, null, e);
             }
-            throw new XincoException();
+            return false;
         }
     }
 
-    public boolean write2DB() throws XincoException {
+    public boolean write2DB() {
         try {
             if (getXincoAddAttributePK().getAttributeId() > 0) {
                 if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
@@ -378,7 +378,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
             if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, e);
             }
-            throw new XincoException();
+            return false;
         }
     }
 }

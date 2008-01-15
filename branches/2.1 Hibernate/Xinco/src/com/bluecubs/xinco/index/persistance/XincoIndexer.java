@@ -1,8 +1,7 @@
 package com.bluecubs.xinco.index.persistance;
 
-import com.bluecubs.xinco.core.XincoSettingException;
+import com.bluecubs.xinco.core.exception.XincoSettingException;
 import com.bluecubs.xinco.core.persistance.XincoCoreData;
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.server.persistance.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.persistance.XincoCoreDataTypeServer;
 import com.bluecubs.xinco.core.server.persistance.XincoPersistanceManager;
@@ -45,12 +44,12 @@ public class XincoIndexer {
             } catch (Exception ie) {
                 writer = new IndexWriter(XincoPersistanceManager.config.getFileIndexPath(), new StandardAnalyzer(), true);
             }
-            if (new XincoSettingServer().getSetting("setting.enable.developermode").getBoolValue()) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 System.out.println("Indexing...");
             }
             Document temp = XincoDocument.getXincoDocument(new XincoCoreDataServer(d.getId()), index_content);
             List l = temp.getFields();
-            if (new XincoSettingServer().getSetting("setting.enable.developermode").getBoolValue()) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 for (int i = 0; i < l.size(); i++) {
                     System.out.println(((Field) l.get(i)).toString());
                 }
@@ -58,7 +57,7 @@ public class XincoIndexer {
             writer.addDocument(temp);
             writer.flush();
             writer.close();
-            if (new XincoSettingServer().getSetting("setting.enable.developermode").getBoolValue()) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                 System.out.println("Indexing complete!");
             }
         } catch (Exception e) {
@@ -90,7 +89,7 @@ public class XincoIndexer {
             }
         } catch (Exception re) {
             try {
-                if (new XincoSettingServer().getSetting("setting.enable.developermode").getBoolValue()) {
+                if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
                     Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, re);
                 }
                 if (reader != null) {
@@ -100,7 +99,7 @@ public class XincoIndexer {
                     }
                 }
                 return false;
-            } catch (XincoSettingException ex) {
+            } catch (Throwable ex) {
                 Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -109,14 +108,13 @@ public class XincoIndexer {
 
     /**
      * Optimize Lucene index
-     * @param DBM
      * @return boolean
      */
-    public static synchronized boolean optimizeIndex(XincoDBManager DBM) {
+    public static synchronized boolean optimizeIndex() {
         IndexWriter writer = null;
         try {
             //optimize index
-            writer = new IndexWriter(DBM.config.getFileIndexPath(), new StandardAnalyzer(), false);
+            writer = new IndexWriter(XincoPersistanceManager.config.getFileIndexPath(), new StandardAnalyzer(), false);
             writer.optimize();
             writer.close();
         } catch (Exception e) {
