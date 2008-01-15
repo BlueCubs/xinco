@@ -1,5 +1,5 @@
 /**
- *Copyright 2004 blueCubs.com
+ *Copyright 2007 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@
  *
  * Name:            XincoCoreLanguageServer
  *
- * Description:     language
+ * Description:     Language
  *
- * Original Author: Alexander Manes
- * Date:            2004
+ * Original Author: Javier A. Ortiz
+ * Date:            2007
  *
  * Modifications:
  *
@@ -35,41 +35,63 @@
  */
 package com.bluecubs.xinco.core.server;
 
-import java.sql.*;
+import com.bluecubs.xinco.core.exception.XincoException;
+import com.bluecubs.xinco.core.persistence.XincoCoreLanguage;
+import com.bluecubs.xinco.core.persistence.audit.XincoCoreLanguageT;
+import com.bluecubs.xinco.core.persistence.audit.tools.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditableDAO;
+import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditingDAOHelper;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
-
-import com.bluecubs.xinco.core.*;
-import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import net.sf.oness.common.model.temporal.DateRange;
+import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.dao.OptimisticLockingFailureException;
 
 /**
- * Create language object for data structures
- * @author Alexander Manes
+ *
+ * @author Javier A. Ortiz
  */
-public class XincoCoreLanguageServer extends XincoCoreLanguage {
+public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoAuditableDAO, XincoPersistanceServerObject {
+
+    private static List result;
 
     /**
      * Create language object for data structures
      * @param id
-     * @param DBM
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException
      */
-    public XincoCoreLanguageServer(int id, XincoDBManager DBM) throws XincoException {
+    @SuppressWarnings("unchecked")
+    public XincoCoreLanguageServer(int id) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         try {
-            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_language WHERE id=" + id);
+            parameters.clear();
+            parameters.put("id", id);
+            result = pm.namedQuery("XincoCoreLanguage.findById", parameters);
             //throw exception if no result found
-            int RowCount = 0;
-            while (rs.next()) {
-                RowCount++;
-                setId(rs.getInt("id"));
-                setSign(rs.getString("sign"));
-                setDesignation(rs.getString("designation"));
-            }
-            if (RowCount < 1) {
+            if (result.size() > 0) {
+                XincoCoreLanguage temp = (XincoCoreLanguage) result.get(0);
+                setId(temp.getId());
+                setSign(temp.getSign());
+                setDesignation(temp.getDesignation());
+            } else {
                 throw new XincoException();
             }
         } catch (Throwable e) {
+            if (new XincoSettingServer().getSetting("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.SEVERE, null, e);
+            }
             throw new XincoException();
         }
+    }
+
+    /**
+     * Create language object for data structures
+     */
+    public XincoCoreLanguageServer() {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
     }
 
     /**
@@ -77,7 +99,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
      * @param id
      * @param sign
      * @param designation
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException
      */
     public XincoCoreLanguageServer(int id, String sign, String designation) throws XincoException {
         setId(id);
@@ -86,61 +108,19 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     }
 
     /**
-     * Write to DB
-     * @param DBM
-     * @return int
-     * @throws com.bluecubs.xinco.core.XincoException
-     */
-    public int write2DB(XincoDBManager DBM) throws XincoException {
-        try {
-            if (getId() > 0) {
-                XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
-                ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
-                audit.updateAuditTrail("xinco_core_language", new String[]{"id =" + getId()},
-                        DBM, xerb.getString("audit.language.change"), this.getChangerID());
-                DBM.executeUpdate("UPDATE xinco_core_language SET sign='" + getSign().replaceAll("'", "\\\\'") + "', designation='" + getDesignation().replaceAll("'", "\\\\'") + "' WHERE id=" + getId());
-            } else {
-                setId(DBM.getNewID("xinco_core_language"));
-                DBM.executeUpdate("INSERT INTO xinco_core_language VALUES (" + getId() + ", '" + getSign().replaceAll("'", "\\\\'") + "', '" + getDesignation().replaceAll("'", "\\\\'") + "')");
-            }
-        } catch (Throwable e) {
-            throw new XincoException();
-        }
-        return getId();
-    }
-
-    /**
-     * Remove from DB
-     * @param xinco_core_language
-     * @param DBM
-     * @param userID
-     * @return
-     * @throws com.bluecubs.xinco.core.XincoException
-     */
-    public static int removeFromDB(XincoCoreLanguage xinco_core_language, XincoDBManager DBM, int userID) throws XincoException {
-        try {
-            XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
-            audit.updateAuditTrail("xinco_core_language", new String[]{"id =" + xinco_core_language.getId()},
-                    DBM, "audit.general.delete", userID);
-            DBM.executeUpdate("DELETE FROM xinco_core_language WHERE id=" + xinco_core_language.getId());
-        } catch (Throwable e) {
-            throw new XincoException();
-        }
-        return 0;
-    }
-
-    /**
      * Create language object for data structures
-     * @param DBM
      * @return Vector
      */
     @SuppressWarnings("unchecked")
-    public static Vector getXincoCoreLanguages(XincoDBManager DBM) {
+    public static Vector getXincoCoreLanguages() {
         Vector coreLanguages = new Vector();
         try {
-            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_language ORDER BY designation");
-            while (rs.next()) {
-                coreLanguages.add(new XincoCoreLanguageServer(rs.getInt("id"), rs.getString("sign"), rs.getString("designation")));
+            parameters.clear();
+            result = pm.createdQuery("SELECT p FROM XincoCoreLanguage p ORDER BY p.designation", parameters);
+            while (!result.isEmpty()) {
+                XincoCoreLanguage temp = (XincoCoreLanguage) result.get(0);
+                coreLanguages.add(new XincoCoreLanguageServer(temp.getId(), temp.getSign(), temp.getDesignation()));
+                result.remove(0);
             }
         } catch (Throwable e) {
             coreLanguages.removeAllElements();
@@ -151,20 +131,22 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     /**
      * Check if language is in use by other objects
      * @param xcl
-     * @param DBM
      * @return boolean
      */
-    public static boolean isLanguageUsed(XincoCoreLanguage xcl, XincoDBManager DBM) {
+    @SuppressWarnings("unchecked")
+    public static boolean isLanguageUsed(XincoCoreLanguage xcl) {
         boolean is_used = false;
         try {
-            ResultSet rs = null;
-            rs = DBM.executeQuery("SELECT 1 FROM xinco_core_node WHERE xinco_core_language_id = " + xcl.getId());
-            while (rs.next()) {
+            parameters.clear();
+            parameters.put("xincoCoreLanguageId", xcl.getId());
+            result = pm.namedQuery("XincoCoreNode.findByXincoCoreLanguageId", parameters);
+            if (result.size() > 0) {
                 is_used = true;
             }
             if (!is_used) {
-                rs = DBM.executeQuery("SELECT 1 FROM xinco_core_data WHERE xinco_core_language_id = " + xcl.getId());
-                while (rs.next()) {
+                parameters.put("xincoCoreLanguageId", xcl.getId());
+                result = pm.namedQuery("XincoCoreData.findByXincoCoreLanguageId", parameters);
+                if (result.size() > 0) {
                     is_used = true;
                 }
             }
@@ -172,5 +154,144 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
             is_used = true; // rather lock language in case of error!
         }
         return is_used;
+    }
+
+    public XincoAbstractAuditableObject findById(
+            HashMap parameters) throws DataRetrievalFailureException {
+        result = pm.namedQuery("XincoCoreLanguage.findById", parameters);
+        if (result.size() > 0) {
+            XincoCoreLanguage temp = (XincoCoreLanguage) result.get(0);
+            temp.setTransactionTime(getTransactionTime());
+            temp.setChangerID(getChangerID());
+            return temp;
+        } else {
+            return null;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters) throws DataRetrievalFailureException {
+        result = pm.namedQuery("XincoCoreLanguage.findByDesignation", parameters);
+        XincoCoreLanguage temp[] = new XincoCoreLanguage[1];
+        temp[0] = (XincoCoreLanguage) result.get(0);
+        temp[0].setTransactionTime(getTransactionTime());
+        return temp;
+    }
+
+    public XincoAbstractAuditableObject create(
+            XincoAbstractAuditableObject value) {
+        XincoCoreLanguage temp, newValue = new XincoCoreLanguage();
+        boolean exists = false;
+        temp = (XincoCoreLanguage) value;
+        if (!value.isCreated()) {
+            newValue.setId(temp.getId());
+            newValue.setRecordId(temp.getRecordId());
+        } else {
+            newValue.setId(getNewID());
+        }
+        newValue.setSign(temp.getSign());
+        newValue.setDesignation(temp.getDesignation());
+        newValue.setCreated(temp.isCreated());
+        newValue.setChangerID(temp.getChangerID());
+        if (!value.isCreated()) {
+            if (newValue.getId() != 0) {
+                //An object for updating
+                exists = true;
+            } else {
+                //A new object
+                exists = false;
+            }
+        }
+        System.out.println("Creating with id: " + newValue.getId());
+        newValue.setTransactionTime(getTransactionTime());
+        pm.persist(newValue, exists, true);
+        return newValue;
+    }
+
+    public XincoAbstractAuditableObject update(
+            XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
+        XincoCoreLanguage val = (XincoCoreLanguage) value;
+        XincoCoreLanguageT temp = new XincoCoreLanguageT();
+        temp.setRecordId(val.getRecordId());
+        if (!value.isCreated()) {
+            temp.setId(val.getId());
+        } else {
+            temp.setId(val.getRecordId());
+        }
+        temp.setId(val.getId());
+        temp.setSign(val.getSign());
+        temp.setDesignation(val.getDesignation());
+        pm.startTransaction();
+        pm.persist(temp, false, false);
+        pm.persist(val, true, false);
+        val.saveAuditData(pm);
+        pm.commitAndClose();
+        return val;
+    }
+
+    public void delete(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
+        XincoCoreLanguage val = (XincoCoreLanguage) value;
+        XincoCoreLanguageT temp = new XincoCoreLanguageT();
+        temp.setRecordId(val.getRecordId());
+        if (!value.isCreated()) {
+            temp.setId(val.getId());
+        } else {
+            temp.setId(val.getRecordId());
+        }
+        temp.setId(val.getId());
+        temp.setSign(val.getSign());
+        temp.setDesignation(val.getDesignation());
+        pm.startTransaction();
+        pm.persist(temp, false, false);
+        pm.delete(val, false);
+        val.saveAuditData(pm);
+        pm.commitAndClose();
+    }
+
+    @SuppressWarnings("unchecked")
+    public HashMap getParameters() {
+        HashMap temp = new HashMap();
+        temp.put("id", getId());
+        return temp;
+    }
+
+    public int getNewID() {
+        return new XincoIDServer("xinco_core_language").getNewTableID();
+    }
+
+    public boolean deleteFromDB() throws XincoException {
+        setTransactionTime(DateRange.startingNow());
+        try {
+            XincoAuditingDAOHelper.delete(this, getId());
+            return true;
+        } catch (Throwable e) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, e);
+            }
+            throw new XincoException();
+        }
+    }
+
+    public boolean write2DB() throws XincoException {
+        try {
+            if (getId() > 0) {
+                XincoAuditingDAOHelper.update(this, new XincoCoreLanguage(getId()));
+            } else {
+                XincoCoreLanguage temp = new XincoCoreLanguage();
+                temp.setId(getId());
+                temp.setChangerID(getChangerID());
+                temp.setCreated(true);
+                temp.setSign(getSign());
+                temp.setDesignation(getDesignation());
+                temp = (XincoCoreLanguage) XincoAuditingDAOHelper.create(this, temp);
+                setId(temp.getId());
+            }
+            return true;
+        } catch (Throwable e) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.SEVERE, null, e);
+            }
+            throw new XincoException();
+        }
     }
 }

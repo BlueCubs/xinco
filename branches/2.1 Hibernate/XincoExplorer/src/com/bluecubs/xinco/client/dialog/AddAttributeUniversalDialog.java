@@ -38,10 +38,10 @@
  */
 package com.bluecubs.xinco.client.dialog;
 
-import com.bluecubs.xinco.add.XincoAddAttribute;
+import com.bluecubs.xinco.core.XincoAddAttribute;
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.core.XincoCoreData;
-import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.core.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute;
 import java.text.DateFormat;
 import java.util.Date;
 import javax.swing.table.DefaultTableModel;

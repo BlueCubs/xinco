@@ -4,8 +4,9 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
-import com.bluecubs.xinco.core.persistance.XincoAddAttribute;
-import com.bluecubs.xinco.core.persistance.XincoAddAttributePK;
+import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
+import com.bluecubs.xinco.core.persistence.XincoAddAttribute;
+import com.bluecubs.xinco.core.persistence.XincoAddAttributePK;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;

@@ -4,10 +4,10 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
-import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.persistance.XincoCoreLanguage;
-import com.bluecubs.xinco.core.persistance.XincoCoreNode;
-import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
+import com.bluecubs.xinco.core.exception.XincoException;
+import com.bluecubs.xinco.core.persistence.XincoCoreNode;
+import com.bluecubs.xinco.core.persistence.audit.tools.XincoAbstractAuditableObject;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author javydreamercsw
+ * @author Javier A. Ortiz
  */
 public class XincoCoreNodeServerTest {
 

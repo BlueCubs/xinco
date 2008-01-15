@@ -35,10 +35,10 @@
  */
 package com.bluecubs.xinco.client.dialog;
 
-import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
-import com.bluecubs.xinco.core.XincoCoreData;
+import com.bluecubs.xinco.core.XincoAddAttribute;
+import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import java.util.Vector;
 
 /**
@@ -70,7 +70,7 @@ public class AddAttributeText extends javax.swing.JDialog {
         setResizable(false);
         text.setEditable(!isViewOnly());
         //processing independent of creation
-        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 1) {
+        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatusNumber() == 1) {
             save.setEnabled(!isViewOnly());
         } else {
             save.setEnabled(false);

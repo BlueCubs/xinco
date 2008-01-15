@@ -35,6 +35,9 @@
  */
 package com.bluecubs.xinco.server;
 
+import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.core.persistence.XincoCoreACE;
+import com.bluecubs.xinco.core.exception.XincoSettingException;
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import java.io.*;
 import java.sql.ResultSet;

@@ -4,9 +4,10 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
-import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.persistance.XincoCoreData;
-import com.bluecubs.xinco.core.persistance.XincoCoreDataType;
+import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import com.bluecubs.xinco.core.exception.XincoException;
+import com.bluecubs.xinco.core.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.persistence.XincoCoreDataType;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;

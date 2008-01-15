@@ -35,11 +35,12 @@
  */
 package com.bluecubs.xinco.client.object;
 
-import com.bluecubs.xinco.client.*;
-import javax.swing.tree.*;
+import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.core.XincoCoreUser;
+import com.bluecubs.xinco.core.client.XincoCoreNodeClient;
+import com.bluecubs.xinco.service.Xinco;
+import javax.swing.tree.DefaultTreeModel;
 
-import com.bluecubs.xinco.core.*;
-import com.bluecubs.xinco.service.*;
 
 /**
  * XincoClientRepository
@@ -69,14 +70,14 @@ public class XincoClientRepository {
      * @param user User involved
      * @param depth Node depth.
      */
-    public void assignObject2TreeNode(XincoMutableTreeNode node, XincoCoreNode object, Xinco service, XincoCoreUser user, int depth) {
+    public void assignObject2TreeNode(XincoMutableTreeNode node, XincoCoreNodeClient object, Xinco service, XincoCoreUser user, int depth) {
         int i = 0;
         depth--;
         node.removeAllChildren();
         node.setUserObject(object);
-        int size = object.getXinco_core_nodes().size();
+        int size = object.getXincoCoreNodes().size();
         for (i = 0; i < size; i++) {
-            XincoMutableTreeNode temp_xmtn = new XincoMutableTreeNode(object.getXinco_core_nodes().elementAt(i), getExplorer());
+            XincoMutableTreeNode temp_xmtn = new XincoMutableTreeNode(object.getXincoCoreNodes().elementAt(i), getExplorer());
             treemodel.insertNodeInto(temp_xmtn, node, node.getChildCount());
         }
         for (i = 0; i < object.getXinco_core_data().size(); i++) {

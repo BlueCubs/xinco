@@ -35,14 +35,25 @@
  */
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
-import java.sql.*;
-import java.util.Vector;
+import com.bluecubs.xinco.core.exception.XincoException;
+import com.bluecubs.xinco.core.persistence.XincoAddAttribute;
+import com.bluecubs.xinco.core.persistence.XincoCoreACE;
+import com.bluecubs.xinco.core.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.persistence.XincoCoreLog;
+import com.bluecubs.xinco.core.persistence.audit.XincoCoreDataT;
+import com.bluecubs.xinco.core.persistence.audit.tools.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditableDAO;
+import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditingDAOHelper;
 import java.io.File;
-import com.bluecubs.xinco.core.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.sf.oness.common.model.temporal.DateRange;
+import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.dao.OptimisticLockingFailureException;
 
 /**
  * Create data object for data structures
@@ -54,43 +65,47 @@ import java.util.logging.Logger;
  * 4 => Checked Out
  * 5 => Published
  */
-public class XincoCoreDataServer extends XincoCoreData {
+public class XincoCoreDataServer extends XincoCoreData implements XincoAuditableDAO, XincoPersistanceServerObject {
 
-    private XincoCoreUserServer user;
+    private static List result;
+    private Vector xinco_core_logs;
+    private Vector xincoAddAttributes,  xincoCoreACL;
 
     /**
      * create data object for data structures
      * @param attrID Data id
-     * @param DBM XincoDBManager
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException 
      */
-    public XincoCoreDataServer(int attrID, XincoDBManager DBM) throws XincoException {
+    @SuppressWarnings("unchecked")
+    public XincoCoreDataServer(int attrID) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         try {
-            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_data WHERE id=" + attrID);
+            parameters.clear();
+            parameters.put("id", attrID);
+            result = pm.namedQuery("XincoCoreData.findById", parameters);
             //throw exception if no result found
-            int RowCount = 0;
-            while (rs.next()) {
-                RowCount++;
-                setId(rs.getInt("id"));
-                setXinco_core_node_id(rs.getInt("xinco_core_node_id"));
-                setXinco_core_language(new XincoCoreLanguageServer(rs.getInt("xinco_core_language_id"), DBM));
-                setXinco_core_data_type(new XincoCoreDataTypeServer(rs.getInt("xinco_core_data_type_id"), DBM));
+            if (result.size() > 0) {
+                XincoCoreData temp = (XincoCoreData) result.get(0);
+                setId(temp.getId());
+                setXincoCoreNodeId(temp.getXincoCoreNodeId());
+                setXincoCoreLanguageId(temp.getXincoCoreLanguageId());
+                setXincoCoreDataTypeId(temp.getXincoCoreDataTypeId());
                 //load logs
-                setXinco_core_logs(XincoCoreLogServer.getXincoCoreLogs(getId(), DBM));
+                setXincoCoreLogs(XincoCoreLogServer.getXincoCoreLogs(getId()));
                 //load add attributes
-                setXinco_add_attributes(XincoAddAttributeServer.getXincoAddAttributes(getId(), DBM));
-                setDesignation(rs.getString("designation"));
-                setStatus_number(rs.getInt("status_number"));
+                setXincoAddAttributes(XincoAddAttributeServer.getXincoAddAttributes(getId()));
+                setDesignation(temp.getDesignation());
+                setStatusNumber(temp.getStatusNumber());
                 //load acl for this object
-                setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(rs.getInt("id"), "xinco_core_data_id", DBM));
-            }
-
-            if (RowCount < 1) {
+                setXincoCoreACL(XincoCoreACEServer.getXincoCoreACL(temp.getId(), "xincoCoreDataId"));
+            } else {
                 throw new XincoException();
             }
         } catch (Throwable ex) {
-            Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, ex);
-            getXinco_core_acl().removeAllElements();
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            getXincoCoreACL().removeAllElements();
             throw new XincoException();
         }
     }
@@ -98,164 +113,43 @@ public class XincoCoreDataServer extends XincoCoreData {
     /**
      * create data object for data structures
      * @param attrID ID
-     * @param attrCNID Xinco_core_node_id
-     * @param attrLID Xinco_core_language_id
-     * @param attrDTID Xinco_core_data_type_id
+     * @param attrCNID XincoCoreNodeId
+     * @param attrLID XincoCorelanguageId
+     * @param attrDTID XincoCoreDataTypeId
      * @param attrD Designation
      * @param attrSN Status number
-     * @param DBM XincoDBManager
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException
      */
-    public XincoCoreDataServer(int attrID, int attrCNID, int attrLID, int attrDTID, String attrD, int attrSN, XincoDBManager DBM) throws XincoException {
+    public XincoCoreDataServer(int attrID, int attrCNID, int attrLID, int attrDTID, String attrD, int attrSN) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         setId(attrID);
-        setXinco_core_node_id(attrCNID);
-        setXinco_core_language(new XincoCoreLanguageServer(attrLID, DBM));
-        setXinco_core_data_type(new XincoCoreDataTypeServer(attrDTID, DBM));
+        setXincoCoreNodeId(attrCNID);
+        setXincoCoreLanguageId(attrLID);
+        setXincoCoreDataTypeId(attrDTID);
         //load logs
-        setXinco_core_logs(XincoCoreLogServer.getXincoCoreLogs(attrID, DBM));
+        setXincoCoreLogs(XincoCoreLogServer.getXincoCoreLogs(attrID));
         //load add attributes
         //security: don't load add attribute, force direct access to data including check of access rights!
-        setXinco_add_attributes(new Vector());
+        setXincoAddAttributes(new Vector());
         setDesignation(attrD);
-        setStatus_number(attrSN);
+        setStatusNumber(attrSN);
         //load acl for this object
-        setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(getId(), "xinco_core_data_id", DBM));
+        setXincoCoreACL(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreDataId"));
     }
 
-    /**
-     * Set XincoCoreuser
-     * @param user
-     */
-    public void setUser(XincoCoreUserServer user) {
-        this.user = user;
+    public XincoCoreDataServer() {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
     }
 
-    /**
-     * Persist oject to DB
-     * @param DBM XincoDBManager
-     * @return int
-     * @throws com.bluecubs.xinco.core.XincoException
-     */
-    public int write2DB(XincoDBManager DBM) throws XincoException {
-        int i = 0;
-        try {
-            XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
-            if (getId() > 0) {
-                audit.updateAuditTrail("xinco_core_data", new String[]{"id =" + getId()},
-                        DBM, "audit.data.change", this.getChangerID());
-                DBM.executeUpdate("UPDATE xinco_core_data SET xinco_core_node_id=" +
-                        getXinco_core_node_id() + ", xinco_core_language_id=" +
-                        getXinco_core_language().getId() + ", xinco_core_data_type_id=" +
-                        getXinco_core_data_type().getId() + ", designation='" +
-                        getDesignation().replaceAll("'", "\\\\'") + "', status_number=" +
-                        getStatus_number() + " WHERE id =" + getId());
-            } else {
-                setId(DBM.getNewID("xinco_core_data"));
-                DBM.executeUpdate("INSERT INTO xinco_core_data VALUES (" + getId() + ", " + getXinco_core_node_id() + ", " + getXinco_core_language().getId() + ", " + getXinco_core_data_type().getId() + ", '" + getDesignation().replaceAll("'", "\\\\'") + "', " + getStatus_number() + ")");
-                audit.updateAuditTrail("xinco_core_data", new String[]{"id =" + getId()},
-                        DBM, "audit.data.create", this.getChangerID());
-            }
-            //write add attributes
-            XincoAddAttributeServer xaas;
-            for (i = 0; i < getXinco_add_attributes().size(); i++) {
-                ((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).setXinco_core_data_id(getId());
-                //copy fields from XincoAddAttribute to XincoAddAttributeServer
-                xaas = new XincoAddAttributeServer(((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getXinco_core_data_id(), ((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttribute_id(), ((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_int(), ((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint(), ((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_double(), ((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_varchar(), ((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_text(), ((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_datetime());
-                xaas.write2DB(DBM);
-            }
-            DBM.getConnection().commit();
-        } catch (Throwable e) {
-            try {
-                DBM.getConnection().rollback();
-            } catch (Exception erollback) {
-            }
-            throw new XincoException();
-        }
-        return getId();
-    }
-
-    /**
-     * Removes object from DB
-     * @param DBM XincoDBManager
-     * @param userID User id
-     * @param id 
-     * @throws com.bluecubs.xinco.core.XincoException
-     */
     @SuppressWarnings("unchecked")
-    public void removeFromDB(XincoDBManager DBM, int userID, int id) throws XincoException {
+    public XincoCoreDataTypeServer getXincoCoreDataType() {
         try {
-            ResultSet rs;
-            Vector objects = new Vector();
-            XincoCoreLogServer temp;
-            // Get related logs
-            rs = DBM.executeQuery("select id FROM xinco_core_log WHERE xinco_core_data_id=" + id);
-            while (rs.next()) {
-                temp = new XincoCoreLogServer(rs.getInt(1), DBM);
-                temp.setChangerID(userID);
-                objects.add(temp);
+            return new XincoCoreDataTypeServer(getId());
+        } catch (XincoException ex) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, ex);
             }
-            while (!objects.isEmpty()) {
-                ((XincoCoreLogServer) objects.get(0)).removeFromDB(DBM);
-                objects.remove(0);
-            }
-            objects.removeAllElements();
-            XincoCoreACEServer tempACE;
-            // Get related ACE's
-            rs = DBM.executeQuery("select id FROM xinco_core_ace WHERE xinco_core_data_id=" + id);
-            while (rs.next()) {
-                tempACE = new XincoCoreACEServer(rs.getInt(1), DBM);
-                tempACE.setChangerID(userID);
-                objects.add(tempACE);
-            }
-            while (!objects.isEmpty()) {
-                XincoCoreACEServer.removeFromDB(((XincoCoreACE) objects.get(0)), DBM, userID);
-                objects.remove(0);
-            }
-            objects.removeAllElements();
-            XincoAddAttributeServer tempAdd;
-            // Get related ACE's
-            rs = DBM.executeQuery("select attribute_id FROM xinco_add_attribute WHERE xinco_core_data_id=" + id);
-            while (rs.next()) {
-                tempAdd = new XincoAddAttributeServer(id, rs.getInt(1), DBM);
-                tempAdd.setChangerID(userID);
-                objects.add(tempAdd);
-            }
-            while (!objects.isEmpty()) {
-                XincoAddAttributeServer.removeFromDB(((XincoAddAttributeServer) objects.get(0)).getAttribute_id(),
-                        ((XincoAddAttributeServer) objects.get(0)).getXinco_core_data_id(), DBM);
-                objects.remove(0);
-            }
-            objects.removeAllElements();
-            //Now delete the data
-            int i = 0;
-            XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
-            //delete file / file = 1
-            if (getXinco_core_data_type().getId() == 1) {
-                try {
-                    (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), getId(), "" + getId()))).delete();
-                } catch (Exception dfe) {
-                // continue, file might not exists
-                }
-                // delete revisions created upon creation or checkin
-                for (i = 0; i < this.getXinco_core_logs().size(); i++) {
-                    if ((((XincoCoreLog) getXinco_core_logs().elementAt(i)).getOp_code() == 1) || (((XincoCoreLog) getXinco_core_logs().elementAt(i)).getOp_code() == 5)) {
-                        try {
-                            (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), getId(), getId() + "-" + ((XincoCoreLog) getXinco_core_logs().elementAt(i)).getId()))).delete();
-                        } catch (Exception drfe) {
-                        // continue, delete next revision
-                        }
-                    }
-                }
-            }
-            audit.updateAuditTrail("xinco_core_data", new String[]{"id =" + getId()},
-                    DBM, "audit.general.delete", this.getChangerID());
-            DBM.executeUpdate("DELETE FROM xinco_core_data WHERE id=" + getId());
-        } catch (Throwable e) {
-            try {
-                DBM.getConnection().rollback();
-            } catch (Exception erollback) {
-            }
-            throw new XincoException();
+            return null;
         }
     }
 
@@ -264,41 +158,45 @@ public class XincoCoreDataServer extends XincoCoreData {
      * @param designation
      * @param attrLID
      * @param attrSA
-     * @param attrSFD
-     * @param DBM
      * @return Vector
      */
     @SuppressWarnings("unchecked")
-    public static Vector findXincoCoreData(String designation, int attrLID, boolean attrSA, boolean attrSFD, XincoDBManager DBM) {
+    public static Vector findXincoCoreData(String designation, int attrLID, boolean attrSA) {
         Vector data = new Vector();
         try {
-            ResultSet rs;
+            parameters.clear();
             String lang = "";
             if (attrLID != 0) {
-                lang = "AND (xinco_core_language_id = " + attrLID + ")";
+                lang = "AND p.xincoCorelanguageId = :attrLID";
+                parameters.put("attrLID", attrLID);
             }
+            parameters.put("designation", designation);
             if (attrSA) {
-                rs = DBM.executeQuery("SELECT DISTINCT xinco_core_data.* FROM xinco_core_data, xinco_add_attribute WHERE (xinco_core_data.id = xinco_add_attribute.xinco_core_data_id) AND (xinco_core_data.designation LIKE '" + designation + "%' OR xinco_add_attribute.attrib_varchar LIKE '" + designation + "' OR xinco_add_attribute.attrib_text LIKE '" + designation + "') " + lang + " ORDER BY xinco_core_data.designation, xinco_core_data.xinco_core_language_id");
+                result = pm.createdQuery("SELECT DISTINCT p FROM XincoCoreData p, XincoAddAttribute a WHERE p.id = a.XincoCoreDataId AND p.designation LIKE '" + designation + "%' OR a.attribVarchar LIKE :designation OR a.attribText LIKE :designation " + lang + " ORDER BY p.designation, p.xincoCoreLanguageId", parameters);
             } else {
-                rs = DBM.executeQuery("SELECT DISTINCT xinco_core_data.* FROM xinco_core_data WHERE designation LIKE '" + designation + "' " + lang + " ORDER BY designation, xinco_core_language_id");
+                result = pm.createdQuery("SELECT DISTINCT p FROM XincoCoreData p WHERE p.designation LIKE :designation " + lang + " ORDER BY p.designation, p.xincoCoreLanguageId", parameters);
             }
             int i = 0;
-            while (rs.next()) {
-                data.add(new XincoCoreDataServer(rs.getInt("id"), DBM));
+            while (!result.isEmpty()) {
+                XincoCoreData temp = (XincoCoreData) result.get(0);
+                data.add(new XincoCoreDataServer(temp.getId()));
                 i++;
-                if (i >= DBM.config.getMaxSearchResult()) {
+                if (i >= XincoPersistanceManager.config.getMaxSearchResult()) {
                     break;
                 }
+                result.remove(0);
             }
         } catch (Throwable ex) {
-            Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, ex);
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
             data.removeAllElements();
         }
         return data;
     }
 
     /**
-     * Get XincoCOreData path
+     * Get XincoCoreData path
      * @param attrRP
      * @param attrID
      * @param attrFN
@@ -335,5 +233,303 @@ public class XincoCoreDataServer extends XincoCoreData {
             }
         }
         return path;
+    }
+
+    public XincoAbstractAuditableObject findById(HashMap parameters) throws DataRetrievalFailureException {
+        result = pm.namedQuery("XincoCoreData.findById", parameters);
+        if (result.size() > 0) {
+            XincoCoreData temp = (XincoCoreData) result.get(0);
+            temp.setTransactionTime(getTransactionTime());
+            temp.setChangerID(getChangerID());
+            return temp;
+        } else {
+            return null;
+        }
+    }
+
+    public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters) throws DataRetrievalFailureException {
+        int counter = 0;
+        String sql = "SELECT x FROM XincoCoreData x WHERE ";
+        if (parameters.containsKey("xincoCoreNodeId")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.INFO, "Searching by xincoCoreNodeId");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.xincoCoreNodeId = :xincoCoreNodeId";
+            counter++;
+        }
+        if (parameters.containsKey("xincoCoreLanguageId")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.INFO, "Searching by xincoCoreLanguageId");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.xincoCoreLanguageId = :xincoCoreLanguageId";
+            counter++;
+        }
+        if (parameters.containsKey("xincoCoreDataTypeId")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.INFO, "Searching by xincoCoreDataTypeId");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.xincoCoreDataTypeId = :xincoCoreDataTypeId";
+            counter++;
+        }
+        if (parameters.containsKey("designation")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.INFO, "Searching by designation");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.designation = :designation";
+            counter++;
+        }
+        if (parameters.containsKey("statusNumber")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.INFO, "Searching by statusNumber");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.statusNumber = :statusNumber";
+            counter++;
+        }
+        result = pm.createdQuery(sql, parameters);
+        if (result.size() > 0) {
+            XincoCoreData temp[] = new XincoCoreData[result.size()];
+            int i = 0;
+            while (!result.isEmpty()) {
+                temp[i] = (XincoCoreData) result.get(0);
+                temp[i].setTransactionTime(getTransactionTime());
+                i++;
+                result.remove(0);
+            }
+            return temp;
+        } else {
+            return null;
+        }
+    }
+
+    public XincoAbstractAuditableObject create(XincoAbstractAuditableObject value) {
+        XincoCoreData temp, newValue = new XincoCoreData();
+        temp = (XincoCoreData) value;
+        if (!value.isCreated()) {
+            newValue.setId(temp.getId());
+            newValue.setRecordId(temp.getRecordId());
+        } else {
+            newValue.setId(getNewID());
+        }
+        if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+            Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.INFO, "Creating with new id: " + newValue.getId());
+        }
+        newValue.setDesignation(temp.getDesignation());
+        newValue.setStatusNumber(temp.getStatusNumber());
+        newValue.setXincoCoreNodeId(temp.getXincoCoreNodeId());
+        newValue.setXincoCoreDataTypeId(temp.getXincoCoreDataTypeId());
+        newValue.setXincoCoreLanguageId(temp.getXincoCoreLanguageId());
+        newValue.setCreated(temp.isCreated());
+        newValue.setChangerID(temp.getChangerID());
+        newValue.setTransactionTime(getTransactionTime());
+        pm.persist(newValue, false, true);
+        return newValue;
+    }
+
+    public XincoAbstractAuditableObject update(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
+        XincoCoreData val = (XincoCoreData) value;
+        XincoCoreDataT temp = new XincoCoreDataT();
+        temp.setRecordId(val.getRecordId());
+        if (!value.isCreated()) {
+            temp.setId(val.getId());
+        } else {
+            temp.setId(val.getRecordId());
+        }
+        temp.setDesignation(val.getDesignation());
+        temp.setStatusNumber(val.getStatusNumber());
+        temp.setXincoCoreNodeId(val.getXincoCoreNodeId());
+        temp.setXincoCoreDataTypeId(val.getXincoCoreDataTypeId());
+        temp.setXincoCoreLanguageId(val.getXincoCoreLanguageId());
+        pm.startTransaction();
+        pm.persist(temp, false, false);
+        pm.persist(val, true, false);
+        val.saveAuditData(pm);
+        pm.commitAndClose();
+        return val;
+    }
+
+    public void delete(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
+        XincoCoreData val = (XincoCoreData) value;
+        XincoCoreDataT temp = new XincoCoreDataT();
+        temp.setRecordId(val.getRecordId());
+        temp.setId(val.getId());
+        temp.setDesignation(val.getDesignation());
+        temp.setStatusNumber(val.getStatusNumber());
+        temp.setXincoCoreNodeId(val.getXincoCoreNodeId());
+        temp.setXincoCoreDataTypeId(val.getXincoCoreDataTypeId());
+        temp.setXincoCoreLanguageId(val.getXincoCoreLanguageId());
+        pm.startTransaction();
+        pm.persist(temp, false, false);
+        pm.delete(val, false);
+        val.saveAuditData(pm);
+        pm.commitAndClose();
+    }
+
+    @SuppressWarnings("unchecked")
+    public HashMap getParameters() {
+        HashMap temp = new HashMap();
+        temp.put("id", getId());
+        return temp;
+    }
+
+    public int getNewID() {
+        return new XincoIDServer("xinco_core_data").getNewTableID();
+    }
+
+    @SuppressWarnings("unchecked")
+    public boolean deleteFromDB() throws XincoException {
+        setTransactionTime(DateRange.startingNow());
+        try {
+            XincoAuditingDAOHelper.delete(this, getId());
+            Vector objects = new Vector();
+            XincoCoreLogServer temp;
+            // Get related logs
+            result = pm.createdQuery("select p FROM XincoCoreLog p WHERE p.xincoCoreDataId= :id", getParameters());
+            while (!result.isEmpty()) {
+                XincoCoreLog t = (XincoCoreLog) result.get(0);
+                temp = new XincoCoreLogServer(t.getId());
+                temp.setChangerID(getChangerID());
+                objects.add(temp);
+                result.remove(0);
+            }
+            while (!objects.isEmpty()) {
+                ((XincoCoreLogServer) objects.get(0)).deleteFromDB();
+                objects.remove(0);
+            }
+            objects.removeAllElements();
+            XincoCoreACEServer tempACE;
+            // Get related ACE's
+            result = pm.createdQuery("select p FROM XincoCoreData p WHERE p.id= :id", getParameters());
+            while (!result.isEmpty()) {
+                XincoCoreACE t = (XincoCoreACE) result.get(0);
+                tempACE = new XincoCoreACEServer(t.getId());
+                tempACE.setChangerID(getChangerID());
+                objects.add(tempACE);
+            }
+            while (!objects.isEmpty()) {
+                ((XincoCoreACEServer) objects.get(0)).deleteFromDB();
+                objects.remove(0);
+            }
+            objects.removeAllElements();
+            XincoAddAttributeServer tempAdd;
+            // Get related Attributes
+            result = pm.createdQuery("select p FROM XincoAddAttribute p WHERE p.XincoAddAttributePK.xincoCoreDataId= :id", getParameters());
+            while (!result.isEmpty()) {
+                XincoAddAttribute t = (XincoAddAttribute) result.get(0);
+                tempAdd = new XincoAddAttributeServer(t.getXincoAddAttributePK());
+                tempAdd.setChangerID(getChangerID());
+                objects.add(tempAdd);
+            }
+            while (!objects.isEmpty()) {
+                ((XincoAddAttributeServer) objects.get(0)).deleteFromDB();
+                objects.remove(0);
+            }
+            objects.removeAllElements();
+            //Now delete the data
+            int i = 0;
+            //delete file / file = 1
+            if (getXincoCoreDataTypeId() == 1) {
+                try {
+                    (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistanceManager.config.getFileRepositoryPath(), getId(), "" + getId()))).delete();
+                } catch (Exception dfe) {
+                // continue, file might not exists
+                }
+                // delete revisions created upon creation or checkin
+                for (i = 0; i < this.getXincoCoreLogs().size(); i++) {
+                    if ((((XincoCoreLog) getXincoCoreLogs().elementAt(i)).getOpCode() == 1) || (((XincoCoreLog) getXincoCoreLogs().elementAt(i)).getOpCode() == 5)) {
+                        try {
+                            (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistanceManager.config.getFileRepositoryPath(), getId(), getId() + "-" + ((XincoCoreLog) getXincoCoreLogs().elementAt(i)).getId()))).delete();
+                        } catch (Exception drfe) {
+                        // continue, delete next revision
+                        }
+                    }
+                }
+            }
+            return true;
+        } catch (Throwable e) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, e);
+            }
+            throw new XincoException();
+        }
+    }
+
+    public boolean write2DB() throws XincoException {
+        try {
+            if (getId() > 0) {
+                XincoAuditingDAOHelper.update(this, new XincoCoreData(getId()));
+            } else {
+                XincoCoreData temp = new XincoCoreData();
+                temp.setId(getId());
+                temp.setChangerID(getChangerID());
+                temp.setCreated(true);
+                temp.setStatusNumber(getStatusNumber());
+                temp.setDesignation(getDesignation());
+                temp.setXincoCoreDataTypeId(getXincoCoreDataTypeId());
+                temp.setXincoCoreLanguageId(getXincoCoreLanguageId());
+                temp.setXincoCoreNodeId(getXincoCoreNodeId());
+                temp = (XincoCoreData) XincoAuditingDAOHelper.create(this, temp);
+                setId(temp.getId());
+            }
+            //write add attributes
+            XincoAddAttributeServer xaas;
+            for (int i = 0; i < getXincoAddAttributes().size(); i++) {
+                ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getXincoAddAttributePK().setXincoCoreDataId(getId());
+                //copy fields from XincoAddAttribute to XincoAddAttributeServer
+                xaas = new XincoAddAttributeServer(((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getXincoAddAttributePK().getXincoCoreDataId(),
+                        ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getXincoAddAttributePK().getAttributeId(),
+                        ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribInt(),
+                        ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribUnsignedint(),
+                        ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribDouble(),
+                        ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribVarchar(),
+                        ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribText(),
+                        ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribDatetime());
+                xaas.write2DB();
+            }
+            return true;
+        } catch (Throwable e) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, e);
+            }
+            throw new XincoException();
+        }
+    }
+
+    public Vector getXincoCoreLogs() {
+        return xinco_core_logs;
+    }
+
+    public void setXincoCoreLogs(Vector xinco_core_logs) {
+        this.xinco_core_logs = xinco_core_logs;
+    }
+
+    public Vector getXincoAddAttributes() {
+        return xincoAddAttributes;
+    }
+
+    public void setXincoAddAttributes(Vector xincoAddAttributes) {
+        this.xincoAddAttributes = xincoAddAttributes;
+    }
+
+    public Vector getXincoCoreACL() {
+        return xincoCoreACL;
+    }
+
+    public void setXincoCoreACL(Vector xincoCoreACL) {
+        this.xincoCoreACL = xincoCoreACL;
     }
 }

@@ -35,8 +35,9 @@
  */
 package com.bluecubs.xinco.conf;
 
-import com.bluecubs.xinco.core.XincoSetting;
+import com.bluecubs.xinco.core.persistence.XincoSetting;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
+import java.math.BigInteger;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import javax.naming.InitialContext;
@@ -51,7 +52,7 @@ public class XincoConfigSingletonServer {
     private String FileRepositoryPath = null;
     private String FileIndexPath = null;
     private String FileArchivePath = null;
-    private long FileArchivePeriod = 0;
+    private BigInteger FileArchivePeriod;
     private int FileIndexerCount = 0;
     private Vector IndexFileTypesClass = null;
     private Vector IndexFileTypesExt = null;
@@ -78,6 +79,7 @@ public class XincoConfigSingletonServer {
     protected XincoConfigSingletonServer() {
         try {
             JNDIDB = (String) (new InitialContext()).lookup("xinco/JNDIDB");
+            init();
         } catch (NamingException ex) {
             JNDIDB = "java:comp/env/jdbc/XincoDB";
         }
@@ -85,38 +87,38 @@ public class XincoConfigSingletonServer {
 
     /**
      * Initializes this singleton from a XincoSettingServer object
-     * @param xss XincoSettingServer
      */
     @SuppressWarnings("unchecked")
-    public void init(XincoSettingServer xss) {
+    public void init() {
+        XincoSettingServer xss = new XincoSettingServer();
         try {
-            FileRepositoryPath = xss.getSetting("xinco/FileRepositoryPath").getString_value();
+            FileRepositoryPath = xss.getSetting("xinco/FileRepositoryPath").getStringValue();
             if (!(getFileRepositoryPath().substring(getFileRepositoryPath().length() - 1).equals(System.getProperty("file.separator")))) {
                 FileRepositoryPath = getFileRepositoryPath() + System.getProperty("file.separator");
             }
-            MaxSearchResult = xss.getSetting("xinco/MaxSearchResult").getInt_value();
-            FileIndexPath = xss.getSetting("xinco/FileIndexPath").getString_value();
+            MaxSearchResult = xss.getSetting("xinco/MaxSearchResult").getIntValue();
+            FileIndexPath = xss.getSetting("xinco/FileIndexPath").getStringValue();
             if (getFileIndexPath().equals("")) {
                 FileIndexPath = getFileRepositoryPath() + "index";
             }
             if (!(getFileIndexPath().substring(getFileIndexPath().length() - 1).equals(System.getProperty("file.separator")))) {
                 FileIndexPath += System.getProperty("file.separator");
             }
-            FileArchivePath = xss.getSetting("xinco/FileArchivePath").getString_value();
+            FileArchivePath = xss.getSetting("xinco/FileArchivePath").getStringValue();
             if (!(getFileArchivePath().substring(getFileArchivePath().length() - 1).equals(System.getProperty("file.separator")))) {
                 FileArchivePath += System.getProperty("file.separator");
             }
-            FileArchivePeriod = xss.getSetting("xinco/FileArchivePeriod").getLong_value();
+            FileArchivePeriod = xss.getSetting("xinco/FileArchivePeriod").getLongValue();
             Vector s = xss.getXinco_settings();
             StringTokenizer st;
-            String [] temp;
+            String[] temp;
             for (int i = 0; i < s.size(); i++) {
                 if (((XincoSetting) s.get(i)).getDescription().startsWith("xinco/FileIndexer") &&
                         ((XincoSetting) s.get(i)).getDescription().endsWith("Class")) {
                     if (getIndexFileTypesClass() == null) {
                         IndexFileTypesClass = new Vector();
                     }
-                    getIndexFileTypesClass().add(((XincoSetting) s.get(i)).getString_value());
+                    getIndexFileTypesClass().add(((XincoSetting) s.get(i)).getStringValue());
                     FileIndexerCount++;
                 }
                 if (((XincoSetting) s.get(i)).getDescription().startsWith("xinco/FileIndexer") &&
@@ -124,26 +126,26 @@ public class XincoConfigSingletonServer {
                     if (getIndexFileTypesExt() == null) {
                         IndexFileTypesExt = new Vector();
                     }
-                    getIndexFileTypesExt().add(((XincoSetting) s.get(i)).getString_value());
+                    getIndexFileTypesExt().add(((XincoSetting) s.get(i)).getStringValue());
                 }
-                if(((XincoSetting)s.get(i)).getDescription().startsWith("xinco/IndexNoIndex")){
-                    st= new StringTokenizer(((XincoSetting)s.get(i)).getString_value(),";");
-                    temp= new String[st.countTokens()];
-                    int j=0;
-                    while(st.hasMoreTokens()){
-                        temp[j]=st.nextToken();
+                if (((XincoSetting) s.get(i)).getDescription().startsWith("xinco/IndexNoIndex")) {
+                    st = new StringTokenizer(((XincoSetting) s.get(i)).getStringValue(), ";");
+                    temp = new String[st.countTokens()];
+                    int j = 0;
+                    while (st.hasMoreTokens()) {
+                        temp[j] = st.nextToken();
                         j++;
                     }
                     setIndexNoIndex(temp);
                 }
             }
-            setAllowOutsideLinks(xss.getSetting("setting.allowoutsidelinks").isBool_value());
+            setAllowOutsideLinks(xss.getSetting("setting.allowoutsidelinks").getBoolValue());
         } catch (Exception ex) {
             //Default values
             setFileRepositoryPath("");
             setFileIndexPath("");
             setFileArchivePath("");
-            setFileArchivePeriod(14400000);
+            setFileArchivePeriod(BigInteger.valueOf(14400000));
             setFileIndexerCount(4);
             setAllowOutsideLinks(false);
             setIndexFileTypesClass(new Vector());
@@ -226,7 +228,7 @@ public class XincoConfigSingletonServer {
      * Get FileArchivePeriod
      * @return long
      */
-    public long getFileArchivePeriod() {
+    public BigInteger getFileArchivePeriod() {
         return FileArchivePeriod;
     }
 
@@ -234,7 +236,7 @@ public class XincoConfigSingletonServer {
      * Set FileArchivePeriod
      * @param FileArchivePeriod
      */
-    public void setFileArchivePeriod(long FileArchivePeriod) {
+    public void setFileArchivePeriod(BigInteger FileArchivePeriod) {
         this.FileArchivePeriod = FileArchivePeriod;
     }
 

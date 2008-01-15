@@ -4,8 +4,10 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
-import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.persistance.audit.XincoCoreUserT;
+import com.bluecubs.xinco.core.server.XincoPersistanceManager;
+import com.bluecubs.xinco.core.server.XincoCoreUserServer;
+import com.bluecubs.xinco.core.exception.XincoException;
+import com.bluecubs.xinco.core.persistence.audit.XincoCoreUserT;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;

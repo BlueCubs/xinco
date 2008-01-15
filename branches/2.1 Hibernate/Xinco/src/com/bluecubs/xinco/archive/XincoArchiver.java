@@ -35,15 +35,19 @@
  */
 package com.bluecubs.xinco.archive;
 
-import com.bluecubs.xinco.add.XincoAddAttribute;
-import java.sql.*;
-import java.io.*;
-import java.util.Vector;
+import com.bluecubs.xinco.core.persistence.XincoAddAttribute;
+import com.bluecubs.xinco.core.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import com.bluecubs.xinco.core.server.XincoCoreLogServer;
+import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
+import com.bluecubs.xinco.core.server.XincoPersistanceManager;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
-import com.bluecubs.xinco.add.*;
-import com.bluecubs.xinco.core.server.*;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * This class handles document archiving for xinco.
@@ -51,8 +55,11 @@ import com.bluecubs.xinco.core.server.*;
  */
 public class XincoArchiver {
 
+    private static XincoPersistanceManager pm;
+    private static List result;
+
     @SuppressWarnings("unchecked")
-    public static synchronized boolean archiveData(XincoDBManager DBM) {
+    public static synchronized boolean archiveData() {
         int i = 0;
         int j = 0;
         int k = 0;
@@ -61,69 +68,70 @@ public class XincoArchiver {
         FileOutputStream fcos = null;
         byte[] fcbuf = null;
         try {
-            XincoCoreDataServer xdata_temp = null;
-            XincoCoreLogServer xlog_temp = null;
-            Vector xnode_temp_vector = null;
+            XincoCoreDataServer xdataTemp = null;
+            XincoCoreLogServer xlogTemp = null;
+            Vector xnodeTemp_vector = null;
             Calendar ngc = new GregorianCalendar();
             String ArchiveName = ngc.get(Calendar.YEAR) + "-" + (ngc.get(Calendar.MONTH) + 1) + "-" + ngc.get(Calendar.DAY_OF_MONTH);
-            String ArchiveBaseDir = DBM.config.getFileArchivePath() + ArchiveName;
+            String ArchiveBaseDir = XincoPersistanceManager.config.getFileArchivePath() + ArchiveName;
             String ArchiveFileDir = null;
             Vector OrgFileNames = new Vector();
             Vector OrgFileIDs = new Vector();
             String FileName = null;
             int querycount = 0;
             String[] query = new String[2];
-            query[querycount] = new String("SELECT DISTINCT xcd.id FROM xinco_core_data xcd, xinco_add_attribute xaa1, xinco_add_attribute xaa2 " +
-                    "WHERE xcd.xinco_core_data_type_id = 1 " +
-                    "AND xcd.status_number <> 3 " +
-                    "AND xcd.id = xaa1.xinco_core_data_id " +
-                    "AND xcd.id = xaa2.xinco_core_data_id " +
-                    "AND xaa1.attribute_id = 5 " +
+            query[querycount] = new String("SELECT DISTINCT xcd.id FROM XincoCoreData xcd, XincoAddAttribute xaa1, XincoAddAttribute xaa2 " +
+                    "WHERE xcd.xincoCoreDataTypeId = 1 " +
+                    "AND xcd.statusNumber <> 3 " +
+                    "AND xcd.id = xaa1.xincoCoreDataId " +
+                    "AND xcd.id = xaa2.xincoCoreDataId " +
+                    "AND xaa1.attributeId = 5 " +
                     "AND xaa1.attrib_unsignedint = 1 " +
-                    "AND xaa2.attribute_id = 6 " +
-                    "AND xaa2.attrib_datetime < now() " +
+                    "AND xaa2.attributeId = 6 " +
+                    "AND xaa2.attribDatetime < now() " +
                     "ORDER BY xcd.id");
             querycount++;
-            query[querycount] = new String("SELECT DISTINCT xcd.id FROM xinco_core_data xcd, xinco_add_attribute xaa1, xinco_add_attribute xaa2, xinco_core_log xcl " +
-                    "WHERE xcd.xinco_core_data_type_id = 1 " +
-                    "AND xcd.status_number <> 3 " +
-                    "AND xcd.id = xaa1.xinco_core_data_id " +
-                    "AND xcd.id = xaa2.xinco_core_data_id " +
-                    "AND xcd.id = xcl.xinco_core_data_id " +
-                    "AND xaa1.attribute_id = 5 " +
+            query[querycount] = new String("SELECT DISTINCT xcd.id FROM XincoCoreData xcd, XincoAddAttribute xaa1, XincoAddAttribute xaa2, XincoCoreLog xcl " +
+                    "WHERE xcd.xincoCoreDataTypeId = 1 " +
+                    "AND xcd.statusNumber <> 3 " +
+                    "AND xcd.id = xaa1.xincoCoreDataId " +
+                    "AND xcd.id = xaa2.xincoCoreDataId " +
+                    "AND xcd.id = xcl.xincoCoreDataId " +
+                    "AND xaa1.attributeId = 5 " +
                     "AND xaa1.attrib_unsignedint = 2 " +
-                    "AND xaa2.attribute_id = 7 " +
-                    "AND ADDDATE(DATE(xcl.op_datetime), xaa2.attrib_unsignedint) < now() " +
+                    "AND xaa2.attributeId = 7 " +
+                    "AND ADDDATE(xcl.opDatetime, xaa2.attribUnsignedint) < now() " +
                     "ORDER BY xcd.id");
             querycount++;
             for (j = 0; j < querycount; j++) {
                 //select data with expired archiving date
-                ResultSet rs = DBM.executeQuery(query[j]);
-                while (rs.next()) {
-                    xdata_temp = new XincoCoreDataServer(rs.getInt("xcd.id"), DBM);
-                    xnode_temp_vector = XincoCoreNodeServer.getXincoCoreNodeParents(xdata_temp.getXinco_core_node_id(), DBM);
+                result = pm.executeQuery(query[j]);
+                while (!result.isEmpty()) {
+                    XincoCoreData temp = (XincoCoreData)result.get(0);
+                    xdataTemp = new XincoCoreDataServer(temp.getId());
+                    xnodeTemp_vector = XincoCoreNodeServer.getXincoCoreNodeParents(xdataTemp.getXincoCoreNodeId());
                     //archive data
                     ArchiveFileDir = "";
-                    for (i = xnode_temp_vector.size() - 1; i >= 0; i--) {
-                        ArchiveFileDir = ArchiveFileDir + System.getProperty("file.separator") + ((XincoCoreNodeServer) xnode_temp_vector.elementAt(i)).getDesignation();
+                    for (i = xnodeTemp_vector.size() - 1; i >= 0; i--) {
+                        ArchiveFileDir = ArchiveFileDir + System.getProperty("file.separator") + ((XincoCoreNodeServer) xnodeTemp_vector.elementAt(i)).getDesignation();
                     }
                     (new File(ArchiveBaseDir + ArchiveFileDir)).mkdirs();
                     //copy file + revisions
                     //build file list
-                    OrgFileNames.add(new String("" + xdata_temp.getId()));
-                    OrgFileIDs.add(new Integer(xdata_temp.getId()));
-                    for (i = 0; i < xdata_temp.getXinco_core_logs().size(); i++) {
-                        xlog_temp = ((XincoCoreLogServer) xdata_temp.getXinco_core_logs().elementAt(i));
-                        if ((xlog_temp.getOp_code() == 1) || (xlog_temp.getOp_code() == 5)) {
-                            OrgFileNames.add(new String("" + xdata_temp.getId() + "-" + xlog_temp.getId()));
-                            OrgFileIDs.add(new Integer(xdata_temp.getId()));
+                    OrgFileNames.add(new String("" + xdataTemp.getId()));
+                    OrgFileIDs.add(new Integer(xdataTemp.getId()));
+                    for (i = 0; i < xdataTemp.getXincoCoreLogs().size(); i++) {
+                        xlogTemp = ((XincoCoreLogServer) xdataTemp.getXincoCoreLogs().elementAt(i));
+                        if ((xlogTemp.getOpCode() == 1) || (xlogTemp.getOpCode() == 5)) {
+                            OrgFileNames.add(new String("" + xdataTemp.getId() + "-" + xlogTemp.getId()));
+                            OrgFileIDs.add(new Integer(xdataTemp.getId()));
                         }
                     }
                     //copy + delete files
                     for (k = 0; k < OrgFileNames.size(); k++) {
-                        FileName = ((String) OrgFileNames.elementAt(k)) + "_" + ((XincoAddAttribute) xdata_temp.getXinco_add_attributes().elementAt(0)).getAttrib_varchar();
-                        if ((new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), ((Integer) OrgFileIDs.elementAt(k)).intValue(), ((String) OrgFileNames.elementAt(k))))).exists()) {
-                            fcis = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), ((Integer) OrgFileIDs.elementAt(k)).intValue(), ((String) OrgFileNames.elementAt(k)))));
+                        FileName = ((String) OrgFileNames.elementAt(k)) + "_" + ((XincoAddAttribute) xdataTemp.getXincoAddAttributes().elementAt(0)).getAttribVarchar();
+                        if ((new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistanceManager.config.getFileRepositoryPath(), ((Integer) OrgFileIDs.elementAt(k)).intValue(), ((String) OrgFileNames.elementAt(k))))).exists()) {
+                            fcis = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistanceManager.config.getFileRepositoryPath(), ((Integer) OrgFileIDs.elementAt(k)).intValue(), ((String) OrgFileNames.elementAt(k)))));
                             fcos = new FileOutputStream(new File(ArchiveBaseDir + ArchiveFileDir + System.getProperty("file.separator") + FileName));
                             fcbuf = new byte[4096];
                             len = 0;
@@ -133,23 +141,24 @@ public class XincoArchiver {
                             fcis.close();
                             fcos.close();
                             //delete
-                            (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), ((Integer) OrgFileIDs.elementAt(k)).intValue(), ((String) OrgFileNames.elementAt(k))))).delete();
+                            (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistanceManager.config.getFileRepositoryPath(), ((Integer) OrgFileIDs.elementAt(k)).intValue(), ((String) OrgFileNames.elementAt(k))))).delete();
                         }
                     }
                     //update data + log
-                    xdata_temp.setStatus_number(3);
-                    ((XincoAddAttribute) xdata_temp.getXinco_add_attributes().elementAt(7)).setAttrib_text("[" + ArchiveName + "]" + ArchiveFileDir.replace('\\', '/') + "/" + FileName);
-                    xdata_temp.write2DB(DBM);
-                    if (xdata_temp.getXinco_core_logs().size() > 0) {
-                        xlog_temp = ((XincoCoreLogServer) xdata_temp.getXinco_core_logs().elementAt(xdata_temp.getXinco_core_logs().size() - 1));
-                        if (xlog_temp != null) {
-                            xlog_temp.setId(0);
-                            xlog_temp.setOp_code(8);
-                            xlog_temp.setOp_description("Archived!");
-                            xlog_temp.setXinco_core_user_id(1);
-                            xlog_temp.write2DB(DBM);
+                    xdataTemp.setStatusNumber(3);
+                    ((XincoAddAttribute) xdataTemp.getXincoAddAttributes().elementAt(7)).setAttribText("[" + ArchiveName + "]" + ArchiveFileDir.replace('\\', '/') + "/" + FileName);
+                    xdataTemp.write2DB();
+                    if (xdataTemp.getXincoCoreLogs().size() > 0) {
+                        xlogTemp = ((XincoCoreLogServer) xdataTemp.getXincoCoreLogs().elementAt(xdataTemp.getXincoCoreLogs().size() - 1));
+                        if (xlogTemp != null) {
+                            xlogTemp.setId(0);
+                            xlogTemp.setOpCode(8);
+                            xlogTemp.setOpDescription("Archived!");
+                            xlogTemp.setXincoCoreUserId(1);
+                            xlogTemp.write2DB();
                         }
                     }
+                    result.remove(0);
                 }
             }
             return true;

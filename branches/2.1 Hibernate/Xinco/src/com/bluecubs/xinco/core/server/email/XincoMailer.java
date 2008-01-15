@@ -45,11 +45,17 @@ Author : Sudhir Ancha
  */
 package com.bluecubs.xinco.core.server.email;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
-import javax.mail.*;
-import javax.mail.internet.*;
-import java.util.*;
-import java.io.*;
+import com.bluecubs.xinco.core.server.XincoSettingServer;
+import java.util.Properties;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
 
 /**
  * Send email based on DB settings
@@ -57,14 +63,13 @@ import java.io.*;
  */
 public class XincoMailer {
 
-    private XincoDBManager DBM;
-    private String SMTP_HOST_NAME = DBM.getSetting("setting.email.host").getString_value();
-    private String SMTP_AUTH_USER = DBM.getSetting("setting.email.user").getString_value();
-    private String SMTP_AUTH_PWD = DBM.getSetting("setting.email.password").getString_value();
-    private static final String emailMsgTxt = "Online Order Confirmation Message. Also include the Tracking Number.";
-    private static final String emailSubjectTxt = "Order Confirmation Subject";
-    private static final String emailFromAddress = "sudhir@javacommerce.com";
-    private final String port = DBM.getSetting("setting.email.port").getString_value();
+    private String SMTP_HOST_NAME = new XincoSettingServer("setting.email.host").getStringValue();
+    private String SMTP_AUTH_USER = new XincoSettingServer("setting.email.user").getStringValue();
+    private String SMTP_AUTH_PWD = new XincoSettingServer("setting.email.password").getStringValue();
+    private static final String emailMsgTxt = "Test";
+    private static final String emailSubjectTxt = "Test Subject";
+    private static final String emailFromAddress = "info@bluecubs.com";
+    private final String port = new XincoSettingServer("setting.email.port").getStringValue();
     // Add List of Email address to who email needs to be sent to
     private static final String[] emailList = {"info@bluecubs.com"};
 

@@ -4,9 +4,9 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
-import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.persistance.XincoCoreDataTypeAttribute;
-import com.bluecubs.xinco.core.persistance.XincoCoreDataTypeAttributePK;
+import com.bluecubs.xinco.core.server.XincoCoreDataTypeAttributeServer;
+import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttributePK;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -72,7 +72,7 @@ public class XincoCoreDataTypeAttributeServerTest {
             XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer();
             XincoCoreDataTypeAttribute result = (XincoCoreDataTypeAttribute) instance.findById(parameters);
             assertTrue(result.getXincoCoreDataTypeAttributePK().getAttributeId() == 1);
-        } catch (XincoException ex) {
+        } catch (Throwable ex) {
             Logger.getLogger(XincoCoreDataTypeAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail("Something went wrong.");
         }
@@ -91,7 +91,7 @@ public class XincoCoreDataTypeAttributeServerTest {
             XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer();
             XincoCoreDataTypeAttribute[] result = (XincoCoreDataTypeAttribute[]) instance.findWithDetails(parameters);
             assertTrue(result[0].getXincoCoreDataTypeAttributePK().getXincoCoreDataTypeId() == 1);
-        } catch (XincoException ex) {
+        } catch (Throwable ex) {
             Logger.getLogger(XincoCoreDataTypeAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail("Something went wrong.");
         }

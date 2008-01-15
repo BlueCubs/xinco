@@ -35,7 +35,9 @@
  */
 package com.bluecubs.xinco.core.client;
 
-import com.bluecubs.xinco.core.*;
+import com.bluecubs.xinco.core.exception.XincoException;
+import com.bluecubs.xinco.core.persistence.XincoCoreLanguage;
+
 
 /**
  * XincoCoreLanguageClient
@@ -45,7 +47,7 @@ public class XincoCoreLanguageClient extends XincoCoreLanguage {
 
     /**
      * Constructor
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException
      */
     public XincoCoreLanguageClient() throws XincoException {
     }

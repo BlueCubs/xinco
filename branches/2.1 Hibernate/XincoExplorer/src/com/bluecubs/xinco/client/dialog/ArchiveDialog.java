@@ -38,9 +38,9 @@
  */
 package com.bluecubs.xinco.client.dialog;
 
-import com.bluecubs.xinco.add.XincoAddAttribute;
+import com.bluecubs.xinco.core.XincoAddAttribute;
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.core.XincoCoreData;
+import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;

@@ -36,7 +36,7 @@ package com.bluecubs.xinco.client.object.dragNdrop;
 
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.*;
-import com.bluecubs.xinco.core.XincoCoreData;
+import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.tools.XincoFileIconManager;
 import java.awt.Component;
@@ -54,7 +54,9 @@ public class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
     private XincoFileIconManager xfm = null;
     private XincoExplorer explorer;
 
-    /** Creates a new instance of XincoTreeCellRenderer */
+    /** Creates a new instance of XincoTreeCellRenderer
+     * @param explorer XincoExplorer
+     */
     public XincoTreeCellRenderer(XincoExplorer explorer) {
         this.explorer = explorer;
         xfm = new XincoFileIconManager();

@@ -37,8 +37,8 @@ package com.bluecubs.xinco.client.object.dragNdrop;
 
 import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.object.XincoJTree;
-import com.bluecubs.xinco.core.XincoCoreACE;
-import com.bluecubs.xinco.core.XincoCoreData;
+import com.bluecubs.xinco.core.persistence.XincoCoreACE;
+import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.client.XincoCoreACEClient;
 import java.awt.AlphaComposite;

@@ -39,7 +39,7 @@
 package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.core.XincoCoreData;
+import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreLog;
 import javax.swing.JOptionPane;
 

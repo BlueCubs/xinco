@@ -4,10 +4,11 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
-import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.XincoCoreLogServer;
+import com.bluecubs.xinco.core.exception.XincoException;
 import com.bluecubs.xinco.core.XincoVersion;
-import com.bluecubs.xinco.core.persistance.XincoCoreLog;
-import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.XincoCoreLog;
+import com.bluecubs.xinco.core.persistence.audit.tools.XincoAbstractAuditableObject;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
@@ -22,7 +23,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author javydreamercsw
+ * @author Javier A. Ortiz
  */
 public class XincoCoreLogServerTest {
 

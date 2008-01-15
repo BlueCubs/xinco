@@ -4,10 +4,10 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
-import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.persistance.XincoCoreGroup;
-import com.bluecubs.xinco.core.server.XincoDBManager;
-import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.server.XincoCoreGroupServer;
+import com.bluecubs.xinco.core.exception.XincoException;
+import com.bluecubs.xinco.core.XincoCoreGroup;
+import com.bluecubs.xinco.core.persistence.audit.tools.XincoAbstractAuditableObject;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;

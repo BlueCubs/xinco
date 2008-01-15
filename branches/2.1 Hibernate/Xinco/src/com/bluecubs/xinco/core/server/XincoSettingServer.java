@@ -1,108 +1,102 @@
-/**
- *Copyright 2007 blueCubs.com
- *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
- *
- *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
- *
- * Name:            XincoSettingServer
- *
- * Description:     XincoSettingServer
- *
- * Original Author: Javier A. Ortiz
- * Date:            February 19, 2007, 4:40 PM
- *
- * Modifications:
- *
- * Who?             When?             What?
- *
- *
- *************************************************************
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.XincoSetting;
-import com.bluecubs.xinco.core.XincoSettingException;
-import java.sql.ResultSet;
-import java.util.ResourceBundle;
+import com.bluecubs.xinco.core.exception.XincoException;
+import com.bluecubs.xinco.core.exception.XincoSettingException;
+import com.bluecubs.xinco.core.persistence.XincoSetting;
+import com.bluecubs.xinco.core.persistence.audit.XincoSettingT;
+import com.bluecubs.xinco.core.persistence.audit.tools.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditableDAO;
+import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditingDAOHelper;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.sf.oness.common.model.temporal.DateRange;
+import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.dao.OptimisticLockingFailureException;
 
 /**
- * Server-side XincoSetting logic
+ *
  * @author Javier A. Ortiz
  */
-public class XincoSettingServer extends XincoSetting {
+public class XincoSettingServer extends XincoSetting implements XincoAuditableDAO, XincoPersistanceServerObject {
 
     private Vector xinco_settings = null;
-    private XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
-    private ResourceBundle rb;
+    private int changerID;
+    private static List result;
 
     /** Creates a new instance of XincoSettingServer
      * @param id
      * @param description
-     * @param int_value
-     * @param string_value
-     * @param bool_value
-     * @param long_value
+     * @param IntValue
+     * @param StringValue
+     * @param BoolValue
+     * @param LongValue
      * @param changerID
-     * @throws com.bluecubs.xinco.core.XincoException 
+     * @throws com.bluecubs.xinco.core.exception.XincoException 
      */
-    public XincoSettingServer(int id, java.lang.String description, int int_value,
-            java.lang.String string_value, boolean bool_value, long long_value, int changerID) throws XincoException {
-        this.setId(id);
-        this.setDescription(description);
-        this.setInt_value(int_value);
-        this.setString_value(string_value);
-        this.setBool_value(bool_value);
-        this.setChangerID(changerID);
-        this.setLong_value(long_value);
-        XincoDBManager DBM = null;
-        try {
-            DBM = new XincoDBManager();
-            write2DB(DBM);
-            setXinco_settings(DBM.getXincoSettingServer().getXinco_settings());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    public XincoSettingServer(int id, java.lang.String description, int IntValue,
+            java.lang.String StringValue, boolean BoolValue, BigInteger LongValue, int changerID) throws XincoException {
+        setId(id);
+        setDescription(description);
+        setIntValue(IntValue);
+        setStringValue(StringValue);
+        setBoolValue(BoolValue);
+        setChangerID(changerID);
+        setLongValue(LongValue);
+    }
+
+    @Override
+    public Integer getRecordId() {
+        return getId();
     }
 
     /**
      * Creates a new instance of XincoSettingServer
      * @param id
-     * @param DBM
-     * @throws com.bluecubs.xinco.core.XincoException
      */
-    public XincoSettingServer(int id, XincoDBManager DBM) throws XincoException {
-        try {
-            String sql = "select * from xinco_setting where id=" + id;
-            ResultSet rs = DBM.executeQuery(sql);
-            rs.next();
-            this.setId(id);
-            this.setDescription(rs.getString("description"));
-            this.setInt_value(rs.getInt("int_value"));
-            this.setString_value(rs.getString("string_value"));
-            this.setBool_value(rs.getBoolean("bool_value"));
-            this.setLong_value(rs.getInt("long_value"));
-        } catch (Throwable ex) {
-            Logger.getLogger(XincoSettingServer.class.getName()).log(Level.SEVERE, null, ex);
-            ex.printStackTrace();
+    public XincoSettingServer(int id) {
+        XincoSetting temp;
+        result = pm.executeQuery("SELECT p FROM XincoSetting p WHERE p.id ='" + id + "'");
+        if (result.size() > 0) {
+            temp = (XincoSetting) result.get(0);
+            setId(temp.getId());
+            setDescription(temp.getDescription());
+            setIntValue(temp.getIntValue());
+            setStringValue(temp.getStringValue());
+            setBoolValue(temp.getBoolValue());
+            setLongValue(temp.getLongValue());
+        } else {
+            Logger.getLogger(XincoSettingServer.class.getName()).log(Level.INFO, "Setting not found");
+        }
+    }
+
+    /**
+     * Creates a new instance of XincoSettingServer
+     * @param key 
+     */
+    @SuppressWarnings("unchecked")
+    public XincoSettingServer(String key) {
+        XincoSetting temp;
+        HashMap p = new HashMap();
+        p.put("description", key);
+        result = pm.namedQuery("XincoSetting.findByDescription", p);
+        if (result.size() > 0) {
+            temp = (XincoSetting) result.get(0);
+            setId(temp.getId());
+            setDescription(temp.getDescription());
+            setIntValue(temp.getIntValue());
+            setStringValue(temp.getStringValue());
+            setBoolValue(temp.getBoolValue());
+            setLongValue(temp.getLongValue());
+        } else {
+            Logger.getLogger(XincoSettingServer.class.getName()).log(Level.INFO, "Setting not found");
         }
     }
 
@@ -113,53 +107,29 @@ public class XincoSettingServer extends XincoSetting {
     }
 
     /**
-     * Write to DB
-     * @param DBM
-     * @return
-     * @throws com.bluecubs.xinco.core.XincoException
-     */
-    public int write2DB(XincoDBManager DBM) throws XincoException {
-        try {
-            String sql = "";
-            if (getId() > 0) {
-                sql = "update xinco_setting set id=" + getId() +
-                        ", description='" + getDescription() + "', int_value=" + getInt_value() +
-                        ", string_value='" + getString_value() + "', bool_value=" + isBool_value() +
-                        " where id=" + getId();
-                DBM.executeUpdate(sql);
-                audit.updateAuditTrail("xinco_setting", new String[]{"id =" + getId()},
-                        DBM, "audit.general.modified", getChangerID());
-            } else {
-                setId(DBM.getNewID("xinco_setting"));
-                sql = "insert into xinco_setting values(" + getId() +
-                        ", '" + getDescription() + "'," + getInt_value() +
-                        ", '" + getString_value() + "'," + isBool_value() + "," + getLong_value() + ")";
-                DBM.executeUpdate(sql);
-                audit.updateAuditTrail("xinco_setting", new String[]{"id =" + getId()},
-                        DBM, "audit.general.created", getChangerID());
-            }
-            DBM.getConnection().commit();
-        } catch (Exception ex) {
-            Logger.getLogger(XincoSettingServer.class.getName()).log(Level.SEVERE, null, ex);
-            ex.printStackTrace();
-        }
-        return this.getId();
-    }
-
-    /**
      * Get setting
      * @param i
      * @return @link XincoSetting
      */
     public XincoSetting getSetting(int i) {
-        return (XincoSetting) getXinco_settings().get(i);
+        if (i < getXinco_settings().size()) {
+            return (XincoSetting) getXinco_settings().get(i);
+        } else {
+            for (int j = 0; j < getXinco_settings().size(); j++) {
+                if (((XincoSetting) getXinco_settings().get(j)).getId() == i) {
+                    return (XincoSetting) getXinco_settings().get(j);
+                }
+            }
+        }
+        return null;
     }
 
     /**
      * Get setting
      * @param s
-     * @return @link XincoSetting
-     * @throws com.bluecubs.xinco.core.XincoSettingException
+     * @return XincoSetting
+     * @throws com.bluecubs.xinco.core.exception.XincoSettingException 
+     * @link XincoSetting
      */
     public XincoSetting getSetting(String s) throws XincoSettingException {
         for (int i = 0; i < getXinco_settings().size(); i++) {
@@ -170,11 +140,27 @@ public class XincoSettingServer extends XincoSetting {
         throw new XincoSettingException();
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+    public static Vector getXincoSettings() {
+        Vector answer = new Vector();
+        result = pm.executeQuery("select p from XincoSetting p");
+        while (!result.isEmpty()) {
+            answer.add((XincoSetting) result.get(0));
+            result.remove(0);
+        }
+        return answer;
+    }
+
+    @SuppressWarnings("unchecked")
     public Vector getXinco_settings() {
         if (xinco_settings == null) {
+            Vector temp = new Vector();
             try {
-                setXinco_settings(new XincoDBManager().getXincoSettingServer().getXinco_settings());
+                result = pm.executeQuery("SELECT p FROM XincoSetting p");
+                for (int i = 0; i < result.size(); i++) {
+                    temp.add((XincoSetting) result.get(i));
+                }
+                setXinco_settings(temp);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -182,8 +168,162 @@ public class XincoSettingServer extends XincoSetting {
         return xinco_settings;
     }
 
-    @Override
     public void setXinco_settings(Vector xinco_settings) {
         this.xinco_settings = xinco_settings;
+    }
+
+    @Override
+    public int getChangerID() {
+        return changerID;
+    }
+
+    @Override
+    public void setChangerID(int changerID) {
+        this.changerID = changerID;
+    }
+
+    public boolean deleteFromDB() throws XincoException {
+        setTransactionTime(DateRange.startingNow());
+        try {
+            XincoAuditingDAOHelper.delete(this, getId());
+            return true;
+        } catch (Throwable e) {
+            Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
+            throw new XincoException();
+        }
+    }
+
+    public boolean write2DB() throws XincoException {
+        setTransactionTime(DateRange.startingNow());
+        try {
+            //Object exists
+            if (getId() != null) {
+                XincoAuditingDAOHelper.update(this, new XincoSetting(getId()));
+            } else {
+                XincoSetting temp = new XincoSetting();
+                temp.setBoolValue(getBoolValue());
+                temp.setDescription(getDescription());
+                temp.setId(getId());
+                temp.setIntValue(getIntValue());
+                temp.setLongValue(getLongValue());
+                temp.setStringValue(getStringValue());
+                temp.setChangerID(getChangerID());
+                XincoAuditingDAOHelper.create(this, temp);
+            }
+            return true;
+        } catch (Throwable e) {
+            Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
+            throw new XincoException();
+        }
+    }
+
+    @Override
+    public XincoAbstractAuditableObject findById(HashMap parameters) {
+        result = pm.namedQuery("XincoSetting.findById", parameters);
+        if (result.size() > 0) {
+            XincoSetting temp = (XincoSetting) result.get(0);
+            temp.setTransactionTime(getTransactionTime());
+            temp.setChangerID(getChangerID());
+            return temp;
+        } else {
+            return null;
+        }
+    }
+
+    public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters) throws DataRetrievalFailureException {
+        result = pm.namedQuery("XincoSetting.findByDescription", parameters);
+        if (result.size() > 0) {
+            XincoSetting temp[] = new XincoSetting[1];
+            temp[0] = (XincoSetting) result.get(0);
+            temp[0].setTransactionTime(getTransactionTime());
+            return temp;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public XincoAbstractAuditableObject create(XincoAbstractAuditableObject value) {
+        XincoSetting temp, newValue = new XincoSetting();
+        boolean exists = false;
+        temp = (XincoSetting) value;
+        if (!value.isCreated()) {
+            newValue.setId(temp.getId());
+            newValue.setRecordId(temp.getRecordId());
+        } else {
+            newValue.setId(getNewID());
+        }
+        newValue.setBoolValue(temp.getBoolValue());
+        newValue.setDescription(temp.getDescription());
+        newValue.setIntValue(temp.getIntValue());
+        newValue.setLongValue(temp.getLongValue());
+        newValue.setStringValue(temp.getStringValue());
+        newValue.setCreated(temp.isCreated());
+        newValue.setChangerID(temp.getChangerID());
+        if (!value.isCreated()) {
+            if (newValue.getId() != 0) {
+                //An object for updating
+                exists = true;
+            } else {
+                //A new object
+                exists = false;
+            }
+        }
+        newValue.setTransactionTime(getTransactionTime());
+        pm.persist(newValue, exists, true);
+        return newValue;
+    }
+
+    @Override
+    public XincoAbstractAuditableObject update(XincoAbstractAuditableObject value) {
+        XincoSetting val = (XincoSetting) value;
+        XincoSettingT temp = new XincoSettingT();
+        temp.setRecordId(val.getRecordId());
+        temp.setBoolValue(val.getBoolValue());
+        temp.setDescription(val.getDescription());
+        if (!value.isCreated()) {
+            temp.setId(val.getId());
+        } else {
+            temp.setId(val.getRecordId());
+        }
+        temp.setIntValue(val.getIntValue());
+        temp.setLongValue(val.getLongValue());
+        temp.setStringValue(val.getStringValue());
+        pm.startTransaction();
+        pm.persist(temp, false, false);
+        pm.persist(val, true, false);
+        val.saveAuditData(pm);
+        pm.commitAndClose();
+        return val;
+    }
+
+    @Override
+    public void delete(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
+        XincoSetting val = (XincoSetting) value;
+        XincoSettingT temp = new XincoSettingT();
+        temp.setBoolValue(val.getBoolValue());
+        temp.setRecordId(val.getRecordId());
+        temp.setDescription(val.getDescription());
+        temp.setId(val.getId());
+        temp.setIntValue(val.getIntValue());
+        temp.setLongValue(val.getLongValue());
+        temp.setStringValue(val.getStringValue());
+        pm.startTransaction();
+        pm.persist(temp, false, false);
+        pm.delete(val, false);
+        val.saveAuditData(pm);
+        pm.commitAndClose();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public HashMap getParameters() {
+        HashMap temp = new HashMap();
+        temp.put("id", getId());
+        return temp;
+    }
+
+    public int getNewID() {
+        return new XincoIDServer("xinco_setting").getNewTableID();
     }
 }

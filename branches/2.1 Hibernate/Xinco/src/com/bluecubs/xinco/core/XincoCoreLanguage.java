@@ -7,7 +7,7 @@
 
 package com.bluecubs.xinco.core;
 
-public class XincoCoreLanguage  implements java.io.Serializable {
+public class XincoCoreLanguage extends com.bluecubs.xinco.core.persistence.XincoCoreLanguage implements java.io.Serializable {
     private java.lang.String designation;
 
     private int changerID;
@@ -28,129 +28,6 @@ public class XincoCoreLanguage  implements java.io.Serializable {
            this.changerID = changerID;
            this.id = id;
            this.sign = sign;
-    }
-
-
-    /**
-     * Gets the designation value for this XincoCoreLanguage.
-     * 
-     * @return designation
-     */
-    public java.lang.String getDesignation() {
-        return designation;
-    }
-
-
-    /**
-     * Sets the designation value for this XincoCoreLanguage.
-     * 
-     * @param designation
-     */
-    public void setDesignation(java.lang.String designation) {
-        this.designation = designation;
-    }
-
-
-    /**
-     * Gets the changerID value for this XincoCoreLanguage.
-     * 
-     * @return changerID
-     */
-    public int getChangerID() {
-        return changerID;
-    }
-
-
-    /**
-     * Sets the changerID value for this XincoCoreLanguage.
-     * 
-     * @param changerID
-     */
-    public void setChangerID(int changerID) {
-        this.changerID = changerID;
-    }
-
-
-    /**
-     * Gets the id value for this XincoCoreLanguage.
-     * 
-     * @return id
-     */
-    public int getId() {
-        return id;
-    }
-
-
-    /**
-     * Sets the id value for this XincoCoreLanguage.
-     * 
-     * @param id
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-
-    /**
-     * Gets the sign value for this XincoCoreLanguage.
-     * 
-     * @return sign
-     */
-    public java.lang.String getSign() {
-        return sign;
-    }
-
-
-    /**
-     * Sets the sign value for this XincoCoreLanguage.
-     * 
-     * @param sign
-     */
-    public void setSign(java.lang.String sign) {
-        this.sign = sign;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof XincoCoreLanguage)) return false;
-        XincoCoreLanguage other = (XincoCoreLanguage) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.designation==null && other.getDesignation()==null) || 
-             (this.designation!=null &&
-              this.designation.equals(other.getDesignation()))) &&
-            this.changerID == other.getChangerID() &&
-            this.id == other.getId() &&
-            ((this.sign==null && other.getSign()==null) || 
-             (this.sign!=null &&
-              this.sign.equals(other.getSign())));
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getDesignation() != null) {
-            _hashCode += getDesignation().hashCode();
-        }
-        _hashCode += getChangerID();
-        _hashCode += getId();
-        if (getSign() != null) {
-            _hashCode += getSign().hashCode();
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
     }
 
     // Type metadata

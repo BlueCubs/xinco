@@ -35,7 +35,9 @@
  */
 package com.bluecubs.xinco.core.client;
 
-import com.bluecubs.xinco.core.*;
+import com.bluecubs.xinco.core.exception.XincoException;
+import com.bluecubs.xinco.core.persistence.XincoCoreNode;
+
 
 /**
  * XincoCoreNodeClient
@@ -45,13 +47,12 @@ public class XincoCoreNodeClient extends XincoCoreNode {
 
     /**
      * Constructor
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException
      */
     public XincoCoreNodeClient() throws XincoException {
     }
 
-    @Override
-    public String toString() {
-        return this.getDesignation();
+    public Object getXincoCoreNodes() {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 }

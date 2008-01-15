@@ -39,7 +39,7 @@
 package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.exception.XincoException;
 import javax.swing.JOptionPane;
 
 /**
@@ -67,7 +67,7 @@ public class UserDialog extends javax.swing.JDialog {
         setLocationRelativeTo(null);
         //Do not allow to close the window. User MUST change password!
         if (this.isAged) {
-            setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+            setDefaultCloseOperation(javax.swing.WindowConstants.DONOTHING_ON_CLOSE);
             this.cancel.setEnabled(false);
             this.name.setEnabled(false);
             this.lastname.setEnabled(false);
@@ -101,10 +101,10 @@ public class UserDialog extends javax.swing.JDialog {
         this.lastnameLabel.setText(explorer.getResourceBundle().getString("window.userinfo.lastname") + ":");
         this.email.setText("" + explorer.getSession().getUser().getEmail());
         this.emailLabel.setText(explorer.getResourceBundle().getString("window.userinfo.email") + ":");
-        if (explorer.getSession().getUser().getStatus_number() == 1) {
+        if (explorer.getSession().getUser().getStatusNumber() == 1) {
             text = explorer.getResourceBundle().getString("general.status.open") + "";
         }
-        if (explorer.getSession().getUser().getStatus_number() == 2) {
+        if (explorer.getSession().getUser().getStatusNumber() == 2) {
             text = explorer.getResourceBundle().getString("general.status.locked") + " (-)";
         }
         this.status.setText(text);
@@ -299,8 +299,8 @@ public class UserDialog extends javax.swing.JDialog {
                 explorer.getUser().setFirstname(name.getText());
                 explorer.getUser().setName(lastname.getText());
                 explorer.getUser().setEmail(email.getText());
-                explorer.getUser().setXinco_core_groups(explorer.getSession().getUser().getXinco_core_groups());
-                explorer.getUser().setStatus_number(explorer.getSession().getUser().getStatus_number());
+                explorer.getUser().setXincoCoreGroups(explorer.getSession().getUser().getXincoCoreGroups());
+                explorer.getUser().setStatusNumber(explorer.getSession().getUser().getStatusNumber());
                 explorer.getUser().setChange(true);
                 explorer.getUser().setUserpassword(new String(password.getPassword()));
                 ChangeReasonDialog crd = null;
@@ -327,10 +327,10 @@ public class UserDialog extends javax.swing.JDialog {
                 explorer.getUser().setChangerID(explorer.getUser().getId());
                 explorer.getUser().setWriteGroups(true);
                 explorer.getUser().setChange(true);
-                explorer.getUser().setStatus_number(1);
+                explorer.getUser().setStatusNumber(1);
                 if (isAged) {
                     explorer.getUser().setReason("audit.user.account.aged");
-                    explorer.getUser().setStatus_number(4);
+                    explorer.getUser().setStatusNumber(4);
                 } else {
                     explorer.getUser().setReason(crd.getReason());
                 }

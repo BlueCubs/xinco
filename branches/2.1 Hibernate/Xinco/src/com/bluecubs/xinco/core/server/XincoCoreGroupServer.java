@@ -35,35 +35,48 @@
  */
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.exception.XincoException;
+import com.bluecubs.xinco.core.persistence.XincoCoreGroup;
+import com.bluecubs.xinco.core.persistence.audit.XincoCoreGroupT;
+import com.bluecubs.xinco.core.persistence.audit.tools.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditableDAO;
+import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditingDAOHelper;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
-import java.sql.*;
-
-import com.bluecubs.xinco.core.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import net.sf.oness.common.model.temporal.DateRange;
+import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.dao.OptimisticLockingFailureException;
 
 /**
  * Create group object for data structures
  * @author Alexander Manes
  */
-public class XincoCoreGroupServer extends XincoCoreGroup {
+public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditableDAO, XincoPersistanceServerObject {
+
+    private static List result;
 
     /**
      * Create group object for data structures
      * @param id
-     * @param DBM
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException 
      */
-    public XincoCoreGroupServer(int id, XincoDBManager DBM) throws XincoException {
+    @SuppressWarnings("unchecked")
+    public XincoCoreGroupServer(int id) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         try {
-            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_group WHERE id=" + id);
+            parameters.clear();
+            parameters.put("id", id);
+            result = pm.namedQuery("XincoCoreGroup.findById", parameters);
             //throw exception if no result found
-            int RowCount = 0;
-            while (rs.next()) {
-                RowCount++;
-                setId(rs.getInt("id"));
-                setDesignation(rs.getString("designation"));
-                setStatus_number(rs.getInt("status_number"));
-            }
-            if (RowCount < 1) {
+            if (result.size() > 0) {
+                XincoCoreGroup temp = (XincoCoreGroup) result.get(0);
+                setId(temp.getId());
+                setDesignation(temp.getDesignation());
+                setStatusNumber(temp.getStatusNumber());
+            } else {
                 throw new XincoException();
             }
         } catch (Throwable e) {
@@ -71,63 +84,207 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
         }
     }
 
+    public XincoCoreGroupServer() {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
+    }
+
     /**
      * Create group object for data structures
      * @param id
      * @param designation
      * @param status
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException
      */
     public XincoCoreGroupServer(int id, String designation, int status) throws XincoException {
+        pm.setDeveloperMode(new XincoSettingServer("setting.enable.developermode").getBoolValue());
         setId(id);
         setDesignation(designation);
-        setStatus_number(status);
+        setStatusNumber(status);
     }
 
     /**
      * Persist object
-     * @param DBM
-     * @return
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @return 
+     * @throws com.bluecubs.xinco.core.exception.XincoException
      */
-    public int write2DB(XincoDBManager DBM) throws XincoException {
+    public boolean write2DB() throws XincoException {
         try {
             if (getId() > 0) {
-                XincoCoreAuditTrail audit = new XincoCoreAuditTrail();
-                audit.updateAuditTrail("xinco_core_group", new String[]{"id =" + getId()},
-                        DBM, "audit.coregroup.change", this.getChangerID());
-                DBM.executeUpdate("UPDATE xinco_core_group SET designation='" + getDesignation().replaceAll("'", "\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
+                XincoAuditingDAOHelper.update(this, new XincoCoreGroup(getId()));
             } else {
-                setId(DBM.getNewID("xinco_core_group"));
-                DBM.executeUpdate("INSERT INTO xinco_core_group VALUES (" + getId() + ", '" + getDesignation().replaceAll("'", "\\\\'") + "', " + getStatus_number() + ")");
+                XincoCoreGroup temp = new XincoCoreGroup();
+                temp.setId(getId());
+                temp.setChangerID(getChangerID());
+                temp.setCreated(true);
+                temp.setDesignation(getDesignation());
+                temp.setStatusNumber(getStatusNumber());
+                temp = (XincoCoreGroup) XincoAuditingDAOHelper.create(this, temp);
+                setId(temp.getId());
             }
-            DBM.getConnection().commit();
+            return true;
         } catch (Throwable e) {
-            try {
-                DBM.getConnection().rollback();
-            } catch (Exception erollback) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.SEVERE, null, e);
             }
             throw new XincoException();
         }
-        return getId();
     }
 
     /**
      * Create complete list of groups
-     * @param DBM
-     * @return Vector
+     * @return A vector containing all Core Groups
      */
     @SuppressWarnings("unchecked")
-    public static Vector getXincoCoreGroups(XincoDBManager DBM) {
+    public static Vector getXincoCoreGroups() {
         Vector coreGroups = new Vector();
         try {
-            ResultSet rs = DBM.executeQuery("SELECT * FROM xinco_core_group ORDER BY designation");
-            while (rs.next()) {
-                coreGroups.add(new XincoCoreGroupServer(rs.getInt("id"), rs.getString("designation"), rs.getInt("status_number")));
+            result = pm.executeQuery("select p from XincoCoreGroup p order by p.designation");
+            while (!result.isEmpty()) {
+                coreGroups.add((XincoCoreGroup) result.get(0));
+                result.remove(0);
             }
         } catch (Throwable e) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.INFO, null, e);
+            }
             coreGroups.removeAllElements();
         }
         return coreGroups;
+    }
+
+    public boolean deleteFromDB() throws XincoException {
+        setTransactionTime(DateRange.startingNow());
+        try {
+            XincoAuditingDAOHelper.delete(this, getId());
+            return true;
+        } catch (Throwable e) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
+            }
+            throw new XincoException();
+        }
+    }
+
+    public XincoAbstractAuditableObject findById(HashMap parameters) throws DataRetrievalFailureException {
+        result = pm.namedQuery("XincoCoreGroup.findById", parameters);
+        if (result.size() > 0) {
+            XincoCoreGroup temp = (XincoCoreGroup) result.get(0);
+            temp.setTransactionTime(getTransactionTime());
+            temp.setChangerID(getChangerID());
+            return temp;
+        } else {
+            return null;
+        }
+    }
+
+    public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters) throws DataRetrievalFailureException {
+        int counter = 0;
+        String sql = "SELECT x FROM XincoCoreGroup x WHERE ";
+        if (parameters.containsKey("designation")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreDataTypeServer.class.getName()).log(Level.INFO, "Searching by designation");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.designation = :designation";
+            counter++;
+        }
+        if (parameters.containsKey("statusNumber")) {
+            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreDataTypeServer.class.getName()).log(Level.INFO, "Searching by statusNumber");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.statusNumber = :statusNumber";
+            counter++;
+        }
+        result = pm.createdQuery(sql, parameters);
+        if (result.size() > 0) {
+            XincoCoreGroup temp[] = new XincoCoreGroup[result.size()];
+            int i = 0;
+            while (!result.isEmpty()) {
+                temp[i] = (XincoCoreGroup) result.get(0);
+                temp[i].setTransactionTime(getTransactionTime());
+                i++;
+                result.remove(0);
+            }
+            return temp;
+        } else {
+            return null;
+        }
+    }
+
+    public XincoAbstractAuditableObject create(XincoAbstractAuditableObject value) {
+        XincoCoreGroup temp, newValue = new XincoCoreGroup();
+        boolean exists = false;
+        temp = (XincoCoreGroup) value;
+        if (!value.isCreated()) {
+            newValue.setId(temp.getId());
+            newValue.setRecordId(temp.getRecordId());
+        } else {
+            newValue.setId(new XincoIDServer("xinco_core_group").getNewTableID());
+        }
+        newValue.setDesignation(temp.getDesignation());
+        newValue.setStatusNumber(temp.getStatusNumber());
+        newValue.setCreated(temp.isCreated());
+        newValue.setChangerID(temp.getChangerID());
+        if (!value.isCreated()) {
+            if (((XincoCoreGroup) value).getId() != 0) {
+                //An object for updating
+                exists = true;
+            } else {
+                //A new object
+                exists = false;
+            }
+        }
+        newValue.setTransactionTime(getTransactionTime());
+        pm.persist(newValue, exists, true);
+        return newValue;
+    }
+
+    public XincoAbstractAuditableObject update(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
+        XincoCoreGroup val = (XincoCoreGroup) value;
+        XincoCoreGroupT temp = new XincoCoreGroupT();
+        if (!value.isCreated()) {
+            temp.setId(val.getId());
+        } else {
+            temp.setId(val.getRecordId());
+        }
+        temp.setRecordId(val.getRecordId());
+        temp.setDesignation(val.getDesignation());
+        temp.setStatusNumber(val.getStatusNumber());
+        pm.startTransaction();
+        pm.persist(temp, false, false);
+        pm.persist(val, true, false);
+        val.saveAuditData(pm);
+        pm.commitAndClose();
+        return val;
+    }
+
+    public void delete(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
+        XincoCoreGroup val = (XincoCoreGroup) value;
+        XincoCoreGroupT temp = new XincoCoreGroupT();
+        temp.setRecordId(val.getRecordId());
+        temp.setDesignation(val.getDesignation());
+        temp.setStatusNumber(val.getStatusNumber());
+        temp.setId(val.getId());
+        pm.startTransaction();
+        pm.persist(temp, false, false);
+        pm.delete(val, false);
+        val.saveAuditData(pm);
+        pm.commitAndClose();
+    }
+
+    @SuppressWarnings("unchecked")
+    public HashMap getParameters() {
+        HashMap temp = new HashMap();
+        temp.put("id", getId());
+        return temp;
+    }
+
+    public int getNewID() {
+        return new XincoIDServer("xinco_core_group").getNewTableID();
     }
 }

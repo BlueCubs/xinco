@@ -41,7 +41,7 @@ package com.bluecubs.xinco.client.object.thread;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.*;
 import com.bluecubs.xinco.core.XincoCoreNode;
-import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.exception.XincoException;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ResourceBundle;
@@ -106,7 +106,7 @@ public class XincoImportThread extends Thread {
             }
             try {
                 explorer.getSession().getXinco().indexFiles(explorer.getFilesToBeIndexed(), explorer.getSession().getUser());
-                if (explorer.getSettings().getSetting("setting.enable.developermode").isBool_value()) {
+                if (explorer.getSettings().getSetting("setting.enable.developermode").getBoolValue()) {
                     System.out.println("Indexing complete!");
                 }
             } catch (RemoteException ex) {

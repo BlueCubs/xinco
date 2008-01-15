@@ -35,11 +35,12 @@
  */
 package com.bluecubs.xinco.index;
 
-import com.bluecubs.xinco.core.XincoCoreData;
+import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
-import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.XincoPersistanceManager;
+import com.bluecubs.xinco.core.server.XincoSettingServer;
 import java.io.File;
-import java.sql.ResultSet;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,8 +53,9 @@ public class XincoIndexThread extends Thread {
     private Vector nodes = null;
     private boolean index_content = false,  index_result = false;
     private static boolean index_directory_deleted = false;
-    private XincoDBManager DBM = null;
     private XincoCoreData d = null;
+    private List result;
+    private static XincoPersistanceManager pm = new XincoPersistanceManager();
 
     /**
      * Run method
@@ -62,14 +64,12 @@ public class XincoIndexThread extends Thread {
     public void run() {
         while (!nodes.isEmpty()) {
             try {
-                DBM = new XincoDBManager();
                 d = (XincoCoreData) nodes.firstElement();
-                if (XincoIndexer.indexXincoCoreData(d, index_content, DBM)) {  
+                if (XincoIndexer.indexXincoCoreData(d, index_content)) {
                     nodes.remove(0);
                 } else {
-                    Logger.getLogger(XincoIndexThread.class.getName()).log(Level.INFO, "Couldn't index " + d.getDesignation()+". Verify if there's a indexer for this file type.");
+                    Logger.getLogger(XincoIndexThread.class.getName()).log(Level.INFO, "Couldn't index " + d.getDesignation() + ". Verify if there's a indexer for this file type.");
                 }
-                DBM.finalize();
             } catch (Throwable ex) {
                 Logger.getLogger(XincoIndexThread.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -119,32 +119,22 @@ public class XincoIndexThread extends Thread {
     }
 
     /**
-     * Get XIncoDBManager
-     * @return
-     */
-    public XincoDBManager getXincoDBManager() {
-        return DBM;
-    }
-
-    /**
      * Delete Lucene Index
-     * @param DBM
      * @return boolean
      */
-    public synchronized static boolean deleteIndex(XincoDBManager DBM) {
+    public synchronized static boolean deleteIndex() {
         try {
-            DBM = new XincoDBManager();
             File indexDirectory = null;
             File indexDirectoryFile = null;
             String[] indexDirectoryFileList = null;
-            indexDirectory = new File(DBM.config.getFileIndexPath());
+            indexDirectory = new File(XincoPersistanceManager.config.getFileIndexPath());
             if (indexDirectory.exists()) {
                 indexDirectoryFileList = indexDirectory.list();
                 for (int i = 0; i < indexDirectoryFileList.length; i++) {
-                    if (DBM.getSetting("setting.enable.developermode").isBool_value()) {
-                        System.out.println("Deleting index file: " + DBM.config.getFileIndexPath() + indexDirectoryFileList[i]);
+                    if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                        System.out.println("Deleting index file: " + XincoPersistanceManager.config.getFileIndexPath() + indexDirectoryFileList[i]);
                     }
-                    indexDirectoryFile = new File(DBM.config.getFileIndexPath() + indexDirectoryFileList[i]);
+                    indexDirectoryFile = new File(XincoPersistanceManager.config.getFileIndexPath() + indexDirectoryFileList[i]);
                     indexDirectoryFile.delete();
                 }
                 index_directory_deleted = indexDirectory.delete();
@@ -165,16 +155,17 @@ public class XincoIndexThread extends Thread {
 
     /**
      * Build Lucene Index
-     * @param DBM
      * @return boolean
      */
-    public synchronized boolean buildIndex(XincoDBManager DBM) {
+    public synchronized boolean buildIndex() {
         //select all data
         try {
-            ResultSet rs = DBM.executeQuery("SELECT id FROM xinco_core_data ORDER BY designation");
+            result = pm.executeQuery("SELECT p FROM XincoCoreData p ORDER BY p.designation");
             nodes = null;
-            while (rs.next()) {
-                addData(new XincoCoreDataServer(rs.getInt("id"), DBM));
+            while (!result.isEmpty()) {
+                XincoCoreData temp = (XincoCoreData) result.get(0);
+                addData(new XincoCoreDataServer(temp.getId()));
+                result.remove(0);
             }
             if (!this.isAlive()) {
                 start();
@@ -191,15 +182,13 @@ public class XincoIndexThread extends Thread {
      * @return boolean
      */
     public synchronized boolean rebuildIndex() {
-        boolean result = false;
+        boolean resultT = false;
         try {
-            DBM = new XincoDBManager();
-            deleteIndex(DBM);
-            result = buildIndex(DBM);
-            DBM.finalize();
+            deleteIndex();
+            resultT = buildIndex();
         } catch (Throwable ex) {
             Logger.getLogger(XincoIndexThread.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return result;
+        return resultT;
     }
 }

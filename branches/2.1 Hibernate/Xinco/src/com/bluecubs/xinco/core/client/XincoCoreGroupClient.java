@@ -35,7 +35,9 @@
  */
 package com.bluecubs.xinco.core.client;
 
-import com.bluecubs.xinco.core.*;
+import com.bluecubs.xinco.core.exception.XincoException;
+import com.bluecubs.xinco.core.persistence.XincoCoreGroup;
+
 
 /**
  * XincoCoreGroupClient
@@ -45,7 +47,7 @@ public class XincoCoreGroupClient extends XincoCoreGroup {
 
     /**
      * Contructor
-     * @throws com.bluecubs.xinco.core.XincoException
+     * @throws com.bluecubs.xinco.core.exception.XincoException
      */
     public XincoCoreGroupClient() throws XincoException {
     }

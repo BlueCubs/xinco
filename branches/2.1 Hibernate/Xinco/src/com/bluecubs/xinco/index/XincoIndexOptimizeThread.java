@@ -38,8 +38,6 @@ package com.bluecubs.xinco.index;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
-
 /**
  * This class runs index optimizing in a separate thread
  * (only one thread is allowed)
@@ -55,11 +53,8 @@ public class XincoIndexOptimizeThread extends Thread {
         firstRun = new GregorianCalendar();
         while (true) {
             try {
-                XincoDBManager DBM = null;
-                DBM = new XincoDBManager();
-                XincoIndexer.optimizeIndex(DBM);
+                XincoIndexer.optimizeIndex();
                 lastRun = new GregorianCalendar();
-                DBM.finalize();
             } catch (Throwable e) {
             //continue, wait and try again...
             }

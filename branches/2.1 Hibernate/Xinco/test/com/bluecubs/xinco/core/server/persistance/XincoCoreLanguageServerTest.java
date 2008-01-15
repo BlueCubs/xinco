@@ -4,9 +4,10 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
-import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.persistance.XincoCoreLanguage;
-import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.XincoCoreLanguage;
+import com.bluecubs.xinco.core.exception.XincoException;
+import com.bluecubs.xinco.core.persistence.audit.tools.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.server.XincoCoreLanguageServer;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -58,9 +59,13 @@ public class XincoCoreLanguageServerTest {
      */
     @Test
     public void isLanguageUsed() {
-        System.out.println("isLanguageUsed");
-        XincoCoreLanguage xcl = new XincoCoreLanguage(1);
-        assertTrue(XincoCoreLanguageServer.isLanguageUsed(xcl));
+        try {
+            System.out.println("isLanguageUsed");
+            XincoCoreLanguageServer xcl = new XincoCoreLanguageServer(1);
+            assertTrue(XincoCoreLanguageServer.isLanguageUsed(xcl));
+        } catch (XincoException ex) {
+            Logger.getLogger(XincoCoreLanguageServerTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

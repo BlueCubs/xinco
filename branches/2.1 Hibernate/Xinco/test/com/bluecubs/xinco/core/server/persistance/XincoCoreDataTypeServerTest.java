@@ -4,8 +4,8 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
-import com.bluecubs.xinco.core.persistance.XincoCoreDataType;
-import com.bluecubs.xinco.core.server.persistance.audit.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.server.XincoCoreDataTypeServer;
+import com.bluecubs.xinco.core.persistence.XincoCoreDataType;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author javydreamercsw
+ * @author Javier A. Ortiz
  */
 public class XincoCoreDataTypeServerTest {
 

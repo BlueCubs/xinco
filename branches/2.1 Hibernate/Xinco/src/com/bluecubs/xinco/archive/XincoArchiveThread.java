@@ -38,7 +38,8 @@ package com.bluecubs.xinco.archive;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.XincoPersistanceManager;
+import java.math.BigInteger;
 
 /**
  * This class runs document archiving in a separate thread
@@ -52,27 +53,23 @@ public class XincoArchiveThread extends Thread {
 
     @Override
     public void run() {
-        long archive_period = 14400000;
+        BigInteger archive_period = BigInteger.valueOf(14400000);
         firstRun = new GregorianCalendar();
         while (true) {
             try {
-                XincoDBManager DBM = null;
-                DBM = new XincoDBManager();
-                archive_period = DBM.config.getFileArchivePeriod();
+                archive_period = XincoPersistanceManager.config.getFileArchivePeriod();
                 //exit archiver if period = 0
-                if (archive_period == 0) {
+                if (archive_period == BigInteger.valueOf(0)) {
                     break;
                 }
-                XincoArchiver.archiveData(DBM);
+                XincoArchiver.archiveData();
                 lastRun = new GregorianCalendar();
-                DBM.getConnection().close();
-                DBM = null;
             } catch (Throwable e) {
                 //continue, wait and try again...
-                archive_period = 14400000;
+                archive_period = BigInteger.valueOf(14400000);
             }
             try {
-                Thread.sleep(archive_period);
+                Thread.sleep(archive_period.longValue());
             } catch (Exception se) {
                 break;
             }

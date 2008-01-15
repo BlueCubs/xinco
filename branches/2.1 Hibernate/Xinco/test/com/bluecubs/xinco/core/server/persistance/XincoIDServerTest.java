@@ -4,7 +4,8 @@
  */
 package com.bluecubs.xinco.core.server.persistance;
 
-import com.bluecubs.xinco.core.persistance.XincoId;
+import com.bluecubs.xinco.core.server.XincoIDServer;
+import com.bluecubs.xinco.core.XincoId;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
