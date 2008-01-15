@@ -37,7 +37,7 @@ package com.bluecubs.xinco.index;
 
 import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
-import com.bluecubs.xinco.core.server.XincoPersistanceManager;
+import com.bluecubs.xinco.core.server.XincoPersistenceManager;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
 import java.io.File;
 import java.util.List;
@@ -55,7 +55,7 @@ public class XincoIndexThread extends Thread {
     private static boolean index_directory_deleted = false;
     private XincoCoreData d = null;
     private List result;
-    private static XincoPersistanceManager pm = new XincoPersistanceManager();
+    private static XincoPersistenceManager pm = new XincoPersistenceManager();
 
     /**
      * Run method
@@ -127,14 +127,14 @@ public class XincoIndexThread extends Thread {
             File indexDirectory = null;
             File indexDirectoryFile = null;
             String[] indexDirectoryFileList = null;
-            indexDirectory = new File(XincoPersistanceManager.config.getFileIndexPath());
+            indexDirectory = new File(XincoPersistenceManager.config.getFileIndexPath());
             if (indexDirectory.exists()) {
                 indexDirectoryFileList = indexDirectory.list();
                 for (int i = 0; i < indexDirectoryFileList.length; i++) {
                     if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
-                        System.out.println("Deleting index file: " + XincoPersistanceManager.config.getFileIndexPath() + indexDirectoryFileList[i]);
+                        System.out.println("Deleting index file: " + XincoPersistenceManager.config.getFileIndexPath() + indexDirectoryFileList[i]);
                     }
-                    indexDirectoryFile = new File(XincoPersistanceManager.config.getFileIndexPath() + indexDirectoryFileList[i]);
+                    indexDirectoryFile = new File(XincoPersistenceManager.config.getFileIndexPath() + indexDirectoryFileList[i]);
                     indexDirectoryFile.delete();
                 }
                 index_directory_deleted = indexDirectory.delete();

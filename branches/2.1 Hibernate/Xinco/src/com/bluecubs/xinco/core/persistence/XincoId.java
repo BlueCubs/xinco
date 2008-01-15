@@ -5,7 +5,7 @@
 
 package com.bluecubs.xinco.core.persistence;
 
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAbstractAuditableObject;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -79,7 +79,7 @@ public class XincoId extends XincoAbstractAuditableObject implements Serializabl
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.persistance.XincoId[tablename=" + tablename + "]";
+        return "com.bluecubs.xinco.core.persistence.XincoId[tablename=" + tablename + "]";
     }
 
 }

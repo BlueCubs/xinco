@@ -10,7 +10,7 @@ import com.bluecubs.xinco.core.exception.XincoException;
  *
  * @author Javier A. Ortiz
  */
-public interface XincoPersistanceServerObject {
+public interface XincoPersistenceServerObject {
 
     /**
      * Writes a record on the DB.

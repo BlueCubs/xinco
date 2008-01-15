@@ -40,9 +40,9 @@ import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.persistence.XincoCoreLanguage;
 import com.bluecubs.xinco.core.persistence.XincoCoreNode;
 import com.bluecubs.xinco.core.persistence.audit.XincoCoreNodeT;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAbstractAuditableObject;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditableDAO;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditingDAOHelper;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAuditableDAO;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAuditingDAOHelper;
 import com.bluecubs.xinco.index.XincoIndexer;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +57,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
  *
  * @author Javier A. Ortiz
  */
-public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditableDAO, XincoPersistanceServerObject {
+public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditableDAO, XincoPersistenceServerObject {
 
     private static List result;
     private Vector xincoCoreNodes = null,  xincoCoreData = null,  xincoCoreACL = null;
@@ -218,7 +218,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
             while (!result.isEmpty()) {
                 nodes.add((XincoCoreNode) result.get(0));
                 i++;
-                if (i >= XincoPersistanceManager.config.getMaxSearchResult()) {
+                if (i >= XincoPersistenceManager.config.getMaxSearchResult()) {
                     break;
                 }
             }

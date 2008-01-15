@@ -42,9 +42,9 @@ import com.bluecubs.xinco.core.persistence.XincoCoreACE;
 import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.persistence.XincoCoreLog;
 import com.bluecubs.xinco.core.persistence.audit.XincoCoreDataT;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAbstractAuditableObject;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditableDAO;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditingDAOHelper;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAuditableDAO;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAuditingDAOHelper;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +65,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
  * 4 => Checked Out
  * 5 => Published
  */
-public class XincoCoreDataServer extends XincoCoreData implements XincoAuditableDAO, XincoPersistanceServerObject {
+public class XincoCoreDataServer extends XincoCoreData implements XincoAuditableDAO, XincoPersistenceServerObject {
 
     private static List result;
     private Vector xinco_core_logs;
@@ -181,7 +181,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
                 XincoCoreData temp = (XincoCoreData) result.get(0);
                 data.add(new XincoCoreDataServer(temp.getId()));
                 i++;
-                if (i >= XincoPersistanceManager.config.getMaxSearchResult()) {
+                if (i >= XincoPersistenceManager.config.getMaxSearchResult()) {
                     break;
                 }
                 result.remove(0);
@@ -444,7 +444,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
             //delete file / file = 1
             if (getXincoCoreDataTypeId() == 1) {
                 try {
-                    (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistanceManager.config.getFileRepositoryPath(), getId(), "" + getId()))).delete();
+                    (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistenceManager.config.getFileRepositoryPath(), getId(), "" + getId()))).delete();
                 } catch (Exception dfe) {
                 // continue, file might not exists
                 }
@@ -452,7 +452,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
                 for (i = 0; i < this.getXincoCoreLogs().size(); i++) {
                     if ((((XincoCoreLog) getXincoCoreLogs().elementAt(i)).getOpCode() == 1) || (((XincoCoreLog) getXincoCoreLogs().elementAt(i)).getOpCode() == 5)) {
                         try {
-                            (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistanceManager.config.getFileRepositoryPath(), getId(), getId() + "-" + ((XincoCoreLog) getXincoCoreLogs().elementAt(i)).getId()))).delete();
+                            (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistenceManager.config.getFileRepositoryPath(), getId(), getId() + "-" + ((XincoCoreLog) getXincoCoreLogs().elementAt(i)).getId()))).delete();
                         } catch (Exception drfe) {
                         // continue, delete next revision
                         }

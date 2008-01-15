@@ -5,7 +5,7 @@
 
 package com.bluecubs.xinco.core.persistence;
 
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAbstractAuditableObject;
 import java.io.Serializable;
 import java.math.BigInteger;
 import javax.persistence.Column;

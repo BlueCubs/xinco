@@ -7,7 +7,7 @@
 
 package com.bluecubs.xinco.add;
 
-public class XincoAddAttribute  implements java.io.Serializable {
+public class XincoAddAttribute extends com.bluecubs.xinco.core.persistence.XincoAddAttribute implements java.io.Serializable {
     private java.util.Calendar attrib_datetime;
 
     private double attrib_double;

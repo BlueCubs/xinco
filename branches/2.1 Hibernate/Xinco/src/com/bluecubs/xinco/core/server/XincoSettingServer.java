@@ -8,9 +8,9 @@ import com.bluecubs.xinco.core.exception.XincoException;
 import com.bluecubs.xinco.core.exception.XincoSettingException;
 import com.bluecubs.xinco.core.persistence.XincoSetting;
 import com.bluecubs.xinco.core.persistence.audit.XincoSettingT;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAbstractAuditableObject;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditableDAO;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditingDAOHelper;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAuditableDAO;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAuditingDAOHelper;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +25,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
  *
  * @author Javier A. Ortiz
  */
-public class XincoSettingServer extends XincoSetting implements XincoAuditableDAO, XincoPersistanceServerObject {
+public class XincoSettingServer extends XincoSetting implements XincoAuditableDAO, XincoPersistenceServerObject {
 
     private Vector xinco_settings = null;
     private int changerID;

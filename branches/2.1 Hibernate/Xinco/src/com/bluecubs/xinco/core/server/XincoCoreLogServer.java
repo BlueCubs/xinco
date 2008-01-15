@@ -38,9 +38,9 @@ package com.bluecubs.xinco.core.server;
 import com.bluecubs.xinco.core.exception.XincoException;
 import com.bluecubs.xinco.core.XincoVersion;
 import com.bluecubs.xinco.core.persistence.XincoCoreLog;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAbstractAuditableObject;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditableDAO;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditingDAOHelper;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAuditableDAO;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAuditingDAOHelper;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +51,7 @@ import net.sf.oness.common.model.temporal.DateRange;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.dao.OptimisticLockingFailureException;
 
-public class XincoCoreLogServer extends XincoCoreLog implements XincoAuditableDAO, XincoPersistanceServerObject {
+public class XincoCoreLogServer extends XincoCoreLog implements XincoAuditableDAO, XincoPersistenceServerObject {
 
     private static List result;
 

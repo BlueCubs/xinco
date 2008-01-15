@@ -110,7 +110,7 @@ public class XincoConfigSingletonServer {
             }
             FileArchivePeriod = xss.getSetting("xinco/FileArchivePeriod").getLongValue();
             Vector s = xss.getXinco_settings();
-            StringTokenizer st;
+            StringTokenizer st; 
             String[] temp;
             for (int i = 0; i < s.size(); i++) {
                 if (((XincoSetting) s.get(i)).getDescription().startsWith("xinco/FileIndexer") &&

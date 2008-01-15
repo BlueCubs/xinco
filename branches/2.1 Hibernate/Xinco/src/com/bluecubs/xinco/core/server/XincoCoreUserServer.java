@@ -44,9 +44,9 @@ import com.bluecubs.xinco.core.persistence.XincoCoreGroup;
 import com.bluecubs.xinco.core.persistence.XincoCoreUser;
 import com.bluecubs.xinco.core.persistence.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.core.persistence.audit.XincoCoreUserT;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAbstractAuditableObject;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditableDAO;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditingDAOHelper;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAuditableDAO;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAuditingDAOHelper;
 import com.bluecubs.xinco.tools.MD5;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -69,7 +69,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
  * -1 = aged password modified, ready to turn unlocked
  * @author Alexander Manes
  */
-public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditableDAO, XincoPersistanceServerObject {
+public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditableDAO, XincoPersistenceServerObject {
 
     private boolean hashPassword = true;
     private boolean increaseAttempts = false;

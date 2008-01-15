@@ -39,7 +39,7 @@ import com.bluecubs.xinco.core.persistence.XincoAddAttribute;
 import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataTypeAttributeServer;
-import com.bluecubs.xinco.core.server.XincoPersistanceManager;
+import com.bluecubs.xinco.core.server.XincoPersistenceManager;
 import com.bluecubs.xinco.index.filetypes.XincoIndexFileType;
 import com.bluecubs.xinco.index.filetypes.XincoIndexText;
 import java.io.File;
@@ -88,8 +88,8 @@ public class XincoDocument {
                 }
                 //check which indexer to use for file extension
                 fileType = 0; // default: index as TEXT
-                for (l = 0; l < XincoPersistanceManager.config.getFileIndexerCount(); l++) {
-                    if (((String) XincoPersistanceManager.config.getIndexFileTypesExt().elementAt(l)).compareTo(file_ext) == 0) {
+                for (l = 0; l < XincoPersistenceManager.config.getFileIndexerCount(); l++) {
+                    if (((String) XincoPersistenceManager.config.getIndexFileTypesExt().elementAt(l)).compareTo(file_ext) == 0) {
                         fileType = l + 1; // file-type specific indexing
                         break;
                     }
@@ -98,8 +98,8 @@ public class XincoDocument {
                     }
                 }
                 if (fileType == 0) {
-                    for (i = 0; i < XincoPersistanceManager.config.getIndexNoIndex().length; i++) {
-                        if (XincoPersistanceManager.config.getIndexNoIndex()[i].compareTo(file_ext) == 0) {
+                    for (i = 0; i < XincoPersistenceManager.config.getIndexNoIndex().length; i++) {
+                        if (XincoPersistenceManager.config.getIndexNoIndex()[i].compareTo(file_ext) == 0) {
                             fileType = -1; // NO indexing
                             break;
                         }
@@ -112,15 +112,15 @@ public class XincoDocument {
                 if (fileType == 0) {
                     // index as TEXT
                     xift = new XincoIndexText();
-                    doc.add(new Field("file", xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistanceManager.config.getFileRepositoryPath(), d.getId(), "" + d.getId())))));
+                    doc.add(new Field("file", xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistenceManager.config.getFileRepositoryPath(), d.getId(), "" + d.getId())))));
                 } else if (fileType > 0) {
                     try {
-                        xift = (XincoIndexFileType) Class.forName((String) XincoPersistanceManager.config.getIndexFileTypesClass().elementAt(fileType - 1)).newInstance();
-                        ContentReader = xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistanceManager.config.getFileRepositoryPath(), d.getId(), "" + d.getId())));
+                        xift = (XincoIndexFileType) Class.forName((String) XincoPersistenceManager.config.getIndexFileTypesClass().elementAt(fileType - 1)).newInstance();
+                        ContentReader = xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistenceManager.config.getFileRepositoryPath(), d.getId(), "" + d.getId())));
                         if (ContentReader != null) {
                             doc.add(new Field("file", ContentReader));
                         } else {
-                            ContentString = xift.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistanceManager.config.getFileRepositoryPath(), d.getId(), "" + d.getId())));
+                            ContentString = xift.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistenceManager.config.getFileRepositoryPath(), d.getId(), "" + d.getId())));
                             if (ContentString != null) {
                                 doc.add(new Field("file", ContentString, Field.Store.COMPRESS, Field.Index.TOKENIZED));
                             }

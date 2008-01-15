@@ -40,7 +40,7 @@ import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreLogServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
-import com.bluecubs.xinco.core.server.XincoPersistanceManager;
+import com.bluecubs.xinco.core.server.XincoPersistenceManager;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -55,7 +55,7 @@ import java.util.Vector;
  */
 public class XincoArchiver {
 
-    private static XincoPersistanceManager pm;
+    private static XincoPersistenceManager pm;
     private static List result;
 
     @SuppressWarnings("unchecked")
@@ -73,7 +73,7 @@ public class XincoArchiver {
             Vector xnodeTemp_vector = null;
             Calendar ngc = new GregorianCalendar();
             String ArchiveName = ngc.get(Calendar.YEAR) + "-" + (ngc.get(Calendar.MONTH) + 1) + "-" + ngc.get(Calendar.DAY_OF_MONTH);
-            String ArchiveBaseDir = XincoPersistanceManager.config.getFileArchivePath() + ArchiveName;
+            String ArchiveBaseDir = XincoPersistenceManager.config.getFileArchivePath() + ArchiveName;
             String ArchiveFileDir = null;
             Vector OrgFileNames = new Vector();
             Vector OrgFileIDs = new Vector();
@@ -130,8 +130,8 @@ public class XincoArchiver {
                     //copy + delete files
                     for (k = 0; k < OrgFileNames.size(); k++) {
                         FileName = ((String) OrgFileNames.elementAt(k)) + "_" + ((XincoAddAttribute) xdataTemp.getXincoAddAttributes().elementAt(0)).getAttribVarchar();
-                        if ((new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistanceManager.config.getFileRepositoryPath(), ((Integer) OrgFileIDs.elementAt(k)).intValue(), ((String) OrgFileNames.elementAt(k))))).exists()) {
-                            fcis = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistanceManager.config.getFileRepositoryPath(), ((Integer) OrgFileIDs.elementAt(k)).intValue(), ((String) OrgFileNames.elementAt(k)))));
+                        if ((new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistenceManager.config.getFileRepositoryPath(), ((Integer) OrgFileIDs.elementAt(k)).intValue(), ((String) OrgFileNames.elementAt(k))))).exists()) {
+                            fcis = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistenceManager.config.getFileRepositoryPath(), ((Integer) OrgFileIDs.elementAt(k)).intValue(), ((String) OrgFileNames.elementAt(k)))));
                             fcos = new FileOutputStream(new File(ArchiveBaseDir + ArchiveFileDir + System.getProperty("file.separator") + FileName));
                             fcbuf = new byte[4096];
                             len = 0;
@@ -141,7 +141,7 @@ public class XincoArchiver {
                             fcis.close();
                             fcos.close();
                             //delete
-                            (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistanceManager.config.getFileRepositoryPath(), ((Integer) OrgFileIDs.elementAt(k)).intValue(), ((String) OrgFileNames.elementAt(k))))).delete();
+                            (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoPersistenceManager.config.getFileRepositoryPath(), ((Integer) OrgFileIDs.elementAt(k)).intValue(), ((String) OrgFileNames.elementAt(k))))).delete();
                         }
                     }
                     //update data + log

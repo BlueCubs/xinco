@@ -40,9 +40,9 @@ import com.bluecubs.xinco.core.exception.XincoException;
 import com.bluecubs.xinco.core.persistence.XincoAddAttribute;
 import com.bluecubs.xinco.core.persistence.XincoAddAttributePK;
 import com.bluecubs.xinco.core.persistence.audit.XincoAddAttributeT;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAbstractAuditableObject;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditableDAO;
-import com.bluecubs.xinco.core.persistence.audit.tools.XincoAuditingDAOHelper;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAuditableDAO;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAuditingDAOHelper;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +57,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
  *
  * @author Alexander Manes
  */
-public class XincoAddAttributeServer extends XincoAddAttribute implements XincoAuditableDAO, XincoPersistanceServerObject {
+public class XincoAddAttributeServer extends XincoAddAttribute implements XincoAuditableDAO, XincoPersistenceServerObject {
 
     private static List result;
 
