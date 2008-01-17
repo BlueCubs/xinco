@@ -36,7 +36,7 @@
 package com.bluecubs.xinco.core.client;
 
 import com.bluecubs.xinco.core.exception.XincoException;
-import com.bluecubs.xinco.core.persistence.XincoCoreLog;
+import com.bluecubs.xinco.core.XincoCoreLog;
 
 /**
  * XincoCoreLogClient

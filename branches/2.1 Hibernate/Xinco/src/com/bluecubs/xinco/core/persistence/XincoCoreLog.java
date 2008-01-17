@@ -19,7 +19,7 @@ import javax.persistence.TemporalType;
 
 /**
  *
- * @author Javier A. Ortiz
+ * @author javydreamercsw
  */
 @Entity
 @Table(name = "xinco_core_log")

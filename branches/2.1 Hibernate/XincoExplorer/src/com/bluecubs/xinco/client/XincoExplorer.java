@@ -36,6 +36,7 @@
  */
 package com.bluecubs.xinco.client;
 
+import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.object.XincoClientSession;
 import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.core.client.XincoSettingClient;
@@ -62,10 +63,9 @@ import com.bluecubs.xinco.client.object.menu.XincoMenuRepository;
 import com.bluecubs.xinco.client.object.menu.XincoPopUpMenuRepository;
 import com.bluecubs.xinco.client.object.thread.XincoProgressBarThread;
 import com.bluecubs.xinco.client.object.timer.XincoActivityTimer;
-import com.bluecubs.xinco.core.XincoAddAttribute;
-import com.bluecubs.xinco.core.persistence.XincoCoreData;
-import com.bluecubs.xinco.core.persistence.XincoCoreDataType;
-import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.core.XincoCoreData;
+import com.bluecubs.xinco.core.XincoCoreDataType;
+import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreLanguage;
 import com.bluecubs.xinco.core.XincoCoreLog;
@@ -540,7 +540,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jScrollPaneDialogLocale = new JScrollPane();
             jScrollPaneDialogLocale.setViewportView(getJListDialogLocale());
             jScrollPaneDialogLocale.setBounds(10, 10, 270, 100);
-            jScrollPaneDialogLocale.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICALSCROLLBAR_ALWAYS);
+            jScrollPaneDialogLocale.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         }
         return jScrollPaneDialogLocale;
     }
@@ -895,7 +895,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jTreeRepository.setRootVisible(true);
             jTreeRepository.setEditable(false);
             DefaultTreeSelectionModel dtsm = new DefaultTreeSelectionModel();
-            dtsm.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREESELECTION);
+            dtsm.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
             jTreeRepository.setSelectionModel(dtsm);
         }
         return jTreeRepository;
@@ -1575,7 +1575,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jScrollPaneDialogRevision = new javax.swing.JScrollPane();
             jScrollPaneDialogRevision.setViewportView(getJListDialogRevision());
             jScrollPaneDialogRevision.setBounds(120, 10, 250, 100);
-            jScrollPaneDialogRevision.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICALSCROLLBAR_ALWAYS);
+            jScrollPaneDialogRevision.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         }
         return jScrollPaneDialogRevision;
     }
@@ -2779,7 +2779,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jScrollPaneDialogAddAttributesText = new javax.swing.JScrollPane();
             jScrollPaneDialogAddAttributesText.setViewportView(getJTextAreaDialogAddAttributesText());
             jScrollPaneDialogAddAttributesText.setBounds(10, 10, 560, 420);
-            jScrollPaneDialogAddAttributesText.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICALSCROLLBAR_ALWAYS);
+            jScrollPaneDialogAddAttributesText.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             jScrollPaneDialogAddAttributesText.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         }
         return jScrollPaneDialogAddAttributesText;

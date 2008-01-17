@@ -35,8 +35,8 @@
  */
 package com.bluecubs.xinco.core.client;
 
-import com.bluecubs.xinco.core.persistence.XincoSetting;
-
+import com.bluecubs.xinco.core.XincoSetting;
+import com.bluecubs.xinco.core.exception.XincoSettingException;
 
 /**
  *
@@ -46,5 +46,21 @@ public class XincoSettingClient extends XincoSetting {
 
     /** Creates a new instance of XincoSettingClient */
     public XincoSettingClient() {
+    }
+
+    /**
+     * Get setting
+     * @param s
+     * @return XincoSetting
+     * @throws com.bluecubs.xinco.core.exception.XincoSettingException
+     * @link XincoSetting
+     */
+    public XincoSetting getSetting(String s) throws XincoSettingException {
+        for (int i = 0; i < getXincoSettings().size(); i++) {
+            if (((XincoSetting) getXincoSettings().get(i)).getDescription().equals(s)) {
+                return (XincoSetting) getXincoSettings().get(i);
+            }
+        }
+        throw new XincoSettingException();
     }
 }

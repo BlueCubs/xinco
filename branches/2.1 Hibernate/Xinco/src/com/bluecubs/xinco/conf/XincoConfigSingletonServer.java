@@ -36,7 +36,7 @@
 package com.bluecubs.xinco.conf;
 
 import com.bluecubs.xinco.core.persistence.XincoSetting;
-import com.bluecubs.xinco.core.server.XincoSettingServer;
+import com.bluecubs.xinco.core.server.persistence.XincoSettingServer;
 import java.math.BigInteger;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -90,26 +90,25 @@ public class XincoConfigSingletonServer {
      */
     @SuppressWarnings("unchecked")
     public void init() {
-        XincoSettingServer xss = new XincoSettingServer();
         try {
-            FileRepositoryPath = xss.getSetting("xinco/FileRepositoryPath").getStringValue();
+            FileRepositoryPath = new XincoSettingServer("xinco/FileRepositoryPath").getStringValue();
             if (!(getFileRepositoryPath().substring(getFileRepositoryPath().length() - 1).equals(System.getProperty("file.separator")))) {
                 FileRepositoryPath = getFileRepositoryPath() + System.getProperty("file.separator");
             }
-            MaxSearchResult = xss.getSetting("xinco/MaxSearchResult").getIntValue();
-            FileIndexPath = xss.getSetting("xinco/FileIndexPath").getStringValue();
+            MaxSearchResult = new XincoSettingServer("xinco/MaxSearchResult").getIntValue();
+            FileIndexPath = new XincoSettingServer("xinco/FileIndexPath").getStringValue();
             if (getFileIndexPath().equals("")) {
                 FileIndexPath = getFileRepositoryPath() + "index";
             }
             if (!(getFileIndexPath().substring(getFileIndexPath().length() - 1).equals(System.getProperty("file.separator")))) {
                 FileIndexPath += System.getProperty("file.separator");
             }
-            FileArchivePath = xss.getSetting("xinco/FileArchivePath").getStringValue();
+            FileArchivePath = new XincoSettingServer("xinco/FileArchivePath").getStringValue();
             if (!(getFileArchivePath().substring(getFileArchivePath().length() - 1).equals(System.getProperty("file.separator")))) {
                 FileArchivePath += System.getProperty("file.separator");
             }
-            FileArchivePeriod = xss.getSetting("xinco/FileArchivePeriod").getLongValue();
-            Vector s = xss.getXinco_settings();
+            FileArchivePeriod = new XincoSettingServer("xinco/FileArchivePeriod").getLongValue();
+            Vector s = new XincoSettingServer().getXincoSettings();
             StringTokenizer st; 
             String[] temp;
             for (int i = 0; i < s.size(); i++) {
@@ -139,7 +138,7 @@ public class XincoConfigSingletonServer {
                     setIndexNoIndex(temp);
                 }
             }
-            setAllowOutsideLinks(xss.getSetting("setting.allowoutsidelinks").getBoolValue());
+            setAllowOutsideLinks(new XincoSettingServer("setting.allowoutsidelinks").getBoolValue());
         } catch (Exception ex) {
             //Default values
             setFileRepositoryPath("");

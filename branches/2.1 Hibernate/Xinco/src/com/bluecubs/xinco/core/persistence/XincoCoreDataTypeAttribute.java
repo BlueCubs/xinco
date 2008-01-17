@@ -16,7 +16,7 @@ import javax.persistence.Table;
 
 /**
  *
- * @author Javier A. Ortiz
+ * @author javydreamercsw
  */
 @Entity
 @Table(name = "xinco_core_data_type_attribute")
@@ -30,7 +30,7 @@ public class XincoCoreDataTypeAttribute extends XincoAbstractAuditableObject imp
     @Column(name = "data_type", nullable = false)
     private String dataType;
     @Column(name = "size", nullable = false)
-    private int attribSize;
+    private int size;
 
     public XincoCoreDataTypeAttribute() {
     }
@@ -43,7 +43,7 @@ public class XincoCoreDataTypeAttribute extends XincoAbstractAuditableObject imp
         this.xincoCoreDataTypeAttributePK = xincoCoreDataTypeAttributePK;
         this.designation = designation;
         this.dataType = dataType;
-        this.attribSize = size;
+        this.size = size;
     }
 
     public XincoCoreDataTypeAttribute(int xincoCoreDataTypeId, int attributeId) {
@@ -75,11 +75,11 @@ public class XincoCoreDataTypeAttribute extends XincoAbstractAuditableObject imp
     }
 
     public int getSize() {
-        return attribSize;
+        return size;
     }
 
     public void setSize(int size) {
-        this.attribSize = size;
+        this.size = size;
     }
 
     @Override

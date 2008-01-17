@@ -16,7 +16,7 @@ import javax.persistence.Table;
 
 /**
  *
- * @author Javier A. Ortiz
+ * @author javydreamercsw
  */
 @Entity
 @Table(name = "xinco_core_ace")

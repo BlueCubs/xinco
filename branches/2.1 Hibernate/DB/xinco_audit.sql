@@ -88,22 +88,6 @@ CREATE TABLE xinco_core_node_t (
 )
 TYPE=InnoDB;
 
-CREATE TABLE xinco_core_user (
-  id INTEGER(10) UNSIGNED NOT NULL,
-  username VARCHAR(255) NOT NULL,
-  userpassword VARCHAR(255) NOT NULL,
-  name VARCHAR(255) NOT NULL,
-  firstname VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL,
-  status_number INTEGER(10) UNSIGNED NOT NULL,
-  attempts INTEGER(10) UNSIGNED NOT NULL,
-  last_modified DATE NOT NULL,
-  PRIMARY KEY(id),
-  INDEX xinco_core_user_index_username(username),
-  INDEX xinco_core_user_index_status(status_number)
-)
-TYPE=InnoDB;
-
 CREATE TABLE xinco_core_user_has_xinco_core_group_t (
   record_id INTEGER(10) UNSIGNED NOT NULL,
   xinco_core_user_id INTEGER(10) UNSIGNED NOT NULL,
@@ -136,6 +120,26 @@ CREATE TABLE xinco_core_user_t (
   PRIMARY KEY(record_id)
 )
 TYPE=InnoDB;
+
+CREATE TABLE xinco_id_t (
+  record_id INTEGER(10) UNSIGNED NOT NULL,
+  tablename VARCHAR(255) NOT NULL,
+  last_id INTEGER UNSIGNED NOT NULL,
+  PRIMARY KEY(record_id)
+)
+TYPE=InnoDB;
+
+INSERT INTO xinco_id VALUES ('xinco_core_language', 1000); 
+INSERT INTO xinco_id VALUES ('xinco_core_data_type', 1000);   
+INSERT INTO xinco_id VALUES ('xinco_core_user', 1000);  
+INSERT INTO xinco_id VALUES ('xinco_core_group', 1000);   
+INSERT INTO xinco_id VALUES ('xinco_core_node', 1000); 
+INSERT INTO xinco_id VALUES ('xinco_core_data', 1000);  
+INSERT INTO xinco_id VALUES ('xinco_core_ace', 1000);   
+INSERT INTO xinco_id VALUES ('xinco_core_log', 1000);   
+INSERT INTO xinco_id VALUES ('xinco_core_user_modified_record', 0);  
+INSERT INTO xinco_id (tablename, last_id) VALUES('xinco_setting',1000);
+
 
 CREATE TABLE xinco_setting_t (
   record_id INTEGER UNSIGNED NOT NULL,

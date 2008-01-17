@@ -36,7 +36,7 @@
 package com.bluecubs.xinco.add.client;
 
 import com.bluecubs.xinco.core.exception.XincoException;
-import com.bluecubs.xinco.core.persistence.XincoAddAttribute;
+import com.bluecubs.xinco.add.XincoAddAttribute;
 
 
 /**

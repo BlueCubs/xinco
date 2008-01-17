@@ -1,10 +1,10 @@
 package com.bluecubs.xinco.index;
 
 import com.bluecubs.xinco.core.persistence.XincoCoreData;
-import com.bluecubs.xinco.core.server.XincoCoreDataServer;
-import com.bluecubs.xinco.core.server.XincoCoreDataTypeServer;
-import com.bluecubs.xinco.core.server.XincoPersistenceManager;
-import com.bluecubs.xinco.core.server.XincoSettingServer;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataServer;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeServer;
+import com.bluecubs.xinco.core.server.persistence.XincoPersistenceManager;
+import com.bluecubs.xinco.core.server.persistence.XincoSettingServer;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -27,6 +27,7 @@ import org.apache.lucene.search.Searcher;
  * Edit configuration values in context.xml
  */
 public class XincoIndexer {
+    private static XincoPersistenceManager pm= new XincoPersistenceManager();
 
     public static synchronized boolean indexXincoCoreData(XincoCoreData d, boolean index_content) {
 
@@ -39,9 +40,9 @@ public class XincoIndexer {
             XincoIndexer.removeXincoCoreData(d);
             //add document to index
             try {
-                writer = new IndexWriter(XincoPersistenceManager.config.getFileIndexPath(), new StandardAnalyzer(), false);
+                writer = new IndexWriter(pm.getXincoConfigSingleton().getFileIndexPath(), new StandardAnalyzer(), false);
             } catch (Exception ie) {
-                writer = new IndexWriter(XincoPersistenceManager.config.getFileIndexPath(), new StandardAnalyzer(), true);
+                writer = new IndexWriter(pm.getXincoConfigSingleton().getFileIndexPath(), new StandardAnalyzer(), true);
             }
             if (new XincoSettingServer().getSetting("setting.enable.developermode").getBoolValue()) {
                 System.out.println("Indexing...");
@@ -81,8 +82,8 @@ public class XincoIndexer {
         IndexReader reader = null;
         //check if document exists in index and delete
         try {
-            if (IndexReader.indexExists(XincoPersistenceManager.config.getFileIndexPath())) {
-                reader = IndexReader.open(XincoPersistenceManager.config.getFileIndexPath());
+            if (IndexReader.indexExists(pm.getXincoConfigSingleton().getFileIndexPath())) {
+                reader = IndexReader.open(pm.getXincoConfigSingleton().getFileIndexPath());
                 reader.deleteDocuments(new Term("id", "" + d.getId()));
                 reader.close();
             }
@@ -113,7 +114,7 @@ public class XincoIndexer {
         IndexWriter writer = null;
         try {
             //optimize index
-            writer = new IndexWriter(XincoPersistenceManager.config.getFileIndexPath(), new StandardAnalyzer(), false);
+            writer = new IndexWriter(pm.getXincoConfigSingleton().getFileIndexPath(), new StandardAnalyzer(), false);
             writer.optimize();
             writer.close();
         } catch (Exception e) {
@@ -142,7 +143,7 @@ public class XincoIndexer {
             int i = 0;
             Searcher searcher = null;
             try {
-                searcher = new IndexSearcher(XincoPersistenceManager.config.getFileIndexPath());
+                searcher = new IndexSearcher(pm.getXincoConfigSingleton().getFileIndexPath());
                 Analyzer analyzer = new StandardAnalyzer();
 
                 if (language_id != 0) {
@@ -168,7 +169,7 @@ public class XincoIndexer {
                             xcde.printStackTrace();
                         }
                     }
-                    if (i >= XincoPersistenceManager.config.getMaxSearchResult()) {
+                    if (i >= pm.getXincoConfigSingleton().getMaxSearchResult()) {
                         break;
                     }
                 }

@@ -7,7 +7,7 @@
 
 package com.bluecubs.xinco.core;
 
-public class XincoCoreUser extends com.bluecubs.xinco.core.persistence.XincoCoreUser implements java.io.Serializable {
+public class XincoCoreUser  implements java.io.Serializable {
     private boolean change;
 
     private int changerID;
@@ -60,6 +60,325 @@ public class XincoCoreUser extends com.bluecubs.xinco.core.persistence.XincoCore
            this.userpassword = userpassword;
            this.writeGroups = writeGroups;
            this.xinco_core_groups = xinco_core_groups;
+    }
+
+
+    /**
+     * Gets the change value for this XincoCoreUser.
+     * 
+     * @return change
+     */
+    public boolean isChange() {
+        return change;
+    }
+
+
+    /**
+     * Sets the change value for this XincoCoreUser.
+     * 
+     * @param change
+     */
+    public void setChange(boolean change) {
+        this.change = change;
+    }
+
+
+    /**
+     * Gets the changerID value for this XincoCoreUser.
+     * 
+     * @return changerID
+     */
+    public int getChangerID() {
+        return changerID;
+    }
+
+
+    /**
+     * Sets the changerID value for this XincoCoreUser.
+     * 
+     * @param changerID
+     */
+    public void setChangerID(int changerID) {
+        this.changerID = changerID;
+    }
+
+
+    /**
+     * Gets the email value for this XincoCoreUser.
+     * 
+     * @return email
+     */
+    public java.lang.String getEmail() {
+        return email;
+    }
+
+
+    /**
+     * Sets the email value for this XincoCoreUser.
+     * 
+     * @param email
+     */
+    public void setEmail(java.lang.String email) {
+        this.email = email;
+    }
+
+
+    /**
+     * Gets the firstname value for this XincoCoreUser.
+     * 
+     * @return firstname
+     */
+    public java.lang.String getFirstname() {
+        return firstname;
+    }
+
+
+    /**
+     * Sets the firstname value for this XincoCoreUser.
+     * 
+     * @param firstname
+     */
+    public void setFirstname(java.lang.String firstname) {
+        this.firstname = firstname;
+    }
+
+
+    /**
+     * Gets the id value for this XincoCoreUser.
+     * 
+     * @return id
+     */
+    public int getId() {
+        return id;
+    }
+
+
+    /**
+     * Sets the id value for this XincoCoreUser.
+     * 
+     * @param id
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+    /**
+     * Gets the name value for this XincoCoreUser.
+     * 
+     * @return name
+     */
+    public java.lang.String getName() {
+        return name;
+    }
+
+
+    /**
+     * Sets the name value for this XincoCoreUser.
+     * 
+     * @param name
+     */
+    public void setName(java.lang.String name) {
+        this.name = name;
+    }
+
+
+    /**
+     * Gets the reason value for this XincoCoreUser.
+     * 
+     * @return reason
+     */
+    public java.lang.String getReason() {
+        return reason;
+    }
+
+
+    /**
+     * Sets the reason value for this XincoCoreUser.
+     * 
+     * @param reason
+     */
+    public void setReason(java.lang.String reason) {
+        this.reason = reason;
+    }
+
+
+    /**
+     * Gets the status_number value for this XincoCoreUser.
+     * 
+     * @return status_number
+     */
+    public int getStatus_number() {
+        return status_number;
+    }
+
+
+    /**
+     * Sets the status_number value for this XincoCoreUser.
+     * 
+     * @param status_number
+     */
+    public void setStatus_number(int status_number) {
+        this.status_number = status_number;
+    }
+
+
+    /**
+     * Gets the username value for this XincoCoreUser.
+     * 
+     * @return username
+     */
+    public java.lang.String getUsername() {
+        return username;
+    }
+
+
+    /**
+     * Sets the username value for this XincoCoreUser.
+     * 
+     * @param username
+     */
+    public void setUsername(java.lang.String username) {
+        this.username = username;
+    }
+
+
+    /**
+     * Gets the userpassword value for this XincoCoreUser.
+     * 
+     * @return userpassword
+     */
+    public java.lang.String getUserpassword() {
+        return userpassword;
+    }
+
+
+    /**
+     * Sets the userpassword value for this XincoCoreUser.
+     * 
+     * @param userpassword
+     */
+    public void setUserpassword(java.lang.String userpassword) {
+        this.userpassword = userpassword;
+    }
+
+
+    /**
+     * Gets the writeGroups value for this XincoCoreUser.
+     * 
+     * @return writeGroups
+     */
+    public boolean isWriteGroups() {
+        return writeGroups;
+    }
+
+
+    /**
+     * Sets the writeGroups value for this XincoCoreUser.
+     * 
+     * @param writeGroups
+     */
+    public void setWriteGroups(boolean writeGroups) {
+        this.writeGroups = writeGroups;
+    }
+
+
+    /**
+     * Gets the xinco_core_groups value for this XincoCoreUser.
+     * 
+     * @return xinco_core_groups
+     */
+    public java.util.Vector getXinco_core_groups() {
+        return xinco_core_groups;
+    }
+
+
+    /**
+     * Sets the xinco_core_groups value for this XincoCoreUser.
+     * 
+     * @param xinco_core_groups
+     */
+    public void setXinco_core_groups(java.util.Vector xinco_core_groups) {
+        this.xinco_core_groups = xinco_core_groups;
+    }
+
+    private java.lang.Object __equalsCalc = null;
+    public synchronized boolean equals(java.lang.Object obj) {
+        if (!(obj instanceof XincoCoreUser)) return false;
+        XincoCoreUser other = (XincoCoreUser) obj;
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (__equalsCalc != null) {
+            return (__equalsCalc == obj);
+        }
+        __equalsCalc = obj;
+        boolean _equals;
+        _equals = true && 
+            this.change == other.isChange() &&
+            this.changerID == other.getChangerID() &&
+            ((this.email==null && other.getEmail()==null) || 
+             (this.email!=null &&
+              this.email.equals(other.getEmail()))) &&
+            ((this.firstname==null && other.getFirstname()==null) || 
+             (this.firstname!=null &&
+              this.firstname.equals(other.getFirstname()))) &&
+            this.id == other.getId() &&
+            ((this.name==null && other.getName()==null) || 
+             (this.name!=null &&
+              this.name.equals(other.getName()))) &&
+            ((this.reason==null && other.getReason()==null) || 
+             (this.reason!=null &&
+              this.reason.equals(other.getReason()))) &&
+            this.status_number == other.getStatus_number() &&
+            ((this.username==null && other.getUsername()==null) || 
+             (this.username!=null &&
+              this.username.equals(other.getUsername()))) &&
+            ((this.userpassword==null && other.getUserpassword()==null) || 
+             (this.userpassword!=null &&
+              this.userpassword.equals(other.getUserpassword()))) &&
+            this.writeGroups == other.isWriteGroups() &&
+            ((this.xinco_core_groups==null && other.getXinco_core_groups()==null) || 
+             (this.xinco_core_groups!=null &&
+              this.xinco_core_groups.equals(other.getXinco_core_groups())));
+        __equalsCalc = null;
+        return _equals;
+    }
+
+    private boolean __hashCodeCalc = false;
+    public synchronized int hashCode() {
+        if (__hashCodeCalc) {
+            return 0;
+        }
+        __hashCodeCalc = true;
+        int _hashCode = 1;
+        _hashCode += (isChange() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += getChangerID();
+        if (getEmail() != null) {
+            _hashCode += getEmail().hashCode();
+        }
+        if (getFirstname() != null) {
+            _hashCode += getFirstname().hashCode();
+        }
+        _hashCode += getId();
+        if (getName() != null) {
+            _hashCode += getName().hashCode();
+        }
+        if (getReason() != null) {
+            _hashCode += getReason().hashCode();
+        }
+        _hashCode += getStatus_number();
+        if (getUsername() != null) {
+            _hashCode += getUsername().hashCode();
+        }
+        if (getUserpassword() != null) {
+            _hashCode += getUserpassword().hashCode();
+        }
+        _hashCode += (isWriteGroups() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        if (getXinco_core_groups() != null) {
+            _hashCode += getXinco_core_groups().hashCode();
+        }
+        __hashCodeCalc = false;
+        return _hashCode;
     }
 
     // Type metadata

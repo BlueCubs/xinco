@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions targetNamespace="urn:Xinco" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:Xinco" xmlns:intf="urn:Xinco" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns2="http://core.xinco.bluecubs.com" xmlns:tns3="http://persistence.core.xinco.bluecubs.com" xmlns:tns4="http://tools.audit.persistence.core.xinco.bluecubs.com" xmlns:tns5="http://all.common.oness.sf.net" xmlns:tns6="http://temporal.model.common.oness.sf.net" xmlns:tns7="http://add.xinco.bluecubs.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<wsdl:definitions targetNamespace="urn:Xinco" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:Xinco" xmlns:intf="urn:Xinco" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns2="http://core.xinco.bluecubs.com" xmlns:tns3="http://persistence.core.xinco.bluecubs.com" xmlns:tns4="http://audit.persistence.server.core.xinco.bluecubs.com" xmlns:tns5="http://all.common.oness.sf.net" xmlns:tns6="http://temporal.model.common.oness.sf.net" xmlns:tns7="http://add.xinco.bluecubs.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 <!--WSDL created by Apache Axis version: 1.4
 Built on Apr 22, 2006 (06:55:48 PDT)-->
  <wsdl:types>
   <schema targetNamespace="http://core.xinco.bluecubs.com" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://temporal.model.common.oness.sf.net"/>
-   <import namespace="http://tools.audit.persistence.core.xinco.bluecubs.com"/>
    <import namespace="http://add.xinco.bluecubs.com"/>
    <import namespace="http://all.common.oness.sf.net"/>
    <import namespace="http://xml.apache.org/xml-soap"/>
    <import namespace="http://persistence.core.xinco.bluecubs.com"/>
+   <import namespace="http://audit.persistence.server.core.xinco.bluecubs.com"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="XincoVersion">
     <sequence>
@@ -52,7 +52,12 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <complexType name="XincoCoreACE">
     <complexContent>
      <extension base="tns3:XincoCoreACE">
-      <sequence/>
+      <sequence>
+       <element name="xincoCoreUserId" nillable="true" type="soapenc:int"/>
+       <element name="xincoCoreNodeId" nillable="true" type="soapenc:int"/>
+       <element name="xincoCoreGroupId" nillable="true" type="soapenc:int"/>
+       <element name="xincoCoreDataId" nillable="true" type="soapenc:int"/>
+      </sequence>
      </extension>
     </complexContent>
    </complexType>
@@ -87,23 +92,23 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
   </schema>
   <schema targetNamespace="http://all.common.oness.sf.net" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://temporal.model.common.oness.sf.net"/>
-   <import namespace="http://tools.audit.persistence.core.xinco.bluecubs.com"/>
    <import namespace="http://add.xinco.bluecubs.com"/>
    <import namespace="http://xml.apache.org/xml-soap"/>
    <import namespace="http://core.xinco.bluecubs.com"/>
    <import namespace="http://persistence.core.xinco.bluecubs.com"/>
+   <import namespace="http://audit.persistence.server.core.xinco.bluecubs.com"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType abstract="true" name="BaseObject">
     <sequence/>
    </complexType>
   </schema>
   <schema targetNamespace="http://temporal.model.common.oness.sf.net" xmlns="http://www.w3.org/2001/XMLSchema">
-   <import namespace="http://tools.audit.persistence.core.xinco.bluecubs.com"/>
    <import namespace="http://add.xinco.bluecubs.com"/>
    <import namespace="http://all.common.oness.sf.net"/>
    <import namespace="http://xml.apache.org/xml-soap"/>
    <import namespace="http://core.xinco.bluecubs.com"/>
    <import namespace="http://persistence.core.xinco.bluecubs.com"/>
+   <import namespace="http://audit.persistence.server.core.xinco.bluecubs.com"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="Date">
     <complexContent>
@@ -133,11 +138,11 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
   </schema>
   <schema targetNamespace="http://persistence.core.xinco.bluecubs.com" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://temporal.model.common.oness.sf.net"/>
-   <import namespace="http://tools.audit.persistence.core.xinco.bluecubs.com"/>
    <import namespace="http://add.xinco.bluecubs.com"/>
    <import namespace="http://all.common.oness.sf.net"/>
    <import namespace="http://xml.apache.org/xml-soap"/>
    <import namespace="http://core.xinco.bluecubs.com"/>
+   <import namespace="http://audit.persistence.server.core.xinco.bluecubs.com"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="XincoCoreUserModifiedRecordPK">
     <sequence>
@@ -186,12 +191,12 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <complexContent>
      <extension base="tns4:XincoAbstractAuditableObject">
       <sequence>
-       <element name="designation" nillable="true" type="soapenc:string"/>
        <element name="id" nillable="true" type="soapenc:int"/>
-       <element name="statusNumber" type="xsd:int"/>
-       <element name="xincoCoreDataTypeId" type="xsd:int"/>
-       <element name="xincoCoreLanguageId" type="xsd:int"/>
-       <element name="xincoCoreNodeId" type="xsd:int"/>
+       <element name="xincoCoreNodeId" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+       <element name="xincoCoreLanguageId" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+       <element name="xincoCoreDataTypeId" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+       <element name="designation" nillable="true" type="soapenc:string"/>
+       <element name="statusNumber" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
       </sequence>
      </extension>
     </complexContent>
@@ -211,16 +216,16 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <complexContent>
      <extension base="tns4:XincoAbstractAuditableObject">
       <sequence>
-       <element name="adminPermission" type="xsd:boolean"/>
-       <element name="executePermission" type="xsd:boolean"/>
        <element name="id" nillable="true" type="soapenc:int"/>
-       <element name="readPermission" type="xsd:boolean"/>
-       <element name="writePermission" type="xsd:boolean"/>
-       <element name="xincoCoreDataId" nillable="true" type="soapenc:int"/>
-       <element name="xincoCoreGroupId" nillable="true" type="soapenc:int"/>
-       <element name="xincoCoreNodeId" nillable="true" type="soapenc:int"/>
-       <element name="xincoCoreUserId" nillable="true" type="soapenc:int"/>
+       <element name="readPermission" type="xsd:boolean" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+       <element name="writePermission" type="xsd:boolean" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+       <element name="executePermission" type="xsd:boolean" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+       <element name="adminPermission" type="xsd:boolean" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
       </sequence>
+      <attribute xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="xincoCoreDataId" type="xsd:integer"/>
+      <attribute xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="xincoCoreGroupId" type="xsd:integer"/>
+      <attribute xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="xincoCoreNodeId" type="xsd:integer"/>
+      <attribute xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="xincoCoreUserId" type="xsd:integer"/>
      </extension>
     </complexContent>
    </complexType>
@@ -271,6 +276,27 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      </extension>
     </complexContent>
    </complexType>
+   <complexType name="XincoAddAttributePK">
+    <sequence>
+     <element name="attributeId" type="xsd:int"/>
+     <element name="xincoCoreDataId" type="xsd:int"/>
+    </sequence>
+   </complexType>
+   <complexType name="XincoAddAttribute">
+    <complexContent>
+     <extension base="tns4:XincoAbstractAuditableObject">
+      <sequence>
+       <element name="attribDatetime" nillable="true" type="xsd:dateTime"/>
+       <element name="attribDouble" nillable="true" type="soapenc:double"/>
+       <element name="attribInt" nillable="true" type="soapenc:int"/>
+       <element name="attribText" nillable="true" type="soapenc:string"/>
+       <element name="attribUnsignedint" nillable="true" type="soapenc:int"/>
+       <element name="attribVarchar" nillable="true" type="soapenc:string"/>
+       <element name="xincoAddAttributePK" nillable="true" type="tns3:XincoAddAttributePK"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
    <complexType name="XincoSetting">
     <complexContent>
      <extension base="tns4:XincoAbstractAuditableObject">
@@ -286,7 +312,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     </complexContent>
    </complexType>
   </schema>
-  <schema targetNamespace="http://tools.audit.persistence.core.xinco.bluecubs.com" xmlns="http://www.w3.org/2001/XMLSchema">
+  <schema targetNamespace="http://audit.persistence.server.core.xinco.bluecubs.com" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://temporal.model.common.oness.sf.net"/>
    <import namespace="http://add.xinco.bluecubs.com"/>
    <import namespace="http://all.common.oness.sf.net"/>
@@ -313,11 +339,11 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
   </schema>
   <schema targetNamespace="http://xml.apache.org/xml-soap" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://temporal.model.common.oness.sf.net"/>
-   <import namespace="http://tools.audit.persistence.core.xinco.bluecubs.com"/>
    <import namespace="http://add.xinco.bluecubs.com"/>
    <import namespace="http://all.common.oness.sf.net"/>
    <import namespace="http://core.xinco.bluecubs.com"/>
    <import namespace="http://persistence.core.xinco.bluecubs.com"/>
+   <import namespace="http://audit.persistence.server.core.xinco.bluecubs.com"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="Vector">
     <sequence>
@@ -327,23 +353,27 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
   </schema>
   <schema targetNamespace="http://add.xinco.bluecubs.com" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://temporal.model.common.oness.sf.net"/>
-   <import namespace="http://tools.audit.persistence.core.xinco.bluecubs.com"/>
    <import namespace="http://all.common.oness.sf.net"/>
    <import namespace="http://xml.apache.org/xml-soap"/>
    <import namespace="http://core.xinco.bluecubs.com"/>
    <import namespace="http://persistence.core.xinco.bluecubs.com"/>
+   <import namespace="http://audit.persistence.server.core.xinco.bluecubs.com"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="XincoAddAttribute">
-    <sequence>
-     <element name="attrib_datetime" nillable="true" type="xsd:dateTime"/>
-     <element name="attrib_double" type="xsd:double"/>
-     <element name="attrib_int" type="xsd:int"/>
-     <element name="attrib_text" nillable="true" type="xsd:string"/>
-     <element name="attrib_unsignedint" type="xsd:long"/>
-     <element name="attrib_varchar" nillable="true" type="xsd:string"/>
-     <element name="attribute_id" type="xsd:int"/>
-     <element name="xinco_core_data_id" type="xsd:int"/>
-    </sequence>
+    <complexContent>
+     <extension base="tns3:XincoAddAttribute">
+      <sequence>
+       <element name="attrib_datetime" nillable="true" type="xsd:dateTime"/>
+       <element name="attrib_double" type="xsd:double"/>
+       <element name="attrib_int" type="xsd:int"/>
+       <element name="attrib_text" nillable="true" type="xsd:string"/>
+       <element name="attrib_unsignedint" type="xsd:long"/>
+       <element name="attrib_varchar" nillable="true" type="xsd:string"/>
+       <element name="attribute_id" type="xsd:int"/>
+       <element name="xinco_core_data_id" type="xsd:int"/>
+      </sequence>
+     </extension>
+    </complexContent>
    </complexType>
   </schema>
  </wsdl:types>
@@ -451,8 +481,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    </wsdl:message>
 
    <wsdl:message name="setXincoAddAttributeResponse">
-
-      <wsdl:part name="in0" type="tns7:XincoAddAttribute"/>
 
    </wsdl:message>
 

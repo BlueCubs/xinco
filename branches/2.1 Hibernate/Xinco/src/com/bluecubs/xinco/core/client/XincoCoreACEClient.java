@@ -35,10 +35,10 @@
  */
 package com.bluecubs.xinco.core.client;
 
-import com.bluecubs.xinco.core.persistence.XincoCoreACE;
+import com.bluecubs.xinco.core.XincoCoreACE;
 import com.bluecubs.xinco.core.exception.XincoException;
-import com.bluecubs.xinco.core.persistence.XincoCoreGroup;
-import com.bluecubs.xinco.core.persistence.XincoCoreUser;
+import com.bluecubs.xinco.core.XincoCoreGroup;
+import com.bluecubs.xinco.core.XincoCoreUser;
 import java.util.Vector;
 
 /**

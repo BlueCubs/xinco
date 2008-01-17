@@ -7,7 +7,7 @@
 
 package com.bluecubs.xinco.core;
 
-public class XincoVersion implements java.io.Serializable {
+public class XincoVersion  implements java.io.Serializable {
     private int version_high;
 
     private int version_low;

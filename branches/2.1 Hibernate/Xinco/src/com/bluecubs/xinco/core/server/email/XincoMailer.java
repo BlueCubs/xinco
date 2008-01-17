@@ -45,7 +45,7 @@ Author : Sudhir Ancha
  */
 package com.bluecubs.xinco.core.server.email;
 
-import com.bluecubs.xinco.core.server.XincoSettingServer;
+import com.bluecubs.xinco.core.server.persistence.XincoSettingServer;
 import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.Message;

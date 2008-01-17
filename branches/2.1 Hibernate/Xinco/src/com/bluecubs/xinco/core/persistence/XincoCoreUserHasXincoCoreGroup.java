@@ -16,7 +16,7 @@ import javax.persistence.Table;
 
 /**
  *
- * @author Javier A. Ortiz
+ * @author javydreamercsw
  */
 @Entity
 @Table(name = "xinco_core_user_has_xinco_core_group")

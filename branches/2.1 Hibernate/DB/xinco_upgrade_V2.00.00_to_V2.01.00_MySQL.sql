@@ -21,6 +21,14 @@ CREATE TABLE xinco_setting_t (
 )
 TYPE=InnoDB;
 
+CREATE TABLE xinco_id_t (
+  record_id INTEGER(10) UNSIGNED NOT NULL,
+  tablename VARCHAR(255) NOT NULL,
+  last_id INTEGER UNSIGNED NOT NULL,
+  PRIMARY KEY(record_id)
+)
+TYPE=InnoDB;
+
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(1,'version.high', 2,null,null ); 
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(2,'version.med', 1,null ,null ); 
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(3,'version.low', 0,null,null ); 

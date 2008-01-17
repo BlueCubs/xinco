@@ -1,351 +1,140 @@
-/**
- * XincoAddAttribute.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 
 package com.bluecubs.xinco.add;
 
-public class XincoAddAttribute extends com.bluecubs.xinco.core.persistence.XincoAddAttribute implements java.io.Serializable {
-    private java.util.Calendar attrib_datetime;
+import com.bluecubs.xinco.core.persistence.*;
+import com.bluecubs.xinco.core.server.persistence.audit.XincoAbstractAuditableObject;
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-    private double attrib_double;
-
-    private int attrib_int;
-
-    private java.lang.String attrib_text;
-
-    private long attrib_unsignedint;
-
-    private java.lang.String attrib_varchar;
-
-    private int attribute_id;
-
-    private int xinco_core_data_id;
+/**
+ *
+ * @author javydreamercsw
+ */
+@Entity
+@Table(name = "xinco_add_attribute")
+@NamedQueries({@NamedQuery(name = "XincoAddAttribute.findByXincoCoreDataId", query = "SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.xincoCoreDataId = :xincoCoreDataId"), @NamedQuery(name = "XincoAddAttribute.findByAttributeId", query = "SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.attributeId = :attributeId"), @NamedQuery(name = "XincoAddAttribute.findByAttribInt", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribInt = :attribInt"), @NamedQuery(name = "XincoAddAttribute.findByAttribUnsignedint", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribUnsignedint = :attribUnsignedint"), @NamedQuery(name = "XincoAddAttribute.findByAttribDouble", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribDouble = :attribDouble"), @NamedQuery(name = "XincoAddAttribute.findByAttribVarchar", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribVarchar = :attribVarchar"), @NamedQuery(name = "XincoAddAttribute.findByAttribDatetime", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribDatetime = :attribDatetime")})
+public class XincoAddAttribute extends XincoAbstractAuditableObject implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @EmbeddedId
+    protected XincoAddAttributePK xincoAddAttributePK;
+    @Column(name = "attrib_int")
+    private Integer attribInt;
+    @Column(name = "attrib_unsignedint")
+    private Integer attribUnsignedint;
+    @Column(name = "attrib_double")
+    private Double attribDouble;
+    @Column(name = "attrib_varchar")
+    private String attribVarchar;
+    @Lob
+    @Column(name = "attrib_text")
+    private String attribText;
+    @Column(name = "attrib_datetime")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date attribDatetime;
 
     public XincoAddAttribute() {
     }
 
-    public XincoAddAttribute(
-           java.util.Calendar attrib_datetime,
-           double attrib_double,
-           int attrib_int,
-           java.lang.String attrib_text,
-           long attrib_unsignedint,
-           java.lang.String attrib_varchar,
-           int attribute_id,
-           int xinco_core_data_id) {
-           this.attrib_datetime = attrib_datetime;
-           this.attrib_double = attrib_double;
-           this.attrib_int = attrib_int;
-           this.attrib_text = attrib_text;
-           this.attrib_unsignedint = attrib_unsignedint;
-           this.attrib_varchar = attrib_varchar;
-           this.attribute_id = attribute_id;
-           this.xinco_core_data_id = xinco_core_data_id;
+    public XincoAddAttribute(XincoAddAttributePK xincoAddAttributePK) {
+        this.xincoAddAttributePK = xincoAddAttributePK;
     }
 
-
-    /**
-     * Gets the attrib_datetime value for this XincoAddAttribute.
-     * 
-     * @return attrib_datetime
-     */
-    public java.util.Calendar getAttrib_datetime() {
-        return attrib_datetime;
+    public XincoAddAttribute(int xincoCoreDataId, int attributeId) {
+        this.xincoAddAttributePK = new XincoAddAttributePK(xincoCoreDataId, attributeId);
     }
 
-
-    /**
-     * Sets the attrib_datetime value for this XincoAddAttribute.
-     * 
-     * @param attrib_datetime
-     */
-    public void setAttrib_datetime(java.util.Calendar attrib_datetime) {
-        this.attrib_datetime = attrib_datetime;
+    public XincoAddAttributePK getXincoAddAttributePK() {
+        return xincoAddAttributePK;
     }
 
-
-    /**
-     * Gets the attrib_double value for this XincoAddAttribute.
-     * 
-     * @return attrib_double
-     */
-    public double getAttrib_double() {
-        return attrib_double;
+    public void setXincoAddAttributePK(XincoAddAttributePK xincoAddAttributePK) {
+        this.xincoAddAttributePK = xincoAddAttributePK;
     }
 
-
-    /**
-     * Sets the attrib_double value for this XincoAddAttribute.
-     * 
-     * @param attrib_double
-     */
-    public void setAttrib_double(double attrib_double) {
-        this.attrib_double = attrib_double;
+    public Integer getAttribInt() {
+        return attribInt;
     }
 
-
-    /**
-     * Gets the attrib_int value for this XincoAddAttribute.
-     * 
-     * @return attrib_int
-     */
-    public int getAttrib_int() {
-        return attrib_int;
+    public void setAttribInt(Integer attribInt) {
+        this.attribInt = attribInt;
     }
 
-
-    /**
-     * Sets the attrib_int value for this XincoAddAttribute.
-     * 
-     * @param attrib_int
-     */
-    public void setAttrib_int(int attrib_int) {
-        this.attrib_int = attrib_int;
+    public Integer getAttribUnsignedint() {
+        return attribUnsignedint;
     }
 
-
-    /**
-     * Gets the attrib_text value for this XincoAddAttribute.
-     * 
-     * @return attrib_text
-     */
-    public java.lang.String getAttrib_text() {
-        return attrib_text;
+    public void setAttribUnsignedint(Integer attribUnsignedint) {
+        this.attribUnsignedint = attribUnsignedint;
     }
 
-
-    /**
-     * Sets the attrib_text value for this XincoAddAttribute.
-     * 
-     * @param attrib_text
-     */
-    public void setAttrib_text(java.lang.String attrib_text) {
-        this.attrib_text = attrib_text;
+    public Double getAttribDouble() {
+        return attribDouble;
     }
 
-
-    /**
-     * Gets the attrib_unsignedint value for this XincoAddAttribute.
-     * 
-     * @return attrib_unsignedint
-     */
-    public long getAttrib_unsignedint() {
-        return attrib_unsignedint;
+    public void setAttribDouble(Double attribDouble) {
+        this.attribDouble = attribDouble;
     }
 
-
-    /**
-     * Sets the attrib_unsignedint value for this XincoAddAttribute.
-     * 
-     * @param attrib_unsignedint
-     */
-    public void setAttrib_unsignedint(long attrib_unsignedint) {
-        this.attrib_unsignedint = attrib_unsignedint;
+    public String getAttribVarchar() {
+        return attribVarchar;
     }
 
-
-    /**
-     * Gets the attrib_varchar value for this XincoAddAttribute.
-     * 
-     * @return attrib_varchar
-     */
-    public java.lang.String getAttrib_varchar() {
-        return attrib_varchar;
+    public void setAttribVarchar(String attribVarchar) {
+        this.attribVarchar = attribVarchar;
     }
 
-
-    /**
-     * Sets the attrib_varchar value for this XincoAddAttribute.
-     * 
-     * @param attrib_varchar
-     */
-    public void setAttrib_varchar(java.lang.String attrib_varchar) {
-        this.attrib_varchar = attrib_varchar;
+    public String getAttribText() {
+        return attribText;
     }
 
-
-    /**
-     * Gets the attribute_id value for this XincoAddAttribute.
-     * 
-     * @return attribute_id
-     */
-    public int getAttribute_id() {
-        return attribute_id;
+    public void setAttribText(String attribText) {
+        this.attribText = attribText;
     }
 
-
-    /**
-     * Sets the attribute_id value for this XincoAddAttribute.
-     * 
-     * @param attribute_id
-     */
-    public void setAttribute_id(int attribute_id) {
-        this.attribute_id = attribute_id;
+    public Date getAttribDatetime() {
+        return attribDatetime;
     }
 
-
-    /**
-     * Gets the xinco_core_data_id value for this XincoAddAttribute.
-     * 
-     * @return xinco_core_data_id
-     */
-    public int getXinco_core_data_id() {
-        return xinco_core_data_id;
+    public void setAttribDatetime(Date attribDatetime) {
+        this.attribDatetime = attribDatetime;
     }
 
-
-    /**
-     * Sets the xinco_core_data_id value for this XincoAddAttribute.
-     * 
-     * @param xinco_core_data_id
-     */
-    public void setXinco_core_data_id(int xinco_core_data_id) {
-        this.xinco_core_data_id = xinco_core_data_id;
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (xincoAddAttributePK != null ? xincoAddAttributePK.hashCode() : 0);
+        return hash;
     }
 
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof XincoAddAttribute)) return false;
-        XincoAddAttribute other = (XincoAddAttribute) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof XincoAddAttribute)) {
+            return false;
         }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.attrib_datetime==null && other.getAttrib_datetime()==null) || 
-             (this.attrib_datetime!=null &&
-              this.attrib_datetime.equals(other.getAttrib_datetime()))) &&
-            this.attrib_double == other.getAttrib_double() &&
-            this.attrib_int == other.getAttrib_int() &&
-            ((this.attrib_text==null && other.getAttrib_text()==null) || 
-             (this.attrib_text!=null &&
-              this.attrib_text.equals(other.getAttrib_text()))) &&
-            this.attrib_unsignedint == other.getAttrib_unsignedint() &&
-            ((this.attrib_varchar==null && other.getAttrib_varchar()==null) || 
-             (this.attrib_varchar!=null &&
-              this.attrib_varchar.equals(other.getAttrib_varchar()))) &&
-            this.attribute_id == other.getAttribute_id() &&
-            this.xinco_core_data_id == other.getXinco_core_data_id();
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
+        XincoAddAttribute other = (XincoAddAttribute) object;
+        if ((this.xincoAddAttributePK == null && other.xincoAddAttributePK != null) || (this.xincoAddAttributePK != null && !this.xincoAddAttributePK.equals(other.xincoAddAttributePK))) {
+            return false;
         }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getAttrib_datetime() != null) {
-            _hashCode += getAttrib_datetime().hashCode();
-        }
-        _hashCode += new Double(getAttrib_double()).hashCode();
-        _hashCode += getAttrib_int();
-        if (getAttrib_text() != null) {
-            _hashCode += getAttrib_text().hashCode();
-        }
-        _hashCode += new Long(getAttrib_unsignedint()).hashCode();
-        if (getAttrib_varchar() != null) {
-            _hashCode += getAttrib_varchar().hashCode();
-        }
-        _hashCode += getAttribute_id();
-        _hashCode += getXinco_core_data_id();
-        __hashCodeCalc = false;
-        return _hashCode;
+        return true;
     }
 
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(XincoAddAttribute.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://add.xinco.bluecubs.com", "XincoAddAttribute"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("attrib_datetime");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "attrib_datetime"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "dateTime"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("attrib_double");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "attrib_double"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "double"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("attrib_int");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "attrib_int"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("attrib_text");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "attrib_text"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("attrib_unsignedint");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "attrib_unsignedint"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("attrib_varchar");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "attrib_varchar"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("attribute_id");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "attribute_id"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xinco_core_data_id");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_data_id"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    @Override
+    public String toString() {
+        return "com.bluecubs.xinco.core.persistence.XincoAddAttribute[xincoAddAttributePK=" + xincoAddAttributePK + "]";
     }
 
 }

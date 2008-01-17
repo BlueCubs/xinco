@@ -11,7 +11,7 @@ import javax.persistence.Embeddable;
 
 /**
  *
- * @author Javier A. Ortiz
+ * @author javydreamercsw
  */
 @Embeddable
 public class XincoCoreDataTypeAttributePK implements Serializable {

@@ -35,9 +35,9 @@
  */
 package com.bluecubs.xinco.client.dialog;
 
+import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
-import com.bluecubs.xinco.core.XincoAddAttribute;
 import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import java.util.Vector;
 

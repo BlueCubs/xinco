@@ -679,4 +679,12 @@ CREATE TABLE xinco_setting_t (
 )
 TYPE=InnoDB;
 
+CREATE TABLE xinco_id_t (
+  record_id INTEGER(10) UNSIGNED NOT NULL,
+  tablename VARCHAR(255) NOT NULL,
+  last_id INTEGER UNSIGNED NOT NULL,
+  PRIMARY KEY(record_id)
+)
+TYPE=InnoDB;
+
 
