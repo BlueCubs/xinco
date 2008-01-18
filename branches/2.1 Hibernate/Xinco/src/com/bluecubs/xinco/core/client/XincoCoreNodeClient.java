@@ -51,8 +51,4 @@ public class XincoCoreNodeClient extends XincoCoreNode {
      */
     public XincoCoreNodeClient() throws XincoException {
     }
-
-    public Object getXincoCoreNodes() {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
 }

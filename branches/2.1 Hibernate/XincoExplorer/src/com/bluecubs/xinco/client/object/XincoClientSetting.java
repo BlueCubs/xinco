@@ -48,7 +48,7 @@ public class XincoClientSetting extends XincoSetting {
     }
 
     private XincoSetting getSetting(int i) {
-        return (XincoSetting) getXinco_settings().get(i);
+        return (XincoSetting) getXincoSettings().get(i);
     }
 
     /**
@@ -57,9 +57,9 @@ public class XincoClientSetting extends XincoSetting {
      * @return XincoSetting
      */
     public XincoSetting getSetting(String setting_name) {
-        for (int i = 0; i < getXinco_settings().size(); i++) {
-            if (((XincoSetting) getXinco_settings().get(i)).getDescription().equals(setting_name)) {
-                return (XincoSetting) getXinco_settings().get(i);
+        for (int i = 0; i < getXincoSettings().size(); i++) {
+            if (((XincoSetting) getXincoSettings().get(i)).getDescription().equals(setting_name)) {
+                return (XincoSetting) getXincoSettings().get(i);
             }
         }
         return null;

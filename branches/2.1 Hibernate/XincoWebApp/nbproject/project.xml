@@ -35,6 +35,10 @@
                     <file>${libs.PostgreSQLDriver.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
+                <library files="25">
+                    <file>${libs.spring-framework-2.5.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
             </web-module-libraries>
             <web-module-additional-libraries>
                 <library files="1">

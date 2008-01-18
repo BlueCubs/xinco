@@ -39,6 +39,7 @@ import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoVersion;
 import com.bluecubs.xinco.service.Xinco;
+import com.bluecubs.xinco.service.XincoService;
 import java.util.Vector;
 
 
@@ -50,7 +51,7 @@ public class XincoClientSession {
     /**
      * Service Endpoint
      */
-    private String service_endpoint = "";
+    private String serviceEndpoint = "";
     /**
      * User
      */
@@ -59,7 +60,7 @@ public class XincoClientSession {
     /**
      * Xinco Service
      */
-    private XincoService xinco_service = null;
+    private XincoService xincoService = null;
     /**
      * Xinco object
      */
@@ -72,19 +73,19 @@ public class XincoClientSession {
     /**
      * Server version
      */
-    private XincoVersion server_version = null;
+    private XincoVersion serverVersion = null;
     /**
      * Server groups
      */
-    private Vector server_groups = null;
+    private Vector serverGroups = null;
     /**
      * Server languages
      */
-    private Vector server_languages = null;
+    private Vector serverLanguages = null;
     /**
      * Server data type
      */
-    private Vector server_datatypes = null;
+    private Vector serverDatatypes = null;
     /**
      * Current tree node selection
      */
@@ -110,14 +111,14 @@ public class XincoClientSession {
      * @param e 
      */
     public XincoClientSession(XincoExplorer e) {
-        service_endpoint = "";
+        serviceEndpoint = "";
         user = new XincoCoreUser();
         //init repository
         xincoClientRepository = new XincoClientRepository(e);
-        server_version = new XincoVersion();
-        server_groups = new Vector();
-        server_languages = new Vector();
-        server_datatypes = new Vector();
+        serverVersion = new XincoVersion();
+        serverGroups = new Vector();
+        serverLanguages = new Vector();
+        serverDatatypes = new Vector();
         clipboardTreeNodeSelection = new Vector();
         currentSearchResult = new Vector();
         status = 0;
@@ -134,16 +135,16 @@ public class XincoClientSession {
      * 
      * @return String
      */
-    public String getService_endpoint() {
-        return service_endpoint;
+    public String getServiceEndpoint() {
+        return serviceEndpoint;
     }
 
     /**
      * 
-     * @param service_endpoint
+     * @param serviceEndpoint
      */
-    public void setService_endpoint(String service_endpoint) {
-        this.service_endpoint = service_endpoint;
+    public void setServiceEndpoint(String serviceEndpoint) {
+        this.serviceEndpoint = serviceEndpoint;
     }
 
     /**
@@ -166,16 +167,16 @@ public class XincoClientSession {
      * Xinco Service
      * @return XincoService
      */
-    public XincoService getXinco_service() {
-        return xinco_service;
+    public XincoService getXincoService() {
+        return xincoService;
     }
 
     /**
      * 
-     * @param xinco_service
+     * @param xincoService
      */
-    public void setXinco_service(XincoService xinco_service) {
-        this.xinco_service = xinco_service;
+    public void setXincoService(XincoService xincoService) {
+        this.xincoService = xincoService;
     }
 
     /**
@@ -214,64 +215,64 @@ public class XincoClientSession {
      * Server version
      * @return XincoVersion
      */
-    public XincoVersion getServer_version() {
-        return server_version;
+    public XincoVersion getServerVersion() {
+        return serverVersion;
     }
 
     /**
      * 
-     * @param server_version
+     * @param serverVersion
      */
-    public void setServer_version(XincoVersion server_version) {
-        this.server_version = server_version;
-    }
-
-    /**
-     * 
-     * @return Vector
-     */
-    public Vector getServer_groups() {
-        return server_groups;
-    }
-
-    /**
-     * 
-     * @param server_groups
-     */
-    public void setServer_groups(Vector server_groups) {
-        this.server_groups = server_groups;
+    public void setServerVersion(XincoVersion serverVersion) {
+        this.serverVersion = serverVersion;
     }
 
     /**
      * 
      * @return Vector
      */
-    public Vector getServer_languages() {
-        return server_languages;
+    public Vector getServerGroups() {
+        return serverGroups;
     }
 
     /**
      * 
-     * @param server_languages
+     * @param serverGroups
      */
-    public void setServer_languages(Vector server_languages) {
-        this.server_languages = server_languages;
+    public void setServerGroups(Vector serverGroups) {
+        this.serverGroups = serverGroups;
     }
 
     /**
      * 
      * @return Vector
      */
-    public Vector getServer_datatypes() {
-        return server_datatypes;
+    public Vector getServerLanguages() {
+        return serverLanguages;
     }
 
     /**
      * 
-     * @param server_datatypes
+     * @param serverLanguages
      */
-    public void setServer_datatypes(Vector server_datatypes) {
-        this.server_datatypes = server_datatypes;
+    public void setServerLanguages(Vector serverLanguages) {
+        this.serverLanguages = serverLanguages;
+    }
+
+    /**
+     * 
+     * @return Vector
+     */
+    public Vector getServerDatatypes() {
+        return serverDatatypes;
+    }
+
+    /**
+     * 
+     * @param serverDatatypes
+     */
+    public void setServerDatatypes(Vector serverDatatypes) {
+        this.serverDatatypes = serverDatatypes;
     }
 
     /**

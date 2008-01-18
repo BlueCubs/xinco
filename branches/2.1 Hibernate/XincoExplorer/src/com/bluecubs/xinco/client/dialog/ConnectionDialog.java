@@ -51,9 +51,9 @@ import javax.swing.JList;
 public class ConnectionDialog extends javax.swing.JDialog {
 
     private XincoExplorer explorer = null;
-    private int selectedProfileIndex=-1;
-    private boolean savePasswordSelected=false;
-    private String profile,user,pass,endpointname;
+    private int selectedProfileIndex = -1;
+    private boolean savePasswordSelected = false;
+    private String profile,  user,  pass,  endpointname;
 
     /**
      * Creates new form ConnectionDialog
@@ -299,16 +299,16 @@ public class ConnectionDialog extends javax.swing.JDialog {
 
     private void connectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectActionPerformed
         //save session info
-        explorer.getSession().setService_endpoint(endpoint.getText());
+        explorer.getSession().setServiceEndpoint(endpoint.getText());
         explorer.getSession().getUser().setUsername(username.getText());
         explorer.getSession().getUser().setUserpassword(new String(password.getPassword()));
         explorer.getSession().setStatus(1);
-        user=username.getText();
-        pass=new String(password.getPassword());
-        endpointname=endpoint.getText();
-        profile=profileName.getText();
-        selectedProfileIndex=profileList.getSelectedIndex();
-        savePasswordSelected=savePW.isSelected();
+        user = username.getText();
+        pass = new String(password.getPassword());
+        endpointname = endpoint.getText();
+        profile = profileName.getText();
+        selectedProfileIndex = profileList.getSelectedIndex();
+        savePasswordSelected = savePW.isSelected();
         setVisible(false);
     }//GEN-LAST:event_connectActionPerformed
 

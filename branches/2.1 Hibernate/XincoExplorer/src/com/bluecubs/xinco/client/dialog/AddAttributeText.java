@@ -38,7 +38,7 @@ package com.bluecubs.xinco.client.dialog;
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
-import com.bluecubs.xinco.core.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.XincoCoreData;
 import java.util.Vector;
 
 /**
@@ -48,7 +48,7 @@ import java.util.Vector;
 public class AddAttributeText extends javax.swing.JDialog {
 
     private XincoExplorer explorer;
-    private boolean viewOnly=false;
+    private boolean viewOnly = false;
 
     /** Creates new form AddAttributeText
      * @param parent
@@ -99,24 +99,24 @@ public class AddAttributeText extends javax.swing.JDialog {
      */
     private void showMe() {
         XincoMutableTreeNode node = explorer.getSession().getCurrentTreeNodeSelection();
-        Vector attr = ((XincoCoreData) node.getUserObject()).getXinco_add_attributes();
-        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() != 2) {
+        Vector attr = ((XincoCoreData) node.getUserObject()).getXincoAddAttributes();
+        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatusNumber() != 2) {
             save.setEnabled(!isViewOnly());
         } else {
             save.setEnabled(false);
         }
         text.setEditable(!isViewOnly());
         if (viewOnly) {
-            String temp="";
+            String temp = "";
             for (int i = 0; i < attr.size(); i++) {
-                if (((XincoAddAttribute) attr.get(i)).getAttribute_id() == 1) {
-                    temp+=((XincoAddAttribute) attr.get(i)).getAttrib_text();
+                if (((XincoAddAttribute) attr.get(i)).getAttributeId() == 1) {
+                    temp += ((XincoAddAttribute) attr.get(i)).getAttribText();
                 }
                 text.setText(temp);
                 save.setEnabled(false);
             }
         } else {
-            text.setText(((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(0)).getAttrib_text());
+            text.setText(((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoAddAttributes().elementAt(0)).getAttribText());
         }
         jScrollPane1.setLocation(0, 0);
         setVisible(true);
@@ -187,7 +187,7 @@ public class AddAttributeText extends javax.swing.JDialog {
         save.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(0)).setAttrib_text(text.getText());
+                ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoAddAttributes().elementAt(0)).setAttribText(text.getText());
                 explorer.setGlobalDialogReturnValue(1);
                 setVisible(false);
             }

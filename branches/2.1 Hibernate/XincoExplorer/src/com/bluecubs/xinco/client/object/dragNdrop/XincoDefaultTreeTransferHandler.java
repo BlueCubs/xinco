@@ -35,7 +35,7 @@
 package com.bluecubs.xinco.client.object.dragNdrop;
 
 import com.bluecubs.xinco.client.object.XincoJTree;
-import com.bluecubs.xinco.core.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.XincoCoreData;
 import java.awt.Point;
 import java.awt.dnd.DnDConstants;
 import javax.swing.tree.DefaultMutableTreeNode;

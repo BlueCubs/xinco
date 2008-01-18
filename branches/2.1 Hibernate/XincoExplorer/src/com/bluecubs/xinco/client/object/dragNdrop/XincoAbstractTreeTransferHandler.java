@@ -32,13 +32,12 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.client.object.dragNdrop;
 
 import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.object.XincoJTree;
-import com.bluecubs.xinco.core.persistence.XincoCoreACE;
-import com.bluecubs.xinco.core.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.XincoCoreACE;
+import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.client.XincoCoreACEClient;
 import java.awt.AlphaComposite;
@@ -70,7 +69,7 @@ import javax.swing.tree.TreePath;
  * @author Javier A. Ortiz
  */
 public abstract class XincoAbstractTreeTransferHandler implements DragGestureListener, DragSourceListener, DropTargetListener {
-    
+
     private XincoJTree tree;
     private DragSource dragSource; // dragsource
     private DropTarget dropTarget; //droptarget
@@ -79,7 +78,7 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
     private static BufferedImage image = null; //buff image
     private Rectangle rect2D = new Rectangle();
     private boolean drawImage;
-    
+
     protected XincoAbstractTreeTransferHandler(XincoJTree tree, int action, boolean drawIcon) {
         this.tree = tree;
         drawImage = drawIcon;
@@ -87,22 +86,24 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
         dragSource.createDefaultDragGestureRecognizer(tree, action, this);
         dropTarget = new DropTarget(tree, action, this);
     }
-    
+
     /* Methods for DragSourceListener */
     public void dragDropEnd(DragSourceDropEvent dsde) {
-        if (dsde.getDropSuccess() && dsde.getDropAction()==DnDConstants.ACTION_MOVE && draggedNodeParent != null) {
+        if (dsde.getDropSuccess() && dsde.getDropAction() == DnDConstants.ACTION_MOVE && draggedNodeParent != null) {
             XincoCoreACE temp_ace = new XincoCoreACE();
             // get ace
             if (draggedNode.getUserObject().getClass() == XincoCoreNode.class) {
-                temp_ace = XincoCoreACEClient.checkAccess(getTree().getExplorer().getSession().getUser(),                         ((XincoCoreNode) draggedNode.getUserObject()).getXinco_core_acl());
+                temp_ace = XincoCoreACEClient.checkAccess(getTree().getExplorer().getSession().getUser(),
+                        ((XincoCoreNode) draggedNode.getUserObject()).getXincoCoreACL());
             }
             if (draggedNode.getUserObject().getClass() == XincoCoreData.class) {
-                temp_ace = XincoCoreACEClient.checkAccess(getTree().getExplorer().getSession().getUser(),                         ((XincoCoreData) draggedNode.getUserObject()).getXinco_core_acl());
+                temp_ace = XincoCoreACEClient.checkAccess(getTree().getExplorer().getSession().getUser(),
+                        ((XincoCoreData) draggedNode.getUserObject()).getXincoCoreACL());
             }
             //Drop only if you have write permissions
-            if (temp_ace.isWrite_permission()) {
-                getTree().getExplorer().getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode)draggedNodeParent);
-                ((DefaultTreeModel)getTree().getModel()).nodeStructureChanged(draggedNodeParent);
+            if (temp_ace.getWritePermission()) {
+                getTree().getExplorer().getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode) draggedNodeParent);
+                ((DefaultTreeModel) getTree().getModel()).nodeStructureChanged(draggedNodeParent);
                 getTree().expandPath(new TreePath(draggedNodeParent.getPath()));
                 getTree().expandPath(new TreePath(draggedNode.getPath()));
                 getTree().getExplorer().getActionHandler().insertNode(true);
@@ -110,9 +111,10 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
             }
         }
     }
-    public final void dragEnter(DragSourceDragEvent dsde)  {
+
+    public final void dragEnter(DragSourceDragEvent dsde) {
         int action = dsde.getDropAction();
-        if (action == DnDConstants.ACTION_COPY)  {
+        if (action == DnDConstants.ACTION_COPY) {
             dsde.getDragSourceContext().setCursor(DragSource.DefaultCopyDrop);
         } else {
             if (action == DnDConstants.ACTION_MOVE) {
@@ -122,23 +124,12 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
             }
         }
     }
+
     public final void dragOver(DragSourceDragEvent dsde) {
         int action = dsde.getDropAction();
         if (action == DnDConstants.ACTION_COPY) {
             dsde.getDragSourceContext().setCursor(DragSource.DefaultCopyDrop);
-        } else  {
-            if (action == DnDConstants.ACTION_MOVE) {
-                dsde.getDragSourceContext().setCursor(DragSource.DefaultMoveDrop);
-            } else  {
-                dsde.getDragSourceContext().setCursor(DragSource.DefaultMoveNoDrop);
-            }
-        }
-    }
-    public final void dropActionChanged(DragSourceDragEvent dsde)  {
-        int action = dsde.getDropAction();
-        if (action == DnDConstants.ACTION_COPY) {
-            dsde.getDragSourceContext().setCursor(DragSource.DefaultCopyDrop);
-        } else  {
+        } else {
             if (action == DnDConstants.ACTION_MOVE) {
                 dsde.getDragSourceContext().setCursor(DragSource.DefaultMoveDrop);
             } else {
@@ -146,19 +137,33 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
             }
         }
     }
+
+    public final void dropActionChanged(DragSourceDragEvent dsde) {
+        int action = dsde.getDropAction();
+        if (action == DnDConstants.ACTION_COPY) {
+            dsde.getDragSourceContext().setCursor(DragSource.DefaultCopyDrop);
+        } else {
+            if (action == DnDConstants.ACTION_MOVE) {
+                dsde.getDragSourceContext().setCursor(DragSource.DefaultMoveDrop);
+            } else {
+                dsde.getDragSourceContext().setCursor(DragSource.DefaultMoveNoDrop);
+            }
+        }
+    }
+
     public final void dragExit(DragSourceEvent dse) {
         dse.getDragSourceContext().setCursor(DragSource.DefaultMoveNoDrop);
     }
-    
+
     /* Methods for DragGestureListener */
     public final void dragGestureRecognized(DragGestureEvent dge) {
         TreePath path = getTree().getSelectionPath();
         if (path != null) {
-            draggedNode = (DefaultMutableTreeNode)path.getLastPathComponent();
-            draggedNodeParent = (DefaultMutableTreeNode)draggedNode.getParent();
+            draggedNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+            draggedNodeParent = (DefaultMutableTreeNode) draggedNode.getParent();
             if (drawImage) {
                 Rectangle pathBounds = getTree().getPathBounds(path); //getpathbounds of selectionpath
-                JComponent lbl = (JComponent)getTree().getCellRenderer().getTreeCellRendererComponent(getTree(), draggedNode, false , getTree().isExpanded(path),((DefaultTreeModel)getTree().getModel()).isLeaf(path.getLastPathComponent()), 0,false);//returning the label
+                JComponent lbl = (JComponent) getTree().getCellRenderer().getTreeCellRendererComponent(getTree(), draggedNode, false, getTree().isExpanded(path), ((DefaultTreeModel) getTree().getModel()).isLeaf(path.getLastPathComponent()), 0, false);//returning the label
                 lbl.setBounds(pathBounds);//setting bounds to lbl
                 image = new BufferedImage(lbl.getWidth(), lbl.getHeight(), java.awt.image.BufferedImage.TYPE_INT_ARGB_PRE);//buffered image reference passing the label's ht and width
                 Graphics2D graphics = image.createGraphics();//creating the graphics for buffered image
@@ -169,12 +174,11 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
                 getTree().getExplorer().jLabelInternalFrameInformationText.setText(getTree().getExplorer().getResourceBundle().getString("menu.edit.movemessage"));
                 getTree().getExplorer().getActionHandler().moveToClipboard();
             }
-            dragSource.startDrag(dge, DragSource.DefaultMoveNoDrop , image, new Point(0,0), new XincoTransferableNode(draggedNode), this);
+            dragSource.startDrag(dge, DragSource.DefaultMoveNoDrop, image, new Point(0, 0), new XincoTransferableNode(draggedNode), this);
         }
     }
-    
+
     /* Methods for DropTargetListener */
-    
     public final void dragEnter(DropTargetDragEvent dtde) {
         Point pt = dtde.getLocation();
         int action = dtde.getDropAction();
@@ -187,13 +191,13 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
             dtde.rejectDrag();
         }
     }
-    
+
     public final void dragExit(DropTargetEvent dte) {
         if (drawImage) {
             clearImage();
         }
     }
-    
+
     public final void dragOver(DropTargetDragEvent dtde) {
         Point pt = dtde.getLocation();
         int action = dtde.getDropAction();
@@ -207,7 +211,7 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
             dtde.rejectDrag();
         }
     }
-    
+
     public final void dropActionChanged(DropTargetDragEvent dtde) {
         Point pt = dtde.getLocation();
         int action = dtde.getDropAction();
@@ -220,7 +224,7 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
             dtde.rejectDrag();
         }
     }
-    
+
     public final void drop(DropTargetDropEvent dtde) {
         try {
             if (drawImage) {
@@ -232,8 +236,8 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
             if (transferable.isDataFlavorSupported(XincoTransferableNode.NODE_FLAVOR) && canPerformAction(getTree(), draggedNode, action, pt)) {
                 TreePath pathTarget = getTree().getPathForLocation(pt.x, pt.y);
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) transferable.getTransferData(XincoTransferableNode.NODE_FLAVOR);
-                DefaultMutableTreeNode newParentNode =(DefaultMutableTreeNode)pathTarget.getLastPathComponent();
-                getTree().setTargetTreeNode((XincoMutableTreeNode)newParentNode);
+                DefaultMutableTreeNode newParentNode = (DefaultMutableTreeNode) pathTarget.getLastPathComponent();
+                getTree().setTargetTreeNode((XincoMutableTreeNode) newParentNode);
                 if (executeDrop(getTree(), node, newParentNode, action)) {
                     dtde.acceptDrop(action);
                     dtde.dropComplete(true);
@@ -248,21 +252,21 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
             dtde.dropComplete(false);
         }
     }
-    
+
     private final void paintImage(Point pt) {
         getTree().paintImmediately(rect2D.getBounds());
-        rect2D.setRect((int) pt.getX(),(int) pt.getY(),image.getWidth(),image.getHeight());
-        getTree().getGraphics().drawImage(image,(int) pt.getX(),(int) pt.getY(), getTree());
+        rect2D.setRect((int) pt.getX(), (int) pt.getY(), image.getWidth(), image.getHeight());
+        getTree().getGraphics().drawImage(image, (int) pt.getX(), (int) pt.getY(), getTree());
     }
-    
+
     private final void clearImage() {
         getTree().paintImmediately(rect2D.getBounds());
     }
-    
+
     protected abstract boolean canPerformAction(XincoJTree target, DefaultMutableTreeNode draggedNode, int action, Point location);
-    
+
     protected abstract boolean executeDrop(XincoJTree tree, DefaultMutableTreeNode draggedNode, DefaultMutableTreeNode newParentNode, int action);
-    
+
     protected XincoJTree getTree() {
         return tree;
     }

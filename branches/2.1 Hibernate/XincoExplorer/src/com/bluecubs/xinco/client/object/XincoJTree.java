@@ -141,10 +141,10 @@ public class XincoJTree extends JTree {
                 setCurrentTreeNodeSelection(node);
                 // get ace
                 if (node.getUserObject().getClass() == XincoCoreNode.class) {
-                    tempAce = XincoCoreACEClient.checkAccess(getExplorer().getSession().getUser(), ((XincoCoreNode) node.getUserObject()).getXincoCoreAcl());
+                    tempAce = XincoCoreACEClient.checkAccess(getExplorer().getSession().getUser(), ((XincoCoreNode) node.getUserObject()).getXincoCoreACL());
                 }
                 if (node.getUserObject().getClass() == XincoCoreData.class) {
-                    tempAce = XincoCoreACEClient.checkAccess(getExplorer().getSession().getUser(), ((XincoCoreData) node.getUserObject()).getXincoCoreAcl());
+                    tempAce = XincoCoreACEClient.checkAccess(getExplorer().getSession().getUser(), ((XincoCoreData) node.getUserObject()).getXincoCoreACL());
                 }
                 // Intelligent menu
                 // reset menus
@@ -480,11 +480,11 @@ public class XincoJTree extends JTree {
                                 rdata[0] = ((XincoCoreDataTypeAttribute) getExplorer().getXdata().getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation();
                                 if (((XincoCoreDataTypeAttribute) getExplorer().getXdata().getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().equalsIgnoreCase("int")) {
                                     rdata[1] = "" +
-                                            ((XincoAddAttribute) getExplorer().getXdata().getXincoAddAttributes().elementAt(i)).getAttrib_int();
+                                            ((XincoAddAttribute) getExplorer().getXdata().getXincoAddAttributes().elementAt(i)).getAttribInt();
                                 }
                                 if (((XincoCoreDataTypeAttribute) getExplorer().getXdata().getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().equalsIgnoreCase("unsignedint")) {
                                     rdata[1] = "" +
-                                            ((XincoAddAttribute) getExplorer().getXdata().getXincoAddAttributes().elementAt(i)).getAttrib_unsignedint();
+                                            ((XincoAddAttribute) getExplorer().getXdata().getXincoAddAttributes().elementAt(i)).getAttribUnsignedint();
                                 }
                                 if (((XincoCoreDataTypeAttribute) getExplorer().getXdata().getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().equalsIgnoreCase("double")) {
                                     rdata[1] = "" +
@@ -492,7 +492,7 @@ public class XincoJTree extends JTree {
                                 }
                                 if (((XincoCoreDataTypeAttribute) getExplorer().getXdata().getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().equalsIgnoreCase("varchar")) {
                                     rdata[1] = "" +
-                                            ((XincoAddAttribute) getExplorer().getXdata().getXincoAddAttributes().elementAt(i)).getAttrib_varchar();
+                                            ((XincoAddAttribute) getExplorer().getXdata().getXincoAddAttributes().elementAt(i)).getAttribVarchar();
                                 }
                                 if (((XincoCoreDataTypeAttribute) getExplorer().getXdata().getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().equalsIgnoreCase("text")) {
                                     rdata[1] = "" +
@@ -520,7 +520,7 @@ public class XincoJTree extends JTree {
                     rdata[1] = "";
                     dtm.addRow(rdata);
                     Calendar cal;
-                    Calendar realcal;
+                    Calendar realcal = null;
                     Calendar ngc = new GregorianCalendar();
                     for (i = getExplorer().getXdata().getXincoCoreLogs().size() - 1; i >= 0; i--) {
                         if (((XincoCoreLog) getExplorer().getXdata().getXincoCoreLogs().elementAt(i)).getOpDatetime() !=
@@ -528,7 +528,7 @@ public class XincoJTree extends JTree {
                             try {
                                 // convert clone from remote time to local time
                                 cal = (Calendar) ((XincoCoreLog) getExplorer().getXdata().getXincoCoreLogs().elementAt(i)).getOpDatetime().clone();
-                                realcal = ((XincoCoreLog) getExplorer().getXdata().getXincoCoreLogs().elementAt(i)).getOpDatetime();
+                                realcal.setTime(((XincoCoreLog) getExplorer().getXdata().getXincoCoreLogs().elementAt(i)).getOpDatetime());
                                 cal.add(Calendar.MILLISECOND,
                                         (ngc.get(Calendar.ZONE_OFFSET) -
                                         realcal.get(Calendar.ZONE_OFFSET)) -
@@ -571,13 +571,13 @@ public class XincoJTree extends JTree {
                         try {
                             rdata[1] = getExplorer().getResourceBundle().getString("general.version") +
                                     " " +
-                                    ((XincoCoreLog) getExplorer().getXdata().getXincoCoreLogs().elementAt(i)).getVersion().getVersion_high() +
+                                    ((XincoCoreLog) getExplorer().getXdata().getXincoCoreLogs().elementAt(i)).getVersion().getVersionHigh() +
                                     "." +
-                                    ((XincoCoreLog) getExplorer().getXdata().getXincoCoreLogs().elementAt(i)).getVersion().getVersion_mid() +
+                                    ((XincoCoreLog) getExplorer().getXdata().getXincoCoreLogs().elementAt(i)).getVersion().getVersionMid() +
                                     "." +
                                     ((XincoCoreLog) getExplorer().getXdata().getXincoCoreLogs().elementAt(i)).getVersion().getVersionLow() +
                                     "" +
-                                    ((XincoCoreLog) getExplorer().getXdata().getXincoCoreLogs().elementAt(i)).getVersion().getVersion_postfix();
+                                    ((XincoCoreLog) getExplorer().getXdata().getXincoCoreLogs().elementAt(i)).getVersion().getVersionPostfix();
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }

@@ -36,7 +36,6 @@
 package com.bluecubs.xinco.client.object.timer;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.core.exception.XincoSettingException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Level;
@@ -65,7 +64,7 @@ public class XincoActivityActionListener implements ActionListener {
             if (this.explorer.getSettings().getSetting("general.setting.enable.lockidle").getBoolValue()) {
                 this.explorer.setLock(true);
             }
-        } catch (XincoSettingException ex) {
+        } catch (Throwable ex) {
             Logger.getLogger(XincoActivityActionListener.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

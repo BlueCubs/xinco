@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.bluecubs.xinco.core.persistence;
+package com.bluecubs.xinco.add.persistence;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -70,7 +70,7 @@ public class XincoAddAttributePK implements Serializable {
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.persistence.XincoAddAttributePK[xincoCoreDataId=" + xincoCoreDataId + ", attributeId=" + attributeId + "]";
+        return "com.bluecubs.xinco.add.persistance.XincoAddAttributePK[xincoCoreDataId=" + xincoCoreDataId + ", attributeId=" + attributeId + "]";
     }
 
 }

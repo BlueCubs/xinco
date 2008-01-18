@@ -35,10 +35,10 @@
  */
 package com.bluecubs.xinco.add.server;
 
+import com.bluecubs.xinco.add.persistence.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.persistence.*;
 import com.bluecubs.xinco.core.exception.XincoException;
-import com.bluecubs.xinco.add.XincoAddAttribute;
-import com.bluecubs.xinco.core.persistence.XincoAddAttributePK;
+import com.bluecubs.xinco.add.persistence.XincoAddAttributePK;
 import com.bluecubs.xinco.core.persistence.audit.XincoAddAttributeT;
 import com.bluecubs.xinco.core.server.persistence.audit.XincoAbstractAuditableObject;
 import com.bluecubs.xinco.core.server.persistence.audit.XincoAuditableDAO;

@@ -567,7 +567,7 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
 
             qName = new javax.xml.namespace.QName("http://persistence.core.xinco.bluecubs.com", "XincoAddAttributePK");
             cachedSerQNames.add(qName);
-            cls = com.bluecubs.xinco.core.persistence.XincoAddAttributePK.class;
+            cls = com.bluecubs.xinco.add.persistence.XincoAddAttributePK.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);

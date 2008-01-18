@@ -12,11 +12,11 @@ public class XincoCoreData  implements java.io.Serializable {
 
     private java.util.Vector xinco_core_acl;
 
-    private int changerID;
+    private int changerID,xinco_core_data_type_id,xinco_core_language_id;
 
-    private com.bluecubs.xinco.core.XincoCoreDataType xinco_core_data_type;
+    private com.bluecubs.xinco.core.XincoCoreDataType xincoCoreDataType;
 
-    private com.bluecubs.xinco.core.XincoCoreLanguage xinco_core_language;
+    private com.bluecubs.xinco.core.XincoCoreLanguage xincoCoreLanguage;
 
     private int xinco_core_node_id;
 
@@ -45,8 +45,8 @@ public class XincoCoreData  implements java.io.Serializable {
            this.designation = designation;
            this.xinco_core_acl = xinco_core_acl;
            this.changerID = changerID;
-           this.xinco_core_data_type = xinco_core_data_type;
-           this.xinco_core_language = xinco_core_language;
+           this.xincoCoreDataType = xinco_core_data_type;
+           this.xincoCoreLanguage = xinco_core_language;
            this.xinco_core_node_id = xinco_core_node_id;
            this.id = id;
            this.status_number = status_number;
@@ -80,7 +80,7 @@ public class XincoCoreData  implements java.io.Serializable {
      * 
      * @return xinco_core_acl
      */
-    public java.util.Vector getXinco_core_acl() {
+    public java.util.Vector getXincoCoreACL() {
         return xinco_core_acl;
     }
 
@@ -90,7 +90,7 @@ public class XincoCoreData  implements java.io.Serializable {
      * 
      * @param xinco_core_acl
      */
-    public void setXinco_core_acl(java.util.Vector xinco_core_acl) {
+    public void setXincoCoreACL(java.util.Vector xinco_core_acl) {
         this.xinco_core_acl = xinco_core_acl;
     }
 
@@ -116,42 +116,42 @@ public class XincoCoreData  implements java.io.Serializable {
 
 
     /**
-     * Gets the xinco_core_data_type value for this XincoCoreData.
+     * Gets the xinco_core_data_type_id value for this XincoCoreData.
      * 
-     * @return xinco_core_data_type
+     * @return xinco_core_data_type_id
      */
-    public com.bluecubs.xinco.core.XincoCoreDataType getXinco_core_data_type() {
-        return xinco_core_data_type;
+    public com.bluecubs.xinco.core.XincoCoreDataType getXincoCoreDataType() {
+        return getXincoCoreDataType();
     }
 
 
     /**
-     * Sets the xinco_core_data_type value for this XincoCoreData.
+     * Sets the xinco_core_data_type_id value for this XincoCoreData.
      * 
-     * @param xinco_core_data_type
+     * @param xinco_core_data_type_id
      */
-    public void setXinco_core_data_type(com.bluecubs.xinco.core.XincoCoreDataType xinco_core_data_type) {
-        this.xinco_core_data_type = xinco_core_data_type;
+    public void setXincoCoreDataTypeId(int xinco_core_data_type_id) {
+        this.setXinco_core_data_type_id(xinco_core_data_type_id);
     }
 
 
     /**
-     * Gets the xinco_core_language value for this XincoCoreData.
+     * Gets the xincoCoreLanguage value for this XincoCoreData.
      * 
-     * @return xinco_core_language
+     * @return xincoCoreLanguage
      */
-    public com.bluecubs.xinco.core.XincoCoreLanguage getXinco_core_language() {
-        return xinco_core_language;
+    public com.bluecubs.xinco.core.XincoCoreLanguage getXincoCoreLanguage() {
+        return xincoCoreLanguage;
     }
 
 
     /**
-     * Sets the xinco_core_language value for this XincoCoreData.
+     * Sets the xincoCoreLanguage value for this XincoCoreData.
      * 
-     * @param xinco_core_language
+     * @param xincoCoreLanguage
      */
-    public void setXinco_core_language(com.bluecubs.xinco.core.XincoCoreLanguage xinco_core_language) {
-        this.xinco_core_language = xinco_core_language;
+    public void setXincoCoreLanguage(com.bluecubs.xinco.core.XincoCoreLanguage xinco_core_language) {
+        this.xincoCoreLanguage = xinco_core_language;
     }
 
 
@@ -160,7 +160,7 @@ public class XincoCoreData  implements java.io.Serializable {
      * 
      * @return xinco_core_node_id
      */
-    public int getXinco_core_node_id() {
+    public int getXincoCoreNodeId() {
         return xinco_core_node_id;
     }
 
@@ -170,7 +170,7 @@ public class XincoCoreData  implements java.io.Serializable {
      * 
      * @param xinco_core_node_id
      */
-    public void setXinco_core_node_id(int xinco_core_node_id) {
+    public void setXincoCoreNodeId(int xinco_core_node_id) {
         this.xinco_core_node_id = xinco_core_node_id;
     }
 
@@ -200,7 +200,7 @@ public class XincoCoreData  implements java.io.Serializable {
      * 
      * @return status_number
      */
-    public int getStatus_number() {
+    public int getStatusNumber() {
         return status_number;
     }
 
@@ -210,7 +210,7 @@ public class XincoCoreData  implements java.io.Serializable {
      * 
      * @param status_number
      */
-    public void setStatus_number(int status_number) {
+    public void setStatusNumber(int status_number) {
         this.status_number = status_number;
     }
 
@@ -220,7 +220,7 @@ public class XincoCoreData  implements java.io.Serializable {
      * 
      * @return xinco_add_attributes
      */
-    public java.util.Vector getXinco_add_attributes() {
+    public java.util.Vector getXincoAddAttributes() {
         return xinco_add_attributes;
     }
 
@@ -230,7 +230,7 @@ public class XincoCoreData  implements java.io.Serializable {
      * 
      * @param xinco_add_attributes
      */
-    public void setXinco_add_attributes(java.util.Vector xinco_add_attributes) {
+    public void setXincoAddAttributes(java.util.Vector xinco_add_attributes) {
         this.xinco_add_attributes = xinco_add_attributes;
     }
 
@@ -240,7 +240,7 @@ public class XincoCoreData  implements java.io.Serializable {
      * 
      * @return xinco_core_logs
      */
-    public java.util.Vector getXinco_core_logs() {
+    public java.util.Vector getXincoCoreLogs() {
         return xinco_core_logs;
     }
 
@@ -250,7 +250,7 @@ public class XincoCoreData  implements java.io.Serializable {
      * 
      * @param xinco_core_logs
      */
-    public void setXinco_core_logs(java.util.Vector xinco_core_logs) {
+    public void setXincoCoreLogs(java.util.Vector xinco_core_logs) {
         this.xinco_core_logs = xinco_core_logs;
     }
 
@@ -269,25 +269,25 @@ public class XincoCoreData  implements java.io.Serializable {
             ((this.designation==null && other.getDesignation()==null) || 
              (this.designation!=null &&
               this.designation.equals(other.getDesignation()))) &&
-            ((this.xinco_core_acl==null && other.getXinco_core_acl()==null) || 
+            ((this.xinco_core_acl==null && other.getXincoCoreACL()==null) || 
              (this.xinco_core_acl!=null &&
-              this.xinco_core_acl.equals(other.getXinco_core_acl()))) &&
+              this.xinco_core_acl.equals(other.getXincoCoreACL()))) &&
             this.changerID == other.getChangerID() &&
-            ((this.xinco_core_data_type==null && other.getXinco_core_data_type()==null) || 
-             (this.xinco_core_data_type!=null &&
-              this.xinco_core_data_type.equals(other.getXinco_core_data_type()))) &&
-            ((this.xinco_core_language==null && other.getXinco_core_language()==null) || 
-             (this.xinco_core_language!=null &&
-              this.xinco_core_language.equals(other.getXinco_core_language()))) &&
-            this.xinco_core_node_id == other.getXinco_core_node_id() &&
+            ((this.getXincoCoreDataType()==null && other.getXincoCoreDataType()==null) ||
+             (this.getXincoCoreDataType()!=null &&
+              this.getXincoCoreDataType().equals(other.getXincoCoreDataType()))) &&
+            ((this.getXincoCoreLanguage()==null && other.getXincoCoreLanguage()==null) || 
+             (this.getXincoCoreLanguage()!=null &&
+              this.getXincoCoreLanguage().equals(other.getXincoCoreLanguage()))) &&
+            this.xinco_core_node_id == other.getXincoCoreNodeId() &&
             this.id == other.getId() &&
-            this.status_number == other.getStatus_number() &&
-            ((this.xinco_add_attributes==null && other.getXinco_add_attributes()==null) || 
+            this.status_number == other.getStatusNumber() &&
+            ((this.xinco_add_attributes==null && other.getXincoAddAttributes()==null) || 
              (this.xinco_add_attributes!=null &&
-              this.xinco_add_attributes.equals(other.getXinco_add_attributes()))) &&
-            ((this.xinco_core_logs==null && other.getXinco_core_logs()==null) || 
+              this.xinco_add_attributes.equals(other.getXincoAddAttributes()))) &&
+            ((this.xinco_core_logs==null && other.getXincoCoreLogs()==null) || 
              (this.xinco_core_logs!=null &&
-              this.xinco_core_logs.equals(other.getXinco_core_logs())));
+              this.xinco_core_logs.equals(other.getXincoCoreLogs())));
         __equalsCalc = null;
         return _equals;
     }
@@ -302,24 +302,24 @@ public class XincoCoreData  implements java.io.Serializable {
         if (getDesignation() != null) {
             _hashCode += getDesignation().hashCode();
         }
-        if (getXinco_core_acl() != null) {
-            _hashCode += getXinco_core_acl().hashCode();
+        if (getXincoCoreACL() != null) {
+            _hashCode += getXincoCoreACL().hashCode();
         }
         _hashCode += getChangerID();
-        if (getXinco_core_data_type() != null) {
-            _hashCode += getXinco_core_data_type().hashCode();
+        if (getXincoCoreDataType() != null) {
+            _hashCode += getXincoCoreDataType().hashCode();
         }
-        if (getXinco_core_language() != null) {
-            _hashCode += getXinco_core_language().hashCode();
+        if (getXincoCoreLanguage() != null) {
+            _hashCode += getXincoCoreLanguage().hashCode();
         }
-        _hashCode += getXinco_core_node_id();
+        _hashCode += getXincoCoreNodeId();
         _hashCode += getId();
-        _hashCode += getStatus_number();
-        if (getXinco_add_attributes() != null) {
-            _hashCode += getXinco_add_attributes().hashCode();
+        _hashCode += getStatusNumber();
+        if (getXincoAddAttributes() != null) {
+            _hashCode += getXincoAddAttributes().hashCode();
         }
-        if (getXinco_core_logs() != null) {
-            _hashCode += getXinco_core_logs().hashCode();
+        if (getXincoCoreLogs() != null) {
+            _hashCode += getXincoCoreLogs().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -422,6 +422,26 @@ public class XincoCoreData  implements java.io.Serializable {
         return 
           new  org.apache.axis.encoding.ser.BeanDeserializer(
             _javaType, _xmlType, typeDesc);
+    }
+
+    public int getXincoCoreDataTypeId() {
+        return xinco_core_data_type_id;
+    }
+
+    public void setXinco_core_data_type_id(int xinco_core_data_type_id) {
+        this.xinco_core_data_type_id = xinco_core_data_type_id;
+    }
+
+    public int getXincoCoreLanguageId() {
+        return xinco_core_language_id;
+    }
+
+    public void setXincoCoreLanguageId(int xinco_core_language_id) {
+        this.xinco_core_language_id = xinco_core_language_id;
+    }
+
+    public void setXincoCoreDataType(com.bluecubs.xinco.core.XincoCoreDataType xincoCoreDataType) {
+        this.xincoCoreDataType = xincoCoreDataType;
     }
 
 }

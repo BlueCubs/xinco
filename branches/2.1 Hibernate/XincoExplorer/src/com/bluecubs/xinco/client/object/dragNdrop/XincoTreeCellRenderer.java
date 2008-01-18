@@ -36,7 +36,7 @@ package com.bluecubs.xinco.client.object.dragNdrop;
 
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.*;
-import com.bluecubs.xinco.core.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.tools.XincoFileIconManager;
 import java.awt.Component;
@@ -76,7 +76,7 @@ public class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
                 if (!isFolder(value)) {
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
                     String ext = value.toString().substring(0, value.toString().indexOf("(") - 1);
-                    switch (((XincoCoreData) (node.getUserObject())).getXinco_core_data_type().getId()) {
+                    switch (((XincoCoreData) (node.getUserObject())).getXincoCoreDataType().getId()) {
                         case 1:
                             try {
                                 setIcon(xfm.getIcon16(ext));

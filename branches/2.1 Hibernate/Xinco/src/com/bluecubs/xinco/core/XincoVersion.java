@@ -36,7 +36,7 @@ public class XincoVersion  implements java.io.Serializable {
      * 
      * @return version_high
      */
-    public int getVersion_high() {
+    public int getVersionHigh() {
         return version_high;
     }
 
@@ -46,7 +46,7 @@ public class XincoVersion  implements java.io.Serializable {
      * 
      * @param version_high
      */
-    public void setVersion_high(int version_high) {
+    public void setVersionHigh(int version_high) {
         this.version_high = version_high;
     }
 
@@ -56,7 +56,7 @@ public class XincoVersion  implements java.io.Serializable {
      * 
      * @return version_low
      */
-    public int getVersion_low() {
+    public int getVersionLow() {
         return version_low;
     }
 
@@ -66,7 +66,7 @@ public class XincoVersion  implements java.io.Serializable {
      * 
      * @param version_low
      */
-    public void setVersion_low(int version_low) {
+    public void setVersionLow(int version_low) {
         this.version_low = version_low;
     }
 
@@ -76,7 +76,7 @@ public class XincoVersion  implements java.io.Serializable {
      * 
      * @return version_mid
      */
-    public int getVersion_mid() {
+    public int getVersionMid() {
         return version_mid;
     }
 
@@ -86,7 +86,7 @@ public class XincoVersion  implements java.io.Serializable {
      * 
      * @param version_mid
      */
-    public void setVersion_mid(int version_mid) {
+    public void setVersionMid(int version_mid) {
         this.version_mid = version_mid;
     }
 
@@ -96,7 +96,7 @@ public class XincoVersion  implements java.io.Serializable {
      * 
      * @return version_postfix
      */
-    public java.lang.String getVersion_postfix() {
+    public java.lang.String getVersionPostfix() {
         return version_postfix;
     }
 
@@ -106,7 +106,7 @@ public class XincoVersion  implements java.io.Serializable {
      * 
      * @param version_postfix
      */
-    public void setVersion_postfix(java.lang.String version_postfix) {
+    public void setVersionPostfix(java.lang.String version_postfix) {
         this.version_postfix = version_postfix;
     }
 
@@ -122,12 +122,12 @@ public class XincoVersion  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
-            this.version_high == other.getVersion_high() &&
-            this.version_low == other.getVersion_low() &&
-            this.version_mid == other.getVersion_mid() &&
-            ((this.version_postfix==null && other.getVersion_postfix()==null) || 
+            this.version_high == other.getVersionHigh() &&
+            this.version_low == other.getVersionLow() &&
+            this.version_mid == other.getVersionMid() &&
+            ((this.version_postfix==null && other.getVersionPostfix()==null) || 
              (this.version_postfix!=null &&
-              this.version_postfix.equals(other.getVersion_postfix())));
+              this.version_postfix.equals(other.getVersionPostfix())));
         __equalsCalc = null;
         return _equals;
     }
@@ -139,11 +139,11 @@ public class XincoVersion  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
-        _hashCode += getVersion_high();
-        _hashCode += getVersion_low();
-        _hashCode += getVersion_mid();
-        if (getVersion_postfix() != null) {
-            _hashCode += getVersion_postfix().hashCode();
+        _hashCode += getVersionHigh();
+        _hashCode += getVersionLow();
+        _hashCode += getVersionMid();
+        if (getVersionPostfix() != null) {
+            _hashCode += getVersionPostfix().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;

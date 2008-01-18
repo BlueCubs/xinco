@@ -31,4 +31,14 @@
       <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3307/xinco?autoReconnect=true"/>
     </properties>
   </persistence-unit>
+  <persistence-unit name="xincoPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <properties>
+      <property name="hibernate.connection.username" value="root"/>
+      <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+      <property name="hibernate.connection.password" value="lyjx100pre"/>
+      <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3307/xinco?autoReconnect=true"/>
+      <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
+    </properties>
+  </persistence-unit>
 </persistence>

@@ -27,7 +27,7 @@
     <class>com.bluecubs.xinco.core.persistence.audit.XincoCoreUserT</class>
     <class>com.bluecubs.xinco.core.persistence.audit.XincoIdT</class>
     <class>com.bluecubs.xinco.core.persistence.audit.XincoSettingT</class>
-    <class>com.bluecubs.xinco.add.XincoAddAttribute</class>
+    <class>com.bluecubs.xinco.add.persistence.XincoAddAttribute</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>

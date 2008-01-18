@@ -208,7 +208,7 @@ public class XincoCoreUser  implements java.io.Serializable {
      * 
      * @return status_number
      */
-    public int getStatus_number() {
+    public int getStatusNumber() {
         return status_number;
     }
 
@@ -218,7 +218,7 @@ public class XincoCoreUser  implements java.io.Serializable {
      * 
      * @param status_number
      */
-    public void setStatus_number(int status_number) {
+    public void setStatusNumber(int status_number) {
         this.status_number = status_number;
     }
 
@@ -288,7 +288,7 @@ public class XincoCoreUser  implements java.io.Serializable {
      * 
      * @return xinco_core_groups
      */
-    public java.util.Vector getXinco_core_groups() {
+    public java.util.Vector getXincoCoreGroups() {
         return xinco_core_groups;
     }
 
@@ -298,7 +298,7 @@ public class XincoCoreUser  implements java.io.Serializable {
      * 
      * @param xinco_core_groups
      */
-    public void setXinco_core_groups(java.util.Vector xinco_core_groups) {
+    public void setXincoCoreGroups(java.util.Vector xinco_core_groups) {
         this.xinco_core_groups = xinco_core_groups;
     }
 
@@ -329,7 +329,7 @@ public class XincoCoreUser  implements java.io.Serializable {
             ((this.reason==null && other.getReason()==null) || 
              (this.reason!=null &&
               this.reason.equals(other.getReason()))) &&
-            this.status_number == other.getStatus_number() &&
+            this.status_number == other.getStatusNumber() &&
             ((this.username==null && other.getUsername()==null) || 
              (this.username!=null &&
               this.username.equals(other.getUsername()))) &&
@@ -337,9 +337,9 @@ public class XincoCoreUser  implements java.io.Serializable {
              (this.userpassword!=null &&
               this.userpassword.equals(other.getUserpassword()))) &&
             this.writeGroups == other.isWriteGroups() &&
-            ((this.xinco_core_groups==null && other.getXinco_core_groups()==null) || 
+            ((this.xinco_core_groups==null && other.getXincoCoreGroups()==null) || 
              (this.xinco_core_groups!=null &&
-              this.xinco_core_groups.equals(other.getXinco_core_groups())));
+              this.xinco_core_groups.equals(other.getXincoCoreGroups())));
         __equalsCalc = null;
         return _equals;
     }
@@ -366,7 +366,7 @@ public class XincoCoreUser  implements java.io.Serializable {
         if (getReason() != null) {
             _hashCode += getReason().hashCode();
         }
-        _hashCode += getStatus_number();
+        _hashCode += getStatusNumber();
         if (getUsername() != null) {
             _hashCode += getUsername().hashCode();
         }
@@ -374,8 +374,8 @@ public class XincoCoreUser  implements java.io.Serializable {
             _hashCode += getUserpassword().hashCode();
         }
         _hashCode += (isWriteGroups() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        if (getXinco_core_groups() != null) {
-            _hashCode += getXinco_core_groups().hashCode();
+        if (getXincoCoreGroups() != null) {
+            _hashCode += getXincoCoreGroups().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;

@@ -16,7 +16,7 @@ public class XincoCoreDataType  implements java.io.Serializable {
 
     private java.lang.String description;
 
-    private java.util.Vector xinco_core_data_type_attributes;
+    private java.util.Vector xincoCoreDataTypeAttributes;
 
     public XincoCoreDataType() {
     }
@@ -26,12 +26,12 @@ public class XincoCoreDataType  implements java.io.Serializable {
            int id,
            int changerID,
            java.lang.String description,
-           java.util.Vector xinco_core_data_type_attributes) {
+           java.util.Vector xincoCoreDataTypeAttributes) {
            this.designation = designation;
            this.id = id;
            this.changerID = changerID;
            this.description = description;
-           this.xinco_core_data_type_attributes = xinco_core_data_type_attributes;
+           this.xincoCoreDataTypeAttributes = xincoCoreDataTypeAttributes;
     }
 
 
@@ -116,22 +116,22 @@ public class XincoCoreDataType  implements java.io.Serializable {
 
 
     /**
-     * Gets the xinco_core_data_type_attributes value for this XincoCoreDataType.
+     * Gets the xincoCoreDataTypeAttributes value for this XincoCoreDataType.
      * 
-     * @return xinco_core_data_type_attributes
+     * @return xincoCoreDataTypeAttributes
      */
-    public java.util.Vector getXinco_core_data_type_attributes() {
-        return xinco_core_data_type_attributes;
+    public java.util.Vector getXincoCoreDataTypeAttributes() {
+        return xincoCoreDataTypeAttributes;
     }
 
 
     /**
-     * Sets the xinco_core_data_type_attributes value for this XincoCoreDataType.
+     * Sets the xincoCoreDataTypeAttributes value for this XincoCoreDataType.
      * 
-     * @param xinco_core_data_type_attributes
+     * @param xincoCoreDataTypeAttributes
      */
-    public void setXinco_core_data_type_attributes(java.util.Vector xinco_core_data_type_attributes) {
-        this.xinco_core_data_type_attributes = xinco_core_data_type_attributes;
+    public void setXincoCoreDataTypeAttributes(java.util.Vector xincoCoreDataTypeAttributes) {
+        this.xincoCoreDataTypeAttributes = xincoCoreDataTypeAttributes;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -154,9 +154,9 @@ public class XincoCoreDataType  implements java.io.Serializable {
             ((this.description==null && other.getDescription()==null) || 
              (this.description!=null &&
               this.description.equals(other.getDescription()))) &&
-            ((this.xinco_core_data_type_attributes==null && other.getXinco_core_data_type_attributes()==null) || 
-             (this.xinco_core_data_type_attributes!=null &&
-              this.xinco_core_data_type_attributes.equals(other.getXinco_core_data_type_attributes())));
+            ((this.xincoCoreDataTypeAttributes==null && other.getXincoCoreDataTypeAttributes()==null) || 
+             (this.xincoCoreDataTypeAttributes!=null &&
+              this.xincoCoreDataTypeAttributes.equals(other.getXincoCoreDataTypeAttributes())));
         __equalsCalc = null;
         return _equals;
     }
@@ -176,8 +176,8 @@ public class XincoCoreDataType  implements java.io.Serializable {
         if (getDescription() != null) {
             _hashCode += getDescription().hashCode();
         }
-        if (getXinco_core_data_type_attributes() != null) {
-            _hashCode += getXinco_core_data_type_attributes().hashCode();
+        if (getXincoCoreDataTypeAttributes() != null) {
+            _hashCode += getXincoCoreDataTypeAttributes().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -214,8 +214,8 @@ public class XincoCoreDataType  implements java.io.Serializable {
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xinco_core_data_type_attributes");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_data_type_attributes"));
+        elemField.setFieldName("xincoCoreDataTypeAttributes");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "xincoCoreDataTypeAttributes"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);

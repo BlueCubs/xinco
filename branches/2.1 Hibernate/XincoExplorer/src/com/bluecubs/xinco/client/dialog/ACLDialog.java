@@ -39,8 +39,8 @@
 package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.core.persistence.XincoCoreACE;
-import com.bluecubs.xinco.core.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.XincoCoreACE;
+import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.exception.XincoException;
@@ -91,9 +91,9 @@ public class ACLDialog extends javax.swing.JDialog {
      * Loads the ACL group list
      */
     protected void loadACLGroupListACL() {
-        String[] list = new String[this.explorer.getSession().getServer_groups().size()];
-        for (int i = 0; i < this.explorer.getSession().getServer_groups().size(); i++) {
-            list[i] = ((XincoCoreGroup) this.explorer.getSession().getServer_groups().elementAt(i)).getDesignation();
+        String[] list = new String[this.explorer.getSession().getServerGroups().size()];
+        for (int i = 0; i < this.explorer.getSession().getServerGroups().size(); i++) {
+            list[i] = ((XincoCoreGroup) this.explorer.getSession().getServerGroups().elementAt(i)).getDesignation();
         }
         setACLGroupModel(list);
     }
@@ -107,10 +107,10 @@ public class ACLDialog extends javax.swing.JDialog {
         Vector temp_vector = new Vector();
 
         if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
-            temp_vector = ((XincoCoreNode) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
+            temp_vector = ((XincoCoreNode) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreACL();
         }
         if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
-            temp_vector = ((XincoCoreData) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
+            temp_vector = ((XincoCoreData) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreACL();
         }
         if (temp_acl != null) {
             temp_vector = temp_acl;
@@ -118,43 +118,43 @@ public class ACLDialog extends javax.swing.JDialog {
         String[] list = new String[temp_vector.size()];
         for (i = 0; i < temp_vector.size(); i++) {
             temp_ace = (XincoCoreACE) temp_vector.elementAt(i);
-            if (temp_ace.getXinco_core_user_id() > 0) {
+            if (temp_ace.getXincoCoreUserId() > 0) {
                 temp_string = this.explorer.getResourceBundle().getString("general.user") +
                         ": " + this.explorer.getResourceBundle().getString("general.id") +
-                        "=" + temp_ace.getXinco_core_user_id();
+                        "=" + temp_ace.getXincoCoreUserId();
             }
-            if (temp_ace.getXinco_core_group_id() > 0) {
-                for (j = 0; j < this.explorer.getSession().getServer_groups().size(); j++) {
-                    if (((XincoCoreGroup) this.explorer.getSession().getServer_groups().elementAt(j)).getId() == temp_ace.getXinco_core_group_id()) {
-                        String temp_group_name;
-                        if (((XincoCoreGroup) this.explorer.getSession().getServer_groups().elementAt(i)).getId() <= 1000) {
-                            temp_group_name = this.explorer.getResourceBundle().getString(new String(((XincoCoreGroup) this.explorer.getSession().getServer_groups().elementAt(i)).getDesignation()));
+            if (temp_ace.getXincoCoreGroupId() > 0) {
+                for (j = 0; j < this.explorer.getSession().getServerGroups().size(); j++) {
+                    if (((XincoCoreGroup) this.explorer.getSession().getServerGroups().elementAt(j)).getId() == temp_ace.getXincoCoreGroupId()) {
+                        String tempGroupName;
+                        if (((XincoCoreGroup) this.explorer.getSession().getServerGroups().elementAt(i)).getId() <= 1000) {
+                            tempGroupName = this.explorer.getResourceBundle().getString(new String(((XincoCoreGroup) this.explorer.getSession().getServerGroups().elementAt(i)).getDesignation()));
                         } else {
-                            temp_group_name = new String(((XincoCoreGroup) this.explorer.getSession().getServer_groups().elementAt(i)).getDesignation());
+                            tempGroupName = new String(((XincoCoreGroup) this.explorer.getSession().getServerGroups().elementAt(i)).getDesignation());
                         }
                         temp_string = this.explorer.getResourceBundle().getString("general.group") +
-                                ": " + temp_group_name;
+                                ": " + tempGroupName;
                         break;
                     }
                 }
             }
             temp_string = temp_string + " [";
-            if (temp_ace.isRead_permission()) {
+            if (temp_ace.getReadPermission()) {
                 temp_string = temp_string + "R";
             } else {
                 temp_string = temp_string + "-";
             }
-            if (temp_ace.isWrite_permission()) {
+            if (temp_ace.getWritePermission()) {
                 temp_string = temp_string + "W";
             } else {
                 temp_string = temp_string + "-";
             }
-            if (temp_ace.isExecute_permission()) {
+            if (temp_ace.getExecutePermission()) {
                 temp_string = temp_string + "X";
             } else {
                 temp_string = temp_string + "-";
             }
-            if (temp_ace.isAdmin_permission()) {
+            if (temp_ace.getAdminPermission()) {
                 temp_string = temp_string + "A";
             } else {
                 temp_string = temp_string + "-";
@@ -376,14 +376,14 @@ public class ACLDialog extends javax.swing.JDialog {
             try {
                 temp_ace = new XincoCoreACE();
                 if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
-                    temp_acl = ((XincoCoreNode) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
+                    temp_acl = ((XincoCoreNode) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreACL();
                     temp_ace = (XincoCoreACE) temp_acl.elementAt(this.currentACLList.getSelectedIndex());
                 }
                 if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
-                    temp_acl = ((XincoCoreData) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
+                    temp_acl = ((XincoCoreData) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreACL();
                     temp_ace = (XincoCoreACE) temp_acl.elementAt(this.currentACLList.getSelectedIndex());
                 }
-                if (temp_ace.getXinco_core_user_id() > 0) {
+                if (temp_ace.getXincoCoreUserId() > 0) {
                     throw new XincoException(this.explorer.getResourceBundle().getString("window.acl.cannotremoveowner"));
                 }
                 if (!this.explorer.getSession().getXinco().removeXincoCoreACE(temp_ace, this.explorer.getSession().getUser())) {
@@ -411,14 +411,14 @@ public class ACLDialog extends javax.swing.JDialog {
         if (this.groupList.getSelectedIndex() >= 0) {
             try {
                 if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
-                    temp_acl = ((XincoCoreNode) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
+                    temp_acl = ((XincoCoreNode) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreACL();
                 }
                 if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
-                    temp_acl = ((XincoCoreData) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
+                    temp_acl = ((XincoCoreData) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreACL();
                 }
                 //check if an ACE already exists for selected group
                 for (i = 0; i < temp_acl.size(); i++) {
-                    if (((XincoCoreACE) temp_acl.elementAt(i)).getXinco_core_group_id() == ((XincoCoreGroup) this.explorer.getSession().getServer_groups().elementAt(this.groupList.getSelectedIndex())).getId()) {
+                    if (((XincoCoreACE) temp_acl.elementAt(i)).getXincoCoreGroupId() == ((XincoCoreGroup) this.explorer.getSession().getServerGroups().elementAt(this.groupList.getSelectedIndex())).getId()) {
                         isNew = false;
                         old = i;
                     }
@@ -426,17 +426,17 @@ public class ACLDialog extends javax.swing.JDialog {
                 if (isNew) {
                     //create new ACE
                     ace = new XincoCoreACE();
-                    ace.setXinco_core_group_id(((XincoCoreGroup) this.explorer.getSession().getServer_groups().elementAt(this.groupList.getSelectedIndex())).getId());
+                    ace.setXincoCoreGroupId(((XincoCoreGroup) this.explorer.getSession().getServerGroups().elementAt(this.groupList.getSelectedIndex())).getId());
                     if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
-                        ace.setXinco_core_node_id(((XincoCoreNode) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
+                        ace.setXincoCoreNodeId(((XincoCoreNode) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
                     }
                     if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
-                        ace.setXinco_core_data_id(((XincoCoreData) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
+                        ace.setXincoCore_dataId(((XincoCoreData) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
                     }
-                    ace.setRead_permission(this.Read.isSelected());
-                    ace.setWrite_permission(this.Write.isSelected());
-                    ace.setExecute_permission(this.Execute.isSelected());
-                    ace.setAdmin_permission(this.Admin.isSelected());
+                    ace.setReadPermission(this.Read.isSelected());
+                    ace.setWritePermission(this.Write.isSelected());
+                    ace.setExecutePermission(this.Execute.isSelected());
+                    ace.setAdminPermission(this.Admin.isSelected());
 
                     if ((ace = this.explorer.getSession().getXinco().setXincoCoreACE(ace, this.explorer.getSession().getUser())) == null) {
                         throw new XincoException(this.explorer.getResourceBundle().getString("error.noadminpermission"));
@@ -446,10 +446,10 @@ public class ACLDialog extends javax.swing.JDialog {
                 } else {
                     //update existing ACE
                     ace = ((XincoCoreACE) temp_acl.elementAt(old));
-                    ace.setRead_permission(this.Read.isSelected());
-                    ace.setWrite_permission(this.Write.isSelected());
-                    ace.setExecute_permission(this.Execute.isSelected());
-                    ace.setAdmin_permission(this.Admin.isSelected());
+                    ace.setReadPermission(this.Read.isSelected());
+                    ace.setWritePermission(this.Write.isSelected());
+                    ace.setExecutePermission(this.Execute.isSelected());
+                    ace.setAdminPermission(this.Admin.isSelected());
 
                     if ((ace = this.explorer.getSession().getXinco().setXincoCoreACE(ace, this.explorer.getSession().getUser())) == null) {
                         throw new XincoException(this.explorer.getResourceBundle().getString("error.noadminpermission"));
@@ -458,7 +458,7 @@ public class ACLDialog extends javax.swing.JDialog {
                 reloadACLListACL();
                 this.groupList.clearSelection();
             } catch (Exception xe) {
-                if (this.explorer.getSettings().getSetting("setting.enable.developermode").isBool_value()) {
+                if (this.explorer.getSettings().getSetting("setting.enable.developermode").getBoolValue()) {
                     xe.printStackTrace();
                 }
                 JOptionPane.showMessageDialog(this, this.explorer.getResourceBundle().getString("window.acl.addacefailed") +
