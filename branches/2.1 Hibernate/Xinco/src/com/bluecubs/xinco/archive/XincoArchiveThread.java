@@ -35,6 +35,7 @@
  */
 package com.bluecubs.xinco.archive;
 
+import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.server.persistence.XincoPersistenceManager;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -50,7 +51,7 @@ public class XincoArchiveThread extends Thread {
     public static XincoArchiveThread instance = null;
     public Calendar firstRun = null;
     public Calendar lastRun = null;
-    private XincoPersistenceManager pm = new XincoPersistenceManager();
+    private static XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
 
     @Override
     @SuppressWarnings("static-access")
@@ -59,7 +60,7 @@ public class XincoArchiveThread extends Thread {
         firstRun = new GregorianCalendar();
         while (true) {
             try {
-                archive_period = pm.getXincoConfigSingleton().getFileArchivePeriod();
+                archive_period = config.getFileArchivePeriod();
                 //exit archiver if period = 0
                 if (archive_period == BigInteger.valueOf(0)) {
                     break;

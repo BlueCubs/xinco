@@ -35,6 +35,7 @@
  */
 package com.bluecubs.xinco.index;
 
+import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.persistence.XincoPersistenceManager;
@@ -51,11 +52,12 @@ import java.util.logging.Logger;
 public class XincoIndexThread extends Thread {
 
     private Vector nodes = null;
-    private boolean index_content = false,  index_result = false;
+    private boolean index_content = false;
     private static boolean index_directory_deleted = false;
     private XincoCoreData d = null;
     private List result;
     private static XincoPersistenceManager pm = new XincoPersistenceManager();
+    private static XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
 
     /**
      * Run method
@@ -127,14 +129,14 @@ public class XincoIndexThread extends Thread {
             File indexDirectory = null;
             File indexDirectoryFile = null;
             String[] indexDirectoryFileList = null;
-            indexDirectory = new File(pm.getXincoConfigSingleton().getFileIndexPath());
+            indexDirectory = new File(config.getFileIndexPath());
             if (indexDirectory.exists()) {
                 indexDirectoryFileList = indexDirectory.list();
                 for (int i = 0; i < indexDirectoryFileList.length; i++) {
-                    if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
-                        System.out.println("Deleting index file: " + pm.getXincoConfigSingleton().getFileIndexPath() + indexDirectoryFileList[i]);
+                    if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
+                        System.out.println("Deleting index file: " + config.getFileIndexPath() + indexDirectoryFileList[i]);
                     }
-                    indexDirectoryFile = new File(pm.getXincoConfigSingleton().getFileIndexPath() + indexDirectoryFileList[i]);
+                    indexDirectoryFile = new File(config.getFileIndexPath() + indexDirectoryFileList[i]);
                     indexDirectoryFile.delete();
                 }
                 index_directory_deleted = indexDirectory.delete();

@@ -36,10 +36,10 @@
 package com.bluecubs.xinco.index;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
+import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributeServer;
-import com.bluecubs.xinco.core.server.persistence.XincoPersistenceManager;
 import com.bluecubs.xinco.index.filetypes.XincoIndexFileType;
 import com.bluecubs.xinco.index.filetypes.XincoIndexText;
 import java.io.File;
@@ -52,7 +52,7 @@ import org.apache.lucene.document.Field;
 /** A utility for making Lucene Documents from a File. */
 public class XincoDocument {
 
-    private static XincoPersistenceManager pm = new XincoPersistenceManager();
+    private static XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
 
     /**
      * Get Xinco Document
@@ -91,8 +91,8 @@ public class XincoDocument {
                 }
                 //check which indexer to use for file extension
                 fileType = 0; // default: index as TEXT
-                for (l = 0; l < pm.getXincoConfigSingleton().getFileIndexerCount(); l++) {
-                    if (((String) pm.getXincoConfigSingleton().getIndexFileTypesExt().elementAt(l)).compareTo(file_ext) == 0) {
+                for (l = 0; l < config.getFileIndexerCount(); l++) {
+                    if (((String) config.getIndexFileTypesExt().elementAt(l)).compareTo(file_ext) == 0) {
                         fileType = l + 1; // file-type specific indexing
                         break;
                     }
@@ -101,8 +101,8 @@ public class XincoDocument {
                     }
                 }
                 if (fileType == 0) {
-                    for (i = 0; i < pm.getXincoConfigSingleton().getIndexNoIndex().length; i++) {
-                        if (pm.getXincoConfigSingleton().getIndexNoIndex()[i].compareTo(file_ext) == 0) {
+                    for (i = 0; i < config.getIndexNoIndex().length; i++) {
+                        if (config.getIndexNoIndex()[i].compareTo(file_ext) == 0) {
                             fileType = -1; // NO indexing
                             break;
                         }
@@ -115,15 +115,15 @@ public class XincoDocument {
                 if (fileType == 0) {
                     // index as TEXT
                     xift = new XincoIndexText();
-                    doc.add(new Field("file", xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(pm.getXincoConfigSingleton().getFileRepositoryPath(), d.getId(), "" + d.getId())))));
+                    doc.add(new Field("file", xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(config.getFileRepositoryPath(), d.getId(), "" + d.getId())))));
                 } else if (fileType > 0) {
                     try {
-                        xift = (XincoIndexFileType) Class.forName((String) pm.getXincoConfigSingleton().getIndexFileTypesClass().elementAt(fileType - 1)).newInstance();
-                        ContentReader = xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(pm.getXincoConfigSingleton().getFileRepositoryPath(), d.getId(), "" + d.getId())));
+                        xift = (XincoIndexFileType) Class.forName((String) config.getIndexFileTypesClass().elementAt(fileType - 1)).newInstance();
+                        ContentReader = xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(config.getFileRepositoryPath(), d.getId(), "" + d.getId())));
                         if (ContentReader != null) {
                             doc.add(new Field("file", ContentReader));
                         } else {
-                            ContentString = xift.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(pm.getXincoConfigSingleton().getFileRepositoryPath(), d.getId(), "" + d.getId())));
+                            ContentString = xift.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(config.getFileRepositoryPath(), d.getId(), "" + d.getId())));
                             if (ContentString != null) {
                                 doc.add(new Field("file", ContentString, Field.Store.COMPRESS, Field.Index.TOKENIZED));
                             }

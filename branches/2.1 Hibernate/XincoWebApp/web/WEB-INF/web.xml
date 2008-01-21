@@ -63,12 +63,6 @@
         </init-param>
         <load-on-startup>100</load-on-startup>
     </servlet>
-    
-    <servlet>
-        <servlet-name>dispatcher</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
     <servlet-mapping>
         <servlet-name>XincoAdminServlet</servlet-name>
         <url-pattern>/XincoAdmin</url-pattern>
@@ -111,10 +105,6 @@
         <url-pattern>/servlet/AdminServlet</url-pattern>
     </servlet-mapping>
     
-    <servlet-mapping>
-        <servlet-name>XmlHttpProxy</servlet-name>
-        <url-pattern>/xhp</url-pattern>
-    </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>

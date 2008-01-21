@@ -40,6 +40,8 @@ import com.bluecubs.xinco.core.server.persistence.XincoSettingServer;
 import java.math.BigInteger;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -70,6 +72,7 @@ public class XincoConfigSingletonServer {
         if (instance == null) {
             instance = new XincoConfigSingletonServer();
         }
+        instance.init();
         return instance;
     }
 
@@ -79,7 +82,6 @@ public class XincoConfigSingletonServer {
     protected XincoConfigSingletonServer() {
         try {
             JNDIDB = (String) (new InitialContext()).lookup("xinco/JNDIDB");
-            init();
         } catch (NamingException ex) {
             JNDIDB = "java:comp/env/jdbc/XincoDB";
         }
@@ -87,29 +89,48 @@ public class XincoConfigSingletonServer {
 
     /**
      * Initializes this singleton from a XincoSettingServer object
+     * @return True if initialization was successfull
      */
     @SuppressWarnings("unchecked")
-    public void init() {
+    public boolean init() {
         try {
-            FileRepositoryPath = new XincoSettingServer("xinco/FileRepositoryPath").getStringValue();
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, "Retrieving settings from Database...");
+            }
+            FileRepositoryPath = XincoSettingServer.getSetting("xinco/FileRepositoryPath").getStringValue();
             if (!(getFileRepositoryPath().substring(getFileRepositoryPath().length() - 1).equals(System.getProperty("file.separator")))) {
                 FileRepositoryPath = getFileRepositoryPath() + System.getProperty("file.separator");
             }
-            MaxSearchResult = new XincoSettingServer("xinco/MaxSearchResult").getIntValue();
-            FileIndexPath = new XincoSettingServer("xinco/FileIndexPath").getStringValue();
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, "FileRepositoryPath: " + FileRepositoryPath);
+            }
+            MaxSearchResult = XincoSettingServer.getSetting("xinco/MaxSearchResult").getIntValue();
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, "MaxSearchResult: " + MaxSearchResult);
+            }
+            FileIndexPath = XincoSettingServer.getSetting("xinco/FileIndexPath").getStringValue();
             if (getFileIndexPath().equals("")) {
                 FileIndexPath = getFileRepositoryPath() + "index";
             }
             if (!(getFileIndexPath().substring(getFileIndexPath().length() - 1).equals(System.getProperty("file.separator")))) {
                 FileIndexPath += System.getProperty("file.separator");
             }
-            FileArchivePath = new XincoSettingServer("xinco/FileArchivePath").getStringValue();
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, "FileIndexPath: " + FileIndexPath);
+            }
+            FileArchivePath = XincoSettingServer.getSetting("xinco/FileArchivePath").getStringValue();
             if (!(getFileArchivePath().substring(getFileArchivePath().length() - 1).equals(System.getProperty("file.separator")))) {
                 FileArchivePath += System.getProperty("file.separator");
             }
-            FileArchivePeriod = new XincoSettingServer("xinco/FileArchivePeriod").getLongValue();
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, "FileArchivePath: " + FileArchivePath);
+            }
+            FileArchivePeriod = XincoSettingServer.getSetting("xinco/FileArchivePeriod").getLongValue();
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, "FileArchivePeriod: " + FileArchivePeriod);
+            }
             Vector s = new XincoSettingServer().getXincoSettings();
-            StringTokenizer st; 
+            StringTokenizer st;
             String[] temp;
             for (int i = 0; i < s.size(); i++) {
                 if (((XincoSetting) s.get(i)).getDescription().startsWith("xinco/FileIndexer") &&
@@ -138,7 +159,15 @@ public class XincoConfigSingletonServer {
                     setIndexNoIndex(temp);
                 }
             }
-            setAllowOutsideLinks(new XincoSettingServer("setting.allowoutsidelinks").getBoolValue());
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, "IndexFileTypesClass: " + IndexFileTypesClass);
+                Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, "IndexFileTypesExt: " + IndexFileTypesExt);
+                Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, "IndexNoIndex: " + IndexNoIndex);
+            }
+            setAllowOutsideLinks(XincoSettingServer.getSetting("setting.allowoutsidelinks").getBoolValue());
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, "AllowOutsideLinks: " + allowOutsideLinks);
+            }
         } catch (Exception ex) {
             //Default values
             setFileRepositoryPath("");
@@ -172,7 +201,9 @@ public class XincoConfigSingletonServer {
             getIndexNoIndex()[2] = "exe";
             setJNDIDB("java:comp/env/jdbc/XincoDB");
             setMaxSearchResult(30);
+            return true;
         }
+        return true;
     }
 
     /**

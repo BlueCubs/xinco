@@ -45,8 +45,11 @@ Author : Sudhir Ancha
  */
 package com.bluecubs.xinco.core.server.email;
 
+import com.bluecubs.xinco.core.exception.XincoSettingException;
 import com.bluecubs.xinco.core.server.persistence.XincoSettingServer;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -56,26 +59,36 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-
 /**
  * Send email based on DB settings
  * @author Javier A. Ortiz
  */
 public class XincoMailer {
 
-    private String SMTP_HOST_NAME = new XincoSettingServer("setting.email.host").getStringValue();
-    private String SMTP_AUTH_USER = new XincoSettingServer("setting.email.user").getStringValue();
-    private String SMTP_AUTH_PWD = new XincoSettingServer("setting.email.password").getStringValue();
+    private String SMTP_HOST_NAME;
+    private String SMTP_AUTH_USER;
+    private String SMTP_AUTH_PWD;
     private static final String emailMsgTxt = "Test";
     private static final String emailSubjectTxt = "Test Subject";
     private static final String emailFromAddress = "info@bluecubs.com";
-    private final String port = new XincoSettingServer("setting.email.port").getStringValue();
+    private String port;
     // Add List of Email address to who email needs to be sent to
     private static final String[] emailList = {"info@bluecubs.com"};
 
     public static void main(String args[]) throws Exception {
         XincoMailer Xmailer = new XincoMailer();
         Xmailer.postMail(emailList, emailSubjectTxt, emailMsgTxt, emailFromAddress);
+    }
+
+    public XincoMailer() {
+        try {
+            SMTP_HOST_NAME = XincoSettingServer.getSetting("setting.email.host").getStringValue();
+            SMTP_AUTH_USER = XincoSettingServer.getSetting("setting.email.user").getStringValue();
+            SMTP_AUTH_PWD = XincoSettingServer.getSetting("setting.email.password").getStringValue();
+            port = XincoSettingServer.getSetting("setting.email.port").getStringValue();
+        } catch (XincoSettingException ex) {
+            Logger.getLogger(XincoMailer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -89,7 +102,6 @@ public class XincoMailer {
     public void postMail(String recipients[], String subject,
             String message, String from) throws MessagingException {
         boolean debug = false;
-
         //Set the host smtp address and related properties
         Properties props = new Properties();
         props.put("mail.smtp.host", SMTP_HOST_NAME);
@@ -97,25 +109,19 @@ public class XincoMailer {
         props.put("mail.smtp.port", this.port);
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.auth ", "true ");
-
         Authenticator auth = new SMTPAuthenticator();
         Session session = Session.getDefaultInstance(props, auth);
-
         session.setDebug(debug);
-
         // create a message
         Message msg = new MimeMessage(session);
-
         // set the from and to address
         InternetAddress addressFrom = new InternetAddress(from);
         msg.setFrom(addressFrom);
-
         InternetAddress[] addressTo = new InternetAddress[recipients.length];
         for (int i = 0; i < recipients.length; i++) {
             addressTo[i] = new InternetAddress(recipients[i]);
         }
         msg.setRecipients(Message.RecipientType.TO, addressTo);
-
         // Setting the Subject and Content Type
         msg.setSubject(subject);
         msg.setContent(message, "text/plain");
@@ -127,7 +133,6 @@ public class XincoMailer {
      * when the SMTP server requires it.
      */
     private class SMTPAuthenticator extends javax.mail.Authenticator {
-
         @Override
         public PasswordAuthentication getPasswordAuthentication() {
             String username = SMTP_AUTH_USER;

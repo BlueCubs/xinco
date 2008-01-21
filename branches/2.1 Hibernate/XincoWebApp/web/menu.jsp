@@ -2,18 +2,14 @@
 <%@page pageEncoding="UTF-8"%>
 <%@page import="java.util.ResourceBundle"%>
 <%@page import="java.util.Locale"%>
-<%@page import="com.bluecubs.xinco.core.server.XincoDBManager"%>
+<%@page import="com.bluecubs.xinco.core.server.persistence.XincoPersistenceManager"%>
+<%@page import="com.bluecubs.xinco.core.server.persistence.XincoSettingServer"%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <%
 Locale loc = null;
-XincoDBManager DBM=null;
-try {
-    DBM = new XincoDBManager();
-} catch (Exception ex) {
-    ex.printStackTrace();
-}
+XincoPersistenceManager pm=new XincoPersistenceManager();
 try {
     String list = request.getParameter("list");
     String[] locales;
@@ -34,12 +30,12 @@ out.println("<html>");
 out.println("<head>");
 out.println("<title>"+rb.getString("message.admin.main.title")+"</title>");
 out.println("<link rel='stylesheet' href='xincostyle.css' type='text/css'/>");
-if(!DBM.config.isAllowOutsideLinks())
-    out.println(DBM.getWebBlockRightClickScript());
+if(!XincoSettingServer.getSetting("setting.allowoutsidelinks").getBoolValue())
+    out.println(pm.getWebBlockRightClickScript());
 out.println("</head>");
 out.println("<body>");
-if(!DBM.config.isAllowOutsideLinks())
-    out.println(DBM.getWebBlockRightClickScript());
+if(!XincoSettingServer.getSetting("setting.allowoutsidelinks").getBoolValue())
+    out.println(pm.getWebBlockRightClickScript());
 out.println("<center>");
 out.println("<span class='text'>");
 out.println("<br><img src='blueCubs.gif' border='0'/>");
@@ -61,7 +57,7 @@ out.println("<td class='text'><a href='XincoPublisher?list="+request.getParamete
 out.println("<td class='text'>"+rb.getString("message.admin.main.publisherdesc")+"</td>");
 out.println("</tr>");
 out.println("<tr>");
-out.println("<td class='text'>"+(DBM.config.isAllowOutsideLinks()? "<a href='http://java.sun.com' class='link'>"+
+out.println("<td class='text'>"+(XincoSettingServer.getSetting("setting.allowoutsidelinks").getBoolValue()? "<a href='http://java.sun.com' class='link'>"+
         rb.getString("message.admin.main.java.label")+"</a>":"http://java.sun.com")+"</td>");
 out.println("<td class='text'>"+rb.getString("message.admin.main.javadesc")+"</td>");
 out.println("</tr>");
@@ -87,7 +83,7 @@ out.println("<td class='text'>&nbsp;</td>");
 out.println("</tr>");
 out.println("<tr>");
 out.println("<td class='text'>&nbsp;</td>");
-out.println("<td class='text'>&copy; "+DBM.getSetting("general.copyright.date").getString_value()+", "+(DBM.config.isAllowOutsideLinks()? rb.getString("message.admin.main.footer"):"blueCubs.com and xinco.org")+"</a></td>");
+out.println("<td class='text'>&copy; "+XincoSettingServer.getSetting("general.copyright.date").getStringValue()+", "+(XincoSettingServer.getSetting("setting.allowoutsidelinks").getBoolValue()? rb.getString("message.admin.main.footer"):"blueCubs.com and xinco.org")+"</a></td>");
 out.println("</tr>");
 out.println("</table>");
 out.println("</span>");

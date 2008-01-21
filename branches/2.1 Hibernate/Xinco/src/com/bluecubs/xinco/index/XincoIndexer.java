@@ -1,5 +1,6 @@
 package com.bluecubs.xinco.index;
 
+import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeServer;
@@ -27,29 +28,30 @@ import org.apache.lucene.search.Searcher;
  * Edit configuration values in context.xml
  */
 public class XincoIndexer {
-    private static XincoPersistenceManager pm= new XincoPersistenceManager();
+
+    private static XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
 
     public static synchronized boolean indexXincoCoreData(XincoCoreData d, boolean index_content) {
 
         IndexWriter writer = null;
         try {
             //check if document exists in index and delete
-            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoCoreDataTypeServer.class.getName()).log(Level.INFO, "Removing data from index if it exists...");
             }
             XincoIndexer.removeXincoCoreData(d);
             //add document to index
             try {
-                writer = new IndexWriter(pm.getXincoConfigSingleton().getFileIndexPath(), new StandardAnalyzer(), false);
+                writer = new IndexWriter(config.getFileIndexPath(), new StandardAnalyzer(), false);
             } catch (Exception ie) {
-                writer = new IndexWriter(pm.getXincoConfigSingleton().getFileIndexPath(), new StandardAnalyzer(), true);
+                writer = new IndexWriter(config.getFileIndexPath(), new StandardAnalyzer(), true);
             }
-            if (new XincoSettingServer().getSetting("setting.enable.developermode").getBoolValue()) {
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                 System.out.println("Indexing...");
             }
             Document temp = XincoDocument.getXincoDocument(new XincoCoreDataServer(d.getId()), index_content);
             List l = temp.getFields();
-            if (new XincoSettingServer().getSetting("setting.enable.developermode").getBoolValue()) {
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                 for (int i = 0; i < l.size(); i++) {
                     System.out.println(((Field) l.get(i)).toString());
                 }
@@ -57,7 +59,7 @@ public class XincoIndexer {
             writer.addDocument(temp);
             writer.flush();
             writer.close();
-            if (new XincoSettingServer().getSetting("setting.enable.developermode").getBoolValue()) {
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                 System.out.println("Indexing complete!");
             }
         } catch (Exception e) {
@@ -66,6 +68,7 @@ public class XincoIndexer {
                 try {
                     writer.close();
                 } catch (Exception we) {
+                    Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, we);
                 }
             }
             return false;
@@ -82,14 +85,14 @@ public class XincoIndexer {
         IndexReader reader = null;
         //check if document exists in index and delete
         try {
-            if (IndexReader.indexExists(pm.getXincoConfigSingleton().getFileIndexPath())) {
-                reader = IndexReader.open(pm.getXincoConfigSingleton().getFileIndexPath());
+            if (IndexReader.indexExists(config.getFileIndexPath())) {
+                reader = IndexReader.open(config.getFileIndexPath());
                 reader.deleteDocuments(new Term("id", "" + d.getId()));
                 reader.close();
             }
         } catch (Exception re) {
             try {
-                if (new XincoSettingServer().getSetting("setting.enable.developermode").getBoolValue()) {
+                if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                     Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, re);
                 }
                 if (reader != null) {
@@ -100,7 +103,7 @@ public class XincoIndexer {
                 }
                 return false;
             } catch (Throwable e) {
-
+                Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, e);
             }
         }
         return true;
@@ -114,7 +117,7 @@ public class XincoIndexer {
         IndexWriter writer = null;
         try {
             //optimize index
-            writer = new IndexWriter(pm.getXincoConfigSingleton().getFileIndexPath(), new StandardAnalyzer(), false);
+            writer = new IndexWriter(config.getFileIndexPath(), new StandardAnalyzer(), false);
             writer.optimize();
             writer.close();
         } catch (Exception e) {
@@ -123,6 +126,7 @@ public class XincoIndexer {
                 try {
                     writer.close();
                 } catch (Exception we) {
+                    Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, we);
                 }
             }
             return false;
@@ -143,7 +147,7 @@ public class XincoIndexer {
             int i = 0;
             Searcher searcher = null;
             try {
-                searcher = new IndexSearcher(pm.getXincoConfigSingleton().getFileIndexPath());
+                searcher = new IndexSearcher(config.getFileIndexPath());
                 Analyzer analyzer = new StandardAnalyzer();
 
                 if (language_id != 0) {
@@ -151,25 +155,25 @@ public class XincoIndexer {
                 }
                 QueryParser parser = new QueryParser("designation", analyzer);
                 Query query = parser.parse(designation);
-                if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                     System.out.println("Query: " + designation);
                 }
                 Hits hits = searcher.search(query);
-                if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                     System.out.println("Hits: " + hits.length());
                 }
                 for (i = 0; i < hits.length(); i++) {
                     try {
-                        if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                        if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                             System.out.println("Document found: " + hits.doc(i).get("designation"));
                         }
                         v.addElement(new XincoCoreDataServer(Integer.parseInt(hits.doc(i).get("id"))));
                     } catch (Exception xcde) {
-                        if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                        if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                             xcde.printStackTrace();
                         }
                     }
-                    if (i >= pm.getXincoConfigSingleton().getMaxSearchResult()) {
+                    if (i >= config.getMaxSearchResult()) {
                         break;
                     }
                 }
@@ -181,9 +185,10 @@ public class XincoIndexer {
                         try {
                             searcher.close();
                         } catch (Exception se) {
+                            Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, se);
                         }
                     }
-                    if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+                    if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                         Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, e);
                     }
                     return null;
@@ -191,7 +196,7 @@ public class XincoIndexer {
                     Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            if (new XincoSettingServer("setting.enable.developermode").getBoolValue()) {
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                 System.out.println("Returning " + v.size() + " results.");
             }
         } catch (Throwable ex) {
