@@ -3,6 +3,7 @@
          java.io.IOException,
          javax.xml.parsers.SAXParser,
          javax.xml.parsers.SAXParserFactory,
+         com.bluecubs.xinco.core.server.persistence.XincoSettingServer,
          com.bluecubs.xinco.core.server.persistence.XincoPersistenceManager"
          session="false" %>
 <%
@@ -63,7 +64,7 @@
 <head>
     <%
             XincoPersistenceManager pm = new XincoPersistenceManager();
-            if (!pm.getXincoConfigSingleton().isAllowOutsideLinks()) {
+            if (!new XincoSettingServer("setting.allowoutsidelinks").getBoolValue()) {
                 out.println(pm.getWebBlockRightClickScript());
             }
     %>
@@ -71,7 +72,7 @@
 </head>
 <body bgcolor='#ffffff'>
 <%
-            if (!pm.getXincoConfigSingleton().isAllowOutsideLinks()) {
+            if (!new XincoSettingServer("setting.allowoutsidelinks").getBoolValue()) {
                 out.println(pm.getWebBlockRightClickScript());
             }
 %>
@@ -152,7 +153,7 @@
             if (clazz == null) {
                 String url = "";
                 if (homePage != null) {
-                    if (!XincoPersistenceManager.getXincoConfigSingleton().isAllowOutsideLinks()) {
+                    if (!new XincoSettingServer("setting.allowoutsidelinks").getBoolValue()) {
                         url = "<br>  See " + homePage;
                     } else {
                         url = "<br>  See <a href=" + homePage + ">" + homePage + "</a>";
@@ -172,7 +173,7 @@
         } catch (NoClassDefFoundError ncdfe) {
             String url = "";
             if (homePage != null) {
-                if (!XincoPersistenceManager.getXincoConfigSingleton().isAllowOutsideLinks()) {
+                if (!new XincoSettingServer("setting.allowoutsidelinks").getBoolValue()) {
                     url = "<br>  See " + homePage;
                 } else {
                     url = "<br>  See <a href=" + homePage + ">" + homePage + "</a>";
@@ -337,7 +338,7 @@
 %>
 <html><head><title>Axis Happiness Page</title>
         <%
-            if (!XincoPersistenceManager.getXincoConfigSingleton().isAllowOutsideLinks()) {
+            if (!new XincoSettingServer("setting.allowoutsidelinks").getBoolValue()) {
                 out.println(pm.getWebBlockRightClickScript());
             }
         %>
@@ -349,7 +350,7 @@
         <p>
         <h3>Needed Components</h3>
         <%
-            if (!XincoPersistenceManager.getXincoConfigSingleton().isAllowOutsideLinks()) {
+            if (!new XincoSettingServer("setting.allowoutsidelinks").getBoolValue()) {
                 out.println(pm.getWebBlockRightClickScript());
             }
             int needed = 0, wanted = 0;
@@ -489,7 +490,7 @@
         <% if (xmlParser.indexOf("crimson") >= 0) {%>
         <p>
             <%
-     if (!XincoPersistenceManager.getXincoConfigSingleton().isAllowOutsideLinks()) {
+     if (!new XincoSettingServer("setting.allowoutsidelinks").getBoolValue()) {
          out.println("<b>We recommend Xerces 2 (http://xml.apache.org/xerces2-j/)" +
                  "over Crimson as the XML parser for Axis</b>");
      } else {

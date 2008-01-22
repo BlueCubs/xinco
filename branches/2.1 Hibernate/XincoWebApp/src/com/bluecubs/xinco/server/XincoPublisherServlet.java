@@ -39,20 +39,27 @@ import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.persistence.XincoCoreACE;
 import com.bluecubs.xinco.core.exception.XincoSettingException;
 import com.bluecubs.xinco.add.XincoAddAttribute;
+import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
-import java.io.*;
-import java.sql.ResultSet;
+import com.bluecubs.xinco.core.persistence.XincoCoreData;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.persistence.XincoPersistenceManager;
 import com.bluecubs.xinco.core.server.persistence.XincoSettingServer;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.axis.encoding.Base64;
 
 /**
@@ -60,18 +67,20 @@ import org.apache.axis.encoding.Base64;
  * @author Alexander Manes
  */
 public class XincoPublisherServlet extends HttpServlet {
-
+    private List result;
     private XincoPersistenceManager pm;
     private ResourceBundle rb;
-    private static XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
+    private static XincoConfigSingletonServer config;
 
     /** Initializes the servlet.
      * @param config
      * @throws javax.servlet.ServletException 
      */
     @Override
+    @SuppressWarnings("static-access")
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+        this.config = XincoConfigSingletonServer.getInstance();
     }
 
     /** Destroys the servlet.
@@ -239,36 +248,33 @@ public class XincoPublisherServlet extends HttpServlet {
             //show main menu
             if (coreDataId == 0) {
                 out.println("<br>");
-                out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
-                out.println("<tr>");
-                out.println("<td class=\"text\" width=\"100\"><img src=\"blueCubsSmall.gif\" border=\"0\"/></td>");
-                out.println("<td class=\"bigtext\" width=\"650\">" + rb.getString("message.admin.main.publisher.label") + "</td>");
-                out.println("</tr>");
-                out.println("</table>");
+                out.println("<br><center><img src=\"resources/images/blueCubs.gif\" border=\"0\"/>");
+                out.println("<br><span class=\"bigtext\">" + rb.getString("message.admin.main.publisher.label") + "</span><br><br>");
                 out.println("<br>");
                 out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
                 if (printList) {
                     try {
                         XincoCoreDataServer xdataTemp = null;
-//                        ResultSet rs = pm.executeQuery("SELECT DISTINCT xcd.id, xcd.designation FROM xincoCoreData xcd, " +
-//                                "xincoCoreAce xca WHERE xcd.id=xca.xincoCoreDataId AND (xcd.statusNumber=5 OR " +
-//                                "(xca.xincoCoreGroupId=3 AND xca.readPermission=1)) ORDER BY xcd.designation");
-//                        while (rs.next()) {
-//                            xdataTemp = new XincoCoreDataServer(rs.getInt("id"));
-//                            temp_serverUrl = request.getRequestURL().toString();
-//                            tempUrl = "";
-//                            //file = 1
-//                            if (xdataTemp.getXincoCoreDataType().getId() == 1) {
-//                                tempUrl = ((XincoAddAttribute) xdataTemp.getXincoAddAttributes().elementAt(0)).getAttribVarchar();
-//                            } else {
-//                                tempUrl = xdataTemp.getDesignation();
-//                            }
-//                            out.println("<tr>");
-//                            out.println("<td class=\"text\">" + xdataTemp.getDesignation() + " (" + rb.getString(xdataTemp.getXincoCoreDataType().getDesignation()) + " | " + xdataTemp.getXincoCoreLanguage().getSign() + ")" + "</td>");
-//                            out.println("<td class=\"text\"><a href=\"" + "XincoPublisher/" + xdataTemp.getId() + "/" + tempUrl + "?list=" + request.getParameter("list") + " target='_blank'\">" + temp_serverUrl + "/" + xdataTemp.getId() + "/" + tempUrl + "</a></td>");
-//                            out.println("</tr>");
-//                            out.flush();
-//                        }
+                        result = pm.executeQuery("SELECT DISTINCT xcd FROM XincoCoreData xcd, " +
+                                "XincoCoreACE xca WHERE xcd.id=xca.xincoCoreDataId AND (xcd.statusNumber=5 OR " +
+                                "(xca.xincoCoreGroupId=3 AND xca.readPermission=1)) ORDER BY xcd.designation");
+                        while (!result.isEmpty()) {
+                            xdataTemp = new XincoCoreDataServer(((XincoCoreData)result.get(0)).getId());
+                            temp_serverUrl = request.getRequestURL().toString();
+                            tempUrl = "";
+                            //file = 1
+                            if (xdataTemp.getXincoCoreDataType().getId() == 1) {
+                                tempUrl = ((XincoAddAttributeServer) xdataTemp.getXincoAddAttributes().elementAt(0)).getAttribVarchar();
+                            } else {
+                                tempUrl = xdataTemp.getDesignation();
+                            }
+                            out.println("<tr>");
+                            out.println("<td class=\"text\">" + xdataTemp.getDesignation() + " (" + rb.getString(xdataTemp.getXincoCoreDataType().getDesignation()) + " | " + xdataTemp.getXincoCoreLanguage().getSign() + ")" + "</td>");
+                            out.println("<td class=\"text\"><a href=\"" + "XincoPublisher/" + xdataTemp.getId() + "/" + tempUrl + "?list=" + request.getParameter("list") + " target='_blank'\">" + temp_serverUrl + "/" + xdataTemp.getId() + "/" + tempUrl + "</a></td>");
+                            out.println("</tr>");
+                            out.flush();
+                            result.remove(0);
+                        }
                     } catch (Throwable ex) {
                         Logger.getLogger(XincoPublisherServlet.class.getName()).log(Level.SEVERE, null, ex);
                     }

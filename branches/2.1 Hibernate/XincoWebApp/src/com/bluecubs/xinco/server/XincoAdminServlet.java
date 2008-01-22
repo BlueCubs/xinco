@@ -98,7 +98,7 @@ public class XincoAdminServlet extends HttpServlet {
     private XincoPersistenceManager pm;
     private List result;
     private HashMap parameters = new HashMap();
-    private static XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
+    private static XincoConfigSingletonServer config;
 
     /** Initializes the servlet.
      * @param config
@@ -107,6 +107,7 @@ public class XincoAdminServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+        this.config = XincoConfigSingletonServer.getInstance();
     }
 
     /** Destroys the servlet.
@@ -268,7 +269,7 @@ public class XincoAdminServlet extends HttpServlet {
                 }
                 //check for admin group
                 for (i = 0; i < temp_user.getXincoCoreGroups().size(); i++) {
-                    if (((XincoCoreGroup) temp_user.getXincoCoreGroups().elementAt(i)).getId() == 1) {
+                    if (((com.bluecubs.xinco.core.persistence.XincoCoreGroup)temp_user.getXincoCoreGroups().elementAt(i)).getId() == 1) {
                         break;
                     }
                 }
@@ -687,7 +688,7 @@ public class XincoAdminServlet extends HttpServlet {
                 boolean passwordIsUsable = temp_user.isPasswordUsable(request.getParameter("confirm"));
                 if (!request.getParameter("new").equals(request.getParameter("confirm"))) {
                     //show welcome message
-                    out.println("<br><center><img src=\"blueCubs.gif\" border=\"0\"/>");
+                    out.println("<br><center><img src=\"resources/images/blueCubs.gif\" border=\"0\"/>");
                     out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
                     out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
                     out.println(rb.getString("password.noMatch") + "<br><br>" + "<input type='submit' value='" + rb.getString("general.continue") + "' name='changePassword' />");
@@ -697,7 +698,7 @@ public class XincoAdminServlet extends HttpServlet {
                 }
                 if (!passwordIsUsable) {
                     //show welcome message
-                    out.println("<br><center><img src=\"blueCubs.gif\" border=\"0\"/>");
+                    out.println("<br><center><img src=\"resources/images/blueCubs.gif\" border=\"0\"/>");
                     out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
                     out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
                     out.println(rb.getString("password.unusable") + "<br><br>" + "<input type='submit' value='" + rb.getString("general.continue") + "' name='changePassword' />");
@@ -760,7 +761,7 @@ public class XincoAdminServlet extends HttpServlet {
         if (status == 0) {
 
             //show welcome message
-            out.println("<br><img src=\"blueCubs.gif\" border=\"0\"/>");
+            out.println("<br><img src=\"resources/images/blueCubs.gif\" border=\"0\"/>");
             out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
             if (error_message.compareTo("") != 0) {
                 out.println("<center>" + error_message + "</center>");
@@ -785,7 +786,7 @@ public class XincoAdminServlet extends HttpServlet {
             out.println("</form>");
         } else if (status == 3) {
             //Password must be changed
-            out.println("<br><img src=\"blueCubs.gif\" border=\"0\"/>");
+            out.println("<br><img src=\"resources/images/blueCubs.gif\" border=\"0\"/>");
             out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
             out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
             out.println(rb.getString("password.aged") + "<br><br>" +
@@ -798,7 +799,7 @@ public class XincoAdminServlet extends HttpServlet {
             out.println("<br>");
             out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
             out.println("<tr>");
-            out.println("<td class=\"text\" rowspan=\"3\"><img src=\"blueCubsSmall.gif\" border=\"0\"/></td>");
+            out.println("<td class=\"text\" rowspan=\"3\"><img src=\"resources/images/blueCubsSmall.gif\" border=\"0\"/></td>");
             out.println("<td class=\"bigtext\" colspan=\"5\">XincoAdmin</td>");
             out.println("</tr>");
             out.println("<tr>");

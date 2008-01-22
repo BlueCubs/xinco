@@ -16,7 +16,7 @@
 </head>
 <body class="text">
 <center>
-    <br/><img src="blueCubs.gif" width="356" height="400" alt="blueCubs"/><br/>
+    <br/><img src="resources/images/blueCubs.gif" width="356" height="400" alt="blueCubs"/><br/>
     <%
             Locale loc = null;
             try {

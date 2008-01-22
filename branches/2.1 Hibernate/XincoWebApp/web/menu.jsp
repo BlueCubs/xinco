@@ -38,7 +38,7 @@ if(!XincoSettingServer.getSetting("setting.allowoutsidelinks").getBoolValue())
     out.println(pm.getWebBlockRightClickScript());
 out.println("<center>");
 out.println("<span class='text'>");
-out.println("<br><img src='blueCubs.gif' border='0'/>");
+out.println("<br><img src='resources/images/blueCubs.gif' border='0'/>");
 out.println("<br><span class='bigtext'>"+rb.getString("message.admin.main.description")+"</span><br><br>");
 out.println("<table border='0' cellspacing='10' cellpadding='0'>");
 out.println("<tr>");

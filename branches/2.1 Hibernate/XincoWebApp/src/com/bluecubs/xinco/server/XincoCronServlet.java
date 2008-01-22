@@ -40,6 +40,7 @@ import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.bluecubs.xinco.core.server.persistence.XincoPersistenceManager;
+import com.bluecubs.xinco.core.server.persistence.XincoSettingServer;
 import com.bluecubs.xinco.index.XincoIndexOptimizeThread;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -63,15 +64,17 @@ public class XincoCronServlet extends HttpServlet {
     //single instance of index optimizing thread
     XincoIndexOptimizeThread xiot = null;
     private XincoPersistenceManager pm = new XincoPersistenceManager();
-    private static XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
+    private static XincoConfigSingletonServer config;
 
     /** Initializes the servlet.
      * @param config
      * @throws javax.servlet.ServletException 
      */
     @Override
+    @SuppressWarnings("static-access")
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+        this.config = XincoConfigSingletonServer.getInstance();
         //init archiving thread
         xat = XincoArchiveThread.getInstance();
         xat.start();
@@ -128,14 +131,14 @@ public class XincoCronServlet extends HttpServlet {
             out.println("<head>");
             out.println("<title>" + lrb.getString("message.admin.main.xincocron.label") + "</title>");
             out.println("<link rel=\"stylesheet\" href=\"xincostyle.css\" type=\"text/css\"/>");
-            if (!config.isAllowOutsideLinks()) {
+            if (!new XincoSettingServer("setting.allowoutsidelinks").getBoolValue()) {
                 out.println(pm.getWebBlockRightClickScript());
             }
             out.println("</head>");
 
             out.println("<body>");
 
-            if (!config.isAllowOutsideLinks()) {
+            if (!new XincoSettingServer("setting.allowoutsidelinks").getBoolValue()) {
                 out.println(pm.getWebBlockRightClickScript());
             }
 
@@ -148,7 +151,7 @@ public class XincoCronServlet extends HttpServlet {
             out.println("<br>");
             out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
             out.println("<tr>");
-            out.println("<td class=\"text\" width=\"100\"><img src=\"blueCubsSmall.gif\" border=\"0\"/></td>");
+            out.println("<td class=\"text\" width=\"100\"><img src=\"resources/images/blueCubs.gif\" border=\"0\"/></td>");
             out.println("<td class=\"bigtext\" width=\"650\">" + lrb.getString("message.admin.main.xincocron.label") + "</td>");
             out.println("</tr>");
             out.println("</table>");
@@ -216,7 +219,7 @@ public class XincoCronServlet extends HttpServlet {
             out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
             out.println("<tr>");
             out.println("<td class=\"text\">&nbsp;</td>");
-            out.println("<td class=\"text\">&copy; " + lrb.getString("general.copyright.date") + ", " + (config.isAllowOutsideLinks() ? lrb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
+            out.println("<td class=\"text\">&copy; " + new XincoSettingServer("general.copyright.date").getStringValue() + ", " + (new XincoSettingServer("setting.allowoutsidelinks").getBoolValue() ? lrb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
             out.println("</tr>");
             out.println("</table><tr><form action='menu.jsp'><input type='submit' value='" + lrb.getString("message.admin.main.backtomain") + "' />" + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></form></tr>" + "<tr><FORM><INPUT TYPE='button' VALUE='" + lrb.getString("message.admin.main.back") + "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value='" + request.getParameter("list") + "'/></FORM></tr>");
 

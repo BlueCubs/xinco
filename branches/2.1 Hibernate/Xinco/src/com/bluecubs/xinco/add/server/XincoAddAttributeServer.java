@@ -37,10 +37,12 @@ package com.bluecubs.xinco.add.server;
 
 import com.bluecubs.xinco.add.persistence.XincoAddAttribute;
 import com.bluecubs.xinco.core.exception.XincoSettingException;
-import com.bluecubs.xinco.core.server.persistence.*;
 import com.bluecubs.xinco.core.exception.XincoException;
 import com.bluecubs.xinco.add.persistence.XincoAddAttributePK;
 import com.bluecubs.xinco.core.persistence.audit.XincoAddAttributeT;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreACEServer;
+import com.bluecubs.xinco.core.server.persistence.XincoPersistenceServerObject;
+import com.bluecubs.xinco.core.server.persistence.XincoSettingServer;
 import com.bluecubs.xinco.core.server.persistence.audit.XincoAbstractAuditableObject;
 import com.bluecubs.xinco.core.server.persistence.audit.XincoAuditableDAO;
 import com.bluecubs.xinco.core.server.persistence.audit.XincoAuditingDAOHelper;
@@ -51,8 +53,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.oness.common.model.temporal.DateRange;
-import org.springframework.dao.DataRetrievalFailureException;
-import org.springframework.dao.OptimisticLockingFailureException;
 
 /**
  *
@@ -162,7 +162,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         return addAttributes;
     }
 
-    public XincoAbstractAuditableObject findById(HashMap parameters) throws DataRetrievalFailureException {
+    public XincoAbstractAuditableObject findById(HashMap parameters){
         result = pm.createdQuery("SELECT x FROM XincoAddAttribute x WHERE " +
                 "x.xincoAddAttributePK.xincoCoreDataId = :xincoCoreDataId and " +
                 "x.xincoAddAttributePK.attributeId = :attributeId", parameters);
@@ -176,7 +176,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         }
     }
 
-    public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters) throws DataRetrievalFailureException {
+    public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters){
         int counter = 0;
         String sql = "SELECT x FROM XincoAddAttribute x WHERE ";
         if (parameters.containsKey("attribInt")) {
@@ -301,8 +301,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         }
     }
 
-    public XincoAbstractAuditableObject update(
-            XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
+    public XincoAbstractAuditableObject update(XincoAbstractAuditableObject value){
         XincoAddAttribute val = (XincoAddAttribute) value;
         XincoAddAttributeT temp = new XincoAddAttributeT();
         temp.setRecordId(val.getRecordId());
@@ -328,7 +327,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         return val;
     }
 
-    public void delete(XincoAbstractAuditableObject value) throws OptimisticLockingFailureException {
+    public void delete(XincoAbstractAuditableObject value){
         XincoAddAttribute val = (XincoAddAttribute) value;
         XincoAddAttributeT temp = new XincoAddAttributeT();
         temp.setRecordId(val.getRecordId());
