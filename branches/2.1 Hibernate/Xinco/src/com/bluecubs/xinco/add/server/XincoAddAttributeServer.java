@@ -69,7 +69,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
      */
     @SuppressWarnings("unchecked")
     public XincoAddAttributeServer(XincoAddAttributePK pk) throws XincoException {
-        
+
         try {
             parameters.clear();
             parameters.put("xincoCoreDataId", pk.getXincoCoreDataId());
@@ -107,7 +107,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
      * @throws com.bluecubs.xinco.core.exception.XincoException
      */
     public XincoAddAttributeServer(int xincoCoreDataId, int attributeId, int attrI, int attrUI, double attrD, String attrVC, String attrT, Date attrDT) throws XincoException {
-        
+
         setXincoAddAttributePK(new XincoAddAttributePK(xincoCoreDataId, attributeId));
         setAttribInt(attrI);
         setAttribUnsignedint(attrUI);
@@ -121,7 +121,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
      * Create add attribute object for data structures
      */
     public XincoAddAttributeServer() {
-        
+
     }
 
     /**
@@ -162,7 +162,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         return addAttributes;
     }
 
-    public XincoAbstractAuditableObject findById(HashMap parameters){
+    public XincoAbstractAuditableObject findById(HashMap parameters) {
         result = pm.createdQuery("SELECT x FROM XincoAddAttribute x WHERE " +
                 "x.xincoAddAttributePK.xincoCoreDataId = :xincoCoreDataId and " +
                 "x.xincoAddAttributePK.attributeId = :attributeId", parameters);
@@ -176,7 +176,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         }
     }
 
-    public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters){
+    public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters) {
         int counter = 0;
         String sql = "SELECT x FROM XincoAddAttribute x WHERE ";
         if (parameters.containsKey("attribInt")) {
@@ -271,9 +271,9 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
 
     public XincoAbstractAuditableObject create(
             XincoAbstractAuditableObject value) {
+        XincoAddAttribute temp;
+        XincoAddAttribute newValue = new XincoAddAttribute();
         try {
-            XincoAddAttribute temp;
-            XincoAddAttribute newValue = new XincoAddAttribute();
             temp = (XincoAddAttribute) value;
             if (!value.isCreated()) {
                 newValue.setXincoAddAttributePK(temp.getXincoAddAttributePK());
@@ -301,7 +301,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         }
     }
 
-    public XincoAbstractAuditableObject update(XincoAbstractAuditableObject value){
+    public XincoAbstractAuditableObject update(XincoAbstractAuditableObject value) {
         XincoAddAttribute val = (XincoAddAttribute) value;
         XincoAddAttributeT temp = new XincoAddAttributeT();
         temp.setRecordId(val.getRecordId());
@@ -327,7 +327,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         return val;
     }
 
-    public void delete(XincoAbstractAuditableObject value){
+    public void delete(XincoAbstractAuditableObject value) {
         XincoAddAttribute val = (XincoAddAttribute) value;
         XincoAddAttributeT temp = new XincoAddAttributeT();
         temp.setRecordId(val.getRecordId());

@@ -35,13 +35,13 @@
  */
 package com.bluecubs.xinco.server;
 
-import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute;
-import com.bluecubs.xinco.core.persistence.XincoCoreACE;
 import com.bluecubs.xinco.core.exception.XincoSettingException;
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
+import com.bluecubs.xinco.core.persistence.XincoCoreACE;
 import com.bluecubs.xinco.core.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,6 +67,7 @@ import org.apache.axis.encoding.Base64;
  * @author Alexander Manes
  */
 public class XincoPublisherServlet extends HttpServlet {
+
     private List result;
     private XincoPersistenceManager pm;
     private ResourceBundle rb;
@@ -93,7 +94,8 @@ public class XincoPublisherServlet extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      * @throws javax.servlet.ServletException
-     * @throws java.io.IOException 
+     * @throws java.io.IOException
+     * @throws com.bluecubs.xinco.core.exception.XincoSettingException 
      */
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, XincoSettingException {
         Locale loc = null;
@@ -259,7 +261,7 @@ public class XincoPublisherServlet extends HttpServlet {
                                 "XincoCoreACE xca WHERE xcd.id=xca.xincoCoreDataId AND (xcd.statusNumber=5 OR " +
                                 "(xca.xincoCoreGroupId=3 AND xca.readPermission=1)) ORDER BY xcd.designation");
                         while (!result.isEmpty()) {
-                            xdataTemp = new XincoCoreDataServer(((XincoCoreData)result.get(0)).getId());
+                            xdataTemp = new XincoCoreDataServer(((XincoCoreData) result.get(0)).getId());
                             temp_serverUrl = request.getRequestURL().toString();
                             tempUrl = "";
                             //file = 1

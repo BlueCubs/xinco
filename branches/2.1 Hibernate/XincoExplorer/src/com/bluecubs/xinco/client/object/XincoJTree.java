@@ -72,7 +72,9 @@ public class XincoJTree extends JTree {
     //Drag and Drop variables
     private Insets autoscrollInsets = new Insets(20, 20, 20, 20); // insets
 
-    /** Creates a new instance of XincoJTree */
+    /** Creates a new instance of XincoJTree
+     * @param explorer 
+     */
     public XincoJTree(XincoExplorer explorer) {
         setExplorer(explorer);
         new XincoDefaultTreeTransferHandler(this, DnDConstants.ACTION_COPY_OR_MOVE);
@@ -118,10 +120,8 @@ public class XincoJTree extends JTree {
             }
         });
         addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
-
             public void treeExpanded(javax.swing.event.TreeExpansionEvent e) {
             }
-
             public void treeCollapsed(javax.swing.event.TreeExpansionEvent e) {
             }
         });

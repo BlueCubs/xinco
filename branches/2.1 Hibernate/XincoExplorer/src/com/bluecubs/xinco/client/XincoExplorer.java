@@ -1881,11 +1881,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     System.out.println("------------------------");
                     System.out.println("Node Selected: " + xincoClientSession.getCurrentTreeNodeSelection());
                 }
-                //Recovery code
-                if (xincoClientSession.getCurrentTreeNodeSelection() == null) {
-                    xincoClientSession.setCurrentTreeNodeSelection(previousnode);
-                }
-                //-------
                 if (getSettings().getSetting("setting.enable.developermode").getBoolValue()) {
                     System.out.println("Child Count: " + xincoClientSession.getCurrentTreeNodeSelection().getChildCount());
                     System.out.println("New node: " + newnode);

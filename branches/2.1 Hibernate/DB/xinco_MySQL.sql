@@ -351,7 +351,8 @@ CREATE TABLE xinco_core_group (
   designation VARCHAR(255) NOT NULL,
   status_number INTEGER UNSIGNED NOT NULL,
   PRIMARY KEY(id),
-  INDEX xinco_core_group_index_status(status_number)
+  INDEX xinco_core_group_index_status(status_number),
+  UNIQUE INDEX xinco_core_group_unique(designation)
 )
 TYPE=InnoDB;
 
@@ -366,7 +367,8 @@ CREATE TABLE xinco_core_language (
   id INTEGER UNSIGNED NOT NULL,
   sign VARCHAR(255) NOT NULL,
   designation VARCHAR(255) NOT NULL,
-  PRIMARY KEY(id)
+  PRIMARY KEY(id),
+  UNIQUE INDEX xinco_core_language_index_unique(designation)
 )
 TYPE=InnoDB;
 
@@ -433,7 +435,8 @@ CREATE TABLE xinco_core_user (
   last_modified DATE NOT NULL,
   PRIMARY KEY(id),
   INDEX xinco_core_user_index_username(username),
-  INDEX xinco_core_user_index_status(status_number)
+  INDEX xinco_core_user_index_status(status_number),
+  UNIQUE INDEX xinco_core_user_index_unique(username)
 )
 TYPE=InnoDB;
 
@@ -490,15 +493,15 @@ CREATE TABLE xinco_setting (
 TYPE=InnoDB;
 
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(1,'version.high', 2,null,null ); 
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(2,'version.med', 0,null ,null ); 
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(3,'version.low', 3,null,null ); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(2,'version.med', 1,null ,null ); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(3,'version.low', 0,null,null ); 
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(4,'version.postfix', null,null ,null ); 
  
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(5,'password.aging', 120,null,null ); 
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(6,'password.attempts', 3,null,null); 
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(7,'password.unusable_period', 365,null,null); 
  
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(8,'general.copyright.date', null,'2004-2007' ,null); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(8,'general.copyright.date', null,'2004-2008' ,null); 
  
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(9,'setting.enable.savepassword', null,null ,0); 
  
@@ -542,7 +545,6 @@ INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value,
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(36,'setting.securitycheck.enable',null,null,true,null);   
 
 /*Inserts 51-100 reserved for Workflow settings*/ 
-
 
 CREATE TABLE xinco_add_attribute_t (
   record_id INTEGER(10) UNSIGNED NOT NULL,

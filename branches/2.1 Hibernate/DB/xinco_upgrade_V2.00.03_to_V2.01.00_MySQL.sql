@@ -38,7 +38,7 @@ INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value)
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(6,'password.attempts', 3,null,null); 
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(7,'password.unusable_period', 365,null,null); 
  
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(8,'general.copyright.date', null,'2004-2007' ,null); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(8,'general.copyright.date', null,'2004-2008' ,null); 
  
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(9,'setting.enable.savepassword', null,null ,0); 
  
@@ -104,3 +104,7 @@ UPDATE XINCO_CORE_group SET DESIGNATION = 'general.group.admin' WHERE ID =1;
 UPDATE XINCO_CORE_group SET DESIGNATION = 'general.group.allusers' WHERE ID =2;
 
 UPDATE XINCO_CORE_group SET DESIGNATION = 'general.group.public' WHERE ID =3;
+
+alter table xinco_core_user add unique (username);
+
+alter table xinco_core_group add unique (designation);

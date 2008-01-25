@@ -351,7 +351,8 @@ CREATE TABLE xinco_core_group (
   designation VARCHAR(255) NOT NULL,
   status_number INTEGER UNSIGNED NOT NULL,
   PRIMARY KEY(id),
-  INDEX xinco_core_group_index_status(status_number)
+  INDEX xinco_core_group_index_status(status_number),
+  UNIQUE INDEX xinco_core_group_unique(designation)
 )
 TYPE=InnoDB;
 
@@ -366,7 +367,8 @@ CREATE TABLE xinco_core_language (
   id INTEGER UNSIGNED NOT NULL,
   sign VARCHAR(255) NOT NULL,
   designation VARCHAR(255) NOT NULL,
-  PRIMARY KEY(id)
+  PRIMARY KEY(id),
+  UNIQUE INDEX xinco_core_language_unique(designation)
 )
 TYPE=InnoDB;
 
@@ -433,7 +435,8 @@ CREATE TABLE xinco_core_user (
   last_modified DATE NOT NULL,
   PRIMARY KEY(id),
   INDEX xinco_core_user_index_username(username),
-  INDEX xinco_core_user_index_status(status_number)
+  INDEX xinco_core_user_index_status(status_number),
+  UNIQUE INDEX xinco_core_user_index_unique(username)
 )
 TYPE=InnoDB;
 
@@ -498,7 +501,7 @@ INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value)
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(6,'password.attempts', 3,null,null); 
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(7,'password.unusable_period', 365,null,null); 
  
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(8,'general.copyright.date', null,'2004-2007' ,null); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(8,'general.copyright.date', null,'2004-2008' ,null); 
  
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value) VALUES(9,'setting.enable.savepassword', null,null ,0); 
  

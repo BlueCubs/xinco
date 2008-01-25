@@ -121,7 +121,7 @@ public class XincoIndexer {
             writer.optimize();
             writer.close();
         } catch (Exception e) {
-            Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(XincoIndexer.class.getName()).log(Level.INFO, null, e);
             if (writer != null) {
                 try {
                     writer.close();
