@@ -85,6 +85,7 @@ public class XincoDBManager {
         
     }
     
+    @Override
     protected void finalize() throws Throwable {
         try {
             count--;
@@ -143,7 +144,10 @@ public class XincoDBManager {
     }
     
     /** Returns the column names of the query in an HTML table format for use
-     * as header for a table produced by the drawTable method.*/
+     * as header for a table produced by the drawTable method.
+     * @param rs
+     * @return 
+     */
     public StringTokenizer getColumnNamesList(ResultSet rs) {
         String list="";
         StringTokenizer t;

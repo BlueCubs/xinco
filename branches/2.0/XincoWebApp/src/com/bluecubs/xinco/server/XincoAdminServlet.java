@@ -49,43 +49,68 @@
 
 package com.bluecubs.xinco.server;
 
-import java.sql.*;
-import java.io.*;
-import java.util.Vector;
-
-import javax.servlet.*;
-import javax.servlet.http.*;
-
-import com.bluecubs.xinco.core.*;
-import com.bluecubs.xinco.core.server.*;
+import com.bluecubs.xinco.core.XincoCoreGroup;
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import com.bluecubs.xinco.core.server.XincoCoreDataTypeAttributeServer;
+import com.bluecubs.xinco.core.server.XincoCoreDataTypeServer;
+import com.bluecubs.xinco.core.server.XincoCoreGroupServer;
+import com.bluecubs.xinco.core.server.XincoCoreLanguageServer;
+import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
+import com.bluecubs.xinco.core.server.XincoCoreUserServer;
+import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.index.XincoIndexer;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Vector;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class XincoAdminServlet extends HttpServlet {
     private ResourceBundle rb;
     private ResourceBundle settings;
-    private String credentialID="";
     private XincoCoreUserServer login_user=null;
+    private XincoDBManager db;
     /** Initializes the servlet.
+     * @param config
+     * @throws javax.servlet.ServletException 
      */
+    @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
     }
     
     /** Destroys the servlet.
      */
+    @Override
     public void destroy() {
     }
     
     /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
+     * @throws javax.servlet.ServletException
+     * @throws java.io.IOException 
      */
+    @SuppressWarnings("unchecked")
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        try{
+        db = new XincoDBManager();
+        }catch (Exception e){
+            
+        }
         Locale loc = null;
         try {
             String list = request.getParameter("list");
@@ -182,8 +207,9 @@ public class XincoAdminServlet extends HttpServlet {
                     ResultSet rs= stmt.executeQuery("SELECT id FROM xinco_core_user WHERE username='" +
                             request.getParameter("DialogLoginUsername") + "' AND status_number<>2");
                     //Check if the username is correct if not just throw the wrong login message
-                    if(!rs.next())
-                        throw new XincoException("Login "+rb.getString("general.fail")+" Username and/or Password may be incorrect!");
+                    if(!rs.next()) {
+                        throw new XincoException("Login " + rb.getString("general.fail") + " Username and/or Password may be incorrect!");
+                    }
                     rs= stmt.executeQuery("SELECT id FROM xinco_core_user WHERE username='" +
                             request.getParameter("DialogLoginUsername") + "'");
                     if(rs.next()){
@@ -194,8 +220,9 @@ public class XincoAdminServlet extends HttpServlet {
                             //The logged in admin does the locking
                             int adminId=1;
                             //If no administrator is logged in change is made by default administrator.
-                            if(login_user!=null)
-                                adminId=login_user.getId();
+                            if(login_user!=null) {
+                                adminId = login_user.getId();
+                            }
                             temp_user.setChangerID(adminId);
                             temp_user.setWriteGroups(true);
                             //Register change in audit trail
@@ -329,10 +356,12 @@ public class XincoAdminServlet extends HttpServlet {
                     temp_user = new XincoCoreUserServer(i, dbm);
                     temp_user.setStatus_number(2);
                     //The logged in admin does the locking
-                    if(login_user==null)
+                    if(login_user==null) {
                         temp_user.setChangerID(1);
-                    else
+                    }
+                    else {
                         temp_user.setChangerID(login_user.getId());
+                    }
                     temp_user.setWriteGroups(true);
                     //Register change in audit trail
                     temp_user.setChange(true);
@@ -355,10 +384,12 @@ public class XincoAdminServlet extends HttpServlet {
                 //Reset login attempts
                 temp_user.setAttempts(0);
                 //The logged in admin does the unlocking
-                if(login_user==null)
-                        temp_user.setChangerID(1);
-                    else
-                        temp_user.setChangerID(login_user.getId());
+                if(login_user==null) {
+                    temp_user.setChangerID(1);
+                }
+                    else {
+                    temp_user.setChangerID(login_user.getId());
+                }
                 temp_user.setWriteGroups(true);
                 //Register change in audit trail
                 temp_user.setChange(true);
@@ -376,10 +407,12 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_user = new XincoCoreUserServer(i, dbm);
                 temp_user.setUserpassword("123456");
                 //The logged in admin does the locking
-                if(login_user==null)
-                        temp_user.setChangerID(1);
-                    else
-                        temp_user.setChangerID(login_user.getId());
+                if(login_user==null) {
+                    temp_user.setChangerID(1);
+                }
+                    else {
+                    temp_user.setChangerID(login_user.getId());
+                }
                 temp_user.setWriteGroups(true);
                 //Register change in audit trail
                 temp_user.setChange(true);
@@ -403,10 +436,12 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_group = new XincoCoreGroupServer(2, dbm);
                 temp_user.getXinco_core_groups().addElement(temp_group);
                 //The logged in admin does the locking
-                if(login_user==null)
+                if(login_user==null) {
                     temp_user.setChangerID(temp_user.getId());
-                else
+                }
+                else {
                     temp_user.setChangerID(login_user.getId());
+                }
                 temp_user.setWriteGroups(true);
                 //Register change in audit trail
                 temp_user.setChange(true);
@@ -489,10 +524,12 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_user.setFirstname(request.getParameter("DialogEditUserProfileFirstname"));
                 temp_user.setEmail(request.getParameter("DialogEditUserProfileEmail"));
                 //The logged in admin does the locking
-                if(login_user==null)
+                if(login_user==null) {
                     temp_user.setChangerID(temp_user.getId());
-                else
+                }
+                else {
                     temp_user.setChangerID(login_user.getId());
+                }
                 temp_user.setWriteGroups(true);
                 //Register change in audit trail
                 temp_user.setChange(true);
@@ -618,10 +655,12 @@ public class XincoAdminServlet extends HttpServlet {
                     temp_user.setUserpassword(request.getParameter("new"));
                     temp_user.setLastModified(new Timestamp(System.currentTimeMillis()));
                     //The logged in admin does the locking if none loged in the default admin does the locking
-                    if(login_user==null)
+                    if(login_user==null) {
                         temp_user.setChangerID(1);
-                    else
+                    }
+                    else {
                         temp_user.setChangerID(login_user.getId());
+                    }
                     temp_user.setWriteGroups(true);
                     //Register change in audit trail
                     temp_user.setChange(true);
@@ -642,7 +681,10 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<title>XincoAdmin</title>");
         out.println("<link rel=\"stylesheet\" href=\"xincostyle.css\" type=\"text/css\"/>");
         out.println("</head>");
-        out.println("<body onload=\"if (document.forms[0] != null) { if (document.forms[0].elements[0] != null) { document.forms[0].elements[0].focus(); } }\">");
+        out.println("<body "+(!db.config.isAllowOutsideLinks()?"oncontextmenu='return false;' ":" ")+
+                "onload=\"if (document.forms[0] != null) { if (document.forms[0].elements[0] != null) " +
+                "{ document.forms[0].elements[0].focus(); } }\">");
+        
         out.println("<center>");
         out.println("<span class=\"text\">");
         
@@ -652,7 +694,7 @@ public class XincoAdminServlet extends HttpServlet {
         if (status == 0) {
             
             //show welcome message
-            out.println("<br><img src=\"blueCubs.gif\" border=\"0\"/>");
+            out.println("<br><img src='resources/images/blueCubs.gif' border=\"0\"/>");
             out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
             if (error_message.compareTo("") != 0) {
                 out.println("<center>" + error_message +"</center>");
@@ -1230,8 +1272,9 @@ public class XincoAdminServlet extends HttpServlet {
                     String column="id";
                     if(request.getParameter("table").equals("xinco_add_attribute"))
                         column="xinco_core_data_id";
-                    if(request.getParameter("table").equals("xinco_core_data_type_attribute"))
-                        column="xinco_core_data_type_id";
+                    if(request.getParameter("table").equals("xinco_core_data_type_attribute")) {
+                        column = "xinco_core_data_type_id";
+                    }
                     rs=DBM.con.createStatement().executeQuery("select * from "+request.getParameter("table")+
                             "_t a, (select concat(concat(a.firstname , ' ' ), a.name) as \""+
                             rb.getString("general.user")+"\" , b.mod_time as \""+rb.getString("general.audit.modtime")+
@@ -1456,7 +1499,10 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; "+rb.getString("general.copyright.date")+", "+rb.getString("message.admin.main.footer"));
+        out.println("<td class=\"text\">&copy; "+rb.getString("general.copyright.date")+", "+
+                //Avoid external links if general.setting.allowoutsidelinks is set to false
+                //Security bug
+                (db.config.isAllowOutsideLinks() ? rb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                 rb.getString("message.admin.main.backtomain")+"' />" +
@@ -1483,6 +1529,8 @@ public class XincoAdminServlet extends HttpServlet {
     /** Handles the HTTP <code>GET</code> method.
      * @param request servlet request
      * @param response servlet response
+     * @throws javax.servlet.ServletException
+     * @throws java.io.IOException 
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
@@ -1492,6 +1540,8 @@ public class XincoAdminServlet extends HttpServlet {
     /** Handles the HTTP <code>POST</code> method.
      * @param request servlet request
      * @param response servlet response
+     * @throws javax.servlet.ServletException
+     * @throws java.io.IOException 
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
