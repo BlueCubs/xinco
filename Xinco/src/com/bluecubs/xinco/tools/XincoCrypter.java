@@ -1,11 +1,11 @@
 /*
- * Crypter.java
+ * XincoCrypter.java
  *
  * Created on March 6, 2006, 3:43 PM
  *
  */
 
-package com.bluecubs.xinco.core.server;
+package com.bluecubs.xinco.tools;
 
 import java.io.UnsupportedEncodingException;
 import java.security.spec.AlgorithmParameterSpec;
@@ -16,15 +16,16 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
+import org.apache.axis.encoding.Base64;
 
 /**
  *
  * @author Javier A. Ortiz
  */
 /**
- * Creates a new instance of Crypter
+ * Creates a new instance of XincoCrypter
  */
-public class Crypter {
+public class XincoCrypter {
     Cipher ecipher;
     Cipher dcipher;
     
@@ -37,7 +38,7 @@ public class Crypter {
     // Iteration count
     int iterationCount = 19;
     
-    public Crypter(String passPhrase) {
+    public XincoCrypter(String passPhrase) {
         try {
             // Create the key
             KeySpec keySpec = new PBEKeySpec(passPhrase.toCharArray(), salt, iterationCount);
@@ -69,7 +70,7 @@ public class Crypter {
             byte[] enc = ecipher.doFinal(utf8);
             
             // Encode bytes to base64 to get a string
-            return new sun.misc.BASE64Encoder().encode(enc);
+            return Base64.encode(enc);
         } catch (javax.crypto.BadPaddingException e) {
         } catch (IllegalBlockSizeException e) {
         } catch (UnsupportedEncodingException e) {
@@ -81,7 +82,7 @@ public class Crypter {
     public String decrypt(String str) {
         try {
             // Decode base64 to get bytes
-            byte[] dec = new sun.misc.BASE64Decoder().decodeBuffer(str);
+            byte[] dec = Base64.decode(str);
             
             // Decrypt
             byte[] utf8 = dcipher.doFinal(dec);

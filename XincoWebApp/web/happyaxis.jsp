@@ -1,68 +1,80 @@
 <html>
 <%@ page import="java.io.InputStream,
-                 java.io.IOException,
-                 javax.xml.parsers.SAXParser,
-                 javax.xml.parsers.SAXParserFactory"
-   session="false" %>
- <%
-    /*
-     * The Apache Software License, Version 1.1
-     *
-     * Copyright (c) 2002 The Apache Software Foundation.  All rights
-     * reserved.
-     *
-     * Redistribution and use in source and binary forms, with or without
-     * modification, are permitted provided that the following conditions
-     * are met:
-     *
-     * 1. Redistributions of source code must retain the above copyright
-     *    notice, this list of conditions and the following disclaimer.
-     *
-     * 2. Redistributions in binary form must reproduce the above copyright
-     *    notice, this list of conditions and the following disclaimer in
-     *    the documentation and/or other materials provided with the
-     *    distribution.
-     *
-     * 3. The end-user documentation included with the redistribution, if
-     *    any, must include the following acknowlegement:
-     *       "This product includes software developed by the
-     *        Apache Software Foundation (http://www.apache.org/)."
-     *    Alternately, this acknowlegement may appear in the software itself,
-     *    if and wherever such third-party acknowlegements normally appear.
-     *
-     * 4. The names "The Jakarta Project", "Ant", and "Apache Software
-     *    Foundation" must not be used to endorse or promote products derived
-     *    from this software without prior written permission. For written
-     *    permission, please contact apache@apache.org.
-     *
-     * 5. Products derived from this software may not be called "Apache"
-     *    nor may "Apache" appear in their names without prior written
-     *    permission of the Apache Group.
-     *
-     * THIS SOFTWARE IS PROVIDED ''AS IS'' AND ANY EXPRESSED OR IMPLIED
-     * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-     * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
-     * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-     * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-     * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-     * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-     * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-     * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-     * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-     * SUCH DAMAGE.
-     * ====================================================================
-     *
-     * This software consists of voluntary contributions made by many
-     * individuals on behalf of the Apache Software Foundation.  For more
-     * information on the Apache Software Foundation, please see
-     * <http://www.apache.org/>.
-     */
+         java.io.IOException,
+         javax.xml.parsers.SAXParser,
+         javax.xml.parsers.SAXParserFactory,
+         com.bluecubs.xinco.core.server.XincoDBManager"
+         session="false" %>
+<%
+            /*
+             * The Apache Software License, Version 1.1
+             *
+             * Copyright (c) 2002 The Apache Software Foundation.  All rights
+             * reserved.
+             *
+             * Redistribution and use in source and binary forms, with or without
+             * modification, are permitted provided that the following conditions
+             * are met:
+             *
+             * 1. Redistributions of source code must retain the above copyright
+             *    notice, this list of conditions and the following disclaimer.
+             *
+             * 2. Redistributions in binary form must reproduce the above copyright
+             *    notice, this list of conditions and the following disclaimer in
+             *    the documentation and/or other materials provided with the
+             *    distribution.
+             *
+             * 3. The end-user documentation included with the redistribution, if
+             *    any, must include the following acknowlegement:
+             *       "This product includes software developed by the
+             *        Apache Software Foundation (http://www.apache.org/)."
+             *    Alternately, this acknowlegement may appear in the software itself,
+             *    if and wherever such third-party acknowlegements normally appear.
+             *
+             * 4. The names "The Jakarta Project", "Ant", and "Apache Software
+             *    Foundation" must not be used to endorse or promote products derived
+             *    from this software without prior written permission. For written
+             *    permission, please contact apache@apache.org.
+             *
+             * 5. Products derived from this software may not be called "Apache"
+             *    nor may "Apache" appear in their names without prior written
+             *    permission of the Apache Group.
+             *
+             * THIS SOFTWARE IS PROVIDED ''AS IS'' AND ANY EXPRESSED OR IMPLIED
+             * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+             * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+             * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+             * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+             * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+             * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+             * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+             * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+             * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+             * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+             * SUCH DAMAGE.
+             * ====================================================================
+             *
+             * This software consists of voluntary contributions made by many
+             * individuals on behalf of the Apache Software Foundation.  For more
+             * information on the Apache Software Foundation, please see
+             * <http://www.apache.org/>.
+             */
 %>
 <head>
-<title>Axis Happiness Page</title>
+    <%
+            XincoDBManager db = new XincoDBManager();
+            if (!db.config.isAllowOutsideLinks()) {
+                out.println(db.getWebBlockRightClickScript());
+            }
+    %>
+    <title>Axis Happiness Page</title>
 </head>
 <body bgcolor='#ffffff'>
+<%
+            if (!db.config.isAllowOutsideLinks()) {
+                out.println(db.getWebBlockRightClickScript());
+            }
+%>
 <%!
 
     /*
@@ -74,18 +86,14 @@
      * @author dims
      * @author Brian Ewins
      */
-
-
     /**
      * Get a string providing install information.
      * TODO: make this platform aware and give specific hints
      */
     public String getInstallHints(HttpServletRequest request) {
 
-        String hint=
-            "<B><I>Note:</I></B> On Tomcat 4.x and Java1.4, you may need to put libraries that contain "
-            +"java.* or javax.* packages into CATALINA_HOME/common/lib"
-            +"<br>jaxrpc.jar and saaj.jar are two such libraries.";
+        String hint =
+                "<B><I>Note:</I></B> On Tomcat 4.x and Java1.4, you may need to put libraries that contain " + "java.* or javax.* packages into CATALINA_HOME/common/lib" + "<br>jaxrpc.jar and saaj.jar are two such libraries.";
         return hint;
     }
 
@@ -109,9 +117,9 @@
      */
     boolean resourceExists(String resource) {
         boolean found;
-        InputStream instream=this.getClass().getResourceAsStream(resource);
-        found=instream!=null;
-        if(instream!=null) {
+        InputStream instream = this.getClass().getResourceAsStream(resource);
+        found = instream != null;
+        if (instream != null) {
             try {
                 instream.close();
             } catch (IOException e) {
@@ -132,50 +140,50 @@
      * @throws IOException
      */
     int probeClass(JspWriter out,
-                   String category,
-                   String classname,
-                   String jarFile,
-                   String description,
-                   String errorText,
-                   String homePage) throws IOException {
+            String category,
+            String classname,
+            String jarFile,
+            String description,
+            String errorText,
+            String homePage) throws IOException {
+        XincoDBManager db=null;
+        try {
+            db = new XincoDBManager();
+        } catch (Exception e) {
+
+        }
         try {
             Class clazz = classExists(classname);
-            if(clazz == null)  {
-               String url="";
-               if(homePage!=null) {
-                  url="<br>  See <a href="+homePage+">"+homePage+"</a>";
-               }
-               out.write("<p>"+category+": could not find class "+classname
-                   +" from file <b>"+jarFile
-                   +"</b><br>  "+errorText
-                   +url
-                   +"<p>");
-               return 1;
+            if (clazz == null) {
+                String url = "";
+                if (homePage != null) {
+                    if (!db.config.isAllowOutsideLinks()) {
+                        url = "<br>  See " + homePage;
+                    } else {
+                        url = "<br>  See <a href=" + homePage + ">" + homePage + "</a>";
+                    }
+                }
+                out.write("<p>" + category + ": could not find class " + classname + " from file <b>" + jarFile + "</b><br>  " + errorText + url + "<p>");
+                return 1;
             } else {
-               String location = getLocation(out, clazz);
-               if(location == null) {
-                  out.write("Found "+ description + " (" + classname + ")<br>");
-               }
-               else {
-                  out.write("Found "+ description + " (" + classname + ") at " + location + "<br>");
-               }
-               return 0;
+                String location = getLocation(out, clazz);
+                if (location == null) {
+                    out.write("Found " + description + " (" + classname + ")<br>");
+                } else {
+                    out.write("Found " + description + " (" + classname + ") at " + location + "<br>");
+                }
+                return 0;
             }
-        } catch(NoClassDefFoundError ncdfe) { 
-            String url="";
-            if(homePage!=null) {
-                url="<br>  See <a href="+homePage+">"+homePage+"</a>";
+        } catch (NoClassDefFoundError ncdfe) {
+            String url = "";
+            if (homePage != null) {
+                if (!db.config.isAllowOutsideLinks()) {
+                    url = "<br>  See " + homePage;
+                } else {
+                    url = "<br>  See <a href=" + homePage + ">" + homePage + "</a>";
+                }
             }
-            out.write("<p>"+category+": could not find a dependency"
-                    +" of class "+classname
-                    +" from file <b>"+jarFile
-                    +"</b><br> "+errorText
-                    +url
-                    +"<br>The root cause was: "+ncdfe.getMessage()
-                    +"<br>This can happen e.g. if "+classname+" is in" 
-                    +" the 'common' classpath, but a dependency like "
-                    +" activation.jar is only in the webapp classpath."
-                    +"<p>");
+            out.write("<p>" + category + ": could not find a dependency" + " of class " + classname + " from file <b>" + jarFile + "</b><br> " + errorText + url + "<br>The root cause was: " + ncdfe.getMessage() + "<br>This can happen e.g. if " + classname + " is in" + " the 'common' classpath, but a dependency like " + " activation.jar is only in the webapp classpath." + "<p>");
             return 1;
         }
     }
@@ -186,24 +194,23 @@
      * @param clazz
      * @return the jar file or path where a class was found
      */
-
     String getLocation(JspWriter out,
-                       Class clazz) {
+            Class clazz) {
         try {
             java.net.URL url = clazz.getProtectionDomain().getCodeSource().getLocation();
             String location = url.toString();
-            if(location.startsWith("jar")) {
-                url = ((java.net.JarURLConnection)url.openConnection()).getJarFileURL();
+            if (location.startsWith("jar")) {
+                url = ((java.net.JarURLConnection) url.openConnection()).getJarFileURL();
                 location = url.toString();
-            } 
-            
-            if(location.startsWith("file")) {
+            }
+
+            if (location.startsWith("file")) {
                 java.io.File file = new java.io.File(url.getFile());
                 return file.getAbsolutePath();
             } else {
                 return url.toString();
             }
-        } catch (Throwable t){
+        } catch (Throwable t) {
         }
         return "an unknown location";
     }
@@ -219,11 +226,11 @@
      * @return the number of missing libraries (0 or 1)
      */
     int needClass(JspWriter out,
-                   String classname,
-                   String jarFile,
-                   String description,
-                   String errorText,
-                   String homePage) throws IOException {
+            String classname,
+            String jarFile,
+            String description,
+            String errorText,
+            String homePage) throws IOException {
         return probeClass(out,
                 "<b>Error</b>",
                 classname,
@@ -244,11 +251,11 @@
      * @return the number of missing libraries (0 or 1)
      */
     int wantClass(JspWriter out,
-                   String classname,
-                   String jarFile,
-                   String description,
-                   String errorText,
-                   String homePage) throws IOException {
+            String classname,
+            String jarFile,
+            String description,
+            String errorText,
+            String homePage) throws IOException {
         return probeClass(out,
                 "<b>Warning</b>",
                 classname,
@@ -266,33 +273,27 @@
      * @throws Exception
      */
     int wantResource(JspWriter out,
-                      String resource,
-                      String errorText) throws Exception {
-        if(!resourceExists(resource)) {
-            out.write("<p><b>Warning</b>: could not find resource "+resource
-                        +"<br>"
-                        +errorText);
+            String resource,
+            String errorText) throws Exception {
+        if (!resourceExists(resource)) {
+            out.write("<p><b>Warning</b>: could not find resource " + resource + "<br>" + errorText);
             return 0;
         } else {
-            out.write("found "+resource+"<br>");
+            out.write("found " + resource + "<br>");
             return 1;
         }
     }
-
 
     /**
      *  get servlet version string
      *
      */
-
     public String getServletVersion() {
-        ServletContext context=getServletConfig().getServletContext();
+        ServletContext context = getServletConfig().getServletContext();
         int major = context.getMajorVersion();
         int minor = context.getMinorVersion();
         return Integer.toString(major) + '.' + Integer.toString(minor);
     }
-
-
 
     /**
      * what parser are we using.
@@ -304,7 +305,7 @@
             return "Could not create an XML Parser";
         }
 
-        // check to what is in the classname
+// check to what is in the classname
         String saxParserName = saxParser.getClass().getName();
         return saxParserName;
     }
@@ -330,197 +331,204 @@
      * get the location of the parser
      * @return path or null for trouble in tracking it down
      */
-
     private String getParserLocation(JspWriter out) {
         SAXParser saxParser = getSAXParser();
         if (saxParser == null) {
             return null;
         }
-        String location = getLocation(out,saxParser.getClass());
+        String location = getLocation(out, saxParser.getClass());
         return location;
     }
-    %>
-<html><head><title>Axis Happiness Page</title></head>
-<body>
-<h1>Axis Happiness Page</h1>
-<h2>Examining webapp configuration</h2>
-
-<p>
-<h3>Needed Components</h3>
-<%
-    int needed=0,wanted=0;
-
-    /**
-     * the essentials, without these Axis is not going to work
-     */
-    needed=needClass(out, "javax.xml.soap.SOAPMessage",
-            "saaj.jar",
-            "SAAJ API",
-            "Axis will not work",
-            "http://xml.apache.org/axis/");
-
-    needed+=needClass(out, "javax.xml.rpc.Service",
-            "jaxrpc.jar",
-            "JAX-RPC API",
-            "Axis will not work",
-            "http://xml.apache.org/axis/");
-
-    needed+=needClass(out, "org.apache.axis.transport.http.AxisServlet",
-            "axis.jar",
-            "Apache-Axis",
-            "Axis will not work",
-            "http://xml.apache.org/axis/");
-
-    needed+=needClass(out, "org.apache.commons.discovery.Resource",
-            "commons-discovery.jar",
-            "Jakarta-Commons Discovery",
-            "Axis will not work",
-            "http://jakarta.apache.org/commons/discovery.html");
-
-    needed+=needClass(out, "org.apache.commons.logging.Log",
-            "commons-logging.jar",
-            "Jakarta-Commons Logging",
-            "Axis will not work",
-            "http://jakarta.apache.org/commons/logging.html");
-
-    needed+=needClass(out, "org.apache.log4j.Layout",
-            "log4j-1.2.8.jar",
-            "Log4j",
-            "Axis may not work",
-            "http://jakarta.apache.org/log4j");
-
-    //should we search for a javax.wsdl file here, to hint that it needs
-    //to go into an approved directory? because we dont seem to need to do that.
-    needed+=needClass(out, "com.ibm.wsdl.factory.WSDLFactoryImpl",
-            "wsdl4j.jar",
-            "IBM's WSDL4Java",
-            "Axis will not work",
-            null);
-
-    needed+=needClass(out, "javax.xml.parsers.SAXParserFactory",
-            "xerces.jar",
-            "JAXP implementation",
-            "Axis will not work",
-            "http://xml.apache.org/xerces-j/");
-
-    needed+=needClass(out,"javax.activation.DataHandler",
-            "activation.jar",
-            "Activation API",
-            "Axis will not work",
-            "http://java.sun.com/products/javabeans/glasgow/jaf.html");
 %>
-<h3>Optional Components</h3>
-<%
-    /*
-     * now the stuff we can live without
-     */
-    wanted+=wantClass(out,"javax.mail.internet.MimeMessage",
-            "mail.jar",
-            "Mail API",
-            "Attachments will not work",
-            "http://java.sun.com/products/javamail/");
+<html><head><title>Axis Happiness Page</title>
+        <%
+            if (!db.config.isAllowOutsideLinks()) {
+                out.println(db.getWebBlockRightClickScript());
+            }
+        %>
+    </head>
+    <body>
+        <h1>Axis Happiness Page</h1>
+        <h2>Examining webapp configuration</h2>
+        
+        <p>
+        <h3>Needed Components</h3>
+        <%
+            if (!db.config.isAllowOutsideLinks()) {
+                out.println(db.getWebBlockRightClickScript());
+            }
+            int needed = 0, wanted = 0;
 
-    wanted+=wantClass(out,"org.apache.xml.security.Init",
-            "xmlsec.jar",
-            "XML Security API",
-            "XML Security is not supported",
-            "http://xml.apache.org/security/");
+            /**
+             * the essentials, without these Axis is not going to work
+             */
+            needed = needClass(out, "javax.xml.soap.SOAPMessage",
+                    "saaj.jar",
+                    "SAAJ API",
+                    "Axis will not work",
+                    "http://xml.apache.org/axis/");
 
-    wanted += wantClass(out, "javax.net.ssl.SSLSocketFactory",
-            "jsse.jar or java1.4+ runtime",
-            "Java Secure Socket Extension",
-            "https is not supported",
-            "http://java.sun.com/products/jsse/");
-    /*
-     * resources on the classpath path
-     */
-    /* broken; this is a file, not a resource
-    wantResource(out,"/server-config.wsdd",
+            needed += needClass(out, "javax.xml.rpc.Service",
+                    "jaxrpc.jar",
+                    "JAX-RPC API",
+                    "Axis will not work",
+                    "http://xml.apache.org/axis/");
+
+            needed += needClass(out, "org.apache.axis.transport.http.AxisServlet",
+                    "axis.jar",
+                    "Apache-Axis",
+                    "Axis will not work",
+                    "http://xml.apache.org/axis/");
+
+            needed += needClass(out, "org.apache.commons.discovery.Resource",
+                    "commons-discovery.jar",
+                    "Jakarta-Commons Discovery",
+                    "Axis will not work",
+                    "http://jakarta.apache.org/commons/discovery.html");
+
+            needed += needClass(out, "org.apache.commons.logging.Log",
+                    "commons-logging.jar",
+                    "Jakarta-Commons Logging",
+                    "Axis will not work",
+                    "http://jakarta.apache.org/commons/logging.html");
+
+            needed += needClass(out, "org.apache.log4j.Layout",
+                    "log4j-1.2.8.jar",
+                    "Log4j",
+                    "Axis may not work",
+                    "http://jakarta.apache.org/log4j");
+
+            //should we search for a javax.wsdl file here, to hint that it needs
+            //to go into an approved directory? because we dont seem to need to do that.
+            needed += needClass(out, "com.ibm.wsdl.factory.WSDLFactoryImpl",
+                    "wsdl4j.jar",
+                    "IBM's WSDL4Java",
+                    "Axis will not work",
+                    null);
+
+            needed += needClass(out, "javax.xml.parsers.SAXParserFactory",
+                    "xerces.jar",
+                    "JAXP implementation",
+                    "Axis will not work",
+                    "http://xml.apache.org/xerces-j/");
+
+            needed += needClass(out, "javax.activation.DataHandler",
+                    "activation.jar",
+                    "Activation API",
+                    "Axis will not work",
+                    "http://java.sun.com/products/javabeans/glasgow/jaf.html");
+        %>
+        <h3>Optional Components</h3>
+        <%
+            /*
+             * now the stuff we can live without
+             */
+            wanted += wantClass(out, "javax.mail.internet.MimeMessage",
+                    "mail.jar",
+                    "Mail API",
+                    "Attachments will not work",
+                    "http://java.sun.com/products/javamail/");
+
+            wanted += wantClass(out, "org.apache.xml.security.Init",
+                    "xmlsec.jar",
+                    "XML Security API",
+                    "XML Security is not supported",
+                    "http://xml.apache.org/security/");
+
+            wanted += wantClass(out, "javax.net.ssl.SSLSocketFactory",
+                    "jsse.jar or java1.4+ runtime",
+                    "Java Secure Socket Extension",
+                    "https is not supported",
+                    "http://java.sun.com/products/jsse/");
+            /*
+             * resources on the classpath path
+             */
+            /* broken; this is a file, not a resource
+            wantResource(out,"/server-config.wsdd",
             "There is no server configuration file;"
             +"run AdminClient to create one");
-    */
-    /* add more libraries here */
+             */
+            /* add more libraries here */
 
-    out.write("<h3>");
-    //is everythng we need here
-    if(needed==0) {
-       //yes, be happy
-        out.write("<i>The core axis libraries are present. </i>");
-    } else {
-        //no, be very unhappy
-        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        out.write("<i>"
-                +needed
-                +" core axis librar"
-                +(needed==1?"y is":"ies are")
-                +" missing</i>");
-    }
-    //now look at wanted stuff
-    if(wanted>0) {
-        out.write("<i>"
-                +wanted
-                +" optional axis librar"
-                +(wanted==1?"y is":"ies are")
-                +" missing</i>");
-    } else {
-        out.write("The optional components are present.");
-    }
-    out.write("</h3>");
-    //hint if anything is missing
-    if(needed>0 || wanted>0 ) {
-        out.write(getInstallHints(request));
-    }
+            out.write("<h3>");
+            //is everythng we need here
+            if (needed == 0) {
+                //yes, be happy
+                out.write("<i>The core axis libraries are present. </i>");
+            } else {
+                //no, be very unhappy
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                out.write("<i>" + needed + " core axis librar" + (needed == 1 ? "y is" : "ies are") + " missing</i>");
+            }
+            //now look at wanted stuff
+            if (wanted > 0) {
+                out.write("<i>" + wanted + " optional axis librar" + (wanted == 1 ? "y is" : "ies are") + " missing</i>");
+            } else {
+                out.write("The optional components are present.");
+            }
+            out.write("</h3>");
+            //hint if anything is missing
+            if (needed > 0 || wanted > 0) {
+                out.write(getInstallHints(request));
+            }
 
-    %>
-    <p>
-    <B><I>Note:</I></B> Even if everything this page probes for is present, there is no guarantee your
-    web service will work, because there are many configuration options that we do
-    not check for. These tests are <i>necessary</i> but not <i>sufficient</i>
-    <hr>
+        %>
+        <p>
+        <B><I>Note:</I></B> Even if everything this page probes for is present, there is no guarantee your
+        web service will work, because there are many configuration options that we do
+        not check for. These tests are <i>necessary</i> but not <i>sufficient</i>
+        <hr>
+        
+        <h2>Examining Application Server</h2>
+        <%
+            String servletVersion = getServletVersion();
+            String xmlParser = getParserName();
+            String xmlParserLocation = getParserLocation(out);
 
-    <h2>Examining Application Server</h2>
-    <%
-        String servletVersion=getServletVersion();
-        String xmlParser=getParserName();
-        String xmlParserLocation = getParserLocation(out);
-
-    %>
-    <table>
-        <tr><td>Servlet version</td><td><%= servletVersion %></td></tr>
-        <tr><td>XML Parser</td><td><%= xmlParser %></td></tr>
-        <tr><td>XML ParserLocation</td><td><%= xmlParserLocation %></td></tr>
-    </table>
-<% if(xmlParser.indexOf("crimson")>=0) { %>
-    <p>
-    <b>We recommend <a href="http://xml.apache.org/xerces2-j/">Xerces 2</a>
-        over Crimson as the XML parser for Axis</b>
-    </p>
-<%    } %>
-
-    <h2>Examining System Properties</h2>
-<%
-    /** 
-     * Dump the system properties
-     */
-    java.util.Enumeration e=null;
-    try {
-        e= System.getProperties().propertyNames();
-    } catch (SecurityException se) {
-    }
-    if(e!=null) {
-        out.write("<pre>");
-        for (;e.hasMoreElements();) {
-            String key = (String) e.nextElement();
-            out.write(key + "=" + System.getProperty(key)+"\n");
-        }
-        out.write("</pre><p>");
-    } else {
-        out.write("System properties are not accessible<p>");
-    }
-%>
-    <hr>
-    Platform: <%= getServletConfig().getServletContext().getServerInfo()  %>
-</body>
+        %>
+        <table>
+            <tr><td>Servlet version</td><td><%= servletVersion %></td></tr>
+            <tr><td>XML Parser</td><td><%= xmlParser %></td></tr>
+            <tr><td>XML ParserLocation</td><td><%= xmlParserLocation %></td></tr>
+        </table>
+        <% if (xmlParser.indexOf("crimson") >= 0) {%>
+        <p>
+            <%
+     if (!db.config.isAllowOutsideLinks()) {
+         out.println("<b>We recommend Xerces 2 (http://xml.apache.org/xerces2-j/)" +
+                 "over Crimson as the XML parser for Axis</b>");
+     } else {
+         out.println("<b>We recommend <a href='http://xml.apache.org/xerces2-j/'>Xerces 2</a>" +
+                 "over Crimson as the XML parser for Axis</b>");
+     }
+            %>
+        </p>
+        <%    }%>
+        
+        <h2>Examining System Properties</h2>
+        <%
+            /**
+             * Dump the system properties
+             */
+            java.util.Enumeration e = null;
+            try {
+                e = System.getProperties().propertyNames();
+            } catch (SecurityException se) {
+            }
+            if (e != null) {
+                out.write("<pre>");
+                for (; e.hasMoreElements();) {
+                    String key = (String) e.nextElement();
+                    out.write(key + "=" + System.getProperty(key) + "\n");
+                }
+                out.write("</pre><p>");
+            } else {
+                out.write("System properties are not accessible<p>");
+            }
+        %>
+        <hr>
+        Platform: <%= getServletConfig().getServletContext().getServerInfo()  %>
+    </body>
 </html>
 
 

@@ -34,8 +34,9 @@
     ResourceBundle rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc),
             settings=ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings",loc);
     out.println("<span class='bigtext'>"+rb.getString("password.aged")+"</span><br/><br/>");
-    out.print(rb.getString("password.change.warning").replaceAll("%n",settings.getString("password.unusable_period")));%>
-    </span><br/><br/>
+    out.print(rb.getString("password.change.warning").replaceAll("%n",settings.getString("password.unusable_period")));
+    out.println("</span>");%>
+    <br/><br/>
     <form name="password" action="XincoAdmin" method="post">
         <table border="0">
             <tbody>

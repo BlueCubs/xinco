@@ -53,8 +53,13 @@ public class XincoCronServlet extends HttpServlet {
     //single instance of index optimizing thread
     XincoIndexOptimizeThread xiot = null;
     
+    private XincoDBManager db = null;
+    
     /** Initializes the servlet.
+     * @param config
+     * @throws javax.servlet.ServletException 
      */
+    @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         //init archiving thread
@@ -68,15 +73,23 @@ public class XincoCronServlet extends HttpServlet {
     
     /** Destroys the servlet.
      */
+    @Override
     public void destroy() {
     }
     
     /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
+     * @throws javax.servlet.ServletException
+     * @throws java.io.IOException 
      */
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        try{
+            db=new XincoDBManager();
+        }catch (Exception e){
+            
+        }
         Locale loc = null;
         try {
             String list = request.getParameter("list");
@@ -104,7 +117,7 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<link rel=\"stylesheet\" href=\"xincostyle.css\" type=\"text/css\"/>");
         out.println("</head>");
         
-        out.println("<body>");
+        out.println("<body "+(!db.config.isAllowOutsideLinks()?"oncontextmenu='return false;' ":" ")+">");
         out.println("<center>");
         out.println("<span class=\"text\">");
         
@@ -114,7 +127,7 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<br>");
         out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
-        out.println("<td class=\"text\" width=\"100\"><img src=\"blueCubsSmall.gif\" border=\"0\"/></td>");
+        out.println("<td class=\"text\" width=\"100\"><img src='resources/images/blueCubsSmall.gif\" border=\"0\"/></td>");
         out.println("<td class=\"bigtext\" width=\"650\">"+lrb.getString("message.admin.main.xincocron.label")+"</td>");
         out.println("</tr>");
         out.println("</table>");
@@ -182,7 +195,10 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; "+lrb.getString("general.copyright.date")+", "+lrb.getString("message.admin.main.footer"));
+        out.println("<td class=\"text\">&copy; "+lrb.getString("general.copyright.date")+", "+
+                //Avoid external links if general.setting.allowoutsidelinks is set to false
+                //Security bug
+                (db.config.isAllowOutsideLinks() ? lrb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
                 lrb.getString("message.admin.main.backtomain")+"' />" +
@@ -203,7 +219,10 @@ public class XincoCronServlet extends HttpServlet {
     /** Handles the HTTP <code>GET</code> method.
      * @param request servlet request
      * @param response servlet response
+     * @throws javax.servlet.ServletException
+     * @throws java.io.IOException 
      */
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         processRequest(request, response);
@@ -212,16 +231,20 @@ public class XincoCronServlet extends HttpServlet {
     /** Handles the HTTP <code>POST</code> method.
      * @param request servlet request
      * @param response servlet response
+     * @throws javax.servlet.ServletException
+     * @throws java.io.IOException 
      */
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         processRequest(request, response);
     }
     
     /** Returns a short description of the servlet.
+     * @return 
      */
+    @Override
     public String getServletInfo() {
         return "Servlet of xinco";
     }
-    
 }
