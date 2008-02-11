@@ -131,16 +131,9 @@ public class XincoCronServlet extends HttpServlet {
             out.println("<head>");
             out.println("<title>" + lrb.getString("message.admin.main.xincocron.label") + "</title>");
             out.println("<link rel=\"stylesheet\" href=\"xincostyle.css\" type=\"text/css\"/>");
-            if (!new XincoSettingServer("setting.allowoutsidelinks").getBoolValue()) {
-                out.println(pm.getWebBlockRightClickScript());
-            }
             out.println("</head>");
 
-            out.println("<body>");
-
-            if (!new XincoSettingServer("setting.allowoutsidelinks").getBoolValue()) {
-                out.println(pm.getWebBlockRightClickScript());
-            }
+            out.println("<body "+(!XincoSettingServer.getSetting("setting.allowoutsidelinks").getBoolValue()?"oncontextmenu='return false;' ":" ")+">");
 
             out.println("<center>");
             out.println("<span class=\"text\">");

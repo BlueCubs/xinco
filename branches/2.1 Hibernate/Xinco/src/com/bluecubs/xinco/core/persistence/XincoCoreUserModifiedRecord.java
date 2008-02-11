@@ -18,7 +18,7 @@ import javax.persistence.TemporalType;
 
 /**
  *
- * @author javydreamercsw
+ * @author Javier A. Ortiz
  */
 @Entity
 @Table(name = "xinco_core_user_modified_record")

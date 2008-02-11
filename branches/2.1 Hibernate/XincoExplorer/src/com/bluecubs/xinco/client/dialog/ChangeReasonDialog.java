@@ -39,6 +39,7 @@
 package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.exception.XincoException;
 import javax.swing.JOptionPane;
@@ -47,7 +48,7 @@ import javax.swing.JOptionPane;
  * Change Reason Dialog
  * @author Javier A. Ortiz
  */
-public class ChangeReasonDialog extends javax.swing.JDialog {
+public class ChangeReasonDialog extends AbstractDialog {
 
     private XincoCoreUser user;
     private XincoExplorer explorer = null;
@@ -61,8 +62,8 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
      * Creates new form ChangeReasonDialog
      * @param parent Dialog's parent
      * @param modal Is modal?
-     * @param explorer 
-     * @throws com.bluecubs.xinco.core.XincoException XincoException thrown
+     * @param explorer
+     * @throws com.bluecubs.xinco.core.exception.XincoException 
      */
     public ChangeReasonDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) throws XincoException {
         super(parent, modal);
@@ -75,6 +76,7 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
         this.save.setText(explorer.getResourceBundle().getString("general.save") + "!");
         this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
         setLocationRelativeTo(null);
+        addTextArea(reason);
     }
 
     /**
@@ -170,6 +172,7 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         this.done = true;
         setVisible(false);
+        
     }//GEN-LAST:event_cancelActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

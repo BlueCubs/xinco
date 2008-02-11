@@ -30,12 +30,8 @@ out.println("<html>");
 out.println("<head>");
 out.println("<title>"+rb.getString("message.admin.main.title")+"</title>");
 out.println("<link rel='stylesheet' href='xincostyle.css' type='text/css'/>");
-if(!XincoSettingServer.getSetting("setting.allowoutsidelinks").getBoolValue())
-    out.println(pm.getWebBlockRightClickScript());
 out.println("</head>");
-out.println("<body>");
-if(!XincoSettingServer.getSetting("setting.allowoutsidelinks").getBoolValue())
-    out.println(pm.getWebBlockRightClickScript());
+out.println("<body "+(!XincoSettingServer.getSetting("setting.allowoutsidelinks").getBoolValue()?"oncontextmenu='return false;' ":" ")+">");
 out.println("<center>");
 out.println("<span class='text'>");
 out.println("<br><img src='resources/images/blueCubs.gif' border='0'/>");

@@ -38,6 +38,7 @@ package com.bluecubs.xinco.client.dialog;
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreData;
 import java.util.Vector;
 
@@ -45,7 +46,7 @@ import java.util.Vector;
  *
  * @author  Javier A. Ortiz
  */
-public class AddAttributeText extends javax.swing.JDialog {
+public class AddAttributeText extends AbstractDialog {
 
     private XincoExplorer explorer;
     private boolean viewOnly = false;
@@ -75,6 +76,7 @@ public class AddAttributeText extends javax.swing.JDialog {
         } else {
             save.setEnabled(false);
         }
+        addTextArea(text);
         showMe();
     }
 
@@ -181,6 +183,7 @@ public class AddAttributeText extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         setVisible(false);
+        
     }//GEN-LAST:event_cancelActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed

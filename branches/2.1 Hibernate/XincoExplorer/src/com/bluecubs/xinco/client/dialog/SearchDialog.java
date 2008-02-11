@@ -40,6 +40,7 @@ package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.client.object.thread.XincoProgressBarThread;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataType;
@@ -58,7 +59,7 @@ import javax.swing.tree.TreePath;
  * SearchDialog
  * @author  Javier A. Ortiz
  */
-public class SearchDialog extends javax.swing.JDialog {
+public class SearchDialog extends AbstractDialog {
 
     private XincoExplorer explorer;
     private ResourceBundle xerb;
@@ -160,6 +161,9 @@ public class SearchDialog extends javax.swing.JDialog {
         this.languageList.ensureIndexIsVisible(this.languageList.getSelectedIndex());
         this.setBounds(0, 0, (new Double(getToolkit().getScreenSize().getWidth())).intValue() - 100,
                 (new Double(getToolkit().getScreenSize().getHeight())).intValue() - 75);
+        addTable(resultTable);
+        addTextField(queryValueField);
+        addTextField(variableField);
     }
 
     public void clearResults() {

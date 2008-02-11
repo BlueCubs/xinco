@@ -40,6 +40,7 @@ package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.object.XincoClientConnectionProfile;
 import com.bluecubs.xinco.client.*;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -48,7 +49,7 @@ import javax.swing.JList;
  * Connection Dialog
  * @author Javier A. Ortiz
  */
-public class ConnectionDialog extends javax.swing.JDialog {
+public class ConnectionDialog extends AbstractDialog {
 
     private XincoExplorer explorer = null;
     private int selectedProfileIndex = -1;
@@ -68,6 +69,10 @@ public class ConnectionDialog extends javax.swing.JDialog {
         initialize();
         setLocationRelativeTo(null);
         setModal(modal);
+        addTextField(endpoint);
+        addTextField(password);
+        addTextField(profileName);
+        addTextField(username);
     }
 
     /**

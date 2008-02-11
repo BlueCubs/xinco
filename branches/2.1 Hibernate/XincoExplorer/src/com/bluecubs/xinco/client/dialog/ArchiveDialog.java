@@ -40,6 +40,7 @@ package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreData;
 import java.util.Calendar;
 import java.util.Date;
@@ -52,7 +53,7 @@ import javax.swing.DefaultComboBoxModel;
  *
  * @author  Javier A. Ortiz
  */
-public class ArchiveDialog extends javax.swing.JDialog {
+public class ArchiveDialog extends AbstractDialog {
 
     private XincoExplorer explorer;
     private ResourceBundle xerb;
@@ -228,6 +229,7 @@ public class ArchiveDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
         setTitle(this.explorer.getSelectedNodeDesignation());
+        
     }//GEN-LAST:event_formWindowGainedFocus
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed

@@ -40,6 +40,7 @@ package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreLanguage;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.exception.XincoException;
@@ -54,7 +55,7 @@ import javax.swing.tree.TreePath;
  * Data folder Dialog
  * @author Javier A. Ortiz
  */
-public class DataFolderDialog extends javax.swing.JDialog {
+public class DataFolderDialog extends AbstractDialog {
 
     private XincoExplorer explorer = null;
 
@@ -124,6 +125,7 @@ public class DataFolderDialog extends javax.swing.JDialog {
             this.state.setText(text);
         }
         setVisible(true);
+        addTextField(designation);
     }
 
     /** This method is called from within the constructor to

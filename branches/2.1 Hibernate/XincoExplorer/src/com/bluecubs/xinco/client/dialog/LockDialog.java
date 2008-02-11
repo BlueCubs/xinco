@@ -36,6 +36,7 @@ package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoCoreUser;
 import java.rmi.RemoteException;
@@ -45,7 +46,7 @@ import javax.swing.JOptionPane;
  *
  * @author  Javier A. Ortiz
  */
-public class LockDialog extends javax.swing.JDialog {
+public class LockDialog extends AbstractDialog {
 
     private XincoExplorer explorer = null;
 
@@ -66,6 +67,8 @@ public class LockDialog extends javax.swing.JDialog {
         this.setTitle(explorer.getResourceBundle().getString("general.login"));
         this.passwordLabel.setText(explorer.getResourceBundle().getString("general.password"));
         this.usernameLabel.setText(explorer.getResourceBundle().getString("general.username"));
+        addTextField(username);
+        addTextField(password);
     }
 
     /** This method is called from within the constructor to

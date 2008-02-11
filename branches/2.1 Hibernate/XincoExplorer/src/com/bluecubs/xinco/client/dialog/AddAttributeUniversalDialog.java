@@ -40,6 +40,7 @@ package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
 import java.text.DateFormat;
@@ -50,7 +51,7 @@ import javax.swing.table.DefaultTableModel;
  * Add Attribute Universal Dialog
  * @author Javier A. Ortiz
  */
-public class AddAttributeUniversalDialog extends javax.swing.JDialog {
+public class AddAttributeUniversalDialog extends AbstractDialog {
 
     private XincoExplorer explorer = null;
 
@@ -122,6 +123,7 @@ public class AddAttributeUniversalDialog extends javax.swing.JDialog {
         //set selection
         table.editCellAt(0, 1);
         table.setModel(dtm);
+        addTable(table);
     }
 
     /** This method is called from within the constructor to
@@ -194,6 +196,7 @@ public class AddAttributeUniversalDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         setVisible(false);
+        
     }//GEN-LAST:event_cancelActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed

@@ -11,7 +11,7 @@ import javax.persistence.Embeddable;
 
 /**
  *
- * @author javydreamercsw
+ * @author Javier A. Ortiz
  */
 @Embeddable
 public class XincoCoreUserModifiedRecordPK implements Serializable {

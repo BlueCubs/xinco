@@ -39,6 +39,7 @@
 package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.exception.XincoException;
 import javax.swing.JOptionPane;
 
@@ -46,7 +47,7 @@ import javax.swing.JOptionPane;
  * User Dialog
  * @author Javier A. Ortiz
  */
-public class UserDialog extends javax.swing.JDialog {
+public class UserDialog extends AbstractDialog {
 
     private XincoExplorer explorer = null;
     private boolean isAged = false;
@@ -73,6 +74,14 @@ public class UserDialog extends javax.swing.JDialog {
             this.lastname.setEnabled(false);
             this.email.setEnabled(false);
         }
+        addTextField(email);
+        addTextField(id);
+        addTextField(lastname);
+        addTextField(name);
+        addTextField(password);
+        addTextField(status);
+        addTextField(username);
+        addTextField(verification);
     }
 
     private void initialize() {

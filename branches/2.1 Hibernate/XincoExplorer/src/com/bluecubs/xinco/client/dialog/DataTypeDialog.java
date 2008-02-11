@@ -39,6 +39,7 @@
 package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataType;
 import javax.swing.DefaultListModel;
@@ -47,7 +48,7 @@ import javax.swing.DefaultListModel;
  * Data Type Dialog
  * @author Javier A. Ortiz
  */
-public class DataTypeDialog extends javax.swing.JDialog {
+public class DataTypeDialog extends AbstractDialog {
 
     private XincoExplorer explorer = null;
 

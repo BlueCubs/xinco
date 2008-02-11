@@ -612,7 +612,7 @@ public class XincoJTree extends JTree {
                             }
                             // text = 2
                             if (((XincoCoreData) getExplorer().getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreDataType().getId() == 2) {
-                                getExplorer().getJDialogAddAttributesText().setViewOnly(true);
+                                getExplorer().getAbstractDialogAddAttributesText().setViewOnly(true);
                             }
                         }
                     }

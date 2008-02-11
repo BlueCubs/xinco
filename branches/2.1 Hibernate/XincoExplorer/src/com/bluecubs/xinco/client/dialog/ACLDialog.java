@@ -39,6 +39,7 @@
 package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreACE;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreGroup;
@@ -53,7 +54,7 @@ import javax.swing.ListModel;
  * ACL Dialog
  * @author Javier A. Ortiz
  */
-public class ACLDialog extends javax.swing.JDialog {
+public class ACLDialog extends AbstractDialog {
 
     private XincoExplorer explorer = null;
     private Vector temp_acl = null;

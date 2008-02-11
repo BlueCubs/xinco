@@ -231,7 +231,7 @@ public class XincoRepositoryActionHandler {
                     ((XincoCoreNode) newnode.getUserObject()).setStatusNumber(1);
                     explorer.getSession().getXincoClientRepository().treemodel.insertNodeInto(newnode, explorer.getSession().getCurrentTreeNodeSelection(), explorer.getSession().getCurrentTreeNodeSelection().getChildCount());
                     explorer.getSession().setCurrentTreeNodeSelection(newnode);
-                    explorer.getJDialogFolder();
+                    explorer.getAbstractDialogFolder();
                     //update treemodel
                     explorer.getSession().getXincoClientRepository().treemodel.reload(explorer.getSession().getCurrentTreeNodeSelection());
                     explorer.getSession().getXincoClientRepository().treemodel.nodeChanged(explorer.getSession().getCurrentTreeNodeSelection());
@@ -284,7 +284,7 @@ public class XincoRepositoryActionHandler {
             if (explorer.getSession().getCurrentTreeNodeSelection() != null) {
                 if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
                     //open folder dialog
-                    explorer.getJDialogFolder();
+                    explorer.getAbstractDialogFolder();
                 }
                 if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
                     //data wizard -> edit data object
@@ -323,7 +323,7 @@ public class XincoRepositoryActionHandler {
             ListModel dlm;
             if (explorer.getSession().getCurrentTreeNodeSelection() != null) {
                 //open ACL dialog
-                JDialog jDialogACL = explorer.getJDialogACL();
+                JDialog jDialogACL = explorer.getAbstractDialogACL();
                 //fill group list
                 dlm = (((ACLDialog) jDialogACL).getACLGroupModel());
                 String[] list = new String[explorer.getSession().getServerGroups().size()];

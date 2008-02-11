@@ -4,7 +4,6 @@ import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeServer;
-import com.bluecubs.xinco.core.server.persistence.XincoPersistenceManager;
 import com.bluecubs.xinco.core.server.persistence.XincoSettingServer;
 import java.util.List;
 import java.util.Vector;
@@ -126,7 +125,7 @@ public class XincoIndexer {
                 try {
                     writer.close();
                 } catch (Exception we) {
-                    Logger.getLogger(XincoIndexer.class.getName()).log(Level.SEVERE, null, we);
+                    Logger.getLogger(XincoIndexer.class.getName()).log(Level.INFO, null, we);
                 }
             }
             return false;

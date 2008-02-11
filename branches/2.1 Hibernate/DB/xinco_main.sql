@@ -544,6 +544,8 @@ INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value,
 
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(36,'setting.securitycheck.enable',null,null,true,null);   
 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(37,'setting.printDBTransactions.enable',null,null,false,null);   
+
 /*Inserts 51-100 reserved for Workflow settings*/ 
 
 

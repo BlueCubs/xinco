@@ -70,7 +70,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.bluecubs.xinco.index.XincoIndexThread;
 import com.bluecubs.xinco.index.XincoIndexer;
-import com.mysql.jdbc.ResultSet;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -402,15 +401,18 @@ public class XincoAdminServlet extends HttpServlet {
         }
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
             out.println("Current location: " + current_location);
-            out.println("Current location desc: " + current_locationDesc);
+            out.println("<br>Current location desc: " + current_locationDesc);
         }
         //lock user
         if (request.getParameter("DialogAdminUsersLock") != null) {
             //main admin cannot be locked
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.INFO,
+                        "Going to lock user with id: " + request.getParameter("DialogAdminUsersLock"));
+            }
             if (!(Integer.parseInt(request.getParameter("DialogAdminUsersLock")) == 1)) {
                 try {
-                    i = Integer.parseInt(request.getParameter("DialogAdminUsersLock"));
-                    temp_user = new XincoCoreUserServer(i);
+                    temp_user = new XincoCoreUserServer(Integer.parseInt(request.getParameter("DialogAdminUsersLock")));
                     temp_user.setStatusNumber(2);
                     //The logged in admin does the locking
                     if (login_user == null) {
@@ -424,10 +426,18 @@ public class XincoAdminServlet extends HttpServlet {
                     //Reason for change
                     temp_user.setReason("audit.user.account.lock");
                     temp_user.write2DB();
+                    if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
+                        Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.INFO,
+                                "User with id: " + request.getParameter("DialogAdminUsersLock") + " locked!");
+                    }
                 } catch (Throwable e) {
                     Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, e);
                 }
             } else {
+                if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
+                    Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.INFO,
+                            "Can't lock user with id: " + request.getParameter("DialogAdminUsersLock"));
+                }
                 error_message = rb.getString("error.user.account.lock");
             }
         }
@@ -483,28 +493,33 @@ public class XincoAdminServlet extends HttpServlet {
         //create new user
         if (request.getParameter("DialogNewUserSubmit") != null) {
             try {
-                //System.out.println("Creating new user...");
-                temp_user = new XincoCoreUserServer(0,
-                        request.getParameter("DialogNewUserUsername"),
-                        request.getParameter("DialogNewUserPassword"),
-                        request.getParameter("DialogNewUserLastname"),
-                        request.getParameter("DialogNewUserFirstname"),
-                        request.getParameter("DialogNewUserEmail"), 1, 0,
-                        new Timestamp(System.currentTimeMillis()));
-                tempGroup = new XincoCoreGroupServer(2);
-                temp_user.getXincoCoreGroups().addElement(tempGroup);
-                //The logged in admin does the locking
-                if (login_user == null) {
-                    temp_user.setChangerID(temp_user.getId());
+                parameters.clear();
+                parameters.put("username", request.getParameter("DialogNewUserUsername"));
+                if (pm.namedQuery("XincoCoreUser.findByUsername", parameters).isEmpty()) {
+                    temp_user = new XincoCoreUserServer(0,
+                            request.getParameter("DialogNewUserUsername"),
+                            request.getParameter("DialogNewUserPassword"),
+                            request.getParameter("DialogNewUserLastname"),
+                            request.getParameter("DialogNewUserFirstname"),
+                            request.getParameter("DialogNewUserEmail"), 1, 0,
+                            new Timestamp(System.currentTimeMillis()));
+                    tempGroup = new XincoCoreGroupServer(2);
+                    temp_user.getXincoCoreGroups().addElement(tempGroup);
+                    //The logged in admin does the locking
+                    if (login_user == null) {
+                        temp_user.setChangerID(temp_user.getId());
+                    } else {
+                        temp_user.setChangerID(login_user.getId());
+                    }
+                    temp_user.setWriteGroups(true);
+                    //Register change in audit trail
+                    temp_user.setChange(true);
+                    //Reason for change
+                    temp_user.setReason("audit.user.account.create");
+                    temp_user.write2DB();
                 } else {
-                    temp_user.setChangerID(login_user.getId());
+                    out.println(rb.getString("error.unique.username"));
                 }
-                temp_user.setWriteGroups(true);
-                //Register change in audit trail
-                temp_user.setChange(true);
-                //Reason for change
-                temp_user.setReason("audit.user.account.create");
-                temp_user.write2DB();
             } catch (Throwable e) {
                 Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, e);
             }
@@ -512,9 +527,15 @@ public class XincoAdminServlet extends HttpServlet {
         //create new group
         if (request.getParameter("DialogNewGroupSubmit") != null) {
             try {
-                tempGroup = new XincoCoreGroupServer(0, request.getParameter("DialogNewGroupName"), 1);
-                tempGroup.setChangerID(login_user.getId());
-                tempGroup.write2DB();
+                parameters.clear();
+                parameters.put("designation", request.getParameter("DialogNewGroupName"));
+                if (pm.namedQuery("XincoCoreGroup.findByDesignation", parameters).isEmpty()) {
+                    tempGroup = new XincoCoreGroupServer(0, request.getParameter("DialogNewGroupName"), 1);
+                    tempGroup.setChangerID(login_user.getId());
+                    tempGroup.write2DB();
+                } else {
+                    out.println(rb.getString("error.unique.groupname"));
+                }
             } catch (Throwable ex) {
                 Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -526,7 +547,6 @@ public class XincoAdminServlet extends HttpServlet {
                 tempGroup.setDesignation(request.getParameter("DialogEditGroupName"));
                 tempGroup.setChangerID(login_user.getId());
                 tempGroup.write2DB();
-
             } catch (Throwable ex) {
                 Logger.getLogger(XincoAdminServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -678,8 +698,6 @@ public class XincoAdminServlet extends HttpServlet {
         //Password changed due to aging
         if (request.getParameter("changePassword") != null) {
             try {
-                ResultSet rs = null;
-                String sql = null;
                 int id = 0;
                 try {
                     parameters.clear();
@@ -745,19 +763,10 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<head>");
         out.println("<title>XincoAdmin</title>");
         out.println("<link rel=\"stylesheet\" href=\"xincostyle.css\" type=\"text/css\"/>");
-        //Avoid external links if general.setting.allowoutsidelinks is set to false
-        //Security bug (must appear in both head and body, is duplicated on purpose)
-        if (!config.isAllowOutsideLinks()) {
-            out.println(pm.getWebBlockRightClickScript());
-        }
         out.println("</head>");
-        out.println("<body onload=\"if (document.forms[0] != null) { if (document.forms[0].elements[0] != null) { document.forms[0].elements[0].focus(); } }\">");
-
-        //Avoid external links if general.setting.allowoutsidelinks is set to false
-        //Security bug (must appear in both head and body, is duplicated on purpose)
-        if (!config.isAllowOutsideLinks()) {
-            out.println(pm.getWebBlockRightClickScript());
-        }
+        out.println("<body "+(!XincoSettingServer.getSetting("setting.allowoutsidelinks").getBoolValue()?
+            "oncontextmenu='return false;' ":" ")+" onload=\"if (document.forms[0] != null) " +
+            "{ if (document.forms[0].elements[0] != null) { document.forms[0].elements[0].focus(); } }\">");
         out.println("<center>");
         out.println("<span class=\"text\">");
 
@@ -1024,11 +1033,14 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
                     out.println("<tr>");
                     out.println("<td class=\"text\">" + rb.getString("general.name") + ":</td>");
-                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditGroupName\" size=\"40\" value=\"" + pm.localizeString(tempGroup.getDesignation()) + "\"/></td>");
+                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditGroupName\" size=\"40\" value=\"" +
+                            pm.localizeString(tempGroup.getDesignation()) + "\"/></td>");
                     out.println("</tr>");
                     out.println("<tr>");
                     out.println("<td class=\"text\">&nbsp;</td>");
-                    out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogEditGroupID\" value=\"" + currentGroupSelection + "\"/><input type=\"submit\" name=\"DialogEditGroupSubmit\" value=\"" +
+                    out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") +
+                            "'/><input type=\"hidden\" name=\"DialogEditGroupID\" value=\"" + currentGroupSelection +
+                            "\"/><input type=\"submit\" name=\"DialogEditGroupSubmit\" value=\"" +
                             rb.getString("general.save") + "!\"/></td>");
                     out.println("</tr>");
                     out.println("</table>");
@@ -1060,8 +1072,8 @@ public class XincoAdminServlet extends HttpServlet {
                 out.println("</tr>");
                 for (i = 0; i < allusers.size(); i++) {
                     member_ofGroup = false;
-                    for (j = 0; j < ((XincoCoreUserServer) allusers.elementAt(i)).getXincoCoreGroups().size(); j++) {
-                        if (((XincoCoreGroup) ((XincoCoreUserServer) allusers.elementAt(i)).getXincoCoreGroups().elementAt(j)).getId() == currentGroupSelection) {
+                    for (j = 0; j < new XincoCoreUserServer(((XincoCoreUser) allusers.elementAt(i)).getId()).getXincoCoreGroups().size(); j++) {
+                        if (((XincoCoreGroup) new XincoCoreUserServer(((XincoCoreUser) allusers.elementAt(i)).getId()).getXincoCoreGroups().elementAt(j)).getId() == currentGroupSelection) {
                             member_ofGroup = true;
                             break;
                         }
@@ -1384,7 +1396,6 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("        <center>");
                     out.write("            ");
 
-                    ResultSet rs;
                     pm.setLocale(loc);
                     String column = "id";
                     if (request.getParameter("table").equals("xincoAddAttribute")) {
@@ -1449,7 +1460,6 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("</h1>\n");
                     out.write("            ");
 
-                    ResultSet rs;
                     String column = "id";
                     if (request.getParameter("table").equals("xincoAddAttribute")) {
                         column = "xincoCoreDataId";
@@ -1517,7 +1527,6 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("        <center><h1>");
                     out.write("        ");
 
-                    ResultSet rs;
 //                    =  new Xincoanager();
 //                    DatabaseMetaData meta = .
 //                    getConnection().getMetaData();

@@ -233,17 +233,8 @@ public class XincoPublisherServlet extends HttpServlet {
                 out.println("<title>" + xcd.getDesignation() + "</title>");
                 out.println("<link rel=\"stylesheet\" href=\"../../xincostyle.css\" type=\"text/css\"/>");
             }
-            if (!config.isAllowOutsideLinks()) {
-                out.println(pm.getWebBlockRightClickScript());
-            }
             out.println("</head>");
-            out.println("<body>");
-
-            //Avoid external links if setting.allowoutsidelinks is set to false
-            //Security bug
-            if (!config.isAllowOutsideLinks()) {
-                out.println(pm.getWebBlockRightClickScript());
-            }
+            out.println("<body "+(!XincoSettingServer.getSetting("setting.allowoutsidelinks").getBoolValue()?"oncontextmenu='return false;' ":" ")+">");
             out.println("<center>");
             out.println("");
 

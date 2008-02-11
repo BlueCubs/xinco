@@ -39,6 +39,7 @@
 package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreLog;
 import javax.swing.JOptionPane;
@@ -48,7 +49,7 @@ import javax.swing.JOptionPane;
  * Log Dialog
  * @author Javier A. Ortiz
  */
-public class LogDialog extends javax.swing.JDialog {
+public class LogDialog extends AbstractDialog {
 
     private XincoExplorer explorer = null;
     private int log_index = 0;
@@ -117,6 +118,7 @@ public class LogDialog extends javax.swing.JDialog {
             text = "" + ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().elementAt(log_index)).getVersion().getVersionPostfix();
             this.versionPostfix.setText(text);
         }
+        addTextArea(reason);
     }
 
     /** This method is called from within the constructor to

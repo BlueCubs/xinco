@@ -17,7 +17,7 @@ import javax.persistence.Table;
 
 /**
  *
- * @author javydreamercsw
+ * @author Javier A. Ortiz
  */
 @Entity
 @Table(name = "xinco_setting")

@@ -39,6 +39,7 @@
 package com.bluecubs.xinco.client.dialog;
 
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreLanguage;
 import java.util.Locale;
@@ -48,7 +49,7 @@ import javax.swing.DefaultListModel;
  * Data Dialog
  * @author Javier A. Ortiz
  */
-public class DataDialog extends javax.swing.JDialog {
+public class DataDialog extends AbstractDialog {
 
     private XincoExplorer explorer = null;
 
@@ -124,6 +125,7 @@ public class DataDialog extends javax.swing.JDialog {
             }
             this.status.setText(text);
         }
+        addTextField(designation);
     }
 
     /** This method is called from within the constructor to
