@@ -23,7 +23,7 @@
  *
  * Description:     Xinco Crypter
  *
- * Original Author: Javier Ortiz
+ * Original Author: Javier A. Ortiz
  * Date:            March 6, 2006, 3:43 PM
  *
  * Modifications:
@@ -32,8 +32,7 @@
  * 
  *************************************************************
  */
-
-package com.bluecubs.xinco.core.server;
+package com.bluecubs.xinco.tools;
 
 import java.io.UnsupportedEncodingException;
 import java.security.spec.AlgorithmParameterSpec;
@@ -48,25 +47,27 @@ import org.apache.axis.encoding.Base64;
 
 /**
  *
- * @author ortizbj
+ * @author Javier A. Ortiz
  */
 /**
  * Creates a new instance of XincoCrypter
  */
 public class XincoCrypter {
+
     private Cipher ecipher;
     private Cipher dcipher;
-    private Base64 base64= new Base64();
-    
     // 8-byte Salt
     byte[] salt = {
-        (byte)0xA9, (byte)0x9B, (byte)0xC8, (byte)0x32,
-        (byte)0x56, (byte)0x35, (byte)0xE3, (byte)0x03
+        (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32,
+        (byte) 0x56, (byte) 0x35, (byte) 0xE3, (byte) 0x03
     };
-    
     // Iteration count
     int iterationCount = 19;
-    
+
+    /**
+     * Constructor
+     * @param passPhrase
+     */
     public XincoCrypter(String passPhrase) {
         try {
             // Create the key
@@ -75,10 +76,10 @@ public class XincoCrypter {
                     "PBEWithMD5AndDES").generateSecret(keySpec);
             ecipher = Cipher.getInstance(key.getAlgorithm());
             dcipher = Cipher.getInstance(key.getAlgorithm());
-            
+
             // Prepare the parameter to the ciphers
             AlgorithmParameterSpec paramSpec = new PBEParameterSpec(salt, iterationCount);
-            
+
             // Create the ciphers
             ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
             dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
@@ -94,17 +95,22 @@ public class XincoCrypter {
             e.printStackTrace();
         }
     }
-    
+
+    /**
+     * Encript string
+     * @param str
+     * @return String
+     */
     public String encrypt(String str) {
         try {
             // Encode the string into bytes using utf-8
             byte[] utf8 = str.getBytes("UTF8");
-            
+
             // Encrypt
             byte[] enc = ecipher.doFinal(utf8);
-            
+
             // Encode bytes to base64 to get a string
-            return base64.encode(enc);
+            return Base64.encode(enc);
         } catch (javax.crypto.BadPaddingException e) {
             e.printStackTrace();
         } catch (IllegalBlockSizeException e) {
@@ -116,15 +122,19 @@ public class XincoCrypter {
         }
         return null;
     }
-    
+
+    /**
+     * Decrypt
+     * @param str
+     * @return
+     */
     public String decrypt(String str) {
         try {
             // Decode base64 to get bytes
-            byte[] dec = base64.decode(str);
-            
+            byte[] dec = Base64.decode(str);
+
             // Decrypt
             byte[] utf8 = dcipher.doFinal(dec);
-            
             // Decode using utf-8
             return new String(utf8, "UTF8");
         } catch (javax.crypto.BadPaddingException e) {
