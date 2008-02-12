@@ -39,7 +39,8 @@
 
 package com.bluecubs.xinco.client.dialogs;
 
-import com.bluecubs.xinco.client.*;
+import com.bluecubs.xinco.client.XincoClientConnectionProfile;
+import com.bluecubs.xinco.client.XincoExplorer;
 import java.util.Vector;
 import javax.swing.DefaultListModel; 
 import javax.swing.JList;
@@ -101,7 +102,7 @@ public class ConnectionDialog extends javax.swing.JDialog {
         });
         dlm = (DefaultListModel)this.profileList.getModel();
         for (int i=0;i<((Vector)explorer.getConfig().elementAt(0)).size();i++) {
-            dlm.addElement(new String(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(i)).toString()));
+            dlm.addElement(((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(i)).toString());
         }
     }
     

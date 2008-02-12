@@ -966,13 +966,13 @@ public class XincoExplorer extends JFrame {
                     // only nodes have children
                     if (node.getUserObject().getClass() == XincoCoreNode.class) {
                         // check for children only if none have been found yet
-                        if ((((XincoCoreNode) node.getUserObject()).getXinco_core_nodes().size() ==  0) &&
-                                (((XincoCoreNode) node.getUserObject()).getXinco_core_data().size() ==   0)) {
+                        if ((((XincoCoreNode) node.getUserObject()).getXinco_core_nodes().size() == 0) &&
+                                (((XincoCoreNode) node.getUserObject()).getXinco_core_data().size() == 0)) {
                             try {
                                 XincoCoreNode xnode = xincoClientSession.xinco.getXincoCoreNode((XincoCoreNode) node.getUserObject(),
                                         xincoClientSession.user);
 
-                                if (xnode !=   null) {
+                                if (xnode != null) {
                                     xincoClientSession.xincoClientRepository.assignObject2TreeNode(node,
                                             xnode,
                                             xincoClientSession.xinco,
@@ -989,7 +989,7 @@ public class XincoExplorer extends JFrame {
                         }
                     }
                     // load full data
-                    if (node.getUserObject().getClass() ==    XincoCoreData.class) {
+                    if (node.getUserObject().getClass() == XincoCoreData.class) {
                         try {
                             xdata = xincoClientSession.xinco.getXincoCoreData((XincoCoreData) node.getUserObject(),
                                     xincoClientSession.user);
@@ -2094,6 +2094,9 @@ public class XincoExplorer extends JFrame {
     /**
      * This method imports files + subfolders of a folder into node
      *
+     * @param node XincoCoreNode
+     * @param folder File
+     * @throws java.lang.Exception 
      */
     @SuppressWarnings("unchecked")
     public void importContentOfFolder(XincoCoreNode node, File folder) throws Exception {
@@ -2310,7 +2313,7 @@ public class XincoExplorer extends JFrame {
     /**
      * This method leads through data adding/editing
      *
-     * @return void
+     * @param wizard_type 
      */
     @SuppressWarnings("unchecked")
     public void doDataWizard(final int wizard_type) {
@@ -2332,12 +2335,12 @@ public class XincoExplorer extends JFrame {
         = 14 = preview data
          */
         int i = 0, j = 0;
-        XincoMutableTreeNode newnode = new XincoMutableTreeNode(new XincoCoreData());
-        XincoCoreData xdata = null;
-        XincoCoreLog newlog = new XincoCoreLog();
+        newnode = new XincoMutableTreeNode(new XincoCoreData());
+        xdata = null;
+        newlog = new XincoCoreLog();
 
-        InputStream in = null;
-        byte[] byte_array = null;
+        in = null;
+        byte_array = null;
         if (xincoClientSession.getCurrentTreeNodeSelection() != null) {
             //execute wizard as a whole
             try {
@@ -2660,7 +2663,6 @@ public class XincoExplorer extends JFrame {
                         //save log to server
                         newlog = xincoClientSession.xinco.setXincoCoreLog(newlog, xincoClientSession.user);
                         if (newlog == null) {
-                        //System.out.println(xerb.getString("datawizard.savelogfailed"));
                         } else {
                             ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().addElement(newlog);
                         }
@@ -3008,7 +3010,7 @@ public class XincoExplorer extends JFrame {
     /**
      * This method sets current path and filename
      *
-     * @return void
+     * @param s String representing path
      */
     public void setCurrentPath(String s) {
         if (!(s.substring(s.length() - 1).equals(System.getProperty("file.separator")))) {
@@ -3208,14 +3210,16 @@ public class XincoExplorer extends JFrame {
      */
     public void saveConfig() {
         try {
-            java.io.FileOutputStream fout = new java.io.FileOutputStream(System.getProperty("user.home") + System.getProperty("file.separator") + "xincoClientConfig.dat");
+            java.io.FileOutputStream fout =
+                    new java.io.FileOutputStream(System.getProperty("user.home") +
+                    System.getProperty("file.separator") + "xincoClientConfig.dat");
             java.io.ObjectOutputStream os = new java.io.ObjectOutputStream(fout);
             os.writeObject(xincoClientConfig);
             os.close();
             fout.close();
         } catch (Exception ioe) {
-        //error handling
-        //System.out.println("Unable to write Profiles-File!");
+            //error handling
+            System.out.println("Unable to write Profiles-File!");
         }
     }
 
@@ -3231,7 +3235,6 @@ public class XincoExplorer extends JFrame {
             Vector tmp_vector;
             FileInputStream fin;
             ObjectInputStream ois;
-
             //get old settings
             try {
                 fin = new FileInputStream("xincoClientConnectionProfiles.dat");
@@ -3247,27 +3250,22 @@ public class XincoExplorer extends JFrame {
             } catch (Exception ioe2) {
                 tmp_vector_old = null;
             }
-
             fin = new FileInputStream(System.getProperty("user.home") + System.getProperty("file.separator") + "xincoClientConfig.dat");
             ois = new ObjectInputStream(fin);
-
             try {
                 while ((tmp_vector = (Vector) ois.readObject()) != null) {
                     xincoClientConfig = tmp_vector;
                 }
             } catch (Exception ioe3) {
             }
-
             ois.close();
             fin.close();
-
             //insert old settings
             if (tmp_vector_old != null) {
                 xincoClientConfig.setElementAt(tmp_vector_old, 0);
             }
             //delete old settings
             (new File("xincoClientConnectionProfiles.dat")).delete();
-
         } catch (Exception ioe) {
             //error handling
             //create config
@@ -3331,10 +3329,6 @@ public class XincoExplorer extends JFrame {
             jDialogArchive.setResizable(false);
         }
         return jDialogArchive;
-    }
-
-    private int get_global_dialog_return_value() {
-        return this.global_dialog_return_value;
     }
 
     public void set_global_dialog_return_value(int v) {

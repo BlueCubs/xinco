@@ -89,7 +89,7 @@ TYPE=InnoDB;
 
 INSERT INTO xinco_core_data_type VALUES (1, 'File', 'Files stored on the server file system.');    
 INSERT INTO xinco_core_data_type VALUES (2, 'Text', 'Text stored inside the data base.');     
-INSERT INTO xinco_core_data_type VALUES (3, 'URL', 'General uniform ressource locator.');      
+INSERT INTO xinco_core_data_type VALUES (3, 'URL', 'General uniform resource locator.');      
 
 INSERT INTO xinco_core_data_type VALUES (4, 'Contact', 'Personal and business contacts.');      
 
