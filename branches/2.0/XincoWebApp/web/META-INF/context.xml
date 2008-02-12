@@ -20,7 +20,7 @@
   maxIdle="30" maxWait="10000" name="jdbc/XincoDB" 
   type="javax.sql.DataSource" 
   url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true" username="root" 
-  password="lyjx100pre"/>
+  password=""/>
   <!-- #################### ################ ####################-->
 
   <ResourceParams name="jdbc/XincoDB">

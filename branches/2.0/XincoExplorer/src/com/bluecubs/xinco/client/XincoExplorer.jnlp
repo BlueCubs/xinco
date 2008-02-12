@@ -24,6 +24,7 @@
   </information>
   <resources locale="" os="">
     <j2se href="http://java.sun.com/products/autodl/j2se" version="1.5.0+"/>
+    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.6.0+"/>
     <!-- required libraries, ALL SIGNED -->
     <jar download="eager" href="XincoExplorer.jar" main="true"/>
     <jar href="activation.jar"/>
@@ -33,7 +34,7 @@
     <jar href="jaxrpc.jar"/>
     <jar href="mail.jar"/>
     <jar href="saaj.jar"/>
-    <jar href="swing-layout-1.0.jar"/>
+    <jar href="swing-layout-1.0.3.jar"/>
     <jar href="wsdl4j-1.5.1.jar"/>
     <jar href="xercesImpl.jar"/>
     <jar href="Xinco.jar"/>

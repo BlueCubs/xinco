@@ -83,6 +83,9 @@
   <!-- Time frame for repeatingly running the archiver (milliseconds): -->
   <Environment name="xinco/FileArchivePeriod" value="14400000" type="java.lang.Long" override="false"/>
 
+  <!-- Setting for allowing links outside of Xinco: -->
+  <Environment name="setting.allowoutsidelinks" override="false" type="java.lang.String" value="True"/>
+
   <!-- #################### ################ ####################-->
 
 

@@ -459,8 +459,6 @@
     </target>
     <target depends="init,compile,compile-jsps,-pre-dist,-do-dist-with-manifest,-do-dist-without-manifest" name="do-dist"/>
     <target depends="init" if="dist.ear.dir" name="library-inclusion-in-manifest">
-        <basename file="${reference.XincoExplorer.jar}" property="included.lib.reference.XincoExplorer.jar"/>
-        <copy-ear-war file="${reference.XincoExplorer.jar}" propname="included.lib.reference.XincoExplorer.jar.X"/>
         <basename file="${libs.XincoLibs-2.0.3.classpath.libfile.21}" property="included.lib.libs.XincoLibs-2.0.3.classpath.21"/>
         <basename file="${libs.XincoLibs-2.0.3.classpath.libfile.20}" property="included.lib.libs.XincoLibs-2.0.3.classpath.20"/>
         <basename file="${libs.XincoLibs-2.0.3.classpath.libfile.19}" property="included.lib.libs.XincoLibs-2.0.3.classpath.19"/>
@@ -505,6 +503,8 @@
         <copy-ear-war file="${libs.XincoLibs-2.0.3.classpath.libfile.1}" propname="included.lib.libs.XincoLibs-2.0.3.classpath.1.X"/>
         <basename file="${reference.Xinco.jar}" property="included.lib.reference.Xinco.jar"/>
         <copy-ear-war file="${reference.Xinco.jar}" propname="included.lib.reference.Xinco.jar.X"/>
+        <basename file="${reference.XincoExplorer.jar}" property="included.lib.reference.XincoExplorer.jar"/>
+        <copy-ear-war file="${reference.XincoExplorer.jar}" propname="included.lib.reference.XincoExplorer.jar.X"/>
         <copy file="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir}/client"/>
         <copy file="${reference.Xinco.jar}" todir="${build.web.dir}/client"/>
         <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
@@ -524,12 +524,11 @@
         <copy file="${libs.XincoLibsClient-2.0.3.classpath.libfile.1}" todir="${build.web.dir}/client"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
         <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.reference.XincoExplorer.jar} ${included.lib.libs.XincoLibs-2.0.3.classpath.1.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.2.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.3.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.4.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.5.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.6.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.7.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.8.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.9.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.10.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.11.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.12.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.13.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.14.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.15.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.16.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.17.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.18.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.19.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.20.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.21.X} ${included.lib.reference.Xinco.jar} "/>
+            <attribute name="Class-Path" value="${included.lib.libs.XincoLibs-2.0.3.classpath.1.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.2.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.3.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.4.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.5.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.6.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.7.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.8.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.9.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.10.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.11.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.12.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.13.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.14.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.15.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.16.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.17.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.18.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.19.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.20.X} ${included.lib.libs.XincoLibs-2.0.3.classpath.21.X} ${included.lib.reference.Xinco.jar} ${included.lib.reference.XincoExplorer.jar} "/>
         </manifest>
         <delete dir="${dist.ear.dir}/temp"/>
     </target>
     <target depends="init" name="library-inclusion-in-archive" unless="dist.ear.dir">
-        <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.XincoLibs-2.0.3.classpath.libfile.21}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.XincoLibs-2.0.3.classpath.libfile.20}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.XincoLibs-2.0.3.classpath.libfile.19}" todir="${build.web.dir}/WEB-INF/lib"/>
@@ -552,6 +551,7 @@
         <copy file="${libs.XincoLibs-2.0.3.classpath.libfile.2}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.XincoLibs-2.0.3.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${reference.Xinco.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir}/client"/>
         <copy file="${reference.Xinco.jar}" todir="${build.web.dir}/client"/>
         <copy file="${reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
