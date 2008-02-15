@@ -36,14 +36,18 @@
 
 package com.bluecubs.xinco.server;
 
-import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import com.bluecubs.xinco.archive.*;
-import com.bluecubs.xinco.index.*;
+import com.bluecubs.xinco.archive.XincoArchiveThread;
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.index.XincoIndexOptimizeThread;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class XincoCronServlet extends HttpServlet {
     ResourceBundle lrb;
