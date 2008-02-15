@@ -138,7 +138,7 @@ public class XincoConfigSingletonServer {
             allowOutsideLinks = true;
             JNDIDB = "java:comp/env/jdbc/XincoDB";
             MaxSearchResult = 30;
-            FileIndexOptimizerPeriod = 604800000;
+            FileIndexOptimizerPeriod = 14400000;
         }
     }
 
