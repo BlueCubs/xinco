@@ -33,7 +33,6 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.archive;
 
 import java.util.Calendar;
@@ -46,48 +45,47 @@ import com.bluecubs.xinco.core.server.XincoDBManager;
  * (only one archiving thread is allowed)
  */
 public class XincoArchiveThread extends Thread {
-	
-	public static XincoArchiveThread instance = null;
-	
-	public Calendar firstRun = null;
-	public Calendar lastRun = null;
-	
-	public void run() {
-		long archive_period = 14400000;
-		firstRun = new GregorianCalendar();
-		while (true) {
-			try {
-				XincoDBManager dbm = null;
-				dbm = new XincoDBManager();
-				archive_period = dbm.config.FileArchivePeriod;
-				//exit archiver if period = 0
-				if (archive_period == 0) {
-					break;
-				}
-				XincoArchiver.archiveData(dbm);
-				lastRun = new GregorianCalendar();
-				dbm.con.close();
-				dbm = null;
-			} catch (Exception e){
-				//continue, wait and try again...
-				archive_period = 14400000;
-			}
-			try {
-				Thread.sleep(archive_period);
-			} catch (Exception se) {
-				break;
-			}
-		}
-	}
-	
-	public static XincoArchiveThread getInstance() {
-		if (instance == null) {
-			instance = new XincoArchiveThread();
-		}
-		return instance;
-	}
-	
-	private XincoArchiveThread() {
-	}
-	
+
+    public static XincoArchiveThread instance = null;
+    public Calendar firstRun = null;
+    public Calendar lastRun = null;
+
+    @Override
+    public void run() {
+        long archive_period = 14400000;
+        firstRun = new GregorianCalendar();
+        while (true) {
+            try {
+                XincoDBManager dbm = null;
+                dbm = new XincoDBManager();
+                archive_period = dbm.config.FileArchivePeriod;
+                //exit archiver if period = 0
+                if (archive_period == 0) {
+                    break;
+                }
+                XincoArchiver.archiveData(dbm);
+                lastRun = new GregorianCalendar();
+                dbm.con.close();
+                dbm = null;
+            } catch (Exception e) {
+                //continue, wait and try again...
+                archive_period = 14400000;
+            }
+            try {
+                Thread.sleep(archive_period);
+            } catch (Exception se) {
+                break;
+            }
+        }
+    }
+
+    public static XincoArchiveThread getInstance() {
+        if (instance == null) {
+            instance = new XincoArchiveThread();
+        }
+        return instance;
+    }
+
+    private XincoArchiveThread() {
+    }
 }

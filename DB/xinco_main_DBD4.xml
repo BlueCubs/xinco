@@ -1,479 +1,974 @@
-CREATE TABLE xinco_add_attribute (
-  xinco_core_data_id INTEGER UNSIGNED NOT NULL,
-  attribute_id INTEGER UNSIGNED NOT NULL,
-  attrib_int INTEGER NULL,
-  attrib_unsignedint INTEGER UNSIGNED NULL,
-  attrib_double DOUBLE NULL,
-  attrib_varchar VARCHAR(255) NULL,
-  attrib_text TEXT NULL,
-  attrib_datetime DATETIME NULL,
-  PRIMARY KEY(xinco_core_data_id, attribute_id),
-  INDEX xinco_add_attribute_FKIndex1(xinco_core_data_id)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_add_attribute (xinco_core_data_id, attribute_id, attrib_text) VALUES (1, 1, '
-                                 Apache License
-                           Version 2.0, January 2004
-                        http://www.apache.org/licenses/
-
-   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
-
-   1. Definitions.
-
-      "License" shall mean the terms and conditions for use, reproduction,
-      and distribution as defined by Sections 1 through 9 of this document.
-
-      "Licensor" shall mean the copyright owner or entity authorized by
-      the copyright owner that is granting the License.
-
-      "Legal Entity" shall mean the union of the acting entity and all
-      other entities that control, are controlled by, or are under common
-      control with that entity. For the purposes of this definition,
-      "control" means (i) the power, direct or indirect, to cause the
-      direction or management of such entity, whether by contract or
-      otherwise, or (ii) ownership of fifty percent (50%) or more of the
-      outstanding shares, or (iii) beneficial ownership of such entity.
-
-      "You" (or "Your") shall mean an individual or Legal Entity
-      exercising permissions granted by this License.
-
-      "Source" form shall mean the preferred form for making modifications,
-      including but not limited to software source code, documentation
-      source, and configuration files.
-
-      "Object" form shall mean any form resulting from mechanical
-      transformation or translation of a Source form, including but
-      not limited to compiled object code, generated documentation,
-      and conversions to other media types.
-
-      "Work" shall mean the work of authorship, whether in Source or
-      Object form, made available under the License, as indicated by a
-      copyright notice that is included in or attached to the work
-      (an example is provided in the Appendix below).
-
-      "Derivative Works" shall mean any work, whether in Source or Object
-      form, that is based on (or derived from) the Work and for which the
-      editorial revisions, annotations, elaborations, or other modifications
-      represent, as a whole, an original work of authorship. For the purposes
-      of this License, Derivative Works shall not include works that remain
-      separable from, or merely link (or bind by name) to the interfaces of,
-      the Work and Derivative Works thereof.
-
-      "Contribution" shall mean any work of authorship, including
-      the original version of the Work and any modifications or additions
-      to that Work or Derivative Works thereof, that is intentionally
-      submitted to Licensor for inclusion in the Work by the copyright owner
-      or by an individual or Legal Entity authorized to submit on behalf of
-      the copyright owner. For the purposes of this definition, "submitted"
-      means any form of electronic, verbal, or written communication sent
-      to the Licensor or its representatives, including but not limited to
-      communication on electronic mailing lists, source code control systems,
-      and issue tracking systems that are managed by, or on behalf of, the
-      Licensor for the purpose of discussing and improving the Work, but
-      excluding communication that is conspicuously marked or otherwise
-      designated in writing by the copyright owner as "Not a Contribution."
-
-      "Contributor" shall mean Licensor and any individual or Legal Entity
-      on behalf of whom a Contribution has been received by Licensor and
-      subsequently incorporated within the Work.
-
-   2. Grant of Copyright License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      copyright license to reproduce, prepare Derivative Works of,
-      publicly display, publicly perform, sublicense, and distribute the
-      Work and such Derivative Works in Source or Object form.
-
-   3. Grant of Patent License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      (except as stated in this section) patent license to make, have made,
-      use, offer to sell, sell, import, and otherwise transfer the Work,
-      where such license applies only to those patent claims licensable
-      by such Contributor that are necessarily infringed by their
-      Contribution(s) alone or by combination of their Contribution(s)
-      with the Work to which such Contribution(s) was submitted. If You
-      institute patent litigation against any entity (including a
-      cross-claim or counterclaim in a lawsuit) alleging that the Work
-      or a Contribution incorporated within the Work constitutes direct
-      or contributory patent infringement, then any patent licenses
-      granted to You under this License for that Work shall terminate
-      as of the date such litigation is filed.
-
-   4. Redistribution. You may reproduce and distribute copies of the
-      Work or Derivative Works thereof in any medium, with or without
-      modifications, and in Source or Object form, provided that You
-      meet the following conditions:
-
-      (a) You must give any other recipients of the Work or
-          Derivative Works a copy of this License; and
-
-      (b) You must cause any modified files to carry prominent notices
-          stating that You changed the files; and
-
-      (c) You must retain, in the Source form of any Derivative Works
-          that You distribute, all copyright, patent, trademark, and
-          attribution notices from the Source form of the Work,
-          excluding those notices that do not pertain to any part of
-          the Derivative Works; and
-
-      (d) If the Work includes a "NOTICE" text file as part of its
-          distribution, then any Derivative Works that You distribute must
-          include a readable copy of the attribution notices contained
-          within such NOTICE file, excluding those notices that do not
-          pertain to any part of the Derivative Works, in at least one
-          of the following places: within a NOTICE text file distributed
-          as part of the Derivative Works; within the Source form or
-          documentation, if provided along with the Derivative Works; or,
-          within a display generated by the Derivative Works, if and
-          wherever such third-party notices normally appear. The contents
-          of the NOTICE file are for informational purposes only and
-          do not modify the License. You may add Your own attribution
-          notices within Derivative Works that You distribute, alongside
-          or as an addendum to the NOTICE text from the Work, provided
-          that such additional attribution notices cannot be construed
-          as modifying the License.
-
-      You may add Your own copyright statement to Your modifications and
-      may provide additional or different license terms and conditions
-      for use, reproduction, or distribution of Your modifications, or
-      for any such Derivative Works as a whole, provided Your use,
-      reproduction, and distribution of the Work otherwise complies with
-      the conditions stated in this License.
-
-   5. Submission of Contributions. Unless You explicitly state otherwise,
-      any Contribution intentionally submitted for inclusion in the Work
-      by You to the Licensor shall be under the terms and conditions of
-      this License, without any additional terms or conditions.
-      Notwithstanding the above, nothing herein shall supersede or modify
-      the terms of any separate license agreement you may have executed
-      with Licensor regarding such Contributions.
-
-   6. Trademarks. This License does not grant permission to use the trade
-      names, trademarks, service marks, or product names of the Licensor,
-      except as required for reasonable and customary use in describing the
-      origin of the Work and reproducing the content of the NOTICE file.
-
-   7. Disclaimer of Warranty. Unless required by applicable law or
-      agreed to in writing, Licensor provides the Work (and each
-      Contributor provides its Contributions) on an "AS IS" BASIS,
-      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-      implied, including, without limitation, any warranties or conditions
-      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
-      PARTICULAR PURPOSE. You are solely responsible for determining the
-      appropriateness of using or redistributing the Work and assume any
-      risks associated with Your exercise of permissions under this License.
-
-   8. Limitation of Liability. In no event and under no legal theory,
-      whether in tort (including negligence), contract, or otherwise,
-      unless required by applicable law (such as deliberate and grossly
-      negligent acts) or agreed to in writing, shall any Contributor be
-      liable to You for damages, including any direct, indirect, special,
-      incidental, or consequential damages of any character arising as a
-      result of this License or out of the use or inability to use the
-      Work (including but not limited to damages for loss of goodwill,
-      work stoppage, computer failure or malfunction, or any and all
-      other commercial damages or losses), even if such Contributor
-      has been advised of the possibility of such damages.
-
-   9. Accepting Warranty or Additional Liability. While redistributing
-      the Work or Derivative Works thereof, You may choose to offer,
-      and charge a fee for, acceptance of support, warranty, indemnity,
-      or other liability obligations and/or rights consistent with this
-      License. However, in accepting such obligations, You may act only
-      on Your own behalf and on Your sole responsibility, not on behalf
-      of any other Contributor, and only if You agree to indemnify,
-      defend, and hold each Contributor harmless for any liability
-      incurred by, or claims asserted against, such Contributor by reason
-      of your accepting any such warranty or additional liability.
-
-   END OF TERMS AND CONDITIONS
-
-   APPENDIX: How to apply the Apache License to your work.
-
-      To apply the Apache License to your work, attach the following
-      boilerplate notice, with the fields enclosed by brackets "[]"
-      replaced with your own identifying information. (Don\'t include
-      the brackets!)  The text should be enclosed in the appropriate
-      comment syntax for the file format. We also recommend that a
-      file or class name and description of purpose be included on the
-      same "printed page" as the copyright notice for easier
-      identification within third-party archives.
-
-   Copyright [yyyy] [name of copyright owner]
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-');  
-INSERT INTO xinco_add_attribute (xinco_core_data_id, attribute_id, attrib_varchar) VALUES (2, 1, 'http://www.xinco.org');   
-
-
-CREATE TABLE xinco_core_ace (
-  id INTEGER UNSIGNED NOT NULL,
-  xinco_core_user_id INTEGER UNSIGNED NULL,
-  xinco_core_group_id INTEGER UNSIGNED NULL,
-  xinco_core_node_id INTEGER UNSIGNED NULL,
-  xinco_core_data_id INTEGER UNSIGNED NULL,
-  read_permission BOOL NOT NULL,
-  write_permission BOOL NOT NULL,
-  execute_permission BOOL NOT NULL,
-  admin_permission BOOL NOT NULL,
-  PRIMARY KEY(id),
-  INDEX xinco_core_ace_FKIndex1(xinco_core_user_id),
-  INDEX xinco_core_ace_FKIndex2(xinco_core_group_id),
-  INDEX xinco_core_ace_FKIndex3(xinco_core_node_id),
-  INDEX xinco_core_ace_FKIndex4(xinco_core_data_id)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_core_ace VALUES (1, 1, NULL, 1, NULL, 1, 1, 1, 1);        
-INSERT INTO xinco_core_ace VALUES (2, 1, NULL, 2, NULL, 1, 1, 1, 1);        
-INSERT INTO xinco_core_ace VALUES (3, 1, NULL, 3, NULL, 1, 1, 1, 1);         
-INSERT INTO xinco_core_ace VALUES (4, NULL, 1, 1, NULL, 1, 1, 1, 1);         
-INSERT INTO xinco_core_ace VALUES (5, NULL, 1, 2, NULL, 1, 1, 1, 1);         
-INSERT INTO xinco_core_ace VALUES (6, NULL, 1, 3, NULL, 1, 1, 1, 1);          
-INSERT INTO xinco_core_ace VALUES (7, NULL, 2, 1, NULL, 1, 1, 1, 0);         
-INSERT INTO xinco_core_ace VALUES (8, NULL, 2, 2, NULL, 1, 1, 1, 0);         
-INSERT INTO xinco_core_ace VALUES (9, NULL, 2, 3, NULL, 1, 1, 1, 0);          
-INSERT INTO xinco_core_ace VALUES (10, 1, NULL, NULL, 1, 1, 1, 1, 1);          
-INSERT INTO xinco_core_ace VALUES (11, 1, NULL, NULL, 2, 1, 1, 1, 1);          
-INSERT INTO xinco_core_ace VALUES (12, NULL, 1, NULL, 1, 1, 1, 1, 1);            
-INSERT INTO xinco_core_ace VALUES (13, NULL, 1, NULL, 2, 1, 1, 1, 1);            
-INSERT INTO xinco_core_ace VALUES (14, NULL, 2, NULL, 1, 1, 0, 0, 0);            
-INSERT INTO xinco_core_ace VALUES (15, NULL, 2, NULL, 2, 1, 0, 0, 0);            
-
-INSERT INTO xinco_core_ace VALUES (16, 1, NULL, 4, NULL, 1, 1, 1, 1);          
-INSERT INTO xinco_core_ace VALUES (17, NULL, 1, 4, NULL, 1, 1, 1, 1);           
-INSERT INTO xinco_core_ace VALUES (18, NULL, 2, 4, NULL, 1, 0, 0, 0);           
-
-INSERT INTO xinco_core_ace VALUES (19, NULL, 3, 1, NULL, 1, 0, 0, 0);             
-INSERT INTO xinco_core_ace VALUES (20, NULL, 3, 4, NULL, 1, 0, 0, 0);             
-INSERT INTO xinco_core_ace VALUES (21, NULL, 3, NULL, 1, 1, 0, 0, 0);             
-INSERT INTO xinco_core_ace VALUES (22, NULL, 3, NULL, 2, 1, 0, 0, 0);             
-
-
-CREATE TABLE xinco_core_data (
-  id INTEGER UNSIGNED NOT NULL,
-  xinco_core_node_id INTEGER UNSIGNED NOT NULL,
-  xinco_core_language_id INTEGER UNSIGNED NOT NULL,
-  xinco_core_data_type_id INTEGER UNSIGNED NOT NULL,
-  designation VARCHAR(255) NOT NULL,
-  status_number INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(id),
-  INDEX xinco_core_data_FKIndex1(xinco_core_node_id),
-  INDEX xinco_core_data_FKIndex2(xinco_core_language_id),
-  INDEX xinco_core_data_FKIndex5(xinco_core_data_type_id),
-  INDEX xinco_core_data_index_designation(designation),
-  INDEX xinco_core_data_index_status(status_number)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_core_data VALUES (1, 1, 2, 2, 'Apache License 2.0', 5);    
-INSERT INTO xinco_core_data VALUES (2, 1, 2, 3, 'xinco.org', 1);   
-
-
-CREATE TABLE xinco_core_data_type (
-  id INTEGER UNSIGNED NOT NULL,
-  designation VARCHAR(255) NOT NULL,
-  description VARCHAR(255) NOT NULL,
-  PRIMARY KEY(id)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_core_data_type VALUES (1, 'File', 'Files stored on the server file system.');    
-INSERT INTO xinco_core_data_type VALUES (2, 'Text', 'Text stored inside the data base.');     
-INSERT INTO xinco_core_data_type VALUES (3, 'URL', 'General uniform ressource locator.');      
-
-INSERT INTO xinco_core_data_type VALUES (4, 'Contact', 'Personal and business contacts.');      
-
-
-CREATE TABLE xinco_core_data_type_attribute (
-  xinco_core_data_type_id INTEGER UNSIGNED NOT NULL,
-  attribute_id INTEGER UNSIGNED NOT NULL,
-  designation VARCHAR(255) NOT NULL,
-  data_type VARCHAR(255) NOT NULL,
-  size INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(xinco_core_data_type_id, attribute_id),
-  INDEX xinco_core_data_type_attribute_FKIndex1(xinco_core_data_type_id)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 1, 'File_Name', 'varchar', 255);  
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 2, 'Size', 'unsignedint', 0);  
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 3, 'Checksum', 'varchar', 255);    
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 4, 'Revision_Model', 'unsignedint', 0);       
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 5, 'Archiving_Model', 'unsignedint', 0);       
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 6, 'Archiving_Date', 'datetime', 0);      
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 7, 'Archiving_Days', 'unsignedint', 0);      
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 8, 'Archiving_Location', 'text', 0);      
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 9, 'Description', 'varchar', 255);      
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 10, 'Keyword_1', 'varchar', 255);      
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 11, 'Keyword_2', 'varchar', 255);      
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 12, 'Keyword_3', 'varchar', 255);      
- 
-INSERT INTO xinco_core_data_type_attribute VALUES (2, 1, 'Text', 'text', 0);   
- 
-INSERT INTO xinco_core_data_type_attribute VALUES (3, 1, 'URL', 'varchar', 255);   
-
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 1, 'Salutation', 'varchar', 255);     
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 2, 'First_Name', 'varchar', 255);     
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 3, 'Middle_Name', 'varchar', 255);     
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 4, 'Last_Name', 'varchar', 255);     
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 5, 'Name_Affix', 'varchar', 255);     
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 6, 'Phone_business', 'varchar', 255);      
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 7, 'Phone_private', 'varchar', 255);      
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 8, 'Phone_mobile', 'varchar', 255);      
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 9, 'Fax', 'varchar', 255);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 10, 'Email', 'varchar', 255);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 11, 'Website', 'varchar', 255);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 12, 'Street_Address', 'text', 0);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 13, 'Postal_Code', 'varchar', 255);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 14, 'City', 'varchar', 255);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 15, 'State_Province', 'varchar', 255);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 16, 'Country', 'varchar', 255);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 17, 'Company_Name', 'varchar', 255);      
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 18, 'Position', 'varchar', 255);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 19, 'Notes', 'text', 0);         
-
-
-CREATE TABLE xinco_core_group (
-  id INTEGER UNSIGNED NOT NULL,
-  designation VARCHAR(255) NOT NULL,
-  status_number INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(id),
-  INDEX xinco_core_group_index_status(status_number),
-  UNIQUE INDEX xinco_core_group_unique(designation)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_core_group VALUES (1, 'Administrators', 1);     
-INSERT INTO xinco_core_group VALUES (2, 'AllUsers', 1);    
-INSERT INTO xinco_core_group VALUES (3, 'Public', 1);    
-
-
-CREATE TABLE xinco_core_language (
-  id INTEGER UNSIGNED NOT NULL,
-  sign VARCHAR(255) NOT NULL,
-  designation VARCHAR(255) NOT NULL,
-  PRIMARY KEY(id),
-  UNIQUE INDEX xinco_core_language_unique(designation)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_core_language VALUES (1, 'n/a', 'unknown');     
-INSERT INTO xinco_core_language VALUES (2, 'en', 'English');     
-INSERT INTO xinco_core_language VALUES (3, 'de', 'German');      
-INSERT INTO xinco_core_language VALUES (4, 'fr', 'French');      
-INSERT INTO xinco_core_language VALUES (5, 'it', 'Italian');     
-INSERT INTO xinco_core_language VALUES (6, 'es', 'Spanish');     
-INSERT INTO xinco_core_language VALUES (7, 'ru', 'Russian');     
-
-
-CREATE TABLE xinco_core_log (
-  id INTEGER UNSIGNED NOT NULL,
-  xinco_core_data_id INTEGER UNSIGNED NOT NULL,
-  xinco_core_user_id INTEGER UNSIGNED NOT NULL,
-  op_code INTEGER UNSIGNED NOT NULL,
-  op_datetime DATETIME NOT NULL,
-  op_description VARCHAR(255) NOT NULL,
-  version_high INTEGER UNSIGNED NULL,
-  version_mid INTEGER UNSIGNED NULL,
-  version_low INTEGER UNSIGNED NULL,
-  version_postfix VARCHAR(255) NULL,
-  PRIMARY KEY(id),
-  INDEX xinco_core_log_FKIndex1(xinco_core_data_id),
-  INDEX xinco_core_log_FKIndex2(xinco_core_user_id)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_core_log VALUES (1, 1, 1, 1, now(), 'Creation!', 2, 0, 0, ''); 
-INSERT INTO xinco_core_log VALUES (2, 2, 1, 1, now(), 'Creation!', 1, 0, 0, ''); 
-
-
-CREATE TABLE xinco_core_node (
-  id INTEGER UNSIGNED NOT NULL,
-  xinco_core_node_id INTEGER UNSIGNED NULL,
-  xinco_core_language_id INTEGER UNSIGNED NOT NULL,
-  designation VARCHAR(255) NOT NULL,
-  status_number INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(id),
-  INDEX xinco_core_node_FKIndex1(xinco_core_node_id),
-  INDEX xinco_core_node_FKIndex2(xinco_core_language_id),
-  INDEX xinco_core_node_index_designation(designation),
-  INDEX xinco_core_node_index_status(status_number)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_core_node VALUES (1, NULL, 1, 'xincoRoot', 1); 
-INSERT INTO xinco_core_node VALUES (2, 1, 1, 'Trash', 1);
-INSERT INTO xinco_core_node VALUES (3, 1, 1, 'Temp', 1); 
-
-INSERT INTO xinco_core_node VALUES (4, 1, 1, 'News', 1); 
-
-
-CREATE TABLE xinco_core_user (
-  id INTEGER UNSIGNED NOT NULL,
-  username VARCHAR(255) NOT NULL,
-  userpassword VARCHAR(255) NOT NULL,
-  name VARCHAR(255) NOT NULL,
-  firstname VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL,
-  status_number INTEGER UNSIGNED NOT NULL,
-  attempts INTEGER UNSIGNED NOT NULL DEFAULT 0,
-  last_modified DATE NOT NULL,
-  PRIMARY KEY(id),
-  INDEX xinco_core_user_index_username(username),
-  INDEX xinco_core_user_index_status(status_number),
-  UNIQUE INDEX xinco_core_user_unique(username)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_core_user VALUES (1, 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', 1, 0, now()); 
-INSERT INTO xinco_core_user VALUES (2, 'user', MD5('user'), 'User', 'Default', 'user@xinco.org', 1, 0, now());
-
-
-CREATE TABLE xinco_core_user_has_xinco_core_group (
-  xinco_core_user_id INTEGER UNSIGNED NOT NULL,
-  xinco_core_group_id INTEGER UNSIGNED NOT NULL,
-  status_number INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(xinco_core_user_id, xinco_core_group_id),
-  INDEX xinco_core_user_has_xinco_core_group_FKIndex1(xinco_core_user_id),
-  INDEX xinco_core_user_has_xinco_core_group_FKIndex2(xinco_core_group_id),
-  INDEX xinco_core_user_has_xinco_core_group_index_status(status_number)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_core_user_has_xinco_core_group VALUES (1, 1, 1);
-INSERT INTO xinco_core_user_has_xinco_core_group VALUES (1, 2, 1);  
-INSERT INTO xinco_core_user_has_xinco_core_group VALUES (2, 2, 1);  
-
-
-CREATE TABLE xinco_id (
-  tablename VARCHAR(255) NOT NULL,
-  last_id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(tablename)
-)
-TYPE=InnoDB;
-
-INSERT INTO xinco_id VALUES ('xinco_core_language', 1000); 
-INSERT INTO xinco_id VALUES ('xinco_core_data_type', 1000);   
-INSERT INTO xinco_id VALUES ('xinco_core_user', 1000);  
-INSERT INTO xinco_id VALUES ('xinco_core_group', 1000);   
-INSERT INTO xinco_id VALUES ('xinco_core_node', 1000); 
-INSERT INTO xinco_id VALUES ('xinco_core_data', 1000);  
-INSERT INTO xinco_id VALUES ('xinco_core_ace', 1000);   
-INSERT INTO xinco_id VALUES ('xinco_core_log', 1000);   
-INSERT INTO xinco_id VALUES ('xinco_core_user_modified_record', 0);  
-
-
-
+<?xml version="1.0" standalone="yes" ?>
+<DBMODEL Version="4.0">
+<SETTINGS>
+<GLOBALSETTINGS ModelName="xinco_main_DBD4" IDModel="0" IDVersion="0" VersionStr="1.0.0.0" Comments="" UseVersionHistroy="1" AutoIncVersion="1" DatabaseType="MySQL" ZoomFac="80.00" XPos="0" YPos="0" DefaultDataType="5" DefaultTablePrefix="0" DefSaveDBConn="" DefSyncDBConn="xinco" DefQueryDBConn="" Printer="PDF-Datei" HPageCount="4.059464816650148" PageAspectRatio="1.436398386069229" PageOrientation="1" PageFormat="A4 (210x297 mm, 8.26x11.7 inches)" SelectedPages="0;1;5" UsePositionGrid="1" PositionGridX="20" PositionGridY="20" TableNameInRefs="1" DefaultTableType="1" ActivateRefDefForNewRelations="1" FKPrefix="" FKPostfix="" CreateFKRefDefIndex="1" DBQuoteCharacter="`" CreateSQLforLinkedObjects="0" DefModelFont="Tahoma" CanvasWidth="4096" CanvasHeight="2842" />
+<DATATYPEGROUPS>
+<DATATYPEGROUP Name="Numeric Types" Icon="1" />
+<DATATYPEGROUP Name="Date and Time Types" Icon="2" />
+<DATATYPEGROUP Name="String Types" Icon="3" />
+<DATATYPEGROUP Name="Blob and Text Types" Icon="4" />
+<DATATYPEGROUP Name="User defined Types" Icon="5" />
+<DATATYPEGROUP Name="Geographic Types" Icon="6" />
+</DATATYPEGROUPS>
+<DATATYPES>
+<DATATYPE ID="1" IDGroup="0" TypeName="TINYINT" Description="A very small integer. The signed range is -128 to 127. The unsigned range is 0 to 255." ParamCount="1" OptionCount="2" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="length" />
+</PARAMS>
+<OPTIONS>
+<OPTION Name="UNSIGNED" Default="1" />
+<OPTION Name="ZEROFILL" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="2" IDGroup="0" TypeName="SMALLINT" Description="A small integer. The signed range is -32768 to 32767. The unsigned range is 0 to 65535." ParamCount="1" OptionCount="2" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="length" />
+</PARAMS>
+<OPTIONS>
+<OPTION Name="UNSIGNED" Default="1" />
+<OPTION Name="ZEROFILL" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="3" IDGroup="0" TypeName="MEDIUMINT" Description="A medium-size integer. The signed range is -8388608 to 8388607. The unsigned range is 0 to 16777215." ParamCount="1" OptionCount="2" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="length" />
+</PARAMS>
+<OPTIONS>
+<OPTION Name="UNSIGNED" Default="1" />
+<OPTION Name="ZEROFILL" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="4" IDGroup="0" TypeName="INT" Description="A normal-size integer. The signed range is -2147483648 to 2147483647. The unsigned range is 0 to 4294967295." ParamCount="1" OptionCount="2" ParamRequired="0" EditParamsAsString="0" SynonymGroup="1" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="length" />
+</PARAMS>
+<OPTIONS>
+<OPTION Name="UNSIGNED" Default="0" />
+<OPTION Name="ZEROFILL" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="5" IDGroup="0" TypeName="INTEGER" Description="A normal-size integer. The signed range is -2147483648 to 2147483647. The unsigned range is 0 to 4294967295." ParamCount="1" OptionCount="2" ParamRequired="0" EditParamsAsString="0" SynonymGroup="1" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="length" />
+</PARAMS>
+<OPTIONS>
+<OPTION Name="UNSIGNED" Default="1" />
+<OPTION Name="ZEROFILL" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="6" IDGroup="0" TypeName="BIGINT" Description="A large integer. The signed range is -9223372036854775808 to 9223372036854775807. The unsigned range is 0 to 18446744073709551615." ParamCount="1" OptionCount="2" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="length" />
+</PARAMS>
+<OPTIONS>
+<OPTION Name="UNSIGNED" Default="0" />
+<OPTION Name="ZEROFILL" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="7" IDGroup="0" TypeName="FLOAT" Description="A small (single-precision) floating-point number. Cannot be unsigned. Allowable values are -3.402823466E+38 to -1.175494351E-38, 0, and 1.175494351E-38 to 3.402823466E+38." ParamCount="1" OptionCount="1" ParamRequired="1" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="precision" />
+</PARAMS>
+<OPTIONS>
+<OPTION Name="ZEROFILL" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="8" IDGroup="0" TypeName="FLOAT" Description="A small (single-precision) floating-point number. Cannot be unsigned. Allowable values are -3.402823466E+38 to -1.175494351E-38, 0, and 1.175494351E-38 to 3.402823466E+38." ParamCount="2" OptionCount="1" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="length" />
+<PARAM Name="decimals" />
+</PARAMS>
+<OPTIONS>
+<OPTION Name="ZEROFILL" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="9" IDGroup="0" TypeName="DOUBLE" Description="A normal-size (double-precision) floating-point number. Cannot be unsigned. Allowable values are -1.7976931348623157E+308 to -2.2250738585072014E-308, 0, and 2.2250738585072014E-308 to 1.7976931348623157E+308." ParamCount="2" OptionCount="1" ParamRequired="0" EditParamsAsString="0" SynonymGroup="2" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="length" />
+<PARAM Name="decimals" />
+</PARAMS>
+<OPTIONS>
+<OPTION Name="ZEROFILL" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="10" IDGroup="0" TypeName="DOUBLE PRECISION" Description="This is a synonym for DOUBLE." ParamCount="2" OptionCount="1" ParamRequired="0" EditParamsAsString="0" SynonymGroup="2" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="length" />
+<PARAM Name="decimals" />
+</PARAMS>
+<OPTIONS>
+<OPTION Name="ZEROFILL" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="11" IDGroup="0" TypeName="REAL" Description="This is a synonym for DOUBLE." ParamCount="2" OptionCount="1" ParamRequired="0" EditParamsAsString="0" SynonymGroup="2" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="length" />
+<PARAM Name="decimals" />
+</PARAMS>
+<OPTIONS>
+<OPTION Name="ZEROFILL" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="12" IDGroup="0" TypeName="DECIMAL" Description="An unpacked floating-point number. Cannot be unsigned. Behaves like a CHAR column." ParamCount="2" OptionCount="1" ParamRequired="0" EditParamsAsString="0" SynonymGroup="3" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="length" />
+<PARAM Name="decimals" />
+</PARAMS>
+<OPTIONS>
+<OPTION Name="ZEROFILL" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="13" IDGroup="0" TypeName="NUMERIC" Description="This is a synonym for DECIMAL." ParamCount="2" OptionCount="1" ParamRequired="1" EditParamsAsString="0" SynonymGroup="3" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="length" />
+<PARAM Name="decimals" />
+</PARAMS>
+<OPTIONS>
+<OPTION Name="ZEROFILL" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="14" IDGroup="1" TypeName="DATE" Description="A date. The supported range is \a1000-01-01\a to \a9999-12-31\a." ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="15" IDGroup="1" TypeName="DATETIME" Description="A date and time combination. The supported range is \a1000-01-01 00:00:00\a to \a9999-12-31 23:59:59\a." ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="16" IDGroup="1" TypeName="TIMESTAMP" Description="A timestamp. The range is \a1970-01-01 00:00:00\a to sometime in the year 2037. The length can be 14 (or missing), 12, 10, 8, 6, 4, or 2 representing YYYYMMDDHHMMSS, ... , YYYYMMDD, ... , YY formats." ParamCount="1" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="length" />
+</PARAMS>
+</DATATYPE>
+<DATATYPE ID="17" IDGroup="1" TypeName="TIME" Description="A time. The range is \a-838:59:59\a to \a838:59:59\a." ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="18" IDGroup="1" TypeName="YEAR" Description="A year in 2- or 4-digit format (default is 4-digit)." ParamCount="1" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="length" />
+</PARAMS>
+</DATATYPE>
+<DATATYPE ID="19" IDGroup="2" TypeName="CHAR" Description="A fixed-length string (1 to 255 characters) that is always right-padded with spaces to the specified length when stored. values are sorted and compared in case-insensitive fashion according to the default character set unless the BINARY keyword is given." ParamCount="1" OptionCount="1" ParamRequired="1" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="length" />
+</PARAMS>
+<OPTIONS>
+<OPTION Name="BINARY" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="20" IDGroup="2" TypeName="VARCHAR" Description="A variable-length string (1 to 255 characters). Values are sorted and compared in case-sensitive fashion unless the BINARY keyword is given." ParamCount="1" OptionCount="1" ParamRequired="1" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="length" />
+</PARAMS>
+<OPTIONS>
+<OPTION Name="BINARY" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="21" IDGroup="2" TypeName="BIT" Description="This is a synonym for CHAR(1)." ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="22" IDGroup="2" TypeName="BOOL" Description="This is a synonym for CHAR(1)." ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="23" IDGroup="3" TypeName="TINYBLOB" Description="A column maximum length of 255 (2^8 - 1) characters. Values are sorted and compared in case-sensitive fashion." ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="24" IDGroup="3" TypeName="BLOB" Description="A column maximum length of 65535 (2^16 - 1) characters. Values are sorted and compared in case-sensitive fashion." ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="25" IDGroup="3" TypeName="MEDIUMBLOB" Description="A column maximum length of 16777215 (2^24 - 1) characters. Values are sorted and compared in case-sensitive fashion." ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="26" IDGroup="3" TypeName="LONGBLOB" Description="A column maximum length of 4294967295 (2^32 - 1) characters. Values are sorted and compared in case-sensitive fashion." ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="27" IDGroup="3" TypeName="TINYTEXT" Description="A column maximum length of 255 (2^8 - 1) characters." ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="28" IDGroup="3" TypeName="TEXT" Description="A column maximum length of 65535 (2^16 - 1) characters." ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="29" IDGroup="3" TypeName="MEDIUMTEXT" Description="A column maximum length of 16777215 (2^24 - 1) characters." ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="30" IDGroup="3" TypeName="LONGTEXT" Description="A column maximum length of 4294967295 (2^32 - 1) characters." ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="31" IDGroup="3" TypeName="ENUM" Description="An enumeration. A string object that can have only one value, chosen from the list of values." ParamCount="1" OptionCount="0" ParamRequired="1" EditParamsAsString="1" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="values" />
+</PARAMS>
+</DATATYPE>
+<DATATYPE ID="32" IDGroup="3" TypeName="SET" Description="A set. A string object that can have zero or more values, each of which must be chosen from the list of values." ParamCount="1" OptionCount="0" ParamRequired="1" EditParamsAsString="1" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+<PARAMS>
+<PARAM Name="values" />
+</PARAMS>
+</DATATYPE>
+<DATATYPE ID="33" IDGroup="4" TypeName="Varchar(20)" Description="" ParamCount="0" OptionCount="1" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+<OPTIONS>
+<OPTION Name="BINARY" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="34" IDGroup="4" TypeName="Varchar(45)" Description="" ParamCount="0" OptionCount="1" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+<OPTIONS>
+<OPTION Name="BINARY" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="35" IDGroup="4" TypeName="Varchar(255)" Description="" ParamCount="0" OptionCount="1" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+<OPTIONS>
+<OPTION Name="BINARY" Default="0" />
+</OPTIONS>
+</DATATYPE>
+<DATATYPE ID="36" IDGroup="5" TypeName="GEOMETRY" Description="Geographic Datatype" ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="38" IDGroup="5" TypeName="LINESTRING" Description="Geographic Datatype" ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="39" IDGroup="5" TypeName="POLYGON" Description="Geographic Datatype" ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="40" IDGroup="5" TypeName="MULTIPOINT" Description="Geographic Datatype" ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="41" IDGroup="5" TypeName="MULTILINESTRING" Description="Geographic Datatype" ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="42" IDGroup="5" TypeName="MULTIPOLYGON" Description="Geographic Datatype" ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+<DATATYPE ID="43" IDGroup="5" TypeName="GEOMETRYCOLLECTION" Description="Geographic Datatype" ParamCount="0" OptionCount="0" ParamRequired="0" EditParamsAsString="0" SynonymGroup="0" PhysicalMapping="0" PhysicalTypeName="" >
+</DATATYPE>
+</DATATYPES>
+<COMMON_DATATYPES>
+<COMMON_DATATYPE ID="5" />
+<COMMON_DATATYPE ID="8" />
+<COMMON_DATATYPE ID="20" />
+<COMMON_DATATYPE ID="15" />
+<COMMON_DATATYPE ID="22" />
+<COMMON_DATATYPE ID="28" />
+<COMMON_DATATYPE ID="26" />
+<COMMON_DATATYPE ID="33" />
+<COMMON_DATATYPE ID="34" />
+<COMMON_DATATYPE ID="35" />
+</COMMON_DATATYPES>
+<TABLEPREFIXES>
+<TABLEPREFIX Name="Default (no prefix)" />
+</TABLEPREFIXES>
+<REGIONCOLORS>
+<REGIONCOLOR Color="Red=#FFEEEC" />
+<REGIONCOLOR Color="Yellow=#FEFDED" />
+<REGIONCOLOR Color="Green=#EAFFE5" />
+<REGIONCOLOR Color="Cyan=#ECFDFF" />
+<REGIONCOLOR Color="Blue=#F0F1FE" />
+<REGIONCOLOR Color="Magenta=#FFEBFA" />
+</REGIONCOLORS>
+<POSITIONMARKERS>
+<POSITIONMARKER ZoomFac="-1.0" X="0" Y="0" />
+<POSITIONMARKER ZoomFac="-1.0" X="0" Y="0" />
+<POSITIONMARKER ZoomFac="-1.0" X="0" Y="0" />
+<POSITIONMARKER ZoomFac="-1.0" X="0" Y="0" />
+<POSITIONMARKER ZoomFac="-1.0" X="0" Y="0" />
+<POSITIONMARKER ZoomFac="-1.0" X="0" Y="0" />
+<POSITIONMARKER ZoomFac="-1.0" X="0" Y="0" />
+<POSITIONMARKER ZoomFac="-1.0" X="0" Y="0" />
+<POSITIONMARKER ZoomFac="-1.0" X="0" Y="0" />
+<POSITIONMARKER ZoomFac="-1.0" X="0" Y="0" />
+<POSITIONMARKER ZoomFac="-1.0" X="0" Y="0" />
+</POSITIONMARKERS>
+</SETTINGS>
+<METADATA>
+<REGIONS>
+</REGIONS>
+<TABLES>
+<TABLE ID="1000" Tablename="xinco_core_node" PrevTableName="Table_01" XPos="600" YPos="100" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_core_node VALUES (1, NULL, 1, \axincoRoot\a, 1); \nINSERT INTO xinco_core_node VALUES (2, 1, 1, \aTrash\a, 1);\nINSERT INTO xinco_core_node VALUES (3, 1, 1, \aTemp\a, 1); \n\nINSERT INTO xinco_core_node VALUES (4, 1, 1, \aNews\a, 1); \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="Status:\nopen = 1\nlocked = 2\narchived = 3\n" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="2" >
+<COLUMNS>
+<COLUMN ID="1002" ColName="id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1261" ColName="xinco_core_node_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1258" ColName="xinco_core_language_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1005" ColName="designation" PrevColName="" Pos="2" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1139" ColName="status_number" PrevColName="" Pos="8" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+</COLUMNS>
+<RELATIONS_START>
+<RELATION_START ID="1006" />
+<RELATION_START ID="1016" />
+<RELATION_START ID="1069" />
+</RELATIONS_START>
+<RELATIONS_END>
+<RELATION_END ID="1006" />
+<RELATION_END ID="1027" />
+</RELATIONS_END>
+<INDICES>
+<INDEX ID="1003" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1002" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1007" IndexName="xinco_core_node_FKIndex1" IndexKind="1" FKRefDef_Obj_id="1006">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1261" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1028" IndexName="xinco_core_node_FKIndex2" IndexKind="1" FKRefDef_Obj_id="1027">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1258" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1434" IndexName="xinco_core_node_index_designation" IndexKind="1" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1005" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1523" IndexName="xinco_core_node_index_status" IndexKind="1" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1139" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+</INDICES>
+</TABLE>
+<TABLE ID="1008" Tablename="xinco_core_data" PrevTableName="Table_02" XPos="600" YPos="540" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_core_data VALUES (1, 1, 2, 2, \aApache License 2.0\a, 5);    \nINSERT INTO xinco_core_data VALUES (2, 1, 2, 3, \axinco.org\a, 1);   \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="Status: \nopen = 1 \nlocked = 2 \narchived = 3 \nchecked-out = 4\npublished = 5\n" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="3" >
+<COLUMNS>
+<COLUMN ID="1010" ColName="id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1262" ColName="xinco_core_node_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1259" ColName="xinco_core_language_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1296" ColName="xinco_core_data_type_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1012" ColName="designation" PrevColName="" Pos="1" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1137" ColName="status_number" PrevColName="" Pos="9" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+</COLUMNS>
+<RELATIONS_START>
+<RELATION_START ID="1420" />
+<RELATION_START ID="1072" />
+<RELATION_START ID="1497" />
+</RELATIONS_START>
+<RELATIONS_END>
+<RELATION_END ID="1016" />
+<RELATION_END ID="1029" />
+<RELATION_END ID="1295" />
+</RELATIONS_END>
+<INDICES>
+<INDEX ID="1011" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1010" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1018" IndexName="xinco_core_data_FKIndex1" IndexKind="1" FKRefDef_Obj_id="1016">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1262" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1030" IndexName="xinco_core_data_FKIndex2" IndexKind="1" FKRefDef_Obj_id="1029">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1259" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1297" IndexName="xinco_core_data_FKIndex5" IndexKind="1" FKRefDef_Obj_id="1295">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1296" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1437" IndexName="xinco_core_data_index_designation" IndexKind="1" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1012" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1525" IndexName="xinco_core_data_index_status" IndexKind="1" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1137" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+</INDICES>
+</TABLE>
+<TABLE ID="1019" Tablename="xinco_core_language" PrevTableName="Table_03" XPos="220" YPos="340" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_core_language VALUES (1, \an/a\a, \aunknown\a);     \nINSERT INTO xinco_core_language VALUES (2, \aen\a, \aEnglish\a);     \nINSERT INTO xinco_core_language VALUES (3, \ade\a, \aGerman\a);      \nINSERT INTO xinco_core_language VALUES (4, \afr\a, \aFrench\a);      \nINSERT INTO xinco_core_language VALUES (5, \ait\a, \aItalian\a);     \nINSERT INTO xinco_core_language VALUES (6, \aes\a, \aSpanish\a);     \nINSERT INTO xinco_core_language VALUES (7, \aru\a, \aRussian\a);     \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="4" >
+<COLUMNS>
+<COLUMN ID="1021" ColName="id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1394" ColName="sign" PrevColName="" Pos="2" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1023" ColName="designation" PrevColName="" Pos="1" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+</COLUMNS>
+<RELATIONS_START>
+<RELATION_START ID="1027" />
+<RELATION_START ID="1029" />
+</RELATIONS_START>
+<INDICES>
+<INDEX ID="1022" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1021" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+</INDICES>
+</TABLE>
+<TABLE ID="1031" Tablename="xinco_core_ace" PrevTableName="Table_04" XPos="1600" YPos="140" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_core_ace VALUES (1, 1, NULL, 1, NULL, 1, 1, 1, 1);        \nINSERT INTO xinco_core_ace VALUES (2, 1, NULL, 2, NULL, 1, 1, 1, 1);        \nINSERT INTO xinco_core_ace VALUES (3, 1, NULL, 3, NULL, 1, 1, 1, 1);         \nINSERT INTO xinco_core_ace VALUES (4, NULL, 1, 1, NULL, 1, 1, 1, 1);         \nINSERT INTO xinco_core_ace VALUES (5, NULL, 1, 2, NULL, 1, 1, 1, 1);         \nINSERT INTO xinco_core_ace VALUES (6, NULL, 1, 3, NULL, 1, 1, 1, 1);          \nINSERT INTO xinco_core_ace VALUES (7, NULL, 2, 1, NULL, 1, 1, 1, 0);         \nINSERT INTO xinco_core_ace VALUES (8, NULL, 2, 2, NULL, 1, 1, 1, 0);         \nINSERT INTO xinco_core_ace VALUES (9, NULL, 2, 3, NULL, 1, 1, 1, 0);          \nINSERT INTO xinco_core_ace VALUES (10, 1, NULL, NULL, 1, 1, 1, 1, 1);          \nINSERT INTO xinco_core_ace VALUES (11, 1, NULL, NULL, 2, 1, 1, 1, 1);          \nINSERT INTO xinco_core_ace VALUES (12, NULL, 1, NULL, 1, 1, 1, 1, 1);            \nINSERT INTO xinco_core_ace VALUES (13, NULL, 1, NULL, 2, 1, 1, 1, 1);            \nINSERT INTO xinco_core_ace VALUES (14, NULL, 2, NULL, 1, 1, 0, 0, 0);            \nINSERT INTO xinco_core_ace VALUES (15, NULL, 2, NULL, 2, 1, 0, 0, 0);            \n\nINSERT INTO xinco_core_ace VALUES (16, 1, NULL, 4, NULL, 1, 1, 1, 1);          \nINSERT INTO xinco_core_ace VALUES (17, NULL, 1, 4, NULL, 1, 1, 1, 1);           \nINSERT INTO xinco_core_ace VALUES (18, NULL, 2, 4, NULL, 1, 0, 0, 0);           \n\nINSERT INTO xinco_core_ace VALUES (19, NULL, 3, 1, NULL, 1, 0, 0, 0);             \nINSERT INTO xinco_core_ace VALUES (20, NULL, 3, 4, NULL, 1, 0, 0, 0);             \nINSERT INTO xinco_core_ace VALUES (21, NULL, 3, NULL, 1, 1, 0, 0, 0);             \nINSERT INTO xinco_core_ace VALUES (22, NULL, 3, NULL, 2, 1, 0, 0, 0);             \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="5" >
+<COLUMNS>
+<COLUMN ID="1385" ColName="id" PrevColName="" Pos="8" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1277" ColName="xinco_core_user_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1272" ColName="xinco_core_group_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1263" ColName="xinco_core_node_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1481" ColName="xinco_core_data_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1037" ColName="read_permission" PrevColName="" Pos="3" idDatatype="22" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1038" ColName="write_permission" PrevColName="" Pos="4" idDatatype="22" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1039" ColName="execute_permission" PrevColName="" Pos="5" idDatatype="22" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1379" ColName="admin_permission" PrevColName="" Pos="7" idDatatype="22" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+</OPTIONSELECTED>
+</COLUMN>
+</COLUMNS>
+<RELATIONS_END>
+<RELATION_END ID="1065" />
+<RELATION_END ID="1067" />
+<RELATION_END ID="1069" />
+<RELATION_END ID="1072" />
+</RELATIONS_END>
+<INDICES>
+<INDEX ID="1375" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1385" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1066" IndexName="xinco_core_ace_FKIndex1" IndexKind="1" FKRefDef_Obj_id="1065">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1277" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1068" IndexName="xinco_core_ace_FKIndex2" IndexKind="1" FKRefDef_Obj_id="1067">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1272" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1071" IndexName="xinco_core_ace_FKIndex3" IndexKind="1" FKRefDef_Obj_id="1069">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1263" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1482" IndexName="xinco_core_ace_FKIndex4" IndexKind="1" FKRefDef_Obj_id="1072">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1481" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+</INDICES>
+</TABLE>
+<TABLE ID="1040" Tablename="xinco_core_user" PrevTableName="Table_05" XPos="1400" YPos="680" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_core_user VALUES (1, \aadmin\a, MD5(\aadmin\a), \aAdministrator\a, \aXinco\a, \aadmin@xinco.org\a, 1, 0, now()); \nINSERT INTO xinco_core_user VALUES (2, \auser\a, MD5(\auser\a), \aUser\a, \aDefault\a, \auser@xinco.org\a, 1, 0, now());\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="Status: \nopen = 1 \nlocked = 2 \n" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="6" >
+<COLUMNS>
+<COLUMN ID="1042" ColName="id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1044" ColName="username" PrevColName="" Pos="1" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1054" ColName="userpassword" PrevColName="" Pos="5" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1045" ColName="name" PrevColName="" Pos="2" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1046" ColName="firstname" PrevColName="" Pos="3" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1047" ColName="email" PrevColName="" Pos="4" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1128" ColName="status_number" PrevColName="" Pos="6" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1567" ColName="attempts" PrevColName="" Pos="7" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="0" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1568" ColName="last_modified" PrevColName="" Pos="8" idDatatype="14" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+</OPTIONSELECTED>
+</COLUMN>
+</COLUMNS>
+<RELATIONS_START>
+<RELATION_START ID="1057" />
+<RELATION_START ID="1065" />
+<RELATION_START ID="1499" />
+</RELATIONS_START>
+<INDICES>
+<INDEX ID="1043" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1042" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1439" IndexName="xinco_core_user_index_username" IndexKind="1" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1044" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1527" IndexName="xinco_core_user_index_status" IndexKind="1" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1128" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+</INDICES>
+</TABLE>
+<TABLE ID="1048" Tablename="xinco_core_group" PrevTableName="Table_06" XPos="1800" YPos="680" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_core_group VALUES (1, \aAdministrators\a, 1);     \nINSERT INTO xinco_core_group VALUES (2, \aAllUsers\a, 1);    \nINSERT INTO xinco_core_group VALUES (3, \aPublic\a, 1);    \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="Status:  \nopen = 1  \nlocked = 2  \n" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="7" >
+<COLUMNS>
+<COLUMN ID="1050" ColName="id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1052" ColName="designation" PrevColName="" Pos="1" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1130" ColName="status_number" PrevColName="" Pos="2" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+</COLUMNS>
+<RELATIONS_START>
+<RELATION_START ID="1058" />
+<RELATION_START ID="1067" />
+</RELATIONS_START>
+<INDICES>
+<INDEX ID="1051" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1050" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1529" IndexName="xinco_core_group_index_status" IndexKind="1" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1130" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+</INDICES>
+</TABLE>
+<TABLE ID="1056" Tablename="xinco_core_user_has_xinco_core_group" PrevTableName="" XPos="1540" YPos="1100" TableType="1" TablePrefix="0" nmTable="1" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_core_user_has_xinco_core_group VALUES (1, 1, 1);\nINSERT INTO xinco_core_user_has_xinco_core_group VALUES (1, 2, 1);  \nINSERT INTO xinco_core_user_has_xinco_core_group VALUES (2, 2, 1);  \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="Status:  \nopen = 1  \nlocked = 2  \n" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="8" >
+<COLUMNS>
+<COLUMN ID="1278" ColName="xinco_core_user_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1273" ColName="xinco_core_group_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1132" ColName="status_number" PrevColName="" Pos="2" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+</COLUMNS>
+<RELATIONS_END>
+<RELATION_END ID="1057" />
+<RELATION_END ID="1058" />
+</RELATIONS_END>
+<INDICES>
+<INDEX ID="1202" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1278" LengthParam="0" />
+<INDEXCOLUMN idColumn="1273" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1060" IndexName="xinco_core_user_has_xinco_core_group_FKIndex1" IndexKind="1" FKRefDef_Obj_id="1057">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1278" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1062" IndexName="xinco_core_user_has_xinco_core_group_FKIndex2" IndexKind="1" FKRefDef_Obj_id="1058">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1273" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1531" IndexName="xinco_core_user_has_xinco_core_group_index_status" IndexKind="1" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1132" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+</INDICES>
+</TABLE>
+<TABLE ID="1181" Tablename="xinco_id" PrevTableName="Table_10" XPos="220" YPos="80" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_id VALUES (\axinco_core_language\a, 1000); \nINSERT INTO xinco_id VALUES (\axinco_core_data_type\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_user\a, 1000);  \nINSERT INTO xinco_id VALUES (\axinco_core_group\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_node\a, 1000); \nINSERT INTO xinco_id VALUES (\axinco_core_data\a, 1000);  \nINSERT INTO xinco_id VALUES (\axinco_core_ace\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_log\a, 1000);   \nINSERT INTO xinco_id VALUES (\axinco_core_user_modified_record\a, 0);  \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="9" >
+<COLUMNS>
+<COLUMN ID="1183" ColName="tablename" PrevColName="" Pos="0" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1185" ColName="last_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+</COLUMNS>
+<INDICES>
+<INDEX ID="1184" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1183" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+</INDICES>
+</TABLE>
+<TABLE ID="1279" Tablename="xinco_core_data_type" PrevTableName="Table_11" XPos="100" YPos="740" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_core_data_type VALUES (1, \aFile\a, \aFiles stored on the server file system.\a);    \nINSERT INTO xinco_core_data_type VALUES (2, \aText\a, \aText stored inside the data base.\a);     \nINSERT INTO xinco_core_data_type VALUES (3, \aURL\a, \aGeneral uniform ressource locator.\a);      \n\nINSERT INTO xinco_core_data_type VALUES (4, \aContact\a, \aPersonal and business contacts.\a);      \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="10" >
+<COLUMNS>
+<COLUMN ID="1286" ColName="id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1377" ColName="designation" PrevColName="" Pos="3" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1415" ColName="description" PrevColName="" Pos="2" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+</COLUMNS>
+<RELATIONS_START>
+<RELATION_START ID="1295" />
+<RELATION_START ID="1456" />
+</RELATIONS_START>
+<INDICES>
+<INDEX ID="1287" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1286" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+</INDICES>
+</TABLE>
+<TABLE ID="1406" Tablename="xinco_add_attribute" PrevTableName="Table_12" XPos="600" YPos="1000" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_add_attribute (xinco_core_data_id, attribute_id, attrib_text) VALUES (1, 1, \a\n                                 Apache License\n                           Version 2.0, January 2004\n                        http://www.apache.org/licenses/\n\n   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\n\n   1. Definitions.\n\n      \ALicense\A shall mean the terms and conditions for use, reproduction,\n      and distribution as defined by Sections 1 through 9 of this document.\n\n      \ALicensor\A shall mean the copyright owner or entity authorized by\n      the copyright owner that is granting the License.\n\n      \ALegal Entity\A shall mean the union of the acting entity and all\n      other entities that control, are controlled by, or are under common\n      control with that entity. For the purposes of this definition,\n      \Acontrol\A means (i) the power, direct or indirect, to cause the\n      direction or management of such entity, whether by contract or\n      otherwise, or (ii) ownership of fifty percent (50%) or more of the\n      outstanding shares, or (iii) beneficial ownership of such entity.\n\n      \AYou\A (or \AYour\A) shall mean an individual or Legal Entity\n      exercising permissions granted by this License.\n\n      \ASource\A form shall mean the preferred form for making modifications,\n      including but not limited to software source code, documentation\n      source, and configuration files.\n\n      \AObject\A form shall mean any form resulting from mechanical\n      transformation or translation of a Source form, including but\n      not limited to compiled object code, generated documentation,\n      and conversions to other media types.\n\n      \AWork\A shall mean the work of authorship, whether in Source or\n      Object form, made available under the License, as indicated by a\n      copyright notice that is included in or attached to the work\n      (an example is provided in the Appendix below).\n\n      \ADerivative Works\A shall mean any work, whether in Source or Object\n      form, that is based on (or derived from) the Work and for which the\n      editorial revisions, annotations, elaborations, or other modifications\n      represent, as a whole, an original work of authorship. For the purposes\n      of this License, Derivative Works shall not include works that remain\n      separable from, or merely link (or bind by name) to the interfaces of,\n      the Work and Derivative Works thereof.\n\n      \AContribution\A shall mean any work of authorship, including\n      the original version of the Work and any modifications or additions\n      to that Work or Derivative Works thereof, that is intentionally\n      submitted to Licensor for inclusion in the Work by the copyright owner\n      or by an individual or Legal Entity authorized to submit on behalf of\n      the copyright owner. For the purposes of this definition, \Asubmitted\A\n      means any form of electronic, verbal, or written communication sent\n      to the Licensor or its representatives, including but not limited to\n      communication on electronic mailing lists, source code control systems,\n      and issue tracking systems that are managed by, or on behalf of, the\n      Licensor for the purpose of discussing and improving the Work, but\n      excluding communication that is conspicuously marked or otherwise\n      designated in writing by the copyright owner as \ANot a Contribution.\A\n\n      \AContributor\A shall mean Licensor and any individual or Legal Entity\n      on behalf of whom a Contribution has been received by Licensor and\n      subsequently incorporated within the Work.\n\n   2. Grant of Copyright License. Subject to the terms and conditions of\n      this License, each Contributor hereby grants to You a perpetual,\n      worldwide, non-exclusive, no-charge, royalty-free, irrevocable\n      copyright license to reproduce, prepare Derivative Works of,\n      publicly display, publicly perform, sublicense, and distribute the\n      Work and such Derivative Works in Source or Object form.\n\n   3. Grant of Patent License. Subject to the terms and conditions of\n      this License, each Contributor hereby grants to You a perpetual,\n      worldwide, non-exclusive, no-charge, royalty-free, irrevocable\n      (except as stated in this section) patent license to make, have made,\n      use, offer to sell, sell, import, and otherwise transfer the Work,\n      where such license applies only to those patent claims licensable\n      by such Contributor that are necessarily infringed by their\n      Contribution(s) alone or by combination of their Contribution(s)\n      with the Work to which such Contribution(s) was submitted. If You\n      institute patent litigation against any entity (including a\n      cross-claim or counterclaim in a lawsuit) alleging that the Work\n      or a Contribution incorporated within the Work constitutes direct\n      or contributory patent infringement, then any patent licenses\n      granted to You under this License for that Work shall terminate\n      as of the date such litigation is filed.\n\n   4. Redistribution. You may reproduce and distribute copies of the\n      Work or Derivative Works thereof in any medium, with or without\n      modifications, and in Source or Object form, provided that You\n      meet the following conditions:\n\n      (a) You must give any other recipients of the Work or\n          Derivative Works a copy of this License; and\n\n      (b) You must cause any modified files to carry prominent notices\n          stating that You changed the files; and\n\n      (c) You must retain, in the Source form of any Derivative Works\n          that You distribute, all copyright, patent, trademark, and\n          attribution notices from the Source form of the Work,\n          excluding those notices that do not pertain to any part of\n          the Derivative Works; and\n\n      (d) If the Work includes a \ANOTICE\A text file as part of its\n          distribution, then any Derivative Works that You distribute must\n          include a readable copy of the attribution notices contained\n          within such NOTICE file, excluding those notices that do not\n          pertain to any part of the Derivative Works, in at least one\n          of the following places: within a NOTICE text file distributed\n          as part of the Derivative Works; within the Source form or\n          documentation, if provided along with the Derivative Works; or,\n          within a display generated by the Derivative Works, if and\n          wherever such third-party notices normally appear. The contents\n          of the NOTICE file are for informational purposes only and\n          do not modify the License. You may add Your own attribution\n          notices within Derivative Works that You distribute, alongside\n          or as an addendum to the NOTICE text from the Work, provided\n          that such additional attribution notices cannot be construed\n          as modifying the License.\n\n      You may add Your own copyright statement to Your modifications and\n      may provide additional or different license terms and conditions\n      for use, reproduction, or distribution of Your modifications, or\n      for any such Derivative Works as a whole, provided Your use,\n      reproduction, and distribution of the Work otherwise complies with\n      the conditions stated in this License.\n\n   5. Submission of Contributions. Unless You explicitly state otherwise,\n      any Contribution intentionally submitted for inclusion in the Work\n      by You to the Licensor shall be under the terms and conditions of\n      this License, without any additional terms or conditions.\n      Notwithstanding the above, nothing herein shall supersede or modify\n      the terms of any separate license agreement you may have executed\n      with Licensor regarding such Contributions.\n\n   6. Trademarks. This License does not grant permission to use the trade\n      names, trademarks, service marks, or product names of the Licensor,\n      except as required for reasonable and customary use in describing the\n      origin of the Work and reproducing the content of the NOTICE file.\n\n   7. Disclaimer of Warranty. Unless required by applicable law or\n      agreed to in writing, Licensor provides the Work (and each\n      Contributor provides its Contributions) on an \AAS IS\A BASIS,\n      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or\n      implied, including, without limitation, any warranties or conditions\n      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A\n      PARTICULAR PURPOSE. You are solely responsible for determining the\n      appropriateness of using or redistributing the Work and assume any\n      risks associated with Your exercise of permissions under this License.\n\n   8. Limitation of Liability. In no event and under no legal theory,\n      whether in tort (including negligence), contract, or otherwise,\n      unless required by applicable law (such as deliberate and grossly\n      negligent acts) or agreed to in writing, shall any Contributor be\n      liable to You for damages, including any direct, indirect, special,\n      incidental, or consequential damages of any character arising as a\n      result of this License or out of the use or inability to use the\n      Work (including but not limited to damages for loss of goodwill,\n      work stoppage, computer failure or malfunction, or any and all\n      other commercial damages or losses), even if such Contributor\n      has been advised of the possibility of such damages.\n\n   9. Accepting Warranty or Additional Liability. While redistributing\n      the Work or Derivative Works thereof, You may choose to offer,\n      and charge a fee for, acceptance of support, warranty, indemnity,\n      or other liability obligations and/or rights consistent with this\n      License. However, in accepting such obligations, You may act only\n      on Your own behalf and on Your sole responsibility, not on behalf\n      of any other Contributor, and only if You agree to indemnify,\n      defend, and hold each Contributor harmless for any liability\n      incurred by, or claims asserted against, such Contributor by reason\n      of your accepting any such warranty or additional liability.\n\n   END OF TERMS AND CONDITIONS\n\n   APPENDIX: How to apply the Apache License to your work.\n\n      To apply the Apache License to your work, attach the following\n      boilerplate notice, with the fields enclosed by brackets \A[]\A\n      replaced with your own identifying information. (Don\\\at include\n      the brackets!)  The text should be enclosed in the appropriate\n      comment syntax for the file format. We also recommend that a\n      file or class name and description of purpose be included on the\n      same \Aprinted page\A as the copyright notice for easier\n      identification within third-party archives.\n\n   Copyright [yyyy] [name of copyright owner]\n\n   Licensed under the Apache License, Version 2.0 (the \ALicense\A);\n   you may not use this file except in compliance with the License.\n   You may obtain a copy of the License at\n\n       http://www.apache.org/licenses/LICENSE-2.0\n\n   Unless required by applicable law or agreed to in writing, software\n   distributed under the License is distributed on an \AAS IS\A BASIS,\n   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n   See the License for the specific language governing permissions and\n   limitations under the License.\n\a);  \nINSERT INTO xinco_add_attribute (xinco_core_data_id, attribute_id, attrib_varchar) VALUES (2, 1, \ahttp://www.xinco.org\a);   \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="11" >
+<COLUMNS>
+<COLUMN ID="1421" ColName="xinco_core_data_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1408" ColName="attribute_id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1411" ColName="attrib_int" PrevColName="" Pos="2" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1465" ColName="attrib_unsignedint" PrevColName="" Pos="7" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1418" ColName="attrib_double" PrevColName="" Pos="6" idDatatype="9" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1412" ColName="attrib_varchar" PrevColName="" Pos="3" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1413" ColName="attrib_text" PrevColName="" Pos="4" idDatatype="28" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1417" ColName="attrib_datetime" PrevColName="" Pos="5" idDatatype="15" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+</OPTIONSELECTED>
+</COLUMN>
+</COLUMNS>
+<RELATIONS_END>
+<RELATION_END ID="1420" />
+</RELATIONS_END>
+<INDICES>
+<INDEX ID="1409" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1421" LengthParam="0" />
+<INDEXCOLUMN idColumn="1408" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1422" IndexName="xinco_add_attribute_FKIndex1" IndexKind="1" FKRefDef_Obj_id="1420">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1421" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+</INDICES>
+</TABLE>
+<TABLE ID="1447" Tablename="xinco_core_data_type_attribute" PrevTableName="Table_11" XPos="40" YPos="980" TableType="1" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_core_data_type_attribute VALUES (1, 1, \aFile_Name\a, \avarchar\a, 255);  \nINSERT INTO xinco_core_data_type_attribute VALUES (1, 2, \aSize\a, \aunsignedint\a, 0);  \nINSERT INTO xinco_core_data_type_attribute VALUES (1, 3, \aChecksum\a, \avarchar\a, 255);    \nINSERT INTO xinco_core_data_type_attribute VALUES (1, 4, \aRevision_Model\a, \aunsignedint\a, 0);       \nINSERT INTO xinco_core_data_type_attribute VALUES (1, 5, \aArchiving_Model\a, \aunsignedint\a, 0);       \nINSERT INTO xinco_core_data_type_attribute VALUES (1, 6, \aArchiving_Date\a, \adatetime\a, 0);      \nINSERT INTO xinco_core_data_type_attribute VALUES (1, 7, \aArchiving_Days\a, \aunsignedint\a, 0);      \nINSERT INTO xinco_core_data_type_attribute VALUES (1, 8, \aArchiving_Location\a, \atext\a, 0);      \nINSERT INTO xinco_core_data_type_attribute VALUES (1, 9, \aDescription\a, \avarchar\a, 255);      \nINSERT INTO xinco_core_data_type_attribute VALUES (1, 10, \aKeyword_1\a, \avarchar\a, 255);      \nINSERT INTO xinco_core_data_type_attribute VALUES (1, 11, \aKeyword_2\a, \avarchar\a, 255);      \nINSERT INTO xinco_core_data_type_attribute VALUES (1, 12, \aKeyword_3\a, \avarchar\a, 255);      \n \nINSERT INTO xinco_core_data_type_attribute VALUES (2, 1, \aText\a, \atext\a, 0);   \n \nINSERT INTO xinco_core_data_type_attribute VALUES (3, 1, \aURL\a, \avarchar\a, 255);   \n\nINSERT INTO xinco_core_data_type_attribute VALUES (4, 1, \aSalutation\a, \avarchar\a, 255);     \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 2, \aFirst_Name\a, \avarchar\a, 255);     \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 3, \aMiddle_Name\a, \avarchar\a, 255);     \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 4, \aLast_Name\a, \avarchar\a, 255);     \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 5, \aName_Affix\a, \avarchar\a, 255);     \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 6, \aPhone_business\a, \avarchar\a, 255);      \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 7, \aPhone_private\a, \avarchar\a, 255);      \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 8, \aPhone_mobile\a, \avarchar\a, 255);      \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 9, \aFax\a, \avarchar\a, 255);       \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 10, \aEmail\a, \avarchar\a, 255);       \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 11, \aWebsite\a, \avarchar\a, 255);       \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 12, \aStreet_Address\a, \atext\a, 0);       \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 13, \aPostal_Code\a, \avarchar\a, 255);       \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 14, \aCity\a, \avarchar\a, 255);       \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 15, \aState_Province\a, \avarchar\a, 255);       \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 16, \aCountry\a, \avarchar\a, 255);       \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 17, \aCompany_Name\a, \avarchar\a, 255);      \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 18, \aPosition\a, \avarchar\a, 255);       \nINSERT INTO xinco_core_data_type_attribute VALUES (4, 19, \aNotes\a, \atext\a, 0);         \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="12" >
+<COLUMNS>
+<COLUMN ID="1449" ColName="xinco_core_data_type_id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1451" ColName="attribute_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1452" ColName="designation" PrevColName="" Pos="2" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1453" ColName="data_type" PrevColName="" Pos="3" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1454" ColName="size" PrevColName="" Pos="4" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+</COLUMNS>
+<RELATIONS_END>
+<RELATION_END ID="1456" />
+</RELATIONS_END>
+<INDICES>
+<INDEX ID="1450" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1449" LengthParam="0" />
+<INDEXCOLUMN idColumn="1451" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1457" IndexName="xinco_core_data_type_attribute_FKIndex1" IndexKind="1" FKRefDef_Obj_id="1456">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1449" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+</INDICES>
+</TABLE>
+<TABLE ID="1486" Tablename="xinco_core_log" PrevTableName="Table_12" XPos="1020" YPos="980" TableType="1" TablePrefix="0" nmTable="1" Temporary="0" UseStandardInserts="0" StandardInserts="INSERT INTO xinco_core_log VALUES (1, 1, 1, 1, now(), \aCreation!\a, 2, 0, 0, \a\a); \nINSERT INTO xinco_core_log VALUES (2, 2, 1, 1, now(), \aCreation!\a, 1, 0, 0, \a\a); \n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\nChunks=2\nChunkSize=64\n" Comments="Op-Codes: \ncreation = 1 \nmodification = 2 \ncheckout = 3 \ncheckoutundone = 4\ncheckin = 5\npublish = 6\nlock = 7\narchive = 8\ncomment = 9\n" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="13" >
+<COLUMNS>
+<COLUMN ID="1538" ColName="id" PrevColName="" Pos="9" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="1" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1491" ColName="xinco_core_data_id" PrevColName="" Pos="0" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1493" ColName="xinco_core_user_id" PrevColName="" Pos="1" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1494" ColName="op_code" PrevColName="" Pos="2" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1495" ColName="op_datetime" PrevColName="" Pos="3" idDatatype="15" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1496" ColName="op_description" PrevColName="" Pos="4" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1533" ColName="version_high" PrevColName="" Pos="5" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1534" ColName="version_mid" PrevColName="" Pos="6" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1535" ColName="version_low" PrevColName="" Pos="7" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1536" ColName="version_postfix" PrevColName="" Pos="8" idDatatype="20" DatatypeParams="(255)" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+</COLUMNS>
+<RELATIONS_END>
+<RELATION_END ID="1497" />
+<RELATION_END ID="1499" />
+</RELATIONS_END>
+<INDICES>
+<INDEX ID="1492" IndexName="PRIMARY" IndexKind="0" FKRefDef_Obj_id="-1">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1538" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1498" IndexName="xinco_core_log_FKIndex1" IndexKind="1" FKRefDef_Obj_id="1497">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1491" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+<INDEX ID="1500" IndexName="xinco_core_log_FKIndex2" IndexKind="1" FKRefDef_Obj_id="1499">
+<INDEXCOLUMNS>
+<INDEXCOLUMN idColumn="1493" LengthParam="0" />
+</INDEXCOLUMNS>
+</INDEX>
+</INDICES>
+</TABLE>
+</TABLES>
+<RELATIONS>
+<RELATION ID="1006" RelationName="is_core_node_of_xinco_core_node" Kind="2" SrcTable="1000" DestTable="1000" FKFields="id=xinco_core_node_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="23" OptionalStart="1" OptionalEnd="1" CaptionOffsetX="-6" CaptionOffsetY="-1" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1007" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="14" />
+<RELATION ID="1016" RelationName="is_core_node_of_xinco_core_data" Kind="2" SrcTable="1000" DestTable="1008" FKFields="id=xinco_core_node_id\n" FKFieldsComments="\n" relDirection="3" MidOffset="0" OptionalStart="0" OptionalEnd="1" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1018" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="15" />
+<RELATION ID="1027" RelationName="is_language_of_xinco_core_node" Kind="2" SrcTable="1019" DestTable="1000" FKFields="id=xinco_core_language_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="-2" OptionalStart="0" OptionalEnd="1" CaptionOffsetX="-1" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=0\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1028" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="16" />
+<RELATION ID="1029" RelationName="is_language_of_xinco_core_data" Kind="2" SrcTable="1019" DestTable="1008" FKFields="id=xinco_core_language_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="0" OptionalStart="0" OptionalEnd="1" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=0\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1030" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="17" />
+<RELATION ID="1057" RelationName="is_user_of_xinco_core_group" Kind="1" SrcTable="1040" DestTable="1056" FKFields="id=xinco_core_user_id\n" FKFieldsComments="\n" relDirection="3" MidOffset="0" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="45" CaptionOffsetY="9" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1060" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="18" />
+<RELATION ID="1058" RelationName="is_group_of_xinco_core_user" Kind="1" SrcTable="1048" DestTable="1056" FKFields="id=xinco_core_group_id\n" FKFieldsComments="\n" relDirection="3" MidOffset="25" OptionalStart="0" OptionalEnd="0" CaptionOffsetX="-1" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1062" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="19" />
+<RELATION ID="1065" RelationName="is_user_of_xinco_core_ace" Kind="2" SrcTable="1040" DestTable="1031" FKFields="id=xinco_core_user_id\n" FKFieldsComments="\n" relDirection="1" MidOffset="0" OptionalStart="1" OptionalEnd="1" CaptionOffsetX="-1" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1066" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="20" />
+<RELATION ID="1067" RelationName="is_group_of_xinco_core_ace" Kind="2" SrcTable="1048" DestTable="1031" FKFields="id=xinco_core_group_id\n" FKFieldsComments="\n" relDirection="1" MidOffset="0" OptionalStart="1" OptionalEnd="1" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1068" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="21" />
+<RELATION ID="1069" RelationName="is_node_of_xinco_core_ace" Kind="2" SrcTable="1000" DestTable="1031" FKFields="id=xinco_core_node_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="0" OptionalStart="1" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1071" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="22" />
+<RELATION ID="1295" RelationName="is_data_type_of_xinco_core_data" Kind="2" SrcTable="1279" DestTable="1008" FKFields="id=xinco_core_data_type_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="0" OptionalStart="0" OptionalEnd="1" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=0\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1297" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="23" />
+<RELATION ID="1420" RelationName="is_add_attribute_of_xinco_core_data" Kind="2" SrcTable="1008" DestTable="1406" FKFields="id=xinco_core_data_id\n" FKFieldsComments="\n" relDirection="3" MidOffset="1" OptionalStart="0" OptionalEnd="1" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1422" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="24" />
+<RELATION ID="1456" RelationName="is_attribute_of_xinco_core_data_type" Kind="2" SrcTable="1279" DestTable="1447" FKFields="id=xinco_core_data_type_id\n" FKFieldsComments="\n" relDirection="3" MidOffset="0" OptionalStart="0" OptionalEnd="1" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=0\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1457" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="25" />
+<RELATION ID="1072" RelationName="is_data_of_xinco_core_ace" Kind="2" SrcTable="1008" DestTable="1031" FKFields="id=xinco_core_data_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="0" OptionalStart="1" OptionalEnd="0" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1482" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="26" />
+<RELATION ID="1497" RelationName="is_log_of_xinco_core_data" Kind="2" SrcTable="1008" DestTable="1486" FKFields="id=xinco_core_data_id\n" FKFieldsComments="\n" relDirection="2" MidOffset="0" OptionalStart="0" OptionalEnd="1" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1498" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="27" />
+<RELATION ID="1499" RelationName="is_log_of_xinco_core_user" Kind="2" SrcTable="1040" DestTable="1486" FKFields="id=xinco_core_user_id\n" FKFieldsComments="\n" relDirection="4" MidOffset="0" OptionalStart="0" OptionalEnd="1" CaptionOffsetX="0" CaptionOffsetY="0" StartIntervalOffsetX="0" StartIntervalOffsetY="0" EndIntervalOffsetX="0" EndIntervalOffsetY="0" CreateRefDef="1" Invisible="0" RefDef="Matching=0\nOnDelete=1\nOnUpdate=1\n" Comments="" FKRefDefIndex_Obj_id="1500" Splitted="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="28" />
+</RELATIONS>
+<NOTES>
+</NOTES>
+<IMAGES>
+</IMAGES>
+</METADATA>
+<PLUGINDATA>
+<PLUGINDATARECORDS>
+</PLUGINDATARECORDS>
+</PLUGINDATA>
+<QUERYDATA>
+<QUERYRECORDS>
+<QUERYRECORD SQLCmdType="4" StoredPosition="19.09 14:21:59" SQLText="SELECT * \nFROM xinco_id\nORDER BY tablename" />
+<QUERYRECORD SQLCmdType="4" StoredPosition="19.09 14:21:06" SQLText="CREATE TABLE xinco_core_user_has_xinco_core_group_t (\n  xinco_core_user_id INTEGER UNSIGNED NOT NULL,\n  xinco_core_group_id INTEGER UNSIGNED NOT NULL,\n  status_number INTEGER UNSIGNED NOT NULL,\n  PRIMARY KEY(xinco_core_user_id, xinco_core_group_id),\n  INDEX xinco_core_user_has_xinco_core_group_FKIndex1(xinco_core_user_id),\n  INDEX xinco_core_user_has_xinco_core_group_FKIndex2(xinco_core_group_id),\n  INDEX xinco_core_user_has_xinco_core_group_index_status(status_number)\n)\nTYPE=InnoDB;" />
+<QUERYRECORD SQLCmdType="4" StoredPosition="19.09 14:20:03" SQLText="SELECT * \nFROM xinco_core_log\nORDER BY id" />
+<QUERYRECORD SQLCmdType="4" StoredPosition="19.09 14:19:36" SQLText="CREATE TABLE xinco_add_attribute_t (\n  xinco_core_data_id INTEGER UNSIGNED NOT NULL,\n  attribute_id INTEGER UNSIGNED NOT NULL,\n  attrib_int INTEGER NULL,\n  attrib_unsignedint INTEGER UNSIGNED NULL,\n  attrib_double DOUBLE NULL,\n  attrib_varchar VARCHAR(255) NULL,\n  attrib_text TEXT NULL,\n  attrib_datetime DATETIME NULL,\n  PRIMARY KEY(xinco_core_data_id, attribute_id),\n  INDEX xinco_add_attribute_FKIndex1(xinco_core_data_id)\n)\nTYPE=InnoDB;" />
+<QUERYRECORD SQLCmdType="4" StoredPosition="19.09 14:19:19" SQLText="CREATE TABLE xinco_core_data_type_attribute_t (\n  xinco_core_data_type_id INTEGER UNSIGNED NOT NULL,\n  attribute_id INTEGER UNSIGNED NOT NULL,\n  designation VARCHAR(255) NOT NULL,\n  data_type VARCHAR(255) NOT NULL,\n  size INTEGER UNSIGNED NOT NULL,\n  PRIMARY KEY(xinco_core_data_type_id, attribute_id),\n  INDEX xinco_core_data_type_attribute_FKIndex1(xinco_core_data_type_id)\n)\nTYPE=InnoDB;" />
+<QUERYRECORD SQLCmdType="4" StoredPosition="19.09 14:18:51" SQLText="CREATE TABLE xinco_core_group_t (\n  id INTEGER UNSIGNED NOT NULL,\n  designation VARCHAR(255) NOT NULL,\n  status_number INTEGER UNSIGNED NOT NULL,\n  PRIMARY KEY(id),\n  INDEX xinco_core_group_index_status(status_number)\n)\nTYPE=InnoDB;" />
+<QUERYRECORD SQLCmdType="4" StoredPosition="19.09 14:18:36" SQLText="CREATE TABLE xinco_core_user_t (\n  id INTEGER UNSIGNED NOT NULL,\n  username VARCHAR(255) NOT NULL,\n  userpassword VARCHAR(255) NOT NULL,\n  name VARCHAR(255) NOT NULL,\n  firstname VARCHAR(255) NOT NULL,\n  email VARCHAR(255) NOT NULL,\n  status_number INTEGER UNSIGNED NOT NULL,\n  PRIMARY KEY(id),\n  INDEX xinco_core_user_index_username(username),\n  INDEX xinco_core_user_index_status(status_number)\n)\nTYPE=InnoDB;" />
+<QUERYRECORD SQLCmdType="4" StoredPosition="19.09 14:18:18" SQLText="CREATE TABLE xinco_core_data_type_t (\n  id INTEGER UNSIGNED NOT NULL,\n  designation VARCHAR(255) NOT NULL,\n  description VARCHAR(255) NOT NULL,\n  PRIMARY KEY(id)\n)\nTYPE=InnoDB;" />
+<QUERYRECORD SQLCmdType="4" StoredPosition="19.09 14:18:00" SQLText="CREATE TABLE xinco_core_data_t (\n  id INTEGER UNSIGNED NOT NULL,\n  xinco_core_node_id INTEGER UNSIGNED NOT NULL,\n  xinco_core_language_id INTEGER UNSIGNED NOT NULL,\n  xinco_core_data_type_id INTEGER UNSIGNED NOT NULL,\n  designation VARCHAR(255) NOT NULL,\n  status_number INTEGER UNSIGNED NOT NULL,\n  PRIMARY KEY(id),\n  INDEX xinco_core_data_FKIndex1(xinco_core_node_id),\n  INDEX xinco_core_data_FKIndex2(xinco_core_language_id),\n  INDEX xinco_core_data_FKIndex5(xinco_core_data_type_id),\n  INDEX xinco_core_data_index_designation(designation),\n  INDEX xinco_core_data_index_status(status_number)\n)\nTYPE=InnoDB;" />
+<QUERYRECORD SQLCmdType="4" StoredPosition="19.09 14:17:38" SQLText="CREATE TABLE xinco_core_ace_t (\n  id INTEGER UNSIGNED NOT NULL,\n  xinco_core_user_id INTEGER UNSIGNED NULL,\n  xinco_core_group_id INTEGER UNSIGNED NULL,\n  xinco_core_node_id INTEGER UNSIGNED NULL,\n  xinco_core_data_id INTEGER UNSIGNED NULL,\n  read_permission BOOL NOT NULL,\n  write_permission BOOL NOT NULL,\n  execute_permission BOOL NOT NULL,\n  admin_permission BOOL NOT NULL,\n  PRIMARY KEY(id),\n  INDEX xinco_core_ace_FKIndex1(xinco_core_user_id),\n  INDEX xinco_core_ace_FKIndex2(xinco_core_group_id),\n  INDEX xinco_core_ace_FKIndex3(xinco_core_node_id),\n  INDEX xinco_core_ace_FKIndex4(xinco_core_data_id)\n)\nTYPE=InnoDB;" />
+<QUERYRECORD SQLCmdType="4" StoredPosition="19.09 14:17:09" SQLText="CREATE TABLE xinco_core_node_t (\n  id INTEGER UNSIGNED NOT NULL,\n  xinco_core_node_id INTEGER UNSIGNED NULL,\n  xinco_core_language_id INTEGER UNSIGNED NOT NULL,\n  designation VARCHAR(255) NOT NULL,\n  status_number INTEGER UNSIGNED NOT NULL,\n  PRIMARY KEY(id),\n  INDEX xinco_core_node_FKIndex1(xinco_core_node_id),\n  INDEX xinco_core_node_FKIndex2(xinco_core_language_id),\n  INDEX xinco_core_node_index_designation(designation),\n  INDEX xinco_core_node_index_status(status_number)\n)\nTYPE=InnoDB;" />
+</QUERYRECORDS>
+</QUERYDATA>
+<LINKEDMODELS>
+</LINKEDMODELS>
+</DBMODEL>

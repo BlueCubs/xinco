@@ -48,6 +48,7 @@ public class XincoConfigSingletonServer {
     public String FileIndexPath = null;
     public String FileArchivePath = null;
     public long FileArchivePeriod = 0;
+    private long FileIndexOptimizerPeriod = 0;
     public int FileIndexerCount = 0;
     public Vector IndexFileTypesClass = null;
     public Vector IndexFileTypesExt = null;
@@ -86,6 +87,8 @@ public class XincoConfigSingletonServer {
                 FileArchivePath = FileArchivePath + System.getProperty("file.separator");
             }
             FileArchivePeriod = ((Long) (new InitialContext()).lookup("java:comp/env/xinco/FileArchivePeriod")).longValue();
+            
+            FileIndexOptimizerPeriod = ((Long) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexOptimizerPeriod")).longValue();
 
             FileIndexerCount = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexerCount")).intValue();
             IndexFileTypesClass = new Vector();
@@ -128,16 +131,26 @@ public class XincoConfigSingletonServer {
             tsa[2] = "php";
             tsa[3] = "jsp";
             IndexFileTypesExt.add(tsa);
+            IndexNoIndex = new String[3];
             IndexNoIndex[0] = "";
             IndexNoIndex[1] = "com";
             IndexNoIndex[2] = "exe";
             allowOutsideLinks = true;
             JNDIDB = "java:comp/env/jdbc/XincoDB";
             MaxSearchResult = 30;
+            FileIndexOptimizerPeriod = 604800000;
         }
     }
 
     public boolean isAllowOutsideLinks() {
         return allowOutsideLinks;
+    }
+
+    public long getFileIndexOptimizerPeriod() {
+        return FileIndexOptimizerPeriod;
+    }
+
+    public void setFileIndexOptimizerPeriod(long FileIndexOptimizerPeriod) {
+        this.FileIndexOptimizerPeriod = FileIndexOptimizerPeriod;
     }
 }

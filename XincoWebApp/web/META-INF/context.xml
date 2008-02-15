@@ -32,13 +32,15 @@
 
   <!-- #################### PLEASE CONFIGURE ####################-->
   <!-- Full Path where xinco saves files:                        -->
-  <Environment name="xinco/FileRepositoryPath" override="false" type="java.lang.String" value="/daten/repository/"/>
+  <Environment name="xinco/FileRepositoryPath" override="false" type="java.lang.String" value="C:\Xinco\file_repository\"/>
   <!-- Full Path where xinco saves its search index:             -->
-  <Environment name="xinco/FileIndexPath" override="false" type="java.lang.String" value="/daten/search/"/>
+  <Environment name="xinco/FileIndexPath" override="false" type="java.lang.String" value="C:\Xinco\file_repository\index\"/>
   <!-- Full Path where xinco saves archives:                     -->
-  <Environment name="xinco/FileArchivePath" override="false" type="java.lang.String" value="/daten/archiv"/>
+  <Environment name="xinco/FileArchivePath" override="false" type="java.lang.String" value="D:\Xinco\file_repository\archive\"/>
   <!-- Time frame for repeatingly running the archiver (milliseconds): -->
   <Environment name="xinco/FileArchivePeriod" override="false" type="java.lang.Long" value="14400000"/>
+  <!-- Time frame for repeatingly running the index optimizer (milliseconds): -->
+  <Environment name="xinco/FileIndexOptimizerPeriod" override="false" type="java.lang.Long" value="604800000"/>
   <!-- Setting for allowing links outside of Xinco: -->
   <Environment name="setting.allowoutsidelinks" override="false" type="java.lang.String" value="True"/>
   <!-- #################### ################ ####################-->
