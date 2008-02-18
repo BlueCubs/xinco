@@ -36,7 +36,7 @@
   <!-- Full Path where xinco saves its search index:             -->
   <Environment name="xinco/FileIndexPath" override="false" type="java.lang.String" value="C:\Xinco\file_repository\index\"/>
   <!-- Full Path where xinco saves archives:                     -->
-  <Environment name="xinco/FileArchivePath" override="false" type="java.lang.String" value="D:\Xinco\file_repository\archive\"/>
+  <Environment name="xinco/FileArchivePath" override="false" type="java.lang.String" value="C:\Xinco\file_repository\archive\"/>
   <!-- Time frame for repeatingly running the archiver (milliseconds): -->
   <Environment name="xinco/FileArchivePeriod" override="false" type="java.lang.Long" value="14400000"/>
   <!-- Time frame for repeatingly running the index optimizer (milliseconds): -->
