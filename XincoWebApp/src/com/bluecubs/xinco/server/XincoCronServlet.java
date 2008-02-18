@@ -131,7 +131,7 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<br>");
         out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
-        out.println("<td class=\"text\" width=\"100\"><img src='resources/images/blueCubsSmall.gif\" border=\"0\"/></td>");
+        out.println("<td class=\"text\" width=\"100\"><img src='resources/images/blueCubsSmall.gif' border=\"0\"/></td>");
         out.println("<td class=\"bigtext\" width=\"650\">"+lrb.getString("message.admin.main.xincocron.label")+"</td>");
         out.println("</tr>");
         out.println("</table>");

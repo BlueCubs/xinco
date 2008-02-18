@@ -61,19 +61,11 @@
              */
 %>
 <head>
-    <%
-            XincoDBManager db = new XincoDBManager();
-            if (!db.config.isAllowOutsideLinks()) {
-                out.println(db.getWebBlockRightClickScript());
-            }
-    %>
     <title>Axis Happiness Page</title>
 </head>
-<body bgcolor='#ffffff'>
 <%
-            if (!db.config.isAllowOutsideLinks()) {
-                out.println(db.getWebBlockRightClickScript());
-            }
+            XincoDBManager DBM = new XincoDBManager();
+            out.println("<body " + (!DBM.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' " : ">"));
 %>
 <%!
 
@@ -146,7 +138,7 @@
             String description,
             String errorText,
             String homePage) throws IOException {
-        XincoDBManager db=null;
+        XincoDBManager db = null;
         try {
             db = new XincoDBManager();
         } catch (Exception e) {
@@ -341,22 +333,15 @@
     }
 %>
 <html><head><title>Axis Happiness Page</title>
-        <%
-            if (!db.config.isAllowOutsideLinks()) {
-                out.println(db.getWebBlockRightClickScript());
-            }
-        %>
-    </head>
-    <body>
-        <h1>Axis Happiness Page</h1>
-        <h2>Examining webapp configuration</h2>
-        
-        <p>
-        <h3>Needed Components</h3>
-        <%
-            if (!db.config.isAllowOutsideLinks()) {
-                out.println(db.getWebBlockRightClickScript());
-            }
+    <%
+            out.println("<body " + (!DBM.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' " : ">"));
+    %>
+    <h1>Axis Happiness Page</h1>
+    <h2>Examining webapp configuration</h2>
+    
+    <p>
+    <h3>Needed Components</h3>
+    <%
             int needed = 0, wanted = 0;
 
             /**
@@ -417,9 +402,9 @@
                     "Activation API",
                     "Axis will not work",
                     "http://java.sun.com/products/javabeans/glasgow/jaf.html");
-        %>
-        <h3>Optional Components</h3>
-        <%
+    %>
+    <h3>Optional Components</h3>
+    <%
             /*
              * now the stuff we can live without
              */
@@ -472,41 +457,41 @@
                 out.write(getInstallHints(request));
             }
 
-        %>
-        <p>
-        <B><I>Note:</I></B> Even if everything this page probes for is present, there is no guarantee your
-        web service will work, because there are many configuration options that we do
-        not check for. These tests are <i>necessary</i> but not <i>sufficient</i>
-        <hr>
-        
-        <h2>Examining Application Server</h2>
-        <%
+    %>
+    <p>
+    <B><I>Note:</I></B> Even if everything this page probes for is present, there is no guarantee your
+    web service will work, because there are many configuration options that we do
+    not check for. These tests are <i>necessary</i> but not <i>sufficient</i>
+    <hr>
+    
+    <h2>Examining Application Server</h2>
+    <%
             String servletVersion = getServletVersion();
             String xmlParser = getParserName();
             String xmlParserLocation = getParserLocation(out);
 
-        %>
-        <table>
-            <tr><td>Servlet version</td><td><%= servletVersion %></td></tr>
-            <tr><td>XML Parser</td><td><%= xmlParser %></td></tr>
-            <tr><td>XML ParserLocation</td><td><%= xmlParserLocation %></td></tr>
-        </table>
-        <% if (xmlParser.indexOf("crimson") >= 0) {%>
-        <p>
-            <%
-     if (!db.config.isAllowOutsideLinks()) {
+    %>
+    <table>
+        <tr><td>Servlet version</td><td><%= servletVersion %></td></tr>
+        <tr><td>XML Parser</td><td><%= xmlParser %></td></tr>
+        <tr><td>XML ParserLocation</td><td><%= xmlParserLocation %></td></tr>
+    </table>
+    <% if (xmlParser.indexOf("crimson") >= 0) {%>
+    <p>
+        <%
+     if (!DBM.config.isAllowOutsideLinks()) {
          out.println("<b>We recommend Xerces 2 (http://xml.apache.org/xerces2-j/)" +
                  "over Crimson as the XML parser for Axis</b>");
      } else {
          out.println("<b>We recommend <a href='http://xml.apache.org/xerces2-j/'>Xerces 2</a>" +
                  "over Crimson as the XML parser for Axis</b>");
      }
-            %>
-        </p>
-        <%    }%>
-        
-        <h2>Examining System Properties</h2>
-        <%
+        %>
+    </p>
+    <%    }%>
+    
+    <h2>Examining System Properties</h2>
+    <%
             /**
              * Dump the system properties
              */
@@ -525,10 +510,12 @@
             } else {
                 out.write("System properties are not accessible<p>");
             }
-        %>
-        <hr>
-        Platform: <%= getServletConfig().getServletContext().getServerInfo()  %>
-    </body>
+    %>
+    <hr>
+    Platform: <%= getServletConfig().getServletContext().getServerInfo()  %>
+    <%
+            out.println("</body>");
+    %>
 </html>
 
 
