@@ -33,7 +33,6 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.index;
 
 import com.bluecubs.xinco.core.XincoCoreData;
@@ -43,25 +42,24 @@ import com.bluecubs.xinco.core.server.XincoDBManager;
  * This class starts document indexing in a separate thread
  */
 public class XincoIndexThread extends Thread {
-	
-	private XincoCoreData d = null;
-	private boolean index_content = false;
-	private XincoDBManager dbm = null;
 
-	public void run() {
-		XincoIndexer.indexXincoCoreData(d, index_content, dbm);
-		try {
-			dbm.con.close();
-		} catch (Exception e)
-		{
-			//do nothing
-		}
-	}
-	
-	public XincoIndexThread(XincoCoreData d, boolean index_content, XincoDBManager dbm) {
-		this.d = d;
-		this.index_content = index_content;
-		this.dbm = dbm;
-	}
-	
+    private XincoCoreData d = null;
+    private boolean index_content = false;
+    private XincoDBManager dbm = null;
+
+    @Override
+    public void run() {
+        XincoIndexer.indexXincoCoreData(d, index_content, dbm);
+        try {
+            dbm.con.close();
+        } catch (Exception e) {
+        //do nothing
+        }
+    }
+
+    public XincoIndexThread(XincoCoreData d, boolean index_content, XincoDBManager dbm) {
+        this.d = d;
+        this.index_content = index_content;
+        this.dbm = dbm;
+    }
 }
