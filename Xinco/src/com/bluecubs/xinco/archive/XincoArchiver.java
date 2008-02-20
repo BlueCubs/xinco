@@ -37,14 +37,18 @@ package com.bluecubs.xinco.archive;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.core.XincoException;
-import java.sql.*;
-import java.io.*;
-import java.util.Vector;
-
-import com.bluecubs.xinco.add.*;
-import com.bluecubs.xinco.core.server.*;
+import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import com.bluecubs.xinco.core.server.XincoCoreLogServer;
+import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
+import com.bluecubs.xinco.core.server.XincoDBManager;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Vector;
 
 /**
  * This class handles document archiving for xinco.
