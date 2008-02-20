@@ -628,7 +628,7 @@ public class XincoAdminServlet extends HttpServlet {
             boolean passwordIsUsable=temp_user.isPasswordUsable(request.getParameter("confirm"));
             if(!request.getParameter("new").equals(request.getParameter("confirm"))){
                 //show welcome message
-                out.println("<br><center><img src=\"blueCubs.gif\" border=\"0\"/>");
+                out.println("<br><center><img src='resources/images/blueCubs.gif' border=\"0\"/>");
                 out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
                 out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
                 out.println(rb.getString("password.noMatch")+"<br><br>" +
@@ -640,7 +640,7 @@ public class XincoAdminServlet extends HttpServlet {
             }
             if(!passwordIsUsable) {
                 //show welcome message
-                out.println("<br><center><img src=\"blueCubs.gif\" border=\"0\"/>");
+                out.println("<br><center><img src='resources/images/blueCubs.gif' border=\"0\"/>");
                 out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
                 out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
                 out.println(rb.getString("password.unusable")+"<br><br>" +
@@ -719,7 +719,7 @@ public class XincoAdminServlet extends HttpServlet {
             out.println("</form>");
         }else if(status==2){
             //Password must be changed
-            out.println("<br><img src=\"blueCubs.gif\" border=\"0\"/>");
+            out.println("<br><img src='resources/images/blueCubsS.gif' border=\"0\"/>");
             out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
             out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
             out.println(rb.getString("password.aged")+"<br><br>" +
@@ -732,7 +732,7 @@ public class XincoAdminServlet extends HttpServlet {
             out.println("<br>");
             out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
             out.println("<tr>");
-            out.println("<td class=\"text\" rowspan=\"3\"><img src=\"blueCubsSmall.gif\" border=\"0\"/></td>");
+            out.println("<td class=\"text\" rowspan=\"3\"><img src='resources/images/blueCubsSmall.gif' border=\"0\"/></td>");
             out.println("<td class=\"bigtext\" colspan=\"5\">XincoAdmin</td>");
             out.println("</tr>");
             out.println("<tr>");
