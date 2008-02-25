@@ -62,6 +62,8 @@
 %>
 <head>
     <title>Axis Happiness Page</title>
+    <link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>
+    <link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'>
 </head>
 <%
             XincoDBManager DBM = new XincoDBManager();

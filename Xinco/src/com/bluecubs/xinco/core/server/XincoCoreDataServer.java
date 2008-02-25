@@ -92,8 +92,6 @@ public class XincoCoreDataServer extends XincoCoreData {
         setXinco_core_data_type(new XincoCoreDataTypeServer(attrDTID, DBM));
         //load logs
         setXinco_core_logs(XincoCoreLogServer.getXincoCoreLogs(attrID, DBM));
-        //load add attributes
-        //setXinco_add_attributes(XincoAddAttributeServer.getXincoAddAttributes(attrID, DBM));
         //security: don't load add attribute, force direct access to data including check of access rights!
         setXinco_add_attributes(new Vector());
         setDesignation(attrD);

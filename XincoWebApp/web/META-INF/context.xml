@@ -43,6 +43,8 @@
   <Environment name="xinco/FileIndexOptimizerPeriod" override="false" type="java.lang.Long" value="14400000"/>
   <!-- Setting for allowing links outside of Xinco: -->
   <Environment name="setting.allowoutsidelinks" override="false" type="java.lang.String" value="True"/>
+  <!-- Setting for content list in XincoPublisher (in order to force browsing): -->
+  <Environment name="setting.allowpublisherlist" override="false" type="java.lang.String" value="True"/>
   <!-- #################### ################ ####################-->
 
   <!-- ################# Optional Configuration #################-->

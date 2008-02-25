@@ -33,7 +33,6 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.server;
 
 import com.bluecubs.xinco.archive.XincoArchiveThread;
@@ -50,15 +49,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class XincoCronServlet extends HttpServlet {
+
     ResourceBundle lrb;
     //single instance of archiving thread
     XincoArchiveThread xat = null;
-    
     //single instance of index optimizing thread
     XincoIndexOptimizeThread xiot = null;
-    
     private XincoDBManager db = null;
-    
+
     /** Initializes the servlet.
      * @param config
      * @throws javax.servlet.ServletException 
@@ -69,18 +67,18 @@ public class XincoCronServlet extends HttpServlet {
         //init archiving thread
         xat = XincoArchiveThread.getInstance();
         xat.start();
-        
+
         //init index optimizing thread
         xiot = XincoIndexOptimizeThread.getInstance();
         xiot.start();
     }
-    
+
     /** Destroys the servlet.
      */
     @Override
     public void destroy() {
     }
-    
+
     /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
@@ -88,66 +86,74 @@ public class XincoCronServlet extends HttpServlet {
      * @throws java.io.IOException 
      */
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        try{
-            db=new XincoDBManager();
-        }catch (Exception e){
-            
+            throws ServletException, IOException {
+        try {
+            db = new XincoDBManager();
+        } catch (Exception e) {
+
         }
         Locale loc = null;
         try {
             String list = request.getParameter("list");
             String[] locales;
             locales = list.split("_");
-            switch(locales.length){
-                case 1: loc = new Locale(locales[0]);break;
-                case 2: loc = new Locale(locales[0],locales[1]);break;
-                case 3: loc = new
-                        Locale(locales[0],locales[1],locales[2]);break;
-                default: loc = Locale.getDefault();
+            switch (locales.length) {
+                case 1:
+                    loc = new Locale(locales[0]);
+                    break;
+                case 2:
+                    loc = new Locale(locales[0], locales[1]);
+                    break;
+                case 3:
+                    loc = new Locale(locales[0], locales[1], locales[2]);
+                    break;
+                default:
+                    loc = Locale.getDefault();
             }
         } catch (Exception e) {
             loc = Locale.getDefault();
         }
-        lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages",loc);
+        lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
         //start output
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
-        
+
         //show header
         out.println("<html>");
         out.println("<head>");
-        out.println("<title>"+lrb.getString("message.admin.main.xincocron.label")+"</title>");
+        out.println("<title>" + lrb.getString("message.admin.main.xincocron.label") + "</title>");
         out.println("<link rel=\"stylesheet\" href=\"xincostyle.css\" type=\"text/css\"/>");
+        out.println("<link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>");
+        out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
         out.println("</head>");
-        
-        out.println("<body "+(!db.config.isAllowOutsideLinks()?"oncontextmenu='return false;' ":" ")+">");
+
+        out.println("<body " + (!db.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' " : " ") + ">");
         out.println("<center>");
         out.println("<span class=\"text\">");
-        
+
         out.println("");
-        
+
         //show info
         out.println("<br>");
         out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\" width=\"100\"><img src='resources/images/blueCubsSmall.gif' border=\"0\"/></td>");
-        out.println("<td class=\"bigtext\" width=\"650\">"+lrb.getString("message.admin.main.xincocron.label")+"</td>");
+        out.println("<td class=\"bigtext\" width=\"650\">" + lrb.getString("message.admin.main.xincocron.label") + "</td>");
         out.println("</tr>");
         out.println("</table>");
         out.println("<br><br>");
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
-        out.println("<td class=\"text\" colspan=\"3\">"+lrb.getString("message.admin.main.xincocrondesc")+"</td>");
+        out.println("<td class=\"text\" colspan=\"3\">" + lrb.getString("message.admin.main.xincocrondesc") + "</td>");
         out.println("</tr>");
         out.println("<tr>");
         out.println("<td class=\"text\" colspan=\"3\">&nbsp;</td>");
         out.println("</tr>");
         out.println("<tr>");
-        out.println("<td class=\"text\" colspan=\"3\"><b>"+lrb.getString("message.xincocron.status")+"</b></td>");
+        out.println("<td class=\"text\" colspan=\"3\"><b>" + lrb.getString("message.xincocron.status") + "</b></td>");
         out.println("</tr>");
         out.println("<tr>");
-        out.println("<td class=\"text\">"+lrb.getString("message.xincocron.openDB")+"</td>");
+        out.println("<td class=\"text\">" + lrb.getString("message.xincocron.openDB") + "</td>");
         out.println("<td class=\"text\">" + XincoDBManager.count + "</td>");
         out.println("<td class=\"text\">&nbsp;</td>");
         out.println("</tr>");
@@ -155,13 +161,13 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<td class=\"text\" colspan=\"3\">&nbsp;</td>");
         out.println("</tr>");
         out.println("<tr>");
-        out.println("<td class=\"text\"><b>"+lrb.getString("message.xincocron.servicename")+"</b></td>");
-        out.println("<td class=\"text\"><b>"+lrb.getString("message.xincocron.service.first")+"</b></td>");
-        out.println("<td class=\"text\"><b>"+lrb.getString("message.xincocron.service.last")+"</b></td>");
+        out.println("<td class=\"text\"><b>" + lrb.getString("message.xincocron.servicename") + "</b></td>");
+        out.println("<td class=\"text\"><b>" + lrb.getString("message.xincocron.service.first") + "</b></td>");
+        out.println("<td class=\"text\"><b>" + lrb.getString("message.xincocron.service.last") + "</b></td>");
         out.println("</tr>");
-        
+
         out.println("<tr>");
-        out.println("<td class=\"text\">"+lrb.getString("message.xincocron.service.archiver")+"</td>");
+        out.println("<td class=\"text\">" + lrb.getString("message.xincocron.service.archiver") + "</td>");
         String xat_first_run = "";
         String xat_last_run = "";
         if (xat != null) {
@@ -175,9 +181,9 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<td class=\"text\">" + xat_first_run + "</td>");
         out.println("<td class=\"text\">" + xat_last_run + "</td>");
         out.println("</tr>");
-        
+
         out.println("<tr>");
-        out.println("<td class=\"text\">"+lrb.getString("message.xincocron.service.indexOptimizer")+"</td>");
+        out.println("<td class=\"text\">" + lrb.getString("message.xincocron.service.indexOptimizer") + "</td>");
         String xiot_first_run = "";
         String xiot_last_run = "";
         if (xat != null) {
@@ -191,35 +197,35 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<td class=\"text\">" + xiot_first_run + "</td>");
         out.println("<td class=\"text\">" + xiot_last_run + "</td>");
         out.println("</tr>");
-        
+
         out.println("</table>");
-        
+
         //show footer
         out.println("<br><br><br>");
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; "+lrb.getString("general.copyright.date")+", "+
+        out.println("<td class=\"text\">&copy; " + lrb.getString("general.copyright.date") + ", " +
                 //Avoid external links if general.setting.allowoutsidelinks is set to false
                 //Security bug
                 (db.config.isAllowOutsideLinks() ? lrb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
         out.println("</tr>");
-        out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"+
-                lrb.getString("message.admin.main.backtomain")+"' />" +
-                "<input type='hidden' name='list' value='"+request.getParameter("list")+"'/></form></tr>" +
-                "<tr><FORM><INPUT TYPE='button' VALUE='"+lrb.getString("message.admin.main.back")+
-                "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value='"+
-                request.getParameter("list")+"'/></FORM></tr>");
-        
+        out.println("</table><tr><form action='menu.jsp'><input type='submit' value='" +
+                lrb.getString("message.admin.main.backtomain") + "' />" +
+                "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></form></tr>" +
+                "<tr><FORM><INPUT TYPE='button' VALUE='" + lrb.getString("message.admin.main.back") +
+                "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value='" +
+                request.getParameter("list") + "'/></FORM></tr>");
+
         out.println("</span>");
         out.println("</center>");
         out.println("</body>");
         out.println("</html>");
-        
+
         out.close();
-        
+
     }
-    
+
     /** Handles the HTTP <code>GET</code> method.
      * @param request servlet request
      * @param response servlet response
@@ -228,10 +234,10 @@ public class XincoCronServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
     }
-    
+
     /** Handles the HTTP <code>POST</code> method.
      * @param request servlet request
      * @param response servlet response
@@ -240,10 +246,10 @@ public class XincoCronServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
     }
-    
+
     /** Returns a short description of the servlet.
      * @return 
      */

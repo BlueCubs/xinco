@@ -29,6 +29,8 @@ out.println("<html>");
 out.println("<head>");
 out.println("<title>"+rb.getString("message.admin.main.title")+"</title>");
 out.println("<link rel='stylesheet' href='xincostyle.css' type='text/css'/>");
+out.println("<link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>");
+out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'>");
 out.println("</head>");
 out.println("<body "+(!db.config.isAllowOutsideLinks()?"oncontextmenu='return false;' ":" ")+">");
 out.println("<center>");
