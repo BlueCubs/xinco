@@ -55,7 +55,7 @@ public class XincoConfigSingletonServer {
     public String[] IndexNoIndex = null;
     public String JNDIDB = null;
     public int MaxSearchResult = 0;
-    private boolean allowOutsideLinks = true;
+    private boolean allowOutsideLinks = true,  allowPublisherList = true;
     private static XincoConfigSingletonServer instance = null;
 
     public static XincoConfigSingletonServer getInstance() {
@@ -87,7 +87,7 @@ public class XincoConfigSingletonServer {
                 FileArchivePath = FileArchivePath + System.getProperty("file.separator");
             }
             FileArchivePeriod = ((Long) (new InitialContext()).lookup("java:comp/env/xinco/FileArchivePeriod")).longValue();
-            
+
             FileIndexOptimizerPeriod = ((Long) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexOptimizerPeriod")).longValue();
 
             FileIndexerCount = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexerCount")).intValue();
@@ -100,7 +100,7 @@ public class XincoConfigSingletonServer {
             IndexNoIndex = ((String) (new InitialContext()).lookup("java:comp/env/xinco/IndexNoIndex")).split(";");
 
             allowOutsideLinks = ((String) (new InitialContext()).lookup("java:comp/env/setting.allowoutsidelinks")).equals("True");
-
+            allowPublisherList = ((String) (new InitialContext()).lookup("java:comp/env/setting.allowpublisherlist")).equals("True");
             JNDIDB = (String) (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
             MaxSearchResult = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/MaxSearchResult")).intValue();
         } catch (Exception e) {
@@ -136,6 +136,7 @@ public class XincoConfigSingletonServer {
             IndexNoIndex[1] = "com";
             IndexNoIndex[2] = "exe";
             allowOutsideLinks = true;
+            allowPublisherList = true;
             JNDIDB = "java:comp/env/jdbc/XincoDB";
             MaxSearchResult = 30;
             FileIndexOptimizerPeriod = 14400000;
@@ -152,5 +153,9 @@ public class XincoConfigSingletonServer {
 
     public void setFileIndexOptimizerPeriod(long FileIndexOptimizerPeriod) {
         this.FileIndexOptimizerPeriod = FileIndexOptimizerPeriod;
+    }
+
+    public boolean isAllowPublisherList() {
+        return allowPublisherList;
     }
 }

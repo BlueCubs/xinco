@@ -11,6 +11,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Password Aging</title>
         <link rel="stylesheet" href="xincostyle.css" type="text/css"/>
+        <link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>
+        <link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'>
     </head>
     <%
             XincoDBManager DBM = new XincoDBManager();
