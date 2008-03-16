@@ -3,7 +3,8 @@ CREATE TABLE xinco_core_language (
   sign VARCHAR(255) NOT NULL,
   designation VARCHAR(255) NOT NULL,
   PRIMARY KEY(id),
-  UNIQUE INDEX xinco_core_language_unique(designation)
+  UNIQUE INDEX xinco_core_language_index_sign(sign),
+  UNIQUE INDEX xinco_core_language_index_designation(designation)
 )
 TYPE=InnoDB;
 
@@ -27,7 +28,8 @@ CREATE TABLE xinco_core_group (
   designation VARCHAR(255) NOT NULL,
   status_number INTEGER UNSIGNED NOT NULL,
   PRIMARY KEY(id),
-  INDEX xinco_core_group_index_status(status_number)
+  INDEX xinco_core_group_index_status(status_number),
+  UNIQUE INDEX xinco_core_group_index_designation(designation)
 )
 TYPE=InnoDB;
 
@@ -71,7 +73,7 @@ CREATE TABLE xinco_core_user (
   attempts INTEGER UNSIGNED NOT NULL DEFAULT 0,
   last_modified DATE NOT NULL,
   PRIMARY KEY(id),
-  INDEX xinco_core_user_index_username(username),
+  UNIQUE INDEX xinco_core_user_index_username(username),
   INDEX xinco_core_user_index_status(status_number)
 )
 TYPE=InnoDB;
