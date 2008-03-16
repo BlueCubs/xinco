@@ -18,6 +18,9 @@ CREATE TABLE xinco_core_language (
 )
 ;
 
+CREATE INDEX xinco_core_language_index_sign ON xinco_core_language (sign);
+CREATE INDEX xinco_core_language_index_designation ON xinco_core_language (designation);
+
 INSERT INTO xinco_core_language VALUES (1, 'n/a', 'unknown');     
 INSERT INTO xinco_core_language VALUES (2, 'en', 'English');     
 INSERT INTO xinco_core_language VALUES (3, 'de', 'German');      
@@ -42,6 +45,7 @@ CREATE TABLE xinco_core_group (
 ;
 
 CREATE INDEX xinco_core_group_index_status ON xinco_core_group (status_number);
+CREATE INDEX xinco_core_group_index_designation ON xinco_core_group (designation);
 
 INSERT INTO xinco_core_group VALUES (1, 'Administrators', 1);     
 INSERT INTO xinco_core_group VALUES (2, 'AllUsers', 1);   
@@ -86,7 +90,7 @@ CREATE TABLE xinco_core_user (
 )
 ;
 
-CREATE INDEX xinco_core_user_index_username ON xinco_core_user (username);
+CREATE UNIQUE INDEX xinco_core_user_index_username ON xinco_core_user (username);
 CREATE INDEX xinco_core_user_index_status ON xinco_core_user (status_number);
 
 INSERT INTO xinco_core_user VALUES (1, 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', 1, 0, now()); 
