@@ -21,26 +21,25 @@
  *
  * Name:            XincoClientConnectionProfile
  *
- * Description:     connection profiles for client
+ * Description:     connection profiles for client 
  *
  * Original Author: Alexander Manes
  * Date:            2004
  *
  * Modifications:
- *
+ * 
  * Who?             When?             What?
- * Javier A. Ortiz  02/20/2007        Save password feature disabled due to 21 CFR regualtion potential issues
+ * -                -                 -
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.client;
 
 /**
  * XincoClientConnectionProfile
  */
 public class XincoClientConnectionProfile implements java.io.Serializable {
-    
+
     /**
      * Profile's name
      */
@@ -53,24 +52,26 @@ public class XincoClientConnectionProfile implements java.io.Serializable {
      * Username
      */
     public String username = null;
-    /** Password
+    /**
+     * Password
      */
     public String password = null;
     /**
-     * Save password? Not used, kept for compability issues
+     * Save password?
      */
     public boolean save_password = false;
+
     /**
      * XincoClientProfile
      */
     public XincoClientConnectionProfile() {
-        profile_name  = "";
-        service_endpoint  = "";
-        username  = "";
-        password  = "";
+        profile_name = "";
+        service_endpoint = "";
+        username = "";
+        password = "";
         save_password = false;
     }
-    
+
     /**
      * XincoClientConnectionProfile string representation
      * @return Profile Name.
@@ -79,5 +80,4 @@ public class XincoClientConnectionProfile implements java.io.Serializable {
     public String toString() {
         return profile_name;
     }
-    
 }
