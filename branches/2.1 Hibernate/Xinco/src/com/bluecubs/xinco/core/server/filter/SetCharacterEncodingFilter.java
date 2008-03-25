@@ -49,6 +49,7 @@ import javax.servlet.ServletResponse;
  */
 public class SetCharacterEncodingFilter implements Filter {
     // ----------------------------------------------------- Instance Variables
+
     /**
      * The default character encoding to set for requests that pass through
      * this filter.

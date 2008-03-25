@@ -4,64 +4,52 @@
  * This file was auto-generated from WSDL
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
-
 package com.bluecubs.xinco.core;
 
-public class XincoCoreUser  implements java.io.Serializable {
+public class XincoCoreUser implements java.io.Serializable {
+
     private boolean change;
-
     private int changerID;
-
     private java.lang.String email;
-
     private java.lang.String firstname;
-
     private int id;
-
     private java.lang.String name;
-
     private java.lang.String reason;
-
     private int status_number;
-
     private java.lang.String username;
-
     private java.lang.String userpassword;
-
     private boolean writeGroups;
-
     private java.util.Vector xinco_core_groups;
 
     public XincoCoreUser() {
     }
 
     public XincoCoreUser(
-           boolean change,
-           int changerID,
-           java.lang.String email,
-           java.lang.String firstname,
-           int id,
-           java.lang.String name,
-           java.lang.String reason,
-           int status_number,
-           java.lang.String username,
-           java.lang.String userpassword,
-           boolean writeGroups,
-           java.util.Vector xinco_core_groups) {
-           this.change = change;
-           this.changerID = changerID;
-           this.email = email;
-           this.firstname = firstname;
-           this.id = id;
-           this.name = name;
-           this.reason = reason;
-           this.status_number = status_number;
-           this.username = username;
-           this.userpassword = userpassword;
-           this.writeGroups = writeGroups;
-           this.xinco_core_groups = xinco_core_groups;
+            boolean change,
+            int changerID,
+            java.lang.String email,
+            java.lang.String firstname,
+            int id,
+            java.lang.String name,
+            java.lang.String reason,
+            int status_number,
+            java.lang.String username,
+            java.lang.String userpassword,
+            boolean writeGroups,
+            java.util.Vector xinco_core_groups) {
+        this.change = change;
+        this.changerID = changerID;
+        this.email = email;
+        this.firstname = firstname;
+        this.id = id;
+        this.name = name;
+        this.reason = reason;
+        this.status_number = status_number;
+        this.username = username;
+        this.userpassword = userpassword;
+        this.writeGroups = writeGroups;
+        this.xinco_core_groups = xinco_core_groups;
     }
-
 
     /**
      * Gets the change value for this XincoCoreUser.
@@ -72,7 +60,6 @@ public class XincoCoreUser  implements java.io.Serializable {
         return change;
     }
 
-
     /**
      * Sets the change value for this XincoCoreUser.
      * 
@@ -81,7 +68,6 @@ public class XincoCoreUser  implements java.io.Serializable {
     public void setChange(boolean change) {
         this.change = change;
     }
-
 
     /**
      * Gets the changerID value for this XincoCoreUser.
@@ -92,7 +78,6 @@ public class XincoCoreUser  implements java.io.Serializable {
         return changerID;
     }
 
-
     /**
      * Sets the changerID value for this XincoCoreUser.
      * 
@@ -101,7 +86,6 @@ public class XincoCoreUser  implements java.io.Serializable {
     public void setChangerID(int changerID) {
         this.changerID = changerID;
     }
-
 
     /**
      * Gets the email value for this XincoCoreUser.
@@ -112,7 +96,6 @@ public class XincoCoreUser  implements java.io.Serializable {
         return email;
     }
 
-
     /**
      * Sets the email value for this XincoCoreUser.
      * 
@@ -121,7 +104,6 @@ public class XincoCoreUser  implements java.io.Serializable {
     public void setEmail(java.lang.String email) {
         this.email = email;
     }
-
 
     /**
      * Gets the firstname value for this XincoCoreUser.
@@ -132,7 +114,6 @@ public class XincoCoreUser  implements java.io.Serializable {
         return firstname;
     }
 
-
     /**
      * Sets the firstname value for this XincoCoreUser.
      * 
@@ -141,7 +122,6 @@ public class XincoCoreUser  implements java.io.Serializable {
     public void setFirstname(java.lang.String firstname) {
         this.firstname = firstname;
     }
-
 
     /**
      * Gets the id value for this XincoCoreUser.
@@ -152,7 +132,6 @@ public class XincoCoreUser  implements java.io.Serializable {
         return id;
     }
 
-
     /**
      * Sets the id value for this XincoCoreUser.
      * 
@@ -161,7 +140,6 @@ public class XincoCoreUser  implements java.io.Serializable {
     public void setId(int id) {
         this.id = id;
     }
-
 
     /**
      * Gets the name value for this XincoCoreUser.
@@ -172,7 +150,6 @@ public class XincoCoreUser  implements java.io.Serializable {
         return name;
     }
 
-
     /**
      * Sets the name value for this XincoCoreUser.
      * 
@@ -181,7 +158,6 @@ public class XincoCoreUser  implements java.io.Serializable {
     public void setName(java.lang.String name) {
         this.name = name;
     }
-
 
     /**
      * Gets the reason value for this XincoCoreUser.
@@ -192,7 +168,6 @@ public class XincoCoreUser  implements java.io.Serializable {
         return reason;
     }
 
-
     /**
      * Sets the reason value for this XincoCoreUser.
      * 
@@ -201,7 +176,6 @@ public class XincoCoreUser  implements java.io.Serializable {
     public void setReason(java.lang.String reason) {
         this.reason = reason;
     }
-
 
     /**
      * Gets the status_number value for this XincoCoreUser.
@@ -212,7 +186,6 @@ public class XincoCoreUser  implements java.io.Serializable {
         return status_number;
     }
 
-
     /**
      * Sets the status_number value for this XincoCoreUser.
      * 
@@ -221,7 +194,6 @@ public class XincoCoreUser  implements java.io.Serializable {
     public void setStatusNumber(int status_number) {
         this.status_number = status_number;
     }
-
 
     /**
      * Gets the username value for this XincoCoreUser.
@@ -232,7 +204,6 @@ public class XincoCoreUser  implements java.io.Serializable {
         return username;
     }
 
-
     /**
      * Sets the username value for this XincoCoreUser.
      * 
@@ -241,7 +212,6 @@ public class XincoCoreUser  implements java.io.Serializable {
     public void setUsername(java.lang.String username) {
         this.username = username;
     }
-
 
     /**
      * Gets the userpassword value for this XincoCoreUser.
@@ -252,7 +222,6 @@ public class XincoCoreUser  implements java.io.Serializable {
         return userpassword;
     }
 
-
     /**
      * Sets the userpassword value for this XincoCoreUser.
      * 
@@ -261,7 +230,6 @@ public class XincoCoreUser  implements java.io.Serializable {
     public void setUserpassword(java.lang.String userpassword) {
         this.userpassword = userpassword;
     }
-
 
     /**
      * Gets the writeGroups value for this XincoCoreUser.
@@ -272,7 +240,6 @@ public class XincoCoreUser  implements java.io.Serializable {
         return writeGroups;
     }
 
-
     /**
      * Sets the writeGroups value for this XincoCoreUser.
      * 
@@ -281,7 +248,6 @@ public class XincoCoreUser  implements java.io.Serializable {
     public void setWriteGroups(boolean writeGroups) {
         this.writeGroups = writeGroups;
     }
-
 
     /**
      * Gets the xinco_core_groups value for this XincoCoreUser.
@@ -292,7 +258,6 @@ public class XincoCoreUser  implements java.io.Serializable {
         return xinco_core_groups;
     }
 
-
     /**
      * Sets the xinco_core_groups value for this XincoCoreUser.
      * 
@@ -301,50 +266,56 @@ public class XincoCoreUser  implements java.io.Serializable {
     public void setXincoCoreGroups(java.util.Vector xinco_core_groups) {
         this.xinco_core_groups = xinco_core_groups;
     }
-
     private java.lang.Object __equalsCalc = null;
+
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof XincoCoreUser)) return false;
+        if (!(obj instanceof XincoCoreUser)) {
+            return false;
+        }
         XincoCoreUser other = (XincoCoreUser) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
+        if (obj == null) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
         if (__equalsCalc != null) {
             return (__equalsCalc == obj);
         }
         __equalsCalc = obj;
         boolean _equals;
-        _equals = true && 
-            this.change == other.isChange() &&
-            this.changerID == other.getChangerID() &&
-            ((this.email==null && other.getEmail()==null) || 
-             (this.email!=null &&
-              this.email.equals(other.getEmail()))) &&
-            ((this.firstname==null && other.getFirstname()==null) || 
-             (this.firstname!=null &&
-              this.firstname.equals(other.getFirstname()))) &&
-            this.id == other.getId() &&
-            ((this.name==null && other.getName()==null) || 
-             (this.name!=null &&
-              this.name.equals(other.getName()))) &&
-            ((this.reason==null && other.getReason()==null) || 
-             (this.reason!=null &&
-              this.reason.equals(other.getReason()))) &&
-            this.status_number == other.getStatusNumber() &&
-            ((this.username==null && other.getUsername()==null) || 
-             (this.username!=null &&
-              this.username.equals(other.getUsername()))) &&
-            ((this.userpassword==null && other.getUserpassword()==null) || 
-             (this.userpassword!=null &&
-              this.userpassword.equals(other.getUserpassword()))) &&
-            this.writeGroups == other.isWriteGroups() &&
-            ((this.xinco_core_groups==null && other.getXincoCoreGroups()==null) || 
-             (this.xinco_core_groups!=null &&
-              this.xinco_core_groups.equals(other.getXincoCoreGroups())));
+        _equals = true &&
+                this.change == other.isChange() &&
+                this.changerID == other.getChangerID() &&
+                ((this.email == null && other.getEmail() == null) ||
+                (this.email != null &&
+                this.email.equals(other.getEmail()))) &&
+                ((this.firstname == null && other.getFirstname() == null) ||
+                (this.firstname != null &&
+                this.firstname.equals(other.getFirstname()))) &&
+                this.id == other.getId() &&
+                ((this.name == null && other.getName() == null) ||
+                (this.name != null &&
+                this.name.equals(other.getName()))) &&
+                ((this.reason == null && other.getReason() == null) ||
+                (this.reason != null &&
+                this.reason.equals(other.getReason()))) &&
+                this.status_number == other.getStatusNumber() &&
+                ((this.username == null && other.getUsername() == null) ||
+                (this.username != null &&
+                this.username.equals(other.getUsername()))) &&
+                ((this.userpassword == null && other.getUserpassword() == null) ||
+                (this.userpassword != null &&
+                this.userpassword.equals(other.getUserpassword()))) &&
+                this.writeGroups == other.isWriteGroups() &&
+                ((this.xinco_core_groups == null && other.getXincoCoreGroups() == null) ||
+                (this.xinco_core_groups != null &&
+                this.xinco_core_groups.equals(other.getXincoCoreGroups())));
         __equalsCalc = null;
         return _equals;
     }
-
     private boolean __hashCodeCalc = false;
+
     public synchronized int hashCode() {
         if (__hashCodeCalc) {
             return 0;
@@ -383,7 +354,8 @@ public class XincoCoreUser  implements java.io.Serializable {
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(XincoCoreUser.class, true);
+            new org.apache.axis.description.TypeDesc(XincoCoreUser.class, true);
+    
 
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreUser"));
@@ -472,24 +444,21 @@ public class XincoCoreUser  implements java.io.Serializable {
      * Get Custom Serializer
      */
     public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+            java.lang.String mechType,
+            java.lang.Class _javaType,
+            javax.xml.namespace.QName _xmlType) {
+        return new org.apache.axis.encoding.ser.BeanSerializer(
+                _javaType, _xmlType, typeDesc);
     }
 
     /**
      * Get Custom Deserializer
      */
     public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+            java.lang.String mechType,
+            java.lang.Class _javaType,
+            javax.xml.namespace.QName _xmlType) {
+        return new org.apache.axis.encoding.ser.BeanDeserializer(
+                _javaType, _xmlType, typeDesc);
     }
-
 }

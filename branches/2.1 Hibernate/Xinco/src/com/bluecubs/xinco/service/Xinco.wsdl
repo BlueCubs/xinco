@@ -53,10 +53,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
     <complexContent>
      <extension base="tns3:XincoCoreACE">
       <sequence>
-       <element name="xincoCoreUserId" nillable="true" type="soapenc:int"/>
-       <element name="xincoCoreNodeId" nillable="true" type="soapenc:int"/>
-       <element name="xincoCoreGroupId" nillable="true" type="soapenc:int"/>
-       <element name="xincoCoreDataId" nillable="true" type="soapenc:int"/>
+       <element name="xincoCoreUserId" nillable="true" type="xsd:int"/>
+       <element name="xincoCoreNodeId" nillable="true" type="xsd:int"/>
+       <element name="xincoCoreGroupId" nillable="true" type="xsd:int"/>
+       <element name="xincoCoreDataId" nillable="true" type="xsd:int"/>
       </sequence>
      </extension>
     </complexContent>
@@ -152,50 +152,50 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    </complexType>
    <complexType name="XincoCoreUserModifiedRecord">
     <sequence>
-     <element name="modReason" nillable="true" type="soapenc:string"/>
+     <element name="modReason" nillable="true" type="xsd:string"/>
      <element name="modTime" nillable="true" type="xsd:dateTime"/>
      <element name="xincoCoreUserModifiedRecordPK" nillable="true" type="tns3:XincoCoreUserModifiedRecordPK"/>
     </sequence>
    </complexType>
    <complexType name="XincoCoreUser">
     <complexContent>
-     <extension base="tns4:XincoAbstractAuditableObject">
+     <extension base="tns4:AbstractAuditableObject">
       <sequence>
        <element name="attempts" type="xsd:int"/>
-       <element name="email" nillable="true" type="soapenc:string"/>
-       <element name="firstname" nillable="true" type="soapenc:string"/>
-       <element name="id" nillable="true" type="soapenc:int"/>
+       <element name="email" nillable="true" type="xsd:string"/>
+       <element name="firstname" nillable="true" type="xsd:string"/>
+       <element name="id" nillable="true" type="xsd:int"/>
        <element name="lastModified" nillable="true" type="xsd:dateTime"/>
-       <element name="name" nillable="true" type="soapenc:string"/>
+       <element name="name" nillable="true" type="xsd:string"/>
        <element name="statusNumber" type="xsd:int"/>
-       <element name="username" nillable="true" type="soapenc:string"/>
-       <element name="userpassword" nillable="true" type="soapenc:string"/>
+       <element name="username" nillable="true" type="xsd:string"/>
+       <element name="userpassword" nillable="true" type="xsd:string"/>
       </sequence>
      </extension>
     </complexContent>
    </complexType>
    <complexType name="XincoCoreNode">
     <complexContent>
-     <extension base="tns4:XincoAbstractAuditableObject">
+     <extension base="tns4:AbstractAuditableObject">
       <sequence>
-       <element name="designation" nillable="true" type="soapenc:string"/>
-       <element name="id" nillable="true" type="soapenc:int"/>
+       <element name="designation" nillable="true" type="xsd:string"/>
+       <element name="id" nillable="true" type="xsd:int"/>
        <element name="statusNumber" type="xsd:int"/>
        <element name="xincoCoreLanguageId" type="xsd:int"/>
-       <element name="xincoCoreNodeId" nillable="true" type="soapenc:int"/>
+       <element name="xincoCoreNodeId" nillable="true" type="xsd:int"/>
       </sequence>
      </extension>
     </complexContent>
    </complexType>
    <complexType name="XincoCoreData">
     <complexContent>
-     <extension base="tns4:XincoAbstractAuditableObject">
+     <extension base="tns4:AbstractAuditableObject">
       <sequence>
-       <element name="id" nillable="true" type="soapenc:int"/>
+       <element name="id" nillable="true" type="xsd:int"/>
        <element name="xincoCoreNodeId" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
        <element name="xincoCoreLanguageId" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
        <element name="xincoCoreDataTypeId" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
-       <element name="designation" nillable="true" type="soapenc:string"/>
+       <element name="designation" nillable="true" type="xsd:string"/>
        <element name="statusNumber" type="xsd:int" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
       </sequence>
      </extension>
@@ -203,20 +203,20 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    </complexType>
    <complexType name="XincoCoreLanguage">
     <complexContent>
-     <extension base="tns4:XincoAbstractAuditableObject">
+     <extension base="tns4:AbstractAuditableObject">
       <sequence>
-       <element name="designation" nillable="true" type="soapenc:string"/>
-       <element name="id" nillable="true" type="soapenc:int"/>
-       <element name="sign" nillable="true" type="soapenc:string"/>
+       <element name="designation" nillable="true" type="xsd:string"/>
+       <element name="id" nillable="true" type="xsd:int"/>
+       <element name="sign" nillable="true" type="xsd:string"/>
       </sequence>
      </extension>
     </complexContent>
    </complexType>
    <complexType name="XincoCoreACE">
     <complexContent>
-     <extension base="tns4:XincoAbstractAuditableObject">
+     <extension base="tns4:AbstractAuditableObject">
       <sequence>
-       <element name="id" nillable="true" type="soapenc:int"/>
+       <element name="id" nillable="true" type="xsd:int"/>
        <element name="readPermission" type="xsd:boolean" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
        <element name="writePermission" type="xsd:boolean" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
        <element name="executePermission" type="xsd:boolean" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
@@ -231,16 +231,16 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    </complexType>
    <complexType name="XincoCoreLog">
     <complexContent>
-     <extension base="tns4:XincoAbstractAuditableObject">
+     <extension base="tns4:AbstractAuditableObject">
       <sequence>
-       <element name="id" nillable="true" type="soapenc:int"/>
+       <element name="id" nillable="true" type="xsd:int"/>
        <element name="opCode" type="xsd:int"/>
        <element name="opDatetime" nillable="true" type="xsd:dateTime"/>
-       <element name="opDescription" nillable="true" type="soapenc:string"/>
-       <element name="versionHigh" nillable="true" type="soapenc:int"/>
-       <element name="versionLow" nillable="true" type="soapenc:int"/>
-       <element name="versionMid" nillable="true" type="soapenc:int"/>
-       <element name="versionPostfix" nillable="true" type="soapenc:string"/>
+       <element name="opDescription" nillable="true" type="xsd:string"/>
+       <element name="versionHigh" nillable="true" type="xsd:int"/>
+       <element name="versionLow" nillable="true" type="xsd:int"/>
+       <element name="versionMid" nillable="true" type="xsd:int"/>
+       <element name="versionPostfix" nillable="true" type="xsd:string"/>
        <element name="xincoCoreDataId" type="xsd:int"/>
        <element name="xincoCoreUserId" type="xsd:int"/>
       </sequence>
@@ -249,10 +249,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    </complexType>
    <complexType name="XincoCoreGroup">
     <complexContent>
-     <extension base="tns4:XincoAbstractAuditableObject">
+     <extension base="tns4:AbstractAuditableObject">
       <sequence>
-       <element name="designation" nillable="true" type="soapenc:string"/>
-       <element name="id" nillable="true" type="soapenc:int"/>
+       <element name="designation" nillable="true" type="xsd:string"/>
+       <element name="id" nillable="true" type="xsd:int"/>
        <element name="statusNumber" type="xsd:int"/>
       </sequence>
      </extension>
@@ -266,10 +266,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    </complexType>
    <complexType name="XincoCoreDataTypeAttribute">
     <complexContent>
-     <extension base="tns4:XincoAbstractAuditableObject">
+     <extension base="tns4:AbstractAuditableObject">
       <sequence>
-       <element name="dataType" nillable="true" type="soapenc:string"/>
-       <element name="designation" nillable="true" type="soapenc:string"/>
+       <element name="dataType" nillable="true" type="xsd:string"/>
+       <element name="designation" nillable="true" type="xsd:string"/>
        <element name="size" type="xsd:int"/>
        <element name="xincoCoreDataTypeAttributePK" nillable="true" type="tns3:XincoCoreDataTypeAttributePK"/>
       </sequence>
@@ -284,14 +284,14 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    </complexType>
    <complexType name="XincoAddAttribute">
     <complexContent>
-     <extension base="tns4:XincoAbstractAuditableObject">
+     <extension base="tns4:AbstractAuditableObject">
       <sequence>
        <element name="attribDatetime" nillable="true" type="xsd:dateTime"/>
-       <element name="attribDouble" nillable="true" type="soapenc:double"/>
-       <element name="attribInt" nillable="true" type="soapenc:int"/>
-       <element name="attribText" nillable="true" type="soapenc:string"/>
-       <element name="attribUnsignedint" nillable="true" type="soapenc:int"/>
-       <element name="attribVarchar" nillable="true" type="soapenc:string"/>
+       <element name="attribDouble" nillable="true" type="xsd:double"/>
+       <element name="attribInt" nillable="true" type="xsd:int"/>
+       <element name="attribText" nillable="true" type="xsd:string"/>
+       <element name="attribUnsignedint" nillable="true" type="xsd:int"/>
+       <element name="attribVarchar" nillable="true" type="xsd:string"/>
        <element name="xincoAddAttributePK" nillable="true" type="tns3:XincoAddAttributePK"/>
       </sequence>
      </extension>
@@ -299,14 +299,14 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    </complexType>
    <complexType name="XincoSetting">
     <complexContent>
-     <extension base="tns4:XincoAbstractAuditableObject">
+     <extension base="tns4:AbstractAuditableObject">
       <sequence>
-       <element name="boolValue" nillable="true" type="soapenc:boolean"/>
-       <element name="description" nillable="true" type="soapenc:string"/>
-       <element name="id" nillable="true" type="soapenc:int"/>
-       <element name="intValue" nillable="true" type="soapenc:int"/>
-       <element name="longValue" nillable="true" type="soapenc:integer"/>
-       <element name="stringValue" nillable="true" type="soapenc:string"/>
+       <element name="boolValue" nillable="true" type="xsd:boolean"/>
+       <element name="description" nillable="true" type="xsd:string"/>
+       <element name="id" nillable="true" type="xsd:int"/>
+       <element name="intValue" nillable="true" type="xsd:int"/>
+       <element name="longValue" nillable="true" type="xsd:integer"/>
+       <element name="stringValue" nillable="true" type="xsd:string"/>
       </sequence>
      </extension>
     </complexContent>
@@ -320,7 +320,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    <import namespace="http://core.xinco.bluecubs.com"/>
    <import namespace="http://persistence.core.xinco.bluecubs.com"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
-   <complexType abstract="true" name="XincoAbstractAuditableObject">
+   <complexType abstract="true" name="AbstractAuditableObject">
     <complexContent>
      <extension base="tns5:BaseObject">
       <sequence>
@@ -328,8 +328,8 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
        <element name="created" type="xsd:boolean"/>
        <element name="deleted" type="xsd:boolean"/>
        <element name="modified" type="xsd:boolean"/>
-       <element name="reason" nillable="true" type="soapenc:string"/>
-       <element name="recordId" nillable="true" type="soapenc:int"/>
+       <element name="reason" nillable="true" type="xsd:string"/>
+       <element name="recordId" nillable="true" type="xsd:int"/>
        <element name="transactionTime" nillable="true" type="tns6:DateRange"/>
        <element name="xincoCoreUserModifiedRecord" nillable="true" type="tns3:XincoCoreUserModifiedRecord"/>
       </sequence>
@@ -402,7 +402,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:message name="checkXincoCoreUserNewPasswordRequest">
 
-      <wsdl:part name="in0" type="soapenc:string"/>
+      <wsdl:part name="in0" type="xsd:string"/>
 
       <wsdl:part name="in1" type="tns2:XincoCoreUser"/>
 
@@ -438,7 +438,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:message name="findXincoCoreNodesRequest">
 
-      <wsdl:part name="in0" type="soapenc:string"/>
+      <wsdl:part name="in0" type="xsd:string"/>
 
       <wsdl:part name="in1" type="tns2:XincoCoreLanguage"/>
 
@@ -450,7 +450,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       <wsdl:part name="in0" type="tns2:XincoCoreData"/>
 
-      <wsdl:part name="in1" type="soapenc:base64Binary"/>
+      <wsdl:part name="in1" type="xsd:base64Binary"/>
 
       <wsdl:part name="in2" type="tns2:XincoCoreUser"/>
 
@@ -526,7 +526,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:message name="findXincoCoreDataRequest">
 
-      <wsdl:part name="in0" type="soapenc:string"/>
+      <wsdl:part name="in0" type="xsd:string"/>
 
       <wsdl:part name="in1" type="tns2:XincoCoreLanguage"/>
 
@@ -662,7 +662,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:message name="downloadXincoCoreDataResponse">
 
-      <wsdl:part name="downloadXincoCoreDataReturn" type="soapenc:base64Binary"/>
+      <wsdl:part name="downloadXincoCoreDataReturn" type="xsd:base64Binary"/>
 
    </wsdl:message>
 
@@ -674,9 +674,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:message name="localizeStringRequest">
 
-      <wsdl:part name="in0" type="soapenc:string"/>
+      <wsdl:part name="in0" type="xsd:string"/>
 
-      <wsdl:part name="in1" type="soapenc:string"/>
+      <wsdl:part name="in1" type="xsd:string"/>
 
    </wsdl:message>
 
@@ -694,9 +694,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:message name="getCurrentXincoCoreUserRequest">
 
-      <wsdl:part name="in0" type="soapenc:string"/>
+      <wsdl:part name="in0" type="xsd:string"/>
 
-      <wsdl:part name="in1" type="soapenc:string"/>
+      <wsdl:part name="in1" type="xsd:string"/>
 
    </wsdl:message>
 
@@ -736,7 +736,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    <wsdl:message name="localizeStringResponse">
 
-      <wsdl:part name="localizeStringReturn" type="soapenc:string"/>
+      <wsdl:part name="localizeStringReturn" type="xsd:string"/>
 
    </wsdl:message>
 
@@ -1066,13 +1066,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="getXincoServerVersionRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="getXincoServerVersionResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1084,13 +1084,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="getCurrentXincoCoreUserRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="getCurrentXincoCoreUserResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1102,13 +1102,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="getAllXincoCoreGroupsRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="getAllXincoCoreGroupsResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1120,13 +1120,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="getAllXincoCoreLanguagesRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="getAllXincoCoreLanguagesResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1138,13 +1138,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="getAllXincoCoreDataTypesRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="getAllXincoCoreDataTypesResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1156,13 +1156,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="getXincoCoreNodeRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="getXincoCoreNodeResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1174,13 +1174,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="getXincoCoreDataRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="getXincoCoreDataResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1192,13 +1192,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="doXincoCoreDataCheckoutRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="doXincoCoreDataCheckoutResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1210,13 +1210,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="undoXincoCoreDataCheckoutRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="undoXincoCoreDataCheckoutResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1228,13 +1228,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="doXincoCoreDataCheckinRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="doXincoCoreDataCheckinResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1246,13 +1246,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="downloadXincoCoreDataRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="downloadXincoCoreDataResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1264,13 +1264,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="uploadXincoCoreDataRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="uploadXincoCoreDataResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1282,13 +1282,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="findXincoCoreNodesRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="findXincoCoreNodesResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1300,13 +1300,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="findXincoCoreDataRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="findXincoCoreDataResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1318,13 +1318,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="setXincoCoreNodeRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="setXincoCoreNodeResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1336,13 +1336,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="setXincoCoreDataRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="setXincoCoreDataResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1354,13 +1354,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="setXincoCoreACERequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="setXincoCoreACEResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1372,13 +1372,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="removeXincoCoreACERequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="removeXincoCoreACEResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1390,13 +1390,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="setXincoCoreLogRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="setXincoCoreLogResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1408,13 +1408,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="setXincoCoreUserRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="setXincoCoreUserResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1426,13 +1426,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="setXincoCoreGroupRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="setXincoCoreGroupResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1444,13 +1444,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="setXincoCoreLanguageRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="setXincoCoreLanguageResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1462,13 +1462,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="getXincoCoreDataTypeAttributeRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="getXincoCoreDataTypeAttributeResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1480,13 +1480,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="getXincoAddAttributeRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="getXincoAddAttributeResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1498,13 +1498,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="checkXincoCoreUserNewPasswordRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="checkXincoCoreUserNewPasswordResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1516,13 +1516,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="getAllXincoUsersRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="getAllXincoUsersResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1534,13 +1534,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="getXincoSettingRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="getXincoSettingResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1552,13 +1552,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="setXincoSettingRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="setXincoSettingResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1570,13 +1570,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="setXincoAddAttributeRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="setXincoAddAttributeResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1588,13 +1588,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="indexFilesRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="indexFilesResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 
@@ -1606,13 +1606,13 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
          <wsdl:input name="localizeStringRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:input>
 
          <wsdl:output name="localizeStringResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:Xinco" use="encoded"/>
+            <wsdlsoap:body  namespace="urn:Xinco" use="literal"/>
 
          </wsdl:output>
 

@@ -4,50 +4,42 @@
  * This file was auto-generated from WSDL
  * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
-
 package com.bluecubs.xinco.core;
 
 import java.util.Date;
 
-public class XincoCoreLog  implements java.io.Serializable {
+public class XincoCoreLog implements java.io.Serializable {
+
     private int id;
-
     private int opCode;
-
     private int changerID;
-
     private Date opDatetime;
-
     private java.lang.String opDescription;
-
     private com.bluecubs.xinco.core.XincoVersion version;
-
     private int xincoCoreDataId;
-
     private int xincoCoreUserId;
 
     public XincoCoreLog() {
     }
 
     public XincoCoreLog(
-           int id,
-           int opCode,
-           int changerID,
-           Date opDatetime,
-           java.lang.String opDescription,
-           com.bluecubs.xinco.core.XincoVersion version,
-           int xincoCoreDataId,
-           int xincoCoreUserId) {
-           this.id = id;
-           this.opCode = opCode;
-           this.changerID = changerID;
-           this.opDatetime = opDatetime;
-           this.opDescription = opDescription;
-           this.version = version;
-           this.xincoCoreDataId = xincoCoreDataId;
-           this.xincoCoreUserId = xincoCoreUserId;
+            int id,
+            int opCode,
+            int changerID,
+            Date opDatetime,
+            java.lang.String opDescription,
+            com.bluecubs.xinco.core.XincoVersion version,
+            int xincoCoreDataId,
+            int xincoCoreUserId) {
+        this.id = id;
+        this.opCode = opCode;
+        this.changerID = changerID;
+        this.opDatetime = opDatetime;
+        this.opDescription = opDescription;
+        this.version = version;
+        this.xincoCoreDataId = xincoCoreDataId;
+        this.xincoCoreUserId = xincoCoreUserId;
     }
-
 
     /**
      * Gets the id value for this XincoCoreLog.
@@ -58,7 +50,6 @@ public class XincoCoreLog  implements java.io.Serializable {
         return id;
     }
 
-
     /**
      * Sets the id value for this XincoCoreLog.
      * 
@@ -67,7 +58,6 @@ public class XincoCoreLog  implements java.io.Serializable {
     public void setId(int id) {
         this.id = id;
     }
-
 
     /**
      * Gets the opCode value for this XincoCoreLog.
@@ -78,7 +68,6 @@ public class XincoCoreLog  implements java.io.Serializable {
         return opCode;
     }
 
-
     /**
      * Sets the opCode value for this XincoCoreLog.
      * 
@@ -87,7 +76,6 @@ public class XincoCoreLog  implements java.io.Serializable {
     public void setOpCode(int opCode) {
         this.opCode = opCode;
     }
-
 
     /**
      * Gets the changerID value for this XincoCoreLog.
@@ -98,7 +86,6 @@ public class XincoCoreLog  implements java.io.Serializable {
         return changerID;
     }
 
-
     /**
      * Sets the changerID value for this XincoCoreLog.
      * 
@@ -107,7 +94,6 @@ public class XincoCoreLog  implements java.io.Serializable {
     public void setChangerID(int changerID) {
         this.changerID = changerID;
     }
-
 
     /**
      * Gets the opDatetime value for this XincoCoreLog.
@@ -118,7 +104,6 @@ public class XincoCoreLog  implements java.io.Serializable {
         return opDatetime;
     }
 
-
     /**
      * Sets the opDatetime value for this XincoCoreLog.
      * 
@@ -127,7 +112,6 @@ public class XincoCoreLog  implements java.io.Serializable {
     public void setOpDatetime(Date opDatetime) {
         this.opDatetime = opDatetime;
     }
-
 
     /**
      * Gets the opDescription value for this XincoCoreLog.
@@ -138,7 +122,6 @@ public class XincoCoreLog  implements java.io.Serializable {
         return opDescription;
     }
 
-
     /**
      * Sets the opDescription value for this XincoCoreLog.
      * 
@@ -147,7 +130,6 @@ public class XincoCoreLog  implements java.io.Serializable {
     public void setOpDescription(java.lang.String opDescription) {
         this.opDescription = opDescription;
     }
-
 
     /**
      * Gets the version value for this XincoCoreLog.
@@ -158,7 +140,6 @@ public class XincoCoreLog  implements java.io.Serializable {
         return version;
     }
 
-
     /**
      * Sets the version value for this XincoCoreLog.
      * 
@@ -167,7 +148,6 @@ public class XincoCoreLog  implements java.io.Serializable {
     public void setVersion(com.bluecubs.xinco.core.XincoVersion version) {
         this.version = version;
     }
-
 
     /**
      * Gets the xincoCoreDataId value for this XincoCoreLog.
@@ -178,7 +158,6 @@ public class XincoCoreLog  implements java.io.Serializable {
         return xincoCoreDataId;
     }
 
-
     /**
      * Sets the xincoCoreDataId value for this XincoCoreLog.
      * 
@@ -187,7 +166,6 @@ public class XincoCoreLog  implements java.io.Serializable {
     public void setXincoCoreDataId(int xincoCoreDataId) {
         this.xincoCoreDataId = xincoCoreDataId;
     }
-
 
     /**
      * Gets the xincoCoreUserId value for this XincoCoreLog.
@@ -198,7 +176,6 @@ public class XincoCoreLog  implements java.io.Serializable {
         return xincoCoreUserId;
     }
 
-
     /**
      * Sets the xincoCoreUserId value for this XincoCoreLog.
      * 
@@ -207,38 +184,44 @@ public class XincoCoreLog  implements java.io.Serializable {
     public void setXincoCoreUserId(int xincoCoreUserId) {
         this.xincoCoreUserId = xincoCoreUserId;
     }
-
     private java.lang.Object __equalsCalc = null;
+
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof XincoCoreLog)) return false;
+        if (!(obj instanceof XincoCoreLog)) {
+            return false;
+        }
         XincoCoreLog other = (XincoCoreLog) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
+        if (obj == null) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
         if (__equalsCalc != null) {
             return (__equalsCalc == obj);
         }
         __equalsCalc = obj;
         boolean _equals;
-        _equals = true && 
-            this.id == other.getId() &&
-            this.opCode == other.getOpCode() &&
-            this.changerID == other.getChangerID() &&
-            ((this.opDatetime==null && other.getOpDatetime()==null) || 
-             (this.opDatetime!=null &&
-              this.opDatetime.equals(other.getOpDatetime()))) &&
-            ((this.opDescription==null && other.getOpDescription()==null) || 
-             (this.opDescription!=null &&
-              this.opDescription.equals(other.getOpDescription()))) &&
-            ((this.version==null && other.getVersion()==null) || 
-             (this.version!=null &&
-              this.version.equals(other.getVersion()))) &&
-            this.xincoCoreDataId == other.getXincoCoreDataId() &&
-            this.xincoCoreUserId == other.getXincoCoreUserId();
+        _equals = true &&
+                this.id == other.getId() &&
+                this.opCode == other.getOpCode() &&
+                this.changerID == other.getChangerID() &&
+                ((this.opDatetime == null && other.getOpDatetime() == null) ||
+                (this.opDatetime != null &&
+                this.opDatetime.equals(other.getOpDatetime()))) &&
+                ((this.opDescription == null && other.getOpDescription() == null) ||
+                (this.opDescription != null &&
+                this.opDescription.equals(other.getOpDescription()))) &&
+                ((this.version == null && other.getVersion() == null) ||
+                (this.version != null &&
+                this.version.equals(other.getVersion()))) &&
+                this.xincoCoreDataId == other.getXincoCoreDataId() &&
+                this.xincoCoreUserId == other.getXincoCoreUserId();
         __equalsCalc = null;
         return _equals;
     }
-
     private boolean __hashCodeCalc = false;
+
     public synchronized int hashCode() {
         if (__hashCodeCalc) {
             return 0;
@@ -265,7 +248,8 @@ public class XincoCoreLog  implements java.io.Serializable {
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(XincoCoreLog.class, true);
+            new org.apache.axis.description.TypeDesc(XincoCoreLog.class, true);
+    
 
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreLog"));
@@ -330,24 +314,21 @@ public class XincoCoreLog  implements java.io.Serializable {
      * Get Custom Serializer
      */
     public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
+            java.lang.String mechType,
+            java.lang.Class _javaType,
+            javax.xml.namespace.QName _xmlType) {
+        return new org.apache.axis.encoding.ser.BeanSerializer(
+                _javaType, _xmlType, typeDesc);
     }
 
     /**
      * Get Custom Deserializer
      */
     public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+            java.lang.String mechType,
+            java.lang.Class _javaType,
+            javax.xml.namespace.QName _xmlType) {
+        return new org.apache.axis.encoding.ser.BeanDeserializer(
+                _javaType, _xmlType, typeDesc);
     }
-
 }

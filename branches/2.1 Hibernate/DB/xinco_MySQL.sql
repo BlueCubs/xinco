@@ -368,7 +368,7 @@ CREATE TABLE xinco_core_language (
   sign VARCHAR(255) NOT NULL,
   designation VARCHAR(255) NOT NULL,
   PRIMARY KEY(id),
-  UNIQUE INDEX xinco_core_language_index_unique(designation)
+  UNIQUE INDEX xinco_core_language_unique(designation)
 )
 TYPE=InnoDB;
 
@@ -544,9 +544,15 @@ INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value,
 
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(36,'setting.securitycheck.enable',null,null,true,null);   
 
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(37,'setting.printDBTransactions.enable',null,null,false,null); 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(37,'setting.printDBTransactions.enable',null,null,false,null);   
+
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(38,'xinco/FileIndexOptimizerPeriod',null,null,false,604800000);
 
 /*Inserts 51-100 reserved for Workflow settings*/ 
+
+--
+-- Table structure for audit tables 
+--
 
 CREATE TABLE xinco_add_attribute_t (
   record_id INTEGER(10) UNSIGNED NOT NULL,

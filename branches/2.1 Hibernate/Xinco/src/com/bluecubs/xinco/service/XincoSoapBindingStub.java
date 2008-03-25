@@ -481,7 +481,7 @@ public class XincoSoapBindingStub extends org.apache.axis.client.Stub implements
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://audit.persistence.server.core.xinco.bluecubs.com", "XincoAbstractAuditableObject");
+            qName = new javax.xml.namespace.QName("http://audit.persistence.server.core.xinco.bluecubs.com", "AbstractAuditableObject");
             cachedSerQNames.add(qName);
             cls = com.bluecubs.xinco.core.server.persistence.audit.XincoAbstractAuditableObject.class;
             cachedSerClasses.add(cls);

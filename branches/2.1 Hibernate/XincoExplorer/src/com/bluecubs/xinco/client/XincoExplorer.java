@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * Javier A. Ortiz     Aug-Dec 2006      1. Remove dialogs and windows from main code
+ * Javier A. Ortiz     Aug-Dec 2006   1. Remove dialogs and windows from main code
  *                                    2. Incorporate 21 CFR regulatory features
  *
  *************************************************************
@@ -52,7 +52,6 @@ import com.bluecubs.xinco.client.dialog.LockDialog;
 import com.bluecubs.xinco.client.dialog.LogDialog;
 import com.bluecubs.xinco.client.dialog.SearchDialog;
 import com.bluecubs.xinco.client.dialog.UserDialog;
-import com.bluecubs.xinco.client.frames.XincoInformationFrame;
 import com.bluecubs.xinco.client.frames.XincoInformationFrame;
 import com.bluecubs.xinco.client.object.XincoClientSession;
 import com.bluecubs.xinco.client.object.XincoClientSetting;
@@ -260,7 +259,12 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         loadConfig();
         saveConfig();
         //Apply LAF to all screens including de Locale Dialog
-        switchPLAF((String) xincoClientConfig.elementAt(1));
+        try {
+            switchPLAF((String) xincoClientConfig.elementAt(1));
+        } catch (Throwable e) {
+            createDefaultConfiguration(true);
+            switchPLAF((String) xincoClientConfig.elementAt(1));
+        }
         //choose language
         getJDialogLocale().setVisible(true);
 
@@ -291,6 +295,47 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         initialize();
         //Windows-Listener
         addWindowListener(new WindowClosingAdapter(true));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void createDefaultConfiguration(boolean modifyProfiles) {
+        if (modifyProfiles) {
+            //insert default connection profiles
+            ((Vector) xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).profile_name = "xinco Demo User";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).service_endpoint = "http://xinco.org:8080/xinco_demo/services/Xinco";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).username = "user";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).password = "user";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).save_password = true;
+            ((Vector) xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).profile_name = "xinco Demo Admin";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).service_endpoint = "http://xinco.org:8080/xinco_demo/services/Xinco";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).username = "admin";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).password = "admin";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).save_password = true;
+            ((Vector) xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).profile_name = "Template Profile";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).service_endpoint = "http://[server_domain]:8080/xinco/services/Xinco";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).username = "your_username";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).password = "your_password";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).save_password = true;
+            ((Vector) xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).profile_name = "Admin (localhost)";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).service_endpoint = "http://localhost:8080/xinco/services/Xinco";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).username = "admin";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).password = "admin";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).save_password = true;
+            ((Vector) xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).profile_name = "User (localhost)";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).service_endpoint = "http://localhost:8080/xinco/services/Xinco";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).username = "user";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).password = "user";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).save_password = true;
+        }
+        //add Pluggable Look and Feel
+        xincoClientConfig.addElement(new String("javax.swing.plaf.metal.MetalLookAndFeel"));
+        //add locale
+        xincoClientConfig.addElement(Locale.getDefault());
     }
 
     /**
@@ -434,14 +479,13 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             }
         }
     }
-    
+
     /**
      * Reset XincoExplorer dialogs
      */
-    public void resetExplorer(){
-        for(int i=0;i<getDialogs().size();i++)
-        {
-            ((AbstractDialog)getDialogs().get(i)).clearDialog();
+    public void resetExplorer() {
+        for (int i = 0; i < getDialogs().size(); i++) {
+            ((AbstractDialog) getDialogs().get(i)).clearDialog();
         }
     }
 
@@ -1280,8 +1324,9 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      * @return Vector containing XincoExplorer's dialogs
      */
     public Vector getDialogs() {
-        if(dialogs==null)
+        if (dialogs == null) {
             dialogs = new Vector();
+        }
         return dialogs;
     }
 
@@ -1471,7 +1516,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             if (getDialogs() != null) {
                 for (int i = 0; i < getDialogs().size(); i++) {
                     if (getDialogs().get(i) != null) {
-                        SwingUtilities.updateComponentTreeUI((AbstractDialog)getDialogs().get(i));
+                        SwingUtilities.updateComponentTreeUI((AbstractDialog) getDialogs().get(i));
                     }
                 }
             }
@@ -2007,7 +2052,9 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     //files
                     if (((XincoCoreData) newnode.getUserObject()).getXincoCoreDataType().getId() == 1) {
                         ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXincoAddAttributes().elementAt(3)).setAttribUnsignedint(1); //revision model
+
                         ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXincoAddAttributes().elementAt(4)).setAttribUnsignedint(0); //archiving model
+
                     }
 
                 }
@@ -2087,6 +2134,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         newlog.setOpDescription(xerb.getString("datawizard.logging.creation") + "!");
                         newlog.setXincoCoreUserId(xincoClientSession.getUser().getId());
                         newlog.setXincoCoreDataId(((XincoCoreData) newnode.getUserObject()).getId()); //update to new id later!
+
                         newlog.setVersion(new XincoVersion());
                         newlog.getVersion().setVersionHigh(1);
                         newlog.getVersion().setVersionMid(0);
@@ -2280,7 +2328,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         //save log to server
                         newlog = xincoClientSession.getXinco().setXincoCoreLog(newlog, xincoClientSession.getUser());
                         if (newlog == null) {
-                        //System.out.println(xerb.getString("datawizard.savelogfailed"));
+                            //System.out.println(xerb.getString("datawizard.savelogfailed"));
                         } else {
                             ((XincoCoreData) newnode.getUserObject()).getXincoCoreLogs().addElement(newlog);
                         }
@@ -2687,8 +2735,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      * @return AbstractDialog
      */
     public AddAttributeText getAbstractDialogAddAttributesText() {
-        if(AbstractDialogAddAttributesText == null){
-        AbstractDialogAddAttributesText = new AddAttributeText(null, true, viewOnly, this);
+        if (AbstractDialogAddAttributesText == null) {
+            AbstractDialogAddAttributesText = new AddAttributeText(null, true, viewOnly, this);
             addDialog(AbstractDialogAddAttributesText);
         }
         viewOnly = false;
@@ -2909,7 +2957,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             (new File("xincoClientConnectionProfiles.dat")).delete();
 
         } catch (Exception ioe) {
-            Logger.getLogger(XincoExplorer.class.getName()).log(Level.INFO, "Creating new file.", ioe);
             //error handling
             //create config
             xincoClientConfig = new Vector();

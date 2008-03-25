@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bluecubs.xinco.core.persistence.audit;
 
 import java.io.Serializable;
@@ -21,6 +20,7 @@ import javax.persistence.Table;
 @Table(name = "xinco_core_group_t")
 @NamedQueries({@NamedQuery(name = "XincoCoreGroupT.findByRecordId", query = "SELECT x FROM XincoCoreGroupT x WHERE x.recordId = :recordId"), @NamedQuery(name = "XincoCoreGroupT.findById", query = "SELECT x FROM XincoCoreGroupT x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreGroupT.findByDesignation", query = "SELECT x FROM XincoCoreGroupT x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreGroupT.findByStatusNumber", query = "SELECT x FROM XincoCoreGroupT x WHERE x.statusNumber = :statusNumber")})
 public class XincoCoreGroupT implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "record_id", nullable = false)
@@ -102,5 +102,4 @@ public class XincoCoreGroupT implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.persistence.audit.XincoCoreGroupT[recordId=" + recordId + "]";
     }
-
 }

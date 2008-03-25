@@ -37,6 +37,8 @@ package com.bluecubs.xinco.conf;
 
 import com.bluecubs.xinco.core.persistence.XincoSetting;
 import com.bluecubs.xinco.core.server.persistence.XincoSettingServer;
+import com.dreamer.Hibernate.PersistenceManager;
+import com.dreamer.Hibernate.conf.ConfigSingletonServer;
 import java.math.BigInteger;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -44,24 +46,25 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.hibernate.cfg.Configuration;
 
 /**
  * This class handles the server configuration of xinco.
  * Edit values in context.xml
  */
-public class XincoConfigSingletonServer {
+public class XincoConfigSingletonServer extends ConfigSingletonServer {
 
     private String FileRepositoryPath = null;
     private String FileIndexPath = null;
     private String FileArchivePath = null;
     private BigInteger FileArchivePeriod;
+    private BigInteger FileIndexOptimizerPeriod;
     private int FileIndexerCount = 0;
     private Vector IndexFileTypesClass = null;
     private Vector IndexFileTypesExt = null;
     private String[] IndexNoIndex = null;
-    private String JNDIDB = null;
     private int MaxSearchResult = 0;
-    private boolean allowOutsideLinks;
+    private boolean allowOutsideLinks,  printDBTransactions,  allowPublisherList;
     private static XincoConfigSingletonServer instance = null;
 
     /**
@@ -92,10 +95,26 @@ public class XincoConfigSingletonServer {
      * @return True if initialization was successfull
      */
     @SuppressWarnings("unchecked")
+    @Override
     public boolean init() {
         try {
+            //init PersistanceManger
+            Configuration c = new Configuration().setProperty("hibernate.dialect",
+                    (String) (new InitialContext()).lookup("java:comp/env/hibernate.dialect")).
+                    setProperty("hibernate.connection.datasource", JNDIDB).
+                    setProperty("hibernate.show_sql", "false").
+                    setProperty("hibernate.format_sql", "true").
+                    setProperty("hibernate.order_updates", "true");
+            setPersistenceManager(new PersistenceManager(c));
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, "Retrieving settings from Database...");
+                c = new Configuration().setProperty("hibernate.dialect",
+                        (String) (new InitialContext()).lookup("java:comp/env/hibernate.dialect")).
+                        setProperty("hibernate.connection.datasource", JNDIDB).
+                        setProperty("hibernate.show_sql", "true").
+                        setProperty("hibernate.format_sql", "true").
+                        setProperty("hibernate.order_updates", "true");
+                setPersistenceManager(new PersistenceManager(c));
             }
             FileRepositoryPath = XincoSettingServer.getSetting("xinco/FileRepositoryPath").getStringValue();
             if (!(getFileRepositoryPath().substring(getFileRepositoryPath().length() - 1).equals(System.getProperty("file.separator")))) {
@@ -129,6 +148,7 @@ public class XincoConfigSingletonServer {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, "FileArchivePeriod: " + FileArchivePeriod);
             }
+            setFileIndexOptimizerPeriod(XincoSettingServer.getSetting("xinco/FileIndexOptimizerPeriod").getLongValue());
             Vector s = new XincoSettingServer().getXincoSettings();
             StringTokenizer st;
             String[] temp;
@@ -165,6 +185,8 @@ public class XincoConfigSingletonServer {
                 Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, "IndexNoIndex: " + IndexNoIndex);
             }
             setAllowOutsideLinks(XincoSettingServer.getSetting("setting.allowoutsidelinks").getBoolValue());
+            setPrintDBTransactions(XincoSettingServer.getSetting("setting.printDBTransactions.enable").getBoolValue());
+            setAllowPublisherList(XincoSettingServer.getSetting("setting.allowpublisherlist").getBoolValue());
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, "AllowOutsideLinks: " + allowOutsideLinks);
             }
@@ -174,6 +196,7 @@ public class XincoConfigSingletonServer {
             setFileIndexPath("");
             setFileArchivePath("");
             setFileArchivePeriod(BigInteger.valueOf(14400000));
+            setFileIndexOptimizerPeriod(BigInteger.valueOf(14400000));
             setFileIndexerCount(4);
             setAllowOutsideLinks(false);
             setIndexFileTypesClass(new Vector());
@@ -201,6 +224,9 @@ public class XincoConfigSingletonServer {
             getIndexNoIndex()[2] = "exe";
             setJNDIDB("java:comp/env/jdbc/XincoDB");
             setMaxSearchResult(30);
+            setAllowOutsideLinks(true);
+            setPrintDBTransactions(false);
+            setAllowPublisherList(true);
             return true;
         }
         return true;
@@ -335,22 +361,6 @@ public class XincoConfigSingletonServer {
     }
 
     /**
-     * Get JNDIDB
-     * @return String
-     */
-    public String getJNDIDB() {
-        return JNDIDB;
-    }
-
-    /**
-     * Set JNDIDB
-     * @param JNDIDB
-     */
-    public void setJNDIDB(String JNDIDB) {
-        this.JNDIDB = JNDIDB;
-    }
-
-    /**
      * Get MaxSearchResult
      * @return int
      */
@@ -380,5 +390,29 @@ public class XincoConfigSingletonServer {
      */
     public void setAllowOutsideLinks(boolean allowOutsideLinks) {
         this.allowOutsideLinks = allowOutsideLinks;
+    }
+
+    public BigInteger getFileIndexOptimizerPeriod() {
+        return FileIndexOptimizerPeriod;
+    }
+
+    public void setFileIndexOptimizerPeriod(BigInteger FileIndexOptimizerPeriod) {
+        this.FileIndexOptimizerPeriod = FileIndexOptimizerPeriod;
+    }
+
+    public boolean isPrintDBTransactions() {
+        return printDBTransactions;
+    }
+
+    public void setPrintDBTransactions(boolean printDBTransactions) {
+        this.printDBTransactions = printDBTransactions;
+    }
+
+    public boolean isAllowPublisherList() {
+        return allowPublisherList;
+    }
+
+    public void setAllowPublisherList(boolean allowPublisherList) {
+        this.allowPublisherList = allowPublisherList;
     }
 }

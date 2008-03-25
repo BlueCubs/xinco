@@ -41,8 +41,8 @@
       />
       <typeMapping
         xmlns:ns="http://audit.persistence.server.core.xinco.bluecubs.com"
-        qname="ns:XincoAbstractAuditableObject"
-        type="java:com.bluecubs.xinco.core.server.persistence.audit.XincoAbstractAuditableObject"
+        qname="ns:AbstractAuditableObject"
+        type="java:com.bluecubs.xinco.core.server.persistence.audit.AbstractAuditableObject"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"

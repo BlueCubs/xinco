@@ -38,8 +38,9 @@ package com.bluecubs.xinco.index;
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataServer;
-import com.bluecubs.xinco.core.server.persistence.XincoPersistenceManager;
+
 import com.bluecubs.xinco.core.server.persistence.XincoSettingServer;
+import com.dreamer.Hibernate.PersistenceManager;
 import java.io.File;
 import java.util.List;
 import java.util.Vector;
@@ -56,7 +57,7 @@ public class XincoIndexThread extends Thread {
     private static boolean index_directory_deleted = false;
     private XincoCoreData d = null;
     private List result;
-    private static XincoPersistenceManager pm = new XincoPersistenceManager();
+    private static PersistenceManager pm = new PersistenceManager();
     private static XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
 
     /**

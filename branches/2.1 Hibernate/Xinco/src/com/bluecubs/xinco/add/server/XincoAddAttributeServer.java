@@ -41,11 +41,12 @@ import com.bluecubs.xinco.core.exception.XincoException;
 import com.bluecubs.xinco.add.persistence.XincoAddAttributePK;
 import com.bluecubs.xinco.core.persistence.audit.XincoAddAttributeT;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreACEServer;
-import com.bluecubs.xinco.core.server.persistence.XincoPersistenceServerObject;
 import com.bluecubs.xinco.core.server.persistence.XincoSettingServer;
 import com.bluecubs.xinco.core.server.persistence.audit.XincoAbstractAuditableObject;
-import com.bluecubs.xinco.core.server.persistence.audit.XincoAuditableDAO;
-import com.bluecubs.xinco.core.server.persistence.audit.XincoAuditingDAOHelper;
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.dreamer.Hibernate.Audit.AuditableDAO;
+import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
+import com.dreamer.Hibernate.Audit.PersistenceServerObject;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +59,7 @@ import net.sf.oness.common.model.temporal.DateRange;
  *
  * @author Alexander Manes
  */
-public class XincoAddAttributeServer extends XincoAddAttribute implements XincoAuditableDAO, XincoPersistenceServerObject {
+public class XincoAddAttributeServer extends XincoAddAttribute implements AuditableDAO, PersistenceServerObject {
 
     private static List result;
 
@@ -121,7 +122,6 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
      * Create add attribute object for data structures
      */
     public XincoAddAttributeServer() {
-
     }
 
     /**
@@ -162,7 +162,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         return addAttributes;
     }
 
-    public XincoAbstractAuditableObject findById(HashMap parameters) {
+    public AbstractAuditableObject findById(HashMap parameters) {
         result = pm.createdQuery("SELECT x FROM XincoAddAttribute x WHERE " +
                 "x.xincoAddAttributePK.xincoCoreDataId = :xincoCoreDataId and " +
                 "x.xincoAddAttributePK.attributeId = :attributeId", parameters);
@@ -176,7 +176,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         }
     }
 
-    public XincoAbstractAuditableObject[] findWithDetails(HashMap parameters) {
+    public AbstractAuditableObject[] findWithDetails(HashMap parameters) {
         int counter = 0;
         String sql = "SELECT x FROM XincoAddAttribute x WHERE ";
         if (parameters.containsKey("attribInt")) {
@@ -269,83 +269,6 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         }
     }
 
-    public XincoAbstractAuditableObject create(
-            XincoAbstractAuditableObject value) {
-        XincoAddAttribute temp;
-        XincoAddAttribute newValue = new XincoAddAttribute();
-        try {
-            temp = (XincoAddAttribute) value;
-            if (!value.isCreated()) {
-                newValue.setXincoAddAttributePK(temp.getXincoAddAttributePK());
-                newValue.setRecordId(temp.getRecordId());
-            } else {
-                newValue.setXincoAddAttributePK(new XincoAddAttributePK(temp.getXincoAddAttributePK().getXincoCoreDataId(), getNewID()));
-            }
-            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Creating with new id: " + newValue.getXincoAddAttributePK());
-            }
-            newValue.setAttribDatetime(temp.getAttribDatetime());
-            newValue.setAttribDouble(temp.getAttribDouble());
-            newValue.setAttribInt(temp.getAttribInt());
-            newValue.setAttribText(temp.getAttribText());
-            newValue.setAttribUnsignedint(temp.getAttribUnsignedint());
-            newValue.setAttribVarchar(temp.getAttribVarchar());
-            newValue.setCreated(temp.isCreated());
-            newValue.setChangerID(temp.getChangerID());
-            newValue.setTransactionTime(getTransactionTime());
-            pm.persist(newValue, false, true);
-            return newValue;
-        } catch (XincoSettingException ex) {
-            Logger.getLogger(XincoAddAttributeServer.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }
-    }
-
-    public XincoAbstractAuditableObject update(XincoAbstractAuditableObject value) {
-        XincoAddAttribute val = (XincoAddAttribute) value;
-        XincoAddAttributeT temp = new XincoAddAttributeT();
-        temp.setRecordId(val.getRecordId());
-        if (!value.isCreated()) {
-            temp.setAttributeId(val.getXincoAddAttributePK().getAttributeId());
-            temp.setXincoCoreDataId(val.getXincoAddAttributePK().getXincoCoreDataId());
-            temp.setRecordId(val.getRecordId());
-        } else {
-            temp.setAttributeId(val.getRecordId());
-            temp.setXincoCoreDataId(val.getXincoAddAttributePK().getXincoCoreDataId());
-        }
-        temp.setAttribDatetime(val.getAttribDatetime());
-        temp.setAttribDouble(val.getAttribDouble());
-        temp.setAttribInt(val.getAttribInt());
-        temp.setAttribText(val.getAttribText());
-        temp.setAttribUnsignedint(val.getAttribUnsignedint());
-        temp.setAttribVarchar(val.getAttribVarchar());
-        pm.startTransaction();
-        pm.persist(temp, false, false);
-        pm.persist(val, true, false);
-        val.saveAuditData(pm);
-        pm.commitAndClose();
-        return val;
-    }
-
-    public void delete(XincoAbstractAuditableObject value) {
-        XincoAddAttribute val = (XincoAddAttribute) value;
-        XincoAddAttributeT temp = new XincoAddAttributeT();
-        temp.setRecordId(val.getRecordId());
-        temp.setAttributeId(val.getXincoAddAttributePK().getAttributeId());
-        temp.setXincoCoreDataId(val.getXincoAddAttributePK().getXincoCoreDataId());
-        temp.setAttribDatetime(val.getAttribDatetime());
-        temp.setAttribDouble(val.getAttribDouble());
-        temp.setAttribInt(val.getAttribInt());
-        temp.setAttribText(val.getAttribText());
-        temp.setAttribUnsignedint(val.getAttribUnsignedint());
-        temp.setAttribVarchar(val.getAttribVarchar());
-        pm.startTransaction();
-        pm.persist(temp, false, false);
-        pm.delete(val, false);
-        val.saveAuditData(pm);
-        pm.commitAndClose();
-    }
-
     @SuppressWarnings("unchecked")
     public HashMap getParameters() {
         HashMap temp = new HashMap();
@@ -379,7 +302,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
     public boolean deleteFromDB() {
         setTransactionTime(DateRange.startingNow());
         try {
-            XincoAuditingDAOHelper.delete(this, getXincoAddAttributePK().getAttributeId());
+            AuditingDAOHelper.delete(this, getXincoAddAttributePK().getAttributeId());
             return true;
         } catch (Throwable e) {
             try {
@@ -400,7 +323,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
                 if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                     Logger.getLogger(XincoAddAttributeServer.class.getName()).log(Level.INFO, "Updating: " + getXincoAddAttributePK());
                 }
-                XincoAuditingDAOHelper.update(this, new XincoAddAttribute(getXincoAddAttributePK().getXincoCoreDataId(),
+                AuditingDAOHelper.update(this, new XincoAddAttribute(getXincoAddAttributePK().getXincoCoreDataId(),
                         getXincoAddAttributePK().getAttributeId()));
             } else {
                 if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
@@ -414,7 +337,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
                 temp.setAttribText(getAttribText());
                 temp.setAttribUnsignedint(getAttribUnsignedint());
                 temp.setAttribVarchar(getAttribVarchar());
-                temp = (XincoAddAttribute) XincoAuditingDAOHelper.create(this, temp);
+                temp = (XincoAddAttribute) AuditingDAOHelper.create(this, temp);
                 setXincoAddAttributePK(temp.getXincoAddAttributePK());
             }
             return true;
@@ -429,5 +352,81 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
                 return false;
             }
         }
+    }
+
+    public AbstractAuditableObject create(AbstractAuditableObject value) {
+        XincoAddAttribute temp;
+        XincoAddAttribute newValue = new XincoAddAttribute();
+        try {
+            temp = (XincoAddAttribute) value;
+            if (!value.isCreated()) {
+                newValue.setXincoAddAttributePK(temp.getXincoAddAttributePK());
+                newValue.setRecordId(temp.getRecordId());
+            } else {
+                newValue.setXincoAddAttributePK(new XincoAddAttributePK(temp.getXincoAddAttributePK().getXincoCoreDataId(), getNewID()));
+            }
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Creating with new id: " + newValue.getXincoAddAttributePK());
+            }
+            newValue.setAttribDatetime(temp.getAttribDatetime());
+            newValue.setAttribDouble(temp.getAttribDouble());
+            newValue.setAttribInt(temp.getAttribInt());
+            newValue.setAttribText(temp.getAttribText());
+            newValue.setAttribUnsignedint(temp.getAttribUnsignedint());
+            newValue.setAttribVarchar(temp.getAttribVarchar());
+            newValue.setCreated(temp.isCreated());
+            newValue.setChangerID(temp.getChangerID());
+            newValue.setTransactionTime(getTransactionTime());
+            pm.persist(newValue, false, true);
+            return newValue;
+        } catch (XincoSettingException ex) {
+            Logger.getLogger(XincoAddAttributeServer.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    public AbstractAuditableObject update(AbstractAuditableObject value) {
+        XincoAddAttribute val = (XincoAddAttribute) value;
+        XincoAddAttributeT temp = new XincoAddAttributeT();
+        temp.setRecordId(val.getRecordId());
+        if (!value.isCreated()) {
+            temp.setAttributeId(val.getXincoAddAttributePK().getAttributeId());
+            temp.setXincoCoreDataId(val.getXincoAddAttributePK().getXincoCoreDataId());
+            temp.setRecordId(val.getRecordId());
+        } else {
+            temp.setAttributeId(val.getRecordId());
+            temp.setXincoCoreDataId(val.getXincoAddAttributePK().getXincoCoreDataId());
+        }
+        temp.setAttribDatetime(val.getAttribDatetime());
+        temp.setAttribDouble(val.getAttribDouble());
+        temp.setAttribInt(val.getAttribInt());
+        temp.setAttribText(val.getAttribText());
+        temp.setAttribUnsignedint(val.getAttribUnsignedint());
+        temp.setAttribVarchar(val.getAttribVarchar());
+        pm.startTransaction();
+        pm.persist(temp, false, false);
+        pm.persist(val, true, false);
+        getModifiedRecordDAOObject().saveAuditData();
+        pm.commitAndClose();
+        return val;
+    }
+
+    public void delete(AbstractAuditableObject value) {
+        XincoAddAttribute val = (XincoAddAttribute) value;
+        XincoAddAttributeT temp = new XincoAddAttributeT();
+        temp.setRecordId(val.getRecordId());
+        temp.setAttributeId(val.getXincoAddAttributePK().getAttributeId());
+        temp.setXincoCoreDataId(val.getXincoAddAttributePK().getXincoCoreDataId());
+        temp.setAttribDatetime(val.getAttribDatetime());
+        temp.setAttribDouble(val.getAttribDouble());
+        temp.setAttribInt(val.getAttribInt());
+        temp.setAttribText(val.getAttribText());
+        temp.setAttribUnsignedint(val.getAttribUnsignedint());
+        temp.setAttribVarchar(val.getAttribVarchar());
+        pm.startTransaction();
+        pm.persist(temp, false, false);
+        pm.delete(val, false);
+        getModifiedRecordDAOObject().saveAuditData();
+        pm.commitAndClose();
     }
 }

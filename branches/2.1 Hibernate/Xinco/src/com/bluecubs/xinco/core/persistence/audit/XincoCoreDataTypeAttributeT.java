@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bluecubs.xinco.core.persistence.audit;
 
 import java.io.Serializable;
@@ -21,6 +20,7 @@ import javax.persistence.Table;
 @Table(name = "xinco_core_data_type_attribute_t")
 @NamedQueries({@NamedQuery(name = "XincoCoreDataTypeAttributeT.findByRecordId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.recordId = :recordId"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByXincoCoreDataTypeId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.xincoCoreDataTypeId = :xincoCoreDataTypeId"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByAttributeId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.attributeId = :attributeId"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByDesignation", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByDataType", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.dataType = :dataType"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findBySize", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.size = :size")})
 public class XincoCoreDataTypeAttributeT implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "record_id", nullable = false)
@@ -124,5 +124,4 @@ public class XincoCoreDataTypeAttributeT implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.persistence.audit.XincoCoreDataTypeAttributeT[recordId=" + recordId + "]";
     }
-
 }

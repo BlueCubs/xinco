@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bluecubs.xinco.add.persistence;
 
 import com.bluecubs.xinco.core.server.persistence.audit.XincoAbstractAuditableObject;
@@ -135,5 +134,4 @@ public class XincoAddAttribute extends XincoAbstractAuditableObject implements S
     public String toString() {
         return "com.bluecubs.xinco.add.persistance.XincoAddAttribute[xincoAddAttributePK=" + xincoAddAttributePK + "]";
     }
-
 }

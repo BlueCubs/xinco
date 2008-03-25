@@ -83,6 +83,8 @@ INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value,
 
 INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(37,'setting.printDBTransactions.enable',null,null,false,null); 
 
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(38,'xinco/FileIndexOptimizerPeriod',null,null,null,14400000);INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(39,'xinco/FileArchivePeriod',null,null,null,14400000);INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(40,'setting.allowpublisherlist',null,null,true,null); 
+
 /*Inserts 51-100 reserved for Workflow settings*/ 
 
 UPDATE XINCO_CORE_DATA_TYPE SET DESIGNATION = 'general.data.type.file' WHERE ID =1;
