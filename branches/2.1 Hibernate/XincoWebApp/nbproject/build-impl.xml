@@ -77,8 +77,47 @@
         <condition property="do.compile.jsps">
             <istrue value="${compile.jsps}"/>
         </condition>
+        <condition property="enable.jsdebugger">
+            <and>
+                <isset property="debug.client.available"/>
+                <istrue value="${debug.client.available}"/>
+            </and>
+        </condition>
+        <condition property="do.debug.server">
+            <or>
+                <not>
+                    <isset property="debug.server"/>
+                </not>
+                <istrue value="${debug.server}"/>
+                <not>
+                    <isset property="enable.jsdebugger"/>
+                </not>
+                <and>
+                    <not>
+                        <istrue value="${debug.server}"/>
+                    </not>
+                    <not>
+                        <istrue value="${debug.client}"/>
+                    </not>
+                </and>
+            </or>
+        </condition>
+        <condition property="do.debug.client">
+            <and>
+                <istrue value="${debug.client}"/>
+                <isset property="enable.jsdebugger"/>
+            </and>
+        </condition>
         <condition property="do.display.browser">
             <istrue value="${display.browser}"/>
+        </condition>
+        <condition property="do.display.browser.debug">
+            <and>
+                <isset property="do.display.browser"/>
+                <not>
+                    <isset property="do.debug.client"/>
+                </not>
+            </and>
         </condition>
         <available file="${conf.dir}/MANIFEST.MF" property="has.custom.manifest"/>
         <available file="${conf.dir}/persistence.xml" property="has.persistence.xml"/>
@@ -222,6 +261,14 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
             </sequential>
         </macrodef>
     </target>
+    <target if="enable.jsdebugger" name="-init-macrodef-nbjsdebug">
+        <macrodef name="nbjsdebugstart" uri="http://www.netbeans.org/ns/web-project/1">
+            <attribute default="${client.url}" name="webUrl"/>
+            <sequential>
+                <nbjsdebugstart urlPart="${client.urlPart}" webUrl="@{webUrl}"/>
+            </sequential>
+        </macrodef>
+    </target>
     <target name="-init-macrodef-nbjpda">
         <macrodef name="nbjpdastart" uri="http://www.netbeans.org/ns/web-project/1">
             <attribute default="${main.class}" name="name"/>
@@ -319,7 +366,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
             </sequential>
         </macrodef>
     </target>
-    <target depends="-pre-init,-init-private,-init-user,-init-project,-do-init,-post-init,-init-check,-init-macrodef-property,-init-macrodef-javac,-init-macrodef-junit,-init-macrodef-java,-init-macrodef-nbjpda,-init-macrodef-debug,-init-macrodef-copy-ear-war" name="init"/>
+    <target depends="-pre-init,-init-private,-init-user,-init-project,-do-init,-post-init,-init-check,-init-macrodef-property,-init-macrodef-javac,-init-macrodef-junit,-init-macrodef-java,-init-macrodef-nbjpda,-init-macrodef-nbjsdebug,-init-macrodef-debug,-init-macrodef-copy-ear-war" name="init"/>
     <!--
                 COMPILATION SECTION
             -->
@@ -513,104 +560,14 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
         <basename file="${libs.toplink.classpath.libfile.1}" property="included.lib.libs.toplink.classpath.1"/>
         <copy-ear-war file="${libs.toplink.classpath.libfile.2}" propname="included.lib.libs.toplink.classpath.2.X"/>
         <copy-ear-war file="${libs.toplink.classpath.libfile.1}" propname="included.lib.libs.toplink.classpath.1.X"/>
-        <basename file="${libs.Hibernate.classpath.libfile.2}" property="included.lib.libs.Hibernate.classpath.2"/>
-        <basename file="${libs.Hibernate.classpath.libfile.1}" property="included.lib.libs.Hibernate.classpath.1"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.2}" propname="included.lib.libs.Hibernate.classpath.2.X"/>
-        <copy-ear-war file="${libs.Hibernate.classpath.libfile.1}" propname="included.lib.libs.Hibernate.classpath.1.X"/>
-        <basename file="${libs.restlib.classpath.libfile.18}" property="included.lib.libs.restlib.classpath.18"/>
-        <basename file="${libs.restlib.classpath.libfile.17}" property="included.lib.libs.restlib.classpath.17"/>
-        <basename file="${libs.restlib.classpath.libfile.16}" property="included.lib.libs.restlib.classpath.16"/>
-        <basename file="${libs.restlib.classpath.libfile.15}" property="included.lib.libs.restlib.classpath.15"/>
-        <basename file="${libs.restlib.classpath.libfile.14}" property="included.lib.libs.restlib.classpath.14"/>
-        <basename file="${libs.restlib.classpath.libfile.13}" property="included.lib.libs.restlib.classpath.13"/>
-        <basename file="${libs.restlib.classpath.libfile.12}" property="included.lib.libs.restlib.classpath.12"/>
-        <basename file="${libs.restlib.classpath.libfile.11}" property="included.lib.libs.restlib.classpath.11"/>
-        <basename file="${libs.restlib.classpath.libfile.10}" property="included.lib.libs.restlib.classpath.10"/>
-        <basename file="${libs.restlib.classpath.libfile.9}" property="included.lib.libs.restlib.classpath.9"/>
-        <basename file="${libs.restlib.classpath.libfile.8}" property="included.lib.libs.restlib.classpath.8"/>
-        <basename file="${libs.restlib.classpath.libfile.7}" property="included.lib.libs.restlib.classpath.7"/>
-        <basename file="${libs.restlib.classpath.libfile.6}" property="included.lib.libs.restlib.classpath.6"/>
-        <basename file="${libs.restlib.classpath.libfile.5}" property="included.lib.libs.restlib.classpath.5"/>
-        <basename file="${libs.restlib.classpath.libfile.4}" property="included.lib.libs.restlib.classpath.4"/>
-        <basename file="${libs.restlib.classpath.libfile.3}" property="included.lib.libs.restlib.classpath.3"/>
-        <basename file="${libs.restlib.classpath.libfile.2}" property="included.lib.libs.restlib.classpath.2"/>
-        <basename file="${libs.restlib.classpath.libfile.1}" property="included.lib.libs.restlib.classpath.1"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.18}" propname="included.lib.libs.restlib.classpath.18.X"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.17}" propname="included.lib.libs.restlib.classpath.17.X"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.16}" propname="included.lib.libs.restlib.classpath.16.X"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.15}" propname="included.lib.libs.restlib.classpath.15.X"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.14}" propname="included.lib.libs.restlib.classpath.14.X"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.13}" propname="included.lib.libs.restlib.classpath.13.X"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.12}" propname="included.lib.libs.restlib.classpath.12.X"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.11}" propname="included.lib.libs.restlib.classpath.11.X"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.10}" propname="included.lib.libs.restlib.classpath.10.X"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.9}" propname="included.lib.libs.restlib.classpath.9.X"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.8}" propname="included.lib.libs.restlib.classpath.8.X"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.7}" propname="included.lib.libs.restlib.classpath.7.X"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.6}" propname="included.lib.libs.restlib.classpath.6.X"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.5}" propname="included.lib.libs.restlib.classpath.5.X"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.4}" propname="included.lib.libs.restlib.classpath.4.X"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.3}" propname="included.lib.libs.restlib.classpath.3.X"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.2}" propname="included.lib.libs.restlib.classpath.2.X"/>
-        <copy-ear-war file="${libs.restlib.classpath.libfile.1}" propname="included.lib.libs.restlib.classpath.1.X"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.26}" property="included.lib.libs.XincoLibs.classpath.26"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.25}" property="included.lib.libs.XincoLibs.classpath.25"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.24}" property="included.lib.libs.XincoLibs.classpath.24"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.23}" property="included.lib.libs.XincoLibs.classpath.23"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.22}" property="included.lib.libs.XincoLibs.classpath.22"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.21}" property="included.lib.libs.XincoLibs.classpath.21"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.20}" property="included.lib.libs.XincoLibs.classpath.20"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.19}" property="included.lib.libs.XincoLibs.classpath.19"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.18}" property="included.lib.libs.XincoLibs.classpath.18"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.17}" property="included.lib.libs.XincoLibs.classpath.17"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.16}" property="included.lib.libs.XincoLibs.classpath.16"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.15}" property="included.lib.libs.XincoLibs.classpath.15"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.14}" property="included.lib.libs.XincoLibs.classpath.14"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.13}" property="included.lib.libs.XincoLibs.classpath.13"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.12}" property="included.lib.libs.XincoLibs.classpath.12"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.11}" property="included.lib.libs.XincoLibs.classpath.11"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.10}" property="included.lib.libs.XincoLibs.classpath.10"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.9}" property="included.lib.libs.XincoLibs.classpath.9"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.8}" property="included.lib.libs.XincoLibs.classpath.8"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.7}" property="included.lib.libs.XincoLibs.classpath.7"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.6}" property="included.lib.libs.XincoLibs.classpath.6"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.5}" property="included.lib.libs.XincoLibs.classpath.5"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.4}" property="included.lib.libs.XincoLibs.classpath.4"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.3}" property="included.lib.libs.XincoLibs.classpath.3"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.2}" property="included.lib.libs.XincoLibs.classpath.2"/>
-        <basename file="${libs.XincoLibs.classpath.libfile.1}" property="included.lib.libs.XincoLibs.classpath.1"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.26}" propname="included.lib.libs.XincoLibs.classpath.26.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.25}" propname="included.lib.libs.XincoLibs.classpath.25.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.24}" propname="included.lib.libs.XincoLibs.classpath.24.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.23}" propname="included.lib.libs.XincoLibs.classpath.23.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.22}" propname="included.lib.libs.XincoLibs.classpath.22.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.21}" propname="included.lib.libs.XincoLibs.classpath.21.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.20}" propname="included.lib.libs.XincoLibs.classpath.20.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.19}" propname="included.lib.libs.XincoLibs.classpath.19.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.18}" propname="included.lib.libs.XincoLibs.classpath.18.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.17}" propname="included.lib.libs.XincoLibs.classpath.17.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.16}" propname="included.lib.libs.XincoLibs.classpath.16.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.15}" propname="included.lib.libs.XincoLibs.classpath.15.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.14}" propname="included.lib.libs.XincoLibs.classpath.14.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.13}" propname="included.lib.libs.XincoLibs.classpath.13.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.12}" propname="included.lib.libs.XincoLibs.classpath.12.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.11}" propname="included.lib.libs.XincoLibs.classpath.11.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.10}" propname="included.lib.libs.XincoLibs.classpath.10.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.9}" propname="included.lib.libs.XincoLibs.classpath.9.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.8}" propname="included.lib.libs.XincoLibs.classpath.8.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.7}" propname="included.lib.libs.XincoLibs.classpath.7.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.6}" propname="included.lib.libs.XincoLibs.classpath.6.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.5}" propname="included.lib.libs.XincoLibs.classpath.5.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.4}" propname="included.lib.libs.XincoLibs.classpath.4.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.3}" propname="included.lib.libs.XincoLibs.classpath.3.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.2}" propname="included.lib.libs.XincoLibs.classpath.2.X"/>
-        <copy-ear-war file="${libs.XincoLibs.classpath.libfile.1}" propname="included.lib.libs.XincoLibs.classpath.1.X"/>
         <basename file="${reference.Dreamer.jar}" property="included.lib.reference.Dreamer.jar"/>
         <copy-ear-war file="${reference.Dreamer.jar}" propname="included.lib.reference.Dreamer.jar.X"/>
+        <basename file="${libs.restapi.classpath}" property="included.lib.libs.restapi.classpath"/>
+        <copy-ear-war file="${libs.restapi.classpath}" propname="included.lib.libs.restapi.classpath.X"/>
         <copy file="${libs.exceptionhandler-runtime.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
         <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${included.lib.libs.jmakilibrary.classpath.1.X} ${included.lib.libs.jmakilibrary.classpath.2.X} ${included.lib.libs.jmakilibrary.classpath.3.X} ${included.lib.libs.jsf12.classpath.1.X} ${included.lib.libs.jsf12.classpath.2.X} ${included.lib.libs.jsf12.classpath.3.X} ${included.lib.libs.jsf12.classpath.4.X} ${included.lib.libs.jsf12.classpath.5.X} ${included.lib.libs.jsf12.classpath.6.X} ${included.lib.libs.jstl11.classpath.1.X} ${included.lib.libs.jstl11.classpath.2.X} ${included.lib.libs.jsf12-support.classpath.1.X} ${included.lib.libs.jsf12-support.classpath.2.X} ${included.lib.libs.jsf12-support.classpath.3.X} ${included.lib.libs.jsf12-support.classpath.4.X} ${included.lib.libs.woodstock-components.classpath.1.X} ${included.lib.libs.woodstock-components.classpath.2.X} ${included.lib.libs.woodstock-components.classpath.3.X} ${included.lib.libs.woodstock-components.classpath.4.X} ${included.lib.libs.woodstock-components.classpath.5.X} ${included.lib.libs.woodstock-theme-default.classpath} ${included.lib.libs.toplink.classpath.1.X} ${included.lib.libs.toplink.classpath.2.X} ${included.lib.libs.Hibernate.classpath.1.X} ${included.lib.libs.Hibernate.classpath.2.X} ${included.lib.libs.restlib.classpath.1.X} ${included.lib.libs.restlib.classpath.2.X} ${included.lib.libs.restlib.classpath.3.X} ${included.lib.libs.restlib.classpath.4.X} ${included.lib.libs.restlib.classpath.5.X} ${included.lib.libs.restlib.classpath.6.X} ${included.lib.libs.restlib.classpath.7.X} ${included.lib.libs.restlib.classpath.8.X} ${included.lib.libs.restlib.classpath.9.X} ${included.lib.libs.restlib.classpath.10.X} ${included.lib.libs.restlib.classpath.11.X} ${included.lib.libs.restlib.classpath.12.X} ${included.lib.libs.restlib.classpath.13.X} ${included.lib.libs.restlib.classpath.14.X} ${included.lib.libs.restlib.classpath.15.X} ${included.lib.libs.restlib.classpath.16.X} ${included.lib.libs.restlib.classpath.17.X} ${included.lib.libs.restlib.classpath.18.X} ${included.lib.libs.XincoLibs.classpath.1.X} ${included.lib.libs.XincoLibs.classpath.2.X} ${included.lib.libs.XincoLibs.classpath.3.X} ${included.lib.libs.XincoLibs.classpath.4.X} ${included.lib.libs.XincoLibs.classpath.5.X} ${included.lib.libs.XincoLibs.classpath.6.X} ${included.lib.libs.XincoLibs.classpath.7.X} ${included.lib.libs.XincoLibs.classpath.8.X} ${included.lib.libs.XincoLibs.classpath.9.X} ${included.lib.libs.XincoLibs.classpath.10.X} ${included.lib.libs.XincoLibs.classpath.11.X} ${included.lib.libs.XincoLibs.classpath.12.X} ${included.lib.libs.XincoLibs.classpath.13.X} ${included.lib.libs.XincoLibs.classpath.14.X} ${included.lib.libs.XincoLibs.classpath.15.X} ${included.lib.libs.XincoLibs.classpath.16.X} ${included.lib.libs.XincoLibs.classpath.17.X} ${included.lib.libs.XincoLibs.classpath.18.X} ${included.lib.libs.XincoLibs.classpath.19.X} ${included.lib.libs.XincoLibs.classpath.20.X} ${included.lib.libs.XincoLibs.classpath.21.X} ${included.lib.libs.XincoLibs.classpath.22.X} ${included.lib.libs.XincoLibs.classpath.23.X} ${included.lib.libs.XincoLibs.classpath.24.X} ${included.lib.libs.XincoLibs.classpath.25.X} ${included.lib.libs.XincoLibs.classpath.26.X} ${included.lib.reference.Dreamer.jar} "/>
+            <attribute name="Class-Path" value="${included.lib.libs.jmakilibrary.classpath.1.X} ${included.lib.libs.jmakilibrary.classpath.2.X} ${included.lib.libs.jmakilibrary.classpath.3.X} ${included.lib.libs.jsf12.classpath.1.X} ${included.lib.libs.jsf12.classpath.2.X} ${included.lib.libs.jsf12.classpath.3.X} ${included.lib.libs.jsf12.classpath.4.X} ${included.lib.libs.jsf12.classpath.5.X} ${included.lib.libs.jsf12.classpath.6.X} ${included.lib.libs.jstl11.classpath.1.X} ${included.lib.libs.jstl11.classpath.2.X} ${included.lib.libs.jsf12-support.classpath.1.X} ${included.lib.libs.jsf12-support.classpath.2.X} ${included.lib.libs.jsf12-support.classpath.3.X} ${included.lib.libs.jsf12-support.classpath.4.X} ${included.lib.libs.woodstock-components.classpath.1.X} ${included.lib.libs.woodstock-components.classpath.2.X} ${included.lib.libs.woodstock-components.classpath.3.X} ${included.lib.libs.woodstock-components.classpath.4.X} ${included.lib.libs.woodstock-components.classpath.5.X} ${included.lib.libs.woodstock-theme-default.classpath} ${included.lib.libs.toplink.classpath.1.X} ${included.lib.libs.toplink.classpath.2.X} ${included.lib.reference.Dreamer.jar} ${included.lib.libs.restapi.classpath} "/>
         </manifest>
         <delete dir="${dist.ear.dir}/temp"/>
     </target>
@@ -638,53 +595,8 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
         <copy file="${libs.woodstock-theme-default.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.toplink.classpath.libfile.2}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.toplink.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.2}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.Hibernate.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.18}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.17}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.16}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.15}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.14}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.13}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.12}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.11}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.10}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.9}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.8}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.7}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.6}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.5}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.4}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.3}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.2}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.restlib.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.26}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.25}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.24}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.23}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.22}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.21}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.20}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.19}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.18}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.17}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.16}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.15}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.14}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.13}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.12}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.11}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.10}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.9}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.8}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.7}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.6}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.5}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.4}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.3}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.2}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copy file="${libs.XincoLibs.classpath.libfile.1}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${reference.Dreamer.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copy file="${libs.restapi.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copy file="${libs.exceptionhandler-runtime.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
     </target>
     <target depends="init,compile,compile-jsps,-pre-dist,library-inclusion-in-manifest" name="do-ear-dist">
@@ -814,8 +726,9 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
         <nbdeploy clientUrlPart="${client.urlPart}" debugmode="true"/>
         <antcall target="connect-debugger"/>
         <antcall target="debug-display-browser"/>
+        <antcall target="connect-client-debugger"/>
     </target>
-    <target name="connect-debugger" unless="is.debugged">
+    <target if="do.debug.server" name="connect-debugger" unless="is.debugged">
         <nbjpdaconnect address="${jpda.address}" host="${jpda.host}" name="${name}" transport="${jpda.transport}">
             <classpath>
                 <path path="${debug.classpath}:${j2ee.platform.classpath}:${ws.debug.classpaths}"/>
@@ -825,8 +738,11 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
             </sourcepath>
         </nbjpdaconnect>
     </target>
-    <target if="do.display.browser" name="debug-display-browser">
+    <target if="do.display.browser.debug" name="debug-display-browser">
         <nbbrowse url="${client.url}"/>
+    </target>
+    <target if="do.debug.client" name="connect-client-debugger">
+        <webproject1:nbjsdebugstart webUrl="${client.url}"/>
     </target>
     <target depends="init,compile,compile-jsps,-do-compile-single-jsp,debug" if="netbeans.home" name="debug-single"/>
     <target depends="init" if="netbeans.home" name="-debug-start-debugger">

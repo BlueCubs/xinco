@@ -9,6 +9,8 @@ import com.sun.rave.web.ui.appbase.AbstractPageBean;
 import com.sun.webui.jsf.component.Label;
 import com.sun.webui.jsf.component.Page;
 import com.sun.webui.jsf.model.SingleSelectOptionsList;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import javax.faces.FacesException;
 
 /**
@@ -29,19 +31,12 @@ public class Main extends AbstractPageBean {
      * here is subject to being replaced.</p>
      */
     private void _init() throws Exception {
-    }
-    private SingleSelectOptionsList dropDown1DefaultOptions = new SingleSelectOptionsList();
-
-    public SingleSelectOptionsList getDropDown1DefaultOptions() {
-        return dropDown1DefaultOptions;
-    }
-
-    public void setDropDown1DefaultOptions(SingleSelectOptionsList ssol) {
-        this.dropDown1DefaultOptions = ssol;
+        dropDown1DefaultOptions.setOptions(new com.sun.webui.jsf.model.Option[]{new com.sun.webui.jsf.model.Option("val1", "Item 1"), new com.sun.webui.jsf.model.Option("item2", "Item 2"), new com.sun.webui.jsf.model.Option("item3", "Item 3")});
     }
 
     // </editor-fold>
     private Page page1 = new Page();
+    private String version;
 
     public Page getPage1() {
         return page1;
@@ -58,6 +53,15 @@ public class Main extends AbstractPageBean {
 
     public void setLabel3(Label l) {
         this.label3 = l;
+    }
+    private SingleSelectOptionsList dropDown1DefaultOptions = new SingleSelectOptionsList();
+
+    public SingleSelectOptionsList getDropDown1DefaultOptions() {
+        return dropDown1DefaultOptions;
+    }
+
+    public void setDropDown1DefaultOptions(SingleSelectOptionsList ssol) {
+        this.dropDown1DefaultOptions = ssol;
     }
 
     /**
@@ -85,7 +89,20 @@ public class Main extends AbstractPageBean {
         // Perform application initialization that must complete
         // *before* managed components are initialized
         // TODO - add your own initialiation code here
-
+        //Get server version
+        getVersion();
+        //Populate available languages
+        int i = 0;
+            ResourceBundle lrb = null;
+            String[] locales;
+            //load locales
+            lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
+            locales = lrb.getString("AvailableLocales").split(",");
+            com.sun.webui.jsf.model.Option[] languageOptions=new com.sun.webui.jsf.model.Option[locales.length];
+            for (i = 0; i < locales.length; i++) {
+                languageOptions[i]=new com.sun.webui.jsf.model.Option(locales[i], lrb.getString("Locale." + locales[i]));
+            }
+        dropDown1DefaultOptions.setOptions(languageOptions);
         // <editor-fold defaultstate="collapsed" desc="Managed Component Initialization">
         // Initialize automatically managed components
         // *Note* - this logic should NOT be modified
@@ -162,6 +179,11 @@ public class Main extends AbstractPageBean {
      */
     protected XincoApplicationBean getXincoApplicationBean() {
         return (XincoApplicationBean) getBean("XincoApplicationBean");
+    }
+
+    public String getVersion() {
+        version = getXincoApplicationBean().getVersion();
+        return version;
     }
 }
 

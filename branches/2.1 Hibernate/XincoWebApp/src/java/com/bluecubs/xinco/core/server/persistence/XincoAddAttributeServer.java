@@ -37,8 +37,6 @@ package com.bluecubs.xinco.core.server.persistence;
 
 import com.bluecubs.xinco.core.exception.XincoSettingException;
 import com.bluecubs.xinco.core.exception.XincoException;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreACEServer;
-import com.bluecubs.xinco.core.server.persistence.XincoSettingServer;
 import com.bluecubs.xinco.persistence.XincoAddAttribute;
 import com.bluecubs.xinco.persistence.XincoAddAttributePK;
 import com.bluecubs.xinco.persistence.audit.XincoAddAttributeT;
@@ -283,8 +281,8 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements Audita
             temp.put("xincoCoreDataId", getXincoAddAttributePK().getXincoCoreDataId());
             result =
                     pm.createdQuery("select max(p.xincoAddAttributePK.attributeId) from XincoAddAttribute p where p.xincoAddAttributePK.xincoCoreDataId= :xincoCoreDataId", temp);
-            int id = (Integer) result.get(0) + 1;
-            return id;
+            int newId = (Integer) result.get(0) + 1;
+            return newId;
         } catch (Throwable e) {
             try {
                 if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {

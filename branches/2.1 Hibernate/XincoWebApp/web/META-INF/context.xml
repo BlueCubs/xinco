@@ -16,7 +16,7 @@
   factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="100" 
   maxIdle="30" maxWait="10000" name="jdbc/XincoDB"  
   removeAbandoned="true" removeAbandonedTimeout = "60" type="javax.sql.DataSource" 
-  url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true" username="root"
+  url="jdbc:mysql://localhost:3307/xinco?autoReconnect=true" username="root"
   password="lyjx100pre"/>
   <!-- #################### ################ ####################-->
   <ResourceParams name="jdbc/XincoDB">

@@ -41,4 +41,24 @@
         <managed-bean-class>xincowebapp.XincoRequestBean</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>XincoExplorer</managed-bean-name>
+        <managed-bean-class>xincowebapp.XincoExplorer</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>footer</managed-bean-name>
+        <managed-bean-class>xincowebapp.footer</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>Header</managed-bean-name>
+        <managed-bean-class>xincowebapp.Header</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>Page1</managed-bean-name>
+        <managed-bean-class>xincowebapp.Page1</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
 </faces-config>

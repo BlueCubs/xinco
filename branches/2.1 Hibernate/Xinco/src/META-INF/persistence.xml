@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+  <persistence-unit name="XincoPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreDataT1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreLanguage1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoSetting1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoAddAttribute1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreNodeT1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreNode1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreGroupT1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreDataTypeT1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreLog1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreUserHasXincoCoreGroup1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreDataType1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreAce1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreUserHasXincoCoreGroupT1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreUserModifiedRecord1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreUserT1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoIdT</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreData1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoSettingT1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreGroup1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoId1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttributeT1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoAddAttributeT1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreAceT1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreUser1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreLanguageT1</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreDataT</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreLanguage</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoSetting</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreUserHasXincoCoreGroup</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreLanguageT</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoSettingT</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoAddAttributeT</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoAddAttribute</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreUserHasXincoCoreGroupT</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreData</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttributeT</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreGroupT</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreGroup</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreACET</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreUser</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreDataTypeT</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoID</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreUserT</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreACE</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreLog</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreNodeT</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreNode</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreUserModifiedRecord</class>
+    <class>com.bluecubs.xinco.core.persistence.XincoCoreDataType</class>
+    <properties>
+      <property name="hibernate.connection.username" value="root"/>
+      <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+      <property name="hibernate.connection.password" value="lyjx100pre"/>
+      <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3307/xinco"/>
+      <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
+      <property name="hibernate.hbm2ddl.auto" value="update"/>
+    </properties>
+  </persistence-unit>
+</persistence>

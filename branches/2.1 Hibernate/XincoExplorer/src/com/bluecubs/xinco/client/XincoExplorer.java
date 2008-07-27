@@ -112,6 +112,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -244,6 +245,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     private int actionSize = 19;
     private Vector filesToBeIndexed;
     public boolean viewOnly = false;
+    private JRadioButtonMenuItem jRadioButtonMenuItemViewStyleNimbus;
 
     /**
      * This is the default constructor
@@ -1057,6 +1059,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jMenuView.add(getJRadioButtonMenuItemViewStyleMotif());
             jMenuView.add(getJRadioButtonMenuItemViewStyleNapkin());
             jMenuView.add(getJRadioButtonMenuItemViewStyleSubstance());
+            jMenuView.add(getJRadioButtonMenuItemViewStyleNimbus());
             bgwindowstyle.add(jMenuView.getItem(0));
             bgwindowstyle.add(jMenuView.getItem(1));
             bgwindowstyle.add(jMenuView.getItem(2));
@@ -1096,6 +1099,33 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     }
 
     /**
+     * This method initializes jRadioButtonMenuItemViewStyleNimbus
+     *
+     * @return javax.swing.JRadioButtonMenuItem
+     */
+    private javax.swing.JRadioButtonMenuItem getJRadioButtonMenuItemViewStyleNimbus() {
+        if (jRadioButtonMenuItemViewStyleNimbus == null) {
+            jRadioButtonMenuItemViewStyleNimbus = new javax.swing.JRadioButtonMenuItem();
+            if (((String) xincoClientConfig.elementAt(1)).equals(new String("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"))) {
+                jRadioButtonMenuItemViewStyleNimbus.setSelected(true);
+            } else {
+                jRadioButtonMenuItemViewStyleNimbus.setSelected(false);
+            }
+            jRadioButtonMenuItemViewStyleNimbus.setText(xerb.getString("menu.view.nimbus"));
+            jRadioButtonMenuItemViewStyleNimbus.addItemListener(new java.awt.event.ItemListener() {
+
+                @SuppressWarnings("unchecked")
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+                    switchPLAF("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+                    xincoClientConfig.setElementAt(new String("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"), 1);
+                    saveConfig();
+                }
+            });
+        }
+        return jRadioButtonMenuItemViewStyleNimbus;
+    }
+
+    /**
      * This method initializes jRadioButtonMenuItemViewStyleNapkin
      *
      * @return javax.swing.JRadioButtonMenuItem
@@ -1109,7 +1139,10 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 jRadioButtonMenuItemViewStyleNapkin.setSelected(false);
             }
             jRadioButtonMenuItemViewStyleNapkin.setText(xerb.getString("menu.view.napkin"));
-            jRadioButtonMenuItemViewStyleNapkin.addItemListener(new java.awt.event.ItemListener() {
+            jRadioButtonMenuItemViewStyleNapkin.addItemListener(new java.awt 
+
+                  .event.ItemListener  
+                    () {
 
                 @SuppressWarnings("unchecked")
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -1136,7 +1169,10 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 jRadioButtonMenuItemViewStyleSubstance.setSelected(false);
             }
             jRadioButtonMenuItemViewStyleSubstance.setText(xerb.getString("menu.view.substance"));
-            jRadioButtonMenuItemViewStyleSubstance.addItemListener(new java.awt.event.ItemListener() {
+            jRadioButtonMenuItemViewStyleSubstance.addItemListener(new java.awt 
+
+                  .event.ItemListener  
+                    () {
 
                 @SuppressWarnings("unchecked")
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -1163,7 +1199,10 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 jRadioButtonMenuItemViewStyleJava.setSelected(false);
             }
             jRadioButtonMenuItemViewStyleJava.setText(xerb.getString("menu.view.java"));
-            jRadioButtonMenuItemViewStyleJava.addItemListener(new java.awt.event.ItemListener() {
+            jRadioButtonMenuItemViewStyleJava.addItemListener(new java.awt 
+
+                  .event.ItemListener  
+                    () {
 
                 @SuppressWarnings("unchecked")
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -1190,7 +1229,10 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 jRadioButtonMenuItemViewStyleLiquid.setSelected(false);
             }
             jRadioButtonMenuItemViewStyleLiquid.setText(xerb.getString("menu.view.liquid"));
-            jRadioButtonMenuItemViewStyleLiquid.addItemListener(new java.awt.event.ItemListener() {
+            jRadioButtonMenuItemViewStyleLiquid.addItemListener(new java.awt 
+
+                  .event.ItemListener  
+                    () {
 
                 @SuppressWarnings("unchecked")
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -1217,7 +1259,10 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 jRadioButtonMenuItemViewStyleMotif.setSelected(false);
             }
             jRadioButtonMenuItemViewStyleMotif.setText(xerb.getString("menu.view.motif"));
-            jRadioButtonMenuItemViewStyleMotif.addItemListener(new java.awt.event.ItemListener() {
+            jRadioButtonMenuItemViewStyleMotif.addItemListener(new java.awt 
+
+                  .event.ItemListener  
+                    () {
 
                 @SuppressWarnings("unchecked")
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -1241,7 +1286,10 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         if (jMenuItemConnectionConnect == null) {
             jMenuItemConnectionConnect = new javax.swing.JMenuItem();
             jMenuItemConnectionConnect.setText(xerb.getString("menu.connection.connect"));
-            jMenuItemConnectionConnect.addActionListener(new java.awt.event.ActionListener() {
+            jMenuItemConnectionConnect.addActionListener(new java.awt 
+
+                  .event.ActionListener  
+                       () {
 
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     int i = 0;
@@ -1432,7 +1480,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      *
      */
     public void markConnectionStatus() {
-        int i = 0, j = 0;
+           int i = 0, j = 0;
         if (xincoClientSession != null) {
             //do general processing
             DefaultTableModel dtm;
@@ -1664,7 +1712,10 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jButtonDialogRevisionContinue = new javax.swing.JButton();
             jButtonDialogRevisionContinue.setBounds(120, 130, 100, 30);
             jButtonDialogRevisionContinue.setText(xerb.getString("general.continue"));
-            jButtonDialogRevisionContinue.addActionListener(new java.awt.event.ActionListener() {
+            jButtonDialogRevisionContinue.addActionListener(new java.awt 
+
+                  .event.ActionListener  
+                       () {
 
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     int i = 0;
@@ -1697,7 +1748,10 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jButtonDialogRevisionCancel = new javax.swing.JButton();
             jButtonDialogRevisionCancel.setBounds(240, 130, 100, 30);
             jButtonDialogRevisionCancel.setText(xerb.getString("general.cancel"));
-            jButtonDialogRevisionCancel.addActionListener(new java.awt.event.ActionListener() {
+            jButtonDialogRevisionCancel.addActionListener(new java.awt 
+
+                  .event.ActionListener  
+                    () {
 
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     jDialogRevision.setVisible(false);
@@ -2000,7 +2054,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         = 13 = comment data
         = 14 = preview data
          */
-        int i = 0, j = 0;
+           int i = 0, j = 0;
         newnode = new XincoMutableTreeNode(new XincoCoreData(), this);
         setXdata(null);
         newlog = new XincoCoreLog();
@@ -2604,7 +2658,10 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         if (jMenuItemPreferencesEditUser == null) {
             jMenuItemPreferencesEditUser = new javax.swing.JMenuItem();
             jMenuItemPreferencesEditUser.setText(xerb.getString("menu.preferences.edituserinfo"));
-            jMenuItemPreferencesEditUser.addActionListener(new java.awt.event.ActionListener() {
+            jMenuItemPreferencesEditUser.addActionListener(new java.awt 
+
+                  .event.ActionListener  
+                    () {
 
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     getAbstractDialogUser(false);
@@ -2620,7 +2677,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      * @return void
      */
     private void setPreviousPathFilename(String s) {
-        int i = 0, j = 0;
+           int i = 0, j = 0;
         if (s != null) {
             try {
                 setPreviousFullpath(s);
@@ -2649,7 +2706,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      * @param s 
      */
     public void setCurrentPathFilename(String s) {
-        int i = 0, j = 0;
+           int i = 0, j = 0;
         if (s != null) {
             try {
                 setPreviousPathFilename(current_fullpath);
@@ -2797,7 +2854,10 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jButtonDialogAddAttributesTextSave = new javax.swing.JButton();
             jButtonDialogAddAttributesTextSave.setBounds(350, 450, 100, 30);
             jButtonDialogAddAttributesTextSave.setText(xerb.getString("general.save") + "!");
-            jButtonDialogAddAttributesTextSave.addActionListener(new java.awt.event.ActionListener() {
+            jButtonDialogAddAttributesTextSave.addActionListener(new java.awt 
+
+                  .event.ActionListener  
+                    ()  {
 
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     ((XincoAddAttribute) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXincoAddAttributes().elementAt(0)).setAttribText(jTextAreaDialogAddAttributesText.getText());
@@ -2819,7 +2879,10 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jButtonDialogAddAttributesTextCancel = new javax.swing.JButton();
             jButtonDialogAddAttributesTextCancel.setBounds(470, 450, 100, 30);
             jButtonDialogAddAttributesTextCancel.setText(xerb.getString("general.cancel"));
-            jButtonDialogAddAttributesTextCancel.addActionListener(new java.awt.event.ActionListener() {
+            jButtonDialogAddAttributesTextCancel.addActionListener(new java.awt 
+
+                  .event.ActionListener  
+                    () {
 
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     AbstractDialogAddAttributesText.setVisible(false);

@@ -14,7 +14,7 @@ jmaki.debugGlue = false;
 // map topic dojo/fisheye to fisheye handler
 jmaki.subscribe("/dojo/fisheye*", function(args) {
     jmaki.log("glue.js : fisheye event");
- });
+});
 
 
 // map topics ending with  /onSave to the handler
