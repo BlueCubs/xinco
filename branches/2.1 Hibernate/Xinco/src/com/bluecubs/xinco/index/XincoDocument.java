@@ -35,16 +35,16 @@
  */
 package com.bluecubs.xinco.index;
 
+import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import java.io.File;
 import java.io.Reader;
 import java.io.FileInputStream;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import com.bluecubs.xinco.core.persistence.XincoAddAttribute;
-import com.bluecubs.xinco.core.persistence.XincoCoreData;
-import com.bluecubs.xinco.core.persistence.XincoCoreDataType;
 import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import com.bluecubs.xinco.core.server.XincoCoreDataTypeServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.index.filetypes.XincoIndexFileType;
 import com.bluecubs.xinco.index.filetypes.XincoIndexText;
@@ -52,7 +52,7 @@ import com.bluecubs.xinco.index.filetypes.XincoIndexText;
 /** A utility for making Lucene Documents from a File. */
 public class XincoDocument {
 
-    public static Document getXincoDocument(XincoCoreData d, boolean indexContent, XincoDBManager dbm) throws java.io.FileNotFoundException {
+    public static Document getXincoDocument(XincoCoreDataServer d, boolean indexContent, XincoDBManager dbm) throws java.io.FileNotFoundException {
 
         int i, l;
         FileInputStream is = null;
@@ -67,11 +67,11 @@ public class XincoDocument {
         doc.add(new Field("id", (new Integer(d.getId())).toString(),
                 Field.Store.YES, Field.Index.TOKENIZED));
         doc.add(new Field("designation", d.getDesignation(), Field.Store.YES, Field.Index.TOKENIZED));
-        doc.add(new Field("language", String.valueOf(d.getXincoCoreLanguageID()),
+        doc.add(new Field("language", String.valueOf(d.getXincoCoreLanguageId()),
                 Field.Store.YES, Field.Index.TOKENIZED));
         //add content of file
         if (indexContent) {
-            if ((d.getXincoCoreDataTypeID() == 1) && (d.getStatusNumber() != 3)) {
+            if ((d.getXincoCoreDataTypeId() == 1) && (d.getStatusNumber() != 3)) {
                 //process non-archived file
                 //extract file extension from file name
                 file_ext_index = ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(0)).getAttribVarchar().lastIndexOf(".");
@@ -134,28 +134,29 @@ public class XincoDocument {
 
         //add attributes
         for (i = 0; i < d.getXincoAddAttributes().size(); i++) {
-            if (((XincoCoreDataTypeAttribute) d.getXincoCoreDataTypeID().getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("int") == 0) {
-                doc.add(new Field(((XincoCoreDataTypeAttribute) d.getXincoCoreDataTypeID().getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(),
-                        "" + ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttrib_int(), Field.Store.YES, Field.Index.NO));
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreDataTypeServer) d.getXincoAddAttributes().get(i)).getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("int") == 0) {
+                doc.add(new Field(((XincoCoreDataTypeAttribute) ((XincoCoreDataTypeServer) d.getXincoAddAttributes().get(i)).getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(),
+                        ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttribInt().toString(), Field.Store.YES, Field.Index.NO));
             }
-            if (((XincoCoreDataTypeAttribute) d.getXincoCoreDataTypeID().getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("unsignedint") == 0) {
-                doc.add(new Field(((XincoCoreDataTypeAttribute) d.getXincoCoreDataTypeID().getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(), "" + ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttrib_unsignedint(), Field.Store.YES, Field.Index.NO));
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreDataTypeServer) d.getXincoAddAttributes().get(i)).getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("unsignedint") == 0) {
+                doc.add(new Field(((XincoCoreDataTypeAttribute) ((XincoCoreDataTypeServer) d.getXincoAddAttributes().get(i)).getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(),
+                        String.valueOf(((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttribUnsignedint()), Field.Store.YES, Field.Index.NO));
             }
-            if (((XincoCoreDataTypeAttribute) d.getXincoCoreDataTypeID().getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("double") == 0) {
-                doc.add(new Field(((XincoCoreDataTypeAttribute) d.getXincoCoreDataTypeID().getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(), "" +
-                        ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttribDouble(), Field.Store.YES, Field.Index.NO));
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreDataTypeServer) d.getXincoAddAttributes().get(i)).getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("double") == 0) {
+                doc.add(new Field(((XincoCoreDataTypeAttribute) ((XincoCoreDataTypeServer) d.getXincoAddAttributes().get(i)).getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(),
+                        String.valueOf(((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttribDouble()), Field.Store.YES, Field.Index.NO));
             }
-            if (((XincoCoreDataTypeAttribute) d.getXincoCoreDataTypeID().getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("varchar") == 0) {
-                doc.add(new Field(((XincoCoreDataTypeAttribute) d.getXincoCoreDataTypeID().getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(),
-                        ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttribVarchar(), Field.Store.YES, Field.Index.NO));
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreDataTypeServer) d.getXincoAddAttributes().get(i)).getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("varchar") == 0) {
+                doc.add(new Field(((XincoCoreDataTypeAttribute) ((XincoCoreDataTypeServer) d.getXincoAddAttributes().get(i)).getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(),
+                        String.valueOf(((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttribVarchar()), Field.Store.YES, Field.Index.NO));
             }
-            if (((XincoCoreDataTypeAttribute) d.getXincoCoreDataTypeID().getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("text") == 0) {
-                doc.add(new Field(((XincoCoreDataTypeAttribute) d.getXincoCoreDataTypeID().getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(),
-                        ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttribText(), Field.Store.YES, Field.Index.NO));
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreDataTypeServer) d.getXincoAddAttributes().get(i)).getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("text") == 0) {
+                doc.add(new Field(((XincoCoreDataTypeAttribute) ((XincoCoreDataTypeServer) d.getXincoAddAttributes().get(i)).getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(),
+                        String.valueOf(((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttribText()), Field.Store.YES, Field.Index.NO));
             }
-            if (((XincoCoreDataTypeAttribute) d.getXincoCoreDataTypeID().getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("datetime") == 0) {
-                doc.add(new Field(((XincoCoreDataTypeAttribute) d.getXincoCoreDataTypeID().getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(), "" +
-                        ((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttribDatetime(), Field.Store.YES, Field.Index.NO));
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreDataTypeServer) d.getXincoAddAttributes().get(i)).getXincoCoreDataTypeAttributes().elementAt(i)).getDataType().toLowerCase().compareTo("datetime") == 0) {
+                doc.add(new Field(((XincoCoreDataTypeAttribute) ((XincoCoreDataTypeServer) d.getXincoAddAttributes().get(i)).getXincoCoreDataTypeAttributes().elementAt(i)).getDesignation(),
+                        String.valueOf(((XincoAddAttribute) d.getXincoAddAttributes().elementAt(i)).getAttribDatetime()), Field.Store.YES, Field.Index.NO));
             }
         }
         return doc;

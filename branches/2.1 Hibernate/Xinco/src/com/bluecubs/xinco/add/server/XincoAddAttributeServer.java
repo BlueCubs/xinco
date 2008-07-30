@@ -36,7 +36,7 @@
 package com.bluecubs.xinco.add.server;
 
 import com.bluecubs.xinco.core.XincoException;
-import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.Calendar;
@@ -44,8 +44,8 @@ import java.util.GregorianCalendar;
 
 import com.bluecubs.xinco.core.persistence.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.XincoDBManager;
-import com.dreamer.Hibernate.Audit.AuditableDAO;
-import com.dreamer.Hibernate.Audit.PersistenceServerObject;
+import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
+import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
 import java.sql.Date;
 import java.util.List;
 import java.util.logging.Level;

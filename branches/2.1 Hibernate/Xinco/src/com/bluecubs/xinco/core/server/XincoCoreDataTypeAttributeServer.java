@@ -42,10 +42,10 @@ import java.util.Vector;
 import com.bluecubs.xinco.core.persistence.XincoAddAttribute;
 import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttributeT;
-import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
-import com.dreamer.Hibernate.Audit.AuditableDAO;
-import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
-import com.dreamer.Hibernate.Audit.PersistenceServerObject;
+import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
+import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
+import com.bluecubs.xinco.core.hibernate.audit.AuditingDAOHelper;
+import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -85,6 +85,12 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
         setDataType(attrDT);
         setSize(attrS);
     }
+
+    //create data type attribute object for data structures
+    public XincoCoreDataTypeAttributeServer(){
+
+    }
+
     //delete from db
     public static int deleteFromDB(XincoCoreDataTypeAttributeServer attrCDTA, int userID) throws XincoException {
         try {
@@ -281,7 +287,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
      */
     @SuppressWarnings("unchecked")
     public int getNewID() {
-        return new XincoIDServer("xincoCoreAce").getNewTableID();
+        return new XincoIDServer("XincoCoreDataTypeAttribute").getNewTableID();
     }
 
     @SuppressWarnings("unchecked")

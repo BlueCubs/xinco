@@ -16,8 +16,21 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "xinco_core_node", catalog = "xinco", schema = "")
-@NamedQueries({@NamedQuery(name = "XincoCoreNode.findAll", query = "SELECT x FROM XincoCoreNode x"), @NamedQuery(name = "XincoCoreNode.findById", query = "SELECT x FROM XincoCoreNode x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreNode.findByXincoCoreNodeId", query = "SELECT x FROM XincoCoreNode x WHERE x.xincoCoreNodeId = :xincoCoreNodeId"), @NamedQuery(name = "XincoCoreNode.findByXincoCoreLanguageId", query = "SELECT x FROM XincoCoreNode x WHERE x.xincoCoreLanguageId = :xincoCoreLanguageId"), @NamedQuery(name = "XincoCoreNode.findByDesignation", query = "SELECT x FROM XincoCoreNode x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreNode.findByStatusNumber", query = "SELECT x FROM XincoCoreNode x WHERE x.statusNumber = :statusNumber")})
+@NamedQueries({@NamedQuery(name = "XincoCoreNode.findAll",
+    query = "SELECT x FROM XincoCoreNode x"),
+    @NamedQuery(name = "XincoCoreNode.findById",
+    query = "SELECT x FROM XincoCoreNode x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreNode.findByXincoCoreNodeId",
+    query = "SELECT x FROM XincoCoreNode x WHERE x.xincoCoreNodeId = :xincoCoreNodeId"),
+    @NamedQuery(name = "XincoCoreNode.findByXincoCoreLanguageId",
+    query = "SELECT x FROM XincoCoreNode x WHERE x.xincoCoreLanguageId = :xincoCoreLanguageId"),
+    @NamedQuery(name = "XincoCoreNode.findByDesignation",
+    query = "SELECT x FROM XincoCoreNode x WHERE x.designation = :designation"),
+    @NamedQuery(name = "XincoCoreNode.findByStatusNumber",
+    query = "SELECT x FROM XincoCoreNode x WHERE x.statusNumber = :statusNumber")
+})
 public class XincoCoreNode extends XincoAbstractAuditableObject implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "id", nullable = false)
@@ -112,5 +125,4 @@ public class XincoCoreNode extends XincoAbstractAuditableObject implements Seria
     public String toString() {
         return "com.bluecubs.xinco.core.persistence.XincoCoreNode[id=" + id + "]";
     }
-
 }

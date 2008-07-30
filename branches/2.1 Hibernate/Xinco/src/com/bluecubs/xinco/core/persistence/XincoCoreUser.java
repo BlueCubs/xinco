@@ -19,13 +19,35 @@ import javax.persistence.UniqueConstraint;
  * @author Javier
  */
 @Entity
-@Table(name = "xinco_core_user", catalog = "xinco", schema = "", uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
-@NamedQueries({@NamedQuery(name = "XincoCoreUser.findAll", query = "SELECT x FROM XincoCoreUser x"), @NamedQuery(name = "XincoCoreUser.findById", query = "SELECT x FROM XincoCoreUser x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreUser.findByUsername", query = "SELECT x FROM XincoCoreUser x WHERE x.username = :username"), @NamedQuery(name = "XincoCoreUser.findByUserpassword", query = "SELECT x FROM XincoCoreUser x WHERE x.userpassword = :userpassword"), @NamedQuery(name = "XincoCoreUser.findByName", query = "SELECT x FROM XincoCoreUser x WHERE x.name = :name"), @NamedQuery(name = "XincoCoreUser.findByFirstname", query = "SELECT x FROM XincoCoreUser x WHERE x.firstname = :firstname"), @NamedQuery(name = "XincoCoreUser.findByEmail", query = "SELECT x FROM XincoCoreUser x WHERE x.email = :email"), @NamedQuery(name = "XincoCoreUser.findByStatusNumber", query = "SELECT x FROM XincoCoreUser x WHERE x.statusNumber = :statusNumber"), @NamedQuery(name = "XincoCoreUser.findByAttempts", query = "SELECT x FROM XincoCoreUser x WHERE x.attempts = :attempts"), @NamedQuery(name = "XincoCoreUser.findByLastModified", query = "SELECT x FROM XincoCoreUser x WHERE x.lastModified = :lastModified")})
+@Table(name = "xinco_core_user", catalog = "xinco", schema = "",
+uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
+@NamedQueries({@NamedQuery(name = "XincoCoreUser.findAll",
+    query = "SELECT x FROM XincoCoreUser x"),
+    @NamedQuery(name = "XincoCoreUser.findById",
+    query = "SELECT x FROM XincoCoreUser x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreUser.findByUsername",
+    query = "SELECT x FROM XincoCoreUser x WHERE x.username = :username"),
+    @NamedQuery(name = "XincoCoreUser.findByUserpassword",
+    query = "SELECT x FROM XincoCoreUser x WHERE x.userpassword = :userpassword"),
+    @NamedQuery(name = "XincoCoreUser.findByName",
+    query = "SELECT x FROM XincoCoreUser x WHERE x.name = :name"),
+    @NamedQuery(name = "XincoCoreUser.findByFirstname",
+    query = "SELECT x FROM XincoCoreUser x WHERE x.firstname = :firstname"),
+    @NamedQuery(name = "XincoCoreUser.findByEmail",
+    query = "SELECT x FROM XincoCoreUser x WHERE x.email = :email"),
+    @NamedQuery(name = "XincoCoreUser.findByStatusNumber",
+    query = "SELECT x FROM XincoCoreUser x WHERE x.statusNumber = :statusNumber"),
+    @NamedQuery(name = "XincoCoreUser.findByAttempts",
+    query = "SELECT x FROM XincoCoreUser x WHERE x.attempts = :attempts"),
+    @NamedQuery(name = "XincoCoreUser.findByLastModified",
+    query = "SELECT x FROM XincoCoreUser x WHERE x.lastModified = :lastModified")
+})
 public class XincoCoreUser extends XincoAbstractAuditableObject implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Integer userId;
     @Basic(optional = false)
     @Column(name = "username", nullable = false, length = 255)
     private String username;
@@ -56,11 +78,11 @@ public class XincoCoreUser extends XincoAbstractAuditableObject implements Seria
     }
 
     public XincoCoreUser(Integer id) {
-        this.id = id;
+        this.userId = id;
     }
 
     public XincoCoreUser(Integer id, String username, String userpassword, String name, String firstname, String email, int statusNumber, int attempts, Date lastModified) {
-        this.id = id;
+        this.userId = id;
         this.username = username;
         this.userpassword = userpassword;
         this.name = name;
@@ -72,11 +94,11 @@ public class XincoCoreUser extends XincoAbstractAuditableObject implements Seria
     }
 
     public Integer getId() {
-        return id;
+        return userId;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.userId = id;
     }
 
     public String getUsername() {
@@ -146,7 +168,7 @@ public class XincoCoreUser extends XincoAbstractAuditableObject implements Seria
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (userId != null ? userId.hashCode() : 0);
         return hash;
     }
 
@@ -157,7 +179,7 @@ public class XincoCoreUser extends XincoAbstractAuditableObject implements Seria
             return false;
         }
         XincoCoreUser other = (XincoCoreUser) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.userId == null && other.userId != null) || (this.userId != null && !this.userId.equals(other.userId))) {
             return false;
         }
         return true;
@@ -165,7 +187,6 @@ public class XincoCoreUser extends XincoAbstractAuditableObject implements Seria
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.persistence.XincoCoreUser[id=" + id + "]";
+        return "com.bluecubs.xinco.core.persistence.XincoCoreUser[id=" + userId + "]";
     }
-
 }

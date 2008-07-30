@@ -29,7 +29,7 @@
  * Modifications:
  * 
  * Who?             When?             What?
- * -                -                 -
+ * Javier Ortiz     07/28/2008        Hibernate related changes
  *
  *************************************************************
  */
@@ -128,7 +128,7 @@ public class XincoArchiver {
                 xlogTemp.setOpCode(8);
                 xlogTemp.setOpDescription("Archived!");
                 xlogTemp.setXincoCoreUserId(1);
-                xlogTemp.write2DB(DBM);
+                xlogTemp.write2DB();
             }
         }
         return true;

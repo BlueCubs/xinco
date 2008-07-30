@@ -6,7 +6,7 @@
 
 package com.bluecubs.xinco.core.server;
 
-import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
+import com.bluecubs.xinco.core.hibernate.audit.AuditingDAOHelper;
 
 /**
  *

@@ -36,7 +36,7 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
-import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Vector;
@@ -46,10 +46,10 @@ import com.bluecubs.xinco.core.persistence.XincoAddAttribute;
 import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.persistence.XincoCoreDataT;
 import com.bluecubs.xinco.core.persistence.XincoCoreLog;
-import com.dreamer.Hibernate.Audit.AuditableDAO;
-import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
-import com.dreamer.Hibernate.Audit.PersistenceServerObject;
-import com.dreamer.Hibernate.Audit.PersistenceServerUtils;
+import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
+import com.bluecubs.xinco.core.hibernate.audit.AuditingDAOHelper;
+import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
+import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerUtils;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -226,7 +226,6 @@ public class XincoCoreDataServer extends XincoCoreData implements AuditableDAO, 
 
             int i = 0;
             while (!result.isEmpty()) {
-                //data.addElement(new XincoCoreDataServer(rs.getInt("id"), rs.getInt("xincoCoreNodeId"), rs.getInt("xincoCoreLanguageId"), rs.getInt("xincoCoreDataTypeId"), rs.getString("designation"), rs.getInt("statusNumber"), DBM));
                 data.addElement((XincoCoreData) result.get(0));
                 i++;
                 if (i >= DBM.config.getMaxSearchResult()) {
@@ -252,7 +251,9 @@ public class XincoCoreDataServer extends XincoCoreData implements AuditableDAO, 
         path4Id = path4Id.substring(0, 7);
         // add seperator
         for (int i = 0; i < 7; i++) {
-            path4Id = path4Id.substring(0, (i * 2 + 1)) + System.getProperty("file.separator") + path4Id.substring((i * 2 + 1));
+            path4Id = path4Id.substring(0, (i * 2 + 1)) +
+                    System.getProperty("file.separator") +
+                    path4Id.substring((i * 2 + 1));
         }
         // create path if neccessary
         (new File(attrRP + path4Id)).mkdirs();
@@ -373,7 +374,7 @@ public class XincoCoreDataServer extends XincoCoreData implements AuditableDAO, 
      */
     @SuppressWarnings("unchecked")
     public int getNewID() {
-        return new XincoIDServer("xincoCoreAce").getNewTableID();
+        return new XincoIDServer("XincoCoreData").getNewTableID();
     }
 
     @SuppressWarnings("unchecked")

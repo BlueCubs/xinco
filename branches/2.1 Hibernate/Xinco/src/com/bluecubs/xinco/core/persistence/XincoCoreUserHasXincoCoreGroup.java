@@ -16,8 +16,19 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "xinco_core_user_has_xinco_core_group", catalog = "xinco", schema = "")
-@NamedQueries({@NamedQuery(name = "XincoCoreUserHasXincoCoreGroup.findAll", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroup x"), @NamedQuery(name = "XincoCoreUserHasXincoCoreGroup.findByXincoCoreUserId", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreUserId = :xincoCoreUserId"), @NamedQuery(name = "XincoCoreUserHasXincoCoreGroup.findByXincoCoreGroupId", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreGroupId = :xincoCoreGroupId"), @NamedQuery(name = "XincoCoreUserHasXincoCoreGroup.findByStatusNumber", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE x.statusNumber = :statusNumber")})
+@NamedQueries({@NamedQuery(name = "XincoCoreUserHasXincoCoreGroup.findAll",
+    query = "SELECT x FROM XincoCoreUserHasXincoCoreGroup x"),
+    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroup.findByXincoCoreUserId",
+    query = "SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE " +
+    "x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreUserId = :xincoCoreUserId"),
+    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroup.findByXincoCoreGroupId",
+    query = "SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE " +
+    "x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreGroupId = :xincoCoreGroupId"),
+    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroup.findByStatusNumber",
+    query = "SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE x.statusNumber = :statusNumber")
+})
 public class XincoCoreUserHasXincoCoreGroup extends XincoAbstractAuditableObject implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected XincoCoreUserHasXincoCoreGroupPK xincoCoreUserHasXincoCoreGroupPK;
@@ -81,5 +92,4 @@ public class XincoCoreUserHasXincoCoreGroup extends XincoAbstractAuditableObject
     public String toString() {
         return "com.bluecubs.xinco.core.persistence.XincoCoreUserHasXincoCoreGroup[xincoCoreUserHasXincoCoreGroupPK=" + xincoCoreUserHasXincoCoreGroupPK + "]";
     }
-
 }

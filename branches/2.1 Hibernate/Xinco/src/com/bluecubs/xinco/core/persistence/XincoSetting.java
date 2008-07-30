@@ -17,12 +17,27 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "xinco_setting", catalog = "xinco", schema = "")
-@NamedQueries({@NamedQuery(name = "XincoSetting.findAll", query = "SELECT x FROM XincoSetting x"), @NamedQuery(name = "XincoSetting.findById", query = "SELECT x FROM XincoSetting x WHERE x.id = :id"), @NamedQuery(name = "XincoSetting.findByDescription", query = "SELECT x FROM XincoSetting x WHERE x.description = :description"), @NamedQuery(name = "XincoSetting.findByIntValue", query = "SELECT x FROM XincoSetting x WHERE x.intValue = :intValue"), @NamedQuery(name = "XincoSetting.findByStringValue", query = "SELECT x FROM XincoSetting x WHERE x.stringValue = :stringValue"), @NamedQuery(name = "XincoSetting.findByBoolValue", query = "SELECT x FROM XincoSetting x WHERE x.boolValue = :boolValue"), @NamedQuery(name = "XincoSetting.findByLongValue", query = "SELECT x FROM XincoSetting x WHERE x.longValue = :longValue")})
+@NamedQueries({@NamedQuery(name = "XincoSetting.findAll",
+    query = "SELECT x FROM XincoSetting x"),
+    @NamedQuery(name = "XincoSetting.findById",
+    query = "SELECT x FROM XincoSetting x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoSetting.findByDescription",
+    query = "SELECT x FROM XincoSetting x WHERE x.description = :description"),
+    @NamedQuery(name = "XincoSetting.findByIntValue",
+    query = "SELECT x FROM XincoSetting x WHERE x.intValue = :intValue"),
+    @NamedQuery(name = "XincoSetting.findByStringValue",
+    query = "SELECT x FROM XincoSetting x WHERE x.stringValue = :stringValue"),
+    @NamedQuery(name = "XincoSetting.findByBoolValue",
+    query = "SELECT x FROM XincoSetting x WHERE x.boolValue = :boolValue"),
+    @NamedQuery(name = "XincoSetting.findByLongValue",
+    query = "SELECT x FROM XincoSetting x WHERE x.longValue = :longValue")
+})
 public class XincoSetting extends XincoAbstractAuditableObject implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Integer sId;
     @Basic(optional = false)
     @Column(name = "description", nullable = false, length = 45)
     private String description;
@@ -39,20 +54,20 @@ public class XincoSetting extends XincoAbstractAuditableObject implements Serial
     }
 
     public XincoSetting(Integer id) {
-        this.id = id;
+        this.sId = id;
     }
 
     public XincoSetting(Integer id, String description) {
-        this.id = id;
+        this.sId = id;
         this.description = description;
     }
 
     public Integer getId() {
-        return id;
+        return sId;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.sId = id;
     }
 
     public String getDescription() {
@@ -98,7 +113,7 @@ public class XincoSetting extends XincoAbstractAuditableObject implements Serial
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (sId != null ? sId.hashCode() : 0);
         return hash;
     }
 
@@ -109,7 +124,7 @@ public class XincoSetting extends XincoAbstractAuditableObject implements Serial
             return false;
         }
         XincoSetting other = (XincoSetting) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.sId == null && other.sId != null) || (this.sId != null && !this.sId.equals(other.sId))) {
             return false;
         }
         return true;
@@ -117,7 +132,6 @@ public class XincoSetting extends XincoAbstractAuditableObject implements Serial
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.persistence.XincoSetting[id=" + id + "]";
+        return "com.bluecubs.xinco.core.persistence.XincoSetting[id=" + sId + "]";
     }
-
 }

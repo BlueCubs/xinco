@@ -42,10 +42,10 @@ import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.persistence.XincoCoreDataType;
 import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeT;
-import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
-import com.dreamer.Hibernate.Audit.AuditableDAO;
-import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
-import com.dreamer.Hibernate.Audit.PersistenceServerObject;
+import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
+import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
+import com.bluecubs.xinco.core.hibernate.audit.AuditingDAOHelper;
+import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -154,7 +154,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements Audita
         String sql = "SELECT x FROM XincoCoreDataType x WHERE ";
         if (parameters.containsKey("designation")) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getName()).log(Level.INFO, "Searching by designation");
+                Logger.getLogger(XincoCoreDataTypeServer.class.getName()).log(Level.INFO, "Searching by designation");
             }
             if (counter > 0) {
                 sql += " and ";
@@ -164,7 +164,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements Audita
         }
         if (parameters.containsKey("description")) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getName()).log(Level.INFO, "Searching by description");
+                Logger.getLogger(XincoCoreDataTypeServer.class.getName()).log(Level.INFO, "Searching by description");
             }
             if (counter > 0) {
                 sql += " and ";
@@ -204,17 +204,17 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements Audita
         newValue.setTransactionTime(getTransactionTime());
         pm.persist(newValue, false, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-            Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getName()).log(Level.INFO,
+            Logger.getLogger(XincoCoreDataTypeServer.class.getName()).log(Level.INFO,
                     "New value created: " + newValue);
         }
         return newValue;
     }
 
     public AbstractAuditableObject update(AbstractAuditableObject value) {
-        XincoCoreDataTypeAttributeServer val = (XincoCoreDataTypeAttributeServer) value;
+        XincoCoreDataTypeServer val = (XincoCoreDataTypeServer) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-            Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getName()).log(Level.INFO,
+            Logger.getLogger(XincoCoreDataTypeServer.class.getName()).log(Level.INFO,
                     "Value updated: " + val);
         }
         return val;
@@ -254,7 +254,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements Audita
      */
     @SuppressWarnings("unchecked")
     public int getNewID() {
-        return new XincoIDServer("xincoCoreAce").getNewTableID();
+        return new XincoIDServer("XincoCoreDataType").getNewTableID();
     }
 
     @SuppressWarnings("unchecked")
@@ -280,7 +280,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements Audita
             return true;
         } catch (Throwable e) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getName()).log(Level.SEVERE, null, e);
+                Logger.getLogger(XincoCoreDataTypeServer.class.getName()).log(Level.SEVERE, null, e);
             }
             return false;
         }
@@ -293,7 +293,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements Audita
             return true;
         } catch (Throwable e) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getName()).log(Level.SEVERE, null, e);
+                Logger.getLogger(XincoCoreDataTypeServer.class.getName()).log(Level.SEVERE, null, e);
             }
             return false;
         }

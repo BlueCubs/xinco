@@ -37,12 +37,11 @@ package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.persistence.XincoID;
-import com.dreamer.Hibernate.PersistenceManager;
+import com.bluecubs.xinco.core.hibernate.PersistenceManager;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -56,8 +55,6 @@ public class XincoDBManager extends PersistenceManager {
     private int EmailLink = 1,  DataLink = 2;
     private ResourceBundle lrb = null;
     private Locale loc = null;
-    private HashMap parameters;
-    private List result;
 
     public XincoDBManager() throws Exception {
         lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
@@ -79,7 +76,7 @@ public class XincoDBManager extends PersistenceManager {
         return newID;
 
     }
-
+    //TODO Remove to use jasperreports instead
     /**Draws a table with results of the query stored in the ResultSet rs in the PrintWriter out
      * @param rs
      * @param out
@@ -137,6 +134,7 @@ public class XincoDBManager extends PersistenceManager {
         }
     }
 
+    //TODO Remove to use jasperreports instead
     /** Returns the column names of the query in an HTML table format for use
      * as header for a table produced by the drawTable method.
      * @param rs
@@ -160,6 +158,7 @@ public class XincoDBManager extends PersistenceManager {
         return t;
     }
 
+    //TODO Remove to use jasperreports instead
     /** Returns the column names of the query in an HTML table format for use
      * as header for a table produced by the drawTable method.
      * @param rs
@@ -182,6 +181,7 @@ public class XincoDBManager extends PersistenceManager {
         return header;
     }
 
+    @Override
     public List createdQuery(String query) {
         return createdQuery(query, null);
     }

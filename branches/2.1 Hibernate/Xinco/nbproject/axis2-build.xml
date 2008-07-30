@@ -5,30 +5,9 @@
                 JAX-WS WSIMPORT SECTION
                 ===================
             -->
-    <target name="java2wsdl-init" depends="init">
-        <mkdir dir="${basedir}/xml-resources/axis2/META-INF"/>
-        <taskdef name="java2wsdl" classname="org.apache.ws.java2wsdl.Java2WSDLTask">
-            <classpath path="${libs.axis2.classpath}"/>
-        </taskdef>
-    </target>
-    <target name="java2wsdl-check-Xinco" depends="java2wsdl-init">
-        <condition property="java2wsdl-check-Xinco.notRequired">
-            <available file="${basedir}/xml-resources/axis2/META-INF/Xinco.wsdl" type="file"/>
-        </condition>
-    </target>
-    <target name="java2wsdl-Xinco" depends="java2wsdl-check-Xinco, compile" unless="java2wsdl-check-Xinco.notRequired">
-        <java2wsdl className="com.bluecubs.xinco.service.Xinco" serviceName="Xinco" outputLocation="${basedir}/xml-resources/axis2/META-INF" outputFileName="Xinco.wsdl" targetNamespace="http://service/xinco/bluecubs/com/" schemaTargetNamespace="http://service/xinco/bluecubs/com/xsd">
-            <classpath>
-                <pathelement location="${build.dir}/classes"/>
-            </classpath>
-        </java2wsdl>
-    </target>
-    <target name="java2wsdl-clean-Xinco" depends="init">
-        <delete file="${basedir}/xml-resources/axis2/META-INF/Xinco.wsdl"/>
-    </target>
-    <target name="axis2-aar" depends="compile, java2wsdl-Xinco">
+    <target name="axis2-aar" depends="compile">
         <mkdir dir="${build.dir}/axis2/WEB-INF/services"/>
-        <jar destfile="${build.dir}/axis2/WEB-INF/services/Xinco.aar">
+        <jar destfile="${build.dir}/axis2/WEB-INF/services/${ant.project.name}.aar">
             <fileset excludes="**/Test.class" dir="${build.dir}/classes"/>
             <fileset dir="${basedir}/xml-resources/axis2">
                 <include name="**/*.wsdl"/>

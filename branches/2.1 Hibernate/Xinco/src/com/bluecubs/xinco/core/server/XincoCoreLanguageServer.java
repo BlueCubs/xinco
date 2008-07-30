@@ -40,10 +40,10 @@ import java.util.Vector;
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.persistence.XincoCoreLanguageT;
 import com.bluecubs.xinco.core.persistence.XincoCoreLanguage;
-import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
-import com.dreamer.Hibernate.Audit.AuditableDAO;
-import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
-import com.dreamer.Hibernate.Audit.PersistenceServerObject;
+import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
+import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
+import com.bluecubs.xinco.core.hibernate.audit.AuditingDAOHelper;
+import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -176,9 +176,9 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements Audita
         XincoCoreLanguage newValue = new XincoCoreLanguage();
 
         temp = (XincoCoreLanguageServer) value;
-        temp.setId(temp.getId());
-        temp.setDesignation(temp.getDesignation());
-        temp.setSign(temp.getSign());
+        newValue.setId(temp.getId());
+        newValue.setDesignation(temp.getDesignation());
+        newValue.setSign(temp.getSign());
 
         newValue.setRecordId(temp.getRecordId());
         newValue.setCreated(temp.isCreated());
@@ -211,7 +211,6 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements Audita
             temp.setId(val.getId());
 
             temp.setDesignation(val.getDesignation());
-            temp.setDesignation(val.getDesignation());
             temp.setSign(val.getSign());
 
             pm.startTransaction();
@@ -220,7 +219,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements Audita
             getModifiedRecordDAOObject().saveAuditData();
             pm.commitAndClose();
         } catch (Throwable ex) {
-            Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -237,7 +236,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements Audita
      */
     @SuppressWarnings("unchecked")
     public int getNewID() {
-        return new XincoIDServer("xinco_core_language").getNewTableID();
+        return new XincoIDServer("XincoCoreLanguage").getNewTableID();
     }
 
     @SuppressWarnings("unchecked")

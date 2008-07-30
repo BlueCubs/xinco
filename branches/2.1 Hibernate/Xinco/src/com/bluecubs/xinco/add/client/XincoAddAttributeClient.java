@@ -40,6 +40,7 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.persistence.XincoAddAttribute;
 
 public class XincoAddAttributeClient extends XincoAddAttribute {
+    private static final long serialVersionUID = -7128374015219475637L;
     
 	public XincoAddAttributeClient() throws XincoException {
 	}

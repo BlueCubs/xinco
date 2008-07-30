@@ -1,6 +1,6 @@
 package com.bluecubs.xinco.core.server;
 
-import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
 
 /**
  *

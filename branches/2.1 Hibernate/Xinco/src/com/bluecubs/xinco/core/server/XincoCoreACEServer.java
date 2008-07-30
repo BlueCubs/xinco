@@ -36,17 +36,17 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
-import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
-import com.dreamer.Hibernate.Audit.PersistenceServerUtils;
+import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
+import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerUtils;
 import java.util.HashMap;
 import java.util.Vector;
 
 import com.bluecubs.xinco.core.persistence.XincoCoreACE;
 import com.bluecubs.xinco.core.persistence.XincoCoreACET;
 import com.bluecubs.xinco.core.persistence.XincoCoreGroup;
-import com.dreamer.Hibernate.Audit.AuditableDAO;
-import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
-import com.dreamer.Hibernate.Audit.PersistenceServerObject;
+import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
+import com.bluecubs.xinco.core.hibernate.audit.AuditingDAOHelper;
+import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -254,7 +254,7 @@ public class XincoCoreACEServer extends XincoCoreACE implements AuditableDAO, Pe
 
     public AbstractAuditableObject[] findWithDetails(HashMap parameters) throws Exception {
         int counter = 0;
-        String sql = "SELECT x FROM XincoCoreACEServer x WHERE ";
+        String sql = "SELECT x FROM XincoCoreACE x WHERE ";
         if (parameters.containsKey("id")) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.INFO, "Searching by id");
@@ -397,7 +397,7 @@ public class XincoCoreACEServer extends XincoCoreACE implements AuditableDAO, Pe
      */
     @SuppressWarnings("unchecked")
     public int getNewID() {
-        return new XincoIDServer("xinco_core_ace").getNewTableID();
+        return new XincoIDServer("XincoCoreACE").getNewTableID();
     }
 
     @SuppressWarnings("unchecked")

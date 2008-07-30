@@ -39,10 +39,10 @@ import com.bluecubs.xinco.core.XincoException;
 import java.util.Vector;
 import com.bluecubs.xinco.core.persistence.XincoCoreGroup;
 import com.bluecubs.xinco.core.persistence.XincoCoreGroupT;
-import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
-import com.dreamer.Hibernate.Audit.AuditableDAO;
-import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
-import com.dreamer.Hibernate.Audit.PersistenceServerObject;
+import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
+import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
+import com.bluecubs.xinco.core.hibernate.audit.AuditingDAOHelper;
+import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -165,9 +165,9 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements AuditableDAO
         XincoCoreGroup newValue = new XincoCoreGroup();
 
         temp = (XincoCoreGroupServer) value;
-        temp.setId(temp.getId());
-        temp.setDesignation(temp.getDesignation());
-        temp.setStatusNumber(temp.getStatusNumber());
+        newValue.setId(temp.getId());
+        newValue.setDesignation(temp.getDesignation());
+        newValue.setStatusNumber(temp.getStatusNumber());
 
         newValue.setRecordId(temp.getRecordId());
         newValue.setCreated(temp.isCreated());
@@ -226,7 +226,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements AuditableDAO
      */
     @SuppressWarnings("unchecked")
     public int getNewID() {
-        return new XincoIDServer("xincoCoreAce").getNewTableID();
+        return new XincoIDServer("XincoCoreGroup").getNewTableID();
     }
 
     @SuppressWarnings("unchecked")

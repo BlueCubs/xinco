@@ -33,7 +33,6 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.core.client;
 
 import com.bluecubs.xinco.core.XincoException;
@@ -41,61 +40,62 @@ import java.util.Vector;
 
 import com.bluecubs.xinco.core.persistence.XincoCoreACE;
 import com.bluecubs.xinco.core.persistence.XincoCoreGroup;
-import com.bluecubs.xinco.core.persistence.XincoCoreUser;
+import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 
 public class XincoCoreACEClient extends XincoCoreACE {
+
     private static final long serialVersionUID = 7719276388843169093L;
 
-	public XincoCoreACEClient() throws XincoException {
-	}
-    
-	//check access by comparing user / user groups to ACL and return permissions
-	public static XincoCoreACE checkAccess(XincoCoreUser attrU, Vector attrACL) {
-        
-		int i = 0;
-		int j = 0;
-		boolean match_ace = false;
-		XincoCoreACE core_ace = new XincoCoreACE();
-		
-		try {
-                    for (i=0;i<attrACL.size();i++) {
-                            //reset match_ace
-                            match_ace = false;
-                            //check if user is mentioned in ACE
-                            if (((XincoCoreACE)attrACL.elementAt(i)).getXincoCoreUserId() == attrU.getId()) { match_ace = true; } 
-                            //check if group of user is mentioned in ACE
-                            if (!match_ace) {
-                                    for (j=0;j<attrU.getXincoCoreGroups().size();j++) {
-                                            if (((XincoCoreACE)attrACL.elementAt(i)).getXincoCoreGroupId() == ((XincoCoreGroup)attrU.getXincoCoreGroups().elementAt(j)).getId()) {
-                                                    match_ace = true;
-                                                    break;
-                                            } 
-                                    }
-                            }
-                            //add to rights
-                            if (match_ace) {
-                                    //modify read permission
-                                    if (!core_ace.getReadPermission()) {
-                                            core_ace.setReadPermission(((XincoCoreACE)attrACL.elementAt(i)).getReadPermission());				
-                                    }
-                                    //modify write permission
-                                    if (!core_ace.getWritePermission()) {
-                                            core_ace.setWritePermission(((XincoCoreACE)attrACL.elementAt(i)).getWritePermission());				
-                                    }
-                                    //modify execute permission
-                                    if (!core_ace.getExecutePermission()) {
-                                            core_ace.setExecutePermission(((XincoCoreACE)attrACL.elementAt(i)).getExecutePermission());				
-                                    }
-                                    //modify admin permission
-                                    if (!core_ace.getAdminPermission()) {
-                                            core_ace.setAdminPermission(((XincoCoreACE)attrACL.elementAt(i)).getAdminPermission());				
-                                    }
-                            }
-                    }
-                } catch (Exception e) {
-                }
-        
-		return core_ace;
-	}
+    public XincoCoreACEClient() throws XincoException {
+    }
+    //check access by comparing user / user groups to ACL and return permissions
+    public static XincoCoreACE checkAccess(XincoCoreUserServer attrU, Vector attrACL) {
 
+        int i = 0;
+        int j = 0;
+        boolean match_ace = false;
+        XincoCoreACE core_ace = new XincoCoreACE();
+
+        try {
+            for (i = 0; i < attrACL.size(); i++) {
+                //reset match_ace
+                match_ace = false;
+                //check if user is mentioned in ACE
+                if (((XincoCoreACE) attrACL.elementAt(i)).getXincoCoreUserId() == attrU.getId()) {
+                    match_ace = true;
+                }
+                //check if group of user is mentioned in ACE
+                if (!match_ace) {
+                    for (j = 0; j < attrU.getXincoCoreGroups().size(); j++) {
+                        if (((XincoCoreACE) attrACL.elementAt(i)).getXincoCoreGroupId() == ((XincoCoreGroup) attrU.getXincoCoreGroups().elementAt(j)).getId()) {
+                            match_ace = true;
+                            break;
+                        }
+                    }
+                }
+                //add to rights
+                if (match_ace) {
+                    //modify read permission
+                    if (!core_ace.getReadPermission()) {
+                        core_ace.setReadPermission(((XincoCoreACE) attrACL.elementAt(i)).getReadPermission());
+                    }
+                    //modify write permission
+                    if (!core_ace.getWritePermission()) {
+                        core_ace.setWritePermission(((XincoCoreACE) attrACL.elementAt(i)).getWritePermission());
+                    }
+                    //modify execute permission
+                    if (!core_ace.getExecutePermission()) {
+                        core_ace.setExecutePermission(((XincoCoreACE) attrACL.elementAt(i)).getExecutePermission());
+                    }
+                    //modify admin permission
+                    if (!core_ace.getAdminPermission()) {
+                        core_ace.setAdminPermission(((XincoCoreACE) attrACL.elementAt(i)).getAdminPermission());
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+
+        return core_ace;
+    }
 }

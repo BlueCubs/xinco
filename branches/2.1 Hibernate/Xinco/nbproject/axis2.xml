@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <axis2 xmlns="http://www.netbeans.org/ns/axis2/1">
-    <service name="Xinco">
-        <service-class>com.bluecubs.xinco.service.Xinco</service-class>
-        <generate-wsdl targetNamespace="http://service/xinco/bluecubs/com/" schemaNamespace="http://service/xinco/bluecubs/com/xsd"/>
+    <service name="XincoAddAttribute">
+        <service-class>com.bluecubs.xinco.core.persistence.XincoAddAttribute</service-class>
+    </service>
+    <service name="AbstractAuditableObject">
+        <service-class>com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject</service-class>
+    </service>
+    <service name="BaseObject">
+        <service-class>net.sf.oness.common.all.BaseObject</service-class>
     </service>
 </axis2>

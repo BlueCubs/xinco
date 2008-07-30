@@ -42,9 +42,9 @@ import java.sql.*;
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.persistence.XincoCoreLog;
 import com.bluecubs.xinco.core.persistence.XincoCoreUser;
-import com.dreamer.Hibernate.Audit.PersistenceServerObject;
-import com.dreamer.Hibernate.PersistenceManager;
-import com.dreamer.Hibernate.conf.ConfigSingletonServer;
+import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
+import com.bluecubs.xinco.core.hibernate.PersistenceManager;
+import com.bluecubs.xinco.core.hibernate.conf.ConfigSingletonServer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -74,10 +74,10 @@ public class XincoCoreLogServer extends XincoCoreLog implements PersistenceServe
                 setOpDatetime(xcl.getOpDatetime());
                 setOpDescription(xcl.getOpDescription());
                 setVersion(new XincoVersion());
-                getVersion().setVersion_high(xcl.getVersionHigh());
-                getVersion().setVersion_mid(xcl.getVersionMid());
-                getVersion().setVersion_low(xcl.getVersionLow());
-                getVersion().setVersion_postfix(xcl.getVersionPostfix());
+                getVersion().setVersionHigh(xcl.getVersionHigh());
+                getVersion().setVersionMid(xcl.getVersionMid());
+                getVersion().setVersionLow(xcl.getVersionLow());
+                getVersion().setVersionPostfix(xcl.getVersionPostfix());
             } else {
                 throw new XincoException();
             }
@@ -100,10 +100,10 @@ public class XincoCoreLogServer extends XincoCoreLog implements PersistenceServe
         setOpDatetime(attrODT);
         setOpDescription(attrOD);
         setVersion(new XincoVersion());
-        getVersion().setVersion_high(attrVH);
-        getVersion().setVersion_mid(attrVM);
-        getVersion().setVersion_low(attrVL);
-        getVersion().setVersion_postfix(attrVP);
+        getVersion().setVersionHigh(attrVH);
+        getVersion().setVersionMid(attrVM);
+        getVersion().setVersionLow(attrVL);
+        getVersion().setVersionPostfix(attrVP);
 
     }
     //create complete log list for data
@@ -125,7 +125,7 @@ public class XincoCoreLogServer extends XincoCoreLog implements PersistenceServe
     
      @SuppressWarnings("unchecked")
     public int getNewID() {
-        return new XincoIDServer("xinco_core_log").getNewTableID();
+        return new XincoIDServer("XincoCoreLog").getNewTableID();
     }
 
     public boolean write2DB() {
@@ -135,7 +135,7 @@ public class XincoCoreLogServer extends XincoCoreLog implements PersistenceServe
             } else {
                 setId(getNewID());
                 if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                    Logger.getLogger(XincoCoreDataTypeServer.class.getName()).log(Level.INFO, "Assigned id: " + getId());
+                    Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.INFO, "Assigned id: " + getId());
                 }
             }
             return true;

@@ -20,11 +20,11 @@ import javax.persistence.TemporalType;
 
 /**
  *
- * @author Javier
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 @Entity
-@Table(name = "xinco_add_attribute", catalog = "xinco", schema = "")
-@NamedQueries({@NamedQuery(name = "XincoAddAttribute.findAll", query = "SELECT x FROM XincoAddAttribute x"), @NamedQuery(name = "XincoAddAttribute.findByXincoCoreDataId", query = "SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.xincoCoreDataId = :xincoCoreDataId"), @NamedQuery(name = "XincoAddAttribute.findByAttributeId", query = "SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.attributeId = :attributeId"), @NamedQuery(name = "XincoAddAttribute.findByAttribInt", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribInt = :attribInt"), @NamedQuery(name = "XincoAddAttribute.findByAttribUnsignedint", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribUnsignedint = :attribUnsignedint"), @NamedQuery(name = "XincoAddAttribute.findByAttribDouble", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribDouble = :attribDouble"), @NamedQuery(name = "XincoAddAttribute.findByAttribVarchar", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribVarchar = :attribVarchar"), @NamedQuery(name = "XincoAddAttribute.findByAttribDatetime", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribDatetime = :attribDatetime")})
+@Table(name = "xinco_add_attribute")
+@NamedQueries({@NamedQuery(name = "XincoAddAttribute.findByXincoCoreDataId", query = "SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.xincoCoreDataId = :xincoCoreDataId"), @NamedQuery(name = "XincoAddAttribute.findByAttributeId", query = "SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.attributeId = :attributeId"), @NamedQuery(name = "XincoAddAttribute.findByAttribInt", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribInt = :attribInt"), @NamedQuery(name = "XincoAddAttribute.findByAttribUnsignedint", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribUnsignedint = :attribUnsignedint"), @NamedQuery(name = "XincoAddAttribute.findByAttribDouble", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribDouble = :attribDouble"), @NamedQuery(name = "XincoAddAttribute.findByAttribVarchar", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribVarchar = :attribVarchar"), @NamedQuery(name = "XincoAddAttribute.findByAttribDatetime", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribDatetime = :attribDatetime")})
 public class XincoAddAttribute extends XincoAbstractAuditableObject implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -33,12 +33,12 @@ public class XincoAddAttribute extends XincoAbstractAuditableObject implements S
     private Integer attribInt;
     @Column(name = "attrib_unsignedint")
     private long attribUnsignedint;
-    @Column(name = "attrib_double", precision = 22)
+    @Column(name = "attrib_double")
     private Double attribDouble;
-    @Column(name = "attrib_varchar", length = 255)
+    @Column(name = "attrib_varchar")
     private String attribVarchar;
     @Lob
-    @Column(name = "attrib_text", length = 65535)
+    @Column(name = "attrib_text")
     private String attribText;
     @Column(name = "attrib_datetime")
     @Temporal(TemporalType.TIMESTAMP)
@@ -135,5 +135,4 @@ public class XincoAddAttribute extends XincoAbstractAuditableObject implements S
     public String toString() {
         return "com.bluecubs.xinco.core.persistence.XincoAddAttribute[xincoAddAttributePK=" + xincoAddAttributePK + "]";
     }
-
 }
