@@ -1,6 +1,10 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.bluecubs.xinco.core.persistence;
 
-import com.bluecubs.xinco.core.server.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAbstractAuditableObject;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -12,23 +16,22 @@ import javax.persistence.Table;
 
 /**
  *
- * @author Javier
+ * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 @Entity
 @Table(name = "xinco_core_data_type_attribute", catalog = "xinco", schema = "")
 @NamedQueries({@NamedQuery(name = "XincoCoreDataTypeAttribute.findAll",
     query = "SELECT x FROM XincoCoreDataTypeAttribute x"),
     @NamedQuery(name = "XincoCoreDataTypeAttribute.findByXincoCoreDataTypeId",
-    query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE " +
-    "x.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId = :xincoCoreDataTypeId"),
+    query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId = :xincoCoreDataTypeId"),
     @NamedQuery(name = "XincoCoreDataTypeAttribute.findByAttributeId",
     query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.xincoCoreDataTypeAttributePK.attributeId = :attributeId"),
     @NamedQuery(name = "XincoCoreDataTypeAttribute.findByDesignation",
     query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.designation = :designation"),
     @NamedQuery(name = "XincoCoreDataTypeAttribute.findByDataType",
     query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.dataType = :dataType"),
-    @NamedQuery(name = "XincoCoreDataTypeAttribute.findBySize",
-    query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.size = :size")
+    @NamedQuery(name = "XincoCoreDataTypeAttribute.findByAttrSize",
+    query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.attrSize = :attrSize")
 })
 public class XincoCoreDataTypeAttribute extends XincoAbstractAuditableObject implements Serializable {
 
@@ -42,8 +45,8 @@ public class XincoCoreDataTypeAttribute extends XincoAbstractAuditableObject imp
     @Column(name = "data_type", nullable = false, length = 255)
     private String dataType;
     @Basic(optional = false)
-    @Column(name = "size", nullable = false)
-    private int xcdtaSize;
+    @Column(name = "attr_size", nullable = false)
+    private int attrSize;
 
     public XincoCoreDataTypeAttribute() {
     }
@@ -52,11 +55,11 @@ public class XincoCoreDataTypeAttribute extends XincoAbstractAuditableObject imp
         this.xincoCoreDataTypeAttributePK = xincoCoreDataTypeAttributePK;
     }
 
-    public XincoCoreDataTypeAttribute(XincoCoreDataTypeAttributePK xincoCoreDataTypeAttributePK, String designation, String dataType, int size) {
+    public XincoCoreDataTypeAttribute(XincoCoreDataTypeAttributePK xincoCoreDataTypeAttributePK, String designation, String dataType, int attrSize) {
         this.xincoCoreDataTypeAttributePK = xincoCoreDataTypeAttributePK;
         this.designation = designation;
         this.dataType = dataType;
-        this.xcdtaSize = size;
+        this.attrSize = attrSize;
     }
 
     public XincoCoreDataTypeAttribute(int xincoCoreDataTypeId, int attributeId) {
@@ -87,12 +90,12 @@ public class XincoCoreDataTypeAttribute extends XincoAbstractAuditableObject imp
         this.dataType = dataType;
     }
 
-    public int getSize() {
-        return xcdtaSize;
+    public int getAttrSize() {
+        return attrSize;
     }
 
-    public void setSize(int size) {
-        this.xcdtaSize = size;
+    public void setAttrSize(int attrSize) {
+        this.attrSize = attrSize;
     }
 
     @Override

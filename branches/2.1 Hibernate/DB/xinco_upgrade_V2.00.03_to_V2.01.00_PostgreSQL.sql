@@ -110,3 +110,7 @@ UPDATE XINCO_CORE_group SET DESIGNATION = 'general.group.allusers' WHERE ID =2;
 UPDATE XINCO_CORE_group SET DESIGNATION = 'general.group.public' WHERE ID =3;
 
 update xinco_core_log set op_description= 'audit.general.create' where op_description='Creation!'
+
+ALTER TABLE xinco_core_data_type_attribute CHANGE COLUMN `size` `attr_size` INTEGER UNSIGNED NOT NULL DEFAULT 0;
+
+ALTER TABLE `xinco`.`xinco_core_data_type_attribute_t` CHANGE COLUMN `size` `attr_size` INTEGER UNSIGNED NOT NULL DEFAULT 0;

@@ -36,30 +36,30 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAuditableDAO;
 import java.util.Vector;
 import com.bluecubs.xinco.core.persistence.XincoCoreGroup;
 import com.bluecubs.xinco.core.persistence.XincoCoreGroupT;
-import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
-import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
-import com.bluecubs.xinco.core.hibernate.audit.AuditingDAOHelper;
-import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
+import com.dreamer.Hibernate.Audit.PersistenceServerObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.oness.common.model.temporal.DateRange;
 
-public class XincoCoreGroupServer extends XincoCoreGroup implements AuditableDAO, PersistenceServerObject {
+public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditableDAO, PersistenceServerObject {
 
     private static List result;
     private static final long serialVersionUID = 6866425466359539411L;
     //create group object for data structures
     @SuppressWarnings("unchecked")
-    public XincoCoreGroupServer(int attrID, XincoDBManager DBM) throws XincoException {
+    public XincoCoreGroupServer(int attrID) throws XincoException {
         try {
             parameters.clear();
             parameters.put("id", attrID);
-            result = DBM.namedQuery("XincoCoreGroup.findById", parameters);
+            result = pm.namedQuery("XincoCoreGroup.findById", parameters);
             //throw exception if no result found
             if (!result.isEmpty()) {
                 XincoCoreGroup xcg = (XincoCoreGroup) result.get(0);
@@ -82,13 +82,12 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements AuditableDAO
 
     XincoCoreGroupServer() {
     }
-    
     //create complete list of groups
     @SuppressWarnings("unchecked")
-    public static Vector getXincoCoreGroups(XincoDBManager DBM) {
+    public static Vector getXincoCoreGroups() {
         Vector coreGroups = new Vector();
         try {
-            result = DBM.createdQuery("SELECT x FROM XincoCoreGroup x ORDER BY x.designation", null);
+            result = pm.createdQuery("SELECT x FROM XincoCoreGroup x ORDER BY x.designation", null);
             while (!result.isEmpty()) {
                 coreGroups.addElement((XincoCoreGroup) result.get(0));
                 result.remove(0);

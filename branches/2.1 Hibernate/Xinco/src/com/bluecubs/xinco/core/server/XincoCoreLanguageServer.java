@@ -35,15 +35,15 @@
  */
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.XincoException;
 import java.util.Vector;
 
-import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.persistence.XincoCoreLanguageT;
 import com.bluecubs.xinco.core.persistence.XincoCoreLanguage;
-import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
-import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
-import com.bluecubs.xinco.core.hibernate.audit.AuditingDAOHelper;
-import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.dreamer.Hibernate.Audit.AuditableDAO;
+import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
+import com.dreamer.Hibernate.Audit.PersistenceServerObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -55,11 +55,11 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements Audita
     private static final long serialVersionUID = 607986769219212765L;
     private static List result;
     //create language object for data structures
-    public XincoCoreLanguageServer(int attrID, XincoDBManager DBM) throws XincoException {
+    public XincoCoreLanguageServer(int attrID) throws XincoException {
         try {
             parameters.clear();
             parameters.put("id", attrID);
-            result = DBM.namedQuery("XincoCoreLanguage.findById", parameters);
+            result = pm.namedQuery("XincoCoreLanguage.findById", parameters);
             //throw exception if no result found
             if (!result.isEmpty()) {
                 XincoCoreLanguage xcg = (XincoCoreLanguage) result.get(0);
@@ -82,10 +82,10 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements Audita
 
     }
     //create complete list of languages
-    public static Vector getXincoCoreLanguages(XincoDBManager DBM) {
+    public static Vector getXincoCoreLanguages() {
         Vector coreLanguages = new Vector();
         try {
-            result = DBM.createdQuery("SELECT x FROM XincoCoreLanguage x ORDER BY x.designation", null);
+            result = pm.createdQuery("SELECT x FROM XincoCoreLanguage x ORDER BY x.designation", null);
             while (!result.isEmpty()) {
                 coreLanguages.addElement((XincoCoreLanguage) result.get(0));
                 result.remove(0);
@@ -96,12 +96,12 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements Audita
         return coreLanguages;
     }
     //check if language is in use by other objects
-    public static boolean isLanguageUsed(XincoCoreLanguage xcl, XincoDBManager DBM) {
+    public static boolean isLanguageUsed(XincoCoreLanguage xcl) {
         boolean is_used = false;
         try {
-            result = DBM.createdQuery("SELECT x FROM XincoCoreNode x where x.xincoCoreLanguageId=" + xcl.getId(), null);
+            result = pm.createdQuery("SELECT x FROM XincoCoreNode x where x.xincoCoreLanguageId=" + xcl.getId(), null);
             if (!result.isEmpty()) {
-                result = DBM.createdQuery("SELECT x FROM XincoCoreData x where x.xincoCoreLanguageId=" + xcl.getId(), null);
+                result = pm.createdQuery("SELECT x FROM XincoCoreData x where x.xincoCoreLanguageId=" + xcl.getId(), null);
                 is_used = !result.isEmpty();
             }
         } catch (Exception e) {

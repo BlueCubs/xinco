@@ -16,11 +16,11 @@ import javax.persistence.Table;
 
 /**
  *
- * @author Javier
+ * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 @Entity
 @Table(name = "xinco_core_data_type_attribute_t", catalog = "xinco", schema = "")
-@NamedQueries({@NamedQuery(name = "XincoCoreDataTypeAttributeT.findAll", query = "SELECT x FROM XincoCoreDataTypeAttributeT x"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByRecordId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.recordId = :recordId"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByXincoCoreDataTypeId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.xincoCoreDataTypeId = :xincoCoreDataTypeId"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByAttributeId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.attributeId = :attributeId"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByDesignation", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByDataType", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.dataType = :dataType"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findBySize", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.size = :size")})
+@NamedQueries({@NamedQuery(name = "XincoCoreDataTypeAttributeT.findAll", query = "SELECT x FROM XincoCoreDataTypeAttributeT x"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByRecordId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.recordId = :recordId"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByXincoCoreDataTypeId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.xincoCoreDataTypeId = :xincoCoreDataTypeId"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByAttributeId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.attributeId = :attributeId"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByDesignation", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByDataType", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.dataType = :dataType"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByAttrSize", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.attrSize = :attrSize")})
 public class XincoCoreDataTypeAttributeT implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -39,8 +39,8 @@ public class XincoCoreDataTypeAttributeT implements Serializable {
     @Column(name = "data_type", nullable = false, length = 255)
     private String dataType;
     @Basic(optional = false)
-    @Column(name = "size", nullable = false)
-    private int size;
+    @Column(name = "attr_size", nullable = false)
+    private int attrSize;
 
     public XincoCoreDataTypeAttributeT() {
     }
@@ -49,13 +49,13 @@ public class XincoCoreDataTypeAttributeT implements Serializable {
         this.recordId = recordId;
     }
 
-    public XincoCoreDataTypeAttributeT(Integer recordId, int xincoCoreDataTypeId, int attributeId, String designation, String dataType, int size) {
+    public XincoCoreDataTypeAttributeT(Integer recordId, int xincoCoreDataTypeId, int attributeId, String designation, String dataType, int attrSize) {
         this.recordId = recordId;
         this.xincoCoreDataTypeId = xincoCoreDataTypeId;
         this.attributeId = attributeId;
         this.designation = designation;
         this.dataType = dataType;
-        this.size = size;
+        this.attrSize = attrSize;
     }
 
     public Integer getRecordId() {
@@ -98,12 +98,12 @@ public class XincoCoreDataTypeAttributeT implements Serializable {
         this.dataType = dataType;
     }
 
-    public int getSize() {
-        return size;
+    public int getAttrSize() {
+        return attrSize;
     }
 
-    public void setSize(int size) {
-        this.size = size;
+    public void setAttrSize(int attrSize) {
+        this.attrSize = attrSize;
     }
 
     @Override

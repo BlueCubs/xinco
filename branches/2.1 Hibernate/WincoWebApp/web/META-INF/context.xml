@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- #################### xinco DMS Configuration for Tomcat >=5.5 ####################-->
-<Context docBase="xinco" path="/Xinco" reloadable="true">
-  <!-- #################### ################ ####################-->
-  <!-- Database JNDI Name -->
-  <Environment name="xinco/JNDIDB" override="false" type="java.lang.String" value="java:comp/env/jdbc/XincoDB"/>
-</Context>

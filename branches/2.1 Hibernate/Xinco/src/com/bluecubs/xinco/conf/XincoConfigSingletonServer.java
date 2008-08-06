@@ -21,13 +21,13 @@
  *
  * Name:            XincoConfigSingletonServer
  *
- * Description:     configuration class on server side 
+ * Description:     configuration class on server side
  *
  * Original Author: Alexander Manes
  * Date:            2004
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
@@ -35,28 +35,52 @@
  */
 package com.bluecubs.xinco.conf;
 
-import javax.naming.InitialContext;
+import com.bluecubs.xinco.core.persistence.XincoSetting;
+import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.XincoSettingServer;
+import com.dreamer.Hibernate.HibernateConfigurationParams;
+import com.dreamer.Hibernate.conf.ConfigSingletonServer;
+import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 /**
  * This class handles the server configuration of xinco.
  * Edit values in context.xml
  */
-public class XincoConfigSingletonServer {
+public class XincoConfigSingletonServer extends ConfigSingletonServer {
+
+    private static XincoDBManager DBM = null;
+
+    public static XincoDBManager getPersistenceManager() {
+        if (DBM == null) {
+            try {
+                DBM = new XincoDBManager(HibernateConfigurationParams.FILE);
+            } catch (Exception ex) {
+                Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return DBM;
+    }
     private String FileRepositoryPath = null;
     private String FileIndexPath = null;
     private String FileArchivePath = null;
     private long FileArchivePeriod = 0;
-    private long FileIndexOptimizerPeriod = 0;
     private int FileIndexerCount = 0;
     private Vector IndexFileTypesClass = null;
     private Vector IndexFileTypesExt = null;
     private String[] IndexNoIndex = null;
-    private String JNDIDB = null;
     private int MaxSearchResult = 0;
-    private boolean allowOutsideLinks = true,  allowPublisherList = true;
+    private boolean allowOutsideLinks;
     private static XincoConfigSingletonServer instance = null;
 
+    /**
+     * Gets a singleton instance. Creates one if needed.
+     * @return
+     */
     public static XincoConfigSingletonServer getInstance() {
         if (instance == null) {
             instance = new XincoConfigSingletonServer();
@@ -64,167 +88,267 @@ public class XincoConfigSingletonServer {
         return instance;
     }
 
-    //private constructor to avoid instance generation with new-operator!
-    @SuppressWarnings("unchecked")
-    private XincoConfigSingletonServer() {
+    /**
+     * private constructor to avoid instance generation with new-operator!
+     */
+    protected XincoConfigSingletonServer() {
         try {
-            FileRepositoryPath = (String) (new InitialContext()).lookup("java:comp/env/xinco/FileRepositoryPath");
-            if (!(FileRepositoryPath.substring(FileRepositoryPath.length() - 1).equals(System.getProperty("file.separator")))) {
-                FileRepositoryPath = FileRepositoryPath + System.getProperty("file.separator");
-            }
-            //optional: FileIndexPath
-            try {
-                FileIndexPath = (String) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexPath");
-            } catch (Exception ce) {
-                FileIndexPath = FileRepositoryPath + "index";
-            }
-            if (!(FileIndexPath.substring(FileIndexPath.length() - 1).equals(System.getProperty("file.separator")))) {
-                FileIndexPath = FileIndexPath + System.getProperty("file.separator");
-            }
-            FileArchivePath = (String) (new InitialContext()).lookup("java:comp/env/xinco/FileArchivePath");
-            if (!(FileArchivePath.substring(FileArchivePath.length() - 1).equals(System.getProperty("file.separator")))) {
-                FileArchivePath = FileArchivePath + System.getProperty("file.separator");
-            }
-            FileArchivePeriod = ((Long) (new InitialContext()).lookup("java:comp/env/xinco/FileArchivePeriod")).longValue();
+            JNDIDB = (String) (new InitialContext()).lookup("xinco/JNDIDB");
+        } catch (NamingException ex) {
+            JNDIDB = "java:comp/env/jdbc/XincoDB";
+        }
+    }
 
-            FileIndexOptimizerPeriod = ((Long) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexOptimizerPeriod")).longValue();
-
-            FileIndexerCount = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexerCount")).intValue();
-            IndexFileTypesClass = new Vector();
-            IndexFileTypesExt = new Vector();
-            for (int i = 0; i < FileIndexerCount; i++) {
-                IndexFileTypesClass.add((String) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexer_" + (i + 1) + "_Class"));
-                IndexFileTypesExt.add(((String) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexer_" + (i + 1) + "_Ext")).split(";"));
+    /**
+     * Initializes this singleton from a XincoSettingServer object
+     * @return 
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean init() {
+        try {
+            FileRepositoryPath = XincoSettingServer.getSetting("xinco/FileRepositoryPath").getStringValue();
+            if (!(getFileRepositoryPath().substring(getFileRepositoryPath().length() - 1).equals(System.getProperty("file.separator")))) {
+                FileRepositoryPath = getFileRepositoryPath() + System.getProperty("file.separator");
             }
-            IndexNoIndex = ((String) (new InitialContext()).lookup("java:comp/env/xinco/IndexNoIndex")).split(";");
-
-            allowOutsideLinks = ((String) (new InitialContext()).lookup("java:comp/env/setting.allowoutsidelinks")).equals("True");
-            allowPublisherList = ((String) (new InitialContext()).lookup("java:comp/env/setting.allowpublisherlist")).equals("True");
-            JNDIDB = (String) (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
-            MaxSearchResult = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/MaxSearchResult")).intValue();
-        } catch (Exception e) {
-            FileRepositoryPath = "";
-            FileIndexPath = "";
-            FileArchivePath = "";
-            FileArchivePeriod = 14400000;
-            FileIndexerCount = 4;
-            IndexFileTypesClass = new Vector();
-            IndexFileTypesExt = new Vector();
-            String[] tsa = null;
-            IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF");
-            tsa = new String[1];
+            MaxSearchResult = XincoSettingServer.getSetting("xinco/MaxSearchResult").getIntValue();
+            FileIndexPath = XincoSettingServer.getSetting("xinco/FileIndexPath").getStringValue();
+            if (getFileIndexPath().equals("")) {
+                FileIndexPath = getFileRepositoryPath() + "index";
+            }
+            if (!(getFileIndexPath().substring(getFileIndexPath().length() - 1).equals(System.getProperty("file.separator")))) {
+                FileIndexPath += System.getProperty("file.separator");
+            }
+            FileArchivePath = XincoSettingServer.getSetting("xinco/FileArchivePath").getStringValue();
+            if (!(getFileArchivePath().substring(getFileArchivePath().length() - 1).equals(System.getProperty("file.separator")))) {
+                FileArchivePath += System.getProperty("file.separator");
+            }
+            FileArchivePeriod = XincoSettingServer.getSetting("xinco/FileArchivePeriod").getLongValue();
+            Vector s = XincoSettingServer.getXincoSettings();
+            StringTokenizer st;
+            String[] temp;
+            for (int i = 0; i < s.size(); i++) {
+                if (((XincoSetting) s.get(i)).getDescription().startsWith("xinco/FileIndexer") &&
+                        ((XincoSetting) s.get(i)).getDescription().endsWith("Class")) {
+                    if (getIndexFileTypesClass() == null) {
+                        IndexFileTypesClass = new Vector();
+                    }
+                    getIndexFileTypesClass().add(((XincoSetting) s.get(i)).getStringValue());
+                    FileIndexerCount++;
+                }
+                if (((XincoSetting) s.get(i)).getDescription().startsWith("xinco/FileIndexer") &&
+                        ((XincoSetting) s.get(i)).getDescription().endsWith("Ext")) {
+                    if (getIndexFileTypesExt() == null) {
+                        IndexFileTypesExt = new Vector();
+                    }
+                    getIndexFileTypesExt().add(((XincoSetting) s.get(i)).getStringValue());
+                }
+                if (((XincoSetting) s.get(i)).getDescription().startsWith("xinco/IndexNoIndex")) {
+                    st = new StringTokenizer(((XincoSetting) s.get(i)).getStringValue(), ";");
+                    temp = new String[st.countTokens()];
+                    int j = 0;
+                    while (st.hasMoreTokens()) {
+                        temp[j] = st.nextToken();
+                        j++;
+                    }
+                    setIndexNoIndex(temp);
+                }
+            }
+            setAllowOutsideLinks(XincoSettingServer.getSetting("setting.allowoutsidelinks").getBoolValue());
+        } catch (Exception ex) {
+            //Default values
+            setFileRepositoryPath("");
+            setFileIndexPath("");
+            setFileArchivePath("");
+            setFileArchivePeriod(14400000);
+            setFileIndexerCount(4);
+            setAllowOutsideLinks(false);
+            setIndexFileTypesClass(new Vector());
+            setIndexFileTypesExt(new Vector());
+            setIndexNoIndex(new String[3]);
+            String[] tsa = new String[1];
+            getIndexFileTypesClass().add("com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF");
             tsa[0] = "pdf";
-            IndexFileTypesExt.add(tsa);
-            IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexMSWord");
-            tsa = new String[1];
+            getIndexFileTypesExt().add(tsa);
+            getIndexFileTypesClass().add("com.bluecubs.xinco.index.filetypes.XincoIndexMSWord");
             tsa[0] = "doc";
-            IndexFileTypesExt.add(tsa);
-            IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexMSExcel");
-            tsa = new String[1];
+            getIndexFileTypesExt().add(tsa);
+            getIndexFileTypesClass().add("com.bluecubs.xinco.index.filetypes.XincoIndexMSExcel");
             tsa[0] = "xls";
-            IndexFileTypesExt.add(tsa);
-            IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexHTML");
+            getIndexFileTypesExt().add(tsa);
+            getIndexFileTypesClass().add("com.bluecubs.xinco.index.filetypes.XincoIndexHTML");
             tsa = new String[4];
             tsa[0] = "htm";
             tsa[1] = "html";
             tsa[2] = "php";
             tsa[3] = "jsp";
-            IndexFileTypesExt.add(tsa);
-            IndexNoIndex = new String[3];
-            IndexNoIndex[0] = "";
-            IndexNoIndex[1] = "com";
-            IndexNoIndex[2] = "exe";
-            allowOutsideLinks = true;
-            allowPublisherList = true;
-            JNDIDB = "java:comp/env/jdbc/XincoDB";
-            MaxSearchResult = 30;
-            FileIndexOptimizerPeriod = 14400000;
+            getIndexFileTypesExt().add(tsa);
+            getIndexNoIndex()[0] = "";
+            getIndexNoIndex()[1] = "com";
+            getIndexNoIndex()[2] = "exe";
+            setJNDIDB("java:comp/env/jdbc/XincoDB");
+            setMaxSearchResult(30);
         }
-    }
-
-    public boolean isAllowOutsideLinks() {
-        return allowOutsideLinks;
-    }
-
-    public long getFileIndexOptimizerPeriod() {
-        return FileIndexOptimizerPeriod;
-    }
-
-    public void setFileIndexOptimizerPeriod(long FileIndexOptimizerPeriod) {
-        this.FileIndexOptimizerPeriod = FileIndexOptimizerPeriod;
-    }
-
-    public boolean isAllowPublisherList() {
-        return allowPublisherList;
+        return true;
     }
 
     /**
-     * @return the FileRepositoryPath
-     */
-    public String getFileRepositoryPath() {
-        return FileRepositoryPath;
-    }
-
-    /**
-     * @return the FileIndexPath
-     */
-    public String getFileIndexPath() {
-        return FileIndexPath;
-    }
-
-    /**
-     * @return the FileArchivePath
+     * Get FileArchivePath
+     * @return String
      */
     public String getFileArchivePath() {
         return FileArchivePath;
     }
 
     /**
-     * @return the FileArchivePeriod
+     * Get FileRepositoryPath
+     * @return String
+     */
+    public String getFileRepositoryPath() {
+        return FileRepositoryPath;
+    }
+
+    /**
+     * Set FileRepositoryPath
+     * @param FileRepositoryPath
+     */
+    public void setFileRepositoryPath(String FileRepositoryPath) {
+        this.FileRepositoryPath = FileRepositoryPath;
+    }
+
+    /**
+     * Get FileIndexPath
+     * @return String
+     */
+    public String getFileIndexPath() {
+        return FileIndexPath;
+    }
+
+    /**
+     * Set FileIndexPath
+     * @param FileIndexPath
+     */
+    public void setFileIndexPath(String FileIndexPath) {
+        this.FileIndexPath = FileIndexPath;
+    }
+
+    /**
+     * Set FileArchivePath
+     * @param FileArchivePath
+     */
+    public void setFileArchivePath(String FileArchivePath) {
+        this.FileArchivePath = FileArchivePath;
+    }
+
+    /**
+     * Get FileArchivePeriod
+     * @return long
      */
     public long getFileArchivePeriod() {
         return FileArchivePeriod;
     }
 
     /**
-     * @return the FileIndexerCount
+     * Set FileArchivePeriod
+     * @param FileArchivePeriod
+     */
+    public void setFileArchivePeriod(long FileArchivePeriod) {
+        this.FileArchivePeriod = FileArchivePeriod;
+    }
+
+    /**
+     * Get FileIndexerCount
+     * @return int
      */
     public int getFileIndexerCount() {
         return FileIndexerCount;
     }
 
     /**
-     * @return the IndexFileTypesClass
+     * Set FileIndexerCount
+     * @param FileIndexerCount
+     */
+    public void setFileIndexerCount(int FileIndexerCount) {
+        this.FileIndexerCount = FileIndexerCount;
+    }
+
+    /**
+     * Get IndexFileTypesClass
+     * @return Vector
      */
     public Vector getIndexFileTypesClass() {
         return IndexFileTypesClass;
     }
 
     /**
-     * @return the IndexFileTypesExt
+     * Set IndexFileTypesClass
+     * @param IndexFileTypesClass
+     */
+    public void setIndexFileTypesClass(Vector IndexFileTypesClass) {
+        this.IndexFileTypesClass = IndexFileTypesClass;
+    }
+
+    /**
+     * Get IndexFileTypesExt
+     * @return Vector
      */
     public Vector getIndexFileTypesExt() {
         return IndexFileTypesExt;
     }
 
     /**
-     * @return the IndexNoIndex
+     * Set IndexFileTypesExt
+     * @param IndexFileTypesExt
+     */
+    public void setIndexFileTypesExt(Vector IndexFileTypesExt) {
+        this.IndexFileTypesExt = IndexFileTypesExt;
+    }
+
+    /**
+     * Get IndexNoIndex
+     * @return String[]
      */
     public String[] getIndexNoIndex() {
         return IndexNoIndex;
     }
 
     /**
-     * @return the JNDIDB
+     * Set IndexNoIndex
+     * @param IndexNoIndex
      */
-    public String getJNDIDB() {
-        return JNDIDB;
+    public void setIndexNoIndex(String[] IndexNoIndex) {
+        this.IndexNoIndex = IndexNoIndex;
     }
 
     /**
-     * @return the MaxSearchResult
+     * Get MaxSearchResult
+     * @return int
      */
     public int getMaxSearchResult() {
         return MaxSearchResult;
+    }
+
+    /**
+     * Set MaxSearchResult
+     * @param MaxSearchResult
+     */
+    public void setMaxSearchResult(int MaxSearchResult) {
+        this.MaxSearchResult = MaxSearchResult;
+    }
+
+    /**
+     * Is outside links allowed?
+     * @return boolean
+     */
+    public boolean isAllowOutsideLinks() {
+        return allowOutsideLinks;
+    }
+
+    /**
+     * Set allowOutsideLinks
+     * @param allowOutsideLinks
+     */
+    public void setAllowOutsideLinks(boolean allowOutsideLinks) {
+        this.allowOutsideLinks = allowOutsideLinks;
     }
 }

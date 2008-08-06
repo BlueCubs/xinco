@@ -66,4 +66,8 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <target name="-post-compile">
+        <copy file="server.ini" todir="dist/"/>
+        <echo message="Copied server.ini to dist folder" />
+    </target>
 </project>

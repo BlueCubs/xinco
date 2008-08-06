@@ -37,7 +37,9 @@ package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.persistence.XincoID;
-import com.bluecubs.xinco.core.hibernate.PersistenceManager;
+import com.dreamer.Hibernate.HibernateConfiguration;
+import com.dreamer.Hibernate.PersistenceManager;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -45,22 +47,51 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
+import javax.naming.NamingException;
+import org.hibernate.cfg.Configuration;
+
 
 public class XincoDBManager extends PersistenceManager {
 
-    public XincoConfigSingletonServer config;
+    public static XincoConfigSingletonServer config;
     public static int count = 0;
     private int EmailLink = 1,  DataLink = 2;
     private ResourceBundle lrb = null;
     private Locale loc = null;
+    private boolean testing=false;
+    
+    protected XincoDBManager(){
+        
+    }
 
-    public XincoDBManager() throws Exception {
+    public XincoDBManager(int type) throws Exception {
+        super();
         lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
         //load compiled configuartion
         config = XincoConfigSingletonServer.getInstance();
         count++;
+        setPersistenceUnitName("XincoPU");
+        setSessions(getDefaultConfig().buildSessionFactory());
+        getSessions().openSession();
+        setShowQueries(false);
+    }
+    
+    private Configuration getDefaultConfig() throws IOException, NamingException {
+        conf=HibernateConfiguration.getConfiguration(true);
+        Properties props = new Properties();
+        props.put("hibernate.connection.url", conf.get("jdbc_url"));
+        props.put("hibernate.connection.driver_class", conf.get("jdbc_class"));
+        props.put("hibernate.connection.username", conf.get("jdbc_user"));
+        props.put("hibernate.connection.password", conf.get("jdbc_pwd"));
+        props.put("hibernate.dialect", conf.get("dialect"));
+        props.put("hibernate.c3p0.min_size", conf.get("min_size"));
+        props.put("hibernate.c3p0.max_size", conf.get("max_size"));
+        props.put("hibernate.c3p0.timeout", conf.get("timeout"));
+        props.put("hibernate.c3p0.max_statements", conf.get("max_statements"));
+        return new org.hibernate.cfg.Configuration().addProperties(props);
     }
 
     @SuppressWarnings("unchecked")
@@ -201,16 +232,110 @@ public class XincoDBManager extends PersistenceManager {
         return lrb.getString(s);
     }
 
-    public void setLoc(Locale loc) {
+    /**
+     * Script for removing right click functionality in web pages.
+     * @return String
+     */
+    public String getWebBlockRightClickScript() {
+        return "<script language=JavaScript> /n" +
+                "<!--/n" +
+                "var message='';/n" +
+                "function clickIE() {if (document.all) {(message);return false;}}/n" +
+                "function clickNS(e) {if /n" +
+                "(document.layers||(document.getElementById&&!document.all)) {/n" +
+                "if (e.which==2||e.which==3) {(message);return false;}}}/n" +
+                "if (document.layers) /n" +
+                "{document.captureEvents(Event.MOUSEDOWN);document.onmousedown=clickNS;}/n" +
+                "else{document.onmouseup=clickNS;document.oncontextmenu=clickIE;}/n" +
+                "document.oncontextmenu=new Function('return false')/n" +
+                "// --> /n" +
+                "</script>";
+    }
+
+    /**
+     * Replace a string with contents of resource bundle is applicable
+     * Used to transform db contents to human readable form.
+     * @param s
+     * @return String
+     */
+    public String localizeString(String s) {
+        if (s == null) {
+            return null;
+        }
+        try {
+            getResourceBundle().getString(s);
+        } catch (MissingResourceException e) {
+            return s;
+        }
+        return getResourceBundle().getString(s);
+    }
+
+    /**
+     * Get Resource bundle
+     * @return ResourceBundle
+     */
+    public ResourceBundle getResourceBundle() {
+        return lrb;
+    }
+
+    /**
+     * Create locale from string
+     * @param locale
+     */
+    public void createAndLoadLocale(String locale) {
+        Locale temp = null;
+        try {
+            String[] locales;
+            locales = locale.split("_");
+            switch (locales.length) {
+                case 1:
+                    temp = new Locale(locales[0]);
+                    break;
+                case 2:
+                    temp = new Locale(locales[0], locales[1]);
+                    break;
+                case 3:
+                    temp = new Locale(locales[0], locales[1], locales[2]);
+                    break;
+                default:
+                    temp = Locale.getDefault();
+            }
+        } catch (Throwable e) {
+            temp = Locale.getDefault();
+        }
+        setLocale(temp);
+    }
+
+    /**
+     * Set locale
+     * @param loc
+     */
+    public void setLocale(Locale loc) {
         this.loc = loc;
         if (loc == null) {
             loc = Locale.getDefault();
         } else {
             try {
-                lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
-            } catch (Exception e) {
+                setResourceBundle(ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc));
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Set Resource bundle
+     * @param lrb
+     */
+    public void setResourceBundle(ResourceBundle lrb) {
+        this.lrb = lrb;
+    }
+
+    public boolean isTesting() {
+        return testing;
+    }
+
+    public void setTesting(boolean testing) {
+        this.testing = testing;
     }
 }

@@ -40,38 +40,40 @@
  */
 package com.bluecubs.xinco.core.server;
 
-import java.sql.*;
+import com.bluecubs.xinco.core.XincoException;
 import java.util.Vector;
 
-import com.bluecubs.xinco.core.*;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAuditableDAO;
 import com.bluecubs.xinco.core.persistence.XincoCoreLanguage;
 import com.bluecubs.xinco.core.persistence.XincoCoreLanguageT;
 import com.bluecubs.xinco.core.persistence.XincoCoreNode;
 import com.bluecubs.xinco.core.persistence.XincoCoreUser;
 import com.bluecubs.xinco.core.persistence.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.tools.MD5;
-import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
-import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
-import com.bluecubs.xinco.core.hibernate.audit.AuditingDAOHelper;
-import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
-import com.bluecubs.xinco.core.hibernate.PersistenceManager;
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
+import com.dreamer.Hibernate.Audit.PersistenceServerObject;
+import com.dreamer.Hibernate.HibernateConfigurationParams;
+import com.dreamer.Hibernate.PersistenceManager;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
-
-//Status list (in DB)
+import net.sf.oness.common.model.temporal.DateRange;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+//Status list (in DB)
 //1 = unlocked
-import net.sf.oness.common.model.temporal.DateRange;
 //2 = locked
 //3 = aged password
 //Temporary statuses
 //-1 = aged password modified, ready to turn unlocked
-public class XincoCoreUserServer extends XincoCoreUser implements AuditableDAO, PersistenceServerObject {
+public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditableDAO, PersistenceServerObject {
 
+    private static final long serialVersionUID = -1768571785372297089L;
     private String sql;
     private boolean change = true,  writeGroups = false;
     private ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages"),  settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
@@ -80,12 +82,12 @@ public class XincoCoreUserServer extends XincoCoreUser implements AuditableDAO, 
     private static List result;
 
     //create user object and login
-    public XincoCoreUserServer(String attrUN, String attrUPW, XincoDBManager DBM) throws XincoException {
+    public XincoCoreUserServer(String attrUN, String attrUPW) throws XincoException {
         try {
             parameters.clear();
             parameters.put("username", attrUN);
             parameters.put("userpassword", MD5.encrypt(attrUPW));
-            result = DBM.createdQuery("SELECT x FROM XincoCoreUser x WHERE " +
+            result = pm.createdQuery("SELECT x FROM XincoCoreUser x WHERE " +
                     "x.username = :username and x.userpassword = :userpassword " +
                     "and x.statusNumber != 2");
             //throw exception if no result found
@@ -120,7 +122,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements AuditableDAO, 
             } else {
                 parameters.clear();
                 parameters.put("username", attrUN);
-                result = DBM.createdQuery("SELECT x FROM XincoCoreUser x WHERE " +
+                result = pm.createdQuery("SELECT x FROM XincoCoreUser x WHERE " +
                         "x.username = :username", parameters);
                 //The username is valid but wrong password. Increase the login attempts.
                 if (!result.isEmpty()) {
@@ -128,14 +130,14 @@ public class XincoCoreUserServer extends XincoCoreUser implements AuditableDAO, 
                 }
                 throw new XincoException();
             }
-            fillXincoCoreGroups(DBM);
+            fillXincoCoreGroups();
         } catch (Exception e) {
             if (getXincoCoreGroups() != null) {
                 getXincoCoreGroups().removeAllElements();
             }
             parameters.clear();
             parameters.put("username", attrUN);
-            result = DBM.createdQuery("SELECT x FROM XincoCoreUser x WHERE " +
+            result = pm.createdQuery("SELECT x FROM XincoCoreUser x WHERE " +
                     "x.username = :username and" +
                     " x.statusNumber != 2");
             //increase number of attempts
@@ -159,11 +161,11 @@ public class XincoCoreUserServer extends XincoCoreUser implements AuditableDAO, 
     }
 
 //create user object for data structures
-    public XincoCoreUserServer(int attrID, XincoDBManager DBM) throws XincoException {
+    public XincoCoreUserServer(int attrID) throws XincoException {
         try {
             parameters.clear();
             parameters.put("id", attrID);
-            result = DBM.namedQuery("XincoCoreUser.findById", parameters);
+            result = pm.namedQuery("XincoCoreUser.findById", parameters);
             //throw exception if no result found
             if (!result.isEmpty()) {
                 XincoCoreUser xcu = (XincoCoreUser) result.get(0);
@@ -179,7 +181,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements AuditableDAO, 
             } else {
                 throw new XincoException();
             }
-            fillXincoCoreGroups(DBM);
+            fillXincoCoreGroups();
         } catch (Exception e) {
             getXincoCoreGroups().removeAllElements();
             throw new XincoException();
@@ -188,8 +190,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements AuditableDAO, 
 
 //create user object
     public XincoCoreUserServer(int attrID, String attrUN, String attrUPW, String attrN,
-            String attrFN, String attrE, int attrSN, int attrAN, java.sql.Timestamp attrTS,
-            XincoDBManager DBM) throws XincoException {
+            String attrFN, String attrE, int attrSN, int attrAN, java.sql.Timestamp attrTS) throws XincoException {
         try {
             setId(attrID);
             setUsername(attrUN);
@@ -200,7 +201,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements AuditableDAO, 
             setStatusNumber(attrSN);
             setAttempts(attrAN);
             setLastModified(attrTS);
-            fillXincoCoreGroups(DBM);
+            fillXincoCoreGroups();
         } catch (Exception e) {
             getXincoCoreGroups().removeAllElements();
             throw new XincoException();
@@ -208,12 +209,12 @@ public class XincoCoreUserServer extends XincoCoreUser implements AuditableDAO, 
     }
 
     @SuppressWarnings("unchecked")
-    private void fillXincoCoreGroups(XincoDBManager DBM) throws XincoException {
+    private void fillXincoCoreGroups() throws XincoException {
         setXincoCoreGroups(new Vector());
         try {
             parameters.clear();
             parameters.put("id", getId());
-            result = DBM.namedQuery("XincoCoreUserHasXincoCoreGroup.findByXincoCoreUserId", parameters);
+            result = pm.namedQuery("XincoCoreUserHasXincoCoreGroup.findByXincoCoreUserId", parameters);
             while (!result.isEmpty()) {
                 getXincoCoreGroups().addElement((XincoCoreUserHasXincoCoreGroup) result.get(0));
                 result.remove(0);
@@ -237,10 +238,8 @@ public class XincoCoreUserServer extends XincoCoreUser implements AuditableDAO, 
                 result.remove(0);
             }
             for (i = 0; i < getXincoCoreGroups().size(); i++) {
-                XincoCoreUserHasXincoCoreGroupServer xcuhxcg = new XincoCoreUserHasXincoCoreGroupServer();
-                xcuhxcg.getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreGroupId(getId());
-                xcuhxcg.getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreUserId(((XincoCoreGroupServer) getXincoCoreGroups().elementAt(i)).getId());
-                xcuhxcg.setStatusNumber(1);
+                XincoCoreUserHasXincoCoreGroupServer xcuhxcg = new XincoCoreUserHasXincoCoreGroupServer(getId(),
+                        ((XincoCoreGroupServer) getXincoCoreGroups().elementAt(i)).getId(), 1);
                 xcuhxcg.write2DB();
             }
         } catch (Exception e) {
@@ -325,10 +324,10 @@ public class XincoCoreUserServer extends XincoCoreUser implements AuditableDAO, 
     }
 
 //create complete list of users
-    public static Vector getXincoCoreUsers(XincoDBManager DBM) {
+    public static Vector getXincoCoreUsers() {
         Vector coreUsers = new Vector();
         try {
-            result = DBM.createdQuery("SELECT x FROM XincoCoreUser x ORDER BY x.username");
+            result = pm.createdQuery("SELECT x FROM XincoCoreUser x ORDER BY x.username");
             while (!result.isEmpty()) {
                 coreUsers.addElement((XincoCoreUserServer) result.get(0));
                 result.remove(0);
@@ -345,7 +344,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements AuditableDAO, 
         try {
             XincoDBManager DBM = null;
             try {
-                DBM = new XincoDBManager();
+                DBM = new XincoDBManager(HibernateConfigurationParams.CONTEXT);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

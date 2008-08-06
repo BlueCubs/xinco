@@ -37,29 +37,30 @@ package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
 import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAuditableDAO;
 import java.util.Vector;
 
 import com.bluecubs.xinco.core.persistence.XincoAddAttribute;
 import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttributeT;
-import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
-import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
-import com.bluecubs.xinco.core.hibernate.audit.AuditingDAOHelper;
-import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
+import com.dreamer.Hibernate.Audit.PersistenceServerObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.oness.common.model.temporal.DateRange;
 
-public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute implements AuditableDAO, PersistenceServerObject {
+public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute implements XincoAuditableDAO,
+        PersistenceServerObject {
 
     private static List result;
     private static final long serialVersionUID = -4308712617323530780L;
     //create data type attribute object for data structures
-    public XincoCoreDataTypeAttributeServer(int attrID1, int attrID2, XincoDBManager DBM) throws XincoException {
+    public XincoCoreDataTypeAttributeServer(int attrID1, int attrID2) throws XincoException {
         try {
-            result = DBM.createdQuery("SELECT x FROM XincoCoreDataTypeAttribute x " +
+            result = pm.createdQuery("SELECT x FROM XincoCoreDataTypeAttribute x " +
                     "WHERE x.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId=" + attrID1 +
                     " AND x.xincoCoreDataTypeAttributePK.attributeId=" + attrID2);
             if (!result.isEmpty()) {
@@ -68,7 +69,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
                 getXincoCoreDataTypeAttributePK().setAttributeId(xcdt.getXincoCoreDataTypeAttributePK().getAttributeId());
                 setDesignation(xcdt.getDesignation());
                 setDataType(xcdt.getDataType());
-                setSize(xcdt.getSize());
+                setAttrSize(xcdt.getAttrSize());
             } else {
                 throw new XincoException();
             }
@@ -83,12 +84,11 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
         getXincoCoreDataTypeAttributePK().setAttributeId(attrID2);
         setDesignation(attrD);
         setDataType(attrDT);
-        setSize(attrS);
+        setAttrSize(attrS);
     }
 
     //create data type attribute object for data structures
-    public XincoCoreDataTypeAttributeServer(){
-
+    public XincoCoreDataTypeAttributeServer() {
     }
 
     //delete from db
@@ -110,7 +110,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
 
     }
     //create complete list of data type attributes
-    public static Vector getXincoCoreDataTypeAttributes(int attrID, XincoDBManager DBM) {
+    public static Vector getXincoCoreDataTypeAttributes(int attrID) {
         Vector coreDataTypeAttributes = new Vector();
         try {
             result = pm.createdQuery("SELECT x FROM XincoCoreDataTypeAttribute x WHERE " +
@@ -217,7 +217,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
         newValue.getXincoCoreDataTypeAttributePK().setAttributeId(temp.getXincoCoreDataTypeAttributePK().getAttributeId());
         newValue.getXincoCoreDataTypeAttributePK().setXincoCoreDataTypeId(temp.getXincoCoreDataTypeAttributePK().getXincoCoreDataTypeId());
         newValue.setDataType(temp.getDataType());
-        newValue.setSize(temp.getSize());
+        newValue.setAttrSize(temp.getAttrSize());
         newValue.setDesignation(temp.getDesignation());
 
         newValue.setRecordId(temp.getRecordId());
@@ -259,7 +259,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
                 temp.setAttributeId(val.getXincoCoreDataTypeAttributePK().getAttributeId());
                 temp.setXincoCoreDataTypeId(val.getXincoCoreDataTypeAttributePK().getXincoCoreDataTypeId());
                 temp.setDataType(val.getDataType());
-                temp.setSize(val.getSize());
+                temp.setAttrSize(val.getAttrSize());
                 temp.setDesignation(val.getDesignation());
 
                 pm.persist(temp, false, false);
@@ -304,7 +304,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
                 temp.getXincoCoreDataTypeAttributePK().setAttributeId(getXincoCoreDataTypeAttributePK().getAttributeId());
                 temp.setDesignation(getDesignation());
                 temp.setDataType(getDataType());
-                temp.setSize(getSize());
+                temp.setAttrSize(getAttrSize());
 
                 temp = (XincoCoreDataTypeAttribute) AuditingDAOHelper.create(this, temp);
                 setXincoCoreDataTypeAttributePK(temp.getXincoCoreDataTypeAttributePK());

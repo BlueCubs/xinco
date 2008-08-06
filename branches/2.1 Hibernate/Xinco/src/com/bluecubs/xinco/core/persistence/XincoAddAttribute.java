@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bluecubs.xinco.core.persistence;
 
 import com.bluecubs.xinco.core.server.XincoAbstractAuditableObject;
@@ -24,17 +23,32 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "xinco_add_attribute")
-@NamedQueries({@NamedQuery(name = "XincoAddAttribute.findByXincoCoreDataId", query = "SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.xincoCoreDataId = :xincoCoreDataId"), @NamedQuery(name = "XincoAddAttribute.findByAttributeId", query = "SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.attributeId = :attributeId"), @NamedQuery(name = "XincoAddAttribute.findByAttribInt", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribInt = :attribInt"), @NamedQuery(name = "XincoAddAttribute.findByAttribUnsignedint", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribUnsignedint = :attribUnsignedint"), @NamedQuery(name = "XincoAddAttribute.findByAttribDouble", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribDouble = :attribDouble"), @NamedQuery(name = "XincoAddAttribute.findByAttribVarchar", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribVarchar = :attribVarchar"), @NamedQuery(name = "XincoAddAttribute.findByAttribDatetime", query = "SELECT x FROM XincoAddAttribute x WHERE x.attribDatetime = :attribDatetime")})
+@NamedQueries({@NamedQuery(name = "XincoAddAttribute.findByXincoCoreDataId",
+    query = "SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.xincoCoreDataId = :xincoCoreDataId"),
+    @NamedQuery(name = "XincoAddAttribute.findByAttributeId",
+    query = "SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.attributeId = :attributeId"),
+    @NamedQuery(name = "XincoAddAttribute.findByAttribInt",
+    query = "SELECT x FROM XincoAddAttribute x WHERE x.attribInt = :attribInt"),
+    @NamedQuery(name = "XincoAddAttribute.findByAttribUnsignedint",
+    query = "SELECT x FROM XincoAddAttribute x WHERE x.attribUnsignedint = :attribUnsignedint"),
+    @NamedQuery(name = "XincoAddAttribute.findByAttribDouble",
+    query = "SELECT x FROM XincoAddAttribute x WHERE x.attribDouble = :attribDouble"),
+    @NamedQuery(name = "XincoAddAttribute.findByAttribVarchar",
+    query = "SELECT x FROM XincoAddAttribute x WHERE x.attribVarchar = :attribVarchar"),
+    @NamedQuery(name = "XincoAddAttribute.findByAttribDatetime",
+    query = "SELECT x FROM XincoAddAttribute x WHERE x.attribDatetime = :attribDatetime")
+})
 public class XincoAddAttribute extends XincoAbstractAuditableObject implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected XincoAddAttributePK xincoAddAttributePK;
     @Column(name = "attrib_int")
-    private Integer attribInt;
+    private int attribInt;
     @Column(name = "attrib_unsignedint")
     private long attribUnsignedint;
     @Column(name = "attrib_double")
-    private Double attribDouble;
+    private double attribDouble;
     @Column(name = "attrib_varchar")
     private String attribVarchar;
     @Lob
@@ -63,11 +77,11 @@ public class XincoAddAttribute extends XincoAbstractAuditableObject implements S
         this.xincoAddAttributePK = xincoAddAttributePK;
     }
 
-    public Integer getAttribInt() {
+    public int getAttribInt() {
         return attribInt;
     }
 
-    public void setAttribInt(Integer attribInt) {
+    public void setAttribInt(int attribInt) {
         this.attribInt = attribInt;
     }
 
@@ -79,7 +93,7 @@ public class XincoAddAttribute extends XincoAbstractAuditableObject implements S
         this.attribUnsignedint = attribUnsignedint;
     }
 
-    public Double getAttribDouble() {
+    public double getAttribDouble() {
         return attribDouble;
     }
 

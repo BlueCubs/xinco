@@ -2,7 +2,6 @@ package com.bluecubs.xinco.core.persistence;
 
 import com.bluecubs.xinco.core.server.XincoAbstractAuditableObject;
 import java.io.Serializable;
-import java.math.BigInteger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,7 +47,7 @@ public class XincoSetting extends XincoAbstractAuditableObject implements Serial
     @Column(name = "bool_value")
     private Boolean boolValue;
     @Column(name = "long_value")
-    private BigInteger longValue;
+    private long longValue;
 
     public XincoSetting() {
     }
@@ -102,11 +101,11 @@ public class XincoSetting extends XincoAbstractAuditableObject implements Serial
         this.boolValue = boolValue;
     }
 
-    public BigInteger getLongValue() {
+    public long getLongValue() {
         return longValue;
     }
 
-    public void setLongValue(BigInteger longValue) {
+    public void setLongValue(long longValue) {
         this.longValue = longValue;
     }
 

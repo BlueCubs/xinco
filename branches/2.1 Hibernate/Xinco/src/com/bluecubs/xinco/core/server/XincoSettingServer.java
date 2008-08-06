@@ -1,15 +1,51 @@
+/**
+ *Copyright 2008 blueCubs.com
+ *
+ *Licensed under the Apache License, Version 2.0 (the "License");
+ *you may not use this file except in compliance with the License.
+ *You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *Unless required by applicable law or agreed to in writing, software
+ *distributed under the License is distributed on an "AS IS" BASIS,
+ *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *See the License for the specific language governing permissions and
+ *limitations under the License.
+ *
+ *************************************************************
+ * This project supports the blueCubs vision of giving back
+ * to the community in exchange for free software!
+ * More information on: http://www.bluecubs.org
+ *************************************************************
+ *
+ * Name:            XincoSettingServer
+ *
+ * Description:     setting object
+ *
+ * Original Author: Javier Ortz
+ * Date:            2008
+ *
+ * Modifications:
+ *
+ * Who?             When?             What?
+ * -                -                 -
+ *
+ *************************************************************
+ */
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.persistence.XincoSetting;
 import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAuditableDAO;
 import com.bluecubs.xinco.core.persistence.XincoSettingT;
-import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
-import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
-import com.bluecubs.xinco.core.hibernate.audit.AuditingDAOHelper;
-import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
+import com.dreamer.Hibernate.Audit.PersistenceServerObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.oness.common.model.temporal.DateRange;
@@ -18,15 +54,39 @@ import net.sf.oness.common.model.temporal.DateRange;
  *
  * @author Javier
  */
-class XincoSettingServer extends XincoSetting implements AuditableDAO, PersistenceServerObject {
+public class XincoSettingServer extends XincoSetting implements XincoAuditableDAO, PersistenceServerObject {
 
     private static List result;
+    private static final long serialVersionUID = -6434592092601825647L;
     //create node object for data structures
-    public XincoSettingServer(int attrID, XincoDBManager DBM) throws XincoException {
+    public XincoSettingServer(int attrID) throws XincoException {
         try {
             parameters.clear();
             parameters.put("id", attrID);
-            result = DBM.namedQuery("XincoSetting.findById", parameters);
+            result = pm.namedQuery("XincoSetting.findById", parameters);
+            //throw exception if no result found
+            if (!result.isEmpty()) {
+                XincoSetting xs = (XincoSetting) result.get(0);
+                setId(xs.getId());
+                setIntValue(xs.getIntValue());
+                setLongValue(xs.getLongValue());
+                setBoolValue(xs.getBoolValue());
+                setDescription(xs.getDescription());
+                setStringValue(xs.getStringValue());
+            } else {
+                throw new XincoException();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new XincoException(e.getLocalizedMessage());
+        }
+    }
+    //create node object for data structures
+    public XincoSettingServer(String desc) throws XincoException {
+        try {
+            parameters.clear();
+            parameters.put("description", desc);
+            result = pm.namedQuery("XincoSetting.findByDescription", parameters);
             //throw exception if no result found
             if (!result.isEmpty()) {
                 XincoSetting xs = (XincoSetting) result.get(0);
@@ -43,9 +103,19 @@ class XincoSettingServer extends XincoSetting implements AuditableDAO, Persisten
             throw new XincoException(e.getLocalizedMessage());
         }
     }
+    //create node object for data structures
+    public XincoSettingServer(int attrID, String desc, boolean bool,
+            int intVal, long longVal, String stringVal) throws XincoException {
+        setId(attrID);
+        setIntValue(intVal);
+        setLongValue(longVal);
+        setBoolValue(bool);
+        setDescription(desc);
+        setStringValue(stringVal);
+    }
 
     @SuppressWarnings("unchecked")
-    static XincoSetting getSetting(String desc) {
+    static public XincoSetting getSetting(String desc) {
         parameters.clear();
         parameters.put("description", desc);
         result = pm.namedQuery("XincoSetting.findByDescription", parameters);
@@ -128,6 +198,16 @@ class XincoSettingServer extends XincoSetting implements AuditableDAO, Persisten
             Logger.getLogger(XincoSetting.class.getName()).log(Level.INFO, "New value created: " + newValue);
         }
         return newValue;
+    }
+
+    public static Vector getXincoSettings() {
+        Vector settings = new Vector();
+        result = pm.namedQuery("XincoSetting.findAll", null);
+        while (!result.isEmpty()) {
+            settings.add((XincoSetting) result.get(0));
+            result.remove(0);
+        }
+        return settings;
     }
 
     public AbstractAuditableObject update(AbstractAuditableObject value) {

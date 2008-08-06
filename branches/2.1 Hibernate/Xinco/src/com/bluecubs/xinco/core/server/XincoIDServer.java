@@ -35,12 +35,12 @@
  */
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.hibernate.audit.XincoAuditableDAO;
 import com.bluecubs.xinco.core.persistence.XincoCoreGroup;
 import com.bluecubs.xinco.core.persistence.XincoID;
-import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
-import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
-import com.bluecubs.xinco.core.hibernate.audit.AuditingDAOHelper;
-import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
+import com.dreamer.Hibernate.Audit.PersistenceServerObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -51,7 +51,7 @@ import net.sf.oness.common.model.temporal.DateRange;
  *
  * @author Javier
  */
-public class XincoIDServer extends XincoID implements AuditableDAO, PersistenceServerObject {
+public class XincoIDServer extends XincoID implements XincoAuditableDAO, PersistenceServerObject {
 
     private static final long serialVersionUID = 5985918988923778727L;
     private List result;

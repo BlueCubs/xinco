@@ -36,39 +36,39 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAuditableDAO;
 import java.util.Vector;
 
-import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.persistence.XincoCoreDataType;
 import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeT;
-import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
-import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
-import com.bluecubs.xinco.core.hibernate.audit.AuditingDAOHelper;
-import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
+import com.dreamer.Hibernate.Audit.PersistenceServerObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.oness.common.model.temporal.DateRange;
 
-public class XincoCoreDataTypeServer extends XincoCoreDataType implements AuditableDAO, PersistenceServerObject {
+public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoAuditableDAO, PersistenceServerObject {
 
     private static final long serialVersionUID = -3765171134170526537L;
     private Vector xincoCoreDataTypeAttributes;
     private static List result;
     //create data type object for data structures
-    public XincoCoreDataTypeServer(int attrID, XincoDBManager DBM) throws XincoException {
+    public XincoCoreDataTypeServer(int attrID) throws XincoException {
         try {
             parameters.clear();
             parameters.put("id", attrID);
-            result = DBM.namedQuery("XincoCoreDataType.findById", parameters);
+            result = pm.namedQuery("XincoCoreDataType.findById", parameters);
             if (!result.isEmpty()) {
                 XincoCoreDataType xcdt = (XincoCoreDataType) result.get(0);
                 setId(xcdt.getId());
                 setDesignation(xcdt.getDesignation());
                 setDescription(xcdt.getDescription());
-                setXincoCoreDataTypeAttributes(XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(getId(), DBM));
+                setXincoCoreDataTypeAttributes(XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(getId()));
             } else {
                 throw new XincoException();
             }
@@ -88,10 +88,10 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements Audita
 
     }
     //create complete list of data types
-    public static Vector getXincoCoreDataTypes(XincoDBManager DBM) {
+    public static Vector getXincoCoreDataTypes() {
         Vector coreDataTypes = new Vector();
         try {
-            result = DBM.createdQuery("SELECT x FROM XincoCoreDataType x ORDER BY x.designation");
+            result = pm.createdQuery("SELECT x FROM XincoCoreDataType x ORDER BY x.designation");
             while (!result.isEmpty()) {
                 coreDataTypes.addElement((XincoCoreDataType) result.get(0));
             }
@@ -120,7 +120,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements Audita
 
     }
     //create complete list of data type attributes
-    public static Vector getXincoCoreDataTypeAttributeServerTypeAttributes(int attrID, XincoDBManager DBM) {
+    public static Vector getXincoCoreDataTypeAttributeServerTypeAttributes(int attrID) {
         Vector coreDataTypeAttributes = new Vector();
         try {
             result = pm.createdQuery("SELECT x FROM XincoCoreDataTypeAttribute x WHERE " +
@@ -195,7 +195,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements Audita
         newValue.getXincoCoreDataTypeAttributePK().setAttributeId(temp.getXincoCoreDataTypeAttributePK().getAttributeId());
         newValue.getXincoCoreDataTypeAttributePK().setXincoCoreDataTypeId(temp.getXincoCoreDataTypeAttributePK().getXincoCoreDataTypeId());
         newValue.setDataType(temp.getDataType());
-        newValue.setSize(temp.getSize());
+        newValue.setAttrSize(temp.getAttrSize());
         newValue.setDesignation(temp.getDesignation());
 
         newValue.setRecordId(temp.getRecordId());

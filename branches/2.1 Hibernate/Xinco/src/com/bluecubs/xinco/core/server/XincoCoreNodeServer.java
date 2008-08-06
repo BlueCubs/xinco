@@ -35,35 +35,34 @@
  */
 package com.bluecubs.xinco.core.server;
 
-import java.sql.*;
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAuditableDAO;
 import java.util.Vector;
 
-import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.persistence.XincoCoreNode;
 import com.bluecubs.xinco.core.persistence.XincoCoreNodeT;
-import com.bluecubs.xinco.index.*;
-import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
-import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
-import com.bluecubs.xinco.core.hibernate.audit.AuditingDAOHelper;
-import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
+import com.bluecubs.xinco.index.XincoIndexer;
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
+import com.dreamer.Hibernate.Audit.PersistenceServerObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.oness.common.model.temporal.DateRange;
 
-public class XincoCoreNodeServer extends XincoCoreNode implements AuditableDAO, PersistenceServerObject {
+public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditableDAO, PersistenceServerObject {
 
     private static final long serialVersionUID = 519042301570816095L;
     private static List result;
     private Vector xincoCoreNodes,  xincoCoreData,  xincoCoreAcl;
     //create node object for data structures
-    public XincoCoreNodeServer(int attrID, XincoDBManager DBM) throws XincoException {
+    public XincoCoreNodeServer(int attrID) throws XincoException {
         try {
             parameters.clear();
             parameters.put("id", attrID);
-            result = DBM.namedQuery("XincoCoreLanguage.findById", parameters);
+            result = pm.namedQuery("XincoCoreLanguage.findById", parameters);
             //throw exception if no result found
             if (!result.isEmpty()) {
                 XincoCoreNode xcn = (XincoCoreNode) result.get(0);
@@ -75,7 +74,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements AuditableDAO, 
                 setXincoCoreNodes(new Vector());
                 setXincoCoreData(new Vector());
                 //load acl for this object
-                setXincoCoreAcl(XincoCoreACEServer.getXincoCoreACL(xcn.getId(), "XincoCoreNodeId", DBM));
+                setXincoCoreAcl(XincoCoreACEServer.getXincoCoreACL(xcn.getId(), "XincoCoreNodeId"));
             } else {
                 throw new XincoException();
             }
@@ -89,7 +88,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements AuditableDAO, 
 
     }
     //create node object for data structures
-    public XincoCoreNodeServer(int attrID, int attrCNID, int attrLID, String attrD, int attrSN, XincoDBManager DBM) throws XincoException {
+    public XincoCoreNodeServer(int attrID, int attrCNID, int attrLID, String attrD, int attrSN) throws XincoException {
 
         try {
             setId(attrID);
@@ -100,7 +99,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements AuditableDAO, 
             setXincoCoreNodes(new Vector());
             setXincoCoreData(new Vector());
             //load acl for this object
-            setXincoCoreAcl(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreNodeId", DBM));
+            setXincoCoreAcl(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreNodeId"));
         } catch (Exception e) {
             setXincoCoreLanguageId(-1);
             getXincoCoreACL().removeAllElements();
@@ -111,23 +110,22 @@ public class XincoCoreNodeServer extends XincoCoreNode implements AuditableDAO, 
 
     }
     //delete from db
-    public void deleteFromDB(boolean delete_this, XincoDBManager DBM, int userID) throws XincoException {
+    public void deleteFromDB(boolean delete_this, int userID) throws XincoException {
         int i = 0;
         try {
-            Statement stmt;
             //fill nodes and data
-            fillXincoCoreNodes(DBM);
-            fillXincoCoreData(DBM);
+            fillXincoCoreNodes();
+            fillXincoCoreData();
             //start recursive deletion
             for (i = 0; i < getXincoCoreNodes().size(); i++) {
                 ((XincoCoreNodeServer) getXincoCoreNodes().elementAt(i)).deleteFromDB();
             }
             for (i = 0; i < getXincoCoreData().size(); i++) {
-                XincoIndexer.removeXincoCoreData((XincoCoreDataServer) getXincoCoreData().elementAt(i), DBM);
-                XincoCoreDataServer.removeFromDB(DBM, userID,
+                XincoIndexer.removeXincoCoreData((XincoCoreDataServer) getXincoCoreData().elementAt(i));
+                XincoCoreDataServer.removeFromDB(userID,
                         ((XincoCoreDataServer) getXincoCoreData().elementAt(i)).getId());
                 ((XincoCoreDataServer) getXincoCoreData().elementAt(i)).setChangerID(userID);
-                ((XincoCoreDataServer) getXincoCoreData().elementAt(i)).deleteFromDB(DBM);
+                ((XincoCoreDataServer) getXincoCoreData().elementAt(i)).deleteFromDB();
             }
             if (delete_this) {
                 deleteFromDB();
@@ -138,9 +136,9 @@ public class XincoCoreNodeServer extends XincoCoreNode implements AuditableDAO, 
 
     }
 
-    public void fillXincoCoreNodes(XincoDBManager DBM) {
+    public void fillXincoCoreNodes() {
         try {
-            result = DBM.createdQuery("SELECT x FROM XincoCoreNode x WHERE x.xincoCoreNodeId = " + getId() + " ORDER BY x.designation", null);
+            result = pm.createdQuery("SELECT x FROM XincoCoreNode x WHERE x.xincoCoreNodeId = " + getId() + " ORDER BY x.designation", null);
             while (!result.isEmpty()) {
                 getXincoCoreNodes().addElement((XincoCoreNode) result.get(0));
                 result.remove(0);
@@ -150,9 +148,9 @@ public class XincoCoreNodeServer extends XincoCoreNode implements AuditableDAO, 
         }
     }
 
-    public void fillXincoCoreData(XincoDBManager DBM) {
+    public void fillXincoCoreData() {
         try {
-            result = DBM.createdQuery("SELECT x FROM XincoCoreData x WHERE x.xincoCoreNodeId = " + getId() + " ORDER BY x.designation", null);
+            result = pm.createdQuery("SELECT x FROM XincoCoreData x WHERE x.xincoCoreNodeId = " + getId() + " ORDER BY x.designation", null);
             while (!result.isEmpty()) {
                 getXincoCoreData().addElement((XincoCoreData) result.get(0));
                 result.remove(0);
@@ -163,17 +161,17 @@ public class XincoCoreNodeServer extends XincoCoreNode implements AuditableDAO, 
 
     }
 
-    public static Vector findXincoCoreNodes(String attrS, int attrLID, XincoDBManager DBM) {
+    public static Vector findXincoCoreNodes(String attrS, int attrLID) {
         Vector nodes = null;
         try {
-            result = DBM.createdQuery("SELECT x FROM XincoCoreNode x WHERE x.xincoCoreLanguageId = " +
+            result = pm.createdQuery("SELECT x FROM XincoCoreNode x WHERE x.xincoCoreLanguageId = " +
                     attrLID + " AND x.designation LIKE '" + attrS +
                     "%' ORDER BY x.designation, x.xincoCoreLanguageId", null);
             int i = 0;
             while (!result.isEmpty()) {
                 nodes.addElement((XincoCoreNode) result.get(0));
                 i++;
-                if (i >= DBM.config.getMaxSearchResult()) {
+                if (i >= XincoDBManager.config.getMaxSearchResult()) {
                     break;
                 }
                 result.remove(0);
@@ -185,13 +183,13 @@ public class XincoCoreNodeServer extends XincoCoreNode implements AuditableDAO, 
 
     }
 
-    public static Vector getXincoCoreNodeParents(int attrID, XincoDBManager DBM) {
+    public static Vector getXincoCoreNodeParents(int attrID) {
         Vector nodes = new Vector();
         int id;
         try {
             id = attrID;
             while (id > 0) {
-                result = DBM.createdQuery("SELECT x FROM XincoCoreNode x WHERE x.id = " + id);
+                result = pm.createdQuery("SELECT x FROM XincoCoreNode x WHERE x.id = " + id);
                 while (!result.isEmpty()) {
                     nodes.addElement((XincoCoreNode) result.get(0));
                     if (id > 1) {

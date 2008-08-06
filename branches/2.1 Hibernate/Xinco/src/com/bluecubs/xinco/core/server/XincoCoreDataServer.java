@@ -36,38 +36,39 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
-import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
-import java.sql.*;
+import com.bluecubs.xinco.core.XincoException;
 import java.util.HashMap;
 import java.util.Vector;
 import java.io.File;
-import com.bluecubs.xinco.core.*;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAuditableDAO;
 import com.bluecubs.xinco.core.persistence.XincoAddAttribute;
 import com.bluecubs.xinco.core.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.persistence.XincoCoreDataT;
 import com.bluecubs.xinco.core.persistence.XincoCoreLog;
-import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
-import com.bluecubs.xinco.core.hibernate.audit.AuditingDAOHelper;
-import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
-import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerUtils;
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.dreamer.Hibernate.Audit.AuditableDAO;
+import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
+import com.dreamer.Hibernate.Audit.PersistenceServerObject;
+import com.dreamer.Hibernate.Audit.PersistenceServerUtils;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.oness.common.model.temporal.DateRange;
 
-public class XincoCoreDataServer extends XincoCoreData implements AuditableDAO, PersistenceServerObject {
+public class XincoCoreDataServer extends XincoCoreData implements XincoAuditableDAO, PersistenceServerObject {
 
     private static final long serialVersionUID = 4801684078586102177L;
     private XincoCoreUserServer user;
     private static List result;
     private Vector xincoCoreLogs,  xincoAddAttributes,  xincoCoreACL;
     //create data object for data structures
-    public XincoCoreDataServer(int attrID, XincoDBManager DBM) throws XincoException {
+    public XincoCoreDataServer(int attrID) throws XincoException {
 
         try {
             parameters.clear();
             parameters.put("id", attrID);
-            result = DBM.namedQuery("XincoCoreData.findById", parameters);
+            result = pm.namedQuery("XincoCoreData.findById", parameters);
 
             //throw exception if no result found
             if (!result.isEmpty()) {
@@ -77,13 +78,13 @@ public class XincoCoreDataServer extends XincoCoreData implements AuditableDAO, 
                 setXincoCoreLanguageId(xca.getXincoCoreLanguageId());
                 setXincoCoreDataTypeId(xca.getXincoCoreDataTypeId());
                 //load logs
-                setXincoCoreLogs(XincoCoreLogServer.getXincoCoreLogs(xca.getId(), DBM));
+                setXincoCoreLogs(XincoCoreLogServer.getXincoCoreLogs(xca.getId()));
                 //load add attributes
-                setXincoAddAttributes(XincoAddAttributeServer.getXincoAddAttributes(xca.getId(), DBM));
+                setXincoAddAttributes(XincoAddAttributeServer.getXincoAddAttributes(xca.getId()));
                 setDesignation(xca.getDesignation());
                 setStatusNumber(xca.getStatusNumber());
                 //load acl for this object
-                setXincoCoreACL(XincoCoreACEServer.getXincoCoreACL(xca.getId(), "xincoCoreDataId", DBM));
+                setXincoCoreACL(XincoCoreACEServer.getXincoCoreACL(xca.getId(), "xincoCoreDataId"));
             } else {
                 throw new XincoException();
             }
@@ -94,20 +95,20 @@ public class XincoCoreDataServer extends XincoCoreData implements AuditableDAO, 
 
     }
     //create data object for data structures
-    public XincoCoreDataServer(int attrID, int attrCNID, int attrLID, int attrDTID, String attrD, int attrSN, XincoDBManager DBM) throws XincoException {
+    public XincoCoreDataServer(int attrID, int attrCNID, int attrLID, int attrDTID, String attrD, int attrSN) throws XincoException {
 
         setId(attrID);
         setXincoCoreNodeId(attrCNID);
         setXincoCoreLanguageId(attrLID);
         setXincoCoreDataTypeId(attrDTID);
         //load logs
-        setXincoCoreLogs(XincoCoreLogServer.getXincoCoreLogs(attrID, DBM));
+        setXincoCoreLogs(XincoCoreLogServer.getXincoCoreLogs(attrID));
         //security: don't load add attribute, force direct access to data including check of access rights!
         setXincoAddAttributes(new Vector());
         setDesignation(attrD);
         setStatusNumber(attrSN);
         //load acl for this object
-        setXincoCoreACL(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreDataId", DBM));
+        setXincoCoreACL(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreDataId"));
 
     }
 
@@ -115,21 +116,21 @@ public class XincoCoreDataServer extends XincoCoreData implements AuditableDAO, 
         this.user = user;
     }
 
-    public static void removeFromDB(XincoDBManager DBM, int userID, int id) throws XincoException {
+    public static void removeFromDB(int userID, int id) throws XincoException {
         parameters.clear();
         parameters.put("id", id);
-        result = DBM.namedQuery("XincoCoreData.findById", parameters);
+        result = pm.namedQuery("XincoCoreData.findById", parameters);
         if (!result.isEmpty()) {
             try {
                 PersistenceServerUtils.removeFromDB((AuditableDAO) result.get(0), userID);
                 /*
                  * Aduit Trail Table (*T) cannot handle multiple row changes!!!
                 audit.updateAuditTrail("xincoCoreLog",new String [] {"id ="+id},
-                DBM,"audit.general.delete",userID);
+                pm,"audit.general.delete",userID);
                  */
                 parameters.clear();
                 parameters.put("xincoCoreDataId", id);
-                result = DBM.namedQuery("XincoCoreLog.findByXincoCoreDataId", parameters);
+                result = pm.namedQuery("XincoCoreLog.findByXincoCoreDataId", parameters);
                 while (!result.isEmpty()) {
                     ((XincoCoreLogServer) result.get(0)).deleteFromDB();
                     result.remove(0);
@@ -137,11 +138,11 @@ public class XincoCoreDataServer extends XincoCoreData implements AuditableDAO, 
                 /*
                  * Aduit Trail Table (*T) cannot handle multiple row changes!!!
                 audit.updateAuditTrail("xincoCoreAce",new String [] {"id ="+id},
-                DBM,"audit.general.delete",userID);
+                pm,"audit.general.delete",userID);
                  */
                 parameters.clear();
                 parameters.put("xincoCoreDataId", id);
-                result = DBM.namedQuery("XincoCoreData.findByXincoCoreDataId", parameters);
+                result = pm.namedQuery("XincoCoreData.findByXincoCoreDataId", parameters);
                 while (!result.isEmpty()) {
                     PersistenceServerUtils.removeFromDB((XincoCoreDataServer) result.get(0), userID);
                     result.remove(0);
@@ -149,11 +150,11 @@ public class XincoCoreDataServer extends XincoCoreData implements AuditableDAO, 
                 /*
                  * Aduit Trail Table (*T) cannot handle multiple row changes!!!
                 audit.updateAuditTrail("xincoAddAttribute",new String [] {"id ="+id},
-                DBM,"audit.general.delete",userID);
+                pm,"audit.general.delete",userID);
                  */
                 parameters.clear();
                 parameters.put("xincoCoreDataId", id);
-                result = DBM.namedQuery("XincoAddAttribute.findByXincoCoreDataId", parameters);
+                result = pm.namedQuery("XincoAddAttribute.findByXincoCoreDataId", parameters);
                 while (!result.isEmpty()) {
                     PersistenceServerUtils.removeFromDB((XincoCoreDataServer) result.get(0), userID);
                     result.remove(0);
@@ -162,34 +163,6 @@ public class XincoCoreDataServer extends XincoCoreData implements AuditableDAO, 
                 throw new XincoException(e.getLocalizedMessage());
             }
         }
-    }
-    //delete from db
-    public boolean deleteFromDB(XincoDBManager DBM) throws XincoException {
-        int i = 0;
-        try {
-            //delete file / file = 1
-            if (getXincoCoreDataTypeId() == 1) {
-                try {
-                    (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), getId(), "" + getId()))).delete();
-                } catch (Exception dfe) {
-                    // continue, file might not exists
-                }
-                // delete revisions created upon creation or checkin
-                for (i = 0; i < this.getXincoCoreLogs().size(); i++) {
-                    if ((((XincoCoreLog) getXincoCoreLogs().elementAt(i)).getOpCode() == 1) || (((XincoCoreLog) getXincoCoreLogs().elementAt(i)).getOpCode() == 5)) {
-                        try {
-                            (new File(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.getFileRepositoryPath(), getId(), getId() + "-" + ((XincoCoreLog) getXincoCoreLogs().elementAt(i)).getId()))).delete();
-                        } catch (Exception drfe) {
-                            // continue, delete next revision
-                        }
-                    }
-                }
-            }
-            return deleteFromDB();
-        } catch (Exception e) {
-            throw new XincoException(e.getLocalizedMessage());
-        }
-
     }
 
     public static byte[] loadBinaryData(XincoCoreData attrCD) {
@@ -206,7 +179,7 @@ public class XincoCoreDataServer extends XincoCoreData implements AuditableDAO, 
 
     }
 
-    public static Vector findXincoCoreData(String attrS, int attrLID, boolean attrSA, boolean attrSFD, XincoDBManager DBM) {
+    public static Vector findXincoCoreData(String attrS, int attrLID, boolean attrSA, boolean attrSFD) {
         Vector data = new Vector();
         try {
             String lang = "";
@@ -214,12 +187,12 @@ public class XincoCoreDataServer extends XincoCoreData implements AuditableDAO, 
                 lang = "AND (x.xincoCoreLanguageId = " + attrLID + ")";
             }
             if (attrSA) {
-                result = DBM.createdQuery("SELECT x FROM XincoCoreData x, XincoAddAttribute a WHERE (x.id = a.xincoCoreDataId) AND " +
+                result = pm.createdQuery("SELECT x FROM XincoCoreData x, XincoAddAttribute a WHERE (x.id = a.xincoCoreDataId) AND " +
                         "(x.designation LIKE '" + attrS + "%' OR a.attribVarchar LIKE '" + attrS +
                         "' OR a.attribText LIKE '" + attrS + "') " + lang + " ORDER BY x.designation, " +
                         "x.xincoCoreLanguageId", null);
             } else {
-                result = DBM.createdQuery("SELECT x FROM XincoCoreData x WHERE designation LIKE '" + attrS +
+                result = pm.createdQuery("SELECT x FROM XincoCoreData x WHERE designation LIKE '" + attrS +
                         "' " + lang + " ORDER BY x.designation, " +
                         "x.xincoCoreLanguageId", null);
             }
@@ -228,7 +201,7 @@ public class XincoCoreDataServer extends XincoCoreData implements AuditableDAO, 
             while (!result.isEmpty()) {
                 data.addElement((XincoCoreData) result.get(0));
                 i++;
-                if (i >= DBM.config.getMaxSearchResult()) {
+                if (i >= XincoDBManager.config.getMaxSearchResult()) {
                     break;
                 }
             }
@@ -414,7 +387,7 @@ public class XincoCoreDataServer extends XincoCoreData implements AuditableDAO, 
                             ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribVarchar(),
                             ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribText(),
                             (Date) ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribDatetime());
-                    xaas.write2DB(new XincoDBManager());
+                    xaas.write2DB();
                 }
             }
             return true;
@@ -427,6 +400,25 @@ public class XincoCoreDataServer extends XincoCoreData implements AuditableDAO, 
     }
 
     public boolean deleteFromDB() {
+        int i = 0;
+        //delete file / file = 1
+        if (getXincoCoreDataTypeId() == 1) {
+            try {
+                (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.getFileRepositoryPath(), getId(), "" + getId()))).delete();
+            } catch (Exception dfe) {
+                // continue, file might not exists
+                }
+            // delete revisions created upon creation or checkin
+            for (i = 0; i < this.getXincoCoreLogs().size(); i++) {
+                if ((((XincoCoreLog) getXincoCoreLogs().elementAt(i)).getOpCode() == 1) || (((XincoCoreLog) getXincoCoreLogs().elementAt(i)).getOpCode() == 5)) {
+                    try {
+                        (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.getFileRepositoryPath(), getId(), getId() + "-" + ((XincoCoreLog) getXincoCoreLogs().elementAt(i)).getId()))).delete();
+                    } catch (Exception drfe) {
+                        // continue, delete next revision
+                        }
+                }
+            }
+        }
         setTransactionTime(DateRange.startingNow());
         try {
             AuditingDAOHelper.delete(this, getId());

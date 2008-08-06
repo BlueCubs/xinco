@@ -36,17 +36,17 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
-import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerUtils;
 import java.util.HashMap;
 import java.util.Vector;
 
 import com.bluecubs.xinco.core.persistence.XincoCoreACE;
 import com.bluecubs.xinco.core.persistence.XincoCoreACET;
 import com.bluecubs.xinco.core.persistence.XincoCoreGroup;
-import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
-import com.bluecubs.xinco.core.hibernate.audit.AuditingDAOHelper;
-import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.dreamer.Hibernate.Audit.AuditableDAO;
+import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
+import com.dreamer.Hibernate.Audit.PersistenceServerObject;
+import com.dreamer.Hibernate.Audit.PersistenceServerUtils;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,11 +59,11 @@ public class XincoCoreACEServer extends XincoCoreACE implements AuditableDAO, Pe
     private static List result;
     //create single ace object for data structures
     @SuppressWarnings("unchecked")
-    public XincoCoreACEServer(int attrID, XincoDBManager DBM) throws XincoException {
+    public XincoCoreACEServer(int attrID) throws XincoException {
         try {
             parameters.clear();
             parameters.put("id", attrID);
-            result = DBM.namedQuery("XincoCoreACE.findById", parameters);
+            result = pm.namedQuery("XincoCoreACE.findById", parameters);
 
             //throw exception if no result found
             if (!result.isEmpty()) {
@@ -99,84 +99,19 @@ public class XincoCoreACEServer extends XincoCoreACE implements AuditableDAO, Pe
         setAdminPermission(attrAP);
 
     }
-    //write to db
-    public int write2DB(XincoDBManager DBM) throws XincoException {
-
-        try {
-
-            String xcuid = "";
-            String xcgid = "";
-            String xcnid = "";
-            String xcdid = "";
-
-            int rp = 0;
-            int wp = 0;
-            int xp = 0;
-            int ap = 0;
-
-            //set values of nullable attributes
-            if (getXincoCoreUserId() == 0) {
-                xcuid = "NULL";
-            } else {
-                xcuid = "" + getXincoCoreUserId();
-            }
-            if (getXincoCoreGroupId() == 0) {
-                xcgid = "NULL";
-            } else {
-                xcgid = "" + getXincoCoreGroupId();
-            }
-            if (getXincoCoreNodeId() == 0) {
-                xcnid = "NULL";
-            } else {
-                xcnid = "" + getXincoCoreNodeId();
-            }
-            if (getXincoCoreDataId() == 0) {
-                xcdid = "NULL";
-            } else {
-                xcdid = "" + getXincoCoreDataId();
-            }
-
-            //convert boolean to 0/1
-            if (getReadPermission()) {
-                rp = 1;
-            }
-            if (getWritePermission()) {
-                wp = 1;
-            }
-            if (getExecutePermission()) {
-                xp = 1;
-            }
-            if (getAdminPermission()) {
-                ap = 1;
-            }
-
-            XincoCoreAuditServer audit = new XincoCoreAuditServer();
-            if (getId() > 0) {
-                AuditingDAOHelper.create(this, this);
-            } else {
-                setId(DBM.getNewID("xinco_core_ace"));
-                AuditingDAOHelper.create(this, new XincoCoreACE());
-            }
-        } catch (Exception e) {
-            throw new XincoException();
-        }
-
-        return getId();
-
-    }
     //remove from db
-    public static int removeFromDB(XincoCoreACE attrCACE, XincoDBManager DBM, int userID) throws XincoException, Exception {
+    public static int removeFromDB(XincoCoreACE attrCACE, int userID) throws XincoException, Exception {
         PersistenceServerUtils.removeFromDB((AuditableDAO) attrCACE, userID);
         return 1;
     }
     //create complete ACL for node or data
     @SuppressWarnings("unchecked")
-    public static Vector getXincoCoreACL(int attrID, String attrT, XincoDBManager DBM) {
+    public static Vector getXincoCoreACL(int attrID, String attrT) {
         Vector core_acl = new Vector();
         try {
             parameters.clear();
 
-            result = DBM.createdQuery("SELECT xca FROM XincoCoreACE xca WHERE xca." + attrT + "=" +
+            result = pm.createdQuery("SELECT xca FROM XincoCoreACE xca WHERE xca." + attrT + "=" +
                     attrID + " ORDER BY xca.xincoCoreUserId, xca.xincoCoreGroupId, xca.xincoCoreNodeId, " +
                     "xca.xincoCoreDataId", parameters);
             while (!result.isEmpty()) {

@@ -41,10 +41,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.dreamer.Hibernate.HibernateConfigurationParams;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.List;
 
 /**
@@ -67,8 +66,8 @@ public class XincoArchiveThread extends Thread {
         while (true) {
             try {
                 XincoDBManager dbm = null;
-                dbm = new XincoDBManager();
-                archive_period = dbm.config.getFileArchivePeriod();
+                dbm = new XincoDBManager(HibernateConfigurationParams.CONTEXT);
+                archive_period = XincoDBManager.config.getFileArchivePeriod();
                 //exit archiver if period = 0
                 if (archive_period == 0) {
                     break;
@@ -137,7 +136,7 @@ public class XincoArchiveThread extends Thread {
                     //Max number of archiving threads
                     if (activeCount() < 100) {
                         XincoArchiver.archiveData((XincoCoreDataServer) result.get(0),
-                                XincoCoreNodeServer.getXincoCoreNodeParents(xdataTemp.getXincoCoreNodeId(), DBM), DBM);
+                                XincoCoreNodeServer.getXincoCoreNodeParents(xdataTemp.getXincoCoreNodeId()), DBM);
                         result.remove(0);
                     }
                     sleep(10000);

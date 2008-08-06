@@ -112,3 +112,16 @@ UPDATE XINCO_CORE_group SET DESIGNATION = 'general.group.public' WHERE ID =3;
 alter table xinco_core_user add unique (username);
 
 alter table xinco_core_group add unique (designation);
+
+ALTER TABLE xinco_core_data_type_attribute CHANGE COLUMN `size` `attr_size` INTEGER UNSIGNED NOT NULL DEFAULT 0;
+
+ALTER TABLE `xinco`.`xinco_core_data_type_attribute_t` CHANGE COLUMN `size` `attr_size` INTEGER UNSIGNED NOT NULL DEFAULT 0;
+
+ALTER TABLE `xinco`.`xinco_setting` MODIFY COLUMN `int_value` INTEGER DEFAULT -1,
+ MODIFY COLUMN `long_value` BIGINT(20) DEFAULT -1;
+
+update xinco_setting set int_value = -1 where int_value is null;
+update xinco_setting set long_value = -1 where long_value is null;
+
+update xinco_setting_t set int_value = -1 where int_value is null;
+update xinco_setting_t set long_value = -1 where long_value is null;

@@ -36,33 +36,30 @@
 package com.bluecubs.xinco.add.server;
 
 import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.hibernate.audit.AbstractAuditableObject;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAuditableDAO;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import com.bluecubs.xinco.core.persistence.XincoAddAttribute;
-import com.bluecubs.xinco.core.server.XincoDBManager;
-import com.bluecubs.xinco.core.hibernate.audit.AuditableDAO;
-import com.bluecubs.xinco.core.hibernate.audit.PersistenceServerObject;
-import java.sql.Date;
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.dreamer.Hibernate.Audit.PersistenceServerObject;
+import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class XincoAddAttributeServer extends XincoAddAttribute implements AuditableDAO, PersistenceServerObject {
+public class XincoAddAttributeServer extends XincoAddAttribute implements XincoAuditableDAO, PersistenceServerObject {
     //create add attribute object for data structures
     private static List result;
     private static final long serialVersionUID = -2238466076051443225L;
 
     @SuppressWarnings("unchecked")
-    public XincoAddAttributeServer(int attrID1, int attrID2, XincoDBManager DBM) throws XincoException {
+    public XincoAddAttributeServer(int attrID1, int attrID2) throws XincoException {
         try {
             parameters.clear();
             parameters.put("xincoCoreDataId", attrID1);
             parameters.put("attributeId", attrID2);
-            result = DBM.createdQuery("SELECT x FROM XincoAddAttribute x WHERE " +
+            result = pm.createdQuery("SELECT x FROM XincoAddAttribute x WHERE " +
                     "x.xincoAddAttributePK.xincoCoreDataId = :xincoCoreDataId and " +
                     "x.xincoAddAttributePK.attributeId = :attributeId", parameters);
             if (!result.isEmpty()) {
@@ -94,66 +91,51 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements Audita
         setAttribDatetime(attrDT);
     }
 
-    //write to db
     public boolean write2DB() {
-        try {
-            return write2DB(new XincoDBManager()) == 1;
-        } catch (Exception ex) {
-            Logger.getLogger(XincoAddAttributeServer.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+        String attrT = "";
+        String attrVC = "";
+        Date attrDT = null;
+        if (getAttribText() != null) {
+            attrT = getAttribText();
+            attrT = attrT.replaceAll("'", "\\\\'");
+        } else {
+            attrT = "NULL";
         }
-    }
-
-    public int write2DB(XincoDBManager DBM) throws XincoException {
-        try {
-            String attrT = "";
-            String attrVC = "";
-            Date attrDT = null;
-            if (getAttribText() != null) {
-                attrT = getAttribText();
-                attrT = attrT.replaceAll("'", "\\\\'");
-            } else {
-                attrT = "NULL";
-            }
-            if (getAttribVarchar() != null) {
-                attrVC = getAttribVarchar();
-                attrVC = attrVC.replaceAll("'", "\\\\'");
-            } else {
-                attrVC = "NULL";
-            }
-            if (getAttribDatetime() != null) {
-                //convert clone from remote time to local time
-                Calendar calO = (Calendar) getAttribDatetime().clone();
-                Calendar cal = (Calendar) getAttribDatetime().clone();
-                Calendar ngc = new GregorianCalendar();
-                cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - calO.get(Calendar.ZONE_OFFSET)) -
-                        (ngc.get(Calendar.DST_OFFSET) + calO.get(Calendar.DST_OFFSET)));
-                attrDT = new Date(cal.getTimeInMillis());
-            }
-            XincoAddAttribute xaa = new XincoAddAttribute();
-            xaa.getXincoAddAttributePK().setXincoCoreDataId(getXincoAddAttributePK().getXincoCoreDataId());
-            xaa.getXincoAddAttributePK().setAttributeId(getXincoAddAttributePK().getAttributeId());
-            xaa.setAttribInt(getAttribInt());
-            xaa.setAttribUnsignedint(getAttribUnsignedint());
-            xaa.setAttribDouble(getAttribDouble());
-            xaa.setAttribVarchar(attrVC);
-            xaa.setAttribText(attrT);
-            xaa.setAttribDatetime(attrDT);
-            DBM.persist(xaa, false, true);
-        } catch (Exception e) {
-            //no commit or rollback -> CoreData manages exceptions!
-            throw new XincoException();
+        if (getAttribVarchar() != null) {
+            attrVC = getAttribVarchar();
+            attrVC = attrVC.replaceAll("'", "\\\\'");
+        } else {
+            attrVC = "NULL";
         }
-        return 1;
+        if (getAttribDatetime() != null) {
+            //convert clone from remote time to local time
+            Calendar calO = (Calendar) getAttribDatetime().clone();
+            Calendar cal = (Calendar) getAttribDatetime().clone();
+            Calendar ngc = new GregorianCalendar();
+            cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - calO.get(Calendar.ZONE_OFFSET)) -
+                    (ngc.get(Calendar.DST_OFFSET) + calO.get(Calendar.DST_OFFSET)));
+            attrDT = new Date(cal.getTimeInMillis());
+        }
+        XincoAddAttribute xaa = new XincoAddAttribute();
+        xaa.getXincoAddAttributePK().setXincoCoreDataId(getXincoAddAttributePK().getXincoCoreDataId());
+        xaa.getXincoAddAttributePK().setAttributeId(getXincoAddAttributePK().getAttributeId());
+        xaa.setAttribInt(getAttribInt());
+        xaa.setAttribUnsignedint(getAttribUnsignedint());
+        xaa.setAttribDouble(getAttribDouble());
+        xaa.setAttribVarchar(attrVC);
+        xaa.setAttribText(attrT);
+        xaa.setAttribDatetime(attrDT);
+        pm.persist(xaa, false, true);
+        return true;
     }
     //create complete list of add attributes
     @SuppressWarnings("unchecked")
-    public static Vector getXincoAddAttributes(int attrID, XincoDBManager DBM) {
+    public static Vector getXincoAddAttributes(int attrID) {
         Vector addAttributes = new Vector();
         try {
             parameters.clear();
             parameters.put("xincoCoreDataId", attrID);
-            result = DBM.createdQuery("SELECT x FROM XincoAddAttribute x WHERE " +
+            result = pm.createdQuery("SELECT x FROM XincoAddAttribute x WHERE " +
                     "x.xincoAddAttributePK.xincoCoreDataId = :xincoCoreDataId order by x.xincoAddAttributePK.attributeId", parameters);
             while (!result.isEmpty()) {
                 addAttributes.addElement((XincoAddAttributeServer) result.get(0));

@@ -1,5 +1,6 @@
-package com.bluecubs.xinco.core.server;
+package com.bluecubs.xinco.core.hibernate.audit;
 
+import com.bluecubs.xinco.core.server.*;
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
 
@@ -11,7 +12,7 @@ import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
 public class XincoAbstractAuditableObject extends AbstractAuditableObject {
     private static final long serialVersionUID = 3791544578403758791L;
     private static XincoDBManager pm = XincoConfigSingletonServer.getPersistenceManager();
-    
+
     public Integer getRecordId() {
         if (id == 0) {
             XincoIDServer pis = new XincoIDServer("xinco_user_modified_record");

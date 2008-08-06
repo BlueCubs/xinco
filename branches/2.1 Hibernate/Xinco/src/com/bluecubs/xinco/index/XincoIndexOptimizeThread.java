@@ -38,7 +38,7 @@ package com.bluecubs.xinco.index;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.XincoSettingServer;
 
 /**
  * This class runs index optimizing in a separate thread
@@ -56,16 +56,13 @@ public class XincoIndexOptimizeThread extends Thread {
         firstRun = new GregorianCalendar();
         while (true) {
             try {
-                XincoDBManager DBM = null;
-                DBM = new XincoDBManager();
-                index_period = DBM.config.getFileIndexOptimizerPeriod();
+                index_period = XincoSettingServer.getSetting("xinco/FileIndexOptimizerPeriod").getLongValue();
                 //exit indexer if period = 0
                 if (index_period == 0) {
                     break;
                 }
-                XincoIndexer.optimizeIndex(DBM);
+                XincoIndexer.optimizeIndex();
                 lastRun = new GregorianCalendar();
-                DBM = null;
             } catch (Exception e) {
                 //continue, wait and try again...
             }
