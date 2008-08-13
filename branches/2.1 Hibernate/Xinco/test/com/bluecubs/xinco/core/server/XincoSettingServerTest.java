@@ -1,11 +1,14 @@
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.hibernate.audit.XincoAbstractAuditableObject;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.persistence.XincoSetting;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  *
@@ -15,6 +18,11 @@ public class XincoSettingServerTest extends TestCase {
 
     public XincoSettingServerTest(String testName) {
         super(testName);
+    }
+
+    public static Test suite() {
+        TestSuite suite = new TestSuite(XincoSettingServerTest.class);
+        return suite;
     }
 
     @Override
@@ -41,6 +49,7 @@ public class XincoSettingServerTest extends TestCase {
      * Test of findById method, of class XincoSettingServer.
      * @throws Exception 
      */
+    @SuppressWarnings("unchecked")
     public void testFindById() throws Exception {
         System.out.println("findById");
         HashMap parameters = new HashMap();
@@ -57,14 +66,15 @@ public class XincoSettingServerTest extends TestCase {
     public void testFindWithDetails() throws Exception {
         System.out.println("findWithDetails");
         XincoSettingServer instance = new XincoSettingServer(1);
-        XincoAbstractAuditableObject[] expResult = {instance};
+        XincoSetting[] expResult = {instance};
         XincoAbstractAuditableObject[] result = (XincoAbstractAuditableObject[]) instance.findWithDetails(instance.getParameters());
-        assertEquals(expResult, result);
+        assertEquals(expResult[0].getDescription(), ((XincoSetting) result[0]).getDescription());
     }
 
     /**
      * Test of getParameters method, of class XincoSettingServer.
      */
+    @SuppressWarnings("unchecked")
     public void testGetParameters() {
         try {
             System.out.println("getParameters");
@@ -81,33 +91,44 @@ public class XincoSettingServerTest extends TestCase {
 
     /**
      * Test of getNewID method, of class XincoSettingServer.
+     * @throws XincoException
      */
     public void testGetNewID() throws XincoException {
         System.out.println("getNewID");
         XincoSettingServer instance = new XincoSettingServer(1);
-        int expResult = 0;
-        int result = instance.getNewID();
-        assertTrue(expResult < result);
+        int result = instance.getNewID(true);
+        System.out.println("New id: " + result);
+        assertTrue(result > 0);
     }
 
     /**
      * Test of write2DB method, of class XincoSettingServer.
+     * @throws XincoException
      */
     public void testWrite2DB() throws XincoException {
         System.out.println("write2DB");
-        XincoSettingServer instance = new XincoSettingServer("test");
+        XincoSettingServer instance = new XincoSettingServer(0, "test", true, 0, 0, "");
+        System.out.println("Instance id before writing: " + instance.getId());
         assertTrue(instance.write2DB());
+        System.out.println("Instance id after writing: " + instance.getId());
+        assertTrue(instance.getId() > 0);
     }
 
     /**
      * Test of deleteFromDB method, of class XincoSettingServer.
+     * @throws XincoException
+     * @throws Exception
      */
+    @SuppressWarnings({"unchecked", "static-access"})
     public void testDeleteFromDB() throws XincoException, Exception {
         System.out.println("deleteFromDB");
         XincoSettingServer instance = new XincoSettingServer(1);
         HashMap parameters = new HashMap();
         parameters.put("description", "test");
         XincoAbstractAuditableObject[] result = (XincoAbstractAuditableObject[]) instance.findWithDetails(parameters);
-        assertTrue(((XincoSettingServer) result[0]).deleteFromDB());
+        XincoSettingServer value = new XincoSettingServer(((XincoSetting) result[0]).getDescription());
+        //Blame the admin :P
+        value.setChangerID(1);
+        assertTrue(value.deleteFromDB());
     }
 }

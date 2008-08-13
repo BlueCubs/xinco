@@ -54,6 +54,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
     private static List result;
     private static final long serialVersionUID = 6866425466359539411L;
     //create group object for data structures
+
     @SuppressWarnings("unchecked")
     public XincoCoreGroupServer(int attrID) throws XincoException {
         try {
@@ -74,6 +75,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
         }
     }
     //create group object for data structures
+
     public XincoCoreGroupServer(int attrID, String attrD, int attrSN) throws XincoException {
         setId(attrID);
         setDesignation(attrD);
@@ -83,6 +85,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
     XincoCoreGroupServer() {
     }
     //create complete list of groups
+
     @SuppressWarnings("unchecked")
     public static Vector getXincoCoreGroups() {
         Vector coreGroups = new Vector();
@@ -190,7 +193,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
         return val;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "static-access"})
     public void delete(AbstractAuditableObject value) {
         try {
             XincoCoreGroup val = (XincoCoreGroup) value;
@@ -205,9 +208,14 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
             pm.startTransaction();
             pm.persist(temp, false, false);
             pm.delete(val, false);
-            getModifiedRecordDAOObject().saveAuditData();
+            setModifiedRecordDAOObject(value.getModifiedRecordDAOObject());
+            //Make sure all audit data is stored properly. If not undo everything
+            if (!getModifiedRecordDAOObject().saveAuditData()) {
+                throw new XincoException(rb.getString("error.audit_data.invalid"));
+            }
             pm.commitAndClose();
         } catch (Throwable ex) {
+            pm.rollback();
             Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -221,11 +229,12 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
 
     /**
      * Get a new newID
+     * @param a 
      * @return New last ID
      */
     @SuppressWarnings("unchecked")
-    public int getNewID() {
-        return new XincoIDServer("XincoCoreGroup").getNewTableID();
+    public int getNewID(boolean a) {
+        return new XincoIDServer("Xinco_Core_Group").getNewTableID(a);
     }
 
     @SuppressWarnings("unchecked")
@@ -260,7 +269,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
     public boolean deleteFromDB() {
         setTransactionTime(DateRange.startingNow());
         try {
-            AuditingDAOHelper.delete(this, getId());
+            AuditingDAOHelper.delete(this, getId(), getChangerID());
             return true;
         } catch (Throwable e) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {

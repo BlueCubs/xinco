@@ -1,11 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.bluecubs.xinco.core.persistence;
 
-import com.bluecubs.xinco.core.server.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAbstractAuditableObject;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,7 +14,7 @@ import javax.persistence.Table;
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 @Entity
-@Table(name = "xinco_core_data")
+@Table(name = "xinco_core_data", catalog = "xinco", schema = "")
 @NamedQueries({@NamedQuery(name = "XincoCoreData.findById", query = "SELECT x FROM XincoCoreData x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreData.findByXincoCoreNodeId", query = "SELECT x FROM XincoCoreData x WHERE x.xincoCoreNodeId = :xincoCoreNodeId"), @NamedQuery(name = "XincoCoreData.findByXincoCoreLanguageId", query = "SELECT x FROM XincoCoreData x WHERE x.xincoCoreLanguageId = :xincoCoreLanguageId"), @NamedQuery(name = "XincoCoreData.findByXincoCoreDataTypeId", query = "SELECT x FROM XincoCoreData x WHERE x.xincoCoreDataTypeId = :xincoCoreDataTypeId"), @NamedQuery(name = "XincoCoreData.findByDesignation", query = "SELECT x FROM XincoCoreData x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreData.findByStatusNumber", query = "SELECT x FROM XincoCoreData x WHERE x.statusNumber = :statusNumber")})
 public class XincoCoreData extends XincoAbstractAuditableObject implements Serializable {
     private static final long serialVersionUID = 1L;

@@ -62,7 +62,7 @@ public class XincoIDServer extends XincoID implements XincoAuditableDAO, Persist
     }
 
     public XincoIDServer(String tablename) {
-        setTablename(tablename);
+        setTablename(tablename.toLowerCase());
         result = pm.namedQuery("XincoID.findByTablename", getParameters());
         if (result.size() > 0) {
             XincoID temp = (XincoID) result.get(0);
@@ -135,7 +135,7 @@ public class XincoIDServer extends XincoID implements XincoAuditableDAO, Persist
         return val;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "static-access"})
     public void delete(AbstractAuditableObject value) {
         try {
             XincoID tempID = (XincoID) value;
@@ -170,30 +170,31 @@ public class XincoIDServer extends XincoID implements XincoAuditableDAO, Persist
 
     /**
      * Get a new newID
+     * @param atomic
      * @return New last ID
      */
     @SuppressWarnings("unchecked")
-    public int getNewTableID() {
+    public int getNewTableID(boolean atomic) {
         HashMap p = new HashMap();
         p.put("tablename", getTablename());
         result = pm.namedQuery("XincoID.findByTablename", p);
         if (result.size() > 0) {
             try {
                 XincoID temp = (XincoID) result.get(0);
-                if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                    Logger.getLogger(XincoIDServer.class.getName()).log(Level.INFO,
-                            "Setting last id as: " + (temp.getLastId() + 1) + " for table: " + getTablename());
-                }
+                setId(temp.getId());
                 setLastId(temp.getLastId() + 1);
                 setTablename(temp.getTablename());
                 setTransactionTime(DateRange.startingNow());
-                pm.persist(new XincoID(getId(), getTablename(), getLastId()), true, true);
+                pm.persist(new XincoID(getId(), getTablename(), getLastId()), true, atomic);
                 return getLastId();
             } catch (Throwable ex) {
-                Logger.getLogger(XincoIDServer.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(XincoIDServer.class.getName()).log(Level.SEVERE,
+                        rb.getString("error.xinco_id.wrong_table").replaceAll("%t", getTablename()), ex);
                 return -1;
             }
         } else {
+            Logger.getLogger(XincoIDServer.class.getName()).log(Level.SEVERE,
+                    rb.getString("error.xinco_id.wrong_table").replaceAll("%t", getTablename()));
             return -1;
         }
     }
@@ -234,7 +235,7 @@ public class XincoIDServer extends XincoID implements XincoAuditableDAO, Persist
     public boolean deleteFromDB() {
         setTransactionTime(DateRange.startingNow());
         try {
-            AuditingDAOHelper.delete(this, getParameters());
+            AuditingDAOHelper.delete(this, getParameters(), getChangerID());
             return true;
         } catch (Throwable e) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
@@ -244,7 +245,7 @@ public class XincoIDServer extends XincoID implements XincoAuditableDAO, Persist
         }
     }
 
-    public int getNewID() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public int getNewID(boolean a) {
+            return getNewTableID(a);
     }
 }

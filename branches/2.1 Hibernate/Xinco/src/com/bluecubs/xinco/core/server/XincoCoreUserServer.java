@@ -54,7 +54,6 @@ import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
 import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
 import com.dreamer.Hibernate.Audit.PersistenceServerObject;
 import com.dreamer.Hibernate.HibernateConfigurationParams;
-import com.dreamer.Hibernate.PersistenceManager;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -82,6 +81,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
     private static List result;
 
     //create user object and login
+    @SuppressWarnings("unchecked")
     public XincoCoreUserServer(String attrUN, String attrUPW) throws XincoException {
         try {
             parameters.clear();
@@ -89,7 +89,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
             parameters.put("userpassword", MD5.encrypt(attrUPW));
             result = pm.createdQuery("SELECT x FROM XincoCoreUser x WHERE " +
                     "x.username = :username and x.userpassword = :userpassword " +
-                    "and x.statusNumber != 2");
+                    "and x.statusNumber != 2", parameters);
             //throw exception if no result found
             if (!result.isEmpty()) {
                 XincoCoreUser xcu = (XincoCoreUser) result.get(0);
@@ -139,7 +139,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
             parameters.put("username", attrUN);
             result = pm.createdQuery("SELECT x FROM XincoCoreUser x WHERE " +
                     "x.username = :username and" +
-                    " x.statusNumber != 2");
+                    " x.statusNumber != 2", parameters);
             //increase number of attempts
             if (!result.isEmpty()) {
                 XincoCoreUser xcu = (XincoCoreUser) result.get(0);
@@ -161,6 +161,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
     }
 
 //create user object for data structures
+    @SuppressWarnings("unchecked")
     public XincoCoreUserServer(int attrID) throws XincoException {
         try {
             parameters.clear();
@@ -213,7 +214,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         setXincoCoreGroups(new Vector());
         try {
             parameters.clear();
-            parameters.put("id", getId());
+            parameters.put("xincoCoreUserId", getId());
             result = pm.namedQuery("XincoCoreUserHasXincoCoreGroup.findByXincoCoreUserId", parameters);
             while (!result.isEmpty()) {
                 getXincoCoreGroups().addElement((XincoCoreUserHasXincoCoreGroup) result.get(0));
@@ -225,6 +226,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void writeXincoCoreGroups(XincoDBManager DBM) throws XincoException {
         sql = null;
         int i = -1;
@@ -267,63 +269,8 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         this.attempts = attempts;
     }
 
-    //write to db
-    public boolean write2DB(PersistenceManager DBM) throws XincoException {
-        sql = "";
-        xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
-        Timestamp ts = null;
-        try {
-            if (getStatusNumber() == 4) {
-                //Changed from aged out to password changed. Clear status
-                setStatusNumber(1);
-                setAttempts(0);
-                setChange(true);
-                setReason("audit.user.account.aged");
-                ts = new Timestamp(System.currentTimeMillis());
-            }
-            //Lock account if needed. Can't lock main admin.
-            if (getAttempts() > Integer.parseInt(settings.getString("password.attempts")) &&
-                    getId() > 1) {
-                setStatusNumber(2);
-            }
-            if (getId() > 0) {
-                if (isChange()) {
-                    AuditingDAOHelper.update(this, new XincoCoreNode());
-                    setChange(false);
-                } else {
-                    ts = (Timestamp) getLastModified();
-                }
-                setLastModified(ts);
-                DBM.persist(this, true, true);
-            } else {
-                XincoCoreUser temp = new XincoCoreUser();
-                setUsername(getUsername());
-                setUserpassword(getUserpassword());
-                setName(getName());
-                setFirstname(getFirstname());
-                setEmail(getEmail());
-                setAttempts(getAttempts());
-                setStatusNumber(getStatusNumber());
-                setLastModified(getLastModified());
-                temp = (XincoCoreUser) AuditingDAOHelper.create(this, temp);
-                setId(temp.getId());
-                if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                    Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO, "Assigned id: " + getId());
-                }
-            }
-            if (isWriteGroups()) {
-                writeXincoCoreGroups((XincoDBManager) DBM);
-            }
-        } catch (Exception e) {
-            throw new XincoException(e.getLocalizedMessage());
-        }
-        setChange(false);
-        setWriteGroups(false);
-        setReason("");
-        return true;
-    }
-
 //create complete list of users
+    @SuppressWarnings("unchecked")
     public static Vector getXincoCoreUsers() {
         Vector coreUsers = new Vector();
         try {
@@ -338,6 +285,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         return coreUsers;
     }
 
+    @SuppressWarnings("unchecked")
     public boolean isPasswordUsable(String newPass) {
         int tempId = 0;
         boolean passwordIsUsable = false;
@@ -513,14 +461,20 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         }
     }
 
+    @SuppressWarnings("static-access")
     public AbstractAuditableObject create(AbstractAuditableObject value) {
-        XincoCoreLanguageServer temp;
-        XincoCoreLanguage newValue = new XincoCoreLanguage();
+        XincoCoreUser temp;
+        XincoCoreUser newValue = new XincoCoreUser();
+        temp = (XincoCoreUser) value;
 
-        temp = (XincoCoreLanguageServer) value;
-        newValue.setId(temp.getId());
-        newValue.setDesignation(temp.getDesignation());
-        newValue.setSign(temp.getSign());
+        newValue.setId(temp.getRecordId());
+        newValue.setUsername(temp.getUsername());
+        newValue.setUserpassword(temp.getUserpassword());
+        newValue.setName(temp.getName());
+        newValue.setFirstname(temp.getFirstname());
+        newValue.setEmail(temp.getEmail());
+        setStatusNumber(temp.getStatusNumber());
+                setLastModified(temp.getLastModified());
 
         newValue.setRecordId(temp.getRecordId());
         newValue.setCreated(temp.isCreated());
@@ -544,7 +498,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         return val;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "static-access"})
     public void delete(AbstractAuditableObject value) {
         try {
             XincoCoreLanguage val = (XincoCoreLanguage) value;
@@ -559,9 +513,14 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
             pm.startTransaction();
             pm.persist(temp, false, false);
             pm.delete(val, false);
-            getModifiedRecordDAOObject().saveAuditData();
+            setModifiedRecordDAOObject(value.getModifiedRecordDAOObject());
+            //Make sure all audit data is stored properly. If not undo everything
+            if (!getModifiedRecordDAOObject().saveAuditData()) {
+                throw new XincoException(rb.getString("error.audit_data.invalid"));
+            }
             pm.commitAndClose();
         } catch (Throwable ex) {
+            pm.rollback();
             Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -575,17 +534,72 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
 
     /**
      * Get a new newID
+     * @param a
      * @return New last ID
      */
     @SuppressWarnings("unchecked")
-    public int getNewID() {
-        return new XincoIDServer("XincoCoreUser").getNewTableID();
+    public int getNewID(boolean a) {
+        return new XincoIDServer("Xinco_Core_User").getNewTableID(a);
     }
 
     @SuppressWarnings("unchecked")
     public boolean write2DB() {
         try {
-            return write2DB(pm);
+            sql = "";
+            xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+            Timestamp ts = null;
+            try {
+                if (getStatusNumber() == 4) {
+                    //Changed from aged out to password changed. Clear status
+                    setStatusNumber(1);
+                    setAttempts(0);
+                    setChange(true);
+                    setReason("audit.user.account.aged");
+                    ts = new Timestamp(System.currentTimeMillis());
+                }
+                //Lock account if needed. Can't lock main admin.
+                if (getAttempts() > Integer.parseInt(settings.getString("password.attempts")) &&
+                        getId() > 1) {
+                    setStatusNumber(2);
+                }
+                if (getId() > 0) {
+                    if (isChange()) {
+                        AuditingDAOHelper.update(this, new XincoCoreNode());
+                        setChange(false);
+                    } else {
+                        ts = new Timestamp(getLastModified().getTime());
+                    }
+                    setLastModified(ts);
+                    pm.persist(new XincoCoreUser(getId(), getUsername(),
+                            getUserpassword(), getName(), getFirstname(), getEmail(),
+                            getStatusNumber(), getAttempts(), getLastModified()), true, true);
+                } else {
+                    XincoCoreUser temp = new XincoCoreUser();
+                    setId(getNewID(true));
+                    setUsername(getUsername());
+                    setUserpassword(getUserpassword());
+                    setName(getName());
+                    setFirstname(getFirstname());
+                    setEmail(getEmail());
+                    setAttempts(getAttempts());
+                    setStatusNumber(getStatusNumber());
+                    setLastModified(getLastModified());
+                    temp = (XincoCoreUser) AuditingDAOHelper.create(this, temp);
+                    setId(temp.getId());
+                    if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
+                        Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO, "Assigned id: " + getId());
+                    }
+                }
+                if (isWriteGroups()) {
+                    writeXincoCoreGroups((XincoDBManager) pm);
+                }
+            } catch (Exception e) {
+                throw new XincoException(e.getLocalizedMessage());
+            }
+            setChange(false);
+            setWriteGroups(false);
+            setReason("");
+            return true;
         } catch (XincoException ex) {
             Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -595,7 +609,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
     public boolean deleteFromDB() {
         setTransactionTime(DateRange.startingNow());
         try {
-            AuditingDAOHelper.delete(this, getId());
+            AuditingDAOHelper.delete(this, getId(), getChangerID());
             return true;
         } catch (Throwable e) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {

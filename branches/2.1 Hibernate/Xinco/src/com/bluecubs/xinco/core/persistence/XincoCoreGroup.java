@@ -1,6 +1,6 @@
 package com.bluecubs.xinco.core.persistence;
 
-import com.bluecubs.xinco.core.server.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAbstractAuditableObject;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -16,7 +16,8 @@ import javax.persistence.UniqueConstraint;
  * @author Javier
  */
 @Entity
-@Table(name = "xinco_core_group", catalog = "xinco", schema = "", uniqueConstraints = {@UniqueConstraint(columnNames = {"designation"})})
+@Table(name = "xinco_core_group", catalog = "xinco", schema = "", 
+uniqueConstraints = {@UniqueConstraint(columnNames = {"designation"})})
 @NamedQueries({@NamedQuery(name = "XincoCoreGroup.findAll",
     query = "SELECT x FROM XincoCoreGroup x"),
     @NamedQuery(name = "XincoCoreGroup.findById",

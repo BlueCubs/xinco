@@ -58,6 +58,8 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
     private static List result;
     private Vector xincoCoreNodes,  xincoCoreData,  xincoCoreAcl;
     //create node object for data structures
+
+    @SuppressWarnings("unchecked")
     public XincoCoreNodeServer(int attrID) throws XincoException {
         try {
             parameters.clear();
@@ -88,6 +90,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
 
     }
     //create node object for data structures
+
     public XincoCoreNodeServer(int attrID, int attrCNID, int attrLID, String attrD, int attrSN) throws XincoException {
 
         try {
@@ -110,6 +113,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
 
     }
     //delete from db
+
     public void deleteFromDB(boolean delete_this, int userID) throws XincoException {
         int i = 0;
         try {
@@ -136,6 +140,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
 
     }
 
+    @SuppressWarnings("unchecked")
     public void fillXincoCoreNodes() {
         try {
             result = pm.createdQuery("SELECT x FROM XincoCoreNode x WHERE x.xincoCoreNodeId = " + getId() + " ORDER BY x.designation", null);
@@ -148,6 +153,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void fillXincoCoreData() {
         try {
             result = pm.createdQuery("SELECT x FROM XincoCoreData x WHERE x.xincoCoreNodeId = " + getId() + " ORDER BY x.designation", null);
@@ -161,6 +167,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
 
     }
 
+    @SuppressWarnings("unchecked")
     public static Vector findXincoCoreNodes(String attrS, int attrLID) {
         Vector nodes = null;
         try {
@@ -183,6 +190,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
 
     }
 
+    @SuppressWarnings("unchecked")
     public static Vector getXincoCoreNodeParents(int attrID) {
         Vector nodes = new Vector();
         int id;
@@ -287,6 +295,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
         }
     }
 
+    @SuppressWarnings("static-access")
     public AbstractAuditableObject create(AbstractAuditableObject value) {
         XincoCoreNodeServer temp;
         XincoCoreNode newValue = new XincoCoreNode();
@@ -320,7 +329,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
         return val;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "static-access"})
     public void delete(AbstractAuditableObject value) {
         try {
             XincoCoreNode val = (XincoCoreNode) value;
@@ -337,9 +346,14 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
             pm.startTransaction();
             pm.persist(temp, false, false);
             pm.delete(val, false);
-            getModifiedRecordDAOObject().saveAuditData();
+            setModifiedRecordDAOObject(value.getModifiedRecordDAOObject());
+            //Make sure all audit data is stored properly. If not undo everything
+            if (!getModifiedRecordDAOObject().saveAuditData()) {
+                throw new XincoException(rb.getString("error.audit_data.invalid"));
+            }
             pm.commitAndClose();
         } catch (Throwable ex) {
+            pm.rollback();
             Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -353,11 +367,12 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
 
     /**
      * Get a new newID
+     * @param a 
      * @return New last ID
      */
     @SuppressWarnings("unchecked")
-    public int getNewID() {
-        return new XincoIDServer("XincoCoreNode").getNewTableID();
+    public int getNewID(boolean a) {
+        return new XincoIDServer("Xinco_Core_Node").getNewTableID(a);
     }
 
     @SuppressWarnings("unchecked")
@@ -395,7 +410,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
     public boolean deleteFromDB() {
         setTransactionTime(DateRange.startingNow());
         try {
-            AuditingDAOHelper.delete(this, getId());
+            AuditingDAOHelper.delete(this, getId(), getChangerID());
             return true;
         } catch (Throwable e) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {

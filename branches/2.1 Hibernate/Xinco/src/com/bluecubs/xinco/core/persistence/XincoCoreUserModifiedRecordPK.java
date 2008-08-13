@@ -6,17 +6,20 @@
 package com.bluecubs.xinco.core.persistence;
 
 import java.io.Serializable;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 /**
  *
- * @author Javier
+ * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 @Embeddable
 public class XincoCoreUserModifiedRecordPK implements Serializable {
+    @Basic(optional = false)
     @Column(name = "id", nullable = false)
     private int id;
+    @Basic(optional = false)
     @Column(name = "record_id", nullable = false)
     private int recordId;
 

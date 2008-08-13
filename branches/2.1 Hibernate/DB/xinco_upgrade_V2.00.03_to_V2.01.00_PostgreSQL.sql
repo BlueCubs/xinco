@@ -114,3 +114,25 @@ update xinco_core_log set op_description= 'audit.general.create' where op_descri
 ALTER TABLE xinco_core_data_type_attribute CHANGE COLUMN `size` `attr_size` INTEGER UNSIGNED NOT NULL DEFAULT 0;
 
 ALTER TABLE `xinco`.`xinco_core_data_type_attribute_t` CHANGE COLUMN `size` `attr_size` INTEGER UNSIGNED NOT NULL DEFAULT 0;
+
+ALTER TABLE `xinco`.`xinco_setting` MODIFY COLUMN `int_value` INTEGER DEFAULT -1,
+ MODIFY COLUMN `long_value` BIGINT(20) DEFAULT -1;
+
+update xinco_setting set int_value = -1 where int_value is null;
+update xinco_setting set long_value = -1 where long_value is null;
+
+update xinco_setting_t set int_value = -1 where int_value is null;
+update xinco_setting_t set long_value = -1 where long_value is null;
+
+ALTER TABLE `xinco`.`xinco_id` ADD COLUMN `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT AFTER `last_id`,
+ DROP PRIMARY KEY,
+ ADD PRIMARY KEY  USING BTREE(`id`),
+ ADD UNIQUE INDEX `Unique`(`tablename`);
+
+INSERT INTO xinco_id (tablename, last_id) VALUES ('xinco_setting', 1000);
+
+/*For some reason the xinco_core_user_modified_record table is not linked with xinco_core_user*/
+ALTER TABLE `xinco`.`xinco_core_user_modified_record` ADD CONSTRAINT `FK_xinco_core_user` FOREIGN KEY `FK_xinco_core_user` (`id`)
+    REFERENCES `xinco_core_user` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;

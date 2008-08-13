@@ -4,7 +4,7 @@
  */
 package com.bluecubs.xinco.core.persistence;
 
-import com.bluecubs.xinco.core.server.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAbstractAuditableObject;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -22,7 +22,7 @@ import javax.persistence.TemporalType;
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 @Entity
-@Table(name = "xinco_add_attribute")
+@Table(name = "xinco_add_attribute", catalog = "xinco", schema = "")
 @NamedQueries({@NamedQuery(name = "XincoAddAttribute.findByXincoCoreDataId",
     query = "SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.xincoCoreDataId = :xincoCoreDataId"),
     @NamedQuery(name = "XincoAddAttribute.findByAttributeId",
@@ -46,7 +46,7 @@ public class XincoAddAttribute extends XincoAbstractAuditableObject implements S
     @Column(name = "attrib_int")
     private int attribInt;
     @Column(name = "attrib_unsignedint")
-    private long attribUnsignedint;
+    private int attribUnsignedint;
     @Column(name = "attrib_double")
     private double attribDouble;
     @Column(name = "attrib_varchar")
@@ -85,11 +85,11 @@ public class XincoAddAttribute extends XincoAbstractAuditableObject implements S
         this.attribInt = attribInt;
     }
 
-    public long getAttribUnsignedint() {
+    public int getAttribUnsignedint() {
         return attribUnsignedint;
     }
 
-    public void setAttribUnsignedint(long attribUnsignedint) {
+    public void setAttribUnsignedint(int attribUnsignedint) {
         this.attribUnsignedint = attribUnsignedint;
     }
 

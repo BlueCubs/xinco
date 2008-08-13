@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.bluecubs.xinco.core.persistence;
 
 import java.io.Serializable;
@@ -47,8 +42,8 @@ public class XincoCoreUserHasXincoCoreGroupPK implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (int) xincoCoreUserId;
-        hash += (int) xincoCoreGroupId;
+        hash += xincoCoreUserId;
+        hash += xincoCoreGroupId;
         return hash;
     }
 

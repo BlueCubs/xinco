@@ -50,7 +50,6 @@ import com.dreamer.Hibernate.Audit.AuditableDAO;
 import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
 import com.dreamer.Hibernate.Audit.PersistenceServerObject;
 import com.dreamer.Hibernate.Audit.PersistenceServerUtils;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,6 +62,8 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
     private static List result;
     private Vector xincoCoreLogs,  xincoAddAttributes,  xincoCoreACL;
     //create data object for data structures
+
+    @SuppressWarnings("unchecked")
     public XincoCoreDataServer(int attrID) throws XincoException {
 
         try {
@@ -95,6 +96,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
 
     }
     //create data object for data structures
+
     public XincoCoreDataServer(int attrID, int attrCNID, int attrLID, int attrDTID, String attrD, int attrSN) throws XincoException {
 
         setId(attrID);
@@ -116,13 +118,14 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
         this.user = user;
     }
 
+    @SuppressWarnings("unchecked")
     public static void removeFromDB(int userID, int id) throws XincoException {
         parameters.clear();
         parameters.put("id", id);
         result = pm.namedQuery("XincoCoreData.findById", parameters);
         if (!result.isEmpty()) {
             try {
-                PersistenceServerUtils.removeFromDB((AuditableDAO) result.get(0), userID);
+                PersistenceServerUtils.removeFromDB((AuditableDAO) result.get(0), userID, getChangerID());
                 /*
                  * Aduit Trail Table (*T) cannot handle multiple row changes!!!
                 audit.updateAuditTrail("xincoCoreLog",new String [] {"id ="+id},
@@ -144,7 +147,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
                 parameters.put("xincoCoreDataId", id);
                 result = pm.namedQuery("XincoCoreData.findByXincoCoreDataId", parameters);
                 while (!result.isEmpty()) {
-                    PersistenceServerUtils.removeFromDB((XincoCoreDataServer) result.get(0), userID);
+                    PersistenceServerUtils.removeFromDB((XincoCoreDataServer) result.get(0), userID, getChangerID());
                     result.remove(0);
                 }
                 /*
@@ -156,7 +159,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
                 parameters.put("xincoCoreDataId", id);
                 result = pm.namedQuery("XincoAddAttribute.findByXincoCoreDataId", parameters);
                 while (!result.isEmpty()) {
-                    PersistenceServerUtils.removeFromDB((XincoCoreDataServer) result.get(0), userID);
+                    PersistenceServerUtils.removeFromDB((XincoCoreDataServer) result.get(0), userID, getChangerID());
                     result.remove(0);
                 }
             } catch (Exception e) {
@@ -179,6 +182,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
 
     }
 
+    @SuppressWarnings("unchecked")
     public static Vector findXincoCoreData(String attrS, int attrLID, boolean attrSA, boolean attrSFD) {
         Vector data = new Vector();
         try {
@@ -276,6 +280,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
         }
     }
 
+    @SuppressWarnings("static-access")
     public AbstractAuditableObject create(AbstractAuditableObject value) {
         XincoCoreDataServer temp;
         XincoCoreData newValue = new XincoCoreData();
@@ -309,7 +314,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
         return val;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "static-access"})
     public void delete(AbstractAuditableObject value) {
         try {
             XincoCoreData val = (XincoCoreData) value;
@@ -327,10 +332,15 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
             pm.startTransaction();
             pm.persist(temp, false, false);
             pm.delete(val, false);
-            getModifiedRecordDAOObject().saveAuditData();
+            setModifiedRecordDAOObject(value.getModifiedRecordDAOObject());
+            //Make sure all audit data is stored properly. If not undo everything
+            if (!getModifiedRecordDAOObject().saveAuditData()) {
+                throw new XincoException(rb.getString("error.audit_data.invalid"));
+            }
             pm.commitAndClose();
         } catch (Throwable ex) {
             Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, ex);
+            pm.rollback();
         }
     }
 
@@ -343,11 +353,12 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
 
     /**
      * Get a new newID
+     * @param a 
      * @return New last ID
      */
     @SuppressWarnings("unchecked")
-    public int getNewID() {
-        return new XincoIDServer("XincoCoreData").getNewTableID();
+    public int getNewID(boolean a) {
+        return new XincoIDServer("Xinco_Core_Data").getNewTableID(a);
     }
 
     @SuppressWarnings("unchecked")
@@ -385,8 +396,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
                             ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribUnsignedint(),
                             ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribDouble(),
                             ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribVarchar(),
-                            ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribText(),
-                            (Date) ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribDatetime());
+                            ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribText(), ((XincoAddAttribute) getXincoAddAttributes().elementAt(i)).getAttribDatetime());
                     xaas.write2DB();
                 }
             }
@@ -421,7 +431,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
         }
         setTransactionTime(DateRange.startingNow());
         try {
-            AuditingDAOHelper.delete(this, getId());
+            AuditingDAOHelper.delete(this, getId(), getChangerID());
             return true;
         } catch (Throwable e) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {

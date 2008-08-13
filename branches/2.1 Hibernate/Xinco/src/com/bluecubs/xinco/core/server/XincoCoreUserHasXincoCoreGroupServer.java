@@ -51,10 +51,12 @@ import net.sf.oness.common.model.temporal.DateRange;
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoCoreGroup implements XincoAuditableDAO, PersistenceServerObject {
-    private static final long serialVersionUID = -6641477448478703235L;
 
+    private static final long serialVersionUID = -6641477448478703235L;
     private List result;
     //create data type attribute object for data structures
+
+    @SuppressWarnings("unchecked")
     public XincoCoreUserHasXincoCoreGroupServer(int xincoCoreUserId, int xincoCoreGroupId) throws XincoException {
         try {
             parameters.clear();
@@ -77,6 +79,7 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
 
     }
     //create data type attribute object for data structures
+
     public XincoCoreUserHasXincoCoreGroupServer(int xincoCoreUserId, int xincoCoreGroupId, int statusNumber) throws XincoException {
         getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreGroupId(xincoCoreGroupId);
         getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreUserId(xincoCoreUserId);
@@ -176,6 +179,7 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
         return val;
     }
 
+    @SuppressWarnings("static-access")
     public void delete(AbstractAuditableObject value) {
         try {
             XincoCoreUserHasXincoCoreGroupServer val = (XincoCoreUserHasXincoCoreGroupServer) value;
@@ -194,15 +198,21 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
 
                 pm.persist(temp, false, false);
                 pm.delete(val, false);
-                getModifiedRecordDAOObject().saveAuditData();
+                setModifiedRecordDAOObject(value.getModifiedRecordDAOObject());
+                //Make sure all audit data is stored properly. If not undo everything
+                if (!getModifiedRecordDAOObject().saveAuditData()) {
+                    throw new XincoException(rb.getString("error.audit_data.invalid"));
+                }
                 result.remove(0);
             }
             pm.commitAndClose();
         } catch (Throwable ex) {
+            pm.rollback();
             Logger.getLogger(XincoCoreUserHasXincoCoreGroupServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    @SuppressWarnings("unchecked")
     public HashMap getParameters() {
         HashMap temp = new HashMap();
         temp.put("xincoCoreGroupId", getXincoCoreUserHasXincoCoreGroupPK().getXincoCoreGroupId());
@@ -210,8 +220,8 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
         return temp;
     }
 
-    public int getNewID() {
-        return new XincoIDServer("XincoCoreUserHasXincoCoreGroup").getNewTableID();
+    public int getNewID(boolean a) {
+        return new XincoIDServer("Xinco_Core_User_Has_Xinco_Core_Group").getNewTableID(true);
     }
 
     public boolean write2DB() {
@@ -245,7 +255,7 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
     public boolean deleteFromDB() {
         setTransactionTime(DateRange.startingNow());
         try {
-            AuditingDAOHelper.delete(this, getXincoCoreUserHasXincoCoreGroupPK());
+            AuditingDAOHelper.delete(this, getXincoCoreUserHasXincoCoreGroupPK(), getChangerID());
             return true;
         } catch (Throwable e) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {

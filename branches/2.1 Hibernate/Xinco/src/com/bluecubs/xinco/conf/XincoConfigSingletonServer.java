@@ -39,6 +39,7 @@ import com.bluecubs.xinco.core.persistence.XincoSetting;
 import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
 import com.dreamer.Hibernate.HibernateConfigurationParams;
+import com.dreamer.Hibernate.PersistenceManager;
 import com.dreamer.Hibernate.conf.ConfigSingletonServer;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -55,7 +56,7 @@ public class XincoConfigSingletonServer extends ConfigSingletonServer {
 
     private static XincoDBManager DBM = null;
 
-    public static XincoDBManager getPersistenceManager() {
+    public static PersistenceManager getPersistenceManager() {
         if (DBM == null) {
             try {
                 DBM = new XincoDBManager(HibernateConfigurationParams.FILE);
@@ -63,7 +64,7 @@ public class XincoConfigSingletonServer extends ConfigSingletonServer {
                 Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        return DBM;
+        return (PersistenceManager)DBM;
     }
     private String FileRepositoryPath = null;
     private String FileIndexPath = null;
@@ -84,6 +85,7 @@ public class XincoConfigSingletonServer extends ConfigSingletonServer {
     public static XincoConfigSingletonServer getInstance() {
         if (instance == null) {
             instance = new XincoConfigSingletonServer();
+            setPersistenceManager(getPersistenceManager());
         }
         return instance;
     }
@@ -94,6 +96,7 @@ public class XincoConfigSingletonServer extends ConfigSingletonServer {
     protected XincoConfigSingletonServer() {
         try {
             JNDIDB = (String) (new InitialContext()).lookup("xinco/JNDIDB");
+            setPersistenceManager(getPersistenceManager());
         } catch (NamingException ex) {
             JNDIDB = "java:comp/env/jdbc/XincoDB";
         }

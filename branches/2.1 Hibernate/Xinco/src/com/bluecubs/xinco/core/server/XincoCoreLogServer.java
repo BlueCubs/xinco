@@ -59,6 +59,8 @@ public class XincoCoreLogServer extends XincoCoreLog implements PersistenceServe
     private static List result;
     private XincoVersion version;
     //create single log object for data structures
+
+    @SuppressWarnings("unchecked")
     public XincoCoreLogServer(int attrID) throws XincoException {
         try {
             parameters.clear();
@@ -91,6 +93,7 @@ public class XincoCoreLogServer extends XincoCoreLog implements PersistenceServe
         this.user = user;
     }
     //create single log object for data structures
+
     public XincoCoreLogServer(int attrID, int attrCDID, int attrUID, int attrOC, Date attrODT, String attrOD, int attrVH, int attrVM, int attrVL, String attrVP) throws XincoException {
 
         setId(attrID);
@@ -107,6 +110,8 @@ public class XincoCoreLogServer extends XincoCoreLog implements PersistenceServe
 
     }
     //create complete log list for data
+
+    @SuppressWarnings("unchecked")
     public static Vector getXincoCoreLogs(int attrID) {
 
         Vector core_log = new Vector();
@@ -122,10 +127,10 @@ public class XincoCoreLogServer extends XincoCoreLog implements PersistenceServe
         }
         return core_log;
     }
-    
-     @SuppressWarnings("unchecked")
-    public int getNewID() {
-        return new XincoIDServer("XincoCoreLog").getNewTableID();
+
+    @SuppressWarnings("unchecked")
+    public int getNewID(boolean a) {
+        return new XincoIDServer("Xinco_Core_Log").getNewTableID(a);
     }
 
     public boolean write2DB() {
@@ -133,7 +138,8 @@ public class XincoCoreLogServer extends XincoCoreLog implements PersistenceServe
             if (getId() > 0) {
                 pm.persist(this, true, true);
             } else {
-                setId(getNewID());
+                setId(getNewID(true));
+                pm.persist(this, true, true);
                 if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                     Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.INFO, "Assigned id: " + getId());
                 }

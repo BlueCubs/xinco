@@ -1,11 +1,14 @@
 package com.bluecubs.xinco.core.persistence;
 
+import com.bluecubs.xinco.core.hibernate.audit.XincoModifiedRecordDAOObject;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -14,12 +17,23 @@ import javax.persistence.TemporalType;
 
 /**
  *
- * @author Javier
+ * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 @Entity
 @Table(name = "xinco_core_user_modified_record", catalog = "xinco", schema = "")
-@NamedQueries({@NamedQuery(name = "XincoCoreUserModifiedRecord.findAll", query = "SELECT x FROM XincoCoreUserModifiedRecord x"), @NamedQuery(name = "XincoCoreUserModifiedRecord.findById", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.xincoCoreUserModifiedRecordPK.id = :id"), @NamedQuery(name = "XincoCoreUserModifiedRecord.findByRecordId", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.xincoCoreUserModifiedRecordPK.recordId = :recordId"), @NamedQuery(name = "XincoCoreUserModifiedRecord.findByModTime", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.modTime = :modTime"), @NamedQuery(name = "XincoCoreUserModifiedRecord.findByModReason", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.modReason = :modReason")})
-public class XincoCoreUserModifiedRecord implements Serializable {
+@NamedQueries({@NamedQuery(name = "XincoCoreUserModifiedRecord.findAll",
+    query = "SELECT x FROM XincoCoreUserModifiedRecord x"),
+    @NamedQuery(name = "XincoCoreUserModifiedRecord.findById",
+    query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.xincoCoreUserModifiedRecordPK.id = :id"),
+    @NamedQuery(name = "XincoCoreUserModifiedRecord.findByRecordId",
+    query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.xincoCoreUserModifiedRecordPK.recordId = :recordId"),
+    @NamedQuery(name = "XincoCoreUserModifiedRecord.findByModTime",
+    query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.modTime = :modTime"),
+    @NamedQuery(name = "XincoCoreUserModifiedRecord.findByModReason",
+    query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.modReason = :modReason")
+})
+public class XincoCoreUserModifiedRecord extends XincoModifiedRecordDAOObject implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected XincoCoreUserModifiedRecordPK xincoCoreUserModifiedRecordPK;
@@ -29,6 +43,9 @@ public class XincoCoreUserModifiedRecord implements Serializable {
     private Date modTime;
     @Column(name = "mod_Reason", length = 255)
     private String modReason;
+    @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    private XincoCoreUser xincoCoreUser;
 
     public XincoCoreUserModifiedRecord() {
     }
@@ -70,6 +87,14 @@ public class XincoCoreUserModifiedRecord implements Serializable {
         this.modReason = modReason;
     }
 
+    public XincoCoreUser getXincoCoreUser() {
+        return xincoCoreUser;
+    }
+
+    public void setXincoCoreUser(XincoCoreUser xincoCoreUser) {
+        this.xincoCoreUser = xincoCoreUser;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -94,5 +119,4 @@ public class XincoCoreUserModifiedRecord implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.persistence.XincoCoreUserModifiedRecord[xincoCoreUserModifiedRecordPK=" + xincoCoreUserModifiedRecordPK + "]";
     }
-
 }

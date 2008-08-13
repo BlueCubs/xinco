@@ -36,12 +36,12 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAuditableDAO;
 import java.util.Vector;
 
 import com.bluecubs.xinco.core.persistence.XincoCoreLanguageT;
 import com.bluecubs.xinco.core.persistence.XincoCoreLanguage;
 import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
-import com.dreamer.Hibernate.Audit.AuditableDAO;
 import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
 import com.dreamer.Hibernate.Audit.PersistenceServerObject;
 import java.util.HashMap;
@@ -50,11 +50,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.oness.common.model.temporal.DateRange;
 
-public class XincoCoreLanguageServer extends XincoCoreLanguage implements AuditableDAO, PersistenceServerObject {
+public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoAuditableDAO, PersistenceServerObject {
 
     private static final long serialVersionUID = 607986769219212765L;
     private static List result;
     //create language object for data structures
+
+    @SuppressWarnings("unchecked")
     public XincoCoreLanguageServer(int attrID) throws XincoException {
         try {
             parameters.clear();
@@ -74,6 +76,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements Audita
         }
     }
     //create language object for data structures
+
     public XincoCoreLanguageServer(int attrID, String attrS, String attrD) throws XincoException {
 
         setId(attrID);
@@ -82,6 +85,8 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements Audita
 
     }
     //create complete list of languages
+
+    @SuppressWarnings("unchecked")
     public static Vector getXincoCoreLanguages() {
         Vector coreLanguages = new Vector();
         try {
@@ -96,6 +101,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements Audita
         return coreLanguages;
     }
     //check if language is in use by other objects
+
     public static boolean isLanguageUsed(XincoCoreLanguage xcl) {
         boolean is_used = false;
         try {
@@ -171,6 +177,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements Audita
         }
     }
 
+    @SuppressWarnings("static-access")
     public AbstractAuditableObject create(AbstractAuditableObject value) {
         XincoCoreLanguageServer temp;
         XincoCoreLanguage newValue = new XincoCoreLanguage();
@@ -202,7 +209,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements Audita
         return val;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "static-access"})
     public void delete(AbstractAuditableObject value) {
         try {
             XincoCoreLanguage val = (XincoCoreLanguage) value;
@@ -216,9 +223,14 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements Audita
             pm.startTransaction();
             pm.persist(temp, false, false);
             pm.delete(val, false);
-            getModifiedRecordDAOObject().saveAuditData();
+            setModifiedRecordDAOObject(value.getModifiedRecordDAOObject());
+            //Make sure all audit data is stored properly. If not undo everything
+            if (!getModifiedRecordDAOObject().saveAuditData()) {
+                throw new XincoException(rb.getString("error.audit_data.invalid"));
+            }
             pm.commitAndClose();
         } catch (Throwable ex) {
+            pm.rollback();
             Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -232,11 +244,12 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements Audita
 
     /**
      * Get a new newID
+     * @param a 
      * @return New last ID
      */
     @SuppressWarnings("unchecked")
-    public int getNewID() {
-        return new XincoIDServer("XincoCoreLanguage").getNewTableID();
+    public int getNewID(boolean a) {
+        return new XincoIDServer("Xinco_Core_Language").getNewTableID(a);
     }
 
     @SuppressWarnings("unchecked")
@@ -271,7 +284,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements Audita
     public boolean deleteFromDB() {
         setTransactionTime(DateRange.startingNow());
         try {
-            AuditingDAOHelper.delete(this, getId());
+            AuditingDAOHelper.delete(this, getId(), getChangerID());
             return true;
         } catch (Throwable e) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {

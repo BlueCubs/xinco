@@ -36,6 +36,7 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAuditableDAO;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -43,21 +44,20 @@ import com.bluecubs.xinco.core.persistence.XincoCoreACE;
 import com.bluecubs.xinco.core.persistence.XincoCoreACET;
 import com.bluecubs.xinco.core.persistence.XincoCoreGroup;
 import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
-import com.dreamer.Hibernate.Audit.AuditableDAO;
 import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
 import com.dreamer.Hibernate.Audit.PersistenceServerObject;
-import com.dreamer.Hibernate.Audit.PersistenceServerUtils;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.oness.common.model.temporal.DateRange;
 
-public class XincoCoreACEServer extends XincoCoreACE implements AuditableDAO, PersistenceServerObject {
+public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDAO, PersistenceServerObject {
 
     private static final long serialVersionUID = -1577261990104543756L;
     private int userID = 1;
     private static List result;
     //create single ace object for data structures
+
     @SuppressWarnings("unchecked")
     public XincoCoreACEServer(int attrID) throws XincoException {
         try {
@@ -86,8 +86,8 @@ public class XincoCoreACEServer extends XincoCoreACE implements AuditableDAO, Pe
 
     }
     //create single ace object for data structures
-    public XincoCoreACEServer(int attrID, int attrUID, int attrGID, int attrNID, int attrDID, boolean attrRP, boolean attrWP, boolean attrEP, boolean attrAP) throws XincoException {
 
+    public XincoCoreACEServer(int attrID, int attrUID, int attrGID, int attrNID, int attrDID, boolean attrRP, boolean attrWP, boolean attrEP, boolean attrAP) throws XincoException {
         setId(attrID);
         setXincoCoreUserId(attrUID);
         setXincoCoreGroupId(attrGID);
@@ -99,12 +99,8 @@ public class XincoCoreACEServer extends XincoCoreACE implements AuditableDAO, Pe
         setAdminPermission(attrAP);
 
     }
-    //remove from db
-    public static int removeFromDB(XincoCoreACE attrCACE, int userID) throws XincoException, Exception {
-        PersistenceServerUtils.removeFromDB((AuditableDAO) attrCACE, userID);
-        return 1;
-    }
     //create complete ACL for node or data
+
     @SuppressWarnings("unchecked")
     public static Vector getXincoCoreACL(int attrID, String attrT) {
         Vector core_acl = new Vector();
@@ -125,6 +121,7 @@ public class XincoCoreACEServer extends XincoCoreACE implements AuditableDAO, Pe
         return core_acl;
     }
     //check access by comparing user / user groups to ACL and return permissions
+
     public static XincoCoreACE checkAccess(XincoCoreUserServer attrU, Vector attrACL) {
 
         int i = 0;
@@ -256,6 +253,7 @@ public class XincoCoreACEServer extends XincoCoreACE implements AuditableDAO, Pe
         }
     }
 
+    @SuppressWarnings("static-access")
     public AbstractAuditableObject create(AbstractAuditableObject value) {
         XincoCoreACE temp;
         XincoCoreACE newValue = new XincoCoreACE();
@@ -292,7 +290,7 @@ public class XincoCoreACEServer extends XincoCoreACE implements AuditableDAO, Pe
         return val;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "static-access"})
     public void delete(AbstractAuditableObject value) {
         try {
             XincoCoreACE val = (XincoCoreACE) value;
@@ -312,9 +310,14 @@ public class XincoCoreACEServer extends XincoCoreACE implements AuditableDAO, Pe
             pm.startTransaction();
             pm.persist(temp, false, false);
             pm.delete(val, false);
-            getModifiedRecordDAOObject().saveAuditData();
+            setModifiedRecordDAOObject(value.getModifiedRecordDAOObject());
+            //Make sure all audit data is stored properly. If not undo everything
+            if (!getModifiedRecordDAOObject().saveAuditData()) {
+                throw new XincoException(rb.getString("error.audit_data.invalid"));
+            }
             pm.commitAndClose();
         } catch (Throwable ex) {
+            pm.rollback();
             Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -328,11 +331,12 @@ public class XincoCoreACEServer extends XincoCoreACE implements AuditableDAO, Pe
 
     /**
      * Get a new newID
+     * @param a 
      * @return New last ID
      */
     @SuppressWarnings("unchecked")
-    public int getNewID() {
-        return new XincoIDServer("XincoCoreACE").getNewTableID();
+    public int getNewID(boolean a) {
+        return new XincoIDServer("Xinco_Core_ACE").getNewTableID(a);
     }
 
     @SuppressWarnings("unchecked")
@@ -374,7 +378,7 @@ public class XincoCoreACEServer extends XincoCoreACE implements AuditableDAO, Pe
     public boolean deleteFromDB() {
         setTransactionTime(DateRange.startingNow());
         try {
-            AuditingDAOHelper.delete(this, getId());
+            AuditingDAOHelper.delete(this, getId(), getChangerID());
             return true;
         } catch (Throwable e) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {

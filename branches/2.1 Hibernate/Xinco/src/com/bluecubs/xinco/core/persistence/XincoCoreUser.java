@@ -1,6 +1,6 @@
 package com.bluecubs.xinco.core.persistence;
 
-import com.bluecubs.xinco.core.server.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAbstractAuditableObject;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;

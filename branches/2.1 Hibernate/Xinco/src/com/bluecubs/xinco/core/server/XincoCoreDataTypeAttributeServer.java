@@ -58,6 +58,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     private static List result;
     private static final long serialVersionUID = -4308712617323530780L;
     //create data type attribute object for data structures
+
     public XincoCoreDataTypeAttributeServer(int attrID1, int attrID2) throws XincoException {
         try {
             result = pm.createdQuery("SELECT x FROM XincoCoreDataTypeAttribute x " +
@@ -79,6 +80,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
 
     }
     //create data type attribute object for data structures
+
     public XincoCoreDataTypeAttributeServer(int attrID1, int attrID2, String attrD, String attrDT, int attrS) throws XincoException {
         getXincoCoreDataTypeAttributePK().setXincoCoreDataTypeId(attrID1);
         getXincoCoreDataTypeAttributePK().setAttributeId(attrID2);
@@ -107,9 +109,10 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
         }
 
         return 0;
-
     }
     //create complete list of data type attributes
+
+    @SuppressWarnings("unchecked")
     public static Vector getXincoCoreDataTypeAttributes(int attrID) {
         Vector coreDataTypeAttributes = new Vector();
         try {
@@ -242,7 +245,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
         return val;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "static-access"})
     public void delete(AbstractAuditableObject value) {
         try {
             XincoCoreDataTypeAttributeServer val = (XincoCoreDataTypeAttributeServer) value;
@@ -264,12 +267,17 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
 
                 pm.persist(temp, false, false);
                 pm.delete(val, false);
-                getModifiedRecordDAOObject().saveAuditData();
+                setModifiedRecordDAOObject(value.getModifiedRecordDAOObject());
+                //Make sure all audit data is stored properly. If not undo everything
+                if (!getModifiedRecordDAOObject().saveAuditData()) {
+                    throw new XincoException(rb.getString("error.audit_data.invalid"));
+                }
                 result.remove(0);
             }
             pm.commitAndClose();
         } catch (Throwable ex) {
             Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getName()).log(Level.SEVERE, null, ex);
+            pm.rollback();
         }
     }
 
@@ -283,11 +291,12 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
 
     /**
      * Get a new newID
+     * @param a 
      * @return New last ID
      */
     @SuppressWarnings("unchecked")
-    public int getNewID() {
-        return new XincoIDServer("XincoCoreDataTypeAttribute").getNewTableID();
+    public int getNewID(boolean a) {
+        return new XincoIDServer("Xinco_Core_Data_Type_Attribute").getNewTableID(a);
     }
 
     @SuppressWarnings("unchecked")
@@ -324,7 +333,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     public boolean deleteFromDB() {
         setTransactionTime(DateRange.startingNow());
         try {
-            AuditingDAOHelper.delete(this, getXincoCoreDataTypeAttributePK());
+            AuditingDAOHelper.delete(this, getXincoCoreDataTypeAttributePK(), getChangerID());
             return true;
         } catch (Throwable e) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {

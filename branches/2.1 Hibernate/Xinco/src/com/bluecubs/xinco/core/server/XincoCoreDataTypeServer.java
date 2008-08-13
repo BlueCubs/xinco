@@ -58,6 +58,8 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
     private Vector xincoCoreDataTypeAttributes;
     private static List result;
     //create data type object for data structures
+
+    @SuppressWarnings("unchecked")
     public XincoCoreDataTypeServer(int attrID) throws XincoException {
         try {
             parameters.clear();
@@ -88,6 +90,8 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
 
     }
     //create complete list of data types
+
+    @SuppressWarnings("unchecked")
     public static Vector getXincoCoreDataTypes() {
         Vector coreDataTypes = new Vector();
         try {
@@ -102,6 +106,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
         return coreDataTypes;
     }
     //delete from db
+
     public static int deleteFromDB(XincoCoreDataTypeAttributeServer attrCDTA, int userID) throws XincoException {
         try {
             result = pm.namedQuery("select x from XincoAddAttribute X WHERE x.xincoCoreDataTypeAttributePK.attributeId=" +
@@ -120,6 +125,8 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
 
     }
     //create complete list of data type attributes
+
+    @SuppressWarnings("unchecked")
     public static Vector getXincoCoreDataTypeAttributeServerTypeAttributes(int attrID) {
         Vector coreDataTypeAttributes = new Vector();
         try {
@@ -220,7 +227,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
         return val;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "static-access"})
     public void delete(AbstractAuditableObject value) {
         try {
             XincoCoreDataType val = (XincoCoreDataType) value;
@@ -234,9 +241,14 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
             pm.startTransaction();
             pm.persist(temp, false, false);
             pm.delete(val, false);
-            getModifiedRecordDAOObject().saveAuditData();
+            setModifiedRecordDAOObject(value.getModifiedRecordDAOObject());
+            //Make sure all audit data is stored properly. If not undo everything
+            if (!getModifiedRecordDAOObject().saveAuditData()) {
+                throw new XincoException(rb.getString("error.audit_data.invalid"));
+            }
             pm.commitAndClose();
         } catch (Throwable ex) {
+            pm.rollback();
             Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -250,11 +262,12 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
 
     /**
      * Get a new newID
+     * @param a 
      * @return New last ID
      */
     @SuppressWarnings("unchecked")
-    public int getNewID() {
-        return new XincoIDServer("XincoCoreDataType").getNewTableID();
+    public int getNewID(boolean a) {
+        return new XincoIDServer("Xinco_Core_Data_Type").getNewTableID(a);
     }
 
     @SuppressWarnings("unchecked")
@@ -289,7 +302,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
     public boolean deleteFromDB() {
         setTransactionTime(DateRange.startingNow());
         try {
-            AuditingDAOHelper.delete(this, getId());
+            AuditingDAOHelper.delete(this, getId(), getChangerID());
             return true;
         } catch (Throwable e) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {

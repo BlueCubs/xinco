@@ -477,6 +477,7 @@ INSERT INTO xinco_id VALUES ('xinco_core_node', 1000);
 INSERT INTO xinco_id VALUES ('xinco_core_data', 1000);  
 INSERT INTO xinco_id VALUES ('xinco_core_ace', 1000);   
 INSERT INTO xinco_id VALUES ('xinco_core_log', 1000);   
+INSERT INTO xinco_id VALUES ('xinco_setting', 1000);  
 INSERT INTO xinco_id VALUES ('xinco_core_user_modified_record', 0);  
 INSERT INTO xinco_id (tablename, last_id) VALUES('xinco_setting',1000);
 
@@ -689,12 +690,8 @@ CREATE TABLE xinco_setting_t (
 )
 TYPE=InnoDB;
 
-CREATE TABLE xinco_id_t (
-  record_id INTEGER(10) UNSIGNED NOT NULL,
-  tablename VARCHAR(255) NOT NULL,
-  last_id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(record_id)
-)
-TYPE=InnoDB;
-
-
+/*For some reason the xinco_core_user_modified_record table is not linked with xinco_core_user*/
+ALTER TABLE `xinco`.`xinco_core_user_modified_record` ADD CONSTRAINT `FK_xinco_core_user` FOREIGN KEY `FK_xinco_core_user` (`id`)
+    REFERENCES `xinco_core_user` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;

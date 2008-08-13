@@ -58,7 +58,9 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
 
     private static List result;
     private static final long serialVersionUID = -6434592092601825647L;
-    //create node object for data structures
+    //create setting object
+
+    @SuppressWarnings("unchecked")
     public XincoSettingServer(int attrID) throws XincoException {
         try {
             parameters.clear();
@@ -81,7 +83,9 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
             throw new XincoException(e.getLocalizedMessage());
         }
     }
-    //create node object for data structures
+    //create setting object 
+
+    @SuppressWarnings("unchecked")
     public XincoSettingServer(String desc) throws XincoException {
         try {
             parameters.clear();
@@ -103,7 +107,8 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
             throw new XincoException(e.getLocalizedMessage());
         }
     }
-    //create node object for data structures
+    //create setting object
+
     public XincoSettingServer(int attrID, String desc, boolean bool,
             int intVal, long longVal, String stringVal) throws XincoException {
         setId(attrID);
@@ -128,7 +133,7 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
     }
 
     public AbstractAuditableObject findById(HashMap parameters) throws Exception {
-        result = pm.namedQuery("XincoCoreSetting.findById", parameters);
+        result = pm.namedQuery("XincoSetting.findById", parameters);
         if (result.size() > 0) {
             XincoSetting temp = (XincoSetting) result.get(0);
             temp.setTransactionTime(getTransactionTime());
@@ -141,7 +146,7 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
 
     public AbstractAuditableObject[] findWithDetails(HashMap parameters) throws Exception {
         int counter = 0;
-        String sql = "SELECT x FROM XincoCoreSetting x WHERE ";
+        String sql = "SELECT x FROM XincoSetting x WHERE ";
         if (parameters.containsKey("id")) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoSetting.class.getName()).log(Level.INFO, "Searching by id");
@@ -164,10 +169,10 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
         }
         result = pm.createdQuery(sql, parameters);
         if (result.size() > 0) {
-            XincoSettingServer temp[] = new XincoSettingServer[result.size()];
+            XincoSetting temp[] = new XincoSetting[result.size()];
             int i = 0;
             while (!result.isEmpty()) {
-                temp[i] = (XincoSettingServer) result.get(0);
+                temp[i] = (XincoSetting) result.get(0);
                 temp[i].setTransactionTime(getTransactionTime());
                 i++;
                 result.remove(0);
@@ -182,12 +187,12 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
         XincoSetting temp;
         XincoSetting newValue = new XincoSetting();
         temp = (XincoSetting) value;
-        temp.setId(temp.getId());
-        temp.setIntValue(getIntValue());
-        temp.setLongValue(getLongValue());
-        temp.setBoolValue(getBoolValue());
-        temp.setDescription(getDescription());
-        temp.setStringValue(getStringValue());
+        newValue.setId(temp.getRecordId());
+        newValue.setIntValue(getIntValue());
+        newValue.setLongValue(getLongValue());
+        newValue.setBoolValue(getBoolValue());
+        newValue.setDescription(getDescription());
+        newValue.setStringValue(getStringValue());
 
         newValue.setRecordId(temp.getRecordId());
         newValue.setCreated(temp.isCreated());
@@ -200,6 +205,7 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
         return newValue;
     }
 
+    @SuppressWarnings("unchecked")
     public static Vector getXincoSettings() {
         Vector settings = new Vector();
         result = pm.namedQuery("XincoSetting.findAll", null);
@@ -219,12 +225,12 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
         return val;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "static-access"})
     public void delete(AbstractAuditableObject value) {
         try {
             XincoSetting val = (XincoSetting) value;
             XincoSettingT temp = new XincoSettingT();
-            temp.setRecordId(val.getRecordId());
+            temp.setRecordId(getRecordId());
             temp.setId(val.getId());
 
             temp.setIntValue(val.getIntValue());
@@ -232,14 +238,18 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
             temp.setBoolValue(val.getBoolValue());
             temp.setDescription(val.getDescription());
             temp.setStringValue(val.getStringValue());
-
             pm.startTransaction();
             pm.persist(temp, false, false);
             pm.delete(val, false);
-            getModifiedRecordDAOObject().saveAuditData();
+            setModifiedRecordDAOObject(value.getModifiedRecordDAOObject());
+            //Make sure all audit data is stored properly. If not undo everything
+            if (!getModifiedRecordDAOObject().saveAuditData()) {
+                throw new XincoException(rb.getString("error.audit_data.invalid"));
+            }
             pm.commitAndClose();
         } catch (Throwable ex) {
             Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.SEVERE, null, ex);
+            pm.rollback();
         }
     }
 
@@ -252,11 +262,12 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
 
     /**
      * Get a new newID
+     * @param a 
      * @return New last ID
      */
     @SuppressWarnings("unchecked")
-    public int getNewID() {
-        return new XincoIDServer("XincoCoreLanguage").getNewTableID();
+    public int getNewID(boolean a) {
+        return new XincoIDServer("xinco_setting").getNewTableID(a);
     }
 
     @SuppressWarnings("unchecked")
@@ -264,6 +275,7 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
         try {
             if (getId() > 0) {
                 AuditingDAOHelper.update(this, new XincoSetting());
+                return true;
             } else {
                 XincoSetting temp = new XincoSetting();
                 temp.setChangerID(getChangerID());
@@ -294,7 +306,7 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
     public boolean deleteFromDB() {
         setTransactionTime(DateRange.startingNow());
         try {
-            AuditingDAOHelper.delete(this, getId());
+            AuditingDAOHelper.delete(this, getId(), getChangerID());
             return true;
         } catch (Throwable e) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
