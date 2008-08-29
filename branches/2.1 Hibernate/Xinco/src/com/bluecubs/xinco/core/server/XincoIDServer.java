@@ -107,6 +107,7 @@ public class XincoIDServer extends XincoID implements XincoAuditableDAO, Persist
         }
     }
 
+    @SuppressWarnings("static-access")
     public AbstractAuditableObject create(AbstractAuditableObject value) {
         XincoID temp;
         XincoID newValue = new XincoID();
@@ -246,6 +247,6 @@ public class XincoIDServer extends XincoID implements XincoAuditableDAO, Persist
     }
 
     public int getNewID(boolean a) {
-            return getNewTableID(a);
+        return getNewTableID(a);
     }
 }

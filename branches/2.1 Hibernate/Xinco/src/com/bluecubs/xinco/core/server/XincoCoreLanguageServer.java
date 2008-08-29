@@ -119,7 +119,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
     public AbstractAuditableObject findById(HashMap parameters) throws Exception {
         result = pm.namedQuery("XincoCoreLanguage.findById", parameters);
         if (result.size() > 0) {
-            XincoCoreLanguageServer temp = (XincoCoreLanguageServer) result.get(0);
+            XincoCoreLanguage temp = (XincoCoreLanguage) result.get(0);
             temp.setTransactionTime(getTransactionTime());
             temp.setChangerID(getChangerID());
             return temp;
@@ -163,10 +163,10 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
         }
         result = pm.createdQuery(sql, parameters);
         if (result.size() > 0) {
-            XincoCoreLanguageServer temp[] = new XincoCoreLanguageServer[result.size()];
+            XincoCoreLanguage temp[] = new XincoCoreLanguage[result.size()];
             int i = 0;
             while (!result.isEmpty()) {
-                temp[i] = (XincoCoreLanguageServer) result.get(0);
+                temp[i] = (XincoCoreLanguage) result.get(0);
                 temp[i].setTransactionTime(getTransactionTime());
                 i++;
                 result.remove(0);
@@ -179,11 +179,11 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
 
     @SuppressWarnings("static-access")
     public AbstractAuditableObject create(AbstractAuditableObject value) {
-        XincoCoreLanguageServer temp;
+        XincoCoreLanguage temp;
         XincoCoreLanguage newValue = new XincoCoreLanguage();
 
-        temp = (XincoCoreLanguageServer) value;
-        newValue.setId(temp.getId());
+        temp = (XincoCoreLanguage) value;
+        newValue.setId(temp.getRecordId());
         newValue.setDesignation(temp.getDesignation());
         newValue.setSign(temp.getSign());
 
@@ -200,7 +200,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
     }
 
     public AbstractAuditableObject update(AbstractAuditableObject value) {
-        XincoCoreLanguageServer val = (XincoCoreLanguageServer) value;
+        XincoCoreLanguage val = (XincoCoreLanguage) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
             Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.INFO,

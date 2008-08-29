@@ -1,13 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.bluecubs.xinco.core.server;
 
-import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.persistence.XincoCoreGroup;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -17,7 +16,10 @@ import junit.framework.TestSuite;
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 public class XincoCoreGroupServerTest extends TestCase {
-    
+
+    private int tempId = -1;
+    HashMap parameters = new HashMap();
+
     public XincoCoreGroupServerTest(String testName) {
         super(testName);
     }
@@ -41,133 +43,114 @@ public class XincoCoreGroupServerTest extends TestCase {
      * Test of getXincoCoreGroups method, of class XincoCoreGroupServer.
      */
     public void testGetXincoCoreGroups() {
-        System.out.println("getXincoCoreGroups");
-        Vector expResult = null;
-        Vector result = XincoCoreGroupServer.getXincoCoreGroups();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            System.out.println("getXincoCoreGroups");
+            Vector result = XincoCoreGroupServer.getXincoCoreGroups();
+            assertTrue(result.size() > 0);
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreGroupServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
      * Test of findById method, of class XincoCoreGroupServer.
+     * @throws Exception 
      */
+    @SuppressWarnings("unchecked")
     public void testFindById() throws Exception {
-        System.out.println("findById");
-        HashMap parameters = null;
-        XincoCoreGroupServer instance = new XincoCoreGroupServer();
-        AbstractAuditableObject expResult = null;
-        AbstractAuditableObject result = instance.findById(parameters);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            System.out.println("findById");
+            parameters = new HashMap();
+            parameters.put("id", 1);
+            XincoCoreGroupServer instance = new XincoCoreGroupServer(1);
+            XincoAbstractAuditableObject result = (XincoAbstractAuditableObject) instance.findById(parameters);
+            assertEquals(1, (int) ((XincoCoreGroup) result).getId());
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreGroupServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
      * Test of findWithDetails method, of class XincoCoreGroupServer.
+     * @throws Exception 
      */
+    @SuppressWarnings("unchecked")
     public void testFindWithDetails() throws Exception {
-        System.out.println("findWithDetails");
-        HashMap parameters = null;
-        XincoCoreGroupServer instance = new XincoCoreGroupServer();
-        AbstractAuditableObject[] expResult = null;
-        AbstractAuditableObject[] result = instance.findWithDetails(parameters);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of create method, of class XincoCoreGroupServer.
-     */
-    public void testCreate() {
-        System.out.println("create");
-        AbstractAuditableObject value = null;
-        XincoCoreGroupServer instance = new XincoCoreGroupServer();
-        AbstractAuditableObject expResult = null;
-        AbstractAuditableObject result = instance.create(value);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of update method, of class XincoCoreGroupServer.
-     */
-    public void testUpdate() {
-        System.out.println("update");
-        AbstractAuditableObject value = null;
-        XincoCoreGroupServer instance = new XincoCoreGroupServer();
-        AbstractAuditableObject expResult = null;
-        AbstractAuditableObject result = instance.update(value);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of delete method, of class XincoCoreGroupServer.
-     */
-    public void testDelete() {
-        System.out.println("delete");
-        AbstractAuditableObject value = null;
-        XincoCoreGroupServer instance = new XincoCoreGroupServer();
-        instance.delete(value);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            System.out.println("findWithDetails");
+            XincoCoreGroupServer instance = new XincoCoreGroupServer(1);
+            XincoCoreGroup[] expResult = {instance};
+            parameters.clear();
+            parameters.put("designation", "general.group.admin");
+            XincoAbstractAuditableObject[] result = (XincoAbstractAuditableObject[]) instance.findWithDetails(parameters);
+            assertEquals(expResult[0].getId(), ((XincoCoreGroup) result[0]).getId());
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreGroupServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
      * Test of getParameters method, of class XincoCoreGroupServer.
      */
+    @SuppressWarnings("unchecked")
     public void testGetParameters() {
-        System.out.println("getParameters");
-        XincoCoreGroupServer instance = new XincoCoreGroupServer();
-        HashMap expResult = null;
-        HashMap result = instance.getParameters();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            System.out.println("getParameters");
+            XincoCoreGroupServer instance = new XincoCoreGroupServer(1);
+            HashMap expResult = new HashMap();
+            expResult.put("id", 1);
+            HashMap result = instance.getParameters();
+            assertEquals(expResult, result);
+        } catch (XincoException ex) {
+            Logger.getLogger(XincoCoreGroupServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreGroupServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
      * Test of getNewID method, of class XincoCoreGroupServer.
      */
     public void testGetNewID() {
-        System.out.println("getNewID");
-        boolean a = false;
-        XincoCoreGroupServer instance = new XincoCoreGroupServer();
-        int expResult = 0;
-        int result = instance.getNewID(a);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            System.out.println("getNewID");
+            XincoCoreGroupServer instance = new XincoCoreGroupServer(1);
+            int result = instance.getNewID(true);
+            System.out.println("New id: " + result);
+            assertTrue(result > 0);
+        } catch (XincoException ex) {
+            Logger.getLogger(XincoCoreGroupServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreGroupServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
      * Test of write2DB method, of class XincoCoreGroupServer.
      */
-    public void testWrite2DB() {
-        System.out.println("write2DB");
-        XincoCoreGroupServer instance = new XincoCoreGroupServer();
-        boolean expResult = false;
-        boolean result = instance.write2DB();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testWrite2DBAndDelete() {
+        try {
+            System.out.println("write2DB");
+            XincoCoreGroupServer instance = new XincoCoreGroupServer(0, "test", 1);
+            System.out.println("Instance id before writing: " + instance.getId());
+            assertTrue(instance.write2DB());
+            System.out.println("Instance id after writing: " + instance.getId());
+            assertTrue(instance.getId() > 0);
+            instance.setChangerID(1);
+            assertTrue(instance.deleteFromDB());
+        } catch (XincoException ex) {
+            Logger.getLogger(XincoCoreGroupServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreGroupServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
-
-    /**
-     * Test of deleteFromDB method, of class XincoCoreGroupServer.
-     */
-    public void testDeleteFromDB() {
-        System.out.println("deleteFromDB");
-        XincoCoreGroupServer instance = new XincoCoreGroupServer();
-        boolean expResult = false;
-        boolean result = instance.deleteFromDB();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
 }

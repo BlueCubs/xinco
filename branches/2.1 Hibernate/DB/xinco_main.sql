@@ -463,21 +463,23 @@ INSERT INTO xinco_core_user_has_xinco_core_group VALUES (3, 2, 1);
 
 
 CREATE TABLE xinco_id (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   tablename VARCHAR(255) NOT NULL,
   last_id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(tablename)
+  PRIMARY KEY(id),
+  UNIQUE INDEX Unique(tablename)
 )
 TYPE=InnoDB;
 
-INSERT INTO xinco_id VALUES ('xinco_core_language', 1000); 
-INSERT INTO xinco_id VALUES ('xinco_core_data_type', 1000);   
-INSERT INTO xinco_id VALUES ('xinco_core_user', 1000);  
-INSERT INTO xinco_id VALUES ('xinco_core_group', 1000);   
-INSERT INTO xinco_id VALUES ('xinco_core_node', 1000); 
-INSERT INTO xinco_id VALUES ('xinco_core_data', 1000);  
-INSERT INTO xinco_id VALUES ('xinco_core_ace', 1000);   
-INSERT INTO xinco_id VALUES ('xinco_core_log', 1000);   
-INSERT INTO xinco_id VALUES ('xinco_core_user_modified_record', 0);  
+INSERT INTO xinco_id (tablename, last_id)VALUES ('xinco_core_language', 1000); 
+INSERT INTO xinco_id (tablename, last_id)VALUES ('xinco_core_data_type', 1000);   
+INSERT INTO xinco_id (tablename, last_id)VALUES ('xinco_core_user', 1000);  
+INSERT INTO xinco_id (tablename, last_id)VALUES ('xinco_core_group', 1000);   
+INSERT INTO xinco_id (tablename, last_id)VALUES ('xinco_core_node', 1000); 
+INSERT INTO xinco_id (tablename, last_id)VALUES ('xinco_core_data', 1000);  
+INSERT INTO xinco_id (tablename, last_id)VALUES ('xinco_core_ace', 1000);   
+INSERT INTO xinco_id (tablename, last_id)VALUES ('xinco_core_log', 1000);   
+INSERT INTO xinco_id (tablename, last_id)VALUES ('xinco_core_user_modified_record', 0);  
 INSERT INTO xinco_id (tablename, last_id) VALUES('xinco_setting',1000);
 
 

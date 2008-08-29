@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bluecubs.xinco.core.persistence;
 
 import com.bluecubs.xinco.core.hibernate.audit.XincoAbstractAuditableObject;

@@ -36,6 +36,7 @@ package com.bluecubs.xinco.core.server;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.hibernate.audit.XincoAuditableDAO;
 import com.bluecubs.xinco.core.persistence.XincoCoreUserHasXincoCoreGroup;
+import com.bluecubs.xinco.core.persistence.XincoCoreUserHasXincoCoreGroupPK;
 import com.bluecubs.xinco.core.persistence.XincoCoreUserHasXincoCoreGroupT;
 import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
 import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
@@ -54,11 +55,14 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
 
     private static final long serialVersionUID = -6641477448478703235L;
     private List result;
+    private int groupID,  userID;
     //create data type attribute object for data structures
 
     @SuppressWarnings("unchecked")
     public XincoCoreUserHasXincoCoreGroupServer(int xincoCoreUserId, int xincoCoreGroupId) throws XincoException {
         try {
+            groupID = xincoCoreGroupId;
+            userID = xincoCoreUserId;
             parameters.clear();
             parameters.put("xincoCoreUserId", xincoCoreUserId);
             parameters.put("xincoCoreGroupId", xincoCoreGroupId);
@@ -74,16 +78,33 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
                 throw new XincoException();
             }
         } catch (Exception e) {
-            throw new XincoException();
+            throw new XincoException(e.getLocalizedMessage());
         }
 
+    }
+
+    @Override
+    public XincoCoreUserHasXincoCoreGroupPK getXincoCoreUserHasXincoCoreGroupPK() {
+        if(xincoCoreUserHasXincoCoreGroupPK==null) {
+            xincoCoreUserHasXincoCoreGroupPK = new XincoCoreUserHasXincoCoreGroupPK();
+        }
+        return xincoCoreUserHasXincoCoreGroupPK;
     }
     //create data type attribute object for data structures
 
     public XincoCoreUserHasXincoCoreGroupServer(int xincoCoreUserId, int xincoCoreGroupId, int statusNumber) throws XincoException {
         getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreGroupId(xincoCoreGroupId);
         getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreUserId(xincoCoreUserId);
+        groupID = xincoCoreGroupId;
+        userID = xincoCoreUserId;
         setStatusNumber(statusNumber);
+    }
+
+    /**
+     * Protected method for testing purposes
+     */
+    protected XincoCoreUserHasXincoCoreGroupServer() {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     public AbstractAuditableObject findById(HashMap parameters) throws Exception {
@@ -135,10 +156,10 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
         }
         result = pm.createdQuery(sql, parameters);
         if (result.size() > 0) {
-            XincoCoreUserHasXincoCoreGroupServer temp[] = new XincoCoreUserHasXincoCoreGroupServer[result.size()];
+            XincoCoreUserHasXincoCoreGroup temp[] = new XincoCoreUserHasXincoCoreGroup[result.size()];
             int i = 0;
             while (!result.isEmpty()) {
-                temp[i] = (XincoCoreUserHasXincoCoreGroupServer) result.get(0);
+                temp[i] = (XincoCoreUserHasXincoCoreGroup) result.get(0);
                 temp[i].setTransactionTime(getTransactionTime());
                 i++;
                 result.remove(0);
@@ -149,10 +170,11 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
         }
     }
 
+    @SuppressWarnings("static-access")
     public AbstractAuditableObject create(AbstractAuditableObject value) {
-        XincoCoreUserHasXincoCoreGroupServer temp;
+        XincoCoreUserHasXincoCoreGroup temp;
         XincoCoreUserHasXincoCoreGroup newValue = new XincoCoreUserHasXincoCoreGroup();
-        temp = (XincoCoreUserHasXincoCoreGroupServer) value;
+        temp = (XincoCoreUserHasXincoCoreGroup) value;
         newValue.getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreGroupId(temp.getXincoCoreUserHasXincoCoreGroupPK().getXincoCoreGroupId());
         newValue.getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreUserId(temp.getXincoCoreUserHasXincoCoreGroupPK().getXincoCoreUserId());
         newValue.setStatusNumber(temp.getStatusNumber());
@@ -170,7 +192,7 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
     }
 
     public AbstractAuditableObject update(AbstractAuditableObject value) {
-        XincoCoreUserHasXincoCoreGroupServer val = (XincoCoreUserHasXincoCoreGroupServer) value;
+        XincoCoreUserHasXincoCoreGroup val = (XincoCoreUserHasXincoCoreGroup) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
             Logger.getLogger(XincoCoreUserHasXincoCoreGroupServer.class.getName()).log(Level.INFO,
@@ -182,10 +204,11 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
     @SuppressWarnings("static-access")
     public void delete(AbstractAuditableObject value) {
         try {
-            XincoCoreUserHasXincoCoreGroupServer val = (XincoCoreUserHasXincoCoreGroupServer) value;
+            XincoCoreUserHasXincoCoreGroup val = (XincoCoreUserHasXincoCoreGroup) value;
             result = pm.createdQuery("SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE " +
                     "x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreUserId = :xincoCoreUserId and " +
-                    "x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreGroupId = :xincoCoreGroupId", val.getParameters());
+                    "x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreGroupId = :xincoCoreGroupId", 
+                    ((XincoCoreUserHasXincoCoreGroupServer)value).getParameters());
             pm.startTransaction();
             while (!result.isEmpty()) {
 
@@ -233,6 +256,10 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
                 temp.setChangerID(getChangerID());
                 temp.setCreated(true);
 
+                //Make sure our PK is correct
+                getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreGroupId(groupID);
+                getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreUserId(userID);
+
                 temp.getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreGroupId(getXincoCoreUserHasXincoCoreGroupPK().getXincoCoreGroupId());
                 temp.getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreUserId(getXincoCoreUserHasXincoCoreGroupPK().getXincoCoreUserId());
                 temp.setStatusNumber(getStatusNumber());
@@ -242,6 +269,7 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
                 if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                     Logger.getLogger(XincoCoreUserHasXincoCoreGroupServer.class.getName()).log(Level.INFO, "Assigned id: " + getXincoCoreUserHasXincoCoreGroupPK());
                 }
+                setXincoCoreUserHasXincoCoreGroupPK(temp.getXincoCoreUserHasXincoCoreGroupPK());
             }
             return true;
         } catch (Throwable e) {

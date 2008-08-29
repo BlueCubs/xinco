@@ -183,6 +183,7 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
         }
     }
 
+    @SuppressWarnings("static-access")
     public AbstractAuditableObject create(AbstractAuditableObject value) {
         XincoSetting temp;
         XincoSetting newValue = new XincoSetting();

@@ -15,12 +15,25 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "xinco_core_data", catalog = "xinco", schema = "")
-@NamedQueries({@NamedQuery(name = "XincoCoreData.findById", query = "SELECT x FROM XincoCoreData x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreData.findByXincoCoreNodeId", query = "SELECT x FROM XincoCoreData x WHERE x.xincoCoreNodeId = :xincoCoreNodeId"), @NamedQuery(name = "XincoCoreData.findByXincoCoreLanguageId", query = "SELECT x FROM XincoCoreData x WHERE x.xincoCoreLanguageId = :xincoCoreLanguageId"), @NamedQuery(name = "XincoCoreData.findByXincoCoreDataTypeId", query = "SELECT x FROM XincoCoreData x WHERE x.xincoCoreDataTypeId = :xincoCoreDataTypeId"), @NamedQuery(name = "XincoCoreData.findByDesignation", query = "SELECT x FROM XincoCoreData x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreData.findByStatusNumber", query = "SELECT x FROM XincoCoreData x WHERE x.statusNumber = :statusNumber")})
+@NamedQueries({@NamedQuery(name = "XincoCoreData.findById",
+    query = "SELECT x FROM XincoCoreData x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreData.findByXincoCoreNodeId",
+    query = "SELECT x FROM XincoCoreData x WHERE x.xincoCoreNodeId = :xincoCoreNodeId"),
+    @NamedQuery(name = "XincoCoreData.findByXincoCoreLanguageId",
+    query = "SELECT x FROM XincoCoreData x WHERE x.xincoCoreLanguageId = :xincoCoreLanguageId"),
+    @NamedQuery(name = "XincoCoreData.findByXincoCoreDataTypeId",
+    query = "SELECT x FROM XincoCoreData x WHERE x.xincoCoreDataTypeId = :xincoCoreDataTypeId"),
+    @NamedQuery(name = "XincoCoreData.findByDesignation",
+    query = "SELECT x FROM XincoCoreData x WHERE x.designation = :designation"),
+    @NamedQuery(name = "XincoCoreData.findByStatusNumber",
+    query = "SELECT x FROM XincoCoreData x WHERE x.statusNumber = :statusNumber")
+})
 public class XincoCoreData extends XincoAbstractAuditableObject implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Integer xclId;
     @Column(name = "xinco_core_node_id", nullable = false)
     private int xincoCoreNodeId;
     @Column(name = "xinco_core_language_id", nullable = false)
@@ -36,11 +49,11 @@ public class XincoCoreData extends XincoAbstractAuditableObject implements Seria
     }
 
     public XincoCoreData(Integer id) {
-        this.id = id;
+        this.xclId = id;
     }
 
     public XincoCoreData(Integer id, int xincoCoreNodeId, int xincoCoreLanguageId, int xincoCoreDataTypeId, String designation, int statusNumber) {
-        this.id = id;
+        this.xclId = id;
         this.xincoCoreNodeId = xincoCoreNodeId;
         this.xincoCoreLanguageId = xincoCoreLanguageId;
         this.xincoCoreDataTypeId = xincoCoreDataTypeId;
@@ -49,11 +62,11 @@ public class XincoCoreData extends XincoAbstractAuditableObject implements Seria
     }
 
     public Integer getId() {
-        return id;
+        return xclId;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.xclId = id;
     }
 
     public int getXincoCoreNodeId() {
@@ -99,7 +112,7 @@ public class XincoCoreData extends XincoAbstractAuditableObject implements Seria
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (xclId != null ? xclId.hashCode() : 0);
         return hash;
     }
 
@@ -110,7 +123,7 @@ public class XincoCoreData extends XincoAbstractAuditableObject implements Seria
             return false;
         }
         XincoCoreData other = (XincoCoreData) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.xclId == null && other.xclId != null) || (this.xclId != null && !this.xclId.equals(other.xclId))) {
             return false;
         }
         return true;
@@ -118,7 +131,6 @@ public class XincoCoreData extends XincoAbstractAuditableObject implements Seria
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.persistence.XincoCoreData[id=" + id + "]";
+        return "com.bluecubs.xinco.core.persistence.XincoCoreData[id=" + xclId + "]";
     }
-
 }

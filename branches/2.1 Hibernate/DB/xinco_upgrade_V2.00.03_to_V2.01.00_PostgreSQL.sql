@@ -136,3 +136,10 @@ ALTER TABLE `xinco`.`xinco_core_user_modified_record` ADD CONSTRAINT `FK_xinco_c
     REFERENCES `xinco_core_user` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION;
+
+/* Hibernate doesn't handle well these null values*/
+update xinco_add_attribute set attrib_int =0 where attrib_int is null;
+
+update xinco_add_attribute set attrib_unsignedint =0 where attrib_unsignedint is null;
+
+update xinco_add_attribute set attrib_double =0.0 where attrib_double is null;

@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 public interface XincoAuditableDAO extends AuditableDAO {
+
     ResourceBundle rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
     PersistenceManager pm = XincoConfigSingletonServer.getPersistenceManager();
 }

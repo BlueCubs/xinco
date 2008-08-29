@@ -91,8 +91,8 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
         setId(attrID);
         setXincoCoreUserId(attrUID);
         setXincoCoreGroupId(attrGID);
-        setXincoCoreNodeId(attrNID);
-        setXincoCoreDataId(attrDID);
+        setXincoCoreNodeId(attrNID<=0?null:attrNID);
+        setXincoCoreDataId(attrDID<=0?null:attrDID);
         setReadPermission(attrRP);
         setWritePermission(attrWP);
         setExecutePermission(attrEP);
@@ -104,20 +104,19 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
     @SuppressWarnings("unchecked")
     public static Vector getXincoCoreACL(int attrID, String attrT) {
         Vector core_acl = new Vector();
+        parameters.clear();
+        parameters.put("value", attrID);
         try {
-            parameters.clear();
-
-            result = pm.createdQuery("SELECT xca FROM XincoCoreACE xca WHERE xca." + attrT + "=" +
-                    attrID + " ORDER BY xca.xincoCoreUserId, xca.xincoCoreGroupId, xca.xincoCoreNodeId, " +
-                    "xca.xincoCoreDataId", parameters);
+            result = pm.createdQuery("SELECT x FROM XincoCoreACE x WHERE x." + attrT + " =:value" +
+                    " ORDER BY x.xincoCoreUserId, x.xincoCoreGroupId, x.xincoCoreNodeId, " +
+                    "x.xincoCoreDataId",parameters);
             while (!result.isEmpty()) {
-                core_acl.addElement((XincoCoreACEServer) result.get(0));
+                core_acl.addElement((XincoCoreACE) result.get(0));
                 result.remove(0);
             }
         } catch (Exception e) {
             core_acl.removeAllElements();
         }
-
         return core_acl;
     }
     //check access by comparing user / user groups to ACL and return permissions
@@ -166,10 +165,6 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
             }
         }
         return core_ace;
-    }
-
-    public void setUserId(int i) {
-        this.userID = i;
     }
 
     public AbstractAuditableObject findById(HashMap parameters) throws Exception {
@@ -258,7 +253,7 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
         XincoCoreACE temp;
         XincoCoreACE newValue = new XincoCoreACE();
         temp = (XincoCoreACE) value;
-        newValue.setId(temp.getId());
+        newValue.setId(temp.getRecordId());
         newValue.setAdminPermission(temp.getAdminPermission());
         newValue.setExecutePermission(temp.getExecutePermission());
         newValue.setReadPermission(temp.getReadPermission());
@@ -346,7 +341,6 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
                 AuditingDAOHelper.update(this, new XincoCoreACE(getId()));
             } else {
                 XincoCoreACE temp = new XincoCoreACE();
-                temp.setId(getId());
                 temp.setChangerID(getChangerID());
                 temp.setCreated(true);
 

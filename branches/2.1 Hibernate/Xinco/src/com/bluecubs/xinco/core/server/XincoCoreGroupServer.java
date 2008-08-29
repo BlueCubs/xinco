@@ -104,7 +104,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
     public AbstractAuditableObject findById(HashMap parameters) throws Exception {
         result = pm.namedQuery("XincoCoreGroup.findById", parameters);
         if (result.size() > 0) {
-            XincoCoreGroupServer temp = (XincoCoreGroupServer) result.get(0);
+            XincoCoreGroup temp = (XincoCoreGroup) result.get(0);
             temp.setTransactionTime(getTransactionTime());
             temp.setChangerID(getChangerID());
             return temp;
@@ -148,10 +148,10 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
         }
         result = pm.createdQuery(sql, parameters);
         if (result.size() > 0) {
-            XincoCoreGroupServer temp[] = new XincoCoreGroupServer[result.size()];
+            XincoCoreGroup temp[] = new XincoCoreGroup[result.size()];
             int i = 0;
             while (!result.isEmpty()) {
-                temp[i] = (XincoCoreGroupServer) result.get(0);
+                temp[i] = (XincoCoreGroup) result.get(0);
                 temp[i].setTransactionTime(getTransactionTime());
                 i++;
                 result.remove(0);
@@ -162,12 +162,13 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
         }
     }
 
+    @SuppressWarnings("static-access")
     public AbstractAuditableObject create(AbstractAuditableObject value) {
-        XincoCoreGroupServer temp;
+        XincoCoreGroup temp;
         XincoCoreGroup newValue = new XincoCoreGroup();
 
-        temp = (XincoCoreGroupServer) value;
-        newValue.setId(temp.getId());
+        temp = (XincoCoreGroup) value;
+        newValue.setId(temp.getRecordId());
         newValue.setDesignation(temp.getDesignation());
         newValue.setStatusNumber(temp.getStatusNumber());
 
@@ -184,7 +185,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
     }
 
     public AbstractAuditableObject update(AbstractAuditableObject value) {
-        XincoCoreGroupServer val = (XincoCoreGroupServer) value;
+        XincoCoreGroup val = (XincoCoreGroup) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
             Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.INFO,

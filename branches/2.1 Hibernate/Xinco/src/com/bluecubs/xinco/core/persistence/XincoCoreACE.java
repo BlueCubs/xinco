@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bluecubs.xinco.core.persistence;
 
 import com.bluecubs.xinco.core.hibernate.audit.XincoAbstractAuditableObject;
@@ -20,12 +19,31 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "xinco_core_ace", catalog = "xinco", schema = "")
-@NamedQueries({@NamedQuery(name = "XincoCoreACE.findById", query = "SELECT x FROM XincoCoreACE x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreACE.findByXincoCoreUserId", query = "SELECT x FROM XincoCoreACE x WHERE x.xincoCoreUserId = :xincoCoreUserId"), @NamedQuery(name = "XincoCoreACE.findByXincoCoreGroupId", query = "SELECT x FROM XincoCoreACE x WHERE x.xincoCoreGroupId = :xincoCoreGroupId"), @NamedQuery(name = "XincoCoreACE.findByXincoCoreNodeId", query = "SELECT x FROM XincoCoreACE x WHERE x.xincoCoreNodeId = :xincoCoreNodeId"), @NamedQuery(name = "XincoCoreACE.findByXincoCoreDataId", query = "SELECT x FROM XincoCoreACE x WHERE x.xincoCoreDataId = :xincoCoreDataId"), @NamedQuery(name = "XincoCoreACE.findByReadPermission", query = "SELECT x FROM XincoCoreACE x WHERE x.readPermission = :readPermission"), @NamedQuery(name = "XincoCoreACE.findByWritePermission", query = "SELECT x FROM XincoCoreACE x WHERE x.writePermission = :writePermission"), @NamedQuery(name = "XincoCoreACE.findByExecutePermission", query = "SELECT x FROM XincoCoreACE x WHERE x.executePermission = :executePermission"), @NamedQuery(name = "XincoCoreACE.findByAdminPermission", query = "SELECT x FROM XincoCoreACE x WHERE x.adminPermission = :adminPermission")})
+@NamedQueries({@NamedQuery(name = "XincoCoreACE.findById",
+    query = "SELECT x FROM XincoCoreACE x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreACE.findByXincoCoreUserId",
+    query = "SELECT x FROM XincoCoreACE x WHERE x.xincoCoreUserId = :xincoCoreUserId"),
+    @NamedQuery(name = "XincoCoreACE.findByXincoCoreGroupId",
+    query = "SELECT x FROM XincoCoreACE x WHERE x.xincoCoreGroupId = :xincoCoreGroupId"),
+    @NamedQuery(name = "XincoCoreACE.findByXincoCoreNodeId",
+    query = "SELECT x FROM XincoCoreACE x WHERE x.xincoCoreNodeId = :xincoCoreNodeId"),
+    @NamedQuery(name = "XincoCoreACE.findByXincoCoreDataId",
+    query = "SELECT x FROM XincoCoreACE x WHERE x.xincoCoreDataId = :xincoCoreDataId"),
+    @NamedQuery(name = "XincoCoreACE.findByReadPermission",
+    query = "SELECT x FROM XincoCoreACE x WHERE x.readPermission = :readPermission"),
+    @NamedQuery(name = "XincoCoreACE.findByWritePermission",
+    query = "SELECT x FROM XincoCoreACE x WHERE x.writePermission = :writePermission"),
+    @NamedQuery(name = "XincoCoreACE.findByExecutePermission",
+    query = "SELECT x FROM XincoCoreACE x WHERE x.executePermission = :executePermission"),
+    @NamedQuery(name = "XincoCoreACE.findByAdminPermission",
+    query = "SELECT x FROM XincoCoreACE x WHERE x.adminPermission = :adminPermission")
+})
 public class XincoCoreACE extends XincoAbstractAuditableObject implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Integer aceId;
     @Column(name = "xinco_core_user_id")
     private Integer xincoCoreUserId;
     @Column(name = "xinco_core_group_id")
@@ -47,11 +65,11 @@ public class XincoCoreACE extends XincoAbstractAuditableObject implements Serial
     }
 
     public XincoCoreACE(Integer id) {
-        this.id = id;
+        this.aceId = id;
     }
 
     public XincoCoreACE(Integer id, boolean readPermission, boolean writePermission, boolean executePermission, boolean adminPermission) {
-        this.id = id;
+        this.aceId = id;
         this.readPermission = readPermission;
         this.writePermission = writePermission;
         this.executePermission = executePermission;
@@ -59,11 +77,11 @@ public class XincoCoreACE extends XincoAbstractAuditableObject implements Serial
     }
 
     public Integer getId() {
-        return id;
+        return aceId;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.aceId = id;
     }
 
     public Integer getXincoCoreUserId() {
@@ -133,7 +151,7 @@ public class XincoCoreACE extends XincoAbstractAuditableObject implements Serial
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (aceId != null ? aceId.hashCode() : 0);
         return hash;
     }
 
@@ -144,7 +162,8 @@ public class XincoCoreACE extends XincoAbstractAuditableObject implements Serial
             return false;
         }
         XincoCoreACE other = (XincoCoreACE) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.aceId == null && other.aceId != null) ||
+                (this.aceId != null && !this.aceId.equals(other.aceId))) {
             return false;
         }
         return true;
@@ -152,7 +171,6 @@ public class XincoCoreACE extends XincoAbstractAuditableObject implements Serial
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.persistence.XincoCoreACE[id=" + id + "]";
+        return "com.bluecubs.xinco.core.persistence.XincoCoreACE[id=" + aceId + "]";
     }
-
 }

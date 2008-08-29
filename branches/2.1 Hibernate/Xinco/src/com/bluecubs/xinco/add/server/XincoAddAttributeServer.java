@@ -147,13 +147,12 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
             result = pm.createdQuery("SELECT x FROM XincoAddAttribute x WHERE " +
                     "x.xincoAddAttributePK.xincoCoreDataId = :xincoCoreDataId order by x.xincoAddAttributePK.attributeId", parameters);
             while (!result.isEmpty()) {
-                addAttributes.addElement((XincoAddAttributeServer) result.get(0));
+                addAttributes.addElement((XincoAddAttribute) result.get(0));
                 result.remove(0);
             }
         } catch (Exception e) {
             addAttributes.removeAllElements();
         }
-
         return addAttributes;
     }
 
@@ -268,6 +267,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         }
     }
 
+    @SuppressWarnings("static-access")
     public AbstractAuditableObject create(AbstractAuditableObject value) {
         XincoAddAttributeServer temp;
         XincoAddAttribute newValue = new XincoAddAttribute();

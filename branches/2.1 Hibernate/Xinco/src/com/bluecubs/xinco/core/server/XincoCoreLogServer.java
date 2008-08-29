@@ -35,15 +35,14 @@
  */
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoVersion;
 import java.util.Vector;
-import java.util.GregorianCalendar;
 import com.bluecubs.xinco.core.persistence.XincoCoreLog;
 import com.bluecubs.xinco.core.persistence.XincoCoreUser;
 import com.dreamer.Hibernate.Audit.PersistenceServerObject;
 import com.dreamer.Hibernate.PersistenceManager;
-import com.dreamer.Hibernate.conf.ConfigSingletonServer;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -53,11 +52,11 @@ import java.util.logging.Logger;
 public class XincoCoreLogServer extends XincoCoreLog implements PersistenceServerObject {
 
     private static final long serialVersionUID = -8734701061727738206L;
-    private XincoCoreUser user;
-    private static PersistenceManager pm = ConfigSingletonServer.getPersistenceManager();
+    protected XincoCoreUser user;
     private static HashMap parameters = new HashMap();
     private static List result;
     private XincoVersion version;
+    private static PersistenceManager pm = XincoConfigSingletonServer.getPersistenceManager();
     //create single log object for data structures
 
     @SuppressWarnings("unchecked")
@@ -113,16 +112,17 @@ public class XincoCoreLogServer extends XincoCoreLog implements PersistenceServe
 
     @SuppressWarnings("unchecked")
     public static Vector getXincoCoreLogs(int attrID) {
-
         Vector core_log = new Vector();
-        GregorianCalendar cal = new GregorianCalendar();
         try {
-            result = pm.createdQuery("SELECT x FROM XincoCoreLog x WHERE x.xincoCoreDataId=" + attrID, null);
+            parameters.clear();
+            parameters.put("id", attrID);
+            result = pm.namedQuery("XincoCoreLog.findById",parameters);
             while (!result.isEmpty()) {
                 core_log.addElement((XincoCoreLog) result.get(0));
                 result.remove(0);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             core_log.removeAllElements();
         }
         return core_log;

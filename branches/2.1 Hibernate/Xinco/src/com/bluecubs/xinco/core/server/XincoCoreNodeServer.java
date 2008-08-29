@@ -56,7 +56,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
 
     private static final long serialVersionUID = 519042301570816095L;
     private static List result;
-    private Vector xincoCoreNodes,  xincoCoreData,  xincoCoreAcl;
+    private Vector xincoCoreNodes = new Vector(),  xincoCoreData = new Vector(),  xincoCoreACL = new Vector();
     //create node object for data structures
 
     @SuppressWarnings("unchecked")
@@ -64,7 +64,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
         try {
             parameters.clear();
             parameters.put("id", attrID);
-            result = pm.namedQuery("XincoCoreLanguage.findById", parameters);
+            result = pm.namedQuery("XincoCoreNode.findById", parameters);
             //throw exception if no result found
             if (!result.isEmpty()) {
                 XincoCoreNode xcn = (XincoCoreNode) result.get(0);
@@ -85,7 +85,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
             getXincoCoreACL().removeAllElements();
             getXincoCoreNodes().removeAllElements();
             getXincoCoreData().removeAllElements();
-            throw new XincoException();
+            throw new XincoException(e.getLocalizedMessage());
         }
 
     }
@@ -114,9 +114,9 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
     }
     //delete from db
 
-    public void deleteFromDB(boolean delete_this, int userID) throws XincoException {
-        int i = 0;
+    public boolean deleteFromDB(boolean delete_this, int userID) throws XincoException {
         try {
+            int i = 0;
             //fill nodes and data
             fillXincoCoreNodes();
             fillXincoCoreData();
@@ -135,9 +135,9 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
                 deleteFromDB();
             }
         } catch (Exception e) {
-            throw new XincoException();
+            throw new XincoException(e.getLocalizedMessage());
         }
-
+        return true;
     }
 
     @SuppressWarnings("unchecked")
@@ -169,7 +169,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
 
     @SuppressWarnings("unchecked")
     public static Vector findXincoCoreNodes(String attrS, int attrLID) {
-        Vector nodes = null;
+        Vector nodes = new Vector();
         try {
             result = pm.createdQuery("SELECT x FROM XincoCoreNode x WHERE x.xincoCoreLanguageId = " +
                     attrLID + " AND x.designation LIKE '" + attrS +
@@ -184,6 +184,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
                 result.remove(0);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             nodes.removeAllElements();
         }
         return nodes;
@@ -205,8 +206,10 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
                     } else {
                         id = 0;
                     }
+                    result.remove(0);
                 }
-                result.remove(0);
+                //The result list is empty, it's time to break!
+                break;
             }
         } catch (Exception e) {
             nodes.removeAllElements();
@@ -217,7 +220,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
     public AbstractAuditableObject findById(HashMap parameters) throws Exception {
         result = pm.namedQuery("XincoCoreNode.findById", parameters);
         if (result.size() > 0) {
-            XincoCoreNodeServer temp = (XincoCoreNodeServer) result.get(0);
+            XincoCoreNode temp = (XincoCoreNode) result.get(0);
             temp.setTransactionTime(getTransactionTime());
             temp.setChangerID(getChangerID());
             return temp;
@@ -281,10 +284,10 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
         }
         result = pm.createdQuery(sql, parameters);
         if (result.size() > 0) {
-            XincoCoreNodeServer temp[] = new XincoCoreNodeServer[result.size()];
+            XincoCoreNode temp[] = new XincoCoreNode[result.size()];
             int i = 0;
             while (!result.isEmpty()) {
-                temp[i] = (XincoCoreNodeServer) result.get(0);
+                temp[i] = (XincoCoreNode) result.get(0);
                 temp[i].setTransactionTime(getTransactionTime());
                 i++;
                 result.remove(0);
@@ -297,10 +300,10 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
 
     @SuppressWarnings("static-access")
     public AbstractAuditableObject create(AbstractAuditableObject value) {
-        XincoCoreNodeServer temp;
+        XincoCoreNode temp;
         XincoCoreNode newValue = new XincoCoreNode();
 
-        temp = (XincoCoreNodeServer) value;
+        temp = (XincoCoreNode) value;
         newValue.setId(temp.getId());
         newValue.setDesignation(temp.getDesignation());
         newValue.setXincoCoreNodeId(temp.getXincoCoreNodeId());
@@ -320,7 +323,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
     }
 
     public AbstractAuditableObject update(AbstractAuditableObject value) {
-        XincoCoreNodeServer val = (XincoCoreNodeServer) value;
+        XincoCoreNode val = (XincoCoreNode) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
             Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.INFO,
@@ -385,7 +388,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
                 temp.setChangerID(getChangerID());
                 temp.setCreated(true);
 
-                temp.setId(getId());
+                temp.setId(getNewID(true));
                 temp.setDesignation(getDesignation());
                 temp.setXincoCoreNodeId(getXincoCoreNodeId());
                 temp.setXincoCoreLanguageId(getXincoCoreLanguageId());
@@ -437,10 +440,10 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
     }
 
     public Vector getXincoCoreACL() {
-        return xincoCoreAcl;
+        return xincoCoreACL;
     }
 
     public void setXincoCoreAcl(Vector xincoCoreAcl) {
-        this.xincoCoreAcl = xincoCoreAcl;
+        this.xincoCoreACL = xincoCoreAcl;
     }
 }

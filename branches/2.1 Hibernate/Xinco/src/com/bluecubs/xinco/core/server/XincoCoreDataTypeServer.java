@@ -98,6 +98,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
             result = pm.createdQuery("SELECT x FROM XincoCoreDataType x ORDER BY x.designation");
             while (!result.isEmpty()) {
                 coreDataTypes.addElement((XincoCoreDataType) result.get(0));
+                result.remove(0);
             }
         } catch (Exception e) {
             coreDataTypes.removeAllElements();
@@ -107,22 +108,23 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
     }
     //delete from db
 
-    public static int deleteFromDB(XincoCoreDataTypeAttributeServer attrCDTA, int userID) throws XincoException {
-        try {
-            result = pm.namedQuery("select x from XincoAddAttribute X WHERE x.xincoCoreDataTypeAttributePK.attributeId=" +
-                    attrCDTA.getXincoCoreDataTypeAttributePK().getAttributeId() + " AND x.xincoCoreDataTypeAttributePK.xincoCoreDataId IN (SELECT xcd.id FROM XincoCoreData xcd WHERE xcd.xincoCoreDataTypeId=" +
-                    attrCDTA.getXincoCoreDataTypeAttributePK().getXincoCoreDataTypeId() + ")", null);
-            while (!result.isEmpty()) {
-                XincoAddAttributeServer xaa = (XincoAddAttributeServer) result.get(0);
-                xaa.deleteFromDB();
-                result.remove(0);
-            }
-        } catch (Exception e) {
-            throw new XincoException();
-        }
-
-        return 0;
-
+    public static boolean deleteFromDB(XincoCoreDataTypeAttributeServer attrCDTA, int userID) throws XincoException {
+//        try {
+            XincoCoreDataTypeAttributeServer xcdtas= new XincoCoreDataTypeAttributeServer(attrCDTA.getXincoCoreDataTypeAttributePK());
+            return xcdtas.deleteFromDB();
+//            result = pm.createdQuery("select x from XincoCoreDataTypeAttribute X WHERE x.xincoCoreDataTypeAttributePK.attributeId=" +
+//                    attrCDTA.getXincoCoreDataTypeAttributePK().getAttributeId() + " AND x.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId " +
+//                    "IN (SELECT xcd.id FROM XincoCoreData xcd WHERE xcd.xincoCoreDataTypeId=" +
+//                    attrCDTA.getXincoCoreDataTypeAttributePK().getXincoCoreDataTypeId() + ")", null);
+//            while (!result.isEmpty()) {
+//                XincoAddAttributeServer xaa = (XincoAddAttributeServer) result.get(0);
+//                xaa.deleteFromDB();
+//                result.remove(0);
+//            }
+//        } catch (Exception e) {
+//            throw new XincoException(e.getLocalizedMessage());
+//        }
+//        return true;
     }
     //create complete list of data type attributes
 
@@ -131,7 +133,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
         Vector coreDataTypeAttributes = new Vector();
         try {
             result = pm.createdQuery("SELECT x FROM XincoCoreDataTypeAttribute x WHERE " +
-                    "x.xincoCoreDataTypeAttributePK.xincoCoreDataId =" + attrID +
+                    "x.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId =" + attrID +
                     " ORDER BY x.xincoCoreDataTypeAttributePK.attributeId", null);
             while (!result.isEmpty()) {
                 coreDataTypeAttributes.addElement((XincoCoreDataTypeAttribute) result.get(0));
@@ -146,8 +148,9 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
 
     public AbstractAuditableObject findById(HashMap parameters) throws Exception {
         result = pm.namedQuery("XincoCoreDataType.findById", parameters);
+        System.out.println("Looking for: "+parameters.get("id"));
         if (result.size() > 0) {
-            XincoCoreDataTypeAttributeServer temp = (XincoCoreDataTypeAttributeServer) result.get(0);
+            XincoCoreDataType temp = (XincoCoreDataType) result.get(0);
             temp.setTransactionTime(getTransactionTime());
             temp.setChangerID(getChangerID());
             return temp;
@@ -181,10 +184,10 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
         }
         result = pm.createdQuery(sql, parameters);
         if (result.size() > 0) {
-            XincoCoreDataTypeAttributeServer temp[] = new XincoCoreDataTypeAttributeServer[result.size()];
+            XincoCoreDataType temp[] = new XincoCoreDataType[result.size()];
             int i = 0;
             while (!result.isEmpty()) {
-                temp[i] = (XincoCoreDataTypeAttributeServer) result.get(0);
+                temp[i] = (XincoCoreDataType) result.get(0);
                 temp[i].setTransactionTime(getTransactionTime());
                 i++;
                 result.remove(0);
@@ -195,14 +198,13 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
         }
     }
 
+    @SuppressWarnings("static-access")
     public AbstractAuditableObject create(AbstractAuditableObject value) {
-        XincoCoreDataTypeAttributeServer temp;
-        XincoCoreDataTypeAttribute newValue = new XincoCoreDataTypeAttribute();
-        temp = (XincoCoreDataTypeAttributeServer) value;
-        newValue.getXincoCoreDataTypeAttributePK().setAttributeId(temp.getXincoCoreDataTypeAttributePK().getAttributeId());
-        newValue.getXincoCoreDataTypeAttributePK().setXincoCoreDataTypeId(temp.getXincoCoreDataTypeAttributePK().getXincoCoreDataTypeId());
-        newValue.setDataType(temp.getDataType());
-        newValue.setAttrSize(temp.getAttrSize());
+        XincoCoreDataType temp;
+        XincoCoreDataType newValue = new XincoCoreDataType();
+        temp = (XincoCoreDataType) value;
+        newValue.setId(temp.getId());
+        newValue.setDescription(temp.getDescription());
         newValue.setDesignation(temp.getDesignation());
 
         newValue.setRecordId(temp.getRecordId());
@@ -218,7 +220,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
     }
 
     public AbstractAuditableObject update(AbstractAuditableObject value) {
-        XincoCoreDataTypeServer val = (XincoCoreDataTypeServer) value;
+        XincoCoreDataType val = (XincoCoreDataType) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
             Logger.getLogger(XincoCoreDataTypeServer.class.getName()).log(Level.INFO,
@@ -280,7 +282,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
                 temp.setChangerID(getChangerID());
                 temp.setCreated(true);
 
-                temp.setId(getId());
+                temp.setId(temp.getRecordId());
                 temp.setDesignation(getDesignation());
                 temp.setDescription(getDescription());
 

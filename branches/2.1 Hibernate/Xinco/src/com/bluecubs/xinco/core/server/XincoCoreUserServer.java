@@ -44,8 +44,7 @@ import com.bluecubs.xinco.core.XincoException;
 import java.util.Vector;
 
 import com.bluecubs.xinco.core.hibernate.audit.XincoAuditableDAO;
-import com.bluecubs.xinco.core.persistence.XincoCoreLanguage;
-import com.bluecubs.xinco.core.persistence.XincoCoreLanguageT;
+import com.bluecubs.xinco.core.persistence.XincoCoreUserT;
 import com.bluecubs.xinco.core.persistence.XincoCoreNode;
 import com.bluecubs.xinco.core.persistence.XincoCoreUser;
 import com.bluecubs.xinco.core.persistence.XincoCoreUserHasXincoCoreGroup;
@@ -341,9 +340,9 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
     }
 
     public AbstractAuditableObject findById(HashMap parameters) throws Exception {
-        result = pm.namedQuery("XincoCoreLanguage.findById", parameters);
+        result = pm.namedQuery("XincoCoreUser.findById", parameters);
         if (result.size() > 0) {
-            XincoCoreLanguageServer temp = (XincoCoreLanguageServer) result.get(0);
+            XincoCoreUserServer temp = (XincoCoreUserServer) result.get(0);
             temp.setTransactionTime(getTransactionTime());
             temp.setChangerID(getChangerID());
             return temp;
@@ -357,7 +356,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         sql = "SELECT x FROM XincoCoreUser x WHERE ";
         if (parameters.containsKey("id")) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.INFO, "Searching by id");
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO, "Searching by id");
             }
             if (counter > 0) {
                 sql += " and ";
@@ -367,7 +366,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         }
         if (parameters.containsKey("username")) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.INFO, "Searching by username");
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO, "Searching by username");
             }
             if (counter > 0) {
                 sql += " and ";
@@ -377,7 +376,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         }
         if (parameters.containsKey("userpassword")) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.INFO, "Searching by userpassword");
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO, "Searching by userpassword");
             }
             if (counter > 0) {
                 sql += " and ";
@@ -387,7 +386,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         }
         if (parameters.containsKey("name")) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.INFO, "Searching by name");
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO, "Searching by name");
             }
             if (counter > 0) {
                 sql += " and ";
@@ -397,7 +396,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         }
         if (parameters.containsKey("firstname")) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.INFO, "Searching by firstname");
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO, "Searching by firstname");
             }
             if (counter > 0) {
                 sql += " and ";
@@ -407,7 +406,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         }
         if (parameters.containsKey("email")) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.INFO, "Searching by email");
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO, "Searching by email");
             }
             if (counter > 0) {
                 sql += " and ";
@@ -417,7 +416,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         }
         if (parameters.containsKey("statusNumber")) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.INFO, "Searching by statusNumber");
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO, "Searching by statusNumber");
             }
             if (counter > 0) {
                 sql += " and ";
@@ -427,7 +426,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         }
         if (parameters.containsKey("attempts")) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.INFO, "Searching by attempts");
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO, "Searching by attempts");
             }
             if (counter > 0) {
                 sql += " and ";
@@ -437,7 +436,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         }
         if (parameters.containsKey("lastModified")) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.INFO, "Searching by lastModified");
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO, "Searching by lastModified");
             }
             if (counter > 0) {
                 sql += " and ";
@@ -468,13 +467,13 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         temp = (XincoCoreUser) value;
 
         newValue.setId(temp.getRecordId());
-        newValue.setUsername(temp.getUsername());
-        newValue.setUserpassword(temp.getUserpassword());
-        newValue.setName(temp.getName());
-        newValue.setFirstname(temp.getFirstname());
-        newValue.setEmail(temp.getEmail());
-        setStatusNumber(temp.getStatusNumber());
-                setLastModified(temp.getLastModified());
+        newValue.setUsername(getUsername());
+        newValue.setUserpassword(getUserpassword());
+        newValue.setName(getName());
+        newValue.setFirstname(getFirstname());
+        newValue.setEmail(getEmail());
+        newValue.setStatusNumber(getStatusNumber());
+        newValue.setLastModified(getLastModified());
 
         newValue.setRecordId(temp.getRecordId());
         newValue.setCreated(temp.isCreated());
@@ -482,17 +481,17 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
         newValue.setTransactionTime(getTransactionTime());
         pm.persist(newValue, false, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-            Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.INFO,
+            Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO,
                     "New value created: " + newValue);
         }
         return newValue;
     }
 
     public AbstractAuditableObject update(AbstractAuditableObject value) {
-        XincoCoreLanguageServer val = (XincoCoreLanguageServer) value;
+        XincoCoreUser val = (XincoCoreUser) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-            Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.INFO,
+            Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.INFO,
                     "Value updated: " + val);
         }
         return val;
@@ -501,14 +500,19 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
     @SuppressWarnings({"unchecked", "static-access"})
     public void delete(AbstractAuditableObject value) {
         try {
-            XincoCoreLanguage val = (XincoCoreLanguage) value;
-            XincoCoreLanguageT temp = new XincoCoreLanguageT();
+            XincoCoreUser val = (XincoCoreUser) value;
+            XincoCoreUserT temp = new XincoCoreUserT();
             temp.setRecordId(val.getRecordId());
             temp.setId(val.getId());
 
-            temp.setDesignation(val.getDesignation());
-            temp.setDesignation(val.getDesignation());
-            temp.setSign(val.getSign());
+            setId(val.getId());
+            temp.setUsername(val.getUsername());
+            temp.setUserpassword(val.getUserpassword());
+            temp.setName(val.getName());
+            temp.setFirstname(val.getFirstname());
+            temp.setEmail(val.getEmail());
+            temp.setStatusNumber(val.getStatusNumber());
+            temp.setLastModified(val.getLastModified());
 
             pm.startTransaction();
             pm.persist(temp, false, false);
@@ -613,7 +617,7 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
             return true;
         } catch (Throwable e) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
-                Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.SEVERE, null, e);
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
             }
             return false;
         }

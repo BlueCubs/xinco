@@ -3,6 +3,7 @@ package com.bluecubs.xinco.core.server;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.hibernate.audit.XincoAbstractAuditableObject;
 import com.bluecubs.xinco.core.persistence.XincoCoreACE;
+import com.bluecubs.xinco.core.persistence.XincoCoreUser;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Vector;
@@ -17,7 +18,11 @@ import junit.framework.TestSuite;
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 public class XincoCoreACEServerTest extends TestCase {
-private int tempId;
+
+    private int tempId = -1;
+    int tries = 0;
+    HashMap parameters = new HashMap();
+
     public XincoCoreACEServerTest(String testName) {
         super(testName);
     }
@@ -42,15 +47,14 @@ private int tempId;
      */
     public void testGetXincoCoreACL() {
         System.out.println("getXincoCoreACL");
-        int attrID = 1;
-        String attrT = "xinco_core_user";
-        Vector result = XincoCoreACEServer.getXincoCoreACL(attrID, attrT);
+        Vector result = XincoCoreACEServer.getXincoCoreACL(1, "xincoCoreUserId");
         assertTrue(result.size() > 0);
     }
 
     /**
      * Test of checkAccess method, of class XincoCoreACEServer.
      */
+    @SuppressWarnings("unchecked")
     public void testCheckAccess() {
         System.out.println("checkAccess");
         boolean createdUser = false;
@@ -61,18 +65,30 @@ private int tempId;
         try {
             user = new XincoCoreUserServer("admin", "admin");
         } catch (XincoException ex) {
+            parameters.put("username", "admin" + tries);
+            while (!XincoCoreUserServer.pm.namedQuery("XincoCoreUser.findByUsername", parameters).isEmpty()) {
+                tries++;
+                parameters.clear();
+                parameters.put("username", "admin" + tries);
+            }
             try {
                 //Create a new user and assign access to Trash
-                user = new XincoCoreUserServer(0, "admin2", "admin", "", "", "",
+
+                user = new XincoCoreUserServer(0, "admin" + tries, "admin", "Test",
+                        "Admin", "test@bluecubs.org",
                         1, 0, new Timestamp(System.currentTimeMillis()));
                 user.write2DB();
                 acl = new XincoCoreACEServer(0, user.getId(), 1, 2, -1, true, true, true, true);
                 acl.write2DB();
                 createdUser = true;
+                tempId = acl.getId();
             } catch (XincoException ex1) {
                 Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex1);
                 fail();
             }
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
         }
         try {
             //Check Trash folder for access
@@ -80,26 +96,21 @@ private int tempId;
         } catch (XincoException ex) {
             Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
         }
         XincoCoreACE ace = XincoCoreACEServer.checkAccess(user, node.getXincoCoreACL());
         assertTrue(ace != null);
         if (createdUser) {
             //Undo created records
-            acl.deleteFromDB();
-            user.deleteFromDB();
+            parameters.clear();
+            parameters.put("id", acl.getId());
+            XincoCoreACEServer.pm.delete((XincoCoreACE) XincoCoreACEServer.pm.namedQuery("XincoCoreACE.findById", parameters).get(0), createdUser);
+            parameters.clear();
+            parameters.put("id", user.getId());
+            XincoCoreACEServer.pm.delete((XincoCoreUser) XincoCoreACEServer.pm.namedQuery("XincoCoreUser.findById", parameters).get(0), createdUser);
         }
-    }
-
-    /**
-     * Test of setUserId method, of class XincoCoreACEServer.
-     * @throws XincoException
-     */
-    public void testSetUserId() throws XincoException {
-        System.out.println("setUserId");
-        int i = 0;
-        XincoCoreACEServer instance = new XincoCoreACEServer(1);
-        instance.setUserId(i);
-        assertTrue(instance.getId() == 0);
     }
 
     /**
@@ -108,12 +119,17 @@ private int tempId;
      */
     @SuppressWarnings("unchecked")
     public void testFindById() throws Exception {
-        System.out.println("findById");
-        HashMap parameters = new HashMap();
-        parameters.put("id", 1);
-        XincoCoreACEServer instance = new XincoCoreACEServer(1);
-        XincoAbstractAuditableObject result = (XincoAbstractAuditableObject) instance.findById(parameters);
-        assertEquals(1, (int) ((XincoCoreACE) result).getId());
+        try {
+            System.out.println("findById");
+            parameters = new HashMap();
+            parameters.put("id", 1);
+            XincoCoreACEServer instance = new XincoCoreACEServer(1);
+            XincoAbstractAuditableObject result = (XincoAbstractAuditableObject) instance.findById(parameters);
+            assertEquals(1, (int) ((XincoCoreACE) result).getId());
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
@@ -121,11 +137,16 @@ private int tempId;
      * @throws Exception
      */
     public void testFindWithDetails() throws Exception {
-        System.out.println("findWithDetails");
-        XincoCoreACEServer instance = new XincoCoreACEServer(1);
-        XincoCoreACE[] expResult = {instance};
-        XincoAbstractAuditableObject[] result = (XincoAbstractAuditableObject[]) instance.findWithDetails(instance.getParameters());
-        assertEquals(expResult[0].getId(), ((XincoCoreACE) result[0]).getId());
+        try {
+            System.out.println("findWithDetails");
+            XincoCoreACEServer instance = new XincoCoreACEServer(1);
+            XincoCoreACE[] expResult = {instance};
+            XincoAbstractAuditableObject[] result = (XincoAbstractAuditableObject[]) instance.findWithDetails(instance.getParameters());
+            assertEquals(expResult[0].getId(), ((XincoCoreACE) result[0]).getId());
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
@@ -141,6 +162,9 @@ private int tempId;
             HashMap result = instance.getParameters();
             assertEquals(expResult, result);
         } catch (XincoException ex) {
+            Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        } catch (Exception ex) {
             Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();
         }
@@ -159,6 +183,9 @@ private int tempId;
         } catch (XincoException ex) {
             Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
         }
     }
 
@@ -173,8 +200,11 @@ private int tempId;
             assertTrue(instance.write2DB());
             System.out.println("Instance id after writing: " + instance.getId());
             assertTrue(instance.getId() > 0);
-            tempId=instance.getId();
+            tempId = instance.getId();
         } catch (XincoException ex) {
+            Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        } catch (Exception ex) {
             Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();
         }
@@ -189,14 +219,22 @@ private int tempId;
         try {
             System.out.println("deleteFromDB");
             XincoCoreACEServer instance = new XincoCoreACEServer(1);
-            HashMap parameters = new HashMap();
+            if (tempId == -1) {
+                XincoCoreACEServer acl = new XincoCoreACEServer(0, 1, 1, 2, -1, true, true, true, true);
+                acl.write2DB();
+                tempId = acl.getId();
+            }
+            parameters = new HashMap();
             parameters.put("id", tempId);
-            XincoAbstractAuditableObject[] result = (XincoAbstractAuditableObject[]) instance.findWithDetails(parameters);
-            XincoCoreACEServer value = new XincoCoreACEServer(((XincoCoreACE) result[0]).getId());
+            XincoCoreACE[] result = (XincoCoreACE[]) instance.findWithDetails(parameters);
+            XincoCoreACEServer value = new XincoCoreACEServer((result[0]).getId());
             //Blame the admin :P
             value.setChangerID(1);
             assertTrue(value.deleteFromDB());
         } catch (XincoException ex) {
+            Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        } catch (Exception ex) {
             Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();
         }

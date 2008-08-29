@@ -87,18 +87,19 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
                 //load acl for this object
                 setXincoCoreACL(XincoCoreACEServer.getXincoCoreACL(xca.getId(), "xincoCoreDataId"));
             } else {
-                throw new XincoException();
+                throw new XincoException("Record doesn't exist: "+attrID);
             }
         } catch (Exception e) {
-            getXincoCoreACL().removeAllElements();
-            throw new XincoException();
+            if (getXincoCoreACL() != null) {
+                getXincoCoreACL().removeAllElements();
+            }
+            throw new XincoException(e.getLocalizedMessage());
         }
 
     }
     //create data object for data structures
 
     public XincoCoreDataServer(int attrID, int attrCNID, int attrLID, int attrDTID, String attrD, int attrSN) throws XincoException {
-
         setId(attrID);
         setXincoCoreNodeId(attrCNID);
         setXincoCoreLanguageId(attrLID);
@@ -111,7 +112,6 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
         setStatusNumber(attrSN);
         //load acl for this object
         setXincoCoreACL(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreDataId"));
-
     }
 
     public void setUser(XincoCoreUserServer user) {
@@ -169,21 +169,23 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
     }
 
     public static byte[] loadBinaryData(XincoCoreData attrCD) {
-
         byte[] binaryData = null;
-
         return binaryData;
-
     }
 
     public static int saveBinaryData(XincoCoreData attrCD, byte[] attrBD) {
-
         return 0;
-
     }
 
+    /**
+     *
+     * @param attrS
+     * @param attrLID
+     * @param attrSA
+     * @return
+     */
     @SuppressWarnings("unchecked")
-    public static Vector findXincoCoreData(String attrS, int attrLID, boolean attrSA, boolean attrSFD) {
+    public static Vector findXincoCoreData(String attrS, int attrLID, boolean attrSA) {
         Vector data = new Vector();
         try {
             String lang = "";
@@ -191,16 +193,16 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
                 lang = "AND (x.xincoCoreLanguageId = " + attrLID + ")";
             }
             if (attrSA) {
-                result = pm.createdQuery("SELECT x FROM XincoCoreData x, XincoAddAttribute a WHERE (x.id = a.xincoCoreDataId) AND " +
-                        "(x.designation LIKE '" + attrS + "%' OR a.attribVarchar LIKE '" + attrS +
-                        "' OR a.attribText LIKE '" + attrS + "') " + lang + " ORDER BY x.designation, " +
-                        "x.xincoCoreLanguageId", null);
+                result = pm.createdQuery("SELECT x FROM XincoCoreData x, " +
+                        "XincoAddAttribute a WHERE x.id = a.xincoAddAttributePK.xincoCoreDataId " +
+                        "AND (x.designation LIKE '" + attrS + "%' OR a.attribVarchar LIKE '" +
+                        attrS + "' OR a.attribText LIKE '" + attrS + "') " + lang +
+                        " ORDER BY x.designation, x.xincoCoreLanguageId");
             } else {
-                result = pm.createdQuery("SELECT x FROM XincoCoreData x WHERE designation LIKE '" + attrS +
-                        "' " + lang + " ORDER BY x.designation, " +
-                        "x.xincoCoreLanguageId", null);
+                result = pm.createdQuery("SELECT x FROM XincoCoreData x WHERE x.designation LIKE '" + attrS +
+                        "%' " + lang + " ORDER BY x.designation, " +
+                        "x.xincoCoreLanguageId");
             }
-
             int i = 0;
             while (!result.isEmpty()) {
                 data.addElement((XincoCoreData) result.get(0));
@@ -211,6 +213,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
             }
             result.remove(0);
         } catch (Exception e) {
+            e.printStackTrace();
             data.removeAllElements();
         }
         return data;
@@ -282,10 +285,10 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
 
     @SuppressWarnings("static-access")
     public AbstractAuditableObject create(AbstractAuditableObject value) {
-        XincoCoreDataServer temp;
+        XincoCoreData temp;
         XincoCoreData newValue = new XincoCoreData();
-        temp = (XincoCoreDataServer) value;
-        newValue.setId(temp.getId());
+        temp = (XincoCoreData) value;
+        newValue.setId(temp.getRecordId());
         newValue.setXincoCoreNodeId(temp.getXincoCoreNodeId());
         newValue.setXincoCoreLanguageId(temp.getXincoCoreLanguageId());
         newValue.setXincoCoreDataTypeId(temp.getXincoCoreDataTypeId());

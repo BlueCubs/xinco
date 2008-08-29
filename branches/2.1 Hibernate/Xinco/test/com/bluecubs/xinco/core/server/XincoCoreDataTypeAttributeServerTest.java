@@ -1,13 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.bluecubs.xinco.core.server;
 
-import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttributePK;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -17,7 +17,10 @@ import junit.framework.TestSuite;
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 public class XincoCoreDataTypeAttributeServerTest extends TestCase {
-    
+
+    HashMap parameters = new HashMap();
+    private XincoCoreDataTypeAttributePK tempId;
+
     public XincoCoreDataTypeAttributeServerTest(String testName) {
         super(testName);
     }
@@ -38,111 +41,76 @@ public class XincoCoreDataTypeAttributeServerTest extends TestCase {
     }
 
     /**
-     * Test of deleteFromDB method, of class XincoCoreDataTypeAttributeServer.
-     */
-    public void testDeleteFromDB_XincoCoreDataTypeAttributeServer_int() throws Exception {
-        System.out.println("deleteFromDB");
-        XincoCoreDataTypeAttributeServer attrCDTA = null;
-        int userID = 0;
-        int expResult = 0;
-        int result = XincoCoreDataTypeAttributeServer.deleteFromDB(attrCDTA, userID);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
      * Test of getXincoCoreDataTypeAttributes method, of class XincoCoreDataTypeAttributeServer.
      */
     public void testGetXincoCoreDataTypeAttributes() {
-        System.out.println("getXincoCoreDataTypeAttributes");
-        int attrID = 0;
-        Vector expResult = null;
-        Vector result = XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(attrID);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            System.out.println("getXincoCoreDataTypeAttributes");
+            Vector result = XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(1);
+            assertTrue(result.size() > 0);
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreDataTypeAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
      * Test of findById method, of class XincoCoreDataTypeAttributeServer.
+     * @throws Exception 
      */
+    @SuppressWarnings("unchecked")
     public void testFindById() throws Exception {
-        System.out.println("findById");
-        HashMap parameters = null;
-        XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer();
-        AbstractAuditableObject expResult = null;
-        AbstractAuditableObject result = instance.findById(parameters);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            System.out.println("findById");
+            parameters = new HashMap();
+            parameters.put("xincoCoreDataTypeId", 1);
+            parameters.put("attributeId", 1);
+            XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer(1, 1);
+            XincoAbstractAuditableObject result = (XincoAbstractAuditableObject) instance.findById(parameters);
+            assertEquals(1, ((XincoCoreDataTypeAttribute) result).getXincoCoreDataTypeAttributePK().getAttributeId());
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreDataTypeAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
      * Test of findWithDetails method, of class XincoCoreDataTypeAttributeServer.
+     * @throws Exception 
      */
     public void testFindWithDetails() throws Exception {
-        System.out.println("findWithDetails");
-        HashMap parameters = null;
-        XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer();
-        AbstractAuditableObject[] expResult = null;
-        AbstractAuditableObject[] result = instance.findWithDetails(parameters);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of create method, of class XincoCoreDataTypeAttributeServer.
-     */
-    public void testCreate() {
-        System.out.println("create");
-        AbstractAuditableObject value = null;
-        XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer();
-        AbstractAuditableObject expResult = null;
-        AbstractAuditableObject result = instance.create(value);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of update method, of class XincoCoreDataTypeAttributeServer.
-     */
-    public void testUpdate() {
-        System.out.println("update");
-        AbstractAuditableObject value = null;
-        XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer();
-        AbstractAuditableObject expResult = null;
-        AbstractAuditableObject result = instance.update(value);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of delete method, of class XincoCoreDataTypeAttributeServer.
-     */
-    public void testDelete() {
-        System.out.println("delete");
-        AbstractAuditableObject value = null;
-        XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer();
-        instance.delete(value);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            System.out.println("findWithDetails");
+            XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer(1, 1);
+            XincoCoreDataTypeAttribute[] expResult = {instance};
+            XincoAbstractAuditableObject[] result = (XincoAbstractAuditableObject[]) instance.findWithDetails(instance.getParameters());
+            assertEquals(expResult[0].getXincoCoreDataTypeAttributePK().getAttributeId(), ((XincoCoreDataTypeAttribute) result[0]).getXincoCoreDataTypeAttributePK().getAttributeId());
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreDataTypeAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
      * Test of getParameters method, of class XincoCoreDataTypeAttributeServer.
      */
+    @SuppressWarnings("unchecked")
     public void testGetParameters() {
-        System.out.println("getParameters");
-        XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer();
-        HashMap expResult = null;
-        HashMap result = instance.getParameters();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            System.out.println("getParameters");
+            XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer(1, 1);
+            HashMap expResult = new HashMap();
+            expResult.put("attributeId", 1);
+            expResult.put("xincoCoreDataTypeId", 1);
+            HashMap result = instance.getParameters();
+            assertEquals(expResult, result);
+        } catch (XincoException ex) {
+            Logger.getLogger(XincoCoreDataTypeAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreDataTypeAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
@@ -150,39 +118,60 @@ public class XincoCoreDataTypeAttributeServerTest extends TestCase {
      */
     public void testGetNewID() {
         System.out.println("getNewID");
-        boolean a = false;
-        XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer();
-        int expResult = 0;
-        int result = instance.getNewID(a);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer();
+            assertTrue(instance.getNewID(true) == 0);
+        } catch (UnsupportedOperationException e) {
+            fail();
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreDataTypeAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
      * Test of write2DB method, of class XincoCoreDataTypeAttributeServer.
      */
+    @SuppressWarnings({"unchecked", "static-access"})
     public void testWrite2DB() {
-        System.out.println("write2DB");
-        XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer();
-        boolean expResult = false;
-        boolean result = instance.write2DB();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            System.out.println("write2DB");
+            XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer(1, 100, "test", "", 0);
+            assertTrue(instance.write2DB());
+            parameters.clear();
+            parameters.put("designation", instance.getDesignation());
+            assertTrue(instance.pm.namedQuery("XincoCoreDataTypeAttribute.findByDesignation", parameters).size() > 0);
+            //Blame the admin :P
+            assertTrue(XincoCoreDataTypeAttributeServer.deleteFromDB((XincoCoreDataTypeAttribute) instance, 1));
+        } catch (XincoException ex) {
+            Logger.getLogger(XincoCoreDataTypeAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreDataTypeAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
      * Test of deleteFromDB method, of class XincoCoreDataTypeAttributeServer.
      */
+    @SuppressWarnings("unchecked")
     public void testDeleteFromDB_0args() {
-        System.out.println("deleteFromDB");
-        XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer();
-        boolean expResult = false;
-        boolean result = instance.deleteFromDB();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            System.out.println("deleteFromDB");
+            XincoCoreDataTypeAttributeServer acl = new XincoCoreDataTypeAttributeServer(1, 100, "test", "", 0);
+            acl.write2DB();
+            tempId = acl.getXincoCoreDataTypeAttributePK();
+            XincoCoreDataTypeAttributeServer value = new XincoCoreDataTypeAttributeServer(1, 100);
+            //Blame the admin :P
+            value.setChangerID(1);
+            assertTrue(value.deleteFromDB());
+        } catch (XincoException ex) {
+            Logger.getLogger(XincoCoreDataTypeAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreDataTypeAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
-
 }

@@ -66,6 +66,12 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <target name="-pre-compile">
+        <delete>
+            <fileset dir="logs/" includes="**/*.*"/>
+        </delete>
+    </target>
+
     <target name="-post-compile">
         <copy file="server.ini" todir="dist/"/>
         <echo message="Copied server.ini to dist folder" />
