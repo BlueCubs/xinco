@@ -36,7 +36,6 @@
  */
 package com.bluecubs.xinco.client;
 
-import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.object.WindowClosingAdapter;
 import com.bluecubs.xinco.client.object.XincoClientConnectionProfile;
@@ -63,18 +62,17 @@ import com.bluecubs.xinco.client.object.menu.XincoMenuRepository;
 import com.bluecubs.xinco.client.object.menu.XincoPopUpMenuRepository;
 import com.bluecubs.xinco.client.object.thread.XincoProgressBarThread;
 import com.bluecubs.xinco.client.object.timer.XincoActivityTimer;
-import com.bluecubs.xinco.core.XincoCoreData;
-import com.bluecubs.xinco.core.XincoCoreDataType;
-import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
-import com.bluecubs.xinco.core.XincoCoreGroup;
-import com.bluecubs.xinco.core.XincoCoreLanguage;
-import com.bluecubs.xinco.core.XincoCoreLog;
-import com.bluecubs.xinco.core.XincoCoreNode;
-import com.bluecubs.xinco.core.XincoCoreUser;
-import com.bluecubs.xinco.core.exception.XincoException;
+import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoVersion;
-import com.bluecubs.xinco.service.XincoServiceLocator;
-import com.bluecubs.xinco.service.XincoSoapBindingStub;
+import com.bluecubs.xinco.core.persistence.XincoAddAttribute;
+import com.bluecubs.xinco.core.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.persistence.XincoCoreDataType;
+import com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.core.persistence.XincoCoreGroup;
+import com.bluecubs.xinco.core.persistence.XincoCoreLanguage;
+import com.bluecubs.xinco.core.persistence.XincoCoreLog;
+import com.bluecubs.xinco.core.persistence.XincoCoreNode;
+import com.bluecubs.xinco.core.persistence.XincoCoreUser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;

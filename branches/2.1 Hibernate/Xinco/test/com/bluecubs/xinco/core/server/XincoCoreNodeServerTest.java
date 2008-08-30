@@ -190,7 +190,7 @@ public class XincoCoreNodeServerTest extends TestCase {
     public void testWrite2DBAndDelete() {
         try {
             System.out.println("write2DB");
-            XincoCoreNodeServer instance = new XincoCoreNodeServer(0,1,1, "test", 1);
+            XincoCoreNodeServer instance = new XincoCoreNodeServer(0, 1, 1, "test", 1);
             System.out.println("Instance id before writing: " + instance.getId());
             assertTrue(instance.write2DB());
             System.out.println("Instance id after writing: " + instance.getId());
@@ -205,19 +205,24 @@ public class XincoCoreNodeServerTest extends TestCase {
             fail();
         }
     }
-  
+
     /**
      * Test of deleteFromDB method, of class XincoCoreNodeServer.
      * @throws Exception
      */
     public void testDeleteFromDB_boolean_int() throws Exception {
-        System.out.println("deleteFromDB");
-        boolean delete_this = false;
-        int userID = 0;
-        XincoCoreNodeServer instance = new XincoCoreNodeServer(0,1,1, "test", 1);
-        instance.write2DB();
-        instance.deleteFromDB(delete_this, userID);
-        assertTrue(XincoCoreNodeServer.findXincoCoreNodes("test", 1).size()>0);
-        assertTrue(instance.deleteFromDB(true, userID));
+        try {
+            System.out.println("deleteFromDB");
+            boolean delete_this = false;
+            int userID = 0;
+            XincoCoreNodeServer instance = new XincoCoreNodeServer(0, 1, 1, "test", 1);
+            instance.write2DB();
+            instance.deleteFromDB(delete_this, userID);
+            assertTrue(XincoCoreNodeServer.findXincoCoreNodes("test", 1).size() > 0);
+            assertTrue(instance.deleteFromDB(true, userID));
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreNodeServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 }

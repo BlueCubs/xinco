@@ -80,7 +80,29 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
         } catch (Exception e) {
             throw new XincoException(e.getLocalizedMessage());
         }
+    }
 
+    @SuppressWarnings("unchecked")
+    private XincoCoreUserHasXincoCoreGroupServer(XincoCoreUserHasXincoCoreGroupPK pk) throws XincoException {
+        try {
+            groupID = pk.getXincoCoreGroupId();
+            userID = pk.getXincoCoreUserId();
+            parameters.clear();
+            parameters.put("xincoCoreUserId", userID);
+            parameters.put("xincoCoreGroupId", groupID);
+            result = pm.createdQuery("SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE " +
+                    "x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreUserId = :xincoCoreUserId and " +
+                    "x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreGroupId = :xincoCoreGroupId", parameters);
+            if (!result.isEmpty()) {
+                XincoCoreUserHasXincoCoreGroup xcdt = (XincoCoreUserHasXincoCoreGroup) result.get(0);
+                setXincoCoreUserHasXincoCoreGroupPK(xcdt.getXincoCoreUserHasXincoCoreGroupPK());
+                setStatusNumber(xcdt.getStatusNumber());
+            } else {
+                throw new XincoException();
+            }
+        } catch (Exception e) {
+            throw new XincoException(e.getLocalizedMessage());
+        }
     }
 
     @Override
@@ -98,13 +120,13 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
         groupID = xincoCoreGroupId;
         userID = xincoCoreUserId;
         setStatusNumber(statusNumber);
+        setCreated(true);
     }
 
     /**
      * Protected method for testing purposes
      */
     protected XincoCoreUserHasXincoCoreGroupServer() {
-        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     public AbstractAuditableObject findById(HashMap parameters) throws Exception {
@@ -171,10 +193,12 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
     }
 
     @SuppressWarnings("static-access")
-    public AbstractAuditableObject create(AbstractAuditableObject value) {
+    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception{
         XincoCoreUserHasXincoCoreGroup temp;
         XincoCoreUserHasXincoCoreGroup newValue = new XincoCoreUserHasXincoCoreGroup();
         temp = (XincoCoreUserHasXincoCoreGroup) value;
+
+        newValue.setXincoCoreUserHasXincoCoreGroupPK(new XincoCoreUserHasXincoCoreGroupPK());
         newValue.getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreGroupId(temp.getXincoCoreUserHasXincoCoreGroupPK().getXincoCoreGroupId());
         newValue.getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreUserId(temp.getXincoCoreUserHasXincoCoreGroupPK().getXincoCoreUserId());
         newValue.setStatusNumber(temp.getStatusNumber());
@@ -191,7 +215,7 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
         return newValue;
     }
 
-    public AbstractAuditableObject update(AbstractAuditableObject value) {
+    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception{
         XincoCoreUserHasXincoCoreGroup val = (XincoCoreUserHasXincoCoreGroup) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
@@ -202,18 +226,18 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
     }
 
     @SuppressWarnings("static-access")
-    public void delete(AbstractAuditableObject value) {
+    public boolean delete(AbstractAuditableObject value) throws Exception{
         try {
             XincoCoreUserHasXincoCoreGroup val = (XincoCoreUserHasXincoCoreGroup) value;
             result = pm.createdQuery("SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE " +
                     "x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreUserId = :xincoCoreUserId and " +
                     "x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreGroupId = :xincoCoreGroupId", 
-                    ((XincoCoreUserHasXincoCoreGroupServer)value).getParameters());
+                    (new XincoCoreUserHasXincoCoreGroupServer(((XincoCoreUserHasXincoCoreGroup)value).getXincoCoreUserHasXincoCoreGroupPK())).getParameters());
             pm.startTransaction();
             while (!result.isEmpty()) {
 
                 XincoCoreUserHasXincoCoreGroupT temp = new XincoCoreUserHasXincoCoreGroupT();
-                temp.setRecordId(((XincoCoreUserHasXincoCoreGroup) result.get(0)).getRecordId());
+                temp.setRecordId(((XincoCoreUserHasXincoCoreGroup) result.get(0)).getRecordId(false));
 
                 temp.setXincoCoreGroupId(val.getXincoCoreUserHasXincoCoreGroupPK().getXincoCoreGroupId());
                 temp.setXincoCoreUserId(val.getXincoCoreUserHasXincoCoreGroupPK().getXincoCoreUserId());
@@ -228,10 +252,11 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
                 }
                 result.remove(0);
             }
-            pm.commitAndClose();
+            return pm.commitAndClose();
         } catch (Throwable ex) {
             pm.rollback();
             Logger.getLogger(XincoCoreUserHasXincoCoreGroupServer.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
     }
 
@@ -244,12 +269,20 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
     }
 
     public int getNewID(boolean a) {
-        return new XincoIDServer("Xinco_Core_User_Has_Xinco_Core_Group").getNewTableID(true);
+        /* Return 0 to "fool" the audit system. 
+         * This parameter is not used for this class audit related methods.
+         * This class is not meant to generate keys automatically since it's
+         * formed by a foreign key relationship.
+         */
+        return 0;
     }
 
     public boolean write2DB() {
         try {
-            if (getXincoCoreUserHasXincoCoreGroupPK() != null) {
+            if (getXincoCoreUserHasXincoCoreGroupPK() != null&&
+                    getXincoCoreUserHasXincoCoreGroupPK().getXincoCoreGroupId() > 0 &&
+                    getXincoCoreUserHasXincoCoreGroupPK().getXincoCoreUserId() > 0&&
+                    !isCreated()) {
                 AuditingDAOHelper.update(this, new XincoCoreUserHasXincoCoreGroup());
             } else {
                 XincoCoreUserHasXincoCoreGroup temp = new XincoCoreUserHasXincoCoreGroup();
@@ -260,6 +293,7 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
                 getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreGroupId(groupID);
                 getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreUserId(userID);
 
+                temp.setXincoCoreUserHasXincoCoreGroupPK(new XincoCoreUserHasXincoCoreGroupPK());
                 temp.getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreGroupId(getXincoCoreUserHasXincoCoreGroupPK().getXincoCoreGroupId());
                 temp.getXincoCoreUserHasXincoCoreGroupPK().setXincoCoreUserId(getXincoCoreUserHasXincoCoreGroupPK().getXincoCoreUserId());
                 temp.setStatusNumber(getStatusNumber());

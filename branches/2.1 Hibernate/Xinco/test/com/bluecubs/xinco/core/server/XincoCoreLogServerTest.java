@@ -113,26 +113,11 @@ public class XincoCoreLogServerTest extends TestCase {
         try {
             System.out.println("getVersion");
             XincoCoreLogServer instance = new XincoCoreLogServer(1);
-            XincoVersion expResult = null;
             XincoVersion result = instance.getVersion();
-            assertEquals(expResult, result);
-            // TODO review the generated test code and remove the default call to fail.
-            fail("The test case is a prototype.");
+            assertTrue(result.getVersionHigh() > 0);
         } catch (Exception ex) {
             Logger.getLogger(XincoCoreLanguageServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();
         }
-    }
-
-    /**
-     * Test of setVersion method, of class XincoCoreLogServer.
-     */
-    public void testSetVersion() {
-        System.out.println("setVersion");
-        XincoVersion version = null;
-        XincoCoreLogServer instance = null;
-        instance.setVersion(version);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 }

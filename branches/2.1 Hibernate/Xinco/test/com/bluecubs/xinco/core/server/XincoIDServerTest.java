@@ -1,12 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.bluecubs.xinco.core.server;
 
-import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+import com.bluecubs.xinco.core.hibernate.audit.XincoAbstractAuditableObject;
+import com.bluecubs.xinco.core.persistence.XincoID;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -16,7 +14,9 @@ import junit.framework.TestSuite;
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 public class XincoIDServerTest extends TestCase {
-    
+
+    HashMap parameters = new HashMap();
+
     public XincoIDServerTest(String testName) {
         super(testName);
     }
@@ -38,137 +38,121 @@ public class XincoIDServerTest extends TestCase {
 
     /**
      * Test of findById method, of class XincoIDServer.
+     * @throws Exception
      */
+    @SuppressWarnings("unchecked")
     public void testFindById() throws Exception {
-        System.out.println("findById");
-        HashMap parameters = null;
-        XincoIDServer instance = new XincoIDServer();
-        AbstractAuditableObject expResult = null;
-        AbstractAuditableObject result = instance.findById(parameters);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            System.out.println("findById");
+            parameters = new HashMap();
+            parameters.put("id", 1);
+            XincoIDServer instance = new XincoIDServer("xinco_core_ace");
+            XincoAbstractAuditableObject result = (XincoAbstractAuditableObject) instance.findById(parameters);
+            assertEquals(1, (int) ((XincoID) result).getId());
+        } catch (Exception ex) {
+            Logger.getLogger(XincoIDServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
      * Test of findWithDetails method, of class XincoIDServer.
+     * @throws Exception
      */
+    @SuppressWarnings("unchecked")
     public void testFindWithDetails() throws Exception {
-        System.out.println("findWithDetails");
-        HashMap parameters = null;
-        XincoIDServer instance = new XincoIDServer();
-        AbstractAuditableObject[] expResult = null;
-        AbstractAuditableObject[] result = instance.findWithDetails(parameters);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of create method, of class XincoIDServer.
-     */
-    public void testCreate() {
-        System.out.println("create");
-        AbstractAuditableObject value = null;
-        XincoIDServer instance = new XincoIDServer();
-        AbstractAuditableObject expResult = null;
-        AbstractAuditableObject result = instance.create(value);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of update method, of class XincoIDServer.
-     */
-    public void testUpdate() {
-        System.out.println("update");
-        AbstractAuditableObject value = null;
-        XincoIDServer instance = new XincoIDServer();
-        AbstractAuditableObject expResult = null;
-        AbstractAuditableObject result = instance.update(value);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of delete method, of class XincoIDServer.
-     */
-    public void testDelete() {
-        System.out.println("delete");
-        AbstractAuditableObject value = null;
-        XincoIDServer instance = new XincoIDServer();
-        instance.delete(value);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            System.out.println("findWithDetails");
+            XincoIDServer instance = new XincoIDServer("xinco_core_ace");
+            parameters.clear();
+            parameters.put("tablename", "xinco_core_ace");
+            XincoAbstractAuditableObject[] result = (XincoAbstractAuditableObject[]) instance.findWithDetails(parameters);
+            assertEquals(instance.getTablename(), ((XincoID) result[0]).getTablename());
+        } catch (Exception ex) {
+            Logger.getLogger(XincoIDServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
      * Test of getParameters method, of class XincoIDServer.
      */
+    @SuppressWarnings("unchecked")
     public void testGetParameters() {
-        System.out.println("getParameters");
-        XincoIDServer instance = new XincoIDServer();
-        HashMap expResult = null;
-        HashMap result = instance.getParameters();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            System.out.println("getParameters");
+            XincoIDServer instance = new XincoIDServer("xinco_core_ace");
+            HashMap expResult = new HashMap();
+            expResult.put("id", 1);
+            HashMap result = instance.getParameters();
+            assertEquals(expResult, result);
+        } catch (Exception ex) {
+            Logger.getLogger(XincoIDServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
      * Test of getNewTableID method, of class XincoIDServer.
      */
     public void testGetNewTableID() {
-        System.out.println("getNewTableID");
-        boolean atomic = false;
-        XincoIDServer instance = new XincoIDServer();
-        int expResult = 0;
-        int result = instance.getNewTableID(atomic);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            System.out.println("getNewTableID");
+            XincoIDServer instance = new XincoIDServer("xinco_core_ace");
+            assertTrue(instance.getNewTableID(true) > 0);
+        } catch (Exception ex) {
+            Logger.getLogger(XincoIDServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
      * Test of write2DB method, of class XincoIDServer.
      */
-    public void testWrite2DB() {
-        System.out.println("write2DB");
-        XincoIDServer instance = new XincoIDServer();
-        boolean expResult = false;
-        boolean result = instance.write2DB();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testWrite2DBAndDelete() {
+        try {
+            System.out.println("write2DB");
+            XincoIDServer instance = new XincoIDServer("test", 0,1000);
+            System.out.println("Instance id before writing: " + instance.getId());
+            assertTrue(instance.write2DB());
+            System.out.println("Instance id after writing: " + instance.getId());
+            assertTrue(instance.getId() > 0);
+            instance.setChangerID(1);
+            assertTrue(instance.deleteFromDB());
+        } catch (Exception ex) {
+            Logger.getLogger(XincoIDServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
      * Test of deleteFromDB method, of class XincoIDServer.
      */
     public void testDeleteFromDB() {
-        System.out.println("deleteFromDB");
-        XincoIDServer instance = new XincoIDServer();
-        boolean expResult = false;
-        boolean result = instance.deleteFromDB();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        try {
+            System.out.println("deleteFromDB");
+            XincoIDServer instance = new XincoIDServer("test", 0,1000);
+            instance.write2DB();
+            instance.setChangerID(2);
+            assertTrue(!instance.deleteFromDB());
+        } catch (Exception ex) {
+            Logger.getLogger(XincoIDServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 
     /**
      * Test of getNewID method, of class XincoIDServer.
      */
     public void testGetNewID() {
-        System.out.println("getNewID");
-        boolean a = false;
-        XincoIDServer instance = new XincoIDServer();
-        int expResult = 0;
-        int result = instance.getNewID(a);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+        try {
+            System.out.println("getNewID");
+            XincoIDServer instance = new XincoIDServer("xinco_core_ace");
+            assertTrue(instance.getNewTableID(true) > 0);
+        } catch (Exception ex) {
+            Logger.getLogger(XincoIDServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
 
+    }
 }

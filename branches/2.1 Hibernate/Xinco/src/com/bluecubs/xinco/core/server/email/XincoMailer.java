@@ -13,14 +13,11 @@ Author : Sudhir Ancha
  */
 package com.bluecubs.xinco.core.server.email;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.util.*;
-import java.io.*;
 
 public class XincoMailer {
-    private XincoDBManager DBM;
     private String SMTP_HOST_NAME = "smtp.bluecubs.com";
     private String SMTP_AUTH_USER = "myuser@bluecubs.com";
     private String SMTP_AUTH_PWD  = "mypsswd";
@@ -59,7 +56,7 @@ public class XincoMailer {
         Properties props = new Properties();
         props.put("mail.smtp.host", SMTP_HOST_NAME);
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.port", this.port);
+        props.put("mail.smtp.port", port);
         props.put("mail.smtp.starttls.enable","true");
         props.put("mail.smtp.auth ", "true ");
         

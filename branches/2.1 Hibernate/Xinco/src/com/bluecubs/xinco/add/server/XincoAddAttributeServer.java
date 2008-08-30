@@ -99,7 +99,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         setAttribDatetime(attrDT);
     }
 
-    public boolean write2DB() {
+    public boolean write2DB() throws Exception {
         String attrT = "";
         String attrVC = "";
         Date attrDT = null;
@@ -268,7 +268,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
     }
 
     @SuppressWarnings("static-access")
-    public AbstractAuditableObject create(AbstractAuditableObject value) {
+    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception{
         XincoAddAttributeServer temp;
         XincoAddAttribute newValue = new XincoAddAttribute();
         temp = (XincoAddAttributeServer) value;
@@ -292,7 +292,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         return newValue;
     }
 
-    public AbstractAuditableObject update(AbstractAuditableObject value) {
+    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception{
         XincoAddAttribute val = (XincoAddAttribute) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
@@ -302,7 +302,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
         return val;
     }
 
-    public void delete(AbstractAuditableObject value) {
+    public boolean delete(AbstractAuditableObject value) {
         try {
             XincoAddAttribute val = (XincoAddAttribute) value;
             XincoAddAttributeT temp = new XincoAddAttributeT();
@@ -319,9 +319,10 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
             pm.persist(temp, false, false);
             pm.delete(val, false);
             getModifiedRecordDAOObject().saveAuditData();
-            pm.commitAndClose();
+            return pm.commitAndClose();
         } catch (Throwable ex) {
             Logger.getLogger(XincoAddAttributeServer.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
     }
 

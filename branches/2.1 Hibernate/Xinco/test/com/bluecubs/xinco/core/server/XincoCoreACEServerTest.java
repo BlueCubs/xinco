@@ -53,9 +53,10 @@ public class XincoCoreACEServerTest extends TestCase {
 
     /**
      * Test of checkAccess method, of class XincoCoreACEServer.
+     * @throws Exception 
      */
     @SuppressWarnings("unchecked")
-    public void testCheckAccess() {
+    public void testCheckAccess() throws Exception {
         System.out.println("checkAccess");
         boolean createdUser = false;
         //login as admin
@@ -73,7 +74,6 @@ public class XincoCoreACEServerTest extends TestCase {
             }
             try {
                 //Create a new user and assign access to Trash
-
                 user = new XincoCoreUserServer(0, "admin" + tries, "admin", "Test",
                         "Admin", "test@bluecubs.org",
                         1, 0, new Timestamp(System.currentTimeMillis()));

@@ -153,7 +153,7 @@ public class XincoCoreLogServer extends XincoCoreLog implements PersistenceServe
         }
     }
 
-    public boolean deleteFromDB() {
+    public boolean deleteFromDB() throws Exception{
         return pm.delete(this, true);
     }
 

@@ -131,7 +131,7 @@ public class XincoArchiveThread extends Thread {
             for (j = 0; j < querycount; j++) {
 
                 //select data with expired archiving date
-                List result = DBM.createdQuery(query[querycount], null);
+                List result = DBM.createdQuery(query[querycount]);
                 while (!result.isEmpty()) {
                     //Max number of archiving threads
                     if (activeCount() < 100) {

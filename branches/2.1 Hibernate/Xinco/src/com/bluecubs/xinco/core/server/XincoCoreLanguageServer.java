@@ -178,7 +178,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
     }
 
     @SuppressWarnings("static-access")
-    public AbstractAuditableObject create(AbstractAuditableObject value) {
+    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception{
         XincoCoreLanguage temp;
         XincoCoreLanguage newValue = new XincoCoreLanguage();
 
@@ -199,7 +199,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
         return newValue;
     }
 
-    public AbstractAuditableObject update(AbstractAuditableObject value) {
+    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception{
         XincoCoreLanguage val = (XincoCoreLanguage) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
@@ -210,7 +210,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
     }
 
     @SuppressWarnings({"unchecked", "static-access"})
-    public void delete(AbstractAuditableObject value) {
+    public boolean delete(AbstractAuditableObject value) throws Exception{
         try {
             XincoCoreLanguage val = (XincoCoreLanguage) value;
             XincoCoreLanguageT temp = new XincoCoreLanguageT();
@@ -228,10 +228,11 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
             if (!getModifiedRecordDAOObject().saveAuditData()) {
                 throw new XincoException(rb.getString("error.audit_data.invalid"));
             }
-            pm.commitAndClose();
+            return pm.commitAndClose();
         } catch (Throwable ex) {
             pm.rollback();
             Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
     }
 

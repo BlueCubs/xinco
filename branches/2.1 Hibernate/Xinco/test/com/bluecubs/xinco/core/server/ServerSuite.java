@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.bluecubs.xinco.core.server;
 
 import junit.framework.Test;
@@ -31,7 +26,6 @@ public class ServerSuite extends TestCase {
         suite.addTest(new TestSuite(com.bluecubs.xinco.core.server.XincoCoreNodeServerTest.class));
         suite.addTest(new TestSuite(com.bluecubs.xinco.core.server.XincoCoreLogServerTest.class));
         suite.addTest(new TestSuite(com.bluecubs.xinco.core.server.XincoCoreLanguageServerTest.class));
-        suite.addTest(new TestSuite(com.bluecubs.xinco.core.server.XincoDBManagerTest.class));
         suite.addTest(new TestSuite(com.bluecubs.xinco.core.server.XincoCoreUserHasXincoCoreGroupServerTest.class));
         suite.addTest(new TestSuite(com.bluecubs.xinco.core.server.XincoSettingServerTest.class));
         return suite;

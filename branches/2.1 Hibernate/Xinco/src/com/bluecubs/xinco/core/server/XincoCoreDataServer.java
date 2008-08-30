@@ -284,7 +284,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
     }
 
     @SuppressWarnings("static-access")
-    public AbstractAuditableObject create(AbstractAuditableObject value) {
+    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception{
         XincoCoreData temp;
         XincoCoreData newValue = new XincoCoreData();
         temp = (XincoCoreData) value;
@@ -307,7 +307,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
         return newValue;
     }
 
-    public AbstractAuditableObject update(AbstractAuditableObject value) {
+    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception{
         XincoCoreData val = (XincoCoreData) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
@@ -318,7 +318,7 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
     }
 
     @SuppressWarnings({"unchecked", "static-access"})
-    public void delete(AbstractAuditableObject value) {
+    public boolean delete(AbstractAuditableObject value) throws Exception{
         try {
             XincoCoreData val = (XincoCoreData) value;
             XincoCoreDataT temp = new XincoCoreDataT();
@@ -340,10 +340,11 @@ public class XincoCoreDataServer extends XincoCoreData implements XincoAuditable
             if (!getModifiedRecordDAOObject().saveAuditData()) {
                 throw new XincoException(rb.getString("error.audit_data.invalid"));
             }
-            pm.commitAndClose();
+            return pm.commitAndClose();
         } catch (Throwable ex) {
             Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, ex);
             pm.rollback();
+            return false;
         }
     }
 

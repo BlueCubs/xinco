@@ -90,6 +90,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
         setDesignation(attrD);
         setDataType(attrDT);
         setAttrSize(attrS);
+        setCreated(true);
     }
 
     //create data type attribute object for data structures
@@ -253,7 +254,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     }
 
     @SuppressWarnings("static-access")
-    public AbstractAuditableObject create(AbstractAuditableObject value) {
+    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception{
         XincoCoreDataTypeAttribute temp;
         XincoCoreDataTypeAttribute newValue = new XincoCoreDataTypeAttribute();
         temp = (XincoCoreDataTypeAttribute) value;
@@ -275,7 +276,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
         return newValue;
     }
 
-    public AbstractAuditableObject update(AbstractAuditableObject value) {
+    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception{
         XincoCoreDataTypeAttribute val = (XincoCoreDataTypeAttribute) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
@@ -286,7 +287,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     }
 
     @SuppressWarnings({"unchecked", "static-access"})
-    public void delete(AbstractAuditableObject value) {
+    public boolean delete(AbstractAuditableObject value) throws Exception{
         try {
             XincoCoreDataTypeAttribute val = (XincoCoreDataTypeAttribute) value;
             result = pm.createdQuery("select x from XincoCoreDataTypeAttribute X WHERE x.xincoCoreDataTypeAttributePK.attributeId=" +
@@ -315,10 +316,11 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
                 }
                 result.remove(0);
             }
-            pm.commitAndClose();
+            return pm.commitAndClose();
         } catch (Throwable ex) {
             Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getName()).log(Level.SEVERE, null, ex);
             pm.rollback();
+            return false;
         }
     }
 
@@ -335,7 +337,8 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
         try {
             if (getXincoCoreDataTypeAttributePK() != null &&
                     getXincoCoreDataTypeAttributePK().getAttributeId() > 0 &&
-                    getXincoCoreDataTypeAttributePK().getXincoCoreDataTypeId() > 0) {
+                    getXincoCoreDataTypeAttributePK().getXincoCoreDataTypeId() > 0 &&
+                    !isCreated()) {
                 AuditingDAOHelper.update(this, new XincoCoreDataTypeAttribute());
             } else {
                 XincoCoreDataTypeAttribute temp = new XincoCoreDataTypeAttribute();
@@ -387,8 +390,10 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     }
 
     public int getNewID(boolean atomic) {
-        /*Return 0 to "fool" the audit system. This parameter is not used for
-         *this class audit related methods
+        /* Return 0 to "fool" the audit system.
+         * This parameter is not used for this class audit related methods.
+         * This class is not meant to generate keys automatically since it's 
+         * formed by a foreign key relationship.
          */
         return 0;
     }

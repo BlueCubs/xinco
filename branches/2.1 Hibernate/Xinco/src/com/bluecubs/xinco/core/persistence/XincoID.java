@@ -5,25 +5,29 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  *
- * @author Javier
+ * @author ortijaus
  */
 @Entity
-@Table(name = "xinco_id", catalog = "xinco", schema = "")
+@Table(name = "xinco_id", catalog = "xinco", schema = "",
+uniqueConstraints = {@UniqueConstraint(columnNames = {"tablename"})})
 @NamedQueries({@NamedQuery(name = "XincoID.findAll",
     query = "SELECT x FROM XincoID x"),
     @NamedQuery(name = "XincoID.findByTablename",
     query = "SELECT x FROM XincoID x WHERE x.tablename = :tablename"),
-    @NamedQuery(name = "XincoID.findById",
-    query = "SELECT x FROM XincoID x WHERE x.id = :id"),
     @NamedQuery(name = "XincoID.findByLastId",
-    query = "SELECT x FROM XincoID x WHERE x.lastId = :lastId")
+    query = "SELECT x FROM XincoID x WHERE x.lastId = :lastId"),
+    @NamedQuery(name = "XincoID.findById",
+    query = "SELECT x FROM XincoID x WHERE x.id = :id")
 })
 public class XincoID extends XincoAbstractAuditableObject implements Serializable {
 
@@ -31,12 +35,14 @@ public class XincoID extends XincoAbstractAuditableObject implements Serializabl
     @Basic(optional = false)
     @Column(name = "tablename", nullable = false, length = 255)
     private String tablename;
-    @Id
-    @Column(name = "id", nullable = false)
-    private Integer tableId;
     @Basic(optional = false)
     @Column(name = "last_id", nullable = false)
     private int lastId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Basic(optional = false)
+    @Column(name = "id", nullable = false)
+    private Integer tableId;
 
     public XincoID() {
     }
@@ -59,20 +65,20 @@ public class XincoID extends XincoAbstractAuditableObject implements Serializabl
         this.tablename = tablename;
     }
 
-    public Integer getId() {
-        return tableId;
-    }
-
-    public void setId(Integer id) {
-        this.tableId = id;
-    }
-
     public int getLastId() {
         return lastId;
     }
 
     public void setLastId(int lastId) {
         this.lastId = lastId;
+    }
+
+    public Integer getId() {
+        return tableId;
+    }
+
+    public void setId(Integer id) {
+        this.tableId = id;
     }
 
     @Override

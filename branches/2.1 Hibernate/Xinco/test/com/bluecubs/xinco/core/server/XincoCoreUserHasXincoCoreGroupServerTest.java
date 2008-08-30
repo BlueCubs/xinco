@@ -1,15 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.hibernate.audit.XincoAbstractAuditableObject;
 import com.bluecubs.xinco.core.persistence.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.core.persistence.XincoCoreUserHasXincoCoreGroupPK;
-import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,8 +16,10 @@ import junit.framework.TestSuite;
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 public class XincoCoreUserHasXincoCoreGroupServerTest extends TestCase {
-     HashMap parameters = new HashMap();
+
+    HashMap parameters = new HashMap();
     private XincoCoreUserHasXincoCoreGroupPK tempId;
+
     public XincoCoreUserHasXincoCoreGroupServerTest(String testName) {
         super(testName);
     }
@@ -90,8 +86,8 @@ public class XincoCoreUserHasXincoCoreGroupServerTest extends TestCase {
             System.out.println("getParameters");
             XincoCoreUserHasXincoCoreGroupServer instance = new XincoCoreUserHasXincoCoreGroupServer(1, 1);
             HashMap expResult = new HashMap();
-            expResult.put("attributeId", 1);
-            expResult.put("xincoCoreDataTypeId", 1);
+            expResult.put("xincoCoreGroupId", 1);
+            expResult.put("xincoCoreUserId", 1);
             HashMap result = instance.getParameters();
             assertEquals(expResult, result);
         } catch (XincoException ex) {
@@ -112,6 +108,7 @@ public class XincoCoreUserHasXincoCoreGroupServerTest extends TestCase {
             XincoCoreUserHasXincoCoreGroupServer instance = new XincoCoreUserHasXincoCoreGroupServer();
             assertTrue(instance.getNewID(true) == 0);
         } catch (UnsupportedOperationException e) {
+            Logger.getLogger(XincoCoreUserHasXincoCoreGroupServerTest.class.getName()).log(Level.SEVERE, null, e);
             fail();
         } catch (Exception ex) {
             Logger.getLogger(XincoCoreUserHasXincoCoreGroupServerTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -125,10 +122,11 @@ public class XincoCoreUserHasXincoCoreGroupServerTest extends TestCase {
     public void testWrite2DB() {
         try {
             System.out.println("write2DB");
-            XincoCoreUserHasXincoCoreGroupServer instance = new XincoCoreUserHasXincoCoreGroupServer(1, 1,1);
+            XincoCoreUserHasXincoCoreGroupServer instance = new XincoCoreUserHasXincoCoreGroupServer(1, 3, 1);
             assertTrue(instance.write2DB());
-            assertTrue(XincoCoreUserHasXincoCoreGroupServer.pm.namedQuery("XincoCoreUserHasXincoCoreGroup.findByDesignation", instance.getParameters()).size() > 0);
-            //Blame the admin :P
+            assertTrue(instance.findWithDetails(instance.getParameters()).length>0);
+            //Blame the admin
+            instance.setChangerID(1);
             assertTrue(instance.deleteFromDB());
         } catch (XincoException ex) {
             Logger.getLogger(XincoCoreUserHasXincoCoreGroupServerTest.class.getName()).log(Level.SEVERE, null, ex);

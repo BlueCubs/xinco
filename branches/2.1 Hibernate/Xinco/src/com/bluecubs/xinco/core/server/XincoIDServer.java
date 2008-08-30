@@ -19,7 +19,7 @@
  * More information on: http://www.bluecubs.org
  *************************************************************
  *
- * Name:            XincoCoreNodeServer
+ * Name:            XincoIDServer
  *
  * Description:     id object
  *
@@ -36,7 +36,6 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.hibernate.audit.XincoAuditableDAO;
-import com.bluecubs.xinco.core.persistence.XincoCoreGroup;
 import com.bluecubs.xinco.core.persistence.XincoID;
 import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
 import com.dreamer.Hibernate.Audit.AuditingDAOHelper;
@@ -56,17 +55,22 @@ public class XincoIDServer extends XincoID implements XincoAuditableDAO, Persist
     private static final long serialVersionUID = 5985918988923778727L;
     private List result;
 
-    public XincoIDServer(String tablename, Integer id) {
-        super(id);
+    public XincoIDServer(String tablename, int id, int lastId) {
         setTablename(tablename);
+        setId(id);
+        setLastId(lastId);
     }
 
+    @SuppressWarnings("unchecked")
     public XincoIDServer(String tablename) {
         setTablename(tablename.toLowerCase());
-        result = pm.namedQuery("XincoID.findByTablename", getParameters());
+        parameters.clear();
+        parameters.put("tablename", tablename);
+        result = pm.namedQuery("XincoID.findByTablename", parameters);
         if (result.size() > 0) {
             XincoID temp = (XincoID) result.get(0);
             setLastId(temp.getLastId());
+            setId(temp.getId());
         }
     }
 
@@ -79,7 +83,7 @@ public class XincoIDServer extends XincoID implements XincoAuditableDAO, Persist
     }
 
     public AbstractAuditableObject findById(HashMap parameters) throws Exception {
-        result = pm.namedQuery("XincoID.findByTablename", parameters);
+        result = pm.namedQuery("XincoID.findById", parameters);
         if (result.size() > 0) {
             XincoID temp = (XincoID) result.get(0);
             temp.setTransactionTime(getTransactionTime());
@@ -91,7 +95,39 @@ public class XincoIDServer extends XincoID implements XincoAuditableDAO, Persist
     }
 
     public AbstractAuditableObject[] findWithDetails(HashMap parameters) throws Exception {
-        result = pm.createdQuery("SELECT x FROM XincoID x WHERE x.lastID = :lastID", parameters);
+        int counter = 0;
+        String sql = "SELECT x FROM XincoID x WHERE ";
+        if (parameters.containsKey("id")) {
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.INFO, "Searching by id");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.id = :id";
+            counter++;
+        }
+        if (parameters.containsKey("lastID")) {
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.INFO, "Searching by lastID");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.lastID = :lastID";
+            counter++;
+        }
+        if (parameters.containsKey("tablename")) {
+            if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
+                Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.INFO, "Searching by status tablename");
+            }
+            if (counter > 0) {
+                sql += " and ";
+            }
+            sql += "x.tablename = :tablename";
+            counter++;
+        }
+        result = pm.createdQuery(sql, parameters);
         if (result.size() > 0) {
             XincoID temp[] = new XincoID[result.size()];
             int i = 0;
@@ -108,13 +144,17 @@ public class XincoIDServer extends XincoID implements XincoAuditableDAO, Persist
     }
 
     @SuppressWarnings("static-access")
-    public AbstractAuditableObject create(AbstractAuditableObject value) {
+    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception {
         XincoID temp;
         XincoID newValue = new XincoID();
+
         temp = (XincoID) value;
+        newValue.setId(temp.getId());
         newValue.setTablename(temp.getTablename());
         newValue.setRecordId(temp.getRecordId());
         newValue.setLastId(temp.getLastId());
+
+        newValue.setRecordId(temp.getRecordId());
         newValue.setCreated(temp.isCreated());
         newValue.setChangerID(temp.getChangerID());
         newValue.setTransactionTime(getTransactionTime());
@@ -126,7 +166,7 @@ public class XincoIDServer extends XincoID implements XincoAuditableDAO, Persist
         return newValue;
     }
 
-    public AbstractAuditableObject update(AbstractAuditableObject value) {
+    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception {
         XincoID val = (XincoID) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
@@ -137,35 +177,23 @@ public class XincoIDServer extends XincoID implements XincoAuditableDAO, Persist
     }
 
     @SuppressWarnings({"unchecked", "static-access"})
-    public void delete(AbstractAuditableObject value) {
+    public boolean delete(AbstractAuditableObject value) throws Exception {
+        XincoID val = null;
         try {
-            XincoID tempID = (XincoID) value;
-            XincoCoreGroupServer group = new XincoCoreGroupServer();
-            XincoCoreGroup g;
-            parameters.clear();
-            parameters.put("designation", "general.group.admin");
-            //Delete only if member of admin group
-            if (group.findWithDetails(parameters).length > 0) {
-                g = (XincoCoreGroup) group.findWithDetails(parameters)[0];
-                parameters.clear();
-                parameters.put("XincoCoreUserID", tempID.getChangerID());
-                parameters.put("XincoCoreGroupID", g.getId());
-                if (!pm.createdQuery("SELECT x FROM XincoCoreUserHasXincoGroup x WHERE " +
-                        "x.XincoCoreUserHasXincoGroupPK.XincoUserID = :XincoCoreUserID and " +
-                        "x.XincoCoreUserHasXincoGroupPK.XincoGroupID = :XincoCoreGroupID", parameters).isEmpty()) {
-                    XincoID val = (XincoID) value;
-                    pm.delete(val, true);
-                }
-            }
+            val = (XincoID) value;
+            XincoCoreUserHasXincoCoreGroupServer x = new XincoCoreUserHasXincoCoreGroupServer(1, val.getChangerID());
+            return pm.delete(val, true);
         } catch (Throwable ex) {
-            Logger.getLogger(XincoIDServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoCoreACEServer.class.getName()).log(Level.WARNING,
+                    "User with id: " + val.getChangerID() + " has no permission to delete this record.", ex);
+            return false;
         }
     }
 
     @SuppressWarnings("unchecked")
     public HashMap getParameters() {
         HashMap temp = new HashMap();
-        temp.put("tablename", getTablename());
+        temp.put("id", getId());
         return temp;
     }
 
@@ -215,11 +243,14 @@ public class XincoIDServer extends XincoID implements XincoAuditableDAO, Persist
                 AuditingDAOHelper.update(this, new XincoID(getId(), getTablename(), getLastId()));
             } else {
                 XincoID temp = new XincoID();
-                temp.setTablename(getTablename());
-                temp.setLastId(getLastId());
                 temp.setChangerID(getChangerID());
                 temp.setCreated(true);
-                AuditingDAOHelper.create(this, temp);
+
+                temp.setTablename(getTablename());
+                temp.setLastId(getLastId());
+                System.out.println(temp);
+                temp = (XincoID) AuditingDAOHelper.create(this, temp);
+                setId(temp.getId());
                 if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                     Logger.getLogger(XincoIDServer.class.getName()).log(Level.INFO, "ID entry created for: " + getTablename());
                 }
@@ -236,8 +267,7 @@ public class XincoIDServer extends XincoID implements XincoAuditableDAO, Persist
     public boolean deleteFromDB() {
         setTransactionTime(DateRange.startingNow());
         try {
-            AuditingDAOHelper.delete(this, getParameters(), getChangerID());
-            return true;
+            return AuditingDAOHelper.delete(this, getId(), getChangerID());
         } catch (Throwable e) {
             if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
                 Logger.getLogger(XincoIDServer.class.getName()).log(Level.SEVERE, null, e);
