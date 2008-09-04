@@ -1,122 +1,275 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions targetNamespace="urn:Xinco" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:Xinco" xmlns:intf="urn:Xinco" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns2="http://core.xinco.bluecubs.com" xmlns:tns3="http://add.xinco.bluecubs.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<wsdl:definitions targetNamespace="urn:Xinco" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:Xinco" xmlns:intf="urn:Xinco" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns2="http://core.xinco.bluecubs.com" xmlns:tns3="http://persistence.core.xinco.bluecubs.com" xmlns:tns4="http://audit.hibernate.core.xinco.bluecubs.com" xmlns:tns5="http://Audit.Hibernate.dreamer.com" xmlns:tns6="http://all.common.oness.sf.net" xmlns:tns7="http://temporal.model.common.oness.sf.net" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 <!--WSDL created by Apache Axis version: 1.4
 Built on Apr 22, 2006 (06:55:48 PDT)-->
     <wsdl:types>
-        <schema targetNamespace="http://core.xinco.bluecubs.com" xmlns="http://www.w3.org/2001/XMLSchema">
+        <schema targetNamespace="http://all.common.oness.sf.net" xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://Audit.Hibernate.dreamer.com"/>
+            <import namespace="http://temporal.model.common.oness.sf.net"/>
+            <import namespace="http://audit.hibernate.core.xinco.bluecubs.com"/>
             <import namespace="http://xml.apache.org/xml-soap"/>
-            <import namespace="http://add.xinco.bluecubs.com"/>
+            <import namespace="http://core.xinco.bluecubs.com"/>
+            <import namespace="http://persistence.core.xinco.bluecubs.com"/>
             <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
-            <complexType name="XincoVersion">
-                <sequence>
-                    <element name="version_high" type="xsd:int"/>
-                    <element name="version_low" type="xsd:int"/>
-                    <element name="version_mid" type="xsd:int"/>
-                    <element name="version_postfix" nillable="true" type="xsd:string"/>
-                </sequence>
+            <complexType abstract="true" name="BaseObject">
+                <sequence/>
             </complexType>
+        </schema>
+        <schema targetNamespace="http://temporal.model.common.oness.sf.net" xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://Audit.Hibernate.dreamer.com"/>
+            <import namespace="http://audit.hibernate.core.xinco.bluecubs.com"/>
+            <import namespace="http://all.common.oness.sf.net"/>
+            <import namespace="http://xml.apache.org/xml-soap"/>
+            <import namespace="http://core.xinco.bluecubs.com"/>
+            <import namespace="http://persistence.core.xinco.bluecubs.com"/>
+            <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+            <complexType name="Date">
+                <complexContent>
+                    <extension base="tns6:BaseObject">
+                        <sequence>
+                            <element name="calendar" nillable="true" type="xsd:dateTime"/>
+                            <element name="dayOfMonth" type="xsd:int"/>
+                            <element name="month" type="xsd:int"/>
+                            <element name="time" nillable="true" type="xsd:dateTime"/>
+                            <element name="year" type="xsd:int"/>
+                        </sequence>
+                    </extension>
+                </complexContent>
+            </complexType>
+            <complexType name="DateRange">
+                <complexContent>
+                    <extension base="tns6:BaseObject">
+                        <sequence>
+                            <element name="empty" type="xsd:boolean"/>
+                            <element name="end" nillable="true" type="tns7:Date"/>
+                            <element name="open" type="xsd:boolean"/>
+                            <element name="start" nillable="true" type="tns7:Date"/>
+                        </sequence>
+                    </extension>
+                </complexContent>
+            </complexType>
+        </schema>
+        <schema targetNamespace="http://Audit.Hibernate.dreamer.com" xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://temporal.model.common.oness.sf.net"/>
+            <import namespace="http://audit.hibernate.core.xinco.bluecubs.com"/>
+            <import namespace="http://all.common.oness.sf.net"/>
+            <import namespace="http://xml.apache.org/xml-soap"/>
+            <import namespace="http://core.xinco.bluecubs.com"/>
+            <import namespace="http://persistence.core.xinco.bluecubs.com"/>
+            <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+            <complexType abstract="true" name="AbstractAuditableObject">
+                <complexContent>
+                    <extension base="tns6:BaseObject">
+                        <sequence>
+                            <element name="changerID" type="xsd:int"/>
+                            <element name="created" type="xsd:boolean"/>
+                            <element name="deleted" type="xsd:boolean"/>
+                            <element name="modified" type="xsd:boolean"/>
+                            <element name="reason" nillable="true" type="xsd:string"/>
+                            <element name="recordId" nillable="true" type="soapenc:int"/>
+                            <element name="transactionTime" nillable="true" type="tns7:DateRange"/>
+                        </sequence>
+                    </extension>
+                </complexContent>
+            </complexType>
+        </schema>
+        <schema targetNamespace="http://audit.hibernate.core.xinco.bluecubs.com" xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://Audit.Hibernate.dreamer.com"/>
+            <import namespace="http://temporal.model.common.oness.sf.net"/>
+            <import namespace="http://all.common.oness.sf.net"/>
+            <import namespace="http://xml.apache.org/xml-soap"/>
+            <import namespace="http://core.xinco.bluecubs.com"/>
+            <import namespace="http://persistence.core.xinco.bluecubs.com"/>
+            <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+            <complexType name="XincoAbstractAuditableObject">
+                <complexContent>
+                    <extension base="tns5:AbstractAuditableObject">
+                        <sequence/>
+                    </extension>
+                </complexContent>
+            </complexType>
+        </schema>
+        <schema targetNamespace="http://persistence.core.xinco.bluecubs.com" xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://Audit.Hibernate.dreamer.com"/>
+            <import namespace="http://temporal.model.common.oness.sf.net"/>
+            <import namespace="http://audit.hibernate.core.xinco.bluecubs.com"/>
+            <import namespace="http://all.common.oness.sf.net"/>
+            <import namespace="http://xml.apache.org/xml-soap"/>
+            <import namespace="http://core.xinco.bluecubs.com"/>
+            <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
             <complexType name="XincoCoreUser">
-                <sequence>
-                    <element name="change" type="xsd:boolean"/>
-                    <element name="changerID" type="xsd:int"/>
-                    <element name="email" nillable="true" type="xsd:string"/>
-                    <element name="firstname" nillable="true" type="xsd:string"/>
-                    <element name="id" type="xsd:int"/>
-                    <element name="name" nillable="true" type="xsd:string"/>
-                    <element name="reason" nillable="true" type="xsd:string"/>
-                    <element name="status_number" type="xsd:int"/>
-                    <element name="username" nillable="true" type="xsd:string"/>
-                    <element name="userpassword" nillable="true" type="xsd:string"/>
-                    <element name="writeGroups" type="xsd:boolean"/>
-                    <element name="xinco_core_groups" nillable="true" type="apachesoap:Vector"/>
-                </sequence>
-            </complexType>
-            <complexType name="XincoCoreLanguage">
-                <sequence>
-                    <element name="designation" nillable="true" type="xsd:string"/>
-                    <element name="changerID" type="xsd:int"/>
-                    <element name="id" type="xsd:int"/>
-                    <element name="sign" nillable="true" type="xsd:string"/>
-                </sequence>
+                <complexContent>
+                    <extension base="tns4:XincoAbstractAuditableObject">
+                        <sequence>
+                            <element name="attempts" type="xsd:int"/>
+                            <element name="email" nillable="true" type="xsd:string"/>
+                            <element name="firstname" nillable="true" type="xsd:string"/>
+                            <element name="id" nillable="true" type="soapenc:int"/>
+                            <element name="lastModified" nillable="true" type="xsd:dateTime"/>
+                            <element name="name" nillable="true" type="xsd:string"/>
+                            <element name="statusNumber" type="xsd:int"/>
+                            <element name="username" nillable="true" type="xsd:string"/>
+                            <element name="userpassword" nillable="true" type="xsd:string"/>
+                        </sequence>
+                    </extension>
+                </complexContent>
             </complexType>
             <complexType name="XincoCoreNode">
-                <sequence>
-                    <element name="designation" nillable="true" type="xsd:string"/>
-                    <element name="changerID" type="xsd:int"/>
-                    <element name="xinco_core_acl" nillable="true" type="apachesoap:Vector"/>
-                    <element name="xinco_core_data" nillable="true" type="apachesoap:Vector"/>
-                    <element name="xinco_core_language" nillable="true" type="tns2:XincoCoreLanguage"/>
-                    <element name="xinco_core_node_id" type="xsd:int"/>
-                    <element name="xinco_core_nodes" nillable="true" type="apachesoap:Vector"/>
-                    <element name="id" type="xsd:int"/>
-                    <element name="status_number" type="xsd:int"/>
-                </sequence>
+                <complexContent>
+                    <extension base="tns4:XincoAbstractAuditableObject">
+                        <sequence>
+                            <element name="designation" nillable="true" type="xsd:string"/>
+                            <element name="id" nillable="true" type="soapenc:int"/>
+                            <element name="statusNumber" type="xsd:int"/>
+                            <element name="xincoCoreLanguageId" type="xsd:int"/>
+                            <element name="xincoCoreNodeId" nillable="true" type="soapenc:int"/>
+                        </sequence>
+                    </extension>
+                </complexContent>
             </complexType>
-            <complexType name="XincoCoreDataType">
-                <sequence>
-                    <element name="designation" nillable="true" type="xsd:string"/>
-                    <element name="id" type="xsd:int"/>
-                    <element name="changerID" type="xsd:int"/>
-                    <element name="description" nillable="true" type="xsd:string"/>
-                    <element name="xinco_core_data_type_attributes" nillable="true" type="apachesoap:Vector"/>
-                </sequence>
+            <complexType name="XincoCoreLanguage">
+                <complexContent>
+                    <extension base="tns4:XincoAbstractAuditableObject">
+                        <sequence>
+                            <element name="designation" nillable="true" type="xsd:string"/>
+                            <element name="id" nillable="true" type="soapenc:int"/>
+                            <element name="sign" nillable="true" type="xsd:string"/>
+                        </sequence>
+                    </extension>
+                </complexContent>
             </complexType>
             <complexType name="XincoCoreData">
-                <sequence>
-                    <element name="designation" nillable="true" type="xsd:string"/>
-                    <element name="xinco_core_acl" nillable="true" type="apachesoap:Vector"/>
-                    <element name="changerID" type="xsd:int"/>
-                    <element name="xinco_core_data_type" nillable="true" type="tns2:XincoCoreDataType"/>
-                    <element name="xinco_core_language" nillable="true" type="tns2:XincoCoreLanguage"/>
-                    <element name="xinco_core_node_id" type="xsd:int"/>
-                    <element name="id" type="xsd:int"/>
-                    <element name="status_number" type="xsd:int"/>
-                    <element name="xinco_add_attributes" nillable="true" type="apachesoap:Vector"/>
-                    <element name="xinco_core_logs" nillable="true" type="apachesoap:Vector"/>
-                </sequence>
+                <complexContent>
+                    <extension base="tns4:XincoAbstractAuditableObject">
+                        <sequence>
+                            <element name="designation" nillable="true" type="xsd:string"/>
+                            <element name="id" nillable="true" type="soapenc:int"/>
+                            <element name="statusNumber" type="xsd:int"/>
+                            <element name="xincoCoreDataTypeId" type="xsd:int"/>
+                            <element name="xincoCoreLanguageId" type="xsd:int"/>
+                            <element name="xincoCoreNodeId" type="xsd:int"/>
+                        </sequence>
+                    </extension>
+                </complexContent>
+            </complexType>
+            <complexType name="XincoCoreDataType">
+                <complexContent>
+                    <extension base="tns4:XincoAbstractAuditableObject">
+                        <sequence>
+                            <element name="description" nillable="true" type="xsd:string"/>
+                            <element name="designation" nillable="true" type="xsd:string"/>
+                            <element name="id" nillable="true" type="soapenc:int"/>
+                        </sequence>
+                    </extension>
+                </complexContent>
             </complexType>
             <complexType name="XincoCoreACE">
-                <sequence>
-                    <element name="admin_permission" type="xsd:boolean"/>
-                    <element name="changerID" type="xsd:int"/>
-                    <element name="execute_permission" type="xsd:boolean"/>
-                    <element name="xinco_core_data_id" type="xsd:int"/>
-                    <element name="xinco_core_group_id" type="xsd:int"/>
-                    <element name="xinco_core_node_id" type="xsd:int"/>
-                    <element name="xinco_core_user_id" type="xsd:int"/>
-                    <element name="id" type="xsd:int"/>
-                    <element name="read_permission" type="xsd:boolean"/>
-                    <element name="write_permission" type="xsd:boolean"/>
-                </sequence>
+                <complexContent>
+                    <extension base="tns4:XincoAbstractAuditableObject">
+                        <sequence>
+                            <element name="adminPermission" type="xsd:boolean"/>
+                            <element name="executePermission" type="xsd:boolean"/>
+                            <element name="id" nillable="true" type="soapenc:int"/>
+                            <element name="readPermission" type="xsd:boolean"/>
+                            <element name="writePermission" type="xsd:boolean"/>
+                            <element name="xincoCoreDataId" nillable="true" type="soapenc:int"/>
+                            <element name="xincoCoreGroupId" nillable="true" type="soapenc:int"/>
+                            <element name="xincoCoreNodeId" nillable="true" type="soapenc:int"/>
+                            <element name="xincoCoreUserId" nillable="true" type="soapenc:int"/>
+                        </sequence>
+                    </extension>
+                </complexContent>
             </complexType>
             <complexType name="XincoCoreLog">
                 <sequence>
-                    <element name="id" type="xsd:int"/>
-                    <element name="op_code" type="xsd:int"/>
-                    <element name="changerID" type="xsd:int"/>
-                    <element name="op_datetime" nillable="true" type="xsd:dateTime"/>
-                    <element name="op_description" nillable="true" type="xsd:string"/>
-                    <element name="version" nillable="true" type="tns2:XincoVersion"/>
-                    <element name="xinco_core_data_id" type="xsd:int"/>
-                    <element name="xinco_core_user_id" type="xsd:int"/>
+                    <element name="id" nillable="true" type="soapenc:int"/>
+                    <element name="opCode" type="xsd:int"/>
+                    <element name="opDatetime" nillable="true" type="xsd:dateTime"/>
+                    <element name="opDescription" nillable="true" type="xsd:string"/>
+                    <element name="versionHigh" nillable="true" type="soapenc:int"/>
+                    <element name="versionLow" nillable="true" type="soapenc:int"/>
+                    <element name="versionMid" nillable="true" type="soapenc:int"/>
+                    <element name="versionPostfix" nillable="true" type="xsd:string"/>
+                    <element name="xincoCoreDataId" type="xsd:int"/>
+                    <element name="xincoCoreUserId" type="xsd:int"/>
                 </sequence>
             </complexType>
             <complexType name="XincoCoreGroup">
+                <complexContent>
+                    <extension base="tns4:XincoAbstractAuditableObject">
+                        <sequence>
+                            <element name="designation" nillable="true" type="xsd:string"/>
+                            <element name="id" nillable="true" type="soapenc:int"/>
+                            <element name="statusNumber" type="xsd:int"/>
+                        </sequence>
+                    </extension>
+                </complexContent>
+            </complexType>
+            <complexType name="XincoCoreDataTypeAttributePK">
                 <sequence>
-                    <element name="designation" nillable="true" type="xsd:string"/>
-                    <element name="changerID" type="xsd:int"/>
-                    <element name="id" type="xsd:int"/>
-                    <element name="status_number" type="xsd:int"/>
+                    <element name="attributeId" type="xsd:int"/>
+                    <element name="xincoCoreDataTypeId" type="xsd:int"/>
                 </sequence>
             </complexType>
             <complexType name="XincoCoreDataTypeAttribute">
+                <complexContent>
+                    <extension base="tns4:XincoAbstractAuditableObject">
+                        <sequence>
+                            <element name="attrSize" type="xsd:int"/>
+                            <element name="dataType" nillable="true" type="xsd:string"/>
+                            <element name="designation" nillable="true" type="xsd:string"/>
+                            <element name="xincoCoreDataTypeAttributePK" nillable="true" type="tns3:XincoCoreDataTypeAttributePK"/>
+                        </sequence>
+                    </extension>
+                </complexContent>
+            </complexType>
+            <complexType name="XincoAddAttributePK">
                 <sequence>
-                    <element name="designation" nillable="true" type="xsd:string"/>
-                    <element name="changerID" type="xsd:int"/>
-                    <element name="attribute_id" type="xsd:int"/>
-                    <element name="data_type" nillable="true" type="xsd:string"/>
-                    <element name="size" type="xsd:int"/>
-                    <element name="xinco_core_data_type_id" type="xsd:int"/>
+                    <element name="attributeId" type="xsd:int"/>
+                    <element name="xincoCoreDataId" type="xsd:int"/>
+                </sequence>
+            </complexType>
+            <complexType name="XincoAddAttribute">
+                <complexContent>
+                    <extension base="tns4:XincoAbstractAuditableObject">
+                        <sequence>
+                            <element name="attribDatetime" nillable="true" type="xsd:dateTime"/>
+                            <element name="attribDouble" type="xsd:double"/>
+                            <element name="attribInt" type="xsd:int"/>
+                            <element name="attribText" nillable="true" type="xsd:string"/>
+                            <element name="attribUnsignedint" type="xsd:long"/>
+                            <element name="attribVarchar" nillable="true" type="xsd:string"/>
+                            <element name="xincoAddAttributePK" nillable="true" type="tns3:XincoAddAttributePK"/>
+                        </sequence>
+                    </extension>
+                </complexContent>
+            </complexType>
+            <complexType name="XincoSetting">
+                <complexContent>
+                    <extension xmlns:tns4="http://audit.hibernate.core.xinco.bluecubs.com" base="tns4:XincoAbstractAuditableObject">
+                        <sequence>
+                            <element xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="id" type="xsd:int"></element>
+                            <element xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="description" type="xsd:string"></element>
+                            <element xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="intValue" type="xsd:int"></element>
+                            <element xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="longValue" type="xsd:long"></element>
+                            <element xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="stringValue" type="xsd:string"></element>
+                            <element xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="boolValue" type="xsd:boolean"></element>
+                        </sequence>
+                    </extension>
+                </complexContent>
+            </complexType>
+        </schema>
+        <schema targetNamespace="http://xml.apache.org/xml-soap" xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://Audit.Hibernate.dreamer.com"/>
+            <import namespace="http://temporal.model.common.oness.sf.net"/>
+            <import namespace="http://audit.hibernate.core.xinco.bluecubs.com"/>
+            <import namespace="http://all.common.oness.sf.net"/>
+            <import namespace="http://core.xinco.bluecubs.com"/>
+            <import namespace="http://persistence.core.xinco.bluecubs.com"/>
+            <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+            <complexType name="Vector">
+                <sequence>
+                    <element maxOccurs="unbounded" minOccurs="0" name="item" type="xsd:anyType"/>
                 </sequence>
             </complexType>
         </schema>
@@ -130,21 +283,109 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
                 </sequence>
             </complexType>
         </schema>
-        <schema targetNamespace="http://add.xinco.bluecubs.com" xmlns="http://www.w3.org/2001/XMLSchema">
+        <schema targetNamespace="http://core.xinco.bluecubs.com" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns2="http://core.xinco.bluecubs.com">
+            <import namespace="http://xml.apache.org/xml-soap"/>
+            <import namespace="http://Audit.Hibernate.dreamer.com"/>
+            <import namespace="http://temporal.model.common.oness.sf.net"/>
+            <import namespace="http://all.common.oness.sf.net"/>
             <import namespace="http://xml.apache.org/xml-soap"/>
             <import namespace="http://core.xinco.bluecubs.com"/>
+            <import namespace="http://persistence.core.xinco.bluecubs.com"/>
             <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
-            <complexType name="XincoAddAttribute">
+            <complexType name="XincoVersion">
                 <sequence>
-                    <element name="attrib_datetime" nillable="true" type="xsd:dateTime"/>
-                    <element name="attrib_double" type="xsd:double"/>
-                    <element name="attrib_int" type="xsd:int"/>
-                    <element name="attrib_text" nillable="true" type="xsd:string"/>
-                    <element name="attrib_unsignedint" type="xsd:long"/>
-                    <element name="attrib_varchar" nillable="true" type="xsd:string"/>
-                    <element name="attribute_id" type="xsd:int"/>
-                    <element name="xinco_core_data_id" type="xsd:int"/>
+                    <element name="versionHigh" type="xsd:integer"/>
+                    <element name="versionLow" type="xsd:integer"/>
+                    <element name="versionMid" type="xsd:integer"/>
+                    <element name="versionPostfix" nillable="true" type="xsd:string"/>
                 </sequence>
+            </complexType>
+            <complexType name="XincoAddAttribute">
+                <extension base="tns3: XincoAddAttribute ">
+                    <sequence>
+                        <element name="attribDatetime" nillable="true" type="date"/>
+                        <element name="attribDouble" type="xsd:double"/>
+                        <element name="attribInt" type="integer"/>
+                        <element name="attribText" nillable="true" type="xsd:string"/>
+                        <element name="attribUnsignedint" type="xsd:long"/>
+                        <element name="attribVarchar" nillable="true" type="xsd:string"/>
+                        <element name="attributeId" type="xsd:integer"/>
+                        <element name="xincoCoreDataId" type="xsd:integer"/>
+                    </sequence>
+                </extension>
+            </complexType>
+            <complexType name="XincoCoreUser">
+                <extension base="tns3:XincoCoreUser">
+                    <sequence>
+                        <element name="change" type="xsd:boolean"/>
+                        <element name="writeGroups" type="xsd:boolean"/>
+                        <element name="xincoCoreGroups" nillable="true" type="apachesoap:Vector"/>
+                    </sequence>
+                </extension>
+            </complexType>
+            <complexType name="XincoCoreLanguage">
+                <extension base="tns3:XincoCoreLanguage">
+                    <sequence/>
+                </extension>
+            </complexType>
+            <complexType name="XincoCoreNode">
+                <extension base="tns3:XincoCoreNode">
+                    <sequence>
+                        <element name="designation" nillable="true" type="xsd:string"/>
+                        <element name="xincoCoreACL" nillable="true" type="apachesoap:Vector"/>
+                        <element name="xincoCoreData" nillable="true" type="apachesoap:Vector"/>
+                        <element name="xincoCoreLanguage" nillable="true" type="tns2:XincoCoreLanguage"/>
+                        <element name="xincoCoreNodes" nillable="true" type="apachesoap:Vector"/>
+                        <element name="id" type="xsd:integer"/>
+                    </sequence>
+                </extension>
+            </complexType>
+            <complexType name="XincoCoreDataType">
+                <extension base="tns3:XincoCoreDataType">
+                    <sequence>
+                        <element name="xincoCoreDataTypeAttributes" nillable="true" type="apachesoap:Vector"/>
+                    </sequence>
+                </extension>
+            </complexType>
+            <complexType name="XincoCoreData">
+                <extension base="tns3:XincoCoreData">
+                    <sequence>
+                        <element name="xincoCoreACL" nillable="true" type="apachesoap:Vector"/>
+                        <element name="xincoCoreDataType" nillable="true" type="tns2:XincoCoreDataType"/>
+                        <element name="xincoCoreLanguage" nillable="true" type="tns2:XincoCoreLanguage"/>
+                        <element name="xincoAddAttributes" nillable="true" type="apachesoap:Vector"/>
+                        <element name="xincoCoreLogs" nillable="true" type="apachesoap:Vector"/>
+                    </sequence>
+                </extension>
+            </complexType>
+            <complexType name="XincoCoreACE">
+                <extension base="tns3:XincoCoreACE">
+                    <sequence/>
+                </extension>
+            </complexType>
+            <complexType name="XincoCoreLog">
+                <extension base="tns3:XincoCoreLog">
+                    <sequence>
+                    </sequence>
+                </extension>
+            </complexType>
+            <complexType name="XincoCoreGroup">
+                <extension base="tns3:XincoCoreGroup">
+                    <sequence/>
+                </extension>
+            </complexType>
+            <complexType name="XincoCoreDataTypeAttribute">
+                <extension base="tns3:XincoCoreDataTypeAttribute">
+                    <sequence>
+                    </sequence>
+                </extension>
+            </complexType>
+            <complexType name="XincoSetting">
+                <complexContent>
+                    <extension base="tns3:XincoSetting">
+                        <sequence/>
+                    </extension>
+                </complexContent>
             </complexType>
         </schema>
     </wsdl:types>
@@ -159,7 +400,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
     <wsdl:message name="uploadXincoCoreDataResponse">
 
-        <wsdl:part name="uploadXincoCoreDataReturn" type="xsd:int"/>
+        <wsdl:part name="uploadXincoCoreDataReturn" type="xsd:integer"/>
 
     </wsdl:message>
 
@@ -351,7 +592,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
     <wsdl:message name="getXincoAddAttributeRequest">
 
-        <wsdl:part name="in0" type="tns3:XincoAddAttribute"/>
+        <wsdl:part name="in0" type="tns2:XincoAddAttribute"/>
 
         <wsdl:part name="in1" type="tns2:XincoCoreUser"/>
 
@@ -409,7 +650,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
     <wsdl:message name="getXincoAddAttributeResponse">
 
-        <wsdl:part name="getXincoAddAttributeReturn" type="tns3:XincoAddAttribute"/>
+        <wsdl:part name="getXincoAddAttributeReturn" type="tns2:XincoAddAttribute"/>
 
     </wsdl:message>
 
@@ -496,7 +737,12 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
         <wsdl:part name="setXincoCoreLogReturn" type="tns2:XincoCoreLog"/>
 
     </wsdl:message>
-
+    <wsdl:message name="getSettingRequest">
+        <wsdl:part name="description" type="xsd:string"/>
+    </wsdl:message>
+    <wsdl:message name="getSettingResponse">
+        <wsdl:part name="setting" type="tns2:XincoSetting"/>
+    </wsdl:message>
     <wsdl:portType name="Xinco">
 
         <wsdl:operation name="getXincoServerVersion">
@@ -698,7 +944,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
             <wsdl:output message="impl:checkXincoCoreUserNewPasswordResponse" name="checkXincoCoreUserNewPasswordResponse"/>
 
         </wsdl:operation>
-
+        <wsdl:operation name="getSetting">
+            <wsdl:input name="input1" message="impl:getSettingRequest"/>
+            <wsdl:output name="output1" message="impl:getSettingResponse"/>
+        </wsdl:operation>
     </wsdl:portType>
 
     <wsdl:binding name="XincoSoapBinding" type="impl:Xinco">
@@ -1154,7 +1403,10 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
             </wsdl:output>
 
         </wsdl:operation>
-
+        <wsdl:operation name="getSetting">
+            <wsdl:input name="input1"/>
+            <wsdl:output name="output1"/>
+        </wsdl:operation>
     </wsdl:binding>
 
     <wsdl:service name="XincoService">

@@ -87,7 +87,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute implements XincoA
     }
 
     //create add attribute object for data structures
-    public XincoAddAttributeServer(int attrID1, int attrID2, int attrI, int attrUI,
+    public XincoAddAttributeServer(int attrID1, int attrID2, int attrI, long attrUI,
             double attrD, String attrVC, String attrT, Date attrDT) throws XincoException {
         getXincoAddAttributePK().setXincoCoreDataId(attrID1);
         getXincoAddAttributePK().setAttributeId(attrID2);

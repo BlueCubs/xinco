@@ -54,7 +54,6 @@ import net.sf.oness.common.model.temporal.DateRange;
 public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDAO, PersistenceServerObject {
 
     private static final long serialVersionUID = -1577261990104543756L;
-    private int userID = 1;
     private static List result;
     //create single ace object for data structures
 
@@ -381,5 +380,28 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
             }
             return false;
         }
+    }
+    
+    //delete from db
+    @SuppressWarnings("unchecked")
+    public static boolean deleteFromDB(XincoCoreACE ace, int userID) throws XincoException {
+        try {
+            parameters.clear();
+            parameters.put("id", ace.getId());
+            result = pm.namedQuery("XincoCoreACE.findById", null);
+            while (!result.isEmpty()) {
+                XincoCoreACEServer xca =
+                        new XincoCoreACEServer(((XincoCoreACE) result.get(0)).getId());
+                xca.setChangerID(userID);
+                xca.deleteFromDB();
+                if (result.size() > 0) {
+                    result.remove(0);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new XincoException();
+        }
+        return true;
     }
 }

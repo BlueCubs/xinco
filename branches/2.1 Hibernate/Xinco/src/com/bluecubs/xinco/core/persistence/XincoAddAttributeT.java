@@ -41,7 +41,7 @@ public class XincoAddAttributeT implements Serializable {
     private int attribInt;
     @Basic(optional = false)
     @Column(name = "attrib_unsignedint", nullable = false)
-    private int attribUnsignedint;
+    private long attribUnsignedint;
     @Basic(optional = false)
     @Column(name = "attrib_double", nullable = false)
     private double attribDouble;
@@ -108,11 +108,11 @@ public class XincoAddAttributeT implements Serializable {
         this.attribInt = attribInt;
     }
 
-    public int getAttribUnsignedint() {
+    public long getAttribUnsignedint() {
         return attribUnsignedint;
     }
 
-    public void setAttribUnsignedint(int attribUnsignedint) {
+    public void setAttribUnsignedint(long attribUnsignedint) {
         this.attribUnsignedint = attribUnsignedint;
     }
 

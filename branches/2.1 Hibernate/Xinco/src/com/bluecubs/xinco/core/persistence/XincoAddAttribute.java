@@ -42,7 +42,7 @@ public class XincoAddAttribute extends XincoAbstractAuditableObject implements S
     @Column(name = "attrib_int")
     private int attribInt;
     @Column(name = "attrib_unsignedint")
-    private int attribUnsignedint;
+    private long attribUnsignedint;
     @Column(name = "attrib_double")
     private double attribDouble;
     @Column(name = "attrib_varchar")
@@ -81,11 +81,11 @@ public class XincoAddAttribute extends XincoAbstractAuditableObject implements S
         this.attribInt = attribInt;
     }
 
-    public int getAttribUnsignedint() {
+    public long getAttribUnsignedint() {
         return attribUnsignedint;
     }
 
-    public void setAttribUnsignedint(int attribUnsignedint) {
+    public void setAttribUnsignedint(long attribUnsignedint) {
         this.attribUnsignedint = attribUnsignedint;
     }
 

@@ -76,7 +76,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
                 setXincoCoreNodes(new Vector());
                 setXincoCoreData(new Vector());
                 //load acl for this object
-                setXincoCoreAcl(XincoCoreACEServer.getXincoCoreACL(xcn.getId(), "XincoCoreNodeId"));
+                setXincoCoreACL(XincoCoreACEServer.getXincoCoreACL(xcn.getId(), "XincoCoreNodeId"));
             } else {
                 throw new XincoException();
             }
@@ -102,7 +102,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
             setXincoCoreNodes(new Vector());
             setXincoCoreData(new Vector());
             //load acl for this object
-            setXincoCoreAcl(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreNodeId"));
+            setXincoCoreACL(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreNodeId"));
         } catch (Exception e) {
             setXincoCoreLanguageId(-1);
             getXincoCoreACL().removeAllElements();
@@ -444,7 +444,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
         return xincoCoreACL;
     }
 
-    public void setXincoCoreAcl(Vector xincoCoreAcl) {
+    public void setXincoCoreACL(Vector xincoCoreAcl) {
         this.xincoCoreACL = xincoCoreAcl;
     }
 }

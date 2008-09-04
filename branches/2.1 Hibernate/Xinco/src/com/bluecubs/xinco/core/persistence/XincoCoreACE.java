@@ -165,7 +165,7 @@ public class XincoCoreACE extends XincoAbstractAuditableObject implements Serial
         if ((this.aceId == null && other.aceId != null) ||
                 (this.aceId != null && !this.aceId.equals(other.aceId))) {
             return false;
-        }
+    }
         return true;
     }
 

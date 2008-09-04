@@ -35,7 +35,8 @@
  */
 package com.bluecubs.xinco.client.object;
 
-import com.bluecubs.xinco.core.XincoSetting;
+import com.bluecubs.xinco.core.persistence.XincoSetting;
+
 
 /**
  *

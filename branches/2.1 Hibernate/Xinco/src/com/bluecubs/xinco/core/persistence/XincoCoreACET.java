@@ -23,7 +23,7 @@ public class XincoCoreACET implements Serializable {
     private Integer recordId;
     @Basic(optional = false)
     @Column(name = "id", nullable = false)
-    private int id;
+    private Integer id;
     @Column(name = "xinco_core_user_id")
     private Integer xincoCoreUserId;
     @Column(name = "xinco_core_group_id")
@@ -52,7 +52,7 @@ public class XincoCoreACET implements Serializable {
         this.recordId = recordId;
     }
 
-    public XincoCoreACET(Integer recordId, int id, boolean readPermission, boolean writePermission, boolean executePermission, boolean adminPermission) {
+    public XincoCoreACET(Integer recordId, Integer id, boolean readPermission, boolean writePermission, boolean executePermission, boolean adminPermission) {
         this.recordId = recordId;
         this.id = id;
         this.readPermission = readPermission;
@@ -69,11 +69,11 @@ public class XincoCoreACET implements Serializable {
         this.recordId = recordId;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
