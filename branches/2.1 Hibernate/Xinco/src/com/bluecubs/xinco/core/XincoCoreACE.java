@@ -7,71 +7,77 @@
 
 package com.bluecubs.xinco.core;
 
-public class XincoCoreACE  extends com.bluecubs.xinco.core.persistence.XincoCoreACE implements java.io.Serializable {
-    private boolean admin_permission;
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+
+public class XincoCoreACE  extends AbstractAuditableObject implements java.io.Serializable {
+    private boolean adminPermission;
 
     private int changerID;
 
-    private boolean execute_permission;
+    private boolean executePermission;
 
-    private int xinco_core_data_id;
+    private int xincoCoreDataId;
 
-    private int xinco_core_group_id;
+    private int xincoCoreGroupId;
 
-    private int xinco_core_node_id;
+    private int xincoCoreNodeId;
 
-    private int xinco_core_user_id;
+    private int xincoCoreUserId;
 
     private int id;
 
-    private boolean read_permission;
+    private boolean readPermission;
 
-    private boolean write_permission;
+    private boolean writePermission;
+
+    private int userId;
 
     public XincoCoreACE() {
     }
 
     public XincoCoreACE(
-           boolean admin_permission,
+           boolean adminPermission,
            int changerID,
-           boolean execute_permission,
-           int xinco_core_data_id,
-           int xinco_core_group_id,
-           int xinco_core_node_id,
-           int xinco_core_user_id,
+           boolean executePermission,
+           int xincoCoreDataId,
+           int xincoCoreGroupId,
+           int xincoCoreNodeId,
+           int xincoCoreUserId,
            int id,
-           boolean read_permission,
-           boolean write_permission) {
-           this.admin_permission = admin_permission;
+           boolean readPermission,
+           boolean writePermission,
+           int userId) {
+           this.adminPermission = adminPermission;
            this.changerID = changerID;
-           this.execute_permission = execute_permission;
-           this.xinco_core_data_id = xinco_core_data_id;
-           this.xinco_core_group_id = xinco_core_group_id;
-           this.xinco_core_node_id = xinco_core_node_id;
-           this.xinco_core_user_id = xinco_core_user_id;
+           this.executePermission = executePermission;
+           this.xincoCoreDataId = xincoCoreDataId;
+           this.xincoCoreGroupId = xincoCoreGroupId;
+           this.xincoCoreNodeId = xincoCoreNodeId;
+           this.xincoCoreUserId = xincoCoreUserId;
            this.id = id;
-           this.read_permission = read_permission;
-           this.write_permission = write_permission;
+           this.readPermission = readPermission;
+           this.writePermission = writePermission;
+           this.userId = userId;
     }
 
 
     /**
-     * Gets the admin_permission value for this XincoCoreACE.
+     * Gets the adminPermission value for this XincoCoreACE.
      * 
-     * @return admin_permission
+     * @return adminPermission
      */
-    public boolean isAdmin_permission() {
-        return admin_permission;
+    public boolean isAdminPermission() {
+        return adminPermission;
     }
 
 
     /**
-     * Sets the admin_permission value for this XincoCoreACE.
+     * Sets the adminPermission value for this XincoCoreACE.
      * 
-     * @param admin_permission
+     * @param adminPermission
      */
-    public void setAdmin_permission(boolean admin_permission) {
-        this.admin_permission = admin_permission;
+    public void setAdminPermission(boolean adminPermission) {
+        this.adminPermission = adminPermission;
     }
 
     /**
@@ -85,103 +91,114 @@ public class XincoCoreACE  extends com.bluecubs.xinco.core.persistence.XincoCore
 
 
     /**
-     * Gets the execute_permission value for this XincoCoreACE.
+     * Gets the executePermission value for this XincoCoreACE.
      * 
-     * @return execute_permission
+     * @return executePermission
      */
-    public boolean isExecute_permission() {
-        return execute_permission;
+    public boolean isExecutePermission() {
+        return executePermission;
     }
 
 
     /**
-     * Sets the execute_permission value for this XincoCoreACE.
+     * Sets the executePermission value for this XincoCoreACE.
      * 
-     * @param execute_permission
+     * @param executePermission
      */
-    public void setExecute_permission(boolean execute_permission) {
-        this.execute_permission = execute_permission;
+    public void setExecutePermission(boolean executePermission) {
+        this.executePermission = executePermission;
     }
 
 
     /**
-     * Gets the xinco_core_data_id value for this XincoCoreACE.
+     * Gets the xincoCoreDataId value for this XincoCoreACE.
      * 
-     * @return xinco_core_data_id
+     * @return xincoCoreDataId
      */
-    public int getXinco_core_data_id() {
-        return xinco_core_data_id;
+    public int getXincoCoreDataId() {
+        return xincoCoreDataId;
     }
 
 
     /**
-     * Sets the xinco_core_data_id value for this XincoCoreACE.
+     * Sets the xincoCoreDataId value for this XincoCoreACE.
      * 
-     * @param xinco_core_data_id
+     * @param xincoCoreDataId
      */
-    public void setXinco_core_data_id(int xinco_core_data_id) {
-        this.xinco_core_data_id = xinco_core_data_id;
+    public void setXincoCoreDataId(int xincoCoreDataId) {
+        this.xincoCoreDataId = xincoCoreDataId;
     }
 
 
     /**
-     * Gets the xinco_core_group_id value for this XincoCoreACE.
+     * Gets the xincoCoreGroupId value for this XincoCoreACE.
      * 
-     * @return xinco_core_group_id
+     * @return xincoCoreGroupId
      */
-    public int getXinco_core_group_id() {
-        return xinco_core_group_id;
+    public int getXincoCoreGroupId() {
+        return xincoCoreGroupId;
     }
 
 
     /**
-     * Sets the xinco_core_group_id value for this XincoCoreACE.
+     * Sets the xincoCoreGroupId value for this XincoCoreACE.
      * 
-     * @param xinco_core_group_id
+     * @param xincoCoreGroupId
      */
-    public void setXinco_core_group_id(int xinco_core_group_id) {
-        this.xinco_core_group_id = xinco_core_group_id;
+    public void setXincoCoreGroupId(int xincoCoreGroupId) {
+        this.xincoCoreGroupId = xincoCoreGroupId;
     }
 
 
     /**
-     * Gets the xinco_core_node_id value for this XincoCoreACE.
+     * Gets the xincoCoreNodeId value for this XincoCoreACE.
      * 
-     * @return xinco_core_node_id
+     * @return xincoCoreNodeId
      */
-    public int getXinco_core_node_id() {
-        return xinco_core_node_id;
+    public int getXincoCoreNodeId() {
+        return xincoCoreNodeId;
     }
 
 
     /**
-     * Sets the xinco_core_node_id value for this XincoCoreACE.
+     * Sets the xincoCoreNodeId value for this XincoCoreACE.
      * 
-     * @param xinco_core_node_id
+     * @param xincoCoreNodeId
      */
-    public void setXinco_core_node_id(int xinco_core_node_id) {
-        this.xinco_core_node_id = xinco_core_node_id;
+    public void setXincoCoreNodeId(int xincoCoreNodeId) {
+        this.xincoCoreNodeId = xincoCoreNodeId;
     }
 
 
     /**
-     * Gets the xinco_core_user_id value for this XincoCoreACE.
+     * Gets the xincoCoreUserId value for this XincoCoreACE.
      * 
-     * @return xinco_core_user_id
+     * @return xincoCoreUserId
      */
-    public int getXinco_core_user_id() {
-        return xinco_core_user_id;
+    public int getXincoCoreUserId() {
+        return xincoCoreUserId;
     }
 
 
     /**
-     * Sets the xinco_core_user_id value for this XincoCoreACE.
+     * Sets the xincoCoreUserId value for this XincoCoreACE.
      * 
-     * @param xinco_core_user_id
+     * @param xincoCoreUserId
      */
-    public void setXinco_core_user_id(int xinco_core_user_id) {
-        this.xinco_core_user_id = xinco_core_user_id;
+    public void setXincoCoreUserId(int xincoCoreUserId) {
+        this.xincoCoreUserId = xincoCoreUserId;
     }
+
+
+    /**
+     * Gets the id value for this XincoCoreACE.
+     * 
+     * @return id
+     */
+    public int getId() {
+        return id;
+    }
+
 
     /**
      * Sets the id value for this XincoCoreACE.
@@ -194,42 +211,62 @@ public class XincoCoreACE  extends com.bluecubs.xinco.core.persistence.XincoCore
 
 
     /**
-     * Gets the read_permission value for this XincoCoreACE.
+     * Gets the readPermission value for this XincoCoreACE.
      * 
-     * @return read_permission
+     * @return readPermission
      */
-    public boolean isRead_permission() {
-        return read_permission;
+    public boolean isReadPermission() {
+        return readPermission;
     }
 
 
     /**
-     * Sets the read_permission value for this XincoCoreACE.
+     * Sets the readPermission value for this XincoCoreACE.
      * 
-     * @param read_permission
+     * @param readPermission
      */
-    public void setRead_permission(boolean read_permission) {
-        this.read_permission = read_permission;
+    public void setReadPermission(boolean readPermission) {
+        this.readPermission = readPermission;
     }
 
 
     /**
-     * Gets the write_permission value for this XincoCoreACE.
+     * Gets the writePermission value for this XincoCoreACE.
      * 
-     * @return write_permission
+     * @return writePermission
      */
-    public boolean isWrite_permission() {
-        return write_permission;
+    public boolean isWritePermission() {
+        return writePermission;
     }
 
 
     /**
-     * Sets the write_permission value for this XincoCoreACE.
+     * Sets the writePermission value for this XincoCoreACE.
      * 
-     * @param write_permission
+     * @param writePermission
      */
-    public void setWrite_permission(boolean write_permission) {
-        this.write_permission = write_permission;
+    public void setWritePermission(boolean writePermission) {
+        this.writePermission = writePermission;
+    }
+
+
+    /**
+     * Gets the userId value for this XincoCoreACE.
+     * 
+     * @return userId
+     */
+    public int getUserId() {
+        return userId;
+    }
+
+
+    /**
+     * Sets the userId value for this XincoCoreACE.
+     * 
+     * @param userId
+     */
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -244,16 +281,17 @@ public class XincoCoreACE  extends com.bluecubs.xinco.core.persistence.XincoCore
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
-            this.admin_permission == other.isAdmin_permission() &&
+            this.adminPermission == other.isAdminPermission() &&
             this.changerID == other.getChangerID() &&
-            this.execute_permission == other.isExecute_permission() &&
-            this.xinco_core_data_id == other.getXinco_core_data_id() &&
-            this.xinco_core_group_id == other.getXinco_core_group_id() &&
-            this.xinco_core_node_id == other.getXinco_core_node_id() &&
-            this.xinco_core_user_id == other.getXinco_core_user_id() &&
+            this.executePermission == other.isExecutePermission() &&
+            this.xincoCoreDataId == other.getXincoCoreDataId() &&
+            this.xincoCoreGroupId == other.getXincoCoreGroupId() &&
+            this.xincoCoreNodeId == other.getXincoCoreNodeId() &&
+            this.xincoCoreUserId == other.getXincoCoreUserId() &&
             this.id == other.getId() &&
-            this.read_permission == other.isRead_permission() &&
-            this.write_permission == other.isWrite_permission();
+            this.readPermission == other.isReadPermission() &&
+            this.writePermission == other.isWritePermission() &&
+            this.userId == other.getUserId();
         __equalsCalc = null;
         return _equals;
     }
@@ -265,16 +303,17 @@ public class XincoCoreACE  extends com.bluecubs.xinco.core.persistence.XincoCore
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
-        _hashCode += (isAdmin_permission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += (isAdminPermission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += getChangerID();
-        _hashCode += (isExecute_permission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += getXinco_core_data_id();
-        _hashCode += getXinco_core_group_id();
-        _hashCode += getXinco_core_node_id();
-        _hashCode += getXinco_core_user_id();
+        _hashCode += (isExecutePermission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += getXincoCoreDataId();
+        _hashCode += getXincoCoreGroupId();
+        _hashCode += getXincoCoreNodeId();
+        _hashCode += getXincoCoreUserId();
         _hashCode += getId();
-        _hashCode += (isRead_permission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isWrite_permission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += (isReadPermission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += (isWritePermission() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += getUserId();
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -286,8 +325,8 @@ public class XincoCoreACE  extends com.bluecubs.xinco.core.persistence.XincoCore
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreACE"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("admin_permission");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "admin_permission"));
+        elemField.setFieldName("adminPermission");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "adminPermission"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
@@ -298,32 +337,32 @@ public class XincoCoreACE  extends com.bluecubs.xinco.core.persistence.XincoCore
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("execute_permission");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "execute_permission"));
+        elemField.setFieldName("executePermission");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "executePermission"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xinco_core_data_id");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_data_id"));
+        elemField.setFieldName("xincoCoreDataId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "xincoCoreDataId"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xinco_core_group_id");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_group_id"));
+        elemField.setFieldName("xincoCoreGroupId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "xincoCoreGroupId"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xinco_core_node_id");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_node_id"));
+        elemField.setFieldName("xincoCoreNodeId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "xincoCoreNodeId"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xinco_core_user_id");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_user_id"));
+        elemField.setFieldName("xincoCoreUserId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "xincoCoreUserId"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
@@ -334,15 +373,21 @@ public class XincoCoreACE  extends com.bluecubs.xinco.core.persistence.XincoCore
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("read_permission");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "read_permission"));
+        elemField.setFieldName("readPermission");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "readPermission"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("write_permission");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "write_permission"));
+        elemField.setFieldName("writePermission");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "writePermission"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("userId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "userId"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
     }

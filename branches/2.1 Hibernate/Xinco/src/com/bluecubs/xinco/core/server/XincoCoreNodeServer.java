@@ -447,4 +447,8 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoAuditable
     public void setXincoCoreACL(Vector xincoCoreAcl) {
         this.xincoCoreACL = xincoCoreAcl;
     }
+
+    public Object transform() throws Exception {
+        return (com.bluecubs.xinco.core.XincoCoreNode) AuditingDAOHelper.clone(this);
+    }
 }

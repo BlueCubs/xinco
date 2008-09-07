@@ -163,7 +163,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
     }
 
     @SuppressWarnings("static-access")
-    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception{
+    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception {
         XincoCoreGroup temp;
         XincoCoreGroup newValue = new XincoCoreGroup();
 
@@ -184,7 +184,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
         return newValue;
     }
 
-    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception{
+    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception {
         XincoCoreGroup val = (XincoCoreGroup) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
@@ -195,7 +195,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
     }
 
     @SuppressWarnings({"unchecked", "static-access"})
-    public boolean delete(AbstractAuditableObject value) throws Exception{
+    public boolean delete(AbstractAuditableObject value) throws Exception {
         try {
             XincoCoreGroup val = (XincoCoreGroup) value;
             XincoCoreGroupT temp = new XincoCoreGroupT();
@@ -279,5 +279,9 @@ public class XincoCoreGroupServer extends XincoCoreGroup implements XincoAuditab
             }
             return false;
         }
+    }
+
+    public Object transform() throws Exception {
+        return (com.bluecubs.xinco.core.XincoCoreGroup)AuditingDAOHelper.clone(this);
     }
 }

@@ -326,4 +326,8 @@ public class XincoCoreUserHasXincoCoreGroupServer extends XincoCoreUserHasXincoC
             return false;
         }
     }
+
+    public Object transform() throws Exception {
+        return (com.bluecubs.xinco.core.XincoCoreDataTypeAttribute) AuditingDAOHelper.clone(this);
+    }
 }

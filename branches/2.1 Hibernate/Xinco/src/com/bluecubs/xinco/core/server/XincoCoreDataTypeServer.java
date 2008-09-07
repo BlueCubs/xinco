@@ -109,8 +109,8 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
 
     public static boolean deleteFromDB(XincoCoreDataTypeAttributeServer attrCDTA, int userID) throws XincoException {
 //        try {
-            XincoCoreDataTypeAttributeServer xcdtas= new XincoCoreDataTypeAttributeServer(attrCDTA.getXincoCoreDataTypeAttributePK());
-            return xcdtas.deleteFromDB();
+        XincoCoreDataTypeAttributeServer xcdtas = new XincoCoreDataTypeAttributeServer(attrCDTA.getXincoCoreDataTypeAttributePK());
+        return xcdtas.deleteFromDB();
 //            result = pm.createdQuery("select x from XincoCoreDataTypeAttribute X WHERE x.xincoCoreDataTypeAttributePK.attributeId=" +
 //                    attrCDTA.getXincoCoreDataTypeAttributePK().getAttributeId() + " AND x.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId " +
 //                    "IN (SELECT xcd.id FROM XincoCoreData xcd WHERE xcd.xincoCoreDataTypeId=" +
@@ -147,7 +147,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
 
     public AbstractAuditableObject findById(HashMap parameters) throws Exception {
         result = pm.namedQuery("XincoCoreDataType.findById", parameters);
-        System.out.println("Looking for: "+parameters.get("id"));
+        System.out.println("Looking for: " + parameters.get("id"));
         if (result.size() > 0) {
             XincoCoreDataType temp = (XincoCoreDataType) result.get(0);
             temp.setTransactionTime(getTransactionTime());
@@ -198,7 +198,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
     }
 
     @SuppressWarnings("static-access")
-    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception{
+    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception {
         XincoCoreDataType temp;
         XincoCoreDataType newValue = new XincoCoreDataType();
         temp = (XincoCoreDataType) value;
@@ -218,7 +218,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
         return newValue;
     }
 
-    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception{
+    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception {
         XincoCoreDataType val = (XincoCoreDataType) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
@@ -229,7 +229,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
     }
 
     @SuppressWarnings({"unchecked", "static-access"})
-    public boolean delete(AbstractAuditableObject value) throws Exception{
+    public boolean delete(AbstractAuditableObject value) throws Exception {
         try {
             XincoCoreDataType val = (XincoCoreDataType) value;
             XincoCoreDataTypeT temp = new XincoCoreDataTypeT();
@@ -320,5 +320,9 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType implements XincoA
 
     public void setXincoCoreDataTypeAttributes(Vector xincoCoreDataTypeAttributes) {
         this.xincoCoreDataTypeAttributes = xincoCoreDataTypeAttributes;
+    }
+
+    public Object transform() throws Exception {
+        return (com.bluecubs.xinco.core.XincoCoreDataType)AuditingDAOHelper.clone(this);
     }
 }

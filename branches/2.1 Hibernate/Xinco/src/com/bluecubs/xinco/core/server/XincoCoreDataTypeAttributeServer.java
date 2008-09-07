@@ -254,7 +254,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     }
 
     @SuppressWarnings("static-access")
-    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception{
+    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception {
         XincoCoreDataTypeAttribute temp;
         XincoCoreDataTypeAttribute newValue = new XincoCoreDataTypeAttribute();
         temp = (XincoCoreDataTypeAttribute) value;
@@ -276,7 +276,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
         return newValue;
     }
 
-    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception{
+    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception {
         XincoCoreDataTypeAttribute val = (XincoCoreDataTypeAttribute) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
@@ -287,7 +287,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     }
 
     @SuppressWarnings({"unchecked", "static-access"})
-    public boolean delete(AbstractAuditableObject value) throws Exception{
+    public boolean delete(AbstractAuditableObject value) throws Exception {
         try {
             XincoCoreDataTypeAttribute val = (XincoCoreDataTypeAttribute) value;
             result = pm.createdQuery("select x from XincoCoreDataTypeAttribute X WHERE x.xincoCoreDataTypeAttributePK.attributeId=" +
@@ -396,5 +396,9 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
          * formed by a foreign key relationship.
          */
         return 0;
+    }
+
+    public Object transform() throws Exception {
+        return (com.bluecubs.xinco.core.XincoCoreDataTypeAttribute)AuditingDAOHelper.clone(this);
     }
 }

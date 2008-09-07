@@ -7,18 +7,20 @@
 
 package com.bluecubs.xinco.core;
 
-public class XincoCoreDataTypeAttribute  extends com.bluecubs.xinco.core.persistence.XincoCoreDataTypeAttribute implements java.io.Serializable {
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+
+public class XincoCoreDataTypeAttribute extends AbstractAuditableObject  implements java.io.Serializable {
     private java.lang.String designation;
 
     private int changerID;
 
-    private int attribute_id;
+    private int attributeId;
 
-    private java.lang.String data_type;
+    private java.lang.String dataType;
 
     private int size;
 
-    private int xinco_core_data_type_id;
+    private int xincoCoreDataTypeId;
 
     public XincoCoreDataTypeAttribute() {
     }
@@ -26,16 +28,16 @@ public class XincoCoreDataTypeAttribute  extends com.bluecubs.xinco.core.persist
     public XincoCoreDataTypeAttribute(
            java.lang.String designation,
            int changerID,
-           int attribute_id,
-           java.lang.String data_type,
+           int attributeId,
+           java.lang.String dataType,
            int size,
-           int xinco_core_data_type_id) {
+           int xincoCoreDataTypeId) {
            this.designation = designation;
            this.changerID = changerID;
-           this.attribute_id = attribute_id;
-           this.data_type = data_type;
+           this.attributeId = attributeId;
+           this.dataType = dataType;
            this.size = size;
-           this.xinco_core_data_type_id = xinco_core_data_type_id;
+           this.xincoCoreDataTypeId = xincoCoreDataTypeId;
     }
 
 
@@ -69,42 +71,42 @@ public class XincoCoreDataTypeAttribute  extends com.bluecubs.xinco.core.persist
 
 
     /**
-     * Gets the attribute_id value for this XincoCoreDataTypeAttribute.
+     * Gets the attributeId value for this XincoCoreDataTypeAttribute.
      * 
-     * @return attribute_id
+     * @return attributeId
      */
-    public int getAttribute_id() {
-        return attribute_id;
+    public int getAttributeId() {
+        return attributeId;
     }
 
 
     /**
-     * Sets the attribute_id value for this XincoCoreDataTypeAttribute.
+     * Sets the attributeId value for this XincoCoreDataTypeAttribute.
      * 
-     * @param attribute_id
+     * @param attributeId
      */
-    public void setAttribute_id(int attribute_id) {
-        this.attribute_id = attribute_id;
+    public void setAttributeId(int attributeId) {
+        this.attributeId = attributeId;
     }
 
 
     /**
-     * Gets the data_type value for this XincoCoreDataTypeAttribute.
+     * Gets the dataType value for this XincoCoreDataTypeAttribute.
      * 
-     * @return data_type
+     * @return dataType
      */
-    public java.lang.String getData_type() {
-        return data_type;
+    public java.lang.String getDataType() {
+        return dataType;
     }
 
 
     /**
-     * Sets the data_type value for this XincoCoreDataTypeAttribute.
+     * Sets the dataType value for this XincoCoreDataTypeAttribute.
      * 
-     * @param data_type
+     * @param dataType
      */
-    public void setData_type(java.lang.String data_type) {
-        this.data_type = data_type;
+    public void setDataType(java.lang.String dataType) {
+        this.dataType = dataType;
     }
 
 
@@ -129,22 +131,22 @@ public class XincoCoreDataTypeAttribute  extends com.bluecubs.xinco.core.persist
 
 
     /**
-     * Gets the xinco_core_data_type_id value for this XincoCoreDataTypeAttribute.
+     * Gets the xincoCoreDataTypeId value for this XincoCoreDataTypeAttribute.
      * 
-     * @return xinco_core_data_type_id
+     * @return xincoCoreDataTypeId
      */
-    public int getXinco_core_data_type_id() {
-        return xinco_core_data_type_id;
+    public int getXincoCoreDataTypeId() {
+        return xincoCoreDataTypeId;
     }
 
 
     /**
-     * Sets the xinco_core_data_type_id value for this XincoCoreDataTypeAttribute.
+     * Sets the xincoCoreDataTypeId value for this XincoCoreDataTypeAttribute.
      * 
-     * @param xinco_core_data_type_id
+     * @param xincoCoreDataTypeId
      */
-    public void setXinco_core_data_type_id(int xinco_core_data_type_id) {
-        this.xinco_core_data_type_id = xinco_core_data_type_id;
+    public void setXincoCoreDataTypeId(int xincoCoreDataTypeId) {
+        this.xincoCoreDataTypeId = xincoCoreDataTypeId;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -163,12 +165,12 @@ public class XincoCoreDataTypeAttribute  extends com.bluecubs.xinco.core.persist
              (this.designation!=null &&
               this.designation.equals(other.getDesignation()))) &&
             this.changerID == other.getChangerID() &&
-            this.attribute_id == other.getAttribute_id() &&
-            ((this.data_type==null && other.getData_type()==null) || 
-             (this.data_type!=null &&
-              this.data_type.equals(other.getData_type()))) &&
+            this.attributeId == other.getAttributeId() &&
+            ((this.dataType==null && other.getDataType()==null) || 
+             (this.dataType!=null &&
+              this.dataType.equals(other.getDataType()))) &&
             this.size == other.getSize() &&
-            this.xinco_core_data_type_id == other.getXinco_core_data_type_id();
+            this.xincoCoreDataTypeId == other.getXincoCoreDataTypeId();
         __equalsCalc = null;
         return _equals;
     }
@@ -184,12 +186,12 @@ public class XincoCoreDataTypeAttribute  extends com.bluecubs.xinco.core.persist
             _hashCode += getDesignation().hashCode();
         }
         _hashCode += getChangerID();
-        _hashCode += getAttribute_id();
-        if (getData_type() != null) {
-            _hashCode += getData_type().hashCode();
+        _hashCode += getAttributeId();
+        if (getDataType() != null) {
+            _hashCode += getDataType().hashCode();
         }
         _hashCode += getSize();
-        _hashCode += getXinco_core_data_type_id();
+        _hashCode += getXincoCoreDataTypeId();
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -213,14 +215,14 @@ public class XincoCoreDataTypeAttribute  extends com.bluecubs.xinco.core.persist
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("attribute_id");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "attribute_id"));
+        elemField.setFieldName("attributeId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "attributeId"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("data_type");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "data_type"));
+        elemField.setFieldName("dataType");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "dataType"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
@@ -231,8 +233,8 @@ public class XincoCoreDataTypeAttribute  extends com.bluecubs.xinco.core.persist
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xinco_core_data_type_id");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_data_type_id"));
+        elemField.setFieldName("xincoCoreDataTypeId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "xincoCoreDataTypeId"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);

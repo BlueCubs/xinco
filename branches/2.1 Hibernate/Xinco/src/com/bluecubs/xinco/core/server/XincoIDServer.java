@@ -279,4 +279,8 @@ public class XincoIDServer extends XincoID implements XincoAuditableDAO, Persist
     public int getNewID(boolean a) {
         return getNewTableID(a);
     }
+
+    public Object transform() throws Exception {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

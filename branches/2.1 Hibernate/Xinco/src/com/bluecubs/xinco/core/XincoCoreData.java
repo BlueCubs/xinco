@@ -7,51 +7,53 @@
 
 package com.bluecubs.xinco.core;
 
-public class XincoCoreData  extends com.bluecubs.xinco.core.persistence.XincoCoreData implements java.io.Serializable {
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+
+public class XincoCoreData  extends AbstractAuditableObject implements java.io.Serializable {
     private java.lang.String designation;
 
-    private java.util.Vector xinco_core_acl;
+    private java.util.Vector xincoCoreACL;
 
     private int changerID;
 
-    private com.bluecubs.xinco.core.XincoCoreDataType xinco_core_data_type;
+    private com.bluecubs.xinco.core.XincoCoreDataType xincoCoreDataType;
 
-    private com.bluecubs.xinco.core.XincoCoreLanguage xinco_core_language;
+    private com.bluecubs.xinco.core.XincoCoreLanguage xincoCoreLanguage;
 
-    private int xinco_core_node_id;
+    private int xincoCoreNodeId;
 
     private int id;
 
-    private int status_number;
+    private int statusNumber;
 
-    private java.util.Vector xinco_add_attributes;
+    private java.util.Vector xincoAddAttributes;
 
-    private java.util.Vector xinco_core_logs;
+    private java.util.Vector xincoCoreLogs;
 
     public XincoCoreData() {
     }
 
     public XincoCoreData(
            java.lang.String designation,
-           java.util.Vector xinco_core_acl,
+           java.util.Vector xincoCoreACL,
            int changerID,
-           com.bluecubs.xinco.core.XincoCoreDataType xinco_core_data_type,
-           com.bluecubs.xinco.core.XincoCoreLanguage xinco_core_language,
-           int xinco_core_node_id,
+           com.bluecubs.xinco.core.XincoCoreDataType xincoCoreDataType,
+           com.bluecubs.xinco.core.XincoCoreLanguage xincoCoreLanguage,
+           int xincoCoreNodeId,
            int id,
-           int status_number,
-           java.util.Vector xinco_add_attributes,
-           java.util.Vector xinco_core_logs) {
+           int statusNumber,
+           java.util.Vector xincoAddAttributes,
+           java.util.Vector xincoCoreLogs) {
            this.designation = designation;
-           this.xinco_core_acl = xinco_core_acl;
+           this.xincoCoreACL = xincoCoreACL;
            this.changerID = changerID;
-           this.xinco_core_data_type = xinco_core_data_type;
-           this.xinco_core_language = xinco_core_language;
-           this.xinco_core_node_id = xinco_core_node_id;
+           this.xincoCoreDataType = xincoCoreDataType;
+           this.xincoCoreLanguage = xincoCoreLanguage;
+           this.xincoCoreNodeId = xincoCoreNodeId;
            this.id = id;
-           this.status_number = status_number;
-           this.xinco_add_attributes = xinco_add_attributes;
-           this.xinco_core_logs = xinco_core_logs;
+           this.statusNumber = statusNumber;
+           this.xincoAddAttributes = xincoAddAttributes;
+           this.xincoCoreLogs = xincoCoreLogs;
     }
 
 
@@ -76,22 +78,22 @@ public class XincoCoreData  extends com.bluecubs.xinco.core.persistence.XincoCor
 
 
     /**
-     * Gets the xinco_core_acl value for this XincoCoreData.
+     * Gets the xincoCoreACL value for this XincoCoreData.
      * 
-     * @return xinco_core_acl
+     * @return xincoCoreACL
      */
-    public java.util.Vector getXinco_core_acl() {
-        return xinco_core_acl;
+    public java.util.Vector getXincoCoreACL() {
+        return xincoCoreACL;
     }
 
 
     /**
-     * Sets the xinco_core_acl value for this XincoCoreData.
+     * Sets the xincoCoreACL value for this XincoCoreData.
      * 
-     * @param xinco_core_acl
+     * @param xincoCoreACL
      */
-    public void setXinco_core_acl(java.util.Vector xinco_core_acl) {
-        this.xinco_core_acl = xinco_core_acl;
+    public void setXincoCoreACL(java.util.Vector xincoCoreACL) {
+        this.xincoCoreACL = xincoCoreACL;
     }
 
     /**
@@ -105,62 +107,62 @@ public class XincoCoreData  extends com.bluecubs.xinco.core.persistence.XincoCor
 
 
     /**
-     * Gets the xinco_core_data_type value for this XincoCoreData.
+     * Gets the xincoCoreDataType value for this XincoCoreData.
      * 
-     * @return xinco_core_data_type
+     * @return xincoCoreDataType
      */
-    public com.bluecubs.xinco.core.XincoCoreDataType getXinco_core_data_type() {
-        return xinco_core_data_type;
+    public com.bluecubs.xinco.core.XincoCoreDataType getXincoCoreDataType() {
+        return xincoCoreDataType;
     }
 
 
     /**
-     * Sets the xinco_core_data_type value for this XincoCoreData.
+     * Sets the xincoCoreDataType value for this XincoCoreData.
      * 
-     * @param xinco_core_data_type
+     * @param xincoCoreDataType
      */
-    public void setXinco_core_data_type(com.bluecubs.xinco.core.XincoCoreDataType xinco_core_data_type) {
-        this.xinco_core_data_type = xinco_core_data_type;
+    public void setXincoCoreDataType(com.bluecubs.xinco.core.XincoCoreDataType xincoCoreDataType) {
+        this.xincoCoreDataType = xincoCoreDataType;
     }
 
 
     /**
-     * Gets the xinco_core_language value for this XincoCoreData.
+     * Gets the xincoCoreLanguage value for this XincoCoreData.
      * 
-     * @return xinco_core_language
+     * @return xincoCoreLanguage
      */
-    public com.bluecubs.xinco.core.XincoCoreLanguage getXinco_core_language() {
-        return xinco_core_language;
+    public com.bluecubs.xinco.core.XincoCoreLanguage getXincoCoreLanguage() {
+        return xincoCoreLanguage;
     }
 
 
     /**
-     * Sets the xinco_core_language value for this XincoCoreData.
+     * Sets the xincoCoreLanguage value for this XincoCoreData.
      * 
-     * @param xinco_core_language
+     * @param xincoCoreLanguage
      */
-    public void setXinco_core_language(com.bluecubs.xinco.core.XincoCoreLanguage xinco_core_language) {
-        this.xinco_core_language = xinco_core_language;
+    public void setXincoCoreLanguage(com.bluecubs.xinco.core.XincoCoreLanguage xincoCoreLanguage) {
+        this.xincoCoreLanguage = xincoCoreLanguage;
     }
 
 
     /**
-     * Gets the xinco_core_node_id value for this XincoCoreData.
+     * Gets the xincoCoreNodeId value for this XincoCoreData.
      * 
-     * @return xinco_core_node_id
+     * @return xincoCoreNodeId
      */
-    public int getXinco_core_node_id() {
-        return xinco_core_node_id;
+    public int getXincoCoreNodeId() {
+        return xincoCoreNodeId;
     }
 
 
     /**
-     * Sets the xinco_core_node_id value for this XincoCoreData.
+     * Sets the xincoCoreNodeId value for this XincoCoreData.
      * 
-     * @param xinco_core_node_id
+     * @param xincoCoreNodeId
      */
-    public void setXinco_core_node_id(int xinco_core_node_id) {
-        this.xinco_core_node_id = xinco_core_node_id;
+    public void setXincoCoreNodeId(int xincoCoreNodeId) {
+        this.xincoCoreNodeId = xincoCoreNodeId;
     }
 
 
@@ -169,7 +171,7 @@ public class XincoCoreData  extends com.bluecubs.xinco.core.persistence.XincoCor
      * 
      * @return id
      */
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
@@ -185,62 +187,62 @@ public class XincoCoreData  extends com.bluecubs.xinco.core.persistence.XincoCor
 
 
     /**
-     * Gets the status_number value for this XincoCoreData.
+     * Gets the statusNumber value for this XincoCoreData.
      * 
-     * @return status_number
+     * @return statusNumber
      */
-    public int getStatus_number() {
-        return status_number;
+    public int getStatusNumber() {
+        return statusNumber;
     }
 
 
     /**
-     * Sets the status_number value for this XincoCoreData.
+     * Sets the statusNumber value for this XincoCoreData.
      * 
-     * @param status_number
+     * @param statusNumber
      */
-    public void setStatus_number(int status_number) {
-        this.status_number = status_number;
+    public void setStatusNumber(int statusNumber) {
+        this.statusNumber = statusNumber;
     }
 
 
     /**
-     * Gets the xinco_add_attributes value for this XincoCoreData.
+     * Gets the xincoAddAttributes value for this XincoCoreData.
      * 
-     * @return xinco_add_attributes
+     * @return xincoAddAttributes
      */
-    public java.util.Vector getXinco_add_attributes() {
-        return xinco_add_attributes;
+    public java.util.Vector getXincoAddAttributes() {
+        return xincoAddAttributes;
     }
 
 
     /**
-     * Sets the xinco_add_attributes value for this XincoCoreData.
+     * Sets the xincoAddAttributes value for this XincoCoreData.
      * 
-     * @param xinco_add_attributes
+     * @param xincoAddAttributes
      */
-    public void setXinco_add_attributes(java.util.Vector xinco_add_attributes) {
-        this.xinco_add_attributes = xinco_add_attributes;
+    public void setXincoAddAttributes(java.util.Vector xincoAddAttributes) {
+        this.xincoAddAttributes = xincoAddAttributes;
     }
 
 
     /**
-     * Gets the xinco_core_logs value for this XincoCoreData.
+     * Gets the xincoCoreLogs value for this XincoCoreData.
      * 
-     * @return xinco_core_logs
+     * @return xincoCoreLogs
      */
-    public java.util.Vector getXinco_core_logs() {
-        return xinco_core_logs;
+    public java.util.Vector getXincoCoreLogs() {
+        return xincoCoreLogs;
     }
 
 
     /**
-     * Sets the xinco_core_logs value for this XincoCoreData.
+     * Sets the xincoCoreLogs value for this XincoCoreData.
      * 
-     * @param xinco_core_logs
+     * @param xincoCoreLogs
      */
-    public void setXinco_core_logs(java.util.Vector xinco_core_logs) {
-        this.xinco_core_logs = xinco_core_logs;
+    public void setXincoCoreLogs(java.util.Vector xincoCoreLogs) {
+        this.xincoCoreLogs = xincoCoreLogs;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -258,25 +260,25 @@ public class XincoCoreData  extends com.bluecubs.xinco.core.persistence.XincoCor
             ((this.designation==null && other.getDesignation()==null) || 
              (this.designation!=null &&
               this.designation.equals(other.getDesignation()))) &&
-            ((this.xinco_core_acl==null && other.getXinco_core_acl()==null) || 
-             (this.xinco_core_acl!=null &&
-              this.xinco_core_acl.equals(other.getXinco_core_acl()))) &&
+            ((this.xincoCoreACL==null && other.getXincoCoreACL()==null) || 
+             (this.xincoCoreACL!=null &&
+              this.xincoCoreACL.equals(other.getXincoCoreACL()))) &&
             this.changerID == other.getChangerID() &&
-            ((this.xinco_core_data_type==null && other.getXinco_core_data_type()==null) || 
-             (this.xinco_core_data_type!=null &&
-              this.xinco_core_data_type.equals(other.getXinco_core_data_type()))) &&
-            ((this.xinco_core_language==null && other.getXinco_core_language()==null) || 
-             (this.xinco_core_language!=null &&
-              this.xinco_core_language.equals(other.getXinco_core_language()))) &&
-            this.xinco_core_node_id == other.getXinco_core_node_id() &&
+            ((this.xincoCoreDataType==null && other.getXincoCoreDataType()==null) || 
+             (this.xincoCoreDataType!=null &&
+              this.xincoCoreDataType.equals(other.getXincoCoreDataType()))) &&
+            ((this.xincoCoreLanguage==null && other.getXincoCoreLanguage()==null) || 
+             (this.xincoCoreLanguage!=null &&
+              this.xincoCoreLanguage.equals(other.getXincoCoreLanguage()))) &&
+            this.xincoCoreNodeId == other.getXincoCoreNodeId() &&
             this.id == other.getId() &&
-            this.status_number == other.getStatus_number() &&
-            ((this.xinco_add_attributes==null && other.getXinco_add_attributes()==null) || 
-             (this.xinco_add_attributes!=null &&
-              this.xinco_add_attributes.equals(other.getXinco_add_attributes()))) &&
-            ((this.xinco_core_logs==null && other.getXinco_core_logs()==null) || 
-             (this.xinco_core_logs!=null &&
-              this.xinco_core_logs.equals(other.getXinco_core_logs())));
+            this.statusNumber == other.getStatusNumber() &&
+            ((this.xincoAddAttributes==null && other.getXincoAddAttributes()==null) || 
+             (this.xincoAddAttributes!=null &&
+              this.xincoAddAttributes.equals(other.getXincoAddAttributes()))) &&
+            ((this.xincoCoreLogs==null && other.getXincoCoreLogs()==null) || 
+             (this.xincoCoreLogs!=null &&
+              this.xincoCoreLogs.equals(other.getXincoCoreLogs())));
         __equalsCalc = null;
         return _equals;
     }
@@ -291,24 +293,24 @@ public class XincoCoreData  extends com.bluecubs.xinco.core.persistence.XincoCor
         if (getDesignation() != null) {
             _hashCode += getDesignation().hashCode();
         }
-        if (getXinco_core_acl() != null) {
-            _hashCode += getXinco_core_acl().hashCode();
+        if (getXincoCoreACL() != null) {
+            _hashCode += getXincoCoreACL().hashCode();
         }
         _hashCode += getChangerID();
-        if (getXinco_core_data_type() != null) {
-            _hashCode += getXinco_core_data_type().hashCode();
+        if (getXincoCoreDataType() != null) {
+            _hashCode += getXincoCoreDataType().hashCode();
         }
-        if (getXinco_core_language() != null) {
-            _hashCode += getXinco_core_language().hashCode();
+        if (getXincoCoreLanguage() != null) {
+            _hashCode += getXincoCoreLanguage().hashCode();
         }
-        _hashCode += getXinco_core_node_id();
+        _hashCode += getXincoCoreNodeId();
         _hashCode += getId();
-        _hashCode += getStatus_number();
-        if (getXinco_add_attributes() != null) {
-            _hashCode += getXinco_add_attributes().hashCode();
+        _hashCode += getStatusNumber();
+        if (getXincoAddAttributes() != null) {
+            _hashCode += getXincoAddAttributes().hashCode();
         }
-        if (getXinco_core_logs() != null) {
-            _hashCode += getXinco_core_logs().hashCode();
+        if (getXincoCoreLogs() != null) {
+            _hashCode += getXincoCoreLogs().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -327,8 +329,8 @@ public class XincoCoreData  extends com.bluecubs.xinco.core.persistence.XincoCor
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xinco_core_acl");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_acl"));
+        elemField.setFieldName("xincoCoreACL");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "xincoCoreACL"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
@@ -339,20 +341,20 @@ public class XincoCoreData  extends com.bluecubs.xinco.core.persistence.XincoCor
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xinco_core_data_type");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_data_type"));
+        elemField.setFieldName("xincoCoreDataType");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "xincoCoreDataType"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreDataType"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xinco_core_language");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_language"));
+        elemField.setFieldName("xincoCoreLanguage");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "xincoCoreLanguage"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://core.xinco.bluecubs.com", "XincoCoreLanguage"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xinco_core_node_id");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_node_id"));
+        elemField.setFieldName("xincoCoreNodeId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "xincoCoreNodeId"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
@@ -363,20 +365,20 @@ public class XincoCoreData  extends com.bluecubs.xinco.core.persistence.XincoCor
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("status_number");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "status_number"));
+        elemField.setFieldName("statusNumber");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "statusNumber"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xinco_add_attributes");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_add_attributes"));
+        elemField.setFieldName("xincoAddAttributes");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "xincoAddAttributes"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xinco_core_logs");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_logs"));
+        elemField.setFieldName("xincoCoreLogs");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "xincoCoreLogs"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);

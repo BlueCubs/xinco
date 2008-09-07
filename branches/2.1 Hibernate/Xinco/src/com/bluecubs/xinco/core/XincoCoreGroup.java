@@ -7,14 +7,16 @@
 
 package com.bluecubs.xinco.core;
 
-public class XincoCoreGroup  extends com.bluecubs.xinco.core.persistence.XincoCoreGroup implements java.io.Serializable {
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+
+public class XincoCoreGroup extends AbstractAuditableObject  implements java.io.Serializable {
     private java.lang.String designation;
 
     private int changerID;
 
     private int id;
 
-    private int status_number;
+    private int statusNumber;
 
     public XincoCoreGroup() {
     }
@@ -23,11 +25,11 @@ public class XincoCoreGroup  extends com.bluecubs.xinco.core.persistence.XincoCo
            java.lang.String designation,
            int changerID,
            int id,
-           int status_number) {
+           int statusNumber) {
            this.designation = designation;
            this.changerID = changerID;
            this.id = id;
-           this.status_number = status_number;
+           this.statusNumber = statusNumber;
     }
 
 
@@ -65,7 +67,7 @@ public class XincoCoreGroup  extends com.bluecubs.xinco.core.persistence.XincoCo
      * 
      * @return id
      */
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
@@ -81,22 +83,22 @@ public class XincoCoreGroup  extends com.bluecubs.xinco.core.persistence.XincoCo
 
 
     /**
-     * Gets the status_number value for this XincoCoreGroup.
+     * Gets the statusNumber value for this XincoCoreGroup.
      * 
-     * @return status_number
+     * @return statusNumber
      */
-    public int getStatus_number() {
-        return status_number;
+    public int getStatusNumber() {
+        return statusNumber;
     }
 
 
     /**
-     * Sets the status_number value for this XincoCoreGroup.
+     * Sets the statusNumber value for this XincoCoreGroup.
      * 
-     * @param status_number
+     * @param statusNumber
      */
-    public void setStatus_number(int status_number) {
-        this.status_number = status_number;
+    public void setStatusNumber(int statusNumber) {
+        this.statusNumber = statusNumber;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -116,7 +118,7 @@ public class XincoCoreGroup  extends com.bluecubs.xinco.core.persistence.XincoCo
               this.designation.equals(other.getDesignation()))) &&
             this.changerID == other.getChangerID() &&
             this.id == other.getId() &&
-            this.status_number == other.getStatus_number();
+            this.statusNumber == other.getStatusNumber();
         __equalsCalc = null;
         return _equals;
     }
@@ -133,7 +135,7 @@ public class XincoCoreGroup  extends com.bluecubs.xinco.core.persistence.XincoCo
         }
         _hashCode += getChangerID();
         _hashCode += getId();
-        _hashCode += getStatus_number();
+        _hashCode += getStatusNumber();
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -163,8 +165,8 @@ public class XincoCoreGroup  extends com.bluecubs.xinco.core.persistence.XincoCo
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("status_number");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "status_number"));
+        elemField.setFieldName("statusNumber");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "statusNumber"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);

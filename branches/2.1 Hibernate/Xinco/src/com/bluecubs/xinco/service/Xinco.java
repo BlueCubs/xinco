@@ -31,6 +31,12 @@ public interface Xinco extends java.rmi.Remote {
     public com.bluecubs.xinco.core.XincoCoreGroup setXincoCoreGroup(com.bluecubs.xinco.core.XincoCoreGroup in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
     public com.bluecubs.xinco.core.XincoCoreLanguage setXincoCoreLanguage(com.bluecubs.xinco.core.XincoCoreLanguage in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
     public com.bluecubs.xinco.core.XincoCoreDataTypeAttribute getXincoCoreDataTypeAttribute(com.bluecubs.xinco.core.XincoCoreDataTypeAttribute in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
-    public com.bluecubs.xinco.core.XincoAddAttribute getXincoAddAttribute(com.bluecubs.xinco.core.XincoAddAttribute in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
+    public com.bluecubs.xinco.add.XincoAddAttribute getXincoAddAttribute(com.bluecubs.xinco.add.XincoAddAttribute in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
     public boolean checkXincoCoreUserNewPassword(java.lang.String in0, com.bluecubs.xinco.core.XincoCoreUser in1, com.bluecubs.xinco.core.XincoCoreUser in2) throws java.rmi.RemoteException;
+    public java.util.Vector getAllXincoUsers(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException;
+    public java.util.Vector getXincoSetting(com.bluecubs.xinco.core.XincoCoreUser in0) throws java.rmi.RemoteException;
+    public com.bluecubs.xinco.core.XincoSetting setXincoSetting(com.bluecubs.xinco.core.XincoSetting in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
+    public void setXincoAddAttribute(com.bluecubs.xinco.add.holders.XincoAddAttributeHolder in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
+    public boolean indexFiles(java.util.Vector in0, com.bluecubs.xinco.core.XincoCoreUser in1) throws java.rmi.RemoteException;
+    public java.lang.String localizeString(java.lang.String key, java.lang.String locale) throws java.rmi.RemoteException;
 }

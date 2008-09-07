@@ -645,4 +645,8 @@ public class XincoCoreUserServer extends XincoCoreUser implements XincoAuditable
     public void setWriteGroups(boolean writeGroups) {
         this.writeGroups = writeGroups;
     }
+
+    public Object transform() throws Exception {
+        return (com.bluecubs.xinco.core.XincoCoreUser) AuditingDAOHelper.clone(this);
+    }
 }

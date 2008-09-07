@@ -116,7 +116,7 @@ public class XincoCoreLogServer extends XincoCoreLog implements PersistenceServe
         try {
             parameters.clear();
             parameters.put("id", attrID);
-            result = pm.namedQuery("XincoCoreLog.findById",parameters);
+            result = pm.namedQuery("XincoCoreLog.findById", parameters);
             while (!result.isEmpty()) {
                 core_log.addElement((XincoCoreLog) result.get(0));
                 result.remove(0);
@@ -153,7 +153,7 @@ public class XincoCoreLogServer extends XincoCoreLog implements PersistenceServe
         }
     }
 
-    public boolean deleteFromDB() throws Exception{
+    public boolean deleteFromDB() throws Exception {
         return pm.delete(this, true);
     }
 
@@ -163,5 +163,21 @@ public class XincoCoreLogServer extends XincoCoreLog implements PersistenceServe
 
     public void setVersion(XincoVersion version) {
         this.version = version;
+    }
+
+    public Object transform() throws Exception {
+        com.bluecubs.xinco.core.XincoCoreLog transformed = new com.bluecubs.xinco.core.XincoCoreLog();
+
+        transformed.setChangerID(getXincoCoreUserId());
+        transformed.setId(getId());
+
+        transformed.setOpCode(getOpCode());
+        transformed.setOpDatetime(getOpDatetime());
+        transformed.setOpDescription(getOpDescription());
+        transformed.setVersion(getVersion());
+        transformed.setXincoCoreDataId(getXincoCoreDataId());
+        transformed.setXincoCoreUserId(getXincoCoreUserId());
+
+        return transformed;
     }
 }

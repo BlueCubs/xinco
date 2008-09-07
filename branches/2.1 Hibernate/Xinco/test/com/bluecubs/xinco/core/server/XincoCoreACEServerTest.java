@@ -239,4 +239,21 @@ public class XincoCoreACEServerTest extends TestCase {
             fail();
         }
     }
+
+    /**
+     * Test of deleteFromDB method, of class XincoCoreACEServer.
+     * @throws Exception
+     */
+    @SuppressWarnings("unchecked")
+    public void testClone() throws Exception {
+        try {
+            System.out.println("clone");
+            XincoCoreACEServer instance = new XincoCoreACEServer(1);
+            System.out.println("Result: " + instance.clone().getClass().getCanonicalName());
+            assertTrue(instance.clone().getClass().equals(com.bluecubs.xinco.core.XincoCoreACE.class));
+        } catch (Exception e) {
+             Logger.getLogger(XincoCoreACEServerTest.class.getName()).log(Level.SEVERE, null, e);
+            fail();
+        }
+    }
 }

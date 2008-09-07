@@ -7,7 +7,9 @@
 
 package com.bluecubs.xinco.core;
 
-public class XincoCoreLanguage  extends com.bluecubs.xinco.core.persistence.XincoCoreLanguage implements java.io.Serializable {
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+
+public class XincoCoreLanguage extends AbstractAuditableObject  implements java.io.Serializable {
     private java.lang.String designation;
 
     private int changerID;
@@ -50,7 +52,6 @@ public class XincoCoreLanguage  extends com.bluecubs.xinco.core.persistence.Xinc
         this.designation = designation;
     }
 
-
     /**
      * Sets the changerID value for this XincoCoreLanguage.
      * 
@@ -66,7 +67,7 @@ public class XincoCoreLanguage  extends com.bluecubs.xinco.core.persistence.Xinc
      * 
      * @return id
      */
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 

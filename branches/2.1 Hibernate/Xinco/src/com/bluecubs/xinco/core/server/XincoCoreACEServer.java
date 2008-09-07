@@ -90,8 +90,8 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
         setId(attrID);
         setXincoCoreUserId(attrUID);
         setXincoCoreGroupId(attrGID);
-        setXincoCoreNodeId(attrNID<=0?null:attrNID);
-        setXincoCoreDataId(attrDID<=0?null:attrDID);
+        setXincoCoreNodeId(attrNID <= 0 ? null : attrNID);
+        setXincoCoreDataId(attrDID <= 0 ? null : attrDID);
         setReadPermission(attrRP);
         setWritePermission(attrWP);
         setExecutePermission(attrEP);
@@ -108,7 +108,7 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
         try {
             result = pm.createdQuery("SELECT x FROM XincoCoreACE x WHERE x." + attrT + " =:value" +
                     " ORDER BY x.xincoCoreUserId, x.xincoCoreGroupId, x.xincoCoreNodeId, " +
-                    "x.xincoCoreDataId",parameters);
+                    "x.xincoCoreDataId", parameters);
             while (!result.isEmpty()) {
                 core_acl.addElement((XincoCoreACE) result.get(0));
                 result.remove(0);
@@ -248,7 +248,7 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
     }
 
     @SuppressWarnings("static-access")
-    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception{
+    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception {
         XincoCoreACE temp;
         XincoCoreACE newValue = new XincoCoreACE();
         temp = (XincoCoreACE) value;
@@ -274,7 +274,7 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
         return newValue;
     }
 
-    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception{
+    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception {
         XincoCoreACE val = (XincoCoreACE) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
@@ -381,7 +381,7 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
             return false;
         }
     }
-    
+
     //delete from db
     @SuppressWarnings("unchecked")
     public static boolean deleteFromDB(XincoCoreACE ace, int userID) throws XincoException {
@@ -403,5 +403,9 @@ public class XincoCoreACEServer extends XincoCoreACE implements XincoAuditableDA
             throw new XincoException();
         }
         return true;
+    }
+
+    public Object transform() throws Exception {
+        return (com.bluecubs.xinco.core.XincoCoreACE)AuditingDAOHelper.clone(this);
     }
 }

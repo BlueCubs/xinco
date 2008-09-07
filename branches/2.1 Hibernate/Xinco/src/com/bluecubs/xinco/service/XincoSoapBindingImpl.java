@@ -6,7 +6,7 @@
  */
 package com.bluecubs.xinco.service;
 
-import com.bluecubs.xinco.core.XincoAddAttribute;
+import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.core.XincoCoreACE;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreGroup;
@@ -57,7 +57,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
         //login
         try {
             XincoCoreUserServer user = new XincoCoreUserServer(in0, in1);
-            return (XincoCoreUser) (com.bluecubs.xinco.core.persistence.XincoCoreUser) user;
+            return (XincoCoreUser) user;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -633,7 +633,8 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
             log.setOpCode(in0.getOpCode());
             log.setOpDescription(in0.getOpDescription());
             log.setOpDatetime(in0.getOpDatetime());
-            log.setVersion(in0.getVersion());
+            log.setVersion(new XincoVersion(in0.getVersionHigh(), in0.getVersionMid(),
+                    in0.getVersionLow(), in0.getVersionPostfix()));
             log.setUser(user);
             log.write2DB();
 

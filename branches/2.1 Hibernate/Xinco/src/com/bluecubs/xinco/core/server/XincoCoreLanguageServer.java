@@ -178,7 +178,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
     }
 
     @SuppressWarnings("static-access")
-    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception{
+    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception {
         XincoCoreLanguage temp;
         XincoCoreLanguage newValue = new XincoCoreLanguage();
 
@@ -199,7 +199,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
         return newValue;
     }
 
-    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception{
+    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception {
         XincoCoreLanguage val = (XincoCoreLanguage) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
@@ -210,7 +210,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
     }
 
     @SuppressWarnings({"unchecked", "static-access"})
-    public boolean delete(AbstractAuditableObject value) throws Exception{
+    public boolean delete(AbstractAuditableObject value) throws Exception {
         try {
             XincoCoreLanguage val = (XincoCoreLanguage) value;
             XincoCoreLanguageT temp = new XincoCoreLanguageT();
@@ -293,5 +293,9 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage implements XincoA
             }
             return false;
         }
+    }
+
+    public Object transform() throws Exception {
+        return (com.bluecubs.xinco.core.XincoCoreLanguage) AuditingDAOHelper.clone(this);
     }
 }

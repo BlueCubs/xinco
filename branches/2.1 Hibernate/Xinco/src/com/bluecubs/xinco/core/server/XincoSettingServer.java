@@ -184,7 +184,7 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
     }
 
     @SuppressWarnings("static-access")
-    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception{
+    public AbstractAuditableObject create(AbstractAuditableObject value) throws Exception {
         XincoSetting temp;
         XincoSetting newValue = new XincoSetting();
         temp = (XincoSetting) value;
@@ -217,7 +217,7 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
         return settings;
     }
 
-    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception{
+    public AbstractAuditableObject update(AbstractAuditableObject value) throws Exception {
         XincoSetting val = (XincoSetting) value;
         pm.persist(val, true, true);
         if (XincoSettingServer.getSetting("setting.enable.developermode").getBoolValue()) {
@@ -227,7 +227,7 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
     }
 
     @SuppressWarnings({"unchecked", "static-access"})
-    public boolean delete(AbstractAuditableObject value) throws Exception{
+    public boolean delete(AbstractAuditableObject value) throws Exception {
         try {
             XincoSetting val = (XincoSetting) value;
             XincoSettingT temp = new XincoSettingT();
@@ -316,5 +316,9 @@ public class XincoSettingServer extends XincoSetting implements XincoAuditableDA
             }
             return false;
         }
+    }
+
+    public Object transform() throws Exception {
+        return (com.bluecubs.xinco.core.XincoSetting) AuditingDAOHelper.clone(this);
     }
 }

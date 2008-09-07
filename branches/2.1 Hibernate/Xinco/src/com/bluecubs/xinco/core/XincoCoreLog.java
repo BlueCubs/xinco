@@ -7,43 +7,43 @@
 
 package com.bluecubs.xinco.core;
 
-public class XincoCoreLog  extends com.bluecubs.xinco.core.persistence.XincoCoreLog implements java.io.Serializable {
+public class XincoCoreLog  implements java.io.Serializable {
     private int id;
 
-    private int op_code;
+    private int opCode;
 
     private int changerID;
 
-    private java.util.Calendar op_datetime;
+    private java.util.Date opDatetime;
 
-    private java.lang.String op_description;
+    private java.lang.String opDescription;
 
     private com.bluecubs.xinco.core.XincoVersion version;
 
-    private int xinco_core_data_id;
+    private int xincoCoreDataId;
 
-    private int xinco_core_user_id;
+    private int xincoCoreUserId;
 
     public XincoCoreLog() {
     }
 
     public XincoCoreLog(
            int id,
-           int op_code,
+           int opCode,
            int changerID,
-           java.util.Calendar op_datetime,
-           java.lang.String op_description,
+           java.util.Date opDatetime,
+           java.lang.String opDescription,
            com.bluecubs.xinco.core.XincoVersion version,
-           int xinco_core_data_id,
-           int xinco_core_user_id) {
+           int xincoCoreDataId,
+           int xincoCoreUserId) {
            this.id = id;
-           this.op_code = op_code;
+           this.opCode = opCode;
            this.changerID = changerID;
-           this.op_datetime = op_datetime;
-           this.op_description = op_description;
+           this.opDatetime = opDatetime;
+           this.opDescription = opDescription;
            this.version = version;
-           this.xinco_core_data_id = xinco_core_data_id;
-           this.xinco_core_user_id = xinco_core_user_id;
+           this.xincoCoreDataId = xincoCoreDataId;
+           this.xincoCoreUserId = xincoCoreUserId;
     }
 
 
@@ -52,7 +52,7 @@ public class XincoCoreLog  extends com.bluecubs.xinco.core.persistence.XincoCore
      * 
      * @return id
      */
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
@@ -68,22 +68,22 @@ public class XincoCoreLog  extends com.bluecubs.xinco.core.persistence.XincoCore
 
 
     /**
-     * Gets the op_code value for this XincoCoreLog.
+     * Gets the opCode value for this XincoCoreLog.
      * 
-     * @return op_code
+     * @return opCode
      */
-    public int getOp_code() {
-        return op_code;
+    public int getOpCode() {
+        return opCode;
     }
 
 
     /**
-     * Sets the op_code value for this XincoCoreLog.
+     * Sets the opCode value for this XincoCoreLog.
      * 
-     * @param op_code
+     * @param opCode
      */
-    public void setOp_code(int op_code) {
-        this.op_code = op_code;
+    public void setOpCode(int opCode) {
+        this.opCode = opCode;
     }
 
 
@@ -108,42 +108,42 @@ public class XincoCoreLog  extends com.bluecubs.xinco.core.persistence.XincoCore
 
 
     /**
-     * Gets the op_datetime value for this XincoCoreLog.
+     * Gets the opDatetime value for this XincoCoreLog.
      * 
-     * @return op_datetime
+     * @return opDatetime
      */
-    public java.util.Calendar getOp_datetime() {
-        return op_datetime;
+    public java.util.Date getOpDatetime() {
+        return opDatetime;
     }
 
 
     /**
-     * Sets the op_datetime value for this XincoCoreLog.
+     * Sets the opDatetime value for this XincoCoreLog.
      * 
-     * @param op_datetime
+     * @param opDatetime
      */
-    public void setOp_datetime(java.util.Calendar op_datetime) {
-        this.op_datetime = op_datetime;
+    public void setOpDatetime(java.util.Date opDatetime) {
+        this.opDatetime = opDatetime;
     }
 
 
     /**
-     * Gets the op_description value for this XincoCoreLog.
+     * Gets the opDescription value for this XincoCoreLog.
      * 
-     * @return op_description
+     * @return opDescription
      */
-    public java.lang.String getOp_description() {
-        return op_description;
+    public java.lang.String getOpDescription() {
+        return opDescription;
     }
 
 
     /**
-     * Sets the op_description value for this XincoCoreLog.
+     * Sets the opDescription value for this XincoCoreLog.
      * 
-     * @param op_description
+     * @param opDescription
      */
-    public void setOp_description(java.lang.String op_description) {
-        this.op_description = op_description;
+    public void setOpDescription(java.lang.String opDescription) {
+        this.opDescription = opDescription;
     }
 
 
@@ -168,42 +168,42 @@ public class XincoCoreLog  extends com.bluecubs.xinco.core.persistence.XincoCore
 
 
     /**
-     * Gets the xinco_core_data_id value for this XincoCoreLog.
+     * Gets the xincoCoreDataId value for this XincoCoreLog.
      * 
-     * @return xinco_core_data_id
+     * @return xincoCoreDataId
      */
-    public int getXinco_core_data_id() {
-        return xinco_core_data_id;
+    public int getXincoCoreDataId() {
+        return xincoCoreDataId;
     }
 
 
     /**
-     * Sets the xinco_core_data_id value for this XincoCoreLog.
+     * Sets the xincoCoreDataId value for this XincoCoreLog.
      * 
-     * @param xinco_core_data_id
+     * @param xincoCoreDataId
      */
-    public void setXinco_core_data_id(int xinco_core_data_id) {
-        this.xinco_core_data_id = xinco_core_data_id;
+    public void setXincoCoreDataId(int xincoCoreDataId) {
+        this.xincoCoreDataId = xincoCoreDataId;
     }
 
 
     /**
-     * Gets the xinco_core_user_id value for this XincoCoreLog.
+     * Gets the xincoCoreUserId value for this XincoCoreLog.
      * 
-     * @return xinco_core_user_id
+     * @return xincoCoreUserId
      */
-    public int getXinco_core_user_id() {
-        return xinco_core_user_id;
+    public int getXincoCoreUserId() {
+        return xincoCoreUserId;
     }
 
 
     /**
-     * Sets the xinco_core_user_id value for this XincoCoreLog.
+     * Sets the xincoCoreUserId value for this XincoCoreLog.
      * 
-     * @param xinco_core_user_id
+     * @param xincoCoreUserId
      */
-    public void setXinco_core_user_id(int xinco_core_user_id) {
-        this.xinco_core_user_id = xinco_core_user_id;
+    public void setXincoCoreUserId(int xincoCoreUserId) {
+        this.xincoCoreUserId = xincoCoreUserId;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -219,19 +219,19 @@ public class XincoCoreLog  extends com.bluecubs.xinco.core.persistence.XincoCore
         boolean _equals;
         _equals = true && 
             this.id == other.getId() &&
-            this.op_code == other.getOp_code() &&
+            this.opCode == other.getOpCode() &&
             this.changerID == other.getChangerID() &&
-            ((this.op_datetime==null && other.getOp_datetime()==null) || 
-             (this.op_datetime!=null &&
-              this.op_datetime.equals(other.getOp_datetime()))) &&
-            ((this.op_description==null && other.getOp_description()==null) || 
-             (this.op_description!=null &&
-              this.op_description.equals(other.getOp_description()))) &&
+            ((this.opDatetime==null && other.getOpDatetime()==null) || 
+             (this.opDatetime!=null &&
+              this.opDatetime.equals(other.getOpDatetime()))) &&
+            ((this.opDescription==null && other.getOpDescription()==null) || 
+             (this.opDescription!=null &&
+              this.opDescription.equals(other.getOpDescription()))) &&
             ((this.version==null && other.getVersion()==null) || 
              (this.version!=null &&
               this.version.equals(other.getVersion()))) &&
-            this.xinco_core_data_id == other.getXinco_core_data_id() &&
-            this.xinco_core_user_id == other.getXinco_core_user_id();
+            this.xincoCoreDataId == other.getXincoCoreDataId() &&
+            this.xincoCoreUserId == other.getXincoCoreUserId();
         __equalsCalc = null;
         return _equals;
     }
@@ -244,19 +244,19 @@ public class XincoCoreLog  extends com.bluecubs.xinco.core.persistence.XincoCore
         __hashCodeCalc = true;
         int _hashCode = 1;
         _hashCode += getId();
-        _hashCode += getOp_code();
+        _hashCode += getOpCode();
         _hashCode += getChangerID();
-        if (getOp_datetime() != null) {
-            _hashCode += getOp_datetime().hashCode();
+        if (getOpDatetime() != null) {
+            _hashCode += getOpDatetime().hashCode();
         }
-        if (getOp_description() != null) {
-            _hashCode += getOp_description().hashCode();
+        if (getOpDescription() != null) {
+            _hashCode += getOpDescription().hashCode();
         }
         if (getVersion() != null) {
             _hashCode += getVersion().hashCode();
         }
-        _hashCode += getXinco_core_data_id();
-        _hashCode += getXinco_core_user_id();
+        _hashCode += getXincoCoreDataId();
+        _hashCode += getXincoCoreUserId();
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -274,8 +274,8 @@ public class XincoCoreLog  extends com.bluecubs.xinco.core.persistence.XincoCore
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("op_code");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "op_code"));
+        elemField.setFieldName("opCode");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "opCode"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
@@ -286,14 +286,14 @@ public class XincoCoreLog  extends com.bluecubs.xinco.core.persistence.XincoCore
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("op_datetime");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "op_datetime"));
+        elemField.setFieldName("opDatetime");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "opDatetime"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "dateTime"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("op_description");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "op_description"));
+        elemField.setFieldName("opDescription");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "opDescription"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
@@ -304,14 +304,14 @@ public class XincoCoreLog  extends com.bluecubs.xinco.core.persistence.XincoCore
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xinco_core_data_id");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_data_id"));
+        elemField.setFieldName("xincoCoreDataId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "xincoCoreDataId"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xinco_core_user_id");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_user_id"));
+        elemField.setFieldName("xincoCoreUserId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "xincoCoreUserId"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);

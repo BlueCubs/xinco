@@ -7,7 +7,9 @@
 
 package com.bluecubs.xinco.core;
 
-public class XincoCoreUser extends com.bluecubs.xinco.core.persistence.XincoCoreUser implements java.io.Serializable {
+import com.dreamer.Hibernate.Audit.AbstractAuditableObject;
+
+public class XincoCoreUser extends AbstractAuditableObject  implements java.io.Serializable {
     private boolean change;
 
     private int changerID;
@@ -22,7 +24,7 @@ public class XincoCoreUser extends com.bluecubs.xinco.core.persistence.XincoCore
 
     private java.lang.String reason;
 
-    private int status_number;
+    private int statusNumber;
 
     private java.lang.String username;
 
@@ -30,7 +32,7 @@ public class XincoCoreUser extends com.bluecubs.xinco.core.persistence.XincoCore
 
     private boolean writeGroups;
 
-    private java.util.Vector xinco_core_groups;
+    private java.util.Vector xincoCoreGroups;
 
     public XincoCoreUser() {
     }
@@ -43,11 +45,11 @@ public class XincoCoreUser extends com.bluecubs.xinco.core.persistence.XincoCore
            int id,
            java.lang.String name,
            java.lang.String reason,
-           int status_number,
+           int statusNumber,
            java.lang.String username,
            java.lang.String userpassword,
            boolean writeGroups,
-           java.util.Vector xinco_core_groups) {
+           java.util.Vector xincoCoreGroups) {
            this.change = change;
            this.changerID = changerID;
            this.email = email;
@@ -55,11 +57,11 @@ public class XincoCoreUser extends com.bluecubs.xinco.core.persistence.XincoCore
            this.id = id;
            this.name = name;
            this.reason = reason;
-           this.status_number = status_number;
+           this.statusNumber = statusNumber;
            this.username = username;
            this.userpassword = userpassword;
            this.writeGroups = writeGroups;
-           this.xinco_core_groups = xinco_core_groups;
+           this.xincoCoreGroups = xincoCoreGroups;
     }
 
 
@@ -137,7 +139,7 @@ public class XincoCoreUser extends com.bluecubs.xinco.core.persistence.XincoCore
      * 
      * @return id
      */
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
@@ -193,22 +195,22 @@ public class XincoCoreUser extends com.bluecubs.xinco.core.persistence.XincoCore
 
 
     /**
-     * Gets the status_number value for this XincoCoreUser.
+     * Gets the statusNumber value for this XincoCoreUser.
      * 
-     * @return status_number
+     * @return statusNumber
      */
-    public int getStatus_number() {
-        return status_number;
+    public int getStatusNumber() {
+        return statusNumber;
     }
 
 
     /**
-     * Sets the status_number value for this XincoCoreUser.
+     * Sets the statusNumber value for this XincoCoreUser.
      * 
-     * @param status_number
+     * @param statusNumber
      */
-    public void setStatus_number(int status_number) {
-        this.status_number = status_number;
+    public void setStatusNumber(int statusNumber) {
+        this.statusNumber = statusNumber;
     }
 
 
@@ -273,22 +275,22 @@ public class XincoCoreUser extends com.bluecubs.xinco.core.persistence.XincoCore
 
 
     /**
-     * Gets the xinco_core_groups value for this XincoCoreUser.
+     * Gets the xincoCoreGroups value for this XincoCoreUser.
      * 
-     * @return xinco_core_groups
+     * @return xincoCoreGroups
      */
-    public java.util.Vector getXinco_core_groups() {
-        return xinco_core_groups;
+    public java.util.Vector getXincoCoreGroups() {
+        return xincoCoreGroups;
     }
 
 
     /**
-     * Sets the xinco_core_groups value for this XincoCoreUser.
+     * Sets the xincoCoreGroups value for this XincoCoreUser.
      * 
-     * @param xinco_core_groups
+     * @param xincoCoreGroups
      */
-    public void setXinco_core_groups(java.util.Vector xinco_core_groups) {
-        this.xinco_core_groups = xinco_core_groups;
+    public void setXincoCoreGroups(java.util.Vector xincoCoreGroups) {
+        this.xincoCoreGroups = xincoCoreGroups;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -318,7 +320,7 @@ public class XincoCoreUser extends com.bluecubs.xinco.core.persistence.XincoCore
             ((this.reason==null && other.getReason()==null) || 
              (this.reason!=null &&
               this.reason.equals(other.getReason()))) &&
-            this.status_number == other.getStatus_number() &&
+            this.statusNumber == other.getStatusNumber() &&
             ((this.username==null && other.getUsername()==null) || 
              (this.username!=null &&
               this.username.equals(other.getUsername()))) &&
@@ -326,9 +328,9 @@ public class XincoCoreUser extends com.bluecubs.xinco.core.persistence.XincoCore
              (this.userpassword!=null &&
               this.userpassword.equals(other.getUserpassword()))) &&
             this.writeGroups == other.isWriteGroups() &&
-            ((this.xinco_core_groups==null && other.getXinco_core_groups()==null) || 
-             (this.xinco_core_groups!=null &&
-              this.xinco_core_groups.equals(other.getXinco_core_groups())));
+            ((this.xincoCoreGroups==null && other.getXincoCoreGroups()==null) || 
+             (this.xincoCoreGroups!=null &&
+              this.xincoCoreGroups.equals(other.getXincoCoreGroups())));
         __equalsCalc = null;
         return _equals;
     }
@@ -355,7 +357,7 @@ public class XincoCoreUser extends com.bluecubs.xinco.core.persistence.XincoCore
         if (getReason() != null) {
             _hashCode += getReason().hashCode();
         }
-        _hashCode += getStatus_number();
+        _hashCode += getStatusNumber();
         if (getUsername() != null) {
             _hashCode += getUsername().hashCode();
         }
@@ -363,8 +365,8 @@ public class XincoCoreUser extends com.bluecubs.xinco.core.persistence.XincoCore
             _hashCode += getUserpassword().hashCode();
         }
         _hashCode += (isWriteGroups() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        if (getXinco_core_groups() != null) {
-            _hashCode += getXinco_core_groups().hashCode();
+        if (getXincoCoreGroups() != null) {
+            _hashCode += getXincoCoreGroups().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -419,8 +421,8 @@ public class XincoCoreUser extends com.bluecubs.xinco.core.persistence.XincoCore
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("status_number");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "status_number"));
+        elemField.setFieldName("statusNumber");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "statusNumber"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
@@ -443,8 +445,8 @@ public class XincoCoreUser extends com.bluecubs.xinco.core.persistence.XincoCore
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("xinco_core_groups");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "xinco_core_groups"));
+        elemField.setFieldName("xincoCoreGroups");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "xincoCoreGroups"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Vector"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
