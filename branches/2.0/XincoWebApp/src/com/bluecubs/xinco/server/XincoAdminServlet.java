@@ -81,7 +81,6 @@ public class XincoAdminServlet extends HttpServlet {
     private ResourceBundle rb;
     private ResourceBundle settings;
     private XincoCoreUserServer login_user = null;
-    private XincoDBManager db;
 
     /** Initializes the servlet.
      * @param config
@@ -107,11 +106,6 @@ public class XincoAdminServlet extends HttpServlet {
     @SuppressWarnings("unchecked")
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            db = new XincoDBManager();
-        } catch (Exception e) {
-
-        }
         Locale loc = null;
         try {
             String list = request.getParameter("list");
@@ -158,6 +152,7 @@ public class XincoAdminServlet extends HttpServlet {
         //connect to db
         try {
             dbm = new XincoDBManager();
+            dbm.setLoc(loc);
         } catch (Exception e) {
             global_error_message = "" + e.toString() + rb.getString("error.configurationfile.incorrect.deployment");
             out.println(global_error_message);
@@ -609,14 +604,8 @@ public class XincoAdminServlet extends HttpServlet {
             ResultSet rs = null;
             String sql = null;
             int id = 0;
-            XincoDBManager DBM = null;
             try {
-                DBM = new XincoDBManager();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            try {
-                Statement stmt = DBM.con.createStatement();
+                Statement stmt = dbm.con.createStatement();
                 sql = "select id from xinco_core_user where username='" + request.getParameter("user").substring(0, request.getParameter("user").length() - 1) + "'";
                 rs = stmt.executeQuery(sql);
                 rs.next();
@@ -684,7 +673,7 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>");
         out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
         out.println("</head>");
-        out.println("<body " + (!db.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' " : " ") +
+        out.println("<body " + (!dbm.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' " : " ") +
                 "onload=\"if (document.forms[0] != null) { if (document.forms[0].elements[0] != null) " +
                 "{ document.forms[0].elements[0].focus(); } }\">");
 
@@ -1268,8 +1257,6 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("<center>");
 
                     ResultSet rs;
-                    XincoDBManager DBM = new XincoDBManager();
-                    DBM.setLoc(loc);
                     String column = "id";
                     if (request.getParameter("table").equals("xinco_add_attribute")) {
                         column = "xinco_core_data_id";
@@ -1277,14 +1264,14 @@ public class XincoAdminServlet extends HttpServlet {
                     if (request.getParameter("table").equals("xinco_core_data_type_attribute")) {
                         column = "xinco_core_data_type_id";
                     }
-                    rs = DBM.con.createStatement().executeQuery("select * from " + request.getParameter("table") +
+                    rs = dbm.con.createStatement().executeQuery("select * from " + request.getParameter("table") +
                             "_t a, (select concat(concat(a.firstname , ' ' ), a.name) as \"" +
                             rb.getString("general.user") + "\" , b.mod_time as \"" + rb.getString("general.audit.modtime") +
                             "\" ,b.mod_reason as \"" + rb.getString("general.reason") + "\" ,b.record_id " +
                             "from xinco_core_user a,xinco_core_user_modified_record b where a.id=b.id " +
                             ") b where b.record_id =a.record_id and a." + column +
                             " = '" + request.getParameter("id") + "' order by a.record_id desc");
-                    DBM.drawTable(rs, response.getWriter(), DBM.getColumnNames(rs),
+                    dbm.drawTable(rs, response.getWriter(), dbm.getColumnNames(rs),
                             "<center>" + rb.getString("general.audit.results").replaceAll("%i",
                             request.getParameter("id")).replaceAll("%t",
                             request.getParameter("table")) + "<br>", -1, false, -1);
@@ -1325,7 +1312,6 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("            ");
 
                     ResultSet rs;
-                    XincoDBManager DBM = new XincoDBManager();
                     String column = "id";
                     if (request.getParameter("table").equals("xinco_add_attribute")) {
                         column = "xinco_core_data_id";
@@ -1333,12 +1319,12 @@ public class XincoAdminServlet extends HttpServlet {
                     if (request.getParameter("table").equals("xinco_core_data_type_attribute")) {
                         column = "xinco_core_data_type_id";
                     }
-                    rs = DBM.con.createStatement().executeQuery("select distinct * from " + request.getParameter("table") +
+                    rs = dbm.con.createStatement().executeQuery("select distinct * from " + request.getParameter("table") +
                             " where " + column + " in (select distinct " + column + " from " + request.getParameter("table") + "_t)");
-                    DBM.drawTable(rs, response.getWriter(), DBM.getColumnNames(rs), "", -1, false, -1);
-                    rs = DBM.con.createStatement().executeQuery("select distinct " + column + " from " + request.getParameter("table") + "_t");
+                    dbm.drawTable(rs, response.getWriter(), dbm.getColumnNames(rs), "", -1, false, -1);
+                    rs = dbm.con.createStatement().executeQuery("select distinct " + column + " from " + request.getParameter("table") + "_t");
                     out.println("<form action='XincoAdmin?MenuAudit=AuditTable' method='POST'>");
-                    rs = DBM.con.createStatement().executeQuery("select distinct " + column + " from " +
+                    rs = dbm.con.createStatement().executeQuery("select distinct " + column + " from " +
                             request.getParameter("table") + "_t");
                     out.println("Select record id: ");
                     out.println("<select name='id'>");
@@ -1383,8 +1369,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("        ");
 
                     ResultSet rs;
-                    XincoDBManager DBM = new XincoDBManager();
-                    DatabaseMetaData meta = DBM.con.getMetaData();
+                    DatabaseMetaData meta = dbm.con.getMetaData();
                     String[] types = {
                         "TABLE"
                     };
@@ -1510,7 +1495,7 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<td class=\"text\">&copy; " + rb.getString("general.copyright.date") + ", " +
                 //Avoid external links if general.setting.allowoutsidelinks is set to false
                 //Security bug
-                (db.config.isAllowOutsideLinks() ? rb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
+                (dbm.config.isAllowOutsideLinks() ? rb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='" +
                 rb.getString("message.admin.main.backtomain") + "' />" +

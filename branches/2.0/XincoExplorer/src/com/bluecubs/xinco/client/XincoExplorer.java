@@ -827,6 +827,12 @@ public class XincoExplorer extends JFrame {
                     }
                     if (node.getUserObject().getClass() ==
                             XincoCoreNode.class) {
+                        if (temp_ace.isRead_permission()) {
+                            ((XincoMenuRepository) jMenuRepository).itemSetEnable(11,
+                                    true);
+                            jPopupMenuRepository.itemSetEnable(11,
+                                    true);
+                        }
                         if (temp_ace.isWrite_permission()) {
                             if (((XincoCoreNode) node.getUserObject()).getStatus_number() ==
                                     1) {
@@ -2319,6 +2325,80 @@ public class XincoExplorer extends JFrame {
     }
 
     /**
+     * This method download files + subnodes of a node into folder
+     *
+     * @param node XincoCoreNode
+     * @param folder File
+     * @throws java.lang.Exception 
+     */
+    @SuppressWarnings("unchecked")
+    public void downloadContentOfNode(XincoCoreNode node, File folder) throws Exception {
+        int i = 0;
+        XincoMutableTreeNode currentNode = null;
+        
+        if (xincoClientSession.getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
+            currentNode = xincoClientSession.getCurrentTreeNodeSelection();
+            
+            // only nodes have children
+            if (currentNode.getUserObject().getClass() == XincoCoreNode.class) {
+                // check for children only if none have been found yet
+                if ((((XincoCoreNode) currentNode.getUserObject()).getXinco_core_nodes().size() == 0) &&
+                        (((XincoCoreNode) currentNode.getUserObject()).getXinco_core_data().size() == 0)) {
+                    try {
+                        XincoCoreNode xnode = xincoClientSession.xinco.getXincoCoreNode((XincoCoreNode) currentNode.getUserObject(),
+                                xincoClientSession.user);
+
+                        if (xnode != null) {
+                            xincoClientSession.xincoClientRepository.assignObject2TreeNode(currentNode,
+                                    xnode,
+                                    xincoClientSession.xinco,
+                                    xincoClientSession.user,
+                                    2);
+                        }
+                    } catch (Exception rmie) {
+                    }
+                }
+            }
+            
+            // download files of node
+            for (i=0; i<currentNode.getChildCount(); i++) {
+                if (((XincoMutableTreeNode)currentNode.getChildAt(i)).getUserObject().getClass() == XincoCoreData.class) {
+                    if (((XincoCoreData)((XincoMutableTreeNode)currentNode.getChildAt(i)).getUserObject()).getXinco_core_data_type().getId() == 1) {
+                        xincoClientSession.setCurrentTreeNodeSelection((XincoMutableTreeNode)currentNode.getChildAt(i));
+                        // load full data
+                        try {
+                              XincoCoreData xdata = xincoClientSession.xinco.getXincoCoreData(((XincoCoreData)xincoClientSession.getCurrentTreeNodeSelection().getUserObject()),
+                                      xincoClientSession.user);
+                              if (xdata != null) {
+                                  xincoClientSession.getCurrentTreeNodeSelection().setUserObject(xdata);
+                                  xincoClientSession.xincoClientRepository.treemodel.nodeChanged(xincoClientSession.getCurrentTreeNodeSelection());
+                                  // download file
+                                  setCurrentPathFilename(folder.getAbsolutePath()+ System.getProperty("file.separator") + ((XincoAddAttribute)((XincoCoreData)xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(0)).getAttrib_varchar());
+                                  doDataWizard(15);
+                              }
+                        } catch (Exception rmie) {
+                        }
+                    }
+                }
+            }
+            
+            // process subnodes
+            for (i=0; i<currentNode.getChildCount(); i++) {
+                if (((XincoMutableTreeNode)currentNode.getChildAt(i)).getUserObject().getClass() == XincoCoreNode.class) {
+                    File newfolder = null;
+                    newfolder = new File(folder.getAbsolutePath()+ System.getProperty("file.separator") + ((XincoCoreNode)((XincoMutableTreeNode)currentNode.getChildAt(i)).getUserObject()).getDesignation());
+                    if (newfolder.mkdirs() || newfolder.isDirectory()) {
+                        xincoClientSession.setCurrentTreeNodeSelection((XincoMutableTreeNode)currentNode.getChildAt(i));
+                        downloadContentOfNode((XincoCoreNode)xincoClientSession.getCurrentTreeNodeSelection().getUserObject(), newfolder);
+                    }
+                }
+            }
+            
+        }
+        
+    }
+
+    /**
      * This method leads through data adding/editing
      *
      * @param wizard_type 
@@ -2341,6 +2421,7 @@ public class XincoExplorer extends JFrame {
         = 12 = lock data
         = 13 = comment data
         = 14 = preview data
+        = 15 = download file with predefined name
          */
         int i = 0, j = 0;
         newnode = new XincoMutableTreeNode(new XincoCoreData());
@@ -2491,7 +2572,7 @@ public class XincoExplorer extends JFrame {
                         }
                         newlog.setOp_description(newlog.getOp_description() + " (" + xerb.getString("general.user") + ": " + xincoClientSession.user.getUsername() + ")");
                     } else {
-                        if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14)) {
+                        if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14) && (wizard_type != 15)) {
                             newlog = new XincoCoreLog();
                             if (wizard_type <= 3) {
                                 newlog.setOp_code(2);
@@ -2642,7 +2723,7 @@ public class XincoExplorer extends JFrame {
                         }
                     }
                     //save data to server
-                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14)) {
+                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14) && (wizard_type != 15)) {
                         if ((wizard_type >= 4) && (wizard_type <= 6)) {
                             if (wizard_type == 4) {
                                 xdata = xincoClientSession.xinco.doXincoCoreDataCheckout((XincoCoreData) newnode.getUserObject(),
@@ -2665,7 +2746,7 @@ public class XincoExplorer extends JFrame {
                         }
                         newnode.setUserObject(xdata);
                     }
-                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14)) {
+                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14) && (wizard_type != 15)) {
                         //update id cin log
                         newlog.setXinco_core_data_id(((XincoCoreData) newnode.getUserObject()).getId());
                         //save log to server
@@ -2700,11 +2781,13 @@ public class XincoExplorer extends JFrame {
                     //download file
                     //file = 1
                     if (((wizard_type == 4) || (wizard_type == 7) || (wizard_type == 11) ||
-                            (wizard_type == 14)) &&
+                            (wizard_type == 14) || (wizard_type == 15)) &&
                             (((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId() == 1)) {
                         //determine requested revision and set log vector
-                        progressBar.setTitle(xerb.getString("datawizard.filedownloadinfo"));
-                        progressBar.show();
+                        if (wizard_type != 15) {
+                            progressBar.setTitle(xerb.getString("datawizard.filedownloadinfo"));
+                            progressBar.show();
+                        }
                         Vector DataLogVector = null;
                         if (wizard_type == 11) {
                             jDialogRevision = getJDialogRevision();
@@ -2795,40 +2878,44 @@ public class XincoExplorer extends JFrame {
                         //update transaction info
                         jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.filedownloadsuccess"));
                         //open file cin default application
-                        Process process = null;
-                        boolean open_file = false;
-                        if (System.getProperty("os.name").toLowerCase().indexOf("mac") > -1) {
-                            if (wizard_type == 14) {
-                                open_file = true;
-                            } else {
-                                if (JOptionPane.showConfirmDialog(XincoExplorer.this, xerb.getString("datawizard.opendataindefaultapplication"), xerb.getString("general.question"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                        if (wizard_type != 15) {
+                            Process process = null;
+                            boolean open_file = false;
+                            if (System.getProperty("os.name").toLowerCase().indexOf("mac") > -1) {
+                                if (wizard_type == 14) {
                                     open_file = true;
+                                } else {
+                                    if (JOptionPane.showConfirmDialog(XincoExplorer.this, xerb.getString("datawizard.opendataindefaultapplication"), xerb.getString("general.question"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                                        open_file = true;
+                                    }
                                 }
-                            }
-                            if (open_file) {
-                                try {
-                                    String[] cmd = {"open", current_fullpath};
-                                    process = Runtime.getRuntime().exec(cmd);
-                                } catch (Throwable t) {
+                                if (open_file) {
+                                    try {
+                                        String[] cmd = {"open", current_fullpath};
+                                        process = Runtime.getRuntime().exec(cmd);
+                                    } catch (Throwable t) {
+                                    }
                                 }
-                            }
-                        } else if (System.getProperty("os.name").toLowerCase().indexOf("windows") > -1) {
-                            if (wizard_type == 14) {
-                                open_file = true;
-                            } else {
-                                if (JOptionPane.showConfirmDialog(XincoExplorer.this, xerb.getString("datawizard.opendataindefaultapplication"), xerb.getString("general.question"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                            } else if (System.getProperty("os.name").toLowerCase().indexOf("windows") > -1) {
+                                if (wizard_type == 14) {
                                     open_file = true;
+                                } else {
+                                    if (JOptionPane.showConfirmDialog(XincoExplorer.this, xerb.getString("datawizard.opendataindefaultapplication"), xerb.getString("general.question"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                                        open_file = true;
+                                    }
                                 }
-                            }
-                            if (open_file) {
-                                try {
-                                    String cmd = "rundll32 url.dll,FileProtocolHandler" + " \"" + current_fullpath + "\"";
-                                    process = Runtime.getRuntime().exec(cmd);
-                                } catch (Throwable t) {
+                                if (open_file) {
+                                    try {
+                                        String cmd = "rundll32 url.dll,FileProtocolHandler" + " \"" + current_fullpath + "\"";
+                                        process = Runtime.getRuntime().exec(cmd);
+                                    } catch (Throwable t) {
+                                    }
                                 }
                             }
                         }
-                        progressBar.hide();
+                        if (wizard_type != 15) {
+                            progressBar.hide();
+                        }
                     }
                     //Open cin Browser
                     //URL = 3
@@ -2871,7 +2958,7 @@ public class XincoExplorer extends JFrame {
                         }
                     }
 
-                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14)) {
+                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14) && (wizard_type != 15)) {
                         //update treemodel
                         xincoClientSession.xincoClientRepository.treemodel.reload(newnode);
                         xincoClientSession.xincoClientRepository.treemodel.nodeChanged(newnode);

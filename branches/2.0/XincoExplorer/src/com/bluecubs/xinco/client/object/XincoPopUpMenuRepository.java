@@ -404,7 +404,13 @@ public class XincoPopUpMenuRepository extends JPopupMenu {
         this.items[11].addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                explorer.doDataWizard(7);
+                if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
+                    downloadThread downloadT = new downloadThread();
+                    downloadT.setXincoExplorer(explorer);
+                    downloadT.start();
+                } else {
+                    explorer.doDataWizard(7);
+                }
             }
         });
         add(this.items[11]);
