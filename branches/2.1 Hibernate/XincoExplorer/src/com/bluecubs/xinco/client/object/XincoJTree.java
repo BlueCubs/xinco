@@ -38,7 +38,7 @@ import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.dragNdrop.XincoDefaultTreeTransferHandler;
 import com.bluecubs.xinco.client.object.menu.XincoMenuRepository;
 import com.bluecubs.xinco.client.object.menu.XincoPopUpMenuRepository;
-import com.bluecubs.xinco.core.XincoAddAttribute;
+import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.core.XincoCoreACE;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
@@ -63,7 +63,7 @@ import javax.swing.tree.TreePath;
 
 /**
  *
- * @author ortizbj
+ * @author Javier A. ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 public class XincoJTree extends JTree {
 
@@ -120,8 +120,10 @@ public class XincoJTree extends JTree {
             }
         });
         addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
+
             public void treeExpanded(javax.swing.event.TreeExpansionEvent e) {
             }
+
             public void treeCollapsed(javax.swing.event.TreeExpansionEvent e) {
             }
         });
@@ -151,13 +153,13 @@ public class XincoJTree extends JTree {
                 ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).resetItems();
                 ((XincoMenuRepository) getExplorer().getJMenuRepository()).resetItems();
                 // dynamic enabling
-                if (tempAce.getWritePermission()) {
+                if (tempAce.isWritePermission()) {
                     ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(4, true);
                     ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(4, true);
                     ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(7, true);
                     ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(7, true);
                 }
-                if (tempAce.getAdminPermission()) {
+                if (tempAce.isAdminPermission()) {
                     ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(4, true);
                     ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(4, true);
                     ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(6, true);
@@ -166,7 +168,7 @@ public class XincoJTree extends JTree {
                     ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(7, true);
                 }
                 if (node.getUserObject().getClass() == XincoCoreNode.class) {
-                    if (tempAce.getWritePermission()) {
+                    if (tempAce.isWritePermission()) {
                         if (((XincoCoreNode) node.getUserObject()).getStatusNumber() == 1) {
                             ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(4, true);
                             ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(4, true);
@@ -188,7 +190,7 @@ public class XincoJTree extends JTree {
                     if (((XincoCoreData) node.getUserObject()).getXincoCoreDataType().getId() == 1) {
                         ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(17, true);
                         ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(17, true);
-                        if (tempAce.getReadPermission()) {
+                        if (tempAce.isReadPermission()) {
                             if (((XincoCoreData) node.getUserObject()).getStatusNumber() != 3) {
                                 ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(5, true);
                                 ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(11, true);
@@ -196,7 +198,7 @@ public class XincoJTree extends JTree {
                                 ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(11, true);
                             }
                         }
-                        if (tempAce.getWritePermission()) {
+                        if (tempAce.isWritePermission()) {
                             if (((XincoCoreData) node.getUserObject()).getStatusNumber() == 1) {
                                 ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(12, true);
                                 ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(13, false);
@@ -217,23 +219,23 @@ public class XincoJTree extends JTree {
                     }
                     // URL = 3
                     if (((XincoCoreData) node.getUserObject()).getXincoCoreDataType().getId() == 3) {
-                        if (tempAce.getReadPermission()) {
+                        if (tempAce.isReadPermission()) {
                             ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(9, true);
                             ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(9, true);
                         }
                     }
                     // contact = 4
                     if (((XincoCoreData) node.getUserObject()).getXincoCoreDataType().getId() == 4) {
-                        if (tempAce.getReadPermission()) {
+                        if (tempAce.isReadPermission()) {
                             ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(10, true);
                             ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(10, true);
                         }
                     }
-                    if (tempAce.getReadPermission()) {
+                    if (tempAce.isReadPermission()) {
                         ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(5, true);
                         ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(5, true);
                     }
-                    if (tempAce.getWritePermission()) {
+                    if (tempAce.isWritePermission()) {
                         ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(18, true);
                         ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(18, true);
                         if (((XincoCoreData) node.getUserObject()).getStatusNumber() == 1) {
@@ -241,7 +243,7 @@ public class XincoJTree extends JTree {
                             ((XincoPopUpMenuRepository) getExplorer().getJPopupMenuRepository()).itemSetEnable(4, true);
                         }
                     }
-                    if (tempAce.getAdminPermission()) {
+                    if (tempAce.isAdminPermission()) {
                         if ((((XincoCoreData) node.getUserObject()).getStatusNumber() != 3) &&
                                 (((XincoCoreData) node.getUserObject()).getStatusNumber() != 4)) {
                             ((XincoMenuRepository) getExplorer().getJMenuRepository()).itemSetEnable(15, true);
@@ -321,28 +323,28 @@ public class XincoJTree extends JTree {
                     rdata[1] = "";
                     rdata[1] = rdata[1] +
                             "[";
-                    if (tempAce.getReadPermission()) {
+                    if (tempAce.isReadPermission()) {
                         rdata[1] = rdata[1] +
                                 "R";
                     } else {
                         rdata[1] = rdata[1] +
                                 "-";
                     }
-                    if (tempAce.getWritePermission()) {
+                    if (tempAce.isWritePermission()) {
                         rdata[1] = rdata[1] +
                                 "W";
                     } else {
                         rdata[1] = rdata[1] +
                                 "-";
                     }
-                    if (tempAce.getExecutePermission()) {
+                    if (tempAce.isExecutePermission()) {
                         rdata[1] = rdata[1] +
                                 "X";
                     } else {
                         rdata[1] = rdata[1] +
                                 "-";
                     }
-                    if (tempAce.getAdminPermission()) {
+                    if (tempAce.isAdminPermission()) {
                         rdata[1] = rdata[1] +
                                 "A";
                     } else {
@@ -410,28 +412,28 @@ public class XincoJTree extends JTree {
                     rdata[1] = "";
                     rdata[1] = rdata[1] +
                             "[";
-                    if (tempAce.getReadPermission()) {
+                    if (tempAce.isReadPermission()) {
                         rdata[1] = rdata[1] +
                                 "R";
                     } else {
                         rdata[1] = rdata[1] +
                                 "-";
                     }
-                    if (tempAce.getWritePermission()) {
+                    if (tempAce.isWritePermission()) {
                         rdata[1] = rdata[1] +
                                 "W";
                     } else {
                         rdata[1] = rdata[1] +
                                 "-";
                     }
-                    if (tempAce.getExecutePermission()) {
+                    if (tempAce.isExecutePermission()) {
                         rdata[1] = rdata[1] +
                                 "X";
                     } else {
                         rdata[1] = rdata[1] +
                                 "-";
                     }
-                    if (tempAce.getAdminPermission()) {
+                    if (tempAce.isAdminPermission()) {
                         rdata[1] = rdata[1] +
                                 "A";
                     } else {
@@ -528,7 +530,7 @@ public class XincoJTree extends JTree {
                             try {
                                 // convert clone from remote time to local time
                                 cal = (Calendar) ((XincoCoreLog) getExplorer().getXdata().getXincoCoreLogs().elementAt(i)).getOpDatetime().clone();
-                                realcal.setTime(((XincoCoreLog) getExplorer().getXdata().getXincoCoreLogs().elementAt(i)).getOpDatetime());
+                                realcal = (((XincoCoreLog) getExplorer().getXdata().getXincoCoreLogs().elementAt(i)).getOpDatetime());
                                 cal.add(Calendar.MILLISECOND,
                                         (ngc.get(Calendar.ZONE_OFFSET) -
                                         realcal.get(Calendar.ZONE_OFFSET)) -

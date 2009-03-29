@@ -36,7 +36,6 @@
  *
  * Created on September 25, 2006, 6:57 PM
  */
-
 package com.bluecubs.xinco.client.frames;
 
 import com.bluecubs.xinco.client.XincoExplorer;
@@ -46,20 +45,23 @@ import com.bluecubs.xinco.client.XincoExplorer;
  * @author  Javier A. Ortiz
  */
 public class XincoInformationFrame extends javax.swing.JInternalFrame {
-    private XincoExplorer explorer=null;
+
+    private XincoExplorer explorer = null;
+
     /** Creates new form XincoInformationFrame
      * @param explorer 
      */
     public XincoInformationFrame(XincoExplorer explorer) {
         initComponents();
-        this.explorer=explorer;
+        this.explorer = explorer;
         setTitle(explorer.getResourceBundle().getString("window.information"));
         this.setVisible(false);
     }
-    
-    private javax.swing.JTextArea getTextArea(){
+
+    private javax.swing.JTextArea getTextArea() {
         return this.Text;
     }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -95,11 +97,8 @@ public class XincoInformationFrame extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea Text;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
-    
 }

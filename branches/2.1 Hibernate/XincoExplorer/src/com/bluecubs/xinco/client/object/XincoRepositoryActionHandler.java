@@ -43,7 +43,7 @@ import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreLanguage;
 import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoCoreNode;
-import com.bluecubs.xinco.core.exception.XincoException;
+import com.bluecubs.xinco.core.XincoException;
 import java.awt.event.ActionEvent;
 import java.util.ResourceBundle;
 import java.util.Vector;
@@ -586,7 +586,7 @@ public class XincoRepositoryActionHandler {
                             // update transaction info
                             explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movefoldersuccess"));
                         } catch (Exception rmie) {
-                            if (explorer.getSettings().getSetting("setting.enable.developermode").getBoolValue()) {
+                            if (explorer.getSettings().getSetting("setting.enable.developermode").isBoolValue()) {
                                 rmie.printStackTrace();
                             }
                             // undo modification
@@ -664,14 +664,14 @@ public class XincoRepositoryActionHandler {
                                 newlog.setVersion(((XincoCoreLog) oldlogs.elementAt(oldlogs.size() - 1)).getVersion());
                                 explorer.getSession().getXinco().setXincoCoreLog(newlog, explorer.getSession().getUser());
                             } catch (Exception loge) {
-                                if (explorer.getSettings().getSetting("setting.enable.developermode").getBoolValue()) {
+                                if (explorer.getSettings().getSetting("setting.enable.developermode").isBoolValue()) {
                                     loge.printStackTrace();
                                 }
                             }
                             // update transaction info
                             explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movedatasuccess"));
                         } catch (Exception rmie) {
-                            if (explorer.getSettings().getSetting("setting.enable.developermode").getBoolValue()) {
+                            if (explorer.getSettings().getSetting("setting.enable.developermode").isBoolValue()) {
                                 rmie.printStackTrace();
                             }
                             // undo modification
@@ -693,7 +693,7 @@ public class XincoRepositoryActionHandler {
             }
         } else {
             //Display only if in developer mode!
-            if (explorer.getSettings().getSetting("setting.enable.developermode").getBoolValue()) {
+            if (explorer.getSettings().getSetting("setting.enable.developermode").isBoolValue()) {
                 System.err.println("Don't execute change in DB!");
                 System.err.println(((explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) &&
                         dragNdrop));

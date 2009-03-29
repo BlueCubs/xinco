@@ -105,7 +105,7 @@ public class XincoImportThread extends Thread {
             }
             try {
                 explorer.getSession().getXinco().indexFiles(explorer.getFilesToBeIndexed(), explorer.getSession().getUser());
-                if (explorer.getSettings().getSetting("setting.enable.developermode").getBoolValue()) {
+                if (explorer.getSettings().getSetting("setting.enable.developermode").isBoolValue()) {
                     System.out.println("Indexing complete!");
                 }
             } catch (RemoteException ex) {

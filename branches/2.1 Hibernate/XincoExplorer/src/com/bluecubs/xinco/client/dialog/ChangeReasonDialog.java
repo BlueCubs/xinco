@@ -41,7 +41,7 @@ package com.bluecubs.xinco.client.dialog;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreUser;
-import com.bluecubs.xinco.core.exception.XincoException;
+import com.bluecubs.xinco.core.XincoException;
 import javax.swing.JOptionPane;
 
 /**
@@ -63,7 +63,7 @@ public class ChangeReasonDialog extends AbstractDialog {
      * @param parent Dialog's parent
      * @param modal Is modal?
      * @param explorer
-     * @throws com.bluecubs.xinco.core.exception.XincoException 
+     * @throws com.bluecubs.xinco.core.XincoException 
      */
     public ChangeReasonDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) throws XincoException {
         super(parent, modal);

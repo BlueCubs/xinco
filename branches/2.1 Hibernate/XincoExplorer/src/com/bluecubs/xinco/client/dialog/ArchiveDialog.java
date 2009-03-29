@@ -100,7 +100,7 @@ public class ArchiveDialog extends AbstractDialog {
         //convert clone from remote time to local time
         Calendar cal = (Calendar) ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoAddAttributes().elementAt(5)).getAttribDatetime().clone();
         Calendar realcal = null;
-        realcal.setTime(((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoAddAttributes().elementAt(5)).getAttribDatetime());
+        realcal=((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoAddAttributes().elementAt(5)).getAttribDatetime();
         Calendar ngc = new GregorianCalendar();
         cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - realcal.get(Calendar.ZONE_OFFSET)) - (ngc.get(Calendar.DST_OFFSET) + realcal.get(Calendar.DST_OFFSET)));
         archiveDate.setDate(cal.getTime());
@@ -264,7 +264,7 @@ public class ArchiveDialog extends AbstractDialog {
             cal.set(Calendar.HOUR_OF_DAY, 0);
             cal.set(Calendar.MINUTE, 0);
             cal.set(Calendar.SECOND, 0);
-            ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoAddAttributes().elementAt(5)).setAttribDatetime(new Date(cal.getTimeInMillis()));
+            ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoAddAttributes().elementAt(5)).setAttribDatetime(cal);
             tempDays_int = Integer.parseInt(dayAmountTextBox.getText());
             ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoAddAttributes().elementAt(6)).setAttribUnsignedint(tempDays_int);
             //close dialog

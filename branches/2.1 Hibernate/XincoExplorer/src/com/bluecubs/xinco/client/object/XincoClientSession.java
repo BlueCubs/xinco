@@ -36,12 +36,11 @@
 package com.bluecubs.xinco.client.object;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoVersion;
+import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.service.Xinco;
 import com.bluecubs.xinco.service.XincoService;
 import java.util.Vector;
-
 
 /**
  * XincoClientSession
@@ -128,7 +127,6 @@ public class XincoClientSession {
      * Constructor
      */
     protected XincoClientSession() {
-
     }
 
     /**

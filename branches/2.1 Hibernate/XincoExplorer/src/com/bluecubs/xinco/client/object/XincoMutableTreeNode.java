@@ -62,41 +62,41 @@ public class XincoMutableTreeNode extends DefaultMutableTreeNode {
     public String toString() {
         String s = null;
         String status = null;
-        if (this.getUserObject() != null) {
-            if (this.getUserObject().getClass() == XincoCoreNode.class) {
-                s = ((XincoCoreNode) this.getUserObject()).getDesignation();
+        if (getUserObject() != null) {
+            if (getUserObject().getClass() == XincoCoreNode.class) {
+                s = ((XincoCoreNode) getUserObject()).getDesignation();
                 if (s == null) {
                     s = super.toString();
                 }
                 status = new String("");
-                if (((XincoCoreNode) this.getUserObject()).getStatusNumber() == 2) {
+                if (((XincoCoreNode) getUserObject()).getStatusNumber() == 2) {
                     status = new String(" | -");
                 }
-                if (((XincoCoreNode) this.getUserObject()).getStatusNumber() == 3) {
+                if (((XincoCoreNode) getUserObject()).getStatusNumber() == 3) {
                     status = new String(" | ->");
                 }
-                return "" + s + " (" + ((XincoCoreNode) this.getUserObject()).getXincoCoreLanguage().getSign() + status + ")";
+                return "" + s + " (" + ((XincoCoreNode) getUserObject()).getXincoCoreLanguage().getSign() + status + ")";
             }
-            if (this.getUserObject().getClass() == XincoCoreData.class) {
-                s = ((XincoCoreData) this.getUserObject()).getDesignation();
+            if (getUserObject().getClass() == XincoCoreData.class) {
+                s = ((XincoCoreData) getUserObject()).getDesignation();
                 if (s == null) {
                     s = super.toString();
                 }
                 status = new String("");
-                if (((XincoCoreData) this.getUserObject()).getStatusNumber() == 2) {
+                if (((XincoCoreData) getUserObject()).getStatusNumber() == 2) {
                     status = new String(" | -");
                 }
-                if (((XincoCoreData) this.getUserObject()).getStatusNumber() == 3) {
+                if (((XincoCoreData) getUserObject()).getStatusNumber() == 3) {
                     status = new String(" | ->");
                 }
-                if (((XincoCoreData) this.getUserObject()).getStatusNumber() == 4) {
+                if (((XincoCoreData) getUserObject()).getStatusNumber() == 4) {
                     status = new String(" | X");
                 }
-                if (((XincoCoreData) this.getUserObject()).getStatusNumber() == 5) {
+                if (((XincoCoreData) getUserObject()).getStatusNumber() == 5) {
                     status = new String(" | WWW");
                 }
-                return "" + s + " (" + explorer.getResourceBundle().getString(((XincoCoreData) this.getUserObject()).getXincoCoreDataType().getDesignation()) +
-                        " | " + ((XincoCoreData) this.getUserObject()).getXincoCoreLanguage().getSign() + status + ")";
+                return "" + s + " (" + explorer.getResourceBundle().getString(((XincoCoreData) getUserObject()).getXincoCoreDataType().getDesignation()) +
+                        " | " + ((XincoCoreData) getUserObject()).getXincoCoreLanguage().getSign() + status + ")";
             }
         }
         return super.toString();

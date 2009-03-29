@@ -44,7 +44,7 @@ import com.bluecubs.xinco.core.XincoCoreACE;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreNode;
-import com.bluecubs.xinco.core.exception.XincoException;
+import com.bluecubs.xinco.core.XincoException;
 import java.util.MissingResourceException;
 import java.util.Vector;
 import javax.swing.JOptionPane;
@@ -140,22 +140,22 @@ public class ACLDialog extends AbstractDialog {
                 }
             }
             temp_string = temp_string + " [";
-            if (temp_ace.getReadPermission()) {
+            if (temp_ace.isReadPermission()) {
                 temp_string = temp_string + "R";
             } else {
                 temp_string = temp_string + "-";
             }
-            if (temp_ace.getWritePermission()) {
+            if (temp_ace.isWritePermission()) {
                 temp_string = temp_string + "W";
             } else {
                 temp_string = temp_string + "-";
             }
-            if (temp_ace.getExecutePermission()) {
+            if (temp_ace.isExecutePermission()) {
                 temp_string = temp_string + "X";
             } else {
                 temp_string = temp_string + "-";
             }
-            if (temp_ace.getAdminPermission()) {
+            if (temp_ace.isAdminPermission()) {
                 temp_string = temp_string + "A";
             } else {
                 temp_string = temp_string + "-";
@@ -187,7 +187,7 @@ public class ACLDialog extends AbstractDialog {
                 }
                 return explorer.getResourceBundle().getString(strings[i]);
             }
-            });
+        });
     }
 
     /**
@@ -432,7 +432,7 @@ public class ACLDialog extends AbstractDialog {
                         ace.setXincoCoreNodeId(((XincoCoreNode) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
                     }
                     if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
-                        ace.setXincoCore_dataId(((XincoCoreData) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
+                        ace.setXincoCoreDataId(((XincoCoreData) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
                     }
                     ace.setReadPermission(this.Read.isSelected());
                     ace.setWritePermission(this.Write.isSelected());
@@ -459,7 +459,7 @@ public class ACLDialog extends AbstractDialog {
                 reloadACLListACL();
                 this.groupList.clearSelection();
             } catch (Exception xe) {
-                if (this.explorer.getSettings().getSetting("setting.enable.developermode").getBoolValue()) {
+                if (this.explorer.getSettings().getSetting("setting.enable.developermode").isBoolValue()) {
                     xe.printStackTrace();
                 }
                 JOptionPane.showMessageDialog(this, this.explorer.getResourceBundle().getString("window.acl.addacefailed") +

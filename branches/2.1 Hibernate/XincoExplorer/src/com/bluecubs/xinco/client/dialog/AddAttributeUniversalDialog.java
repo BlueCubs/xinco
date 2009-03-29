@@ -45,6 +45,7 @@ import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -203,7 +204,7 @@ public class AddAttributeUniversalDialog extends AbstractDialog {
         int i = 0, start = 0;
         String text = "";
         DefaultTableModel dtm;
-        Date attrDt = new Date(0);
+        GregorianCalendar attrDt = new GregorianCalendar();
         int attrI = 0;
         long attr_l = 0;
         double attrD = 0;
@@ -230,9 +231,9 @@ public class AddAttributeUniversalDialog extends AbstractDialog {
             if (((XincoCoreDataTypeAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreDataType().getXincoCoreDataTypeAttributes().elementAt(i + start)).getDataType().equals(new String("datetime"))) {
                 try {
                     DateFormat df = DateFormat.getInstance();
-                    attrDt = df.parse(text);
+                    attrDt.setTime(df.parse(text));
                 } catch (Exception pe) {
-                    attrDt = new Date(0);
+                    attrDt.setTime(new Date());
                 }
                 ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoAddAttributes().elementAt(i + start)).setAttribDatetime(attrDt);
             }

@@ -61,7 +61,7 @@ public class XincoActivityActionListener implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         try {
-            if (this.explorer.getSettings().getSetting("general.setting.enable.lockidle").getBoolValue()) {
+            if (this.explorer.getSettings().getSetting("general.setting.enable.lockidle").isBoolValue()) {
                 this.explorer.setLock(true);
             }
         } catch (Throwable ex) {

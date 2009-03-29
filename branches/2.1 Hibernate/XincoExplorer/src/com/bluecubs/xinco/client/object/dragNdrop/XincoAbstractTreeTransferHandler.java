@@ -101,7 +101,7 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
                         ((XincoCoreData) draggedNode.getUserObject()).getXincoCoreACL());
             }
             //Drop only if you have write permissions
-            if (temp_ace.getWritePermission()) {
+            if (temp_ace.isWritePermission()) {
                 getTree().getExplorer().getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode) draggedNodeParent);
                 ((DefaultTreeModel) getTree().getModel()).nodeStructureChanged(draggedNodeParent);
                 getTree().expandPath(new TreePath(draggedNodeParent.getPath()));
