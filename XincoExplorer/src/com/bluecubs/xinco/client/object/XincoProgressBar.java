@@ -50,7 +50,7 @@ import javax.swing.JProgressBar;
 
 /**
  *
- * @author ortizbj
+ * @author Javier A. Ortiz
  */
 public class XincoProgressBar extends JFrame{
     private	JProgressBar    progress;

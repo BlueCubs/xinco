@@ -43,7 +43,7 @@ import com.bluecubs.xinco.client.XincoExplorer;
 
 /**
  *
- * @author  ortizbj
+ * @author  Javier A. Ortiz
  */
 public class InformationFrame extends javax.swing.JInternalFrame {
     private XincoExplorer explorer=null;

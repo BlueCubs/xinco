@@ -1,12 +1,7 @@
-CREATE TABLE xinco_setting (
-  id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  description VARCHAR(45) NOT NULL,
-  int_value INTEGER(10) UNSIGNED NULL DEFAULT null,
-  string_value VARCHAR(500) NULL DEFAULT null,
-  bool_value BOOL NULL DEFAULT null,
-  long_value BIGINT NULL DEFAULT null,
-  PRIMARY KEY(id)
-)
-TYPE=InnoDB;
+DROP INDEX xinco_core_user_index_username;
+CREATE UNIQUE INDEX xinco_core_user_index_username ON xinco_core_user (username);
 
-INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(35,'general.setting.allowoutsidelinks',null,null,false,null);
+CREATE INDEX xinco_core_group_index_designation ON xinco_core_group (designation);
+
+CREATE INDEX xinco_core_language_index_sign ON xinco_core_language (sign);
+CREATE INDEX xinco_core_language_index_designation ON xinco_core_language (designation);

@@ -2,27 +2,18 @@
 <%@page pageEncoding="UTF-8"%>
 <%@page import="java.util.Locale"%>
 <%@page import="java.util.ResourceBundle"%>
-<%@page import="com.bluecubs.xinco.core.server.XincoSettingServer"%>
-<%@page import="com.bluecubs.xinco.core.XincoSetting"%>
 
 <html>
-    <%int i = 0;
-    ResourceBundle lrb = null,rb=null;
-    String[] locales;
-    String text = "";
-    //load locales
-    lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
-    rb=ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
-    %>
     <head>
-        <title><%out.println(rb.getString("message.admin.main.title"));%></title>
+        <title>xinco DMS - Open Source Document Management</title>
         <link rel="stylesheet" href="xincostyle.css" type="text/css"/>
+        <link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>
+        <link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'>
     </head>
     <body>
         <center>
-            
-            <span class="text"><br><img src="blueCubs.gif" border="0"/>
-                <br><span class="bigtext"><%out.println(rb.getString("message.admin.main.description"));%></span>
+            <span class="text"><br><img src="resources/images/blueCubs.gif" border="0"/>
+                <br><span class="bigtext">xinco DMS - the Core of Information and Document Management</span>
                 <br><br>
                 
                 <form name='language' action='menu.jsp'>
@@ -33,15 +24,21 @@
                             <td class="text">Please choose a language:&nbsp;</td>
                             <td class="text">
                                 <%
-                                
-                                locales = lrb.getString("AvailableLocales").split(",");
-                                out.println("" +
-                                        "" +
-                                        "");
-                                out.println("<select name='list'>");
-                                for (i=0;i<locales.length;i++)
-                                    out.println("<option value='"+locales[i]+"'>"+lrb.getString("Locale." + locales[i]) + "</option>");
-                                out.println("</select>&nbsp;");
+            int i = 0;
+            ResourceBundle lrb = null;
+            String[] locales;
+            String text = "";
+            //load locales
+            lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
+            locales = lrb.getString("AvailableLocales").split(",");
+            out.println("" +
+                    "" +
+                    "");
+            out.println("<select name='list'>");
+            for (i = 0; i < locales.length; i++) {
+                out.println("<option value='" + locales[i] + "'>" + lrb.getString("Locale." + locales[i]) + "</option>");
+            }
+            out.println("</select>&nbsp;");
                                 %>
                             </td>
                             <td class="text">
@@ -55,16 +52,9 @@
                 <br>
                 <span class="text" style="font-size: 10px;">
                     <%
-                    //load settings
-                    XincoSettingServer xss= new XincoSettingServer();
-                    String version="[Version " + xss.getSetting("version.high").getIntValue()
-                    + "." + xss.getSetting("version.med").getIntValue() + "." +
-                            xss.getSetting("version.low").getIntValue();
-                    if(xss.getSetting("version.postfix").getStringValue()!=null &&
-                            !xss.getSetting("version.postfix").getStringValue().trim().equals(""))
-                        version+=" " + xss.getSetting("version.postfix").getStringValue();
-                    version+="]";
-                    out.println(version);
+            //load settings
+            ResourceBundle settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
+            out.println("[Version " + settings.getString("version.high") + "." + settings.getString("version.mid") + "." + settings.getString("version.low") + " " + settings.getString("version.postfix") + "]");
                     %>
                 </span>
                 

@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * Javier A. Ortiz  02/05/2007        Add support for new audit permission
+ * -                -                 -
  *
  *************************************************************
  */
@@ -42,12 +42,13 @@ import java.sql.*;
 import com.bluecubs.xinco.core.*;
 
 public class XincoCoreACEServer extends XincoCoreACE {
+    private int userID=1;
     //create single ace object for data structures
     public XincoCoreACEServer(int attrID, XincoDBManager DBM) throws XincoException {
         
         try {
             
-            Statement stmt = DBM.getConnection().createStatement();
+            Statement stmt = DBM.con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_ace WHERE id=" + attrID);
             
             //throw exception if no result found
@@ -77,9 +78,8 @@ public class XincoCoreACEServer extends XincoCoreACE {
     }
     
     //create single ace object for data structures
-    public XincoCoreACEServer(int attrID, int attrUID, int attrGID, int attrNID,
-            int attrDID, boolean attrRP, boolean attrWP, boolean attrEP,
-            boolean attrAP, boolean owner) throws XincoException {
+    public XincoCoreACEServer(int attrID, int attrUID, int attrGID, int attrNID, int attrDID, boolean attrRP, boolean attrWP, boolean attrEP, boolean attrAP) throws XincoException {
+        
         setId(attrID);
         setXinco_core_user_id(attrUID);
         setXinco_core_group_id(attrGID);
@@ -89,13 +89,14 @@ public class XincoCoreACEServer extends XincoCoreACE {
         setWrite_permission(attrWP);
         setExecute_permission(attrEP);
         setAdmin_permission(attrAP);
-        setOwner(owner);
+        
     }
     
     //write to db
     public int write2DB(XincoDBManager DBM) throws XincoException {
-        String sql="";
+        
         try {
+            
             String xcuid = "";
             String xcgid = "";
             String xcnid = "";
@@ -105,7 +106,6 @@ public class XincoCoreACEServer extends XincoCoreACE {
             int wp = 0;
             int xp = 0;
             int ap = 0;
-            int ow = 0;
             
             //set values of nullable attributes
             if (getXinco_core_user_id() == 0) {
@@ -142,173 +142,136 @@ public class XincoCoreACEServer extends XincoCoreACE {
             if (isAdmin_permission()) {
                 ap = 1;
             }
-            if (isOwner()) {
-                ow = 1;
-            }
             
-            XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
+            XincoCoreAuditServer audit= new XincoCoreAuditServer();
+            
             if (getId() > 0) {
-                Statement stmt = DBM.getConnection().createStatement();
-                sql="UPDATE xinco_core_ace SET xinco_core_user_id=" + xcuid +
+                Statement stmt = DBM.con.createStatement();
+                audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+getId()},
+                        DBM,"window.acl",this.getChangerID());
+                stmt.executeUpdate("UPDATE xinco_core_ace SET xinco_core_user_id=" + xcuid +
                         ", xinco_core_group_id=" + xcgid + ", xinco_core_node_id=" + xcnid +
                         ", xinco_core_data_id=" + xcdid + ", read_permission=" + rp +
                         ", write_permission=" + wp + ", execute_permission=" + xp +
-                        ", admin_permission=" + ap +  " , owner=" + ow +" WHERE id=" + getId();
-                if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
-                    System.out.println(sql);
-                stmt.executeUpdate(sql);
+                        ", admin_permission=" + ap + " WHERE id=" + getId());
                 stmt.close();
-                audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+getId()},
-                        DBM,"window.acl",this.getChangerID());
             } else {
                 setId(DBM.getNewID("xinco_core_ace"));
                 
-                Statement stmt = DBM.getConnection().createStatement();
-                sql="INSERT INTO xinco_core_ace VALUES (" + getId() +
-                        ", " + xcuid + ", " + xcgid + ", " + xcnid +
-                        ", " + xcdid + ", " + rp + ", " + wp + ", " +
-                        xp + ", " + ap + ", " + ow +")";
-                if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
-                    System.out.println(sql);
-                stmt.executeUpdate(sql);
+                //System.out.println("New ACE");
+                Statement stmt = DBM.con.createStatement();
+                stmt.executeUpdate("INSERT INTO xinco_core_ace VALUES (" + getId() + ", " + xcuid + ", " + xcgid + ", " + xcnid + ", " + xcdid + ", " + rp + ", " + wp + ", " + xp + ", " + ap + ")");
                 stmt.close();
-                DBM.getConnection().commit();
-                audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+getId()},
-                        DBM,"audit.general.create",this.getChangerID());
             }
-            DBM.getConnection().commit();
+            
+            DBM.con.commit();
+            
         } catch (Exception e) {
-            e.printStackTrace();
             try {
-                DBM.getConnection().rollback();
+                DBM.con.rollback();
             } catch (Exception erollback) {
             }
-            if(DBM.getSetting("setting.enable.developermode").isBool_value())
-                e.printStackTrace();
             throw new XincoException();
         }
+        
         return getId();
+        
     }
     
     //remove from db
     public static int removeFromDB(XincoCoreACE attrCACE, XincoDBManager DBM, int userID) throws XincoException {
+        
         try {
-            Statement stmt = DBM.getConnection().createStatement();
-            XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
+            Statement stmt = DBM.con.createStatement();
+            XincoCoreAuditServer audit= new XincoCoreAuditServer();
             audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+attrCACE.getId()},
                     DBM,"audit.general.delete",userID);
             stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE id=" + attrCACE.getId());
             stmt.close();
-            DBM.getConnection().commit();
+            
+            DBM.con.commit();
+            
         } catch (Exception e) {
             try {
-                DBM.getConnection().rollback();
+                DBM.con.rollback();
             } catch (Exception erollback) {
             }
             e.printStackTrace();
             throw new XincoException();
         }
+        
         return 0;
+        
     }
     
     //create complete ACL for node or data
     public static Vector getXincoCoreACL(int attrID, String attrT, XincoDBManager DBM) {
+        
         Vector core_acl = new Vector();
+        
         try {
-            Statement stmt = DBM.getConnection().createStatement();
-            String sql="SELECT * FROM xinco_core_ace WHERE " + attrT +
-                    "=" + attrID + " ORDER BY xinco_core_user_id, xinco_core_group_id, xinco_core_node_id, xinco_core_data_id";
-            if(DBM.getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
-                System.out.println(sql);
-            ResultSet rs = stmt.executeQuery(sql);
+            Statement stmt = DBM.con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_ace WHERE " + attrT + "=" + attrID + " ORDER BY xinco_core_user_id, xinco_core_group_id, xinco_core_node_id, xinco_core_data_id");
+            
             while (rs.next()) {
-                core_acl.addElement(new XincoCoreACEServer(rs.getInt("id"),
-                        rs.getInt("xinco_core_user_id"), rs.getInt("xinco_core_group_id"),
-                        rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_data_id"),
-                        rs.getBoolean("read_permission"), rs.getBoolean("write_permission"),
-                        rs.getBoolean("execute_permission"), rs.getBoolean("admin_permission")
-                        ,rs.getBoolean("owner")));
+                core_acl.addElement(new XincoCoreACEServer(rs.getInt("id"), rs.getInt("xinco_core_user_id"), rs.getInt("xinco_core_group_id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_data_id"), rs.getBoolean("read_permission"), rs.getBoolean("write_permission"), rs.getBoolean("execute_permission"), rs.getBoolean("admin_permission")));
             }
+            
             stmt.close();
         } catch (Exception e) {
             core_acl.removeAllElements();
-            e.printStackTrace();
         }
+        
         return core_acl;
     }
     
     //check access by comparing user / user groups to ACL and return permissions
     public static XincoCoreACE checkAccess(XincoCoreUser attrU, Vector attrACL) {
+        
         int i = 0;
         int j = 0;
         boolean match_ace = false;
         XincoCoreACE core_ace = new XincoCoreACE();
-        try {
-            if(new XincoDBManager().getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
-                System.out.println("Checking access for user: "+attrU.getName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        try{
-            for (i=0;i<attrACL.size();i++) {
-                //reset match_ace
-                match_ace = false;
-                //check if user is mentioned in ACE
-                if (((XincoCoreACE)attrACL.elementAt(i)).getXinco_core_user_id() == attrU.getId()||
-                        ((XincoCoreACE)attrACL.elementAt(i)).isOwner()) {
-                    try {
-                        if(new XincoDBManager().getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
-                            System.out.println("User mentioned in ACE's ("+attrU.getName()+")");
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                    match_ace = true;
-                }
-                //check if group of user is mentioned in ACE
-                if (!match_ace) {
-                    for (j=0;j<attrU.getXinco_core_groups().size();j++) {
-                        if (((XincoCoreACE)attrACL.elementAt(i)).getXinco_core_group_id() ==
-                                ((XincoCoreGroup)attrU.getXinco_core_groups().elementAt(j)).getId()) {
-                            try {
-                                if(new XincoDBManager().getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
-                                    System.out.println("User's group mentioned in ACE's ("+attrU.getName()+"- "+
-                                            ((XincoCoreGroup)attrU.getXinco_core_groups().elementAt(j)).getDesignation()+")");
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
-                            match_ace = true;
-                            break;
-                        }
-                    }
-                }
-                //add to rights
-                if (match_ace) {
-                    //modify read permission
-                    if (!core_ace.isRead_permission()) {
-                        core_ace.setRead_permission(((XincoCoreACE)attrACL.elementAt(i)).isRead_permission());
-                    }
-                    //modify write permission
-                    if (!core_ace.isWrite_permission()) {
-                        core_ace.setWrite_permission(((XincoCoreACE)attrACL.elementAt(i)).isWrite_permission());
-                    }
-                    //modify execute permission
-                    if (!core_ace.isExecute_permission()) {
-                        core_ace.setExecute_permission(((XincoCoreACE)attrACL.elementAt(i)).isExecute_permission());
-                    }
-                    //modify admin permission
-                    if (!core_ace.isAdmin_permission()) {
-                        core_ace.setAdmin_permission(((XincoCoreACE)attrACL.elementAt(i)).isAdmin_permission());
+        
+        for (i=0;i<attrACL.size();i++) {
+            //reset match_ace
+            match_ace = false;
+            //check if user is mentioned in ACE
+            if (((XincoCoreACE)attrACL.elementAt(i)).getXinco_core_user_id() == attrU.getId()) { match_ace = true; }
+            //check if group of user is mentioned in ACE
+            if (!match_ace) {
+                for (j=0;j<attrU.getXinco_core_groups().size();j++) {
+                    if (((XincoCoreACE)attrACL.elementAt(i)).getXinco_core_group_id() == ((XincoCoreGroup)attrU.getXinco_core_groups().elementAt(j)).getId()) {
+                        match_ace = true;
+                        break;
                     }
                 }
             }
-        }catch(Exception e){
-            try {
-                if(new XincoDBManager().getXincoSettingServer().getSetting("setting.enable.developermode").isBool_value())
-                    e.printStackTrace();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            //add to rights
+            if (match_ace) {
+                //modify read permission
+                if (!core_ace.isRead_permission()) {
+                    core_ace.setRead_permission(((XincoCoreACE)attrACL.elementAt(i)).isRead_permission());
+                }
+                //modify write permission
+                if (!core_ace.isWrite_permission()) {
+                    core_ace.setWrite_permission(((XincoCoreACE)attrACL.elementAt(i)).isWrite_permission());
+                }
+                //modify execute permission
+                if (!core_ace.isExecute_permission()) {
+                    core_ace.setExecute_permission(((XincoCoreACE)attrACL.elementAt(i)).isExecute_permission());
+                }
+                //modify admin permission
+                if (!core_ace.isAdmin_permission()) {
+                    core_ace.setAdmin_permission(((XincoCoreACE)attrACL.elementAt(i)).isAdmin_permission());
+                }
             }
         }
         return core_ace;
     }
+
+    public void setUserId(int i) {
+        this.userID=i;
+    }
+    
 }
