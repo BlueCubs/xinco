@@ -1,5 +1,5 @@
 /**
- *Copyright 2006 blueCubs.com
+ *Copyright 2009 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -83,17 +83,17 @@ public class DataDialog extends javax.swing.JDialog {
             this.designation.selectAll();
             DefaultListModel dlm = new DefaultListModel();
             dlm.removeAllElements();
-            for (i=0;i<explorer.getSession().server_languages.size();i++) {
-                text = ((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getSign() + ")";
+            for (i=0;i<explorer.getSession().getServerLanguages().size();i++) {
+                text = ((XincoCoreLanguage)explorer.getSession().getServerLanguages().elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage)explorer.getSession().getServerLanguages().elementAt(i)).getSign() + ")";
                 dlm.addElement(text);
-                if (((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getId() == ((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_language().getId()) {
+                if (((XincoCoreLanguage)explorer.getSession().getServerLanguages().elementAt(i)).getId() == ((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_language().getId()) {
                     selection=i;
                 }
                 if (((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId() == 0) {
-                    if (((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
+                    if (((XincoCoreLanguage)explorer.getSession().getServerLanguages().elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
                         selection = i;
                     }
-                    if (((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(i)).getId() == 1) {
+                    if (((XincoCoreLanguage)explorer.getSession().getServerLanguages().elementAt(i)).getId() == 1) {
                         alt_selection = i;
                     }
                 }
@@ -251,7 +251,7 @@ public class DataDialog extends javax.swing.JDialog {
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
 //set altered values
         ((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).setDesignation(this.designation.getText());
-        ((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).setXinco_core_language(((XincoCoreLanguage)explorer.getSession().server_languages.elementAt(this.language.getSelectedIndex())));
+        ((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).setXinco_core_language(((XincoCoreLanguage)explorer.getSession().getServerLanguages().elementAt(this.language.getSelectedIndex())));
         explorer.set_global_dialog_return_value(1);
         setVisible(false);
     }//GEN-LAST:event_saveActionPerformed

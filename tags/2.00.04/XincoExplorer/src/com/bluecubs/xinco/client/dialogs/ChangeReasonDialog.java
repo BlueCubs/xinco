@@ -1,5 +1,5 @@
 /**
- *Copyright 2006 blueCubs.com
+ *Copyright 2009 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
-        this.user=explorer.getSession().user;
+        this.user=explorer.getSession().getUser();
         this.explorer=explorer;
         setTitle(explorer.getResourceBundle().getString("window.changereason.title"));
         this.reasonLabel.setText(explorer.getResourceBundle().getString("window.changereason.label"));

@@ -1,5 +1,5 @@
 /**
- *Copyright 2006 blueCubs.com
+ *Copyright 2009 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@
 
 package com.bluecubs.xinco.client.dialogs;
 
-import com.bluecubs.xinco.client.XincoClientConnectionProfile;
+import com.bluecubs.xinco.client.object.XincoClientConnectionProfile;
 import com.bluecubs.xinco.client.XincoExplorer;
 import java.util.Vector;
 import javax.swing.DefaultListModel; 
@@ -271,10 +271,10 @@ public class ConnectionDialog extends javax.swing.JDialog {
     
     private void connectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectActionPerformed
         //save session info
-        explorer.getSession().service_endpoint = this.endpoint.getText();
-        explorer.getSession().user.setUsername(this.username.getText());
-        explorer.getSession().user.setUserpassword(new String(this.password.getPassword()));
-        explorer.getSession().status = 1;
+        explorer.getSession().setServiceEndpoint(this.endpoint.getText());
+        explorer.getSession().getUser().setUsername(this.username.getText());
+        explorer.getSession().getUser().setUserpassword(new String(this.password.getPassword()));
+        explorer.getSession().setStatus(1);
         //update profile
         if (this.profileList.getSelectedIndex() >= 0) {
             ((XincoClientConnectionProfile)((Vector)explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).profile_name = this.profileName.getText();
