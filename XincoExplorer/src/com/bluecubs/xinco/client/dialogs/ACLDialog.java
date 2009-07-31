@@ -1,5 +1,5 @@
 /**
- *Copyright 2006 blueCubs.com
+ *Copyright 2009 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -89,9 +89,9 @@ public class ACLDialog extends javax.swing.JDialog {
      * Loads the ACL group list
      */
     protected void loadACLGroupListACL() {
-        String[] list = new String[this.explorer.getSession().server_groups.size()];
-        for (int i=0;i<this.explorer.getSession().server_groups.size();i++) {
-            list[i]=new String(((XincoCoreGroup)this.explorer.getSession().server_groups.elementAt(i)).getDesignation());
+        String[] list = new String[this.explorer.getSession().getServerGroups().size()];
+        for (int i=0;i<this.explorer.getSession().getServerGroups().size();i++) {
+            list[i]=new String(((XincoCoreGroup)this.explorer.getSession().getServerGroups().elementAt(i)).getDesignation());
         }
         setACLGroupModel(list);
     }
@@ -122,10 +122,10 @@ public class ACLDialog extends javax.swing.JDialog {
                         "=" + temp_ace.getXinco_core_user_id();
             }
             if (temp_ace.getXinco_core_group_id() > 0) {
-                for (j=0;j<this.explorer.getSession().server_groups.size();j++) {
-                    if (((XincoCoreGroup)this.explorer.getSession().server_groups.elementAt(j)).getId() == temp_ace.getXinco_core_group_id()) {
+                for (j=0;j<this.explorer.getSession().getServerGroups().size();j++) {
+                    if (((XincoCoreGroup)this.explorer.getSession().getServerGroups().elementAt(j)).getId() == temp_ace.getXinco_core_group_id()) {
                         temp_string = this.explorer.getResourceBundle().getString("general.group") +
-                                ": " + ((XincoCoreGroup)this.explorer.getSession().server_groups.elementAt(j)).getDesignation();
+                                ": " + ((XincoCoreGroup)this.explorer.getSession().getServerGroups().elementAt(j)).getDesignation();
                         break;
                     }
                 }
@@ -360,7 +360,7 @@ public class ACLDialog extends javax.swing.JDialog {
                 if (temp_ace.getXinco_core_user_id() > 0) {
                     throw new XincoException(this.explorer.getResourceBundle().getString("window.acl.cannotremoveowner"));
                 }
-                if (!this.explorer.getSession().xinco.removeXincoCoreACE(temp_ace, this.explorer.getSession().user)) {
+                if (!this.explorer.getSession().getXinco().removeXincoCoreACE(temp_ace, this.explorer.getSession().getUser())) {
                     throw new XincoException(this.explorer.getResourceBundle().getString("error.noadminpermission"));
                 }
                 //remove ACE from ACL and reload
@@ -389,13 +389,13 @@ public class ACLDialog extends javax.swing.JDialog {
                 }
                 //check if an ACE already exists for selected group
                 for (i=0;i<temp_acl.size();i++) {
-                    if (((XincoCoreACE)temp_acl.elementAt(i)).getXinco_core_group_id() == ((XincoCoreGroup)this.explorer.getSession().server_groups.elementAt(this.groupList.getSelectedIndex())).getId()) {
+                    if (((XincoCoreACE)temp_acl.elementAt(i)).getXinco_core_group_id() == ((XincoCoreGroup)this.explorer.getSession().getServerGroups().elementAt(this.groupList.getSelectedIndex())).getId()) {
                         throw new XincoException(this.explorer.getResourceBundle().getString("window.acl.groupexists"));
                     }
                 }
                 //create new ACE
                 XincoCoreACE newace = new XincoCoreACE();
-                newace.setXinco_core_group_id(((XincoCoreGroup)this.explorer.getSession().server_groups.elementAt(this.groupList.getSelectedIndex())).getId());
+                newace.setXinco_core_group_id(((XincoCoreGroup)this.explorer.getSession().getServerGroups().elementAt(this.groupList.getSelectedIndex())).getId());
                 if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
                     newace.setXinco_core_node_id(((XincoCoreNode)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
                 }
@@ -406,7 +406,7 @@ public class ACLDialog extends javax.swing.JDialog {
                 newace.setWrite_permission(this.Write.isSelected());
                 newace.setExecute_permission(this.Execute.isSelected());
                 newace.setAdmin_permission(this.Admin.isSelected());
-                if ((newace = this.explorer.getSession().xinco.setXincoCoreACE(newace, this.explorer.getSession().user)) == null) {
+                if ((newace = this.explorer.getSession().getXinco().setXincoCoreACE(newace,this.explorer.getSession().getUser())) == null) {
                     throw new XincoException(this.explorer.getResourceBundle().getString("error.noadminpermission"));
                 }
                 //add ACE to ACL and reload

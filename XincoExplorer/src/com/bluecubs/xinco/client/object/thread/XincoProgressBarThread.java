@@ -1,5 +1,5 @@
 /**
- *Copyright 2007 blueCubs.com
+ *Copyright 2009 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -37,8 +37,9 @@
  * Created on January 22, 2007, 3:31 PM
  */
 
-package com.bluecubs.xinco.client.object;
+package com.bluecubs.xinco.client.object.thread;
 
+import com.bluecubs.xinco.client.object.*;
 import com.bluecubs.xinco.client.XincoExplorer;
 
 /**

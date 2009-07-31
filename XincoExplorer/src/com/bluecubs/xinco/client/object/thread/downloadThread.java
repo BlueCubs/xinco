@@ -1,5 +1,5 @@
 /**
- *Copyright 2007 blueCubs.com
+ *Copyright 2009 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@
  * Created on January 9, 2007, 3:52 PM
  */
 
-package com.bluecubs.xinco.client.object;
+package com.bluecubs.xinco.client.object.thread;
 
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.core.XincoCoreNode;
@@ -50,18 +50,17 @@ import javax.swing.tree.TreePath;
 
 /**
  *
- * @author Javier A. Ortiz
+ * @author Alexander Manes
  */
-public class importThread extends Thread {
+public class downloadThread extends Thread {
     private XincoExplorer explorer;
     @Override
     public void run() {
         if(this.explorer!=null){
             ResourceBundle xerb = this.explorer.getResourceBundle();
-            //import data structure
+            //download data structure
             if (explorer.getSession().getCurrentTreeNodeSelection() != null) {
                 if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
-                    JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.info"), xerb.getString("window.massiveimport"), JOptionPane.INFORMATION_MESSAGE);
                     try {
                         JFileChooser fc = new JFileChooser();
 
@@ -74,22 +73,17 @@ public class importThread extends Thread {
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
                         }
                         explorer.setCurrentPath(fc.getSelectedFile().toString());
-                        explorer.progressBar.setTitle(xerb.getString("window.massiveimport.progress"));
+                        explorer.progressBar.setTitle(xerb.getString("datawizard.filedownloadinfo"));
                         explorer.progressBar.show();
-                        // update transaction info
-                        JOptionPane.showMessageDialog(explorer,
-                                                      xerb.getString("window.massiveimport.progress"),
-                                                      xerb.getString("window.massiveimport"),
-                                                      JOptionPane.INFORMATION_MESSAGE);
-                        explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.progress"));
-                        explorer.importContentOfFolder((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject(),
+                        explorer.jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.filedownloadinfo"));
+                        explorer.downloadContentOfNode((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject(),
                                                        new File(explorer.current_path));
                         // select current path
                         explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
                         // update transaction info
-                        explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.importsuccess"));
+                        explorer.jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.filedownloadsuccess"));
                     } catch (Exception ie) {
-                        JOptionPane.showMessageDialog(explorer, xerb.getString("window.massiveimport.importfailed") +
+                        JOptionPane.showMessageDialog(explorer, xerb.getString("datawizard.filedownloadfailed") +
                                 " " + xerb.getString("general.reason") + ": " + ie.toString(), xerb.getString("general.error"),
                                 JOptionPane.WARNING_MESSAGE);
                         explorer.jLabelInternalFrameInformationText.setText("");
