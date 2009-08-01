@@ -1,5 +1,5 @@
 /**
- *Copyright 2006 blueCubs.com
+ *Copyright 2009 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -29,18 +29,16 @@
  * Modifications:
  *
  * Who?             When?             What?
- *
+ * 
  *
  *************************************************************
  * XincoMenuPopUpRepository.java
  *
  * Created on December 11, 2006, 2:19 PM
  */
-
 package com.bluecubs.xinco.client.object.menu;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.client.object.*;
 import java.awt.Component;
 import java.util.ResourceBundle;
 import javax.swing.JMenuItem;
@@ -48,55 +46,60 @@ import javax.swing.JPopupMenu;
 
 /**
  *
- * @author ortizbj
+ * @author Javier A. Ortiz
  */
-public class XincoPopUpMenuRepository extends JPopupMenu{
+public class XincoPopUpMenuRepository extends JPopupMenu {
+
     public JMenuItem tmi = null;
-    public XincoExplorer explorer=null;
-    public JMenuItem AddData=null,AddDataStructure=null,
-            ViewURL=null,EmailContact=null,
-            EditFolderData=null,CheckoutData=null,
-            UndoCheckoutData=null,CheckinData=null,
-            PublishData=null,LockData=null,
-            DownloadRevision=null,Refresh=null,
-            AddFolder=null,ViewEditAddAttributes=null,
-            EditFolderDataACL=null,MoveFolderData=null,
-            InsertFolderData=null,ViewData=null,
-            CommentData=null;
-    private JMenuItem [] items,copy;
+    public XincoExplorer explorer = null;
+    public JMenuItem AddData = null, AddDataStructure = null,
+            ViewURL = null, EmailContact = null,
+            EditFolderData = null, CheckoutData = null,
+            UndoCheckoutData = null, CheckinData = null,
+            PublishData = null, LockData = null,
+            DownloadRevision = null, Refresh = null,
+            AddFolder = null, ViewEditAddAttributes = null,
+            EditFolderDataACL = null, MoveFolderData = null,
+            InsertFolderData = null, ViewData = null,
+            CommentData = null;
+    private JMenuItem[] items, copy;
     public ResourceBundle xerb;
-    
+
     /**
      * Creates a new instance of XincoMenuPopUpRepository
+     * @param explorer
      */
     public XincoPopUpMenuRepository(final XincoExplorer explorer) {
-        this.explorer=explorer;
+        this.explorer = explorer;
         addMouseListener(this.explorer);
-        xerb=this.explorer.getResourceBundle();
-        int count =0;
-        items=new JMenuItem[this.explorer.getActionSize()];
-        copy=new JMenuItem[this.explorer.getActionSize()];
+        xerb = this.explorer.getResourceBundle();
+        int count = 0;
+        items = new JMenuItem[this.explorer.getActionSize()];
+        copy = new JMenuItem[this.explorer.getActionSize()];
         //Make a copy & paste of the menus in XincoMenuRepository class!
-        this.copy=((XincoMenuRepository)this.explorer.getJMenuRepository()).getItems();
-        Component [] components=((XincoMenuRepository)this.explorer.getJMenuRepository()).getMenuComponents();
-        for(int i=0;i<components.length;i++) {
-            if(components[i].getClass()==Separator.class)
+        this.copy = ((XincoMenuRepository) this.explorer.getJMenuRepository()).getItems();
+        Component[] components = ((XincoMenuRepository) this.explorer.getJMenuRepository()).getMenuComponents();
+        for (int i = 0; i < components.length; i++) {
+            if (components[i].getClass() == Separator.class) {
                 add(components[i]);
-            else{
-                items[count]=new JMenuItem(copy[count].getAction());
+            } else {
+                items[count] = new JMenuItem(copy[count].getAction());
                 add(items[count]);
                 count++;
             }
         }
         resetItems();
     }
-    public void resetItems(){
-        for(int i=1;i<this.items.length;i++){
-            if(this.items[i]!=null)
-                this.itemSetEnable(i,false);
+
+    public void resetItems() {
+        for (int i = 1; i < this.items.length; i++) {
+            if (this.items[i] != null) {
+                this.itemSetEnable(i, false);
+            }
         }
     }
-    public void itemSetEnable(int number,boolean enable){
+
+    public void itemSetEnable(int number, boolean enable) {
         items[number].setEnabled(enable);
     }
 }

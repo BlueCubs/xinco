@@ -1,5 +1,5 @@
 /**
- *Copyright 2004 blueCubs.com
+ *Copyright 2009 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -42,11 +42,11 @@ import java.sql.*;
 import com.bluecubs.xinco.core.*;
 
 public class XincoCoreGroupServer extends XincoCoreGroup {
-    private XincoCoreAuditTrail audit= new XincoCoreAuditTrail();
+    
     //create group object for data structures
     public XincoCoreGroupServer(int attrID, XincoDBManager DBM) throws XincoException {
         try {
-            Statement stmt = DBM.getConnection().createStatement();
+            Statement stmt = DBM.con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_group WHERE id=" + attrID);
             //throw exception if no result found
             int RowCount = 0;
@@ -76,29 +76,23 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
     public int write2DB(XincoDBManager DBM) throws XincoException{
         try {
             Statement stmt;
-            boolean isNew=false;
             if (getId() > 0) {
+                XincoCoreAuditServer audit= new XincoCoreAuditServer();
                 audit.updateAuditTrail("xinco_core_group",new String [] {"id ="+getId()},
                         DBM,"audit.coregroup.change",this.getChangerID());
-                stmt = DBM.getConnection().createStatement();
+                stmt = DBM.con.createStatement();
                 stmt.executeUpdate("UPDATE xinco_core_group SET designation='" + getDesignation().replaceAll("'","\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
                 stmt.close();
             } else {
                 setId(DBM.getNewID("xinco_core_group"));
-                stmt = DBM.getConnection().createStatement();
+                stmt = DBM.con.createStatement();
                 stmt.executeUpdate("INSERT INTO xinco_core_group VALUES (" + getId() + ", '" + getDesignation().replaceAll("'","\\\\'") + "', " + getStatus_number() + ")");
                 stmt.close();
-                isNew=true;
             }
-            DBM.getConnection().commit();
-            if(isNew){
-                isNew=false;
-                audit.updateAuditTrail("xinco_core_group",new String [] {"id ="+getId()},
-                        DBM,"audit.general.created",this.getChangerID());
-            }
+            DBM.con.commit();
         } catch (Exception e) {
             try {
-                DBM.getConnection().rollback();
+                DBM.con.rollback();
             } catch (Exception erollback) {
             }
             throw new XincoException();
@@ -110,7 +104,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
     public static Vector getXincoCoreGroups(XincoDBManager DBM) {
         Vector coreGroups = new Vector();
         try {
-            Statement stmt = DBM.getConnection().createStatement();
+            Statement stmt = DBM.con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_group ORDER BY designation");
             while (rs.next()) {
                 coreGroups.addElement(new XincoCoreGroupServer(rs.getInt("id"), rs.getString("designation"), rs.getInt("status_number")));
@@ -120,23 +114,5 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
             coreGroups.removeAllElements();
         }
         return coreGroups;
-    }
-    
-    public void deleteFromDB(XincoDBManager DBM) throws XincoException{
-        try {
-            audit.updateAuditTrail("xinco_core_group",new String [] {"id ="+getId()},
-                    DBM,"audit.coregroup.change",this.getChangerID());
-            Statement stmt = DBM.getConnection().createStatement();
-            stmt.executeUpdate("delete from xinco_core_group where id ="+getId());
-            stmt.close();
-            DBM.getConnection().commit();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            try {
-                DBM.getConnection().rollback();
-            } catch (Exception erollback) {
-            }
-            throw new XincoException();
-        }
     }
 }

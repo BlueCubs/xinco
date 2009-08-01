@@ -5,6 +5,7 @@
 <project name="xinco" default="default" basedir=".">
     <description>Builds, tests, and runs the project xinco.</description>
     <import file="nbproject/build-impl.xml"/>
+    <property file="build.ant.properties"/>
     <!--
 
     There exist several targets which are by default empty and which can be 
@@ -63,20 +64,10 @@
     nbproject/build-impl.xml file. 
     -->
     <target name="-pre-dist">
-        <signjar jar="${build.dir}/web/client/activation.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/axis.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/commons-discovery-0.2.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/commons-logging-1.0.4.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/jaxrpc.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/mail.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/napkinlaf.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/saaj.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/substance.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/swing-layout-1.0.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/wsdl4j-1.5.1.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/xercesImpl.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/Xinco.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/XincoExplorer.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
-        <signjar jar="${build.dir}/web/client/xmlParserAPIs.jar" alias="blueCubs" storepass="blueCubs" keystore=".blueCubsKeystore"/>
+        <signjar alias="${keystore.alias}" keystore="${keystore.file}" storepass="${keystore.password}">
+            <fileset dir="${build.dir}/web/client">
+                <include name="**/*.jar"/>
+            </fileset>
+        </signjar>
     </target>
 </project>

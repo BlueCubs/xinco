@@ -2,14 +2,7 @@
 <project xmlns="http://www.netbeans.org/ns/project/1">
     <type>org.netbeans.modules.web.project</type>
     <configuration>
-        <buildExtensions xmlns="http://www.netbeans.org/ns/ant-build-extender/1">
-            <extension file="jaxws-build.xml" id="jaxws">
-                <dependency dependsOn="wsgen-service-compile" target="-post-compile"/>
-            </extension>
-            <extension file="rest-build.xml" id="rest.1">
-                <dependency dependsOn="-rest-post-compile" target="-post-compile"/>
-            </extension>
-        </buildExtensions>
+        <buildExtensions xmlns="http://www.netbeans.org/ns/ant-build-extender/1"/>
         <data xmlns="http://www.netbeans.org/ns/web-project/3">
             <name>xinco</name>
             <minimum-ant-version>1.6</minimum-ant-version>
@@ -60,10 +53,6 @@
                 </library>
                 <library>
                     <file>${file.reference.log4j-1.2.15.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library>
-                    <file>${file.reference.log4j-1.2.8.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library>
@@ -120,14 +109,6 @@
                 </library>
                 <library>
                     <file>${reference.XincoExplorer.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library>
-                    <file>${libs.restapi.classpath}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library>
-                    <file>${libs.jaxws21.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
