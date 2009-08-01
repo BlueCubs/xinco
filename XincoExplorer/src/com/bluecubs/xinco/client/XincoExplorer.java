@@ -1,13 +1,13 @@
 /**
- *Copyright 2005 blueCubs.com
+ *Copyright 2009 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
+ *you may not use this file except cin compliance with the License.
  *You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
+ *Unless required by applicable law or agreed to cin writing, software
  *distributed under the License is distributed on an "AS IS" BASIS,
  *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *See the License for the specific language governing permissions and
@@ -15,7 +15,7 @@
  *
  *************************************************************
  * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
+ * to the community cin exchange for free software!
  * More information on: http://www.bluecubs.org
  *************************************************************
  *
@@ -31,34 +31,37 @@
  * Who?             When?             What?
  * Javier Ortiz     Aug-Dec 2006      1. Remove dialogs and windows from main code
  *                                    2. Incorporate 21 CFR regulatory features
- * Javier Ortiz     Jan-Dec 2007      1. Add new audit data feature
+ *
  *************************************************************
  */
 package com.bluecubs.xinco.client;
 
+import com.bluecubs.xinco.client.object.WindowClosingAdapter;
+import com.bluecubs.xinco.client.object.XincoTreeCellRenderer;
+import com.bluecubs.xinco.client.object.XincoClientConnectionProfile;
+import com.bluecubs.xinco.client.object.XincoClientSession;
+import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.add.XincoAddAttribute;
-import com.bluecubs.xinco.add.holders.XincoAddAttributeHolder;
-import com.bluecubs.xinco.client.dialog.ACLDialog;
-import com.bluecubs.xinco.client.dialog.AddAttributeText;
-import com.bluecubs.xinco.client.dialog.AddAttributeUniversalDialog;
-import com.bluecubs.xinco.client.dialog.ArchiveDialog;
-import com.bluecubs.xinco.client.dialog.ConnectionDialog;
-import com.bluecubs.xinco.client.dialog.DataDialog;
-import com.bluecubs.xinco.client.dialog.DataFolderDialog;
-import com.bluecubs.xinco.client.dialog.DataTypeDialog;
-import com.bluecubs.xinco.client.dialog.LockDialog;
-import com.bluecubs.xinco.client.dialog.LogDialog;
-import com.bluecubs.xinco.client.dialog.SearchDialog;
-import com.bluecubs.xinco.client.dialog.UserDialog;
-import com.bluecubs.xinco.client.object.timer.XincoActivityTimer;
+import com.bluecubs.xinco.client.dialogs.ACLDialog;
+import com.bluecubs.xinco.client.dialogs.AddAttributeText;
+import com.bluecubs.xinco.client.dialogs.AddAttributeUniversalDialog;
+import com.bluecubs.xinco.client.dialogs.ArchiveDialog;
+import com.bluecubs.xinco.client.dialogs.ConnectionDialog;
+import com.bluecubs.xinco.client.dialogs.DataDialog;
+import com.bluecubs.xinco.client.dialogs.DataFolderDialog;
+import com.bluecubs.xinco.client.dialogs.DataTypeDialog;
+import com.bluecubs.xinco.client.dialogs.LockDialog;
+import com.bluecubs.xinco.client.dialogs.LogDialog;
+import com.bluecubs.xinco.client.dialogs.SearchDialog;
+import com.bluecubs.xinco.client.dialogs.UserDialog;
 import com.bluecubs.xinco.client.object.XincoJTree;
+import com.bluecubs.xinco.client.object.XincoRepositoryActionHandler;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.client.object.menu.XincoMenuRepository;
 import com.bluecubs.xinco.client.object.menu.XincoPopUpMenuRepository;
 import com.bluecubs.xinco.client.object.thread.XincoProgressBarThread;
-import com.bluecubs.xinco.client.object.XincoRepositoryActionHandler;
-import com.bluecubs.xinco.client.object.dragNdrop.XincoTreeCellRenderer;
-import com.bluecubs.xinco.client.object.XincoWindowClosingAdapter;
-import com.bluecubs.xinco.client.pane.XincoAuditPanel;
+import com.bluecubs.xinco.client.object.timer.XincoActivityTimer;
+import com.bluecubs.xinco.core.OPCode;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataType;
 import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
@@ -82,12 +85,13 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.URL;
-import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.CheckedOutputStream;
@@ -104,9 +108,7 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
@@ -127,11 +129,10 @@ import org.apache.axis.utils.ByteArrayOutputStream;
 /**
  * XincoExplorer
  */
-public class XincoExplorer extends JFrame implements ActionListener, MouseListener {
-    //language resources, XincoExplorerResourceBundle
+public class XincoExplorer extends JFrame implements ActionListener, MouseListener{
 
-    private ResourceBundle xerb = null,  xesettings = null;
-    private XincoClientSetting settings = null;
+    //language resources, XincoExplorerResourceBundle
+    private ResourceBundle xerb = null;
     private javax.swing.JMenuBar jJMenuBar = null;
     private javax.swing.JMenu jMenuConnection = null;
     private javax.swing.JMenu jMenuAbout = null;
@@ -146,7 +147,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     private javax.swing.JScrollPane jScrollPaneRepositoryTable = null;
     public XincoJTree jTreeRepository = null;
     private javax.swing.JTable jTableRepository = null;
-    private javax.swing.JTable jTableAudit = null;
     private javax.swing.JMenu jMenuSearch = null;
     private javax.swing.JMenuItem jMenuItemSearchRepository = null;
     private javax.swing.JMenu jMenuView = null;
@@ -157,7 +157,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemViewStyleSubstance = null;
     private javax.swing.ButtonGroup bgwindowstyle;
     //client version
-
     private XincoVersion xincoClientVersion = null;
     //session object
     private XincoClientSession xincoClientSession = null;
@@ -168,81 +167,72 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     public String current_path = "";
     private String current_fullpath = "";
     //previous path and filename
-
     private String previous_filename = "";
     private String previous_path = "";
-    public String previous_fullpath = "";
+    String previous_fullpath = "";
     //global dialog return value
-
     private int global_dialog_return_value = 0;
     private javax.swing.JMenuItem jMenuItemConnectionConnect = null;
-    private javax.swing.JDialog jDialogConnection = null;
-    private javax.swing.JDialog jDialogFolder = null;
-    private javax.swing.JDialog jDialogACL = null;
-    private javax.swing.JDialog jDialogDataType = null;
-    private javax.swing.JDialog jDialogRevision = null;
+    private AbstractDialog AbstractDialogFolder = null;
+    private AbstractDialog AbstractDialogACL = null;
+    private AbstractDialog AbstractDialogDataType = null;
+    private JDialog jDialogRevision = null;
     private javax.swing.JPanel jContentPaneDialogRevision = null;
     private javax.swing.JLabel jLabelDialogRevision = null;
     private javax.swing.JScrollPane jScrollPaneDialogRevision = null;
     private javax.swing.JList jListDialogRevision = null;
     private javax.swing.JButton jButtonDialogRevisionContinue = null;
     private javax.swing.JButton jButtonDialogRevisionCancel = null;
-    private javax.swing.JDialog jDialogData = null;
-    private javax.swing.JDialog jDialogArchive = null;
-    private javax.swing.JDialog jDialogLog = null;
-    private javax.swing.JDialog jDialogAddAttributesUniversal = null;
+    private AbstractDialog AbstractDialogData = null;
+    private AbstractDialog AbstractDialogArchive = null;
+    private AbstractDialog AbstractDialogLog = null;
+    private AbstractDialog AbstractDialogAddAttributesUniversal = null;
     private javax.swing.JMenu jMenuPreferences = null;
     private javax.swing.JMenuItem jMenuItemPreferencesEditUser = null;
-    private javax.swing.JDialog jDialogUser = null;
-    private AddAttributeText jDialogAddAttributesText = null;
+    private javax.swing.JPanel jContentPaneDialogUser = null;
+    private AbstractDialog AbstractDialogAddAttributesText = null;
     private javax.swing.JPanel jContentPaneDialogAddAttributesText = null;
     private javax.swing.JTextArea jTextAreaDialogAddAttributesText = null;
     private javax.swing.JButton jButtonDialogAddAttributesTextSave = null;
     private javax.swing.JButton jButtonDialogAddAttributesTextCancel = null;
     private javax.swing.JScrollPane jScrollPaneDialogAddAttributesText = null;
-    private javax.swing.JDialog jDialogTransactionInfo = null;
+    private javax.swing.JPanel jContentPaneDialogTransactionInfo = null;
     private javax.swing.JLabel jLabelDialogTransactionInfoText = null;
     private javax.swing.JPanel jContentPaneInformation = null;
     public javax.swing.JTextArea jLabelInternalFrameInformationText = null;
-    private JPopupMenu jPopupMenuRepository = null;
+    private XincoPopUpMenuRepository jPopupMenuRepository = null;
     private JPanel jContentPaneDialogLocale = null;
-    private JDialog jDialogLocale = null;
+    private JDialog JDialogLocale = null;
     private JScrollPane jScrollPaneDialogLocale = null;
     private JList jListDialogLocale = null;
     private JButton jButtonDialogLocaleOk = null;
-    private XincoProgressBarThread progressBar;
+    public XincoProgressBarThread progressBar;
     private ConnectionDialog dialogConnection = null;
     private UserDialog userDialog = null;
     private JInternalFrame jInternalFrameInformation = null;
     private JMenuItem jMenuItemConnectionExit = null;
-    private String status_string_1 = "",  status_string_2 = "";
+    private String status_string_1 = "", status_string_2 = "";
     private XincoCoreUser temp;
     private final XincoCoreUser newuser = new XincoCoreUser();
-    private loginThread loginT = null;
-    private refreshThread rThread = null;
+    private loginThread loginT;
     private int wizard_type;
-    private XincoMutableTreeNode newnode,  previousnode;
+    private XincoMutableTreeNode newnode, previousnode;
     private byte[] byte_array;
     private XincoCoreData xdata;
     private XincoCoreLog newlog;
+    private InputStream in = null;
     private final XincoExplorer explorer = this;
     private SearchDialog search;
-    private Process process = null;
-    private XincoAuditPanel xincoAuditPanel = null;
     private XincoRepositoryActionHandler actionHandler = null;
     //Size of menu actions
     private int actionSize = 19;
-    private Vector settingsVector = null;
-    private XincoAddAttributeHolder[] xaah = null;
-    //Status of the explorer: lock = true - idle time limit exceeded, user must log in again to continue use
+    private XincoExplorer.refreshThread rThread;
+    private Vector<AbstractDialog> dialogs = null;
+    private LockDialog lockDialog = null;
+    //Status of the explorer: lock = true - idle time limit exceeded, user must log cin again to continue use
     //lock = false - work normally
     private boolean lock = false;
-    private LockDialog lockDialog = null;
     private XincoActivityTimer xat = null;
-    private JDialog[] dialogs = null;
-    //Vector of XincoCoreData to be indexed
-
-    private Vector filesToBeIndexed = null;
 
     /**
      * This is the default constructor
@@ -252,35 +242,47 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         try {
             setIconImage((new ImageIcon(XincoExplorer.class.getResource("blueCubsIcon.gif"))).getImage());
         } catch (Exception icone) {
+            Logger.getLogger(XincoExplorer.class.getName()).log(Level.SEVERE, null, icone);
         }
         //load config
         loadConfig();
         saveConfig();
         //Apply LAF to all screens including de Locale Dialog
-        switchPLAF((String) xincoClientConfig.elementAt(1));
+        try {
+            switchPLAF((String) xincoClientConfig.elementAt(1));
+        } catch (Throwable e) {
+            createDefaultConfiguration(true);
+            switchPLAF((String) xincoClientConfig.elementAt(1));
+        }
         //choose language
         getJDialogLocale().setVisible(true);
-        //load language data
         Locale loc = null;
         try {
-            if (((Locale) xincoClientConfig.elementAt(2)).toString().indexOf("_") == -1) {
-                loc = new Locale(((Locale) xincoClientConfig.elementAt(2)).toString());
-            } else {
-                loc = new Locale(((Locale) xincoClientConfig.elementAt(2)).toString().substring(0, ((Locale) xincoClientConfig.elementAt(2)).toString().indexOf("_")),
-                        ((Locale) xincoClientConfig.elementAt(2)).toString().substring(((Locale) xincoClientConfig.elementAt(2)).toString().indexOf("_") + 1,
-                        ((Locale) xincoClientConfig.elementAt(2)).toString().length()));
+            String list = ((Locale) xincoClientConfig.elementAt(2)).toString();
+            String[] locales;
+            locales = list.split("_");
+            switch (locales.length) {
+                case 1:
+                    loc = new Locale(locales[0]);
+                    break;
+                case 2:
+                    loc = new Locale(locales[0], locales[1]);
+                    break;
+                case 3:
+                    loc = new Locale(locales[0], locales[1], locales[2]);
+                    break;
+                default:
+                    loc = Locale.getDefault();
             }
         } catch (Exception e) {
             loc = Locale.getDefault();
         }
         xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
-        setLocale(xerb.getLocale());
-        //get Xinco Explorer settings
-        xesettings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
+        xerb.getLocale();
         progressBar = new XincoProgressBarThread(this);
         initialize();
         //Windows-Listener
-        addWindowListener(new XincoWindowClosingAdapter(true));
+        addWindowListener(new WindowClosingAdapter(true));
     }
 
     /**
@@ -307,21 +309,21 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     /**
      * This method initializes jPopupMenuRepository
      *
-     * @return javax.swing.JPopupMenu
+     * @return XincoPopUpMenuRepository
      */
-    public JPopupMenu getJPopupMenuRepository() {
+    public XincoPopUpMenuRepository getJPopupMenuRepository() {
         if (jPopupMenuRepository == null) {
             jPopupMenuRepository = new XincoPopUpMenuRepository(this);
         }
         jPopupMenuRepository.setEnabled(jMenuRepository.isEnabled());
         return jPopupMenuRepository;
     }
+
     /**
      * This method initializes jContentPaneDialogLocale
      *
      * @return javax.swing.JPanel
      */
-
     private JPanel getJContentPaneDialogLocale() {
         if (jContentPaneDialogLocale == null) {
             jContentPaneDialogLocale = new JPanel();
@@ -331,23 +333,22 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         return jContentPaneDialogLocale;
     }
-    /**
-     * This method initializes jDialogLocale
-     *
-     * @return javax.swing.JDialog
-     */
 
+    /**
+     * This method initializes AbstractDialogLocale
+     *
+     * @return AbstractDialog
+     */
     private JDialog getJDialogLocale() {
-        if (jDialogLocale == null) {
-            jDialogLocale = new JDialog();
-            jDialogLocale.setContentPane(getJContentPaneDialogLocale());
-            jDialogLocale.setTitle("XincoExplorer");
-            jDialogLocale.setBounds(400, 400, 300, 200);
-            jDialogLocale.setResizable(false);
-            jDialogLocale.setModal(true);
-            jDialogLocale.setAlwaysOnTop(true);
-            jDialogLocale.getRootPane().setDefaultButton(getJButtonDialogLocaleOk());
-            this.addDialog(jDialogLocale);
+        if (JDialogLocale == null) {
+            JDialogLocale = new JDialog();
+            JDialogLocale.setContentPane(getJContentPaneDialogLocale());
+            JDialogLocale.setTitle("XincoExplorer");
+            JDialogLocale.setBounds(400, 400, 300, 200);
+            JDialogLocale.setResizable(false);
+            JDialogLocale.setModal(true);
+            JDialogLocale.setAlwaysOnTop(true);
+            JDialogLocale.getRootPane().setDefaultButton(getJButtonDialogLocaleOk());
         }
         //processing independent of creation
         int i = 0;
@@ -386,14 +387,14 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         jListDialogLocale.setSelectedIndex(selection);
         jListDialogLocale.ensureIndexIsVisible(jListDialogLocale.getSelectedIndex());
-        return jDialogLocale;
+        return JDialogLocale;
     }
+
     /**
      * This method initializes jScrollPaneDialogLocale
      *
      * @return javax.swing.JScrollPane
      */
-
     private JScrollPane getJScrollPaneDialogLocale() {
         if (jScrollPaneDialogLocale == null) {
             jScrollPaneDialogLocale = new JScrollPane();
@@ -403,12 +404,12 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         return jScrollPaneDialogLocale;
     }
+
     /**
      * This method initializes jListDialogLocale
      *
      * @return javax.swing.JList
      */
-
     private JList getJListDialogLocale() {
         if (jListDialogLocale == null) {
             jListDialogLocale = new JList();
@@ -421,12 +422,12 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     public XincoClientSession getSession() {
         return this.xincoClientSession;
     }
+
     /**
      * This method initializes jButtonDialogLocaleOk
      *
      * @return javax.swing.JButton
      */
-
     private JButton getJButtonDialogLocaleOk() {
         if (jButtonDialogLocaleOk == null) {
             jButtonDialogLocaleOk = new JButton();
@@ -434,19 +435,20 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jButtonDialogLocaleOk.setText("Ok");
             jButtonDialogLocaleOk.addActionListener(new java.awt.event.ActionListener() {
 
-                        public void actionPerformed(java.awt.event.ActionEvent e) {
-                            //get locale
-                            if (jListDialogLocale.getSelectedIndex() >= 0) {
-                                ResourceBundle lrb = null;
-                                String[] locales;
-                                lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
-                                locales = lrb.getString("AvailableLocales").split(",");
-                                xincoClientConfig.setElementAt(new Locale(locales[jListDialogLocale.getSelectedIndex()]), 2);
-                                saveConfig();
-                                jDialogLocale.setVisible(false);
-                            }
-                        }
-                    });
+                @SuppressWarnings("unchecked")
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    //get locale
+                    if (jListDialogLocale.getSelectedIndex() >= 0) {
+                        ResourceBundle lrb = null;
+                        String[] locales;
+                        lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
+                        locales = lrb.getString("AvailableLocales").split(",");
+                        xincoClientConfig.setElementAt(new Locale(locales[jListDialogLocale.getSelectedIndex()]), 2);
+                        saveConfig();
+                        JDialogLocale.setVisible(false);
+                    }
+                }
+            });
         }
         return jButtonDialogLocaleOk;
     }
@@ -455,23 +457,22 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         XincoExplorer frame = new XincoExplorer();
         frame.setVisible(true);
     }
+
     /**
      * This method initializes this
      *
      * @return void
      */
-
     private void initialize() {
+        ResourceBundle settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
         //init session
         xincoClientSession = new XincoClientSession(this);
         //set client version
         xincoClientVersion = new XincoVersion();
-        xincoClientVersion.setVersion_high(Integer.parseInt(xesettings.getString("version.high")));
-        xincoClientVersion.setVersion_mid(Integer.parseInt(xesettings.getString("version.mid")));
-        xincoClientVersion.setVersion_low(Integer.parseInt(xesettings.getString("version.low")));
-        xincoClientVersion.setVersion_postfix(xesettings.getString("version.postfix"));
-        //init XincoActionHandler
-        getActionHandler();
+        xincoClientVersion.setVersion_high(Integer.parseInt(settings.getString("version.high")));
+        xincoClientVersion.setVersion_mid(Integer.parseInt(settings.getString("version.mid")));
+        xincoClientVersion.setVersion_low(Integer.parseInt(settings.getString("version.low")));
+        xincoClientVersion.setVersion_postfix(settings.getString("version.postfix"));
         switchPLAF((String) xincoClientConfig.elementAt(1));
         this.setBounds(0, 0, (new Double(getToolkit().getScreenSize().getWidth())).intValue() - 100,
                 (new Double(getToolkit().getScreenSize().getHeight())).intValue() - 75);
@@ -480,21 +481,19 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         this.setTitle(xerb.getString("general.clienttitle") + " - " +
                 xerb.getString("general.version") + " " +
                 xincoClientVersion.getVersion_high() + "." +
-                (xincoClientVersion.getVersion_mid() < 9 ? "0" +
-                xincoClientVersion.getVersion_mid() : xincoClientVersion.getVersion_mid()) + "." +
-                (xincoClientVersion.getVersion_low() < 9 ? "0" +
-                xincoClientVersion.getVersion_low() : xincoClientVersion.getVersion_low()) + " " +
+                xincoClientVersion.getVersion_mid() + "." +
+                xincoClientVersion.getVersion_low() + " " +
                 xincoClientVersion.getVersion_postfix());
         this.setJMenuBar(getJJMenuBar());
         this.setContentPane(getJDesktopPane());
         this.setVisible(true);
     }
+
     /**
      * This method initializes jJMenuBar
      *
      * @return javax.swing.JMenuBar
      */
-
     private javax.swing.JMenuBar getJJMenuBar() {
         if (jJMenuBar == null) {
             jJMenuBar = new javax.swing.JMenuBar();
@@ -507,12 +506,12 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         return jJMenuBar;
     }
+
     /**
      * This method initializes jMenuConnection
      *
      * @return javax.swing.JMenu
      */
-
     private javax.swing.JMenu getJMenuConnection() {
         if (jMenuConnection == null) {
             jMenuConnection = new javax.swing.JMenu();
@@ -527,27 +526,28 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
 
     private JMenuItem getJMenuItemConnectionExit() {
         if (jMenuItemConnectionExit == null) {
-            jMenuItemConnectionExit = new javax.swing.JMenuItem(getXincoIcon());
+            jMenuItemConnectionExit = new javax.swing.JMenuItem();
             jMenuItemConnectionExit.setName("Exit");
             jMenuItemConnectionExit.setText(xerb.getString("menu.connection.exit"));
             jMenuItemConnectionExit.setEnabled(true);
             jMenuItemConnectionExit.addActionListener(new java.awt.event.ActionListener() {
 
-                        public void actionPerformed(java.awt.event.ActionEvent e) {
-                            xincoClientSession.setStatus(0);
-                            dispose();
-                            System.exit(0);
-                        }
-                    });
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    xincoClientSession.setStatus(0);
+                    markConnectionStatus();
+                    dispose();
+                    System.exit(0);
+                }
+            });
         }
         return jMenuItemConnectionExit;
     }
+
     /**
      * This method initializes jMenuAbout
      *
      * @return javax.swing.JMenu
      */
-
     private javax.swing.JMenu getJMenuAbout() {
         if (jMenuAbout == null) {
             jMenuAbout = new javax.swing.JMenu();
@@ -557,12 +557,12 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         return jMenuAbout;
     }
+
     /**
      * This method initializes jMenuRepository
      *
      * @return javax.swing.JMenu
      */
-
     public javax.swing.JMenu getJMenuRepository() {
         if (jMenuRepository == null) {
             jMenuRepository = new XincoMenuRepository(this);
@@ -572,24 +572,27 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         return jMenuRepository;
     }
+
     /**
      * This method initializes jMenuItemConnectionDisconnect
      *
      * @return javax.swing.JMenuItem
      */
-
     private javax.swing.JMenuItem getJMenuItemConnectionDisconnect() {
         if (jMenuItemConnectionDisconnect == null) {
-            jMenuItemConnectionDisconnect = new javax.swing.JMenuItem(getXincoIcon());
+            jMenuItemConnectionDisconnect = new javax.swing.JMenuItem();
             jMenuItemConnectionDisconnect.setName("Disconnect");
             jMenuItemConnectionDisconnect.setText(xerb.getString("menu.disconnect"));
             jMenuItemConnectionDisconnect.setEnabled(false);
             jMenuItemConnectionDisconnect.addActionListener(new java.awt.event.ActionListener() {
 
-                        public void actionPerformed(java.awt.event.ActionEvent e) {
-                            disconnect();
-                        }
-                    });
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    xincoClientSession.setStatus(0);
+                    markConnectionStatus();
+                    loginT.resetStrings();
+                    collapseAllNodes();
+                }
+            });
         }
         return jMenuItemConnectionDisconnect;
     }
@@ -601,49 +604,47 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      */
     private javax.swing.JMenuItem getJMenuItemAboutAboutXinco() {
         if (jMenuItemAboutAboutXinco == null) {
-            jMenuItemAboutAboutXinco =
-                    new javax.swing.JMenuItem(getXincoIcon());
+            jMenuItemAboutAboutXinco = new javax.swing.JMenuItem();
             jMenuItemAboutAboutXinco.setName("AboutXinco");
             jMenuItemAboutAboutXinco.setText(xerb.getString("menu.aboutxinco"));
             jMenuItemAboutAboutXinco.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
             jMenuItemAboutAboutXinco.addActionListener(new java.awt.event.ActionListener() {
 
-                        public void actionPerformed(java.awt.event.ActionEvent e) {
-                            String message_string = "";
-                            message_string = message_string + xerb.getString("window.aboutxinco.clienttitle") + "\n";
-                            message_string = message_string + xerb.getString("window.aboutxinco.clientversion") + ": " +
-                                    xincoClientVersion.getVersion_high() + "." + (xincoClientVersion.getVersion_mid() < 9 ? "0" +
-                                    xincoClientVersion.getVersion_mid() : xincoClientVersion.getVersion_mid()) + "." +
-                                    (xincoClientVersion.getVersion_low() < 9 ? "0" + xincoClientVersion.getVersion_low() : xincoClientVersion.getVersion_low()) + " " + xincoClientVersion.getVersion_postfix() + "\n";
-                            message_string = message_string + "\n";
-                            message_string = message_string + xerb.getString("window.aboutxinco.partof") + ":\n";
-                            message_string = message_string + xerb.getString("window.aboutxinco.softwaretitle") + "\n";
-                            message_string = message_string + xerb.getString("window.aboutxinco.softwaresubtitle") + "\n";
-                            message_string = message_string + "\n";
-                            message_string = message_string + xerb.getString("window.aboutxinco.vision1") + "\n";
-                            message_string = message_string + xerb.getString("window.aboutxinco.vision2") + "\n";
-                            message_string = message_string + "\n";
-                            message_string = message_string + xerb.getString("window.aboutxinco.moreinfo") + "\n";
-                            message_string = message_string + xerb.getString("window.aboutxinco.xinco_org") + "\n";
-                            message_string = message_string + xerb.getString("window.aboutxinco.bluecubs_com") + "\n";
-                            message_string = message_string + xerb.getString("window.aboutxinco.bluecubs_org") + "\n";
-                            message_string = message_string + "\n";
-                            message_string = message_string + xerb.getString("window.aboutxinco.thanks") + "\n";
-                            message_string = message_string + xerb.getString("window.aboutxinco.apache") + "\n";
-                            message_string = message_string + "\n";
-                            message_string = message_string + xerb.getString("window.aboutxinco.copyright") + "\n";
-                            JOptionPane.showMessageDialog(XincoExplorer.this, message_string, xerb.getString("window.aboutxinco"), JOptionPane.INFORMATION_MESSAGE);
-                        }
-                    });
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    String message_string = "";
+                    message_string = message_string + xerb.getString("window.aboutxinco.clienttitle") + "\n";
+                    message_string = message_string + xerb.getString("window.aboutxinco.clientversion") + ": " +
+                            xincoClientVersion.getVersion_high() + "." + xincoClientVersion.getVersion_mid() + "." +
+                            xincoClientVersion.getVersion_low() + " " + xincoClientVersion.getVersion_postfix() + "\n";
+                    message_string = message_string + "\n";
+                    message_string = message_string + xerb.getString("window.aboutxinco.partof") + ":\n";
+                    message_string = message_string + xerb.getString("window.aboutxinco.softwaretitle") + "\n";
+                    message_string = message_string + xerb.getString("window.aboutxinco.softwaresubtitle") + "\n";
+                    message_string = message_string + "\n";
+                    message_string = message_string + xerb.getString("window.aboutxinco.vision1") + "\n";
+                    message_string = message_string + xerb.getString("window.aboutxinco.vision2") + "\n";
+                    message_string = message_string + "\n";
+                    message_string = message_string + xerb.getString("window.aboutxinco.moreinfo") + "\n";
+                    message_string = message_string + xerb.getString("window.aboutxinco.xinco_org") + "\n";
+                    message_string = message_string + xerb.getString("window.aboutxinco.bluecubs_com") + "\n";
+                    message_string = message_string + xerb.getString("window.aboutxinco.bluecubs_org") + "\n";
+                    message_string = message_string + "\n";
+                    message_string = message_string + xerb.getString("window.aboutxinco.thanks") + "\n";
+                    message_string = message_string + xerb.getString("window.aboutxinco.apache") + "\n";
+                    message_string = message_string + "\n";
+                    message_string = message_string + xerb.getString("window.aboutxinco.copyright") + "\n";
+                    JOptionPane.showMessageDialog(XincoExplorer.this, message_string, xerb.getString("window.aboutxinco"), JOptionPane.INFORMATION_MESSAGE);
+                }
+            });
         }
         return jMenuItemAboutAboutXinco;
     }
+
     /**
      * This method initializes jDesktopPane
      *
      * @return javax.swing.JDesktopPane
      */
-
     private javax.swing.JDesktopPane getJDesktopPane() {
         if (jDesktopPane == null) {
             jDesktopPane = new javax.swing.JDesktopPane();
@@ -654,27 +655,26 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         return jDesktopPane;
     }
+
     /**
      * This method initializes jContentPaneRepository
      *
      * @return javax.swing.JPanel
      */
-
     private javax.swing.JPanel getJContentPaneRepository() {
         if (jContentPaneRepository == null) {
             jContentPaneRepository = new javax.swing.JPanel();
-            jContentPaneRepository.addMouseListener(explorer);
             jContentPaneRepository.setLayout(new java.awt.BorderLayout());
             jContentPaneRepository.add(getJSplitPaneRepository(), java.awt.BorderLayout.CENTER);
         }
         return jContentPaneRepository;
     }
+
     /**
      * This method initializes jInternalFrameRepository
      *
      * @return javax.swing.JInternalFrame
      */
-
     private javax.swing.JInternalFrame getJInternalFrameRepository() {
         if (jInternalFrameRepository == null) {
             jInternalFrameRepository = new javax.swing.JInternalFrame();
@@ -686,65 +686,46 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jInternalFrameRepository.setMaximizable(true);
             jInternalFrameRepository.setName("Repository");
             jInternalFrameRepository.setTitle(xerb.getString("window.repository"));
-            jInternalFrameRepository.setFrameIcon(getXincoIcon());
         }
         return jInternalFrameRepository;
     }
+
     /**
      * This method initializes jSplitPaneRepository
      *
      * @return javax.swing.JSplitPane
      */
-
     private javax.swing.JSplitPane getJSplitPaneRepository() {
         if (jSplitPaneRepository == null) {
             jSplitPaneRepository = new javax.swing.JSplitPane();
             jSplitPaneRepository.setLeftComponent(getJScrollPaneRepositoryTree());
+            jSplitPaneRepository.setRightComponent(getJScrollPaneRepositoryTable());
             jSplitPaneRepository.setDividerLocation(2.0 / 3.0);
             jSplitPaneRepository.setResizeWeight(1);
             jSplitPaneRepository.setContinuousLayout(true);
-            JTabbedPane tabbedPane = new JTabbedPane();
-            xincoAuditPanel = new XincoAuditPanel(this.explorer);
-            ImageIcon icon = createImageIcon("blueCubsIcon16x16.GIF");
-            tabbedPane.addTab(xerb.getString("window.audit.tablepanelabel"), icon,
-                    getJScrollPaneRepositoryTable());
-            tabbedPane.addTab(xerb.getString("window.audit.auditpanelabel"), icon,
-                    getXincoAuditPanel().getPane());
-            jSplitPaneRepository.setRightComponent(tabbedPane);
         }
         return jSplitPaneRepository;
     }
 
-    /** Returns an ImageIcon, or null if the path was invalid. */
-    protected static ImageIcon createImageIcon(String path) {
-        java.net.URL imgURL = XincoExplorer.class.getResource(path);
-
-        if (imgURL != null) {
-            return new ImageIcon(imgURL);
-        }
-        System.err.println("Couldn\'t find file: " + path);
-        return null;
-    }
     /**
      * This method initializes jScrollPaneRepositoryTree
      *
      * @return javax.swing.JScrollPane
      */
-
-    protected javax.swing.JScrollPane getJScrollPaneRepositoryTree() {
+    private javax.swing.JScrollPane getJScrollPaneRepositoryTree() {
         if (jScrollPaneRepositoryTree == null) {
             jScrollPaneRepositoryTree = new javax.swing.JScrollPane();
             jScrollPaneRepositoryTree.setViewportView(getJTreeRepository());
         }
         return jScrollPaneRepositoryTree;
     }
+
     /**
      * This method initializes jScrollPaneRepositoryTable
      *
      * @return javax.swing.JScrollPane
      */
-
-    protected javax.swing.JScrollPane getJScrollPaneRepositoryTable() {
+    private javax.swing.JScrollPane getJScrollPaneRepositoryTable() {
         if (jScrollPaneRepositoryTable == null) {
             jScrollPaneRepositoryTable = new javax.swing.JScrollPane();
             jScrollPaneRepositoryTable.setViewportView(getJTableRepository());
@@ -774,26 +755,40 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         return jTreeRepository;
     }
 
-    public void collapseAllNodes() {
-        getJTreeRepository().collapseAllNodes();
+    private void expandAllNodes() {
+        getJTreeRepository();
+        int row = 0;
+        while (row < jTreeRepository.getRowCount()) {
+            jTreeRepository.expandRow(row);
+            row++;
+        }
     }
+
+    public void collapseAllNodes() {
+        getJTreeRepository();
+        int row = jTreeRepository.getRowCount() - 1;
+        while (row >= 0) {
+            jTreeRepository.collapseRow(row);
+            row--;
+        }
+        jTreeRepository.expandRow(0);
+    }
+
     /**
      * This method initializes jTableRepository
      *
      * @return javax.swing.JTable
      */
-
     public javax.swing.JTable getJTableRepository() {
         if (jTableRepository == null) {
-            String[] cn = {xerb.getString("window.repository.table.attribute"),
-                    xerb.getString("window.repository.table.details")};
+            String[] cn = {xerb.getString("window.repository.table.attribute"), xerb.getString("window.repository.table.details")};
             DefaultTableModel dtm = new DefaultTableModel(cn, 0) {
 
-                        @Override
+                @Override
                 public boolean isCellEditable(int row, int column) {
-                            return false;
-                        }
-                    };
+                    return false;
+                }
+            };
             jTableRepository = new javax.swing.JTable();
             jTableRepository.setModel(dtm);
             jTableRepository.setColumnSelectionAllowed(false);
@@ -802,16 +797,15 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jTableRepository.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
             jTableRepository.setCellSelectionEnabled(false);
             jTableRepository.setEnabled(true);
-            jTableRepository.addMouseListener(this.explorer);
         }
         return jTableRepository;
     }
+
     /**
      * This method initializes jMenuSearch
      *
      * @return javax.swing.JMenu
      */
-
     private javax.swing.JMenu getJMenuSearch() {
         if (jMenuSearch == null) {
             jMenuSearch = new javax.swing.JMenu();
@@ -822,36 +816,36 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         return jMenuSearch;
     }
+
     /**
      * This method initializes jMenuItemSearchRepository
      *
      * @return javax.swing.JMenuItem
      */
-
     private javax.swing.JMenuItem getJMenuItemSearchRepository() {
         if (jMenuItemSearchRepository == null) {
-            jMenuItemSearchRepository = new javax.swing.JMenuItem(getXincoIcon());
+            jMenuItemSearchRepository = new javax.swing.JMenuItem();
             jMenuItemSearchRepository.setText(xerb.getString("menu.search.search_repository"));
             jMenuItemSearchRepository.setName("SearchRepository");
             jMenuItemSearchRepository.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.KeyEvent.CTRL_MASK));
             jMenuItemSearchRepository.addActionListener(new java.awt.event.ActionListener() {
 
-                        public void actionPerformed(java.awt.event.ActionEvent e) {
-                            if (search == null) {
-                                search = new SearchDialog(null, true, explorer);
-                            }
-                            search.setVisible(true);
-                        }
-                    });
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    if (search == null) {
+                        search = new SearchDialog(null, true, explorer);
+                    }
+                    search.setVisible(true);
+                }
+            });
         }
         return jMenuItemSearchRepository;
     }
+
     /**
      * This method initializes jMenuView
      *
      * @return javax.swing.JMenu
      */
-
     private javax.swing.JMenu getJMenuView() {
         if (jMenuView == null) {
             jMenuView = new javax.swing.JMenu();
@@ -870,12 +864,12 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         return jMenuView;
     }
+
     /**
      * This method initializes jRadioButtonMenuItemViewStyleWindows
      *
      * @return javax.swing.JRadioButtonMenuItem
      */
-
     private javax.swing.JRadioButtonMenuItem getJRadioButtonMenuItemViewStyleWindows() {
         if (jRadioButtonMenuItemViewStyleWindows == null) {
             jRadioButtonMenuItemViewStyleWindows = new javax.swing.JRadioButtonMenuItem();
@@ -887,21 +881,22 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jRadioButtonMenuItemViewStyleWindows.setText(xerb.getString("menu.view.windows"));
             jRadioButtonMenuItemViewStyleWindows.addItemListener(new java.awt.event.ItemListener() {
 
-                        public void itemStateChanged(java.awt.event.ItemEvent e) {
-                            switchPLAF("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-                            xincoClientConfig.setElementAt(new String("com.sun.java.swing.plaf.windows.WindowsLookAndFeel"), 1);
-                            saveConfig();
-                        }
-                    });
+                @SuppressWarnings("unchecked")
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+                    switchPLAF("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+                    xincoClientConfig.setElementAt(new String("com.sun.java.swing.plaf.windows.WindowsLookAndFeel"), 1);
+                    saveConfig();
+                }
+            });
         }
         return jRadioButtonMenuItemViewStyleWindows;
     }
+
     /**
      * This method initializes jRadioButtonMenuItemViewStyleNapkin
      *
      * @return javax.swing.JRadioButtonMenuItem
      */
-
     private javax.swing.JRadioButtonMenuItem getJRadioButtonMenuItemViewStyleNapkin() {
         if (jRadioButtonMenuItemViewStyleNapkin == null) {
             jRadioButtonMenuItemViewStyleNapkin = new javax.swing.JRadioButtonMenuItem();
@@ -913,21 +908,22 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jRadioButtonMenuItemViewStyleNapkin.setText(xerb.getString("menu.view.napkin"));
             jRadioButtonMenuItemViewStyleNapkin.addItemListener(new java.awt.event.ItemListener() {
 
-                        public void itemStateChanged(java.awt.event.ItemEvent e) {
-                            switchPLAF("net.sourceforge.napkinlaf.NapkinLookAndFeel");
-                            xincoClientConfig.setElementAt(new String("net.sourceforge.napkinlaf.NapkinLookAndFeel"), 1);
-                            saveConfig();
-                        }
-                    });
+                @SuppressWarnings("unchecked")
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+                    switchPLAF("net.sourceforge.napkinlaf.NapkinLookAndFeel");
+                    xincoClientConfig.setElementAt(new String("net.sourceforge.napkinlaf.NapkinLookAndFeel"), 1);
+                    saveConfig();
+                }
+            });
         }
         return jRadioButtonMenuItemViewStyleNapkin;
     }
+
     /**
      * This method initializes jRadioButtonMenuItemViewStyleNapkin
      *
      * @return javax.swing.JRadioButtonMenuItem
      */
-
     private javax.swing.JRadioButtonMenuItem getJRadioButtonMenuItemViewStyleSubstance() {
         if (jRadioButtonMenuItemViewStyleSubstance == null) {
             jRadioButtonMenuItemViewStyleSubstance = new javax.swing.JRadioButtonMenuItem();
@@ -939,21 +935,22 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jRadioButtonMenuItemViewStyleSubstance.setText(xerb.getString("menu.view.substance"));
             jRadioButtonMenuItemViewStyleSubstance.addItemListener(new java.awt.event.ItemListener() {
 
-                        public void itemStateChanged(java.awt.event.ItemEvent e) {
-                            switchPLAF("org.jvnet.substance.SubstanceLookAndFeel");
-                            xincoClientConfig.setElementAt(new String("org.jvnet.substance.SubstanceLookAndFeel"), 1);
-                            saveConfig();
-                        }
-                    });
+                @SuppressWarnings("unchecked")
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+                    switchPLAF("org.jvnet.substance.SubstanceLookAndFeel");
+                    xincoClientConfig.setElementAt(new String("org.jvnet.substance.SubstanceLookAndFeel"), 1);
+                    saveConfig();
+                }
+            });
         }
         return jRadioButtonMenuItemViewStyleSubstance;
     }
+
     /**
      * This method initializes jRadioButtonMenuItemViewStyleJava
      *
      * @return javax.swing.JRadioButtonMenuItem
      */
-
     private javax.swing.JRadioButtonMenuItem getJRadioButtonMenuItemViewStyleJava() {
         if (jRadioButtonMenuItemViewStyleJava == null) {
             jRadioButtonMenuItemViewStyleJava = new javax.swing.JRadioButtonMenuItem();
@@ -965,21 +962,22 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jRadioButtonMenuItemViewStyleJava.setText(xerb.getString("menu.view.java"));
             jRadioButtonMenuItemViewStyleJava.addItemListener(new java.awt.event.ItemListener() {
 
-                        public void itemStateChanged(java.awt.event.ItemEvent e) {
-                            switchPLAF("javax.swing.plaf.metal.MetalLookAndFeel");
-                            xincoClientConfig.setElementAt(new String("javax.swing.plaf.metal.MetalLookAndFeel"), 1);
-                            saveConfig();
-                        }
-                    });
+                @SuppressWarnings("unchecked")
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+                    switchPLAF("javax.swing.plaf.metal.MetalLookAndFeel");
+                    xincoClientConfig.setElementAt(new String("javax.swing.plaf.metal.MetalLookAndFeel"), 1);
+                    saveConfig();
+                }
+            });
         }
         return jRadioButtonMenuItemViewStyleJava;
     }
+
     /**
      * This method initializes jRadioButtonMenuItemViewStyleMotif
      *
      * @return javax.swing.JRadioButtonMenuItem
      */
-
     private javax.swing.JRadioButtonMenuItem getJRadioButtonMenuItemViewStyleMotif() {
         if (jRadioButtonMenuItemViewStyleMotif == null) {
             jRadioButtonMenuItemViewStyleMotif = new javax.swing.JRadioButtonMenuItem();
@@ -991,33 +989,86 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jRadioButtonMenuItemViewStyleMotif.setText(xerb.getString("menu.view.motif"));
             jRadioButtonMenuItemViewStyleMotif.addItemListener(new java.awt.event.ItemListener() {
 
-                        public void itemStateChanged(java.awt.event.ItemEvent e) {
-                            switchPLAF("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
-                            xincoClientConfig.setElementAt(new String("com.sun.java.swing.plaf.motif.MotifLookAndFeel"), 1);
-                            saveConfig();
-                        }
-                    });
+                @SuppressWarnings("unchecked")
+                public void itemStateChanged(java.awt.event.ItemEvent e) {
+                    switchPLAF("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+                    xincoClientConfig.setElementAt(new String("com.sun.java.swing.plaf.motif.MotifLookAndFeel"), 1);
+                    saveConfig();
+                }
+            });
         }
         return jRadioButtonMenuItemViewStyleMotif;
     }
+
     /**
      * This method initializes jMenuItemConnectionConnect
      *
      * @return javax.swing.JMenuItem
      */
-
     private javax.swing.JMenuItem getJMenuItemConnectionConnect() {
         status_string_1 = "";
         status_string_2 = "";
         if (jMenuItemConnectionConnect == null) {
-            jMenuItemConnectionConnect = new javax.swing.JMenuItem(getXincoIcon());
+            jMenuItemConnectionConnect = new javax.swing.JMenuItem();
             jMenuItemConnectionConnect.setText(xerb.getString("menu.connection.connect"));
             jMenuItemConnectionConnect.addActionListener(new java.awt.event.ActionListener() {
 
-                        public void actionPerformed(java.awt.event.ActionEvent e) {
-                            connect(true);
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    int i = 0;
+                    //init session
+                    xincoClientSession = new XincoClientSession(XincoExplorer.this);
+                    getJTreeRepository().setModel(xincoClientSession.getXincoClientRepository().treemodel);
+                    xincoClientSession.setStatus(0);
+                    //open connection dialog
+                    getAbstractDialogConnection();
+                    DefaultListModel dlm = (DefaultListModel) dialogConnection.getProfileList().getModel();
+                    dlm.removeAllElements();
+                    for (i = 0; i < ((Vector) xincoClientConfig.elementAt(0)).size(); i++) {
+                        dlm.addElement(new String(((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(i)).toString()));
+                    }
+                    //establish connection and login
+                    if (xincoClientSession.getStatus() == 1) {
+                        try {
+                            xincoClientSession.setXincoService(new XincoServiceLocator());
+                            xincoClientSession.setXinco(xincoClientSession.getXincoService().getXinco(new java.net.URL(xincoClientSession.getServiceEndpoint())));
+                            xincoClientSession.setServeVersion(xincoClientSession.getXinco().getXincoServerVersion());
+                            //check if client and server versions match (high AND mid must match!)
+                            if ((xincoClientVersion.getVersion_high() != xincoClientSession.getServerVersion().getVersion_high()) || (xincoClientVersion.getVersion_mid() != xincoClientSession.getServerVersion().getVersion_mid())) {
+                                throw new XincoException(xerb.getString("menu.connection.error.serverversion") + " " + xincoClientSession.getServerVersion().getVersion_high() + "." + xincoClientSession.getServerVersion().getVersion_mid() + ".x");
+                            }
+                            if ((temp = xincoClientSession.getXinco().getCurrentXincoCoreUser(xincoClientSession.getUser().getUsername(), xincoClientSession.getUser().getUserpassword())) == null) {
+                                throw new XincoException(xerb.getString("menu.connection.error.user"));
+                            }
+                            temp.setUserpassword(xincoClientSession.getUser().getUserpassword());
+                            newuser.setEmail(temp.getEmail());
+                            newuser.setFirstname(temp.getFirstname());
+                            newuser.setId(temp.getId());
+                            newuser.setName(temp.getName());
+                            newuser.setStatus_number(temp.getStatus_number());
+                            newuser.setUsername(temp.getUsername());
+                            newuser.setUserpassword(temp.getUserpassword());
+                            xincoClientSession.setUser(xincoClientSession.getXinco().getCurrentXincoCoreUser(newuser.getUsername(), newuser.getUserpassword()));
+                            progressBar.run();
+                            xincoClientSession.setServerDatatypes(xincoClientSession.getXinco().getAllXincoCoreDataTypes(xincoClientSession.getUser()));
+                            xincoClientSession.setServeGroups(xincoClientSession.getXinco().getAllXincoCoreGroups(xincoClientSession.getUser()));
+                            xincoClientSession.setServerLanguages(xincoClientSession.getXinco().getAllXincoCoreLanguages(xincoClientSession.getUser()));
+                            for (i = 0; i < xincoClientSession.getUser().getXinco_core_groups().size(); i++) {
+                                status_string_1 = status_string_1 + "      + " + xerb.getString(((XincoCoreGroup) xincoClientSession.getUser().getXinco_core_groups().elementAt(i)).getDesignation()) + "\n";
+                            }
+                            for (i = 0; i < xincoClientSession.getServerDatatypes().size(); i++) {
+                                status_string_2 += "      + " + xerb.getString(((XincoCoreDataType) xincoClientSession.getServerDatatypes().elementAt(i)).getDesignation()) + "\n";
+                            }
+                            loginT = new loginThread();
+                            loginT.start();
+                        } catch (Exception cone) {
+                            xincoClientSession.setStatus(0);
+                            cone.printStackTrace();
+                            markConnectionStatus();
+                            JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("menu.connection.failed") + " " + xerb.getString("general.reason") + ": " + cone.toString(), xerb.getString("menu.connection.failed"), JOptionPane.WARNING_MESSAGE);
                         }
-                    });
+                    }
+                }
+            });
         }
         return jMenuItemConnectionConnect;
     }
@@ -1026,16 +1077,25 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         return this.newuser;
     }
 
-    public XincoCoreUser getTemp() {
-        return temp;
-    }
-    
-    public void setTemp(XincoCoreUser t) {
-        temp=t;
+    /**
+     * @return the global_dialog_return_value
+     */
+    public int getGlobal_dialog_return_value() {
+        return global_dialog_return_value;
     }
 
-    public void setActionHandler(XincoRepositoryActionHandler actionHandler) {
-        this.actionHandler = actionHandler;
+    /**
+     * @param global_dialog_return_value the global_dialog_return_value to set
+     */
+    public void setGlobal_dialog_return_value(int global_dialog_return_value) {
+        this.global_dialog_return_value = global_dialog_return_value;
+    }
+
+    /**
+     * @param lock the lock to set
+     */
+    public void setLock(boolean lock) {
+        this.lock = lock;
     }
 
     private class loginThread extends Thread {
@@ -1043,97 +1103,21 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         @Override
         public void run() {
             try {
-                getProgressBar().run();
-                int i = 0;
-                try {
-                    xincoClientSession.setXinco_service(new XincoServiceLocator());
-                    xincoClientSession.setXinco(xincoClientSession.getXinco_service().getXinco(new java.net.URL(xincoClientSession.getService_endpoint())));
-                    xincoClientSession.setServer_version(xincoClientSession.getXinco().getXincoServerVersion());
-                    //check if client and server versions match (high AND mid must match!)
-                    if ((xincoClientVersion.getVersion_high() != xincoClientSession.getServer_version().getVersion_high()) || (xincoClientVersion.getVersion_mid() != xincoClientSession.getServer_version().getVersion_mid())) {
-                        throw new XincoException(xerb.getString("menu.connection.error.serverversion") + " " + xincoClientSession.getServer_version().getVersion_high() + "." + xincoClientSession.getServer_version().getVersion_mid() + ".x");
-                    }
-                    if ((temp = xincoClientSession.getXinco().getCurrentXincoCoreUser(xincoClientSession.getUser().getUsername(), xincoClientSession.getUser().getUserpassword())) == null) {
-                        throw new XincoException(xerb.getString("menu.connection.error.user"));
-                    }
-                    updateSettings();
-                    if (getSettings().getSetting("setting.enable.developermode").isBool_value()) {
-                        xat = new XincoActivityTimer(XincoExplorer.this,
-                                getSettings().getSetting("general.setting.enable.lockidle").getInt_value());
-                    }
-                    getJDialogConnection().updateProfile();
-                    getTemp().setUserpassword(xincoClientSession.getUser().getUserpassword());
-                    newuser.setEmail(getTemp().getEmail());
-                    newuser.setFirstname(getTemp().getFirstname());
-                    newuser.setId(getTemp().getId());
-                    newuser.setName(getTemp().getName());
-                    newuser.setStatus_number(getTemp().getStatus_number());
-                    newuser.setUsername(getTemp().getUsername());
-                    newuser.setUserpassword(getTemp().getUserpassword());
-                    xincoClientSession.setUser(xincoClientSession.getXinco().getCurrentXincoCoreUser(newuser.getUsername(), newuser.getUserpassword()));
-                    xincoClientSession.setServer_datatypes(xincoClientSession.getXinco().getAllXincoCoreDataTypes(xincoClientSession.getUser()));
-                    xincoClientSession.setServer_groups(xincoClientSession.getXinco().getAllXincoCoreGroups(xincoClientSession.getUser()));
-                    xincoClientSession.setServer_languages(xincoClientSession.getXinco().getAllXincoCoreLanguages(xincoClientSession.getUser()));
-                    xincoClientSession.setServer_users(xincoClientSession.getXinco().getAllXincoUsers(xincoClientSession.getUser()));
-                    String space="      + ";
-                    for (i = 0; i < xincoClientSession.getUser().getXinco_core_groups().size(); i++) {
-                        status_string_1 += space + ((XincoCoreGroup) xincoClientSession.getUser().getXinco_core_groups().elementAt(i)).getDesignation() + "\n";
-                    }
-                    for (i = 0; i < xincoClientSession.getServer_datatypes().size(); i++) {
-                        status_string_2 += space + getSession().getXinco().localizeString(((XincoCoreDataType) xincoClientSession.getServer_datatypes().elementAt(i)).getDesignation(), getLocale().toString()) + "\n";
-                    }
-                } catch (java.rmi.RemoteException cone) {
-                    if (getProgressBar() != null) {
-                        getProgressBar().hide();
-                    }
-                    xincoClientSession.setStatus(0);
-                    cone.printStackTrace();
-                    markConnectionStatus();
-                    JOptionPane.showMessageDialog(XincoExplorer.this,
-                            xerb.getString("menu.connection.failed") + " " +
-                            xerb.getString("general.reason") + ": " +
-                            cone.toString() + " " + xerb.getString("error.connection.incorrect.deployment"),
-                            xerb.getString("menu.connection.failed"),
-                            JOptionPane.WARNING_MESSAGE);
-                    cone.printStackTrace();
-                } catch (Exception cone) {
-                    getProgressBar().hide();
-                    xincoClientSession.setStatus(0);
-                    cone.printStackTrace();
-                    markConnectionStatus();
-                    String exception = "";
-                    if (cone.toString().equals("java.lang")) {
-                        exception = xerb.getString("error.connection.incorrect.deployment");
-                    } else {
-                        exception = cone.toString();
-                    }
-                    JOptionPane.showMessageDialog(XincoExplorer.this,
-                            xerb.getString("menu.connection.failed") + " " +
-                            xerb.getString("general.reason") + ": " +
-                            cone.toString(),
-                            xerb.getString("menu.connection.failed"),
-                            JOptionPane.WARNING_MESSAGE);
-                    if (getSettings().getSetting("setting.enable.developermode").isBool_value()) {
-                        cone.printStackTrace();
-                    }
-                }
                 String status_string = "";
                 temp = xincoClientSession.getXinco().getCurrentXincoCoreUser(xincoClientSession.getUser().getUsername(), xincoClientSession.getUser().getUserpassword());
-                status_string += xerb.getString("menu.connection.connectedto") + ": " + xincoClientSession.getService_endpoint() + "\n";
+                status_string += xerb.getString("menu.connection.connectedto") + ": " + xincoClientSession.getServiceEndpoint() + "\n";
                 status_string += xerb.getString("general.serverversion") + ": ";
-                status_string += xincoClientSession.getServer_version().getVersion_high() + ".";
-                status_string += (xincoClientSession.getServer_version().getVersion_mid() < 9 ? "0" +
-                        xincoClientSession.getServer_version().getVersion_mid() : xincoClientSession.getServer_version().getVersion_mid()) + ".";
-                status_string += (xincoClientSession.getServer_version().getVersion_low() < 9 ? "0" +
-                        xincoClientSession.getServer_version().getVersion_low() : xincoClientSession.getServer_version().getVersion_low());
-                status_string += " " + xincoClientSession.getServer_version().getVersion_postfix() + "\n";
+                status_string += xincoClientSession.getServerVersion().getVersion_high() + ".";
+                status_string += xincoClientSession.getServerVersion().getVersion_mid() + ".";
+                status_string += xincoClientSession.getServerVersion().getVersion_low() + " ";
+                status_string += xincoClientSession.getServerVersion().getVersion_postfix() + "\n";
                 status_string += "\n";
                 status_string += xerb.getString("general.user") + ": " + xincoClientSession.getUser().getFirstname() + " " + xincoClientSession.getUser().getName() + " <" + xincoClientSession.getUser().getEmail() + ">\n";
                 status_string += xerb.getString("general.memberof") + ":\n";
                 status_string += status_string_1 + "\n";
-                status_string += xerb.getString("general.groupsonserver") + ": " + xincoClientSession.getServer_groups().size() + "\n";
-                status_string += xerb.getString("general.languagesonserver") + ": " + xincoClientSession.getServer_languages().size() + "\n";
-                status_string += xerb.getString("general.datatypesonserver") + ": " + xincoClientSession.getServer_datatypes().size() + "\n";
+                status_string += xerb.getString("general.groupsonserver") + ": " + xincoClientSession.getServerGroups().size() + "\n";
+                status_string += xerb.getString("general.languagesonserver") + ": " + xincoClientSession.getServerLanguages().size() + "\n";
+                status_string += xerb.getString("general.datatypesonserver") + ": " + xincoClientSession.getServerDatatypes().size() + "\n";
                 status_string += status_string_2 + "\n";
                 xincoClientSession.setCurrentSearchResult(new Vector());
                 xincoClientSession.setStatus(2);
@@ -1144,26 +1128,21 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 xnode.setId(1);
                 xnode = xincoClientSession.getXinco().getXincoCoreNode(xnode, xincoClientSession.getUser());
                 xincoClientSession.getXincoClientRepository().assignObject2TreeNode((XincoMutableTreeNode) (xincoClientSession.getXincoClientRepository().treemodel).getRoot(),
-                        xnode,
-                        xincoClientSession.getXinco(), xincoClientSession.getUser(), 2);
+                        xnode, xincoClientSession.getXinco(), xincoClientSession.getUser(),
+                        2);
                 getJTreeRepository().expandPath(new TreePath(xincoClientSession.getXincoClientRepository().treemodel.getPathToRoot((XincoMutableTreeNode) (xincoClientSession.getXincoClientRepository().treemodel).getRoot())));
                 markConnectionStatus();
-                if (getTemp().getStatus_number() == 3) {
+                if (temp.getStatus_number() == 3) {
                     jLabelInternalFrameInformationText.setText(xerb.getString("password.aged"));
-                    getJDialogUser(true);
+                    getAbstractDialogUser(true);
                 }
-                getProgressBar().hide();
-                resetStrings();
+                progressBar.hide();
             } catch (Exception cone) {
                 xincoClientSession.setStatus(0);
                 cone.printStackTrace();
                 markConnectionStatus();
                 JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("menu.connection.failed") + " " + xerb.getString("general.reason") + ": " + cone.toString(), xerb.getString("menu.connection.failed"), JOptionPane.WARNING_MESSAGE);
-                getProgressBar().hide();
-                resetStrings();
-                //                if(getSettings().getSetting("setting.enable.developermode").isBool_value())
-                cone.printStackTrace();
-                return;
+                progressBar.hide();
             }
         }
 
@@ -1173,51 +1152,30 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
     }
 
-    private class refreshThread extends Thread {
-
-        @Override
-        public void run() {
-            try {
-                getJTreeRepository().setEnabled(false);
-                getProgressBar().setTitle(getResourceBundle().getString("message.progressbar.refresh"));
-                getProgressBar().show();
-                // get root
-                XincoCoreNode xnode = new XincoCoreNode();
-                xnode.setId(1);
-                xnode = getSession().getXinco().getXincoCoreNode(xnode, getSession().getUser());
-                getSession().getXincoClientRepository().assignObject2TreeNode((XincoMutableTreeNode) (explorer.getSession().getXincoClientRepository().treemodel).getRoot(),
-                        xnode,
-                        explorer.getSession().getXinco(), explorer.getSession().getUser(), 2);
-                jTreeRepository.expandPath(new TreePath(getSession().getXincoClientRepository().treemodel.getPathToRoot((XincoMutableTreeNode) (getSession().getXincoClientRepository().treemodel).getRoot())));
-                collapseAllNodes();
-                getProgressBar().hide();
-                getJTreeRepository().setEnabled(true);
-            } catch (Exception rmie) {
-                if (getSettings().getSetting("setting.enable.developermode").isBool_value()) {
-                    rmie.printStackTrace();
-                }
-                getProgressBar().hide();
-            }
+    /**
+     * This method initializes jContentPaneDialogConnection
+     *
+     * @return javax.swing.JPanel
+     */
+    private void getJContentPaneDialogConnection() {
+        if (this.dialogConnection == null) {
+            this.dialogConnection = new ConnectionDialog(new javax.swing.JFrame(),
+                    true, this);
         }
     }
 
-    public void refreshJTree() {
-        rThread = null;
-        rThread = new refreshThread();
-        rThread.start();
-    }
     /**
-     * This method initializes jDialogConnection
+     * This method initializes AbstractDialogConnection
      *
-     * @return javax.swing.JDialog
+     * @return AbstractDialog
      */
-
-    private ConnectionDialog getJDialogConnection() {
-        if (this.dialogConnection == null) {
+    private AbstractDialog getAbstractDialogConnection() {
+        if (dialogConnection == null) {
             dialogConnection = new ConnectionDialog(new javax.swing.JFrame(),
                     true, this);
-            this.addDialog(dialogConnection);
+            addDialog(dialogConnection);
         }
+        dialogConnection.setVisible(true);
         return dialogConnection;
     }
 
@@ -1228,19 +1186,17 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     public Vector getConfig() {
         return xincoClientConfig;
     }
+
     /**
      * This method marks menues, etc. according to connection status
      *
-     * @return void
      */
-
     public void markConnectionStatus() {
-        int i = 0,
-         j = 0;
+        int i = 0, j = 0;
         if (xincoClientSession != null) {
             //do general processing
             DefaultTableModel dtm;
-            dtm = (DefaultTableModel) getJTableRepository().getModel();
+            dtm = (DefaultTableModel) jTableRepository.getModel();
             j = dtm.getRowCount();
             for (i = 0; i < j; i++) {
                 dtm.removeRow(0);
@@ -1254,7 +1210,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             xincoClientSession.setCurrentSearchResult(new Vector());
             //reset menus
             getJPopupMenuRepository();
-            ((XincoPopUpMenuRepository) jPopupMenuRepository).resetItems();
+            jPopupMenuRepository.resetItems();
             ((XincoMenuRepository) jMenuRepository).resetItems();
             //status = disconnected
             if (xincoClientSession.getStatus() == 0) {
@@ -1296,13 +1252,12 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      *
      * @return javax.swing.JInternalFrame
      */
-    protected JInternalFrame getJInternalFrameInformation() {
+    private JInternalFrame getJInternalFrameInformation() {
         if (jInternalFrameInformation == null) {
             jInternalFrameInformation = new JInternalFrame();
             jInternalFrameInformation.setContentPane(getJContentPaneInformation());
             jInternalFrameInformation.setTitle(xerb.getString("window.information"));
             jInternalFrameInformation.setBounds(this.getWidth() - 450, this.getHeight() - 220, 400, 150);
-            jInternalFrameInformation.setFrameIcon(getXincoIcon());
         }
         return jInternalFrameInformation;
     }
@@ -1312,87 +1267,85 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      *
      * @return void
      */
-    private void switchPLAF(String plaf_string) {
+    private void switchPLAF(String plafString) {
         try {
             //set LAF
-            UIManager.setLookAndFeel(plaf_string);
+            UIManager.setLookAndFeel(plafString);
             //update EACH window
             SwingUtilities.updateComponentTreeUI(XincoExplorer.this);
-            //Log/Folder/Data/ACL/DataType/AddAttributesUniversal/Connection/User/TransactionInfo
-            if (jDialogLog != null) {
-                SwingUtilities.updateComponentTreeUI(jDialogLog);
+            if (getDialogs() != null) {
+                for (int i = 0; i < getDialogs().size(); i++) {
+                    if (getDialogs().get(i) != null) {
+                        SwingUtilities.updateComponentTreeUI((AbstractDialog) getDialogs().get(i));
+                    }
+                }
             }
-            if (jDialogFolder != null) {
-                SwingUtilities.updateComponentTreeUI(jDialogFolder);
-            }
-            if (jDialogData != null) {
-                SwingUtilities.updateComponentTreeUI(jDialogData);
-            }
-            if (jDialogArchive != null) {
-                SwingUtilities.updateComponentTreeUI(jDialogArchive);
-            }
-            if (jDialogACL != null) {
-                SwingUtilities.updateComponentTreeUI(jDialogACL);
-            }
-            if (jDialogDataType != null) {
-                SwingUtilities.updateComponentTreeUI(jDialogDataType);
+            //TODO: Convert to forms
+            if (JDialogLocale != null) {
+                SwingUtilities.updateComponentTreeUI(JDialogLocale);
             }
             if (jDialogRevision != null) {
                 SwingUtilities.updateComponentTreeUI(jDialogRevision);
             }
-            if (jDialogAddAttributesUniversal != null) {
-                SwingUtilities.updateComponentTreeUI(jDialogAddAttributesUniversal);
-            }
-            if (jDialogConnection != null) {
-                SwingUtilities.updateComponentTreeUI(jDialogConnection);
-            }
-            if (jDialogUser != null) {
-                SwingUtilities.updateComponentTreeUI(jDialogUser);
-            }
-            if (jDialogTransactionInfo != null) {
-                SwingUtilities.updateComponentTreeUI(jDialogTransactionInfo);
-            }
-            if (jTreeRepository != null) {
-                SwingUtilities.updateComponentTreeUI(jTreeRepository);
-            }
         } catch (Exception plafe) {
-            if (getSettings().getSetting("setting.enable.developermode").isBool_value()) {
-                plafe.printStackTrace();
-            }
+            Logger.getLogger(XincoExplorer.class.getName()).log(Level.SEVERE, null, plafe);
+            resetExplorer();
         }
     }
-    /**
-     * This method initializes jDialogFolder
-     *
-     * @return javax.swing.JDialog
-     */
 
-    public javax.swing.JDialog getJDialogFolder() {
-        if (jDialogFolder == null) {
-            jDialogFolder = new DataFolderDialog(null, true, this);
-            this.addDialog(jDialogFolder);
-        }
-        return jDialogFolder;
-    }
     /**
-     * This method initializes jDialogACL
-     *
-     * @return javax.swing.JDialog
+     * Reset XincoExplorer dialogs
      */
-
-    public javax.swing.JDialog getJDialogACL() {
-        if (jDialogACL == null) {
-            jDialogACL = new ACLDialog(new javax.swing.JFrame(), true, this);
-            this.addDialog(jDialogACL);
+    public void resetExplorer() {
+        for (int i = 0; i < getDialogs().size(); i++) {
+            ((AbstractDialog) getDialogs().get(i)).clearDialog();
         }
-        return jDialogACL;
     }
+
+    /**
+     * This method initializes AbstractDialogFolder
+     *
+     * @return AbstractDialog
+     */
+    public AbstractDialog getAbstractDialogFolder() {
+        if (AbstractDialogFolder == null) {
+            AbstractDialogFolder = new DataFolderDialog(null, true, this);
+            addDialog(AbstractDialogFolder);
+        }
+        return AbstractDialogFolder;
+    }
+
+    /**
+     *
+     * @return AbstractDialog
+     */
+    protected AbstractDialog getAbstractDialogLock() {
+        if (lockDialog == null) {
+            lockDialog = new LockDialog(null, true, this);
+            addDialog(lockDialog);
+        }
+        lockDialog.setVisible(true);
+        return lockDialog;
+    }
+
+    /**
+     * This method initializes AbstractDialogACL
+     *
+     * @return AbstractDialog
+     */
+    public AbstractDialog getAbstractDialogACL() {
+        if (AbstractDialogACL == null) {
+            AbstractDialogACL = new ACLDialog(new javax.swing.JFrame(), true, this);
+            addDialog(AbstractDialogACL);
+        }
+        return AbstractDialogACL;
+    }
+
     /**
      * This method initializes jContentPaneDialogRevision
      *
      * @return javax.swing.JPanel
      */
-
     private javax.swing.JPanel getJContentPaneDialogRevision() {
         if (jContentPaneDialogRevision == null) {
             jContentPaneDialogRevision = new javax.swing.JPanel();
@@ -1404,22 +1357,21 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         return jContentPaneDialogRevision;
     }
+
     /**
      * This method initializes jDialogRevision
      *
-     * @return javax.swing.JDialog
+     * @return AbstractDialog
      */
-
-    private javax.swing.JDialog getJDialogRevision() {
+    private JDialog getJDialogRevision() {
         if (jDialogRevision == null) {
-            jDialogRevision = new javax.swing.JDialog();
+            jDialogRevision = new JDialog();
             jDialogRevision.setContentPane(getJContentPaneDialogRevision());
             jDialogRevision.setBounds(200, 200, 400, 220);
             jDialogRevision.setTitle(xerb.getString("window.revision"));
             jDialogRevision.setModal(true);
             jDialogRevision.setResizable(false);
             jDialogRevision.getRootPane().setDefaultButton(getJButtonDialogRevisionContinue());
-            this.addDialog(jDialogRevision);
         }
         //processing independent of creation
         int i = 0;
@@ -1427,17 +1379,21 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         if (xincoClientSession.getCurrentTreeNodeSelection().getUserObject() != null) {
             DefaultListModel dlm = (DefaultListModel) jListDialogRevision.getModel();
             dlm.removeAllElements();
-            Calendar cal;
-            Calendar realcal;
+            Calendar cal = null;
+            Calendar realcal = null;
             Calendar ngc = new GregorianCalendar();
             for (i = 0; i < ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().size(); i++) {
-                if ((((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getOp_code() == 1) || (((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getOp_code() == 5)) {
+                if ((((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getOp_code() == 1) ||
+                        (((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getOp_code() == 5)) {
                     //convert clone from remote time to local time
                     cal = (Calendar) ((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getOp_datetime().clone();
-                    realcal = ((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getOp_datetime();
+                    realcal = (((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getOp_datetime());
                     cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - realcal.get(Calendar.ZONE_OFFSET)) - (ngc.get(Calendar.DST_OFFSET) + realcal.get(Calendar.DST_OFFSET)));
                     text = "" + cal.get(Calendar.YEAR) + "/" + (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DAY_OF_MONTH);
-                    text = text + " - " + xerb.getString("general.version") + " " + ((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getVersion().getVersion_high() + "." + ((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getVersion().getVersion_mid() + "." + ((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getVersion().getVersion_low() + "" + ((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getVersion().getVersion_postfix();
+                    text = text + " - " + xerb.getString("general.version") + " " + ((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getVersion().getVersion_high() +
+                            "." + ((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getVersion().getVersion_mid() + "." +
+                            ((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getVersion().getVersion_low() + " " +
+                            ((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getVersion().getVersion_postfix();
                     text = text + " - " + ((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getOp_description();
 
                     dlm.addElement(text);
@@ -1446,12 +1402,12 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         return jDialogRevision;
     }
+
     /**
      * This method initializes jLabelDialogRevision
      *
      * @return javax.swing.JLabel
      */
-
     private javax.swing.JLabel getJLabelDialogRevision() {
         if (jLabelDialogRevision == null) {
             jLabelDialogRevision = new javax.swing.JLabel();
@@ -1460,12 +1416,12 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         return jLabelDialogRevision;
     }
+
     /**
      * This method initializes jScrollPaneDialogRevision
      *
      * @return javax.swing.JScrollPane
      */
-
     private javax.swing.JScrollPane getJScrollPaneDialogRevision() {
         if (jScrollPaneDialogRevision == null) {
             jScrollPaneDialogRevision = new javax.swing.JScrollPane();
@@ -1475,12 +1431,12 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         return jScrollPaneDialogRevision;
     }
+
     /**
      * This method initializes jListDialogRevision
      *
      * @return javax.swing.JList
      */
-
     private javax.swing.JList getJListDialogRevision() {
         if (jListDialogRevision == null) {
             DefaultListModel dlm = new DefaultListModel();
@@ -1490,12 +1446,12 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         return jListDialogRevision;
     }
+
     /**
      * This method initializes jButtonDialogRevisionContinue
      *
      * @return javax.swing.JButton
      */
-
     private javax.swing.JButton getJButtonDialogRevisionContinue() {
         if (jButtonDialogRevisionContinue == null) {
             jButtonDialogRevisionContinue = new javax.swing.JButton();
@@ -1503,32 +1459,32 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jButtonDialogRevisionContinue.setText(xerb.getString("general.continue"));
             jButtonDialogRevisionContinue.addActionListener(new java.awt.event.ActionListener() {
 
-                        public void actionPerformed(java.awt.event.ActionEvent e) {
-                            int i = 0;
-                            int RealLogIndex = -1;
-                            if (jListDialogRevision.getSelectedIndex() >= 0) {
-                                for (i = 0; i < ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().size(); i++) {
-                                    if ((((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getOp_code() == 1) || (((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getOp_code() == 5)) {
-                                        RealLogIndex++;
-                                    }
-                                    if (RealLogIndex == jListDialogRevision.getSelectedIndex()) {
-                                        global_dialog_return_value = ((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getId();
-                                        break;
-                                    }
-                                }
-                                jDialogRevision.setVisible(false);
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    int i = 0;
+                    int RealLogIndex = -1;
+                    if (jListDialogRevision.getSelectedIndex() >= 0) {
+                        for (i = 0; i < ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().size(); i++) {
+                            if ((((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getOp_code() == 1) || (((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getOp_code() == 5)) {
+                                RealLogIndex++;
+                            }
+                            if (RealLogIndex == jListDialogRevision.getSelectedIndex()) {
+                                setGlobal_dialog_return_value(((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(i)).getId());
+                                break;
                             }
                         }
-                    });
+                        jDialogRevision.setVisible(false);
+                    }
+                }
+            });
         }
         return jButtonDialogRevisionContinue;
     }
+
     /**
      * This method initializes jButtonDialogRevisionCancel
      *
      * @return javax.swing.JButton
      */
-
     private javax.swing.JButton getJButtonDialogRevisionCancel() {
         if (jButtonDialogRevisionCancel == null) {
             jButtonDialogRevisionCancel = new javax.swing.JButton();
@@ -1536,44 +1492,46 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             jButtonDialogRevisionCancel.setText(xerb.getString("general.cancel"));
             jButtonDialogRevisionCancel.addActionListener(new java.awt.event.ActionListener() {
 
-                        public void actionPerformed(java.awt.event.ActionEvent e) {
-                            jDialogRevision.setVisible(false);
-                        }
-                    });
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    jDialogRevision.setVisible(false);
+                }
+            });
         }
         return jButtonDialogRevisionCancel;
     }
-    /**
-     * This method initializes jDialogData
-     *
-     * @return javax.swing.JDialog
-     */
 
-    private javax.swing.JDialog getJDialogData() {
-        if (jDialogData == null) {
-            jDialogData = new DataDialog(null, true, this);
-            this.addDialog(jDialogData);
+    /**
+     * This method initializes AbstractDialogData
+     *
+     * @return AbstractDialog
+     */
+    private AbstractDialog getAbstractDialogData() {
+        if (AbstractDialogData == null) {
+            AbstractDialogData = new DataDialog(null, true, this);
+            addDialog(AbstractDialogData);
         }
-        return jDialogData;
+        return AbstractDialogData;
     }
-    /**
-     * This method initializes jDialogLog
-     *
-     * @return javax.swing.JDialog
-     */
 
-    private javax.swing.JDialog getJDialogLog() {
-        if (jDialogLog == null) {
-            jDialogLog = new LogDialog(null, true, this);
-            this.addDialog(jDialogLog);
+    /**
+     * This method initializes AbstractDialogLog
+     *
+     * @return AbstractDialog
+     */
+    private AbstractDialog getAbstractDialogLog(boolean editableVersion) {
+        if (AbstractDialogLog == null) {
+            AbstractDialogLog = new LogDialog(null, true, this, editableVersion);
+            addDialog(AbstractDialogLog);
         }
-        return jDialogLog;
+        return AbstractDialogLog;
     }
 
     /**
      * This method imports files + subfolders of a folder into node
      *
-     * @return void
+     * @param node XincoCoreNode
+     * @param folder File
+     * @throws java.lang.Exception 
      */
     @SuppressWarnings("unchecked")
     public void importContentOfFolder(XincoCoreNode node, File folder) throws Exception {
@@ -1586,9 +1544,9 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         newlog = new XincoCoreLog();
         XincoCoreDataType xcdt1 = null;
         //find data type = 1
-        for (j = 0; j < xincoClientSession.getServer_datatypes().size(); j++) {
-            if (((XincoCoreDataType) xincoClientSession.getServer_datatypes().elementAt(j)).getId() == 1) {
-                xcdt1 = (XincoCoreDataType) xincoClientSession.getServer_datatypes().elementAt(j);
+        for (j = 0; j < xincoClientSession.getServerDatatypes().size(); j++) {
+            if (((XincoCoreDataType) xincoClientSession.getServerDatatypes().elementAt(j)).getId() == 1) {
+                xcdt1 = (XincoCoreDataType) xincoClientSession.getServerDatatypes().elementAt(j);
                 break;
             }
         }
@@ -1596,27 +1554,24 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         XincoCoreLanguage xcl1 = null;
         int selection = -1;
         int alt_selection = 0;
-        for (j = 0; j < xincoClientSession.getServer_languages().size(); j++) {
-            if (((XincoCoreLanguage) xincoClientSession.getServer_languages().elementAt(j)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
+        for (j = 0; j < xincoClientSession.getServerLanguages().size(); j++) {
+            if (((XincoCoreLanguage) xincoClientSession.getServerLanguages().elementAt(j)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
                 selection = j;
                 break;
             }
-            if (((XincoCoreLanguage) xincoClientSession.getServer_languages().elementAt(j)).getId() == 1) {
+            if (((XincoCoreLanguage) xincoClientSession.getServerLanguages().elementAt(j)).getId() == 1) {
                 alt_selection = j;
             }
         }
         if (selection == -1) {
             selection = alt_selection;
         }
-        xcl1 = (XincoCoreLanguage) xincoClientSession.getServer_languages().elementAt(selection);
+        xcl1 = (XincoCoreLanguage) xincoClientSession.getServerLanguages().elementAt(selection);
         //process files
-        getProgressBar().setTitle(xerb.getString("datawizard.fileuploadinfo"));
-        getProgressBar().show();
+        progressBar.setTitle(xerb.getString("datawizard.fileuploadinfo"));
+        progressBar.show();
         for (i = 0; i < folder_list.length; i++) {
-            if (folder_list.length > 0 && folder_list[i].isFile()) {
-                if (getSettings().getSetting("setting.enable.developermode").isBool_value()) {
-                    System.out.println("Processing file: " + folder_list[i].getName() + "(" + (i + 1) + "/" + folder_list.length + ")");
-                }
+            if (folder_list[i].isFile()) {
                 // set current node to new one
                 newnode = new XincoMutableTreeNode(new XincoCoreData(), this);
                 // set data attributes
@@ -1637,6 +1592,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 for (j = 0; j <
                         ((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().size(); j++) {
                     xaa = new XincoAddAttribute();
+                    // xaa.setAttribute_id(j+1); // bug => attribute_ids might be missing cin between
                     xaa.setAttribute_id(((XincoCoreDataTypeAttribute) xcdt1.getXinco_core_data_type_attributes().elementAt(j)).getAttribute_id());
                     xaa.setAttrib_varchar("");
                     xaa.setAttrib_text("");
@@ -1645,8 +1601,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 }
                 // add log
                 newlog = new XincoCoreLog();
-                newlog.setOp_code(1);
-                newlog.setOp_description(xerb.getString("datawizard.logging.creation") +
+                newlog.setOp_code(OPCode.CREATION.ordinal() + 1);
+                newlog.setOp_description(xerb.getString(OPCode.getOPCode(newlog.getOp_code()).getName()) +
                         "!" + " (" +
                         xerb.getString("general.user") + ": " +
                         xincoClientSession.getUser().getUsername() +
@@ -1665,19 +1621,19 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 long total_len = 0;
                 boolean useSAAJ = false;
 
-                if (((xincoClientSession.getServer_version().getVersion_high() == 1) &&
-                        (xincoClientSession.getServer_version().getVersion_mid() >= 9)) ||
-                        (xincoClientSession.getServer_version().getVersion_high() > 1)) {
+                if (((xincoClientSession.getServerVersion().getVersion_high() == 1) &&
+                        (xincoClientSession.getServerVersion().getVersion_mid() >= 9)) ||
+                        (xincoClientSession.getServerVersion().getVersion_high() > 1)) {
                     useSAAJ = true;
                 } else {
                     useSAAJ = false;
                 }
-                CheckedInputStream in = null;
+                CheckedInputStream cin = null;
                 ByteArrayOutputStream out = null;
 
                 byte_array = null;
                 try {
-                    in = new CheckedInputStream(new FileInputStream(folder_list[i]),
+                    cin = new CheckedInputStream(new FileInputStream(folder_list[i]),
                             new CRC32());
                     if (useSAAJ) {
                         total_len = folder_list[i].length();
@@ -1687,7 +1643,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         int len = 0;
 
                         total_len = 0;
-                        while ((len = in.read(buf)) > 0) {
+                        while ((len = cin.read(buf)) > 0) {
                             out.write(buf, 0, len);
                             total_len = total_len + len;
                         }
@@ -1698,25 +1654,22 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(0)).setAttrib_varchar(folder_list[i].getName());
                     ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(1)).setAttrib_unsignedint(total_len);
                     ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(2)).setAttrib_varchar("" +
-                            in.getChecksum().getValue());
+                            cin.getChecksum().getValue());
                     ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(1);
                     ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(4)).setAttrib_unsignedint(0);
                     if (!useSAAJ) {
-                        in.close();
+                        cin.close();
                     }
                 } catch (Exception fe) {
-                    if (getSettings().getSetting("setting.enable.developermode").isBool_value()) {
-                        fe.printStackTrace();
-                    }
                     throw new XincoException(xerb.getString("datawizard.unabletoloadfile"));
                 }
                 // save data to server
-                setXdata(xincoClientSession.getXinco().setXincoCoreData((XincoCoreData) newnode.getUserObject(), xincoClientSession.getUser()));
-                if (getXdata() == null) {
+                xdata = xincoClientSession.getXinco().setXincoCoreData((XincoCoreData) newnode.getUserObject(), xincoClientSession.getUser());
+                if (xdata == null) {
                     throw new XincoException(xerb.getString("datawizard.unabletosavedatatoserver"));
                 }
-                newnode.setUserObject(getXdata());
-                // update id in log
+                newnode.setUserObject(xdata);
+                // update id cin log
                 newlog.setXinco_core_data_id(((XincoCoreData) newnode.getUserObject()).getId());
                 // save log to server
                 newlog = xincoClientSession.getXinco().setXincoCoreLog(newlog, xincoClientSession.getUser());
@@ -1725,23 +1678,21 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 // attach file to SOAP message
                 if (useSAAJ) {
                     AttachmentPart ap = null;
+
                     ap = new AttachmentPart();
-                    ap.setContent(in, "unknown/unknown");
+                    ap.setContent(cin, "unknown/unknown");
                     ((XincoSoapBindingStub) xincoClientSession.getXinco()).addAttachment(ap);
                 }
-                if (this.getFilesToBeIndexed() == null) {
-                    this.setFilesToBeIndexed(new Vector());
-                }
-                this.getFilesToBeIndexed().add((XincoCoreData) newnode.getUserObject());
                 // upload file
                 if (xincoClientSession.getXinco().uploadXincoCoreData((XincoCoreData) newnode.getUserObject(),
-                        byte_array, xincoClientSession.getUser()) != total_len) {
+                        byte_array, xincoClientSession.getUser()) !=
+                        total_len) {
                     ((XincoSoapBindingStub) xincoClientSession.getXinco()).clearAttachments();
-                    in.close();
+                    cin.close();
                     throw new XincoException(xerb.getString("datawizard.fileuploadfailed"));
                 }
                 ((XincoSoapBindingStub) xincoClientSession.getXinco()).clearAttachments();
-                in.close();
+                cin.close();
                 // update treemodel
                 xincoClientSession.getXincoClientRepository().treemodel.reload(newnode);
                 xincoClientSession.getXincoClientRepository().treemodel.nodeChanged(newnode);
@@ -1759,27 +1710,13 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 ((XincoCoreNode) newnode.getUserObject()).setDesignation(folder_list[i].getName());
                 ((XincoCoreNode) newnode.getUserObject()).setXinco_core_language(xcl1);
                 ((XincoCoreNode) newnode.getUserObject()).setStatus_number(1);
-                if (getSettings().getSetting("setting.enable.developermode").isBool_value()) {
-                    System.out.println("Node Info:");
-                    System.out.println(((XincoCoreNode) newnode.getUserObject()).getXinco_core_node_id());
-                    System.out.println(((XincoCoreNode) newnode.getUserObject()).getDesignation());
-                    System.out.println(((XincoCoreNode) newnode.getUserObject()).getXinco_core_language().getChangerID());
-                    System.out.println(((XincoCoreNode) newnode.getUserObject()).getStatus_number());
-                    System.out.println("------------------------");
-                    System.out.println("Node Selected: " + xincoClientSession.getCurrentTreeNodeSelection());
-                }
-                //Recovery code
+                // Bug fix by cmichl for Import Data Structure java.lang.NullPointerException (http://www.bluecubs.com/viewtopic.php?xincoCoreUser=500)
                 if (xincoClientSession.getCurrentTreeNodeSelection() == null) {
                     xincoClientSession.setCurrentTreeNodeSelection(previousnode);
                 }
-                //-------
-                if (getSettings().getSetting("setting.enable.developermode").isBool_value()) {
-                    System.out.println("Child Count: " + xincoClientSession.getCurrentTreeNodeSelection().getChildCount());
-                    System.out.println("New node: " + newnode);
-                }
+                //End bug fix
                 xincoClientSession.getXincoClientRepository().treemodel.insertNodeInto(newnode,
                         xincoClientSession.getCurrentTreeNodeSelection(), xincoClientSession.getCurrentTreeNodeSelection().getChildCount());
-                previousnode = xincoClientSession.getCurrentTreeNodeSelection();
                 xincoClientSession.setCurrentTreeNodeSelection(newnode);
                 // save node to server
                 xnode = xincoClientSession.getXinco().setXincoCoreNode((XincoCoreNode) newnode.getUserObject(), xincoClientSession.getUser());
@@ -1794,45 +1731,117 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 importContentOfFolder((XincoCoreNode) newnode.getUserObject(),
                         folder_list[i]);
                 // select parent of new node
-                // Bug fix by cmichl for Import Data Structure java.lang.NullPointerException (http://www.bluecubs.com/viewtopic.php?t=500)
-                if (newnode.getParent() != null) { 
-                xincoClientSession.setCurrentTreeNodeSelection((XincoMutableTreeNode) newnode.getParent());
+                // Bug fix by cmichl for Import Data Structure java.lang.NullPointerException (http://www.bluecubs.com/viewtopic.php?xincoCoreUser=500)
+                if (newnode.getParent() != null) {
+                    xincoClientSession.setCurrentTreeNodeSelection((XincoMutableTreeNode) newnode.getParent());
                 }
             }
         }
-        getProgressBar().hide();
+        refreshJTree();
+        progressBar.hide();
     }
+
+    /**
+     * This method download files + subnodes of a node into folder
+     *
+     * @param node XincoCoreNode
+     * @param folder File
+     * @throws java.lang.Exception 
+     */
+    @SuppressWarnings("unchecked")
+    public void downloadContentOfNode(XincoCoreNode node, File folder) throws Exception {
+        int i = 0;
+        XincoMutableTreeNode currentNode = null;
+
+        if (xincoClientSession.getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
+            currentNode = xincoClientSession.getCurrentTreeNodeSelection();
+
+            // only nodes have children
+            if (currentNode.getUserObject().getClass() == XincoCoreNode.class) {
+                // check for children only if none have been found yet
+                if ((((XincoCoreNode) currentNode.getUserObject()).getXinco_core_nodes().size() == 0) &&
+                        (((XincoCoreNode) currentNode.getUserObject()).getXinco_core_data().size() == 0)) {
+                    try {
+                        XincoCoreNode xnode = xincoClientSession.getXinco().getXincoCoreNode((XincoCoreNode) currentNode.getUserObject(), xincoClientSession.getUser());
+
+                        if (xnode != null) {
+                            xincoClientSession.getXincoClientRepository().assignObject2TreeNode(currentNode,
+                                    xnode, xincoClientSession.getXinco(), xincoClientSession.getUser(),
+                                    2);
+                        }
+                    } catch (Exception rmie) {
+                    }
+                }
+            }
+
+            // download files of node
+            for (i = 0; i < currentNode.getChildCount(); i++) {
+                if (((XincoMutableTreeNode) currentNode.getChildAt(i)).getUserObject().getClass() == XincoCoreData.class) {
+                    if (((XincoCoreData) ((XincoMutableTreeNode) currentNode.getChildAt(i)).getUserObject()).getXinco_core_data_type().getId() == 1) {
+                        xincoClientSession.setCurrentTreeNodeSelection((XincoMutableTreeNode) currentNode.getChildAt(i));
+                        // load full data
+                        try {
+                            XincoCoreData tempXdata = xincoClientSession.getXinco().getXincoCoreData(((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()), xincoClientSession.getUser());
+                            if (tempXdata != null) {
+                                xincoClientSession.getCurrentTreeNodeSelection().setUserObject(tempXdata);
+                                xincoClientSession.getXincoClientRepository().treemodel.nodeChanged(xincoClientSession.getCurrentTreeNodeSelection());
+                                // download file
+                                setCurrentPathFilename(folder.getAbsolutePath() + System.getProperty("file.separator") + ((XincoAddAttribute) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(0)).getAttrib_varchar());
+                                doDataWizard(15);
+                            }
+                        } catch (Exception rmie) {
+                        }
+                    }
+                }
+            }
+
+            // process subnodes
+            for (i = 0; i < currentNode.getChildCount(); i++) {
+                if (((XincoMutableTreeNode) currentNode.getChildAt(i)).getUserObject().getClass() == XincoCoreNode.class) {
+                    File newfolder = null;
+                    newfolder = new File(folder.getAbsolutePath() + System.getProperty("file.separator") + ((XincoCoreNode) ((XincoMutableTreeNode) currentNode.getChildAt(i)).getUserObject()).getDesignation());
+                    if (newfolder.mkdirs() || newfolder.isDirectory()) {
+                        xincoClientSession.setCurrentTreeNodeSelection((XincoMutableTreeNode) currentNode.getChildAt(i));
+                        downloadContentOfNode((XincoCoreNode) xincoClientSession.getCurrentTreeNodeSelection().getUserObject(), newfolder);
+                    }
+                }
+            }
+
+        }
+
+    }
+
     /**
      * This method leads through data adding/editing
      *
-     * @return void
+     * @param wizard_type 
      */
-
     @SuppressWarnings("unchecked")
     public void doDataWizard(final int wizard_type) {
         this.wizard_type = wizard_type;
         /*
-                     wizard type	= 1  = add new data
-                                        = 2  = edit data object
-                                        = 3  = edit add attributes
-                                        = 4  = checkout data
-                                        = 5  = undo checkout
-                                        = 6  = checkin data
-                                        = 7  = download data
-                                        = 8  = open URL in browser
-                                        = 9  = open email client with contact information
-                                        = 10 = publish data
-                                        = 11 = download previous revision
-                                        = 12 = lock data
-                                        = 13 = comment data
-                                        = 14 = preview data
-                 */
-        int i = 0;
+        wizard type	= 1  = add new data
+        = 2  = edit data object
+        = 3  = edit add attributes
+        = 4  = checkout data
+        = 5  = undo checkout
+        = 6  = checkin data
+        = 7  = download data
+        = 8  = open URL cin browser
+        = 9  = open email client with contact information
+        = 10 = publish data
+        = 11 = download previous revision
+        = 12 = lock data
+        = 13 = comment data
+        = 14 = preview data
+        = 15 = download file with predefined name
+         */
+        int i = 0, j = 0;
         newnode = new XincoMutableTreeNode(new XincoCoreData(), this);
         xdata = null;
         newlog = new XincoCoreLog();
 
-        InputStream in = null;
+        in = null;
         byte_array = null;
         if (xincoClientSession.getCurrentTreeNodeSelection() != null) {
             //execute wizard as a whole
@@ -1846,8 +1855,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     //set data attributes
                     ((XincoCoreData) newnode.getUserObject()).setXinco_core_node_id(((XincoCoreNode) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getId());
                     ((XincoCoreData) newnode.getUserObject()).setDesignation(xerb.getString("datawizard.newdata"));
-                    ((XincoCoreData) newnode.getUserObject()).setXinco_core_data_type((XincoCoreDataType) xincoClientSession.getServer_datatypes().elementAt(0));
-                    ((XincoCoreData) newnode.getUserObject()).setXinco_core_language((XincoCoreLanguage) xincoClientSession.getServer_languages().elementAt(0));
+                    ((XincoCoreData) newnode.getUserObject()).setXinco_core_data_type((XincoCoreDataType) xincoClientSession.getServerDatatypes().elementAt(0));
+                    ((XincoCoreData) newnode.getUserObject()).setXinco_core_language((XincoCoreLanguage) xincoClientSession.getServerLanguages().elementAt(0));
                     ((XincoCoreData) newnode.getUserObject()).setXinco_add_attributes(new Vector());
                     ((XincoCoreData) newnode.getUserObject()).setXinco_core_acl(new Vector());
                     ((XincoCoreData) newnode.getUserObject()).setXinco_core_logs(new Vector());
@@ -1856,11 +1865,11 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     xincoClientSession.setCurrentTreeNodeSelection(newnode);
 
                     //step 1: select data type
-                    jDialogDataType = new DataTypeDialog(null, true, this);
-                    global_dialog_return_value = 0;
-                    jDialogDataType.setVisible(true);
-                    if (global_dialog_return_value == 0) {
-                        this.getProgressBar().hide();
+                    AbstractDialogDataType = new DataTypeDialog(null, true, this);
+                    setGlobal_dialog_return_value(0);
+                    AbstractDialogDataType.setVisible(true);
+                    if (getGlobal_dialog_return_value() == 0) {
+                        this.progressBar.hide();
                         throw new XincoException(xerb.getString("datawizard.updatecancel"));
                     }
 
@@ -1881,31 +1890,39 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(1); //revision model
                         ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(4)).setAttrib_unsignedint(0); //archiving model
                     }
+
                 }
+
                 if (xincoClientSession.getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
+
                     newnode = xincoClientSession.getCurrentTreeNodeSelection();
+
                     //check file attribute count
                     //file = 1
                     if ((wizard_type == 3) &&
                             ((((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId() == 1) &&
                             (((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().size() <= 3))) {
-                        this.getProgressBar().hide();
+                        this.progressBar.hide();
                         throw new XincoException(xerb.getString("datawizard.noaddattributes"));
                     }
+
                     //edit add attributes
                     if ((wizard_type == 1) || (wizard_type == 3)) {
+
                         //step 2: edit add attributes
                         //for files -> show filechooser
                         //file = 1
                         if ((wizard_type == 1) &&
                                 (((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId() == 1)) {
                             JFileChooser fc = new JFileChooser();
+
                             fc.setCurrentDirectory(new File(current_path));
                             fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
                             // show dialog
                             int result = fc.showOpenDialog(XincoExplorer.this);
+
                             if (result != JFileChooser.APPROVE_OPTION) {
-                                this.getProgressBar().hide();
+                                this.progressBar.hide();
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                             setCurrentPathFilename(fc.getSelectedFile().getPath());
@@ -1914,91 +1931,105 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         //for text -> show text editing dialog
                         //text = 2
                         if (((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId() == 2) {
-                            jDialogAddAttributesText = getJDialogAddAttributesText();
-                            global_dialog_return_value = 0;
-                            jDialogAddAttributesText.showMe();
-                            if (global_dialog_return_value == 0) {
-                                this.getProgressBar().hide();
+                            AbstractDialogAddAttributesText = getAbstractDialogAddAttributesText();
+                            setGlobal_dialog_return_value(0);
+                            AbstractDialogAddAttributesText.setVisible(true);
+                            if (getGlobal_dialog_return_value() == 0) {
+                                this.progressBar.hide();
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                         }
                         //show dialog for all additional attributes and custom data types
                         //file = 1 / text = 2
-                        if ((((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId() != 1 ||
-                                ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().size() > 8) &&
-                                (((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId() != 2 ||
-                                ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().size() > 1)) {
+                        if ((((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId() !=
+                                1 ||
+                                ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().size() >
+                                8) &&
+                                (((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId() !=
+                                2 ||
+                                ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().size() >
+                                1)) {
                             //for other data type -> show universal add attribute dialog
-                            jDialogAddAttributesUniversal = new AddAttributeUniversalDialog(null, true, this);
-                            global_dialog_return_value = 0;
-                            jDialogAddAttributesUniversal.setVisible(true);
-                            if (global_dialog_return_value == 0) {
-                                this.getProgressBar().hide();
+                            AbstractDialogAddAttributesUniversal = new AddAttributeUniversalDialog(null, true, this);
+                            setGlobal_dialog_return_value(0);
+                            AbstractDialogAddAttributesUniversal.setVisible(true);
+                            if (getGlobal_dialog_return_value() == 0) {
+                                this.progressBar.hide();
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                         }
+
                     }
+
                     //edit logging
                     //step 3: edit logging (creation!)
                     if (wizard_type == 1) {
                         newlog = new XincoCoreLog();
-                        newlog.setOp_code(1);
-                        newlog.setOp_description(xerb.getString("datawizard.logging.creation") + "!");
+                        newlog.setOp_code(OPCode.CREATION.ordinal() + 1);
+                        newlog.setOp_description(xerb.getString(OPCode.getOPCode(newlog.getOp_code()).getName()) + "!");
                         newlog.setXinco_core_user_id(xincoClientSession.getUser().getId());
                         newlog.setXinco_core_data_id(((XincoCoreData) newnode.getUserObject()).getId()); //update to new id later!
                         newlog.setVersion(new XincoVersion());
-                        newlog.getVersion().setVersion_high(1);
+                        newlog.getVersion().setVersion_high(0);
                         newlog.getVersion().setVersion_mid(0);
                         newlog.getVersion().setVersion_low(0);
                         newlog.getVersion().setVersion_postfix("");
                         ((XincoCoreData) newnode.getUserObject()).setXinco_core_logs(new Vector());
                         ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().addElement(newlog);
+                        AbstractDialogLog = getAbstractDialogLog(true);
+                        setGlobal_dialog_return_value(0);
+                        AbstractDialogLog.setVisible(true);
+                        if (getGlobal_dialog_return_value() == 0) {
+                            this.progressBar.hide();
+                            throw new XincoException(xerb.getString("datawizard.updatecancel"));
+                        }
                         newlog.setOp_description(newlog.getOp_description() + " (" + xerb.getString("general.user") + ": " + xincoClientSession.getUser().getUsername() + ")");
                     } else {
-                        if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14)) {
+                        if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14) && (wizard_type != 15)) {
                             newlog = new XincoCoreLog();
                             if (wizard_type <= 3) {
-                                newlog.setOp_code(2);
-                                newlog.setOp_description(xerb.getString("datawizard.logging.modification") + "!");
+                                newlog.setOp_code(OPCode.MODIFICATION.ordinal() + 1);
+                                newlog.setOp_description(xerb.getString(OPCode.getOPCode(newlog.getOp_code()).getName()) + "!");
                             }
                             if (wizard_type == 4) {
-                                newlog.setOp_code(3);
-                                newlog.setOp_description(xerb.getString("datawizard.logging.checkoutchangesplanned"));
+                                newlog.setOp_code(OPCode.CHECKOUT.ordinal() + 1);
+                                newlog.setOp_description(xerb.getString(OPCode.getOPCode(newlog.getOp_code()).getName()));
                             }
                             if (wizard_type == 5) {
-                                newlog.setOp_code(4);
-                                newlog.setOp_description(xerb.getString("datawizard.logging.checkoutundone"));
+                                newlog.setOp_code(OPCode.CHECKOUT_UNDONE.ordinal() + 1);
+                                newlog.setOp_description(xerb.getString(OPCode.getOPCode(newlog.getOp_code()).getName()));
                             }
                             if (wizard_type == 6) {
-                                newlog.setOp_code(5);
-                                newlog.setOp_description(xerb.getString("datawizard.logging.checkinchangesmade"));
+                                newlog.setOp_code(OPCode.CHECKIN.ordinal() + 1);
+                                newlog.setOp_description(xerb.getString(OPCode.getOPCode(newlog.getOp_code()).getName()));
                             }
                             if (wizard_type == 10) {
-                                newlog.setOp_code(6);
-                                newlog.setOp_description(xerb.getString("datawizard.logging.publishcomment"));
+                                newlog.setOp_code(OPCode.PUBLISH_COMMENT.ordinal() + 1);
+                                newlog.setOp_description(xerb.getString(OPCode.getOPCode(newlog.getOp_code()).getName()));
                             }
                             if (wizard_type == 12) {
-                                newlog.setOp_code(7);
-                                newlog.setOp_description(xerb.getString("datawizard.logging.lockcomment"));
+                                newlog.setOp_code(OPCode.LOCK_COMMENT.ordinal() + 1);
+                                newlog.setOp_description(xerb.getString(OPCode.getOPCode(newlog.getOp_code()).getName()));
                             }
                             if (wizard_type == 13) {
-                                newlog.setOp_code(9);
-                                newlog.setOp_description(xerb.getString("datawizard.logging.commentcomment"));
+                                newlog.setOp_code(OPCode.COMMENT_COMMENT.ordinal() + 1);
+                                newlog.setOp_description(xerb.getString(OPCode.getOPCode(newlog.getOp_code()).getName()));
                             }
                             newlog.setXinco_core_user_id(xincoClientSession.getUser().getId());
                             newlog.setXinco_core_data_id(((XincoCoreData) newnode.getUserObject()).getId());
                             newlog.setVersion(((XincoCoreLog) ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().elementAt(((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().size() - 1)).getVersion());
                             ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().addElement(newlog);
-                            jDialogLog = getJDialogLog();
-                            global_dialog_return_value = 0;
-                            jDialogLog.setVisible(true);
-                            if (global_dialog_return_value == 0) {
-                                this.getProgressBar().hide();
-                                throw new XincoException(xerb.getString("datawizard.updatecancel"));
+                            //Nothing to do in log dialog for checkout...
+                            if (wizard_type != 4) {
+                                AbstractDialogLog = getAbstractDialogLog(false);
+                                setGlobal_dialog_return_value(0);
+                                AbstractDialogLog.setVisible(true);
+                                if (getGlobal_dialog_return_value() == 0) {
+                                    this.progressBar.hide();
+                                    throw new XincoException(xerb.getString("datawizard.updatecancel"));
+                                }
                             }
-                            newlog.setOp_description(newlog.getOp_description() +
-                                    " (" + xerb.getString("general.user") + ": " +
-                                    xincoClientSession.getUser().getUsername() + ")");
+                            newlog.setOp_description(newlog.getOp_description() + " (" + xerb.getString("general.user") + ": " + xincoClientSession.getUser().getUsername() + ")");
                         }
                     }
 
@@ -2019,7 +2050,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             result = fc.showOpenDialog(XincoExplorer.this);
                         }
                         if (result != JFileChooser.APPROVE_OPTION) {
-                            this.getProgressBar().hide();
+                            this.progressBar.hide();
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
                         }
                         setCurrentPathFilename(fc.getSelectedFile().getPath());
@@ -2032,24 +2063,25 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     if ((wizard_type == 1) || (wizard_type == 2)) {
 
                         //step 4: edit data details
-                        jDialogData = getJDialogData();
-                        global_dialog_return_value = 0;
-                        jDialogData.setVisible(true);
-                        if (global_dialog_return_value == 0) {
-                            this.getProgressBar().hide();
+                        AbstractDialogData = getAbstractDialogData();
+                        setGlobal_dialog_return_value(0);
+                        AbstractDialogData.setVisible(true);
+                        if (getGlobal_dialog_return_value() == 0) {
+                            this.progressBar.hide();
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
                         }
 
                         //step 4b: edit archiving options of files
                         if (((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId() == 1) {
-                            jDialogArchive = getJDialogArchive();
-                            global_dialog_return_value = 0;
-                            jDialogArchive.setVisible(true);
-                            if (global_dialog_return_value == 0) {
-                                this.getProgressBar().hide();
+                            AbstractDialogArchive = getAbstractDialogArchive();
+                            setGlobal_dialog_return_value(0);
+                            AbstractDialogArchive.setVisible(true);
+                            if (getGlobal_dialog_return_value() == 0) {
+                                this.progressBar.hide();
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                         }
+
                     }
                     //set status = published
                     if (wizard_type == 10) {
@@ -2064,7 +2096,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     //load file (new / checkin)
                     long total_len = 0;
                     boolean useSAAJ = false;
-                    if (((xincoClientSession.getServer_version().getVersion_high() == 1) && (xincoClientSession.getServer_version().getVersion_mid() >= 9)) || (xincoClientSession.getServer_version().getVersion_high() > 1)) {
+                    if (((xincoClientSession.getServerVersion().getVersion_high() == 1) && (xincoClientSession.getServerVersion().getVersion_mid() >= 9)) || (xincoClientSession.getServerVersion().getVersion_high() > 1)) {
                         useSAAJ = true;
                     } else {
                         useSAAJ = false;
@@ -2074,8 +2106,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     if (((wizard_type == 1) || (wizard_type == 6)) && (((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId() == 1)) {
                         try {
                             //update transaction info
-                            getProgressBar().setTitle(xerb.getString("datawizard.fileuploadinfo"));
-                            getProgressBar().show();
+                            progressBar.setTitle(xerb.getString("datawizard.fileuploadinfo"));
+                            progressBar.show();
                             jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.fileuploadinfo"));
                             in = new CheckedInputStream(new FileInputStream(current_fullpath), new CRC32());
                             if (useSAAJ) {
@@ -2100,21 +2132,12 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                 in.close();
                             }
                         } catch (Exception fe) {
-                            getProgressBar().hide();
-                            if (getSettings().getSetting("setting.enable.developermode").isBool_value()) {
-                                fe.printStackTrace();
-                            }
+                            progressBar.hide();
                             throw new XincoException(xerb.getString("datawizard.unabletoloadfile"));
                         }
                     }
-                    //Add the created attributes to the holder array
-                    xaah = new XincoAddAttributeHolder[((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().size()];
-                    for (int j = 0; j < ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().size(); j++) {
-                        xaah[j] = new XincoAddAttributeHolder((XincoAddAttribute) (((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(j)));
-                    }
                     //save data to server
-                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) &&
-                            (wizard_type != 14) && (wizard_type != 15) && (wizard_type != 16)) {
+                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14) && (wizard_type != 15)) {
                         if ((wizard_type >= 4) && (wizard_type <= 6)) {
                             if (wizard_type == 4) {
                                 xdata = xincoClientSession.getXinco().doXincoCoreDataCheckout((XincoCoreData) newnode.getUserObject(), xincoClientSession.getUser());
@@ -2128,13 +2151,13 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         } else {
                             xdata = xincoClientSession.getXinco().setXincoCoreData((XincoCoreData) newnode.getUserObject(), xincoClientSession.getUser());
                         }
-                        if (xdata == null && wizard_type != 15) {
+                        if (xdata == null) {
                             throw new XincoException(xerb.getString("datawizard.unabletosavedatatoserver"));
                         }
                         newnode.setUserObject(xdata);
                     }
-                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14)) {
-                        //update id in log
+                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14) && (wizard_type != 15)) {
+                        //update id cin log
                         newlog.setXinco_core_data_id(((XincoCoreData) newnode.getUserObject()).getId());
                         //save log to server
                         newlog = xincoClientSession.getXinco().setXincoCoreLog(newlog, xincoClientSession.getUser());
@@ -2163,29 +2186,30 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         in.close();
                         //update transaction info
                         jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.fileuploadsuccess"));
-                        setXdata((XincoCoreData) newnode.getUserObject());
-                        getProgressBar().hide();
+                        progressBar.hide();
                     }
                     //download file
                     //file = 1
                     if (((wizard_type == 4) || (wizard_type == 7) || (wizard_type == 11) ||
-                            (wizard_type == 14)) &&
+                            (wizard_type == 14) || (wizard_type == 15)) &&
                             (((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId() == 1)) {
                         //determine requested revision and set log vector
-                        getProgressBar().setTitle(xerb.getString("datawizard.filedownloadinfo"));
-                        getProgressBar().show();
+                        if (wizard_type != 15) {
+                            progressBar.setTitle(xerb.getString("datawizard.filedownloadinfo"));
+                            progressBar.show();
+                        }
                         Vector DataLogVector = null;
                         if (wizard_type == 11) {
                             jDialogRevision = getJDialogRevision();
-                            global_dialog_return_value = -1;
+                            setGlobal_dialog_return_value(-1);
                             jDialogRevision.setVisible(true);
-                            if (global_dialog_return_value == -1) {
+                            if (getGlobal_dialog_return_value() == -1) {
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                             DataLogVector = ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs();
                             XincoCoreLog RevLog = null;
                             for (i = 0; i < ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().size(); i++) {
-                                if (((XincoCoreLog) ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().elementAt(i)).getId() == global_dialog_return_value) {
+                                if (((XincoCoreLog) ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().elementAt(i)).getId() == getGlobal_dialog_return_value()) {
                                     RevLog = (XincoCoreLog) ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().elementAt(i);
                                     break;
                                 }
@@ -2197,13 +2221,12 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
 
                         //update transaction info
                         jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.filedownloadinfo"));
-                        //call service
                         try {
                             Message m = null;
                             MessageContext mc = null;
                             AttachmentPart ap = null;
-                            Call call = (Call) xincoClientSession.getXinco_service().createCall();
-                            call.setTargetEndpointAddress(new URL(xincoClientSession.getService_endpoint()));
+                            Call call = (Call) xincoClientSession.getXincoService().createCall();
+                            call.setTargetEndpointAddress(new URL(xincoClientSession.getServiceEndpoint()));
                             call.setOperationName(new QName("urn:Xinco", "downloadXincoCoreData"));
                             Object[] objp = new Object[2];
                             objp[0] = (XincoCoreData) newnode.getUserObject();
@@ -2230,10 +2253,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                                 ((XincoCoreData) newnode.getUserObject()).setXinco_core_logs(DataLogVector);
                             }
                             JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("datawizard.filedownloadfailed"), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
-                            this.getProgressBar().hide();
-                            if (getSettings().getSetting("setting.enable.developermode").isBool_value()) {
-                                ce.printStackTrace();
-                            }
+                            this.progressBar.hide();
                             throw (ce);
                         }
 
@@ -2242,7 +2262,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             ((XincoCoreData) newnode.getUserObject()).setXinco_core_logs(DataLogVector);
                         }
 
-                        //ByteArrayInputStream in = new ByteArrayInputStream(byte_array);
+                        //ByteArrayInputStream cin = new ByteArrayInputStream(byte_array);
                         CheckedOutputStream couts = new CheckedOutputStream(new FileOutputStream(current_fullpath), new CRC32());
                         byte[] buf = new byte[4096];
                         int len = 0;
@@ -2255,6 +2275,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         ((XincoSoapBindingStub) xincoClientSession.getXinco()).clearAttachments();
                         //check correctness of data
                         if (wizard_type != 11) {
+                            //if ((((XincoAddAttribute)((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().elementAt(1)).getAttrib_unsignedint() != total_len) || (((XincoAddAttribute)((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().elementAt(2)).getAttrib_varchar().equals(new String("" + couts.getChecksum().getValue())))) {
                             if (((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(1)).getAttrib_unsignedint() != total_len) {
                                 JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("datawizard.filedownloadcorrupted"), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
                             }
@@ -2266,46 +2287,51 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         }
                         //update transaction info
                         jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.filedownloadsuccess"));
-                        //open file in default application
-                        boolean open_file = false;
-                        if (System.getProperty("os.name").toLowerCase().indexOf("mac") > -1) {
-                            if (wizard_type == 14) {
-                                open_file = true;
-                            } else {
-                                if (JOptionPane.showConfirmDialog(XincoExplorer.this, xerb.getString("datawizard.opendataindefaultapplication"), xerb.getString("general.question"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                        //open file cin default application
+                        if (wizard_type != 15) {
+                            Process process = null;
+                            boolean open_file = false;
+                            if (System.getProperty("os.name").toLowerCase().indexOf("mac") > -1) {
+                                if (wizard_type == 14) {
                                     open_file = true;
+                                } else {
+                                    if (JOptionPane.showConfirmDialog(XincoExplorer.this, xerb.getString("datawizard.opendataindefaultapplication"), xerb.getString("general.question"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                                        open_file = true;
+                                    }
                                 }
-                            }
-                            if (open_file) {
-                                try {
-                                    String[] cmd = {"open", current_fullpath};
-                                    process = Runtime.getRuntime().exec(cmd);
-                                } catch (Throwable t) {
+                                if (open_file) {
+                                    try {
+                                        String[] cmd = {"open", current_fullpath};
+                                        process = Runtime.getRuntime().exec(cmd);
+                                    } catch (Throwable t) {
+                                    }
                                 }
-                            }
-                        } else if (System.getProperty("os.name").toLowerCase().indexOf("windows") > -1) {
-                            if (wizard_type == 14) {
-                                open_file = true;
-                            } else {
-                                if (JOptionPane.showConfirmDialog(XincoExplorer.this, xerb.getString("datawizard.opendataindefaultapplication"), xerb.getString("general.question"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                            } else if (System.getProperty("os.name").toLowerCase().indexOf("windows") > -1) {
+                                if (wizard_type == 14) {
                                     open_file = true;
+                                } else {
+                                    if (JOptionPane.showConfirmDialog(XincoExplorer.this, xerb.getString("datawizard.opendataindefaultapplication"), xerb.getString("general.question"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                                        open_file = true;
+                                    }
                                 }
-                            }
-                            if (open_file) {
-                                try {
-                                    String cmd = "rundll32 url.dll,FileProtocolHandler" + " \"" + current_fullpath + "\"";
-                                    process = Runtime.getRuntime().exec(cmd);
-                                } catch (Throwable t) {
+                                if (open_file) {
+                                    try {
+                                        String cmd = "rundll32 url.dll,FileProtocolHandler" + " \"" + current_fullpath + "\"";
+                                        process = Runtime.getRuntime().exec(cmd);
+                                    } catch (Throwable t) {
+                                    }
                                 }
                             }
                         }
-                        getProgressBar().hide();
+                        if (wizard_type != 15) {
+                            progressBar.hide();
+                        }
                     }
-                    //Open in Browser
+                    //Open cin Browser
                     //URL = 3
                     if ((wizard_type == 8) && (((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId() == 3)) {
-                        //open URL in default browser
-                        process = null;
+                        //open URL cin default browser
+                        Process process = null;
                         String temp_url = ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(0)).getAttrib_varchar();
                         if (System.getProperty("os.name").toLowerCase().indexOf("mac") > -1) {
                             try {
@@ -2321,11 +2347,11 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             }
                         }
                     }
-                    //Open in Email Client
+                    //Open cin Email Client
                     //contact = 4
                     if ((wizard_type == 9) && (((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId() == 4)) {
-                        //open URL in default browser
-                        process = null;
+                        //open URL cin default browser
+                        Process process = null;
                         String temp_email = ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().elementAt(9)).getAttrib_varchar();
                         if (System.getProperty("os.name").toLowerCase().indexOf("mac") > -1) {
                             try {
@@ -2342,7 +2368,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         }
                     }
 
-                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14)) {
+                    if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14) && (wizard_type != 15)) {
                         //update treemodel
                         xincoClientSession.getXincoClientRepository().treemodel.reload(newnode);
                         xincoClientSession.getXincoClientRepository().treemodel.nodeChanged(newnode);
@@ -2365,30 +2391,29 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             } catch (Exception we) {
                 //update transaction info
                 jLabelInternalFrameInformationText.setText("");
-                //remove new data in case off error
+                //remove new data cin case off error
                 if (wizard_type == 1) {
                     xincoClientSession.setCurrentTreeNodeSelection((XincoMutableTreeNode) xincoClientSession.getCurrentTreeNodeSelection().getParent());
                     xincoClientSession.getXincoClientRepository().treemodel.removeNodeFromParent(newnode);
                     jTreeRepository.setSelectionPath(new TreePath(xincoClientSession.getCurrentTreeNodeSelection().getPath()));
                 }
-                if (wizard_type != 3 || global_dialog_return_value != 0) {
+                if (wizard_type != 3 || getGlobal_dialog_return_value() != 0) {
                     JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("datawizard.updatefailed") +
                             " " + xerb.getString("general.reason") + ": " +
                             we.toString(), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
                 }
-                this.getProgressBar().hide();
-                if (getSettings().getSetting("setting.enable.developermode").isBool_value()) {
-                    we.printStackTrace();
-                }
+                this.progressBar.hide();
+                we.printStackTrace();
             }
+
         }
     }
+
     /**
      * This method initializes jMenuPreferences
      *
      * @return javax.swing.JMenu
      */
-
     private javax.swing.JMenu getJMenuPreferences() {
         if (jMenuPreferences == null) {
             jMenuPreferences = new javax.swing.JMenu();
@@ -2398,42 +2423,42 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         return jMenuPreferences;
     }
+
     /**
      * This method initializes jMenuItemPreferencesEditUser
      *
      * @return javax.swing.JMenuItem
      */
-
     private javax.swing.JMenuItem getJMenuItemPreferencesEditUser() {
         if (jMenuItemPreferencesEditUser == null) {
-            jMenuItemPreferencesEditUser = new javax.swing.JMenuItem(getXincoIcon());
+            jMenuItemPreferencesEditUser = new javax.swing.JMenuItem();
             jMenuItemPreferencesEditUser.setText(xerb.getString("menu.preferences.edituserinfo"));
             jMenuItemPreferencesEditUser.addActionListener(new java.awt.event.ActionListener() {
 
-                        public void actionPerformed(java.awt.event.ActionEvent e) {
-                            getJDialogUser(false);
-                        }
-                    });
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    getAbstractDialogUser(false);
+                }
+            });
         }
         return jMenuItemPreferencesEditUser;
     }
+
     /**
      * This method sets previous path and filename
      *
      * @return void
      */
-
     private void setPreviousPathFilename(String s) {
-        int i = 0;
+        int i = 0, j = 0;
         if (s != null) {
             try {
                 previous_fullpath = s;
                 i = s.lastIndexOf(System.getProperty("file.separator"));
                 /*j = s.lastIndexOf("\\");
-                                //select i as index wanted
-                                if (j>i) {
-                                        i = j;
-                                }*/
+                //select i as index wanted
+                if (j>i) {
+                i = j;
+                }*/
                 previous_filename = s.substring(i + 1);
                 if (i > 0) {
                     previous_path = s.substring(0, i + 1);
@@ -2451,24 +2476,19 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             previous_fullpath = "";
         }
     }
+
     /**
      * This method sets current path and filename
      *
-     * @return void
+     * @param s
      */
-
     public void setCurrentPathFilename(String s) {
-        int i = 0;
+        int i = 0, j = 0;
         if (s != null) {
             try {
                 setPreviousPathFilename(current_fullpath);
                 current_fullpath = s;
                 i = s.lastIndexOf(System.getProperty("file.separator"));
-                /*j = s.lastIndexOf("\\");
-                                //select i as index wanted
-                                if (j>i) {
-                                        i = j;
-                                }*/
                 current_filename = s.substring(i + 1);
                 if (i > 0) {
                     current_path = s.substring(0, i + 1);
@@ -2486,12 +2506,12 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             current_fullpath = "";
         }
     }
+
     /**
      * This method sets current path and filename
      *
-     * @return void
+     * @param s String representing path
      */
-
     public void setCurrentPath(String s) {
         if (!(s.substring(s.length() - 1).equals(System.getProperty("file.separator")))) {
             s = s + System.getProperty("file.separator");
@@ -2500,44 +2520,115 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         current_path = s;
         current_fullpath = s;
     }
-    /**
-     * This method initializes jDialogUser
-     *
-     * @return javax.swing.JDialog
-     */
 
-    private void getJDialogUser(boolean aged) {
-        if (this.userDialog == null) {
-            this.userDialog = new UserDialog(new javax.swing.JFrame(), true, this, aged);
-            this.addDialog(userDialog);
+    /**
+     * This method initializes jContentPaneDialogUser
+     *
+     * @return javax.swing.JPanel
+     */
+    private javax.swing.JPanel getJContentPaneDialogUser() {
+        if (jContentPaneDialogUser == null) {
+            jContentPaneDialogUser = new javax.swing.JPanel();
+            jContentPaneDialogUser.setLayout(null);
+            getAbstractDialogUser(false);
         }
-        this.userDialog.setVisible(true);
+        return jContentPaneDialogUser;
     }
 
     /**
-     * This method initializes jDialogAddAttributesText
+     * This method initializes AbstractDialogUser
      *
-     * @return javax.swing.JDialog
+     * @return AbstractDialog
      */
-    public AddAttributeText getJDialogAddAttributesText() {
-        if (jDialogAddAttributesText == null) {
-            jDialogAddAttributesText = new AddAttributeText(null, true, false, this);
-            jDialogAddAttributesText.setViewOnly(false);
-            this.addDialog(jDialogAddAttributesText);
+    private void getAbstractDialogUser(boolean aged) {
+        if (userDialog == null) {
+            userDialog = new UserDialog(new javax.swing.JFrame(), true, this, aged);
+            addDialog(userDialog);
         }
-        return jDialogAddAttributesText;
+        userDialog.setVisible(true);
     }
+
+    /**
+     * This method initializes jContentPaneDialogAddAttributesText
+     *
+     * @return javax.swing.JPanel
+     */
+    private javax.swing.JPanel getJContentPaneDialogAddAttributesText() {
+        if (jContentPaneDialogAddAttributesText == null) {
+            jContentPaneDialogAddAttributesText = new javax.swing.JPanel();
+            jContentPaneDialogAddAttributesText.setLayout(null);
+            jContentPaneDialogAddAttributesText.add(getJScrollPaneDialogAddAttributesText(), null);
+            jContentPaneDialogAddAttributesText.add(getJButtonDialogAddAttributesTextSave(), null);
+            jContentPaneDialogAddAttributesText.add(getJButtonDialogAddAttributesTextCancel(), null);
+        }
+        return jContentPaneDialogAddAttributesText;
+    }
+
+    /**
+     * This method initializes AbstractDialogAddAttributesText
+     *
+     * @return AbstractDialog
+     */
+    public AbstractDialog getAbstractDialogAddAttributesText() {
+        if (AbstractDialogAddAttributesText == null) {
+            AbstractDialogAddAttributesText = new AddAttributeText(null, true, false, this);
+            addDialog(AbstractDialogAddAttributesText);
+        }
+        return AbstractDialogAddAttributesText;
+    }
+
     /**
      * This method initializes jTextAreaDialogAddAttributesText
      *
      * @return javax.swing.JTextArea
      */
-
     private javax.swing.JTextArea getJTextAreaDialogAddAttributesText() {
         if (jTextAreaDialogAddAttributesText == null) {
             jTextAreaDialogAddAttributesText = new javax.swing.JTextArea();
         }
         return jTextAreaDialogAddAttributesText;
+    }
+
+    /**
+     * This method initializes jButtonDialogAddAttributesTextSave
+     *
+     * @return javax.swing.JButton
+     */
+    private javax.swing.JButton getJButtonDialogAddAttributesTextSave() {
+        if (jButtonDialogAddAttributesTextSave == null) {
+            jButtonDialogAddAttributesTextSave = new javax.swing.JButton();
+            jButtonDialogAddAttributesTextSave.setBounds(350, 450, 100, 30);
+            jButtonDialogAddAttributesTextSave.setText(xerb.getString("general.save") + "!");
+            jButtonDialogAddAttributesTextSave.addActionListener(new java.awt.event.ActionListener() {
+
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    ((XincoAddAttribute) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(0)).setAttrib_text(jTextAreaDialogAddAttributesText.getText());
+                    setGlobal_dialog_return_value(1);
+                    AbstractDialogAddAttributesText.setVisible(false);
+                }
+            });
+        }
+        return jButtonDialogAddAttributesTextSave;
+    }
+
+    /**
+     * This method initializes jButtonDialogAddAttributesTextCancel
+     *
+     * @return javax.swing.JButton
+     */
+    private javax.swing.JButton getJButtonDialogAddAttributesTextCancel() {
+        if (jButtonDialogAddAttributesTextCancel == null) {
+            jButtonDialogAddAttributesTextCancel = new javax.swing.JButton();
+            jButtonDialogAddAttributesTextCancel.setBounds(470, 450, 100, 30);
+            jButtonDialogAddAttributesTextCancel.setText(xerb.getString("general.cancel"));
+            jButtonDialogAddAttributesTextCancel.addActionListener(new java.awt.event.ActionListener() {
+
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    AbstractDialogAddAttributesText.setVisible(false);
+                }
+            });
+        }
+        return jButtonDialogAddAttributesTextCancel;
     }
 
     /**
@@ -2555,28 +2646,60 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         }
         return jScrollPaneDialogAddAttributesText;
     }
+
+    /**
+     * This method initializes jContentPaneDialogTransactionInfo
+     *
+     * @return javax.swing.JPanel
+     */
+    private javax.swing.JPanel getJContentPaneDialogTransactionInfo() {
+        if (jContentPaneDialogTransactionInfo == null) {
+            jContentPaneDialogTransactionInfo = new javax.swing.JPanel();
+            jContentPaneDialogTransactionInfo.setLayout(null);
+            jContentPaneDialogTransactionInfo.add(getJLabelDialogTransactionInfoText(), null);
+        }
+        return jContentPaneDialogTransactionInfo;
+    }
+
+    /**
+     * This method initializes jLabelDialogTransactionInfoText
+     *
+     * @return javax.swing.JLabel
+     */
+    private javax.swing.JLabel getJLabelDialogTransactionInfoText() {
+        if (jLabelDialogTransactionInfoText == null) {
+            jLabelDialogTransactionInfoText = new javax.swing.JLabel();
+            jLabelDialogTransactionInfoText.setBounds(10, 10, 370, 80);
+        }
+        //independent of creation
+        jLabelDialogTransactionInfoText.setText("");
+        return jLabelDialogTransactionInfoText;
+    }
+
     /**
      * This method saves the configuration
      *
      */
-
     public void saveConfig() {
         try {
-            java.io.FileOutputStream fout = new java.io.FileOutputStream(System.getProperty("user.home") +
+            java.io.FileOutputStream fout =
+                    new java.io.FileOutputStream(System.getProperty("user.home") +
                     System.getProperty("file.separator") + "xincoClientConfig.dat");
             java.io.ObjectOutputStream os = new java.io.ObjectOutputStream(fout);
             os.writeObject(xincoClientConfig);
             os.close();
             fout.close();
         } catch (Exception ioe) {
+            //error handling
+            System.out.println("Unable to write Profiles-File!");
         }
     }
+
     /**
      * This method loads the configuration
      *
      * @return void
      */
-
     @SuppressWarnings("unchecked")
     private void loadConfig() {
         Vector tmp_vector_old = new Vector();
@@ -2584,7 +2707,6 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             Vector tmp_vector;
             FileInputStream fin;
             ObjectInputStream ois;
-
             //get old settings
             try {
                 fin = new FileInputStream("xincoClientConnectionProfiles.dat");
@@ -2600,28 +2722,22 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             } catch (Exception ioe2) {
                 tmp_vector_old = null;
             }
-
-            fin = new FileInputStream(System.getProperty("user.home") +
-                    System.getProperty("file.separator") + "xincoClientConfig.dat");
+            fin = new FileInputStream(System.getProperty("user.home") + System.getProperty("file.separator") + "xincoClientConfig.dat");
             ois = new ObjectInputStream(fin);
-
             try {
                 while ((tmp_vector = (Vector) ois.readObject()) != null) {
                     xincoClientConfig = tmp_vector;
                 }
             } catch (Exception ioe3) {
             }
-
             ois.close();
             fin.close();
-
             //insert old settings
             if (tmp_vector_old != null) {
                 xincoClientConfig.setElementAt(tmp_vector_old, 0);
             }
             //delete old settings
             (new File("xincoClientConnectionProfiles.dat")).delete();
-
         } catch (Exception ioe) {
             //error handling
             //create config
@@ -2634,78 +2750,77 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                 //delete old settings
                 (new File("xincoClientConnectionProfiles.dat")).delete();
             } else {
-                //insert connection profiles
-                ((Vector) xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).profile_name = "xinco Demo User";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).service_endpoint = "http://xinco.org:8080/xinco_demo/services/Xinco";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).username = "user";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).password = "user";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).save_password = false;
-                ((Vector) xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).profile_name = "xinco Demo Admin";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).service_endpoint = "http://xinco.org:8080/xinco_demo/services/Xinco";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).username = "admin";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).password = "admin";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).save_password = false;
-                ((Vector) xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).profile_name = "Template Profile";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).service_endpoint = "http://[server_domain]:8080/xinco/services/Xinco";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).username = "your_username";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).password = "";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).save_password = false;
-                ((Vector) xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).profile_name = "Admin (localhost)";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).service_endpoint = "http://localhost:8080/xinco/services/Xinco";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).username = "admin";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).password = "";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).save_password = false;
-                ((Vector) xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).profile_name = "User (localhost)";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).service_endpoint = "http://localhost:8080/xinco/services/Xinco";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).username = "user";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).password = "";
-                ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).save_password = false;
+                createDefaultConfiguration(true);
             }
-            //add Pluggable Look and Feel
-            xincoClientConfig.addElement(new String("javax.swing.plaf.metal.MetalLookAndFeel"));
-            //add locale
-            xincoClientConfig.addElement(Locale.getDefault());
         }
     }
+
+    @SuppressWarnings("unchecked")
+    private void createDefaultConfiguration(boolean modifyProfiles) {
+        xincoClientConfig = new Vector();
+        xincoClientConfig.add(new Vector());
+        if (modifyProfiles) {
+            //insert default connection profiles
+            ((Vector) xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).profile_name = "xinco Demo User";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).service_endpoint = "http://xinco.org:8080/xinco_demo/services/Xinco";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).username = "user";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).password = "user";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).save_password = true;
+            ((Vector) xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).profile_name = "xinco Demo Admin";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).service_endpoint = "http://xinco.org:8080/xinco_demo/services/Xinco";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).username = "admin";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).password = "admin";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).save_password = true;
+            ((Vector) xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).profile_name = "Template Profile";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).service_endpoint = "http://[server_domain]:8080/xinco/services/Xinco";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).username = "your_username";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).password = "your_password";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).save_password = true;
+            ((Vector) xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).profile_name = "Admin (localhost)";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).service_endpoint = "http://localhost:8080/xinco/services/Xinco";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).username = "admin";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).password = "admin";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).save_password = true;
+            ((Vector) xincoClientConfig.elementAt(0)).addElement(new XincoClientConnectionProfile());
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).profile_name = "User (localhost)";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).service_endpoint = "http://localhost:8080/xinco/services/Xinco";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).username = "user";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).password = "user";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(((Vector) xincoClientConfig.elementAt(0)).size() - 1)).save_password = true;
+        }
+        //add Pluggable Look and Feel
+        xincoClientConfig.addElement(new String("javax.swing.plaf.metal.MetalLookAndFeel"));
+        //add locale
+        xincoClientConfig.addElement(Locale.getDefault());
+    }
+
     /**
-     * This method initializes jDialogArchive
+     * This method initializes AbstractDialogArchive
      *
-     * @return javax.swing.JDialog
+     * @return AbstractDialog
      */
-
-    private javax.swing.JDialog getJDialogArchive() {
-        if (jDialogArchive == null) {
-            jDialogArchive = new ArchiveDialog(null, true, this);
-            jDialogArchive.setTitle(xerb.getString("window.archive"));
-            jDialogArchive.setResizable(false);
-            this.addDialog(jDialogArchive);
+    private AbstractDialog getAbstractDialogArchive() {
+        if (AbstractDialogArchive == null) {
+            AbstractDialogArchive = new ArchiveDialog(null, true, this);
+            AbstractDialogArchive.setTitle(xerb.getString("window.archive"));
+            AbstractDialogArchive.setResizable(false);
+            addDialog(AbstractDialogArchive);
         }
-        return jDialogArchive;
-    }
-
-    private int get_global_dialog_return_value() {
-        return this.global_dialog_return_value;
+        return AbstractDialogArchive;
     }
 
     public void set_global_dialog_return_value(int v) {
-        this.global_dialog_return_value = v;
+        this.setGlobal_dialog_return_value(v);
     }
 
-    public void setJTableAudit(javax.swing.JTable jTableAudit) {
-        this.jTableAudit = jTableAudit;
-    }
-
-    public XincoClientSetting getSettings() {
-        //Catch any recent setting change in the DB
-        updateSettings();
-        return settings;
-    }
-
+    /**
+     *
+     * @return XincoRepositoryActionHandler
+     */
     public XincoRepositoryActionHandler getActionHandler() {
         if (this.actionHandler == null) {
             this.actionHandler = new XincoRepositoryActionHandler(this);
@@ -2713,55 +2828,101 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         return actionHandler;
     }
 
-    private void updateSettings() {
-        settingsVector = null;
-        try {
-            System.out.println(xincoClientSession);
-            System.out.println(xincoClientSession.getXinco());
-            System.out.println(xincoClientSession.getUser());
-            System.out.println(xincoClientSession.getXinco().getXincoSetting(xincoClientSession.getUser()));
-            settingsVector = xincoClientSession.getXinco().getXincoSetting(xincoClientSession.getUser());
-        } catch (RemoteException ex) {
-            if (getSettings().getSetting("setting.enable.developermode").isBool_value()) {
-                ex.printStackTrace();
-            }
-        }
-        settings = new XincoClientSetting();
-        settings.setXinco_settings(settingsVector);
-    }
-
+    /**
+     *
+     * @return int
+     */
     public int getActionSize() {
         return actionSize;
     }
 
+    /**
+     *
+     * @return Icon
+     */
     public Icon getXincoIcon() {
         return new javax.swing.ImageIcon(XincoExplorer.class.getResource("blueCubsIcon16x16.GIF"));
     }
 
-    protected boolean isLock() {
-        return lock;
+    /**
+     * Refresh JTree
+     */
+    public void refreshJTree() {
+        rThread = null;
+        rThread = new refreshThread();
+        rThread.start();
     }
 
-    public void setLock(boolean lock) {
-        this.lock = lock;
-        if (!this.lock) {
-            this.xat.getActivityTimer().restart();
+    /**
+     *
+     * @return XincoProgressBarThread
+     */
+    public XincoProgressBarThread getProgressBar() {
+        return progressBar;
+    }
+
+    private class refreshThread extends Thread {
+
+        @Override
+        public void run() {
+            try {
+                getJTreeRepository().setEnabled(false);
+                getProgressBar().setTitle(getResourceBundle().getString("message.progressbar.refresh"));
+                getProgressBar().show();
+                // get root
+                XincoCoreNode xnode = new XincoCoreNode();
+                xnode.setId(1);
+                xnode = getSession().getXinco().getXincoCoreNode(xnode, getSession().getUser());
+                getSession().getXincoClientRepository().assignObject2TreeNode((XincoMutableTreeNode) (explorer.getSession().getXincoClientRepository().treemodel).getRoot(),
+                        xnode,
+                        explorer.getSession().getXinco(), explorer.getSession().getUser(), 2);
+                jTreeRepository.expandPath(new TreePath(getSession().getXincoClientRepository().treemodel.getPathToRoot((XincoMutableTreeNode) (getSession().getXincoClientRepository().treemodel).getRoot())));
+                collapseAllNodes();
+                getProgressBar().hide();
+                getJTreeRepository().setEnabled(true);
+            } catch (Exception rmie) {
+                getProgressBar().hide();
+                getJTreeRepository().setEnabled(true);
+            }
         }
     }
 
-    loginThread getLoginT() {
-        return loginT;
+    @SuppressWarnings("unchecked")
+    private void addDialog(AbstractDialog dialog) {
+        getDialogs().add(dialog);
     }
 
-    protected LockDialog getJDialogLock() {
-        if (lockDialog == null) {
-            lockDialog = new LockDialog(null, true, this);
-            this.addDialog(lockDialog);
+    /**
+     * Convenience method
+     * @return Vector containing XincoExplorer's dialogs
+     */
+    public Vector getDialogs() {
+        if (dialogs == null) {
+            dialogs = new Vector();
         }
-        lockDialog.setVisible(true);
-        return lockDialog;
+        return dialogs;
     }
 
+    /**
+     *
+     * @return String
+     */
+    public String getSelectedNodeDesignation() {
+        String nodeName = "";
+        XincoMutableTreeNode node = getSession().getCurrentTreeNodeSelection();
+        if (node.getUserObject().getClass() == XincoCoreNode.class) {
+            nodeName = ((XincoCoreNode) node.getUserObject()).getDesignation();
+        }
+        if (node.getUserObject().getClass() == XincoCoreData.class) {
+            nodeName = ((XincoCoreData) node.getUserObject()).getDesignation();
+        }
+        return nodeName;
+    }
+
+    /**
+     *
+     * @return XincoActivityTimer
+     */
     protected XincoActivityTimer getXat() {
         return xat;
     }
@@ -2790,89 +2951,62 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         resetTimer();
     }
 
+    /**
+     * Reset activity timer
+     */
     public void resetTimer() {
         if (this.isLock()) {
-            this.getJDialogLock();
+            this.getAbstractDialogLock();
         } else if (getXat() != null) {
-            this.getXat().getActivityTimer().restart();
+            getXat().getActivityTimer().restart();
         }
     }
 
-    public void disconnect() {
-        xincoClientSession.setStatus(0);
-        markConnectionStatus();
-        getLoginT().resetStrings();
-        collapseAllNodes();
+    /**
+     *
+     * @return boolean
+     */
+    protected boolean isLock() {
+        return lock;
     }
 
-    public void connect(boolean prompt) {
-        int i = 0;
-        if (prompt) {
-            //init session
-            xincoClientSession = new XincoClientSession(this);
-            getJTreeRepository().setModel(xincoClientSession.getXincoClientRepository().treemodel);
-            xincoClientSession.setStatus(0);
-            //open connection dialog
-            getJDialogConnection().setVisible(true);
-            DefaultListModel dlm = (DefaultListModel) dialogConnection.getProfileList().getModel();
-            dlm.removeAllElements();
-            for (i = 0; i < ((Vector) xincoClientConfig.elementAt(0)).size(); i++) {
-                dlm.addElement(new String(((XincoClientConnectionProfile) ((Vector) xincoClientConfig.elementAt(0)).elementAt(i)).toString()));
-            }
-        }
-        //establish connection and login
-        if (xincoClientSession.getStatus() == 1) {
-            loginT = new loginThread();
-            getLoginT().start();
-        }
+    /**
+     *
+     * @param xincoCoreUser
+     */
+    public void setTemp(XincoCoreUser xincoCoreUser) {
+        temp = xincoCoreUser;
     }
 
-    private void addDialog(JDialog dialog) {
-        if (this.dialogs == null) {
-            this.dialogs = new JDialog[1];
-        } else {
-            JDialog[] tempDialog = new JDialog[this.dialogs.length + 1];
-            for (int i = 0; i < this.dialogs.length; i++) {
-                tempDialog[i] = this.dialogs[i];
-            }
-            this.dialogs = tempDialog;
-        }
-        this.dialogs[this.dialogs.length - 1] = dialog;
-    }
-
-    public String getSelectedNodeDesignation() {
-        String nodeName = "";
-        XincoMutableTreeNode node = getSession().getCurrentTreeNodeSelection();
-        if (node.getUserObject().getClass() == XincoCoreNode.class) {
-            nodeName = ((XincoCoreNode) node.getUserObject()).getDesignation();
-        }
-        if (node.getUserObject().getClass() == XincoCoreData.class) {
-            nodeName = ((XincoCoreData) node.getUserObject()).getDesignation();
-        }
-        return nodeName;
-    }
-
-    public Vector getFilesToBeIndexed() {
-        return filesToBeIndexed;
-    }
-
-    public void setFilesToBeIndexed(Vector filesToBeIndexed) {
-        this.filesToBeIndexed = filesToBeIndexed;
-    }
-
+    /**
+     *
+     * @return XincoCoreData
+     */
     public XincoCoreData getXdata() {
         return xdata;
     }
 
+    /**
+     *
+     * @param xdata
+     */
     public void setXdata(XincoCoreData xdata) {
         this.xdata = xdata;
     }
 
-    public XincoAuditPanel getXincoAuditPanel() {
-        return xincoAuditPanel;
+    /**
+     *
+     * @return String
+     */
+    public String getPreviousFullpath() {
+        return previous_fullpath;
     }
 
-    public XincoProgressBarThread getProgressBar() {
-        return progressBar;
+    /**
+     *
+     * @param previous_fullpath
+     */
+    public void setPreviousFullpath(String previous_fullpath) {
+        this.previous_fullpath = previous_fullpath;
     }
 }

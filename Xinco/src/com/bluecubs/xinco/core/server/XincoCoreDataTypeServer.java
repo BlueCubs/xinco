@@ -1,5 +1,5 @@
 /**
- *Copyright 2004 blueCubs.com
+ *Copyright 2009 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -21,13 +21,13 @@
  *
  * Name:            XincoCoreDataTypeServer
  *
- * Description:     data type
+ * Description:     data type 
  *
  * Original Author: Alexander Manes
  * Date:            2004
  *
  * Modifications:
- *
+ * 
  * Who?             When?             What?
  * -                -                 -
  *
@@ -45,54 +45,60 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
     
     //create data type object for data structures
     public XincoCoreDataTypeServer(int attrID, XincoDBManager DBM) throws XincoException {
+        
         try {
-            Statement stmt = DBM.getConnection().createStatement();
+            Statement stmt = DBM.con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data_type WHERE id=" + attrID);
-            
-            //throw exception if no result found
-            int RowCount = 0;
+
+			//throw exception if no result found
+			int RowCount = 0;
             while (rs.next()) {
-                RowCount++;
+				RowCount++;
                 setId(rs.getInt("id"));
                 setDesignation(rs.getString("designation"));
                 setDescription(rs.getString("description"));
-                setXinco_core_data_type_attributes(XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(getId(), DBM));
+				setXinco_core_data_type_attributes(XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(getId(), DBM));
             }
-            if (RowCount < 1) {
-                throw new XincoException();
-            }
+			if (RowCount < 1) {
+				throw new XincoException();
+			}
+
             stmt.close();
         } catch (Exception e) {
-            throw new XincoException();
+        	throw new XincoException();
         }
+        
     }
-    
+
     //create data type object for data structures
     public XincoCoreDataTypeServer(int attrID, String attrD, String attrDESC, Vector attrA) throws XincoException {
+        
         setId(attrID);
         setDesignation(attrD);
         setDescription(attrDESC);
-        setXinco_core_data_type_attributes(attrA);
-    }
-    
-    public XincoCoreDataTypeServer(){
+		setXinco_core_data_type_attributes(attrA);
         
     }
     
     //create complete list of data types
-    public static Vector getXincoCoreDataTypes(XincoDBManager DBM) { 
+    public static Vector getXincoCoreDataTypes(XincoDBManager DBM) {
+        
         Vector coreDataTypes = new Vector();
+        
         try {
-            Statement stmt = DBM.getConnection().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data_type ORDER BY id");
-            
+            Statement stmt = DBM.con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data_type ORDER BY designation");
+
             while (rs.next()) {
                 coreDataTypes.addElement(new XincoCoreDataTypeServer(rs.getInt("id"), rs.getString("designation"), rs.getString("description"), XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(rs.getInt("id"), DBM)));
             }
+
             stmt.close();
         } catch (Exception e) {
             coreDataTypes.removeAllElements();
         }
+
         return coreDataTypes;
     }
+
 }

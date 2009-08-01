@@ -23,7 +23,7 @@
  *
  * Description:     XincoTransferableNode
  *
- * Original Author: Javier Ortiz
+ * Original Author: Javier A. Ortiz
  * Date:            May 18, 2007, 12:01 PM
  *
  * Modifications:
@@ -44,7 +44,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  *
- * @author ortizbj
+ * @author Javier A. Ortiz
  */
 public class XincoTransferableNode implements Transferable {
 	static final DataFlavor NODE_FLAVOR = new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType, "Node");

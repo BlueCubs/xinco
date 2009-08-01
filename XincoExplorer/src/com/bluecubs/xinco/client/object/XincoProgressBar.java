@@ -1,5 +1,5 @@
 /**
- *Copyright 2006 blueCubs.com
+ *Copyright 2009 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ import javax.swing.JProgressBar;
 
 /**
  *
- * @author ortizbj
+ * @author Javier A. Ortiz
  */
 public class XincoProgressBar extends JFrame{
     private	JProgressBar    progress;

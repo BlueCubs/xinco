@@ -1,5 +1,5 @@
 /**
- *Copyright 2006 blueCubs.com
+ *Copyright 2009 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -29,25 +29,23 @@
  * Modifications:
  *
  * Who?             When?             What?
- *
+ * 
  *
  *************************************************************
  * XincoMenuRepository.java
  *
  * Created on December 11, 2006, 2:19 PM
  */
-
 package com.bluecubs.xinco.client.object.menu;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.client.object.*;
 import java.util.ResourceBundle;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 /**
  *
- * @author ortizbj
+ * @author Javier A. Ortiz
  */
 public class XincoMenuRepository extends JMenu{
     private JMenuItem tmi = null;
@@ -65,9 +63,10 @@ public class XincoMenuRepository extends JMenu{
     private JMenuItem [] items = new JMenuItem[20];
     public ResourceBundle xerb;
     private int counter=0;
-    
+
     /**
      * Creates a new instance of XincoMenuRepository
+     * @param explorer
      */
     public XincoMenuRepository(final XincoExplorer explorer){
         this.explorer=explorer;
@@ -171,12 +170,12 @@ public class XincoMenuRepository extends JMenu{
     public void itemSetEnable(int number,boolean enable){
         items[number].setEnabled(enable);
     }
-    
+
     private int increaseItemNumber(){
         counter++;
         return counter;
     }
-    
+
     public JMenuItem[] getItems(){
         return this.items;
     }
