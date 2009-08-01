@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2007 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@
  * More information on: http://www.bluecubs.org
  *************************************************************
  *
- * Name:            XincoImportThread
+ * Name:            importThread
  *
- * Description:     XincoImportThread
+ * Description:     importThread
  *
  * Original Author: Javier A. Ortiz
  * Date:            2007
@@ -32,12 +32,12 @@
  * 
  *
  *************************************************************
- * XincoImportThread.java
+ * importThread.java
  *
  * Created on January 9, 2007, 3:52 PM
  */
 
-package com.bluecubs.xinco.client.object.thread;
+package com.bluecubs.xinco.client.object;
 
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.core.XincoCoreNode;
@@ -52,7 +52,7 @@ import javax.swing.tree.TreePath;
  *
  * @author Javier A. Ortiz
  */
-public class XincoImportThread extends Thread {
+public class importThread extends Thread {
     private XincoExplorer explorer;
     @Override
     public void run() {

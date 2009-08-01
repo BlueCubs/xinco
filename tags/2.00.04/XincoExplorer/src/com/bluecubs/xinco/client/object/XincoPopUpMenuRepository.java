@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2006 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -36,14 +36,11 @@
  *
  * Created on December 11, 2006, 2:19 PM
  */
-package com.bluecubs.xinco.client.object.menu;
+package com.bluecubs.xinco.client.object;
 
-import com.bluecubs.xinco.client.object.*;
-import com.bluecubs.xinco.client.object.thread.importThread;
-import com.bluecubs.xinco.client.object.thread.downloadThread;
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.dialogs.ACLDialog;
-import com.bluecubs.xinco.core.OPCode;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreLanguage;
@@ -69,7 +66,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu {
 
     public JMenuItem tmi = null;
     public XincoExplorer explorer = null;
-    public JMenuItem AddData = null, AddDataStructure = null, ViewURL = null, EmailContact = null, EditFolderData = null, CheckoutData = null, UndoCheckoutData = null, CheckinData = null, PublishData = null, LockData = null, DownloadRevision = null, Refresh = null, AddFolder = null, ViewEditAddAttributes = null, EditFolderDataACL = null, MoveFolderData = null, InsertFolderData = null, ViewData = null, CommentData = null;
+    public JMenuItem AddData = null,  AddDataStructure = null,  ViewURL = null,  EmailContact = null,  EditFolderData = null,  CheckoutData = null,  UndoCheckoutData = null,  CheckinData = null,  PublishData = null,  LockData = null,  DownloadRevision = null,  Refresh = null,  AddFolder = null,  ViewEditAddAttributes = null,  EditFolderDataACL = null,  MoveFolderData = null,  InsertFolderData = null,  ViewData = null,  CommentData = null;
     private JMenuItem[] items = new JMenuItem[19];
     public ResourceBundle xerb;
 
@@ -121,14 +118,14 @@ public class XincoPopUpMenuRepository extends JPopupMenu {
                         //set node attributes
                         ((XincoCoreNode) newnode.getUserObject()).setXinco_core_node_id(((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
                         ((XincoCoreNode) newnode.getUserObject()).setDesignation(xerb.getString("general.newfolder"));
-                        ((XincoCoreNode) newnode.getUserObject()).setXinco_core_language((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(0));
+                        ((XincoCoreNode) newnode.getUserObject()).setXinco_core_language((XincoCoreLanguage) explorer.getSession().server_languages.elementAt(0));
                         ((XincoCoreNode) newnode.getUserObject()).setStatus_number(1);
-                        explorer.getSession().getXincoClientRepository().treemodel.insertNodeInto(newnode, explorer.getSession().getCurrentTreeNodeSelection(), explorer.getSession().getCurrentTreeNodeSelection().getChildCount());
+                        explorer.getSession().xincoClientRepository.treemodel.insertNodeInto(newnode, explorer.getSession().getCurrentTreeNodeSelection(), explorer.getSession().getCurrentTreeNodeSelection().getChildCount());
                         explorer.getSession().setCurrentTreeNodeSelection(newnode);
                         explorer.getJDialogFolder();
                         //update treemodel
-                        explorer.getSession().getXincoClientRepository().treemodel.reload(explorer.getSession().getCurrentTreeNodeSelection());
-                        explorer.getSession().getXincoClientRepository().treemodel.nodeChanged(explorer.getSession().getCurrentTreeNodeSelection());
+                        explorer.getSession().xincoClientRepository.treemodel.reload(explorer.getSession().getCurrentTreeNodeSelection());
+                        explorer.getSession().xincoClientRepository.treemodel.nodeChanged(explorer.getSession().getCurrentTreeNodeSelection());
                     }
                 }
             }
@@ -214,9 +211,9 @@ public class XincoPopUpMenuRepository extends JPopupMenu {
                     JDialog jDialogACL = explorer.getJDialogACL();
                     //fill group list
                     dlm = (((ACLDialog) jDialogACL).getACLGroupModel());
-                    String[] list = new String[explorer.getSession().getServerGroups().size()];
-                    for (i = 0; i < explorer.getSession().getServerGroups().size(); i++) {
-                        list[i] = (new String(((XincoCoreGroup) explorer.getSession().getServerGroups().elementAt(i)).getDesignation()));
+                    String[] list = new String[explorer.getSession().server_groups.size()];
+                    for (i = 0; i < explorer.getSession().server_groups.size(); i++) {
+                        list[i] = (new String(((XincoCoreGroup) explorer.getSession().server_groups.elementAt(i)).getDesignation()));
                     }
                     ((ACLDialog) jDialogACL).setACLGroupModel(list);
                     //fill ACL
@@ -241,9 +238,9 @@ public class XincoPopUpMenuRepository extends JPopupMenu {
                 TreePath[] tps;
                 //cut node
                 tps = explorer.jTreeRepository.getSelectionPaths();
-                explorer.getSession().getClipboardTreeNodeSelection().removeAllElements();
+                explorer.getSession().clipboardTreeNodeSelection.removeAllElements();
                 for (i = 0; i < explorer.jTreeRepository.getSelectionCount(); i++) {
-                    explorer.getSession().getClipboardTreeNodeSelection().addElement(tps[i].getLastPathComponent());
+                    explorer.getSession().clipboardTreeNodeSelection.addElement(tps[i].getLastPathComponent());
                 }
                 //update transaction info
                 explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movemessage"));
@@ -260,16 +257,16 @@ public class XincoPopUpMenuRepository extends JPopupMenu {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 if ((explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() ==
                         XincoCoreNode.class) &&
-                        (explorer.getSession().getClipboardTreeNodeSelection() !=
+                        (explorer.getSession().clipboardTreeNodeSelection !=
                         null)) {
                     int old_parent_node_id = 0;
                     int i;
                     int cb_size;
                     XincoMutableTreeNode temp_node;
 
-                    cb_size = explorer.getSession().getClipboardTreeNodeSelection().size();
+                    cb_size = explorer.getSession().clipboardTreeNodeSelection.size();
                     for (i = 0; i < cb_size; i++) {
-                        temp_node = (XincoMutableTreeNode) explorer.getSession().getClipboardTreeNodeSelection().elementAt(0);
+                        temp_node = (XincoMutableTreeNode) explorer.getSession().clipboardTreeNodeSelection.elementAt(0);
                         if (explorer.getSession().getCurrentTreeNodeSelection() !=
                                 temp_node) {
                             // paste node
@@ -280,13 +277,14 @@ public class XincoPopUpMenuRepository extends JPopupMenu {
                                 ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_node_id(((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
                                 try {
                                     // modify treemodel
-                                    explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(temp_node);
-                                    explorer.getSession().getXincoClientRepository().treemodel.insertNodeInto(temp_node,
+                                    explorer.getSession().xincoClientRepository.treemodel.removeNodeFromParent(temp_node);
+                                    explorer.getSession().xincoClientRepository.treemodel.insertNodeInto(temp_node,
                                             explorer.getSession().getCurrentTreeNodeSelection(), explorer.getSession().getCurrentTreeNodeSelection().getChildCount());
                                     // optimize node size
                                     ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_nodes(new Vector());
                                     ((XincoCoreNode) temp_node.getUserObject()).setXinco_core_data(new Vector());
-                                    if (explorer.getSession().getXinco().setXincoCoreNode((XincoCoreNode) temp_node.getUserObject(), explorer.getSession().getUser()) ==
+                                    if (explorer.getSession().xinco.setXincoCoreNode((XincoCoreNode) temp_node.getUserObject(),
+                                            explorer.getSession().user) ==
                                             null) {
                                         throw new XincoException(xerb.getString("error.nowritepermission"));
                                     }
@@ -314,10 +312,11 @@ public class XincoPopUpMenuRepository extends JPopupMenu {
                                 ((XincoCoreData) temp_node.getUserObject()).setXinco_core_node_id(((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
                                 try {
                                     // modify treemodel
-                                    explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(temp_node);
-                                    explorer.getSession().getXincoClientRepository().treemodel.insertNodeInto(temp_node,
+                                    explorer.getSession().xincoClientRepository.treemodel.removeNodeFromParent(temp_node);
+                                    explorer.getSession().xincoClientRepository.treemodel.insertNodeInto(temp_node,
                                             explorer.getSession().getCurrentTreeNodeSelection(), explorer.getSession().getCurrentTreeNodeSelection().getChildCount());
-                                    if (explorer.getSession().getXinco().setXincoCoreData((XincoCoreData) temp_node.getUserObject(), explorer.getSession().getUser()) ==
+                                    if (explorer.getSession().xinco.setXincoCoreData((XincoCoreData) temp_node.getUserObject(),
+                                            explorer.getSession().user) ==
                                             null) {
                                         throw new XincoException(xerb.getString("error.nowritepermission"));
                                     }
@@ -327,8 +326,8 @@ public class XincoPopUpMenuRepository extends JPopupMenu {
                                         Vector oldlogs = ((XincoCoreData) temp_node.getUserObject()).getXinco_core_logs();
 
                                         newlog.setXinco_core_data_id(((XincoCoreData) temp_node.getUserObject()).getId());
-                                        newlog.setXinco_core_user_id(explorer.getSession().getUser().getId());
-                                        newlog.setOp_code(OPCode.MODIFICATION.ordinal() + 1);
+                                        newlog.setXinco_core_user_id(explorer.getSession().user.getId());
+                                        newlog.setOp_code(2);
                                         newlog.setOp_description(xerb.getString("menu.edit.movedtofolder") +
                                                 " " +
                                                 ((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getDesignation() +
@@ -337,11 +336,12 @@ public class XincoPopUpMenuRepository extends JPopupMenu {
                                                 ") " +
                                                 xerb.getString("general.by") +
                                                 " " +
-                                                explorer.getSession().getUser().getUsername());
+                                                explorer.getSession().user.getUsername());
                                         newlog.setOp_datetime(null);
                                         newlog.setVersion(((XincoCoreLog) oldlogs.elementAt(oldlogs.size() -
                                                 1)).getVersion());
-                                        explorer.getSession().getXinco().setXincoCoreLog(newlog, explorer.getSession().getUser());
+                                        explorer.getSession().xinco.setXincoCoreLog(newlog,
+                                                explorer.getSession().user);
                                     } catch (Exception loge) {
                                     }
                                     // update transaction info
@@ -362,7 +362,7 @@ public class XincoPopUpMenuRepository extends JPopupMenu {
                             }
                         }
                         // remove moved element from clipboard
-                        explorer.getSession().getClipboardTreeNodeSelection().removeElementAt(0);
+                        explorer.getSession().clipboardTreeNodeSelection.removeElementAt(0);
                     }
                 }
             }
@@ -513,11 +513,14 @@ public class XincoPopUpMenuRepository extends JPopupMenu {
         // get root
         XincoCoreNode xnode = new XincoCoreNode();
         xnode.setId(1);
-        xnode = explorer.getSession().getXinco().getXincoCoreNode(xnode, explorer.getSession().getUser());
-        explorer.getSession().getXincoClientRepository().assignObject2TreeNode((XincoMutableTreeNode) (explorer.getSession().getXincoClientRepository().treemodel).getRoot(),
-                xnode, explorer.getSession().getXinco(), explorer.getSession().getUser(),
+        xnode = explorer.getSession().xinco.getXincoCoreNode(xnode,
+                explorer.getSession().user);
+        explorer.getSession().xincoClientRepository.assignObject2TreeNode((XincoMutableTreeNode) (explorer.getSession().xincoClientRepository.treemodel).getRoot(),
+                xnode,
+                explorer.getSession().xinco,
+                explorer.getSession().user,
                 2);
-        explorer.jTreeRepository.expandPath(new TreePath(explorer.getSession().getXincoClientRepository().treemodel.getPathToRoot((XincoMutableTreeNode) (explorer.getSession().getXincoClientRepository().treemodel).getRoot())));
+        explorer.jTreeRepository.expandPath(new TreePath(explorer.getSession().xincoClientRepository.treemodel.getPathToRoot((XincoMutableTreeNode) (explorer.getSession().xincoClientRepository.treemodel).getRoot())));
         explorer.collapseAllNodes();
     }
 }
