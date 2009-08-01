@@ -36,48 +36,48 @@
  *
  * Created on September 26, 2006, 2:11 PM
  */
-
 package com.bluecubs.xinco.client.dialogs;
 
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoException;
-import java.awt.HeadlessException;
-import javax.swing.JOptionPane; 
+import javax.swing.JOptionPane;
 
 /**
  * Change Reason Dialog
  * @author Javier A. Ortiz
  */
-public class ChangeReasonDialog extends javax.swing.JDialog {
+public class ChangeReasonDialog extends AbstractDialog {
+
     private XincoCoreUser user;
-    private XincoExplorer explorer=null;
-    private String reasonS="";
+    private XincoExplorer explorer = null;
+    private String reasonS = "";
     /**
      * Is dialog done?
      */
-    boolean done=false;
+    boolean done = false;
+
     /**
      * Creates new form ChangeReasonDialog
      * @param parent Dialog's parent
      * @param modal Is modal?
-     * @param user User making the change.
      * @param explorer Related XincoExplorer.
      * @throws com.bluecubs.xinco.core.XincoException XincoException thrown
      */
-    public ChangeReasonDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) throws XincoException{
+    public ChangeReasonDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) throws XincoException {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
-        this.user=explorer.getSession().getUser();
-        this.explorer=explorer;
+        this.user = explorer.getSession().getUser();
+        this.explorer = explorer;
         setTitle(explorer.getResourceBundle().getString("window.changereason.title"));
         this.reasonLabel.setText(explorer.getResourceBundle().getString("window.changereason.label"));
         this.save.setText(explorer.getResourceBundle().getString("general.save") + "!");
         this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
         setLocationRelativeTo(null);
     }
-    
+
     /**
      * Get the specified reason.
      * @return Specified reason.
@@ -85,7 +85,7 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
     public String getReason() {
         return this.reasonS;
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -153,27 +153,26 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         //Reason can't be empty'
-        if(!reason.getText().trim().equals("")){
+        if (!reason.getText().trim().equals("")) {
             this.user.setReason(reason.getText());
-            this.reasonS=reason.getText();
+            this.reasonS = reason.getText();
             setVisible(false);
-            this.done=true;
-        }
-        else
-            JOptionPane.showMessageDialog(this, 
+            this.done = true;
+        } else {
+            JOptionPane.showMessageDialog(this,
                     explorer.getResourceBundle().getString("message.warning.reason"),
-                    explorer.getResourceBundle().getString("general.error"), 
+                    explorer.getResourceBundle().getString("general.error"),
                     JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_saveActionPerformed
-    
+
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
-        this.done=true;
+        this.done = true;
         setVisible(false);
     }//GEN-LAST:event_cancelActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;
     private javax.swing.JScrollPane jScrollPane1;
@@ -181,5 +180,4 @@ public class ChangeReasonDialog extends javax.swing.JDialog {
     private javax.swing.JLabel reasonLabel;
     private javax.swing.JButton save;
     // End of variables declaration//GEN-END:variables
-    
 }

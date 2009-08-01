@@ -36,11 +36,11 @@
  *
  * Created on October 31, 2006, 8:21 AM
  */
-
 package com.bluecubs.xinco.client.dialogs;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.core.XincoCoreACE; 
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
+import com.bluecubs.xinco.core.XincoCoreACE;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreNode;
@@ -53,10 +53,12 @@ import javax.swing.ListModel;
  * ACL Dialog
  * @author Javier A. Ortiz
  */
-public class ACLDialog extends javax.swing.JDialog {
-    private XincoExplorer explorer=null;
+public class ACLDialog extends AbstractDialog {
+
+    private XincoExplorer explorer = null;
     private Vector temp_acl = null;
-    private XincoCoreACE temp_ace=null;
+    private XincoCoreACE temp_ace = null;
+
     /**
      * Creates new form ACLDialog
      * @param parent Parent of this dialog
@@ -66,7 +68,7 @@ public class ACLDialog extends javax.swing.JDialog {
     public ACLDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer) {
         super(parent, modal);
         initComponents();
-        this.explorer=explorer;
+        this.explorer = explorer;
         setTitle(explorer.getResourceBundle().getString("window.acl"));
         this.ACLWarning.setText(explorer.getResourceBundle().getString("window.acl.note"));
         this.AddACE.setText(explorer.getResourceBundle().getString("window.acl.addace"));
@@ -84,18 +86,18 @@ public class ACLDialog extends javax.swing.JDialog {
         //fill ACL
         reloadACLListACL();
     }
-    
+
     /**
      * Loads the ACL group list
      */
     protected void loadACLGroupListACL() {
         String[] list = new String[this.explorer.getSession().getServerGroups().size()];
-        for (int i=0;i<this.explorer.getSession().getServerGroups().size();i++) {
-            list[i]=new String(((XincoCoreGroup)this.explorer.getSession().getServerGroups().elementAt(i)).getDesignation());
+        for (int i = 0; i < this.explorer.getSession().getServerGroups().size(); i++) {
+            list[i] = new String(((XincoCoreGroup) this.explorer.getSession().getServerGroups().elementAt(i)).getDesignation());
         }
         setACLGroupModel(list);
     }
-    
+
     /**
      * Reloads ACL list
      */
@@ -103,29 +105,29 @@ public class ACLDialog extends javax.swing.JDialog {
         int i = 0, j = 0;
         String temp_string = "";
         Vector temp_vector = new Vector();
-        
+
         if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
-            temp_vector = ((XincoCoreNode)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
+            temp_vector = ((XincoCoreNode) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
         }
         if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
-            temp_vector = ((XincoCoreData)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
+            temp_vector = ((XincoCoreData) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
         }
-        if(temp_acl!=null){
-            temp_vector=temp_acl;
+        if (temp_acl != null) {
+            temp_vector = temp_acl;
         }
         String[] list = new String[temp_vector.size()];
-        for (i=0;i<temp_vector.size();i++) {
-            temp_ace = (XincoCoreACE)temp_vector.elementAt(i);
+        for (i = 0; i < temp_vector.size(); i++) {
+            temp_ace = (XincoCoreACE) temp_vector.elementAt(i);
             if (temp_ace.getXinco_core_user_id() > 0) {
                 temp_string = this.explorer.getResourceBundle().getString("general.user") +
                         ": " + this.explorer.getResourceBundle().getString("general.id") +
                         "=" + temp_ace.getXinco_core_user_id();
             }
             if (temp_ace.getXinco_core_group_id() > 0) {
-                for (j=0;j<this.explorer.getSession().getServerGroups().size();j++) {
-                    if (((XincoCoreGroup)this.explorer.getSession().getServerGroups().elementAt(j)).getId() == temp_ace.getXinco_core_group_id()) {
+                for (j = 0; j < this.explorer.getSession().getServerGroups().size(); j++) {
+                    if (((XincoCoreGroup) this.explorer.getSession().getServerGroups().elementAt(j)).getId() == temp_ace.getXinco_core_group_id()) {
                         temp_string = this.explorer.getResourceBundle().getString("general.group") +
-                                ": " + ((XincoCoreGroup)this.explorer.getSession().getServerGroups().elementAt(j)).getDesignation();
+                                ": " + ((XincoCoreGroup) this.explorer.getSession().getServerGroups().elementAt(j)).getDesignation();
                         break;
                     }
                 }
@@ -152,43 +154,57 @@ public class ACLDialog extends javax.swing.JDialog {
                 temp_string = temp_string + "-";
             }
             temp_string = temp_string + "]";
-            list[i]=new String(temp_string);
+            list[i] = new String(temp_string);
         }
         setACLListModel(list);
     }
-    
+
     /**
      * Sets ACL group model.
      * @param list String array containing the list.
      */
-    public void setACLGroupModel(final String [] list){
+    public void setACLGroupModel(final String[] list) {
         groupList.setModel(new javax.swing.AbstractListModel() {
+
             String[] strings = list;
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+
+            public int getSize() {
+                return strings.length;
+            }
+
+            public Object getElementAt(int i) {
+                return strings[i];
+            }
         });
     }
-    
+
     /**
      * Sets ACL list model.
      * @param list String array containing the list.
      */
-    protected void setACLListModel(final String [] list){
+    protected void setACLListModel(final String[] list) {
         currentACLList.setModel(new javax.swing.AbstractListModel() {
+
             String[] strings = list;
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+
+            public int getSize() {
+                return strings.length;
+            }
+
+            public Object getElementAt(int i) {
+                return strings[i];
+            }
         });
     }
-    
+
     /**
      * Get ACL group model.
      * @return Group list model.
      */
-    public ListModel getACLGroupModel(){
+    public ListModel getACLGroupModel() {
         return this.groupList.getModel();
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -340,22 +356,22 @@ public class ACLDialog extends javax.swing.JDialog {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+
     private void CloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseActionPerformed
         this.setVisible(false);
     }//GEN-LAST:event_CloseActionPerformed
-    
+
     private void RemoveACEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveACEActionPerformed
         if (this.currentACLList.getSelectedIndex() >= 0) {
             try {
                 temp_ace = new XincoCoreACE();
                 if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
-                    temp_acl = ((XincoCoreNode)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
-                    temp_ace = (XincoCoreACE)temp_acl.elementAt(this.currentACLList.getSelectedIndex());
+                    temp_acl = ((XincoCoreNode) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
+                    temp_ace = (XincoCoreACE) temp_acl.elementAt(this.currentACLList.getSelectedIndex());
                 }
                 if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
-                    temp_acl = ((XincoCoreData)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
-                    temp_ace = (XincoCoreACE)temp_acl.elementAt(this.currentACLList.getSelectedIndex());
+                    temp_acl = ((XincoCoreData) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
+                    temp_ace = (XincoCoreACE) temp_acl.elementAt(this.currentACLList.getSelectedIndex());
                 }
                 if (temp_ace.getXinco_core_user_id() > 0) {
                     throw new XincoException(this.explorer.getResourceBundle().getString("window.acl.cannotremoveowner"));
@@ -375,38 +391,38 @@ public class ACLDialog extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_RemoveACEActionPerformed
-    
+
     private void AddACEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddACEActionPerformed
         int i = 0;
         temp_acl = new Vector();
         if (this.groupList.getSelectedIndex() >= 0) {
             try {
                 if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
-                    temp_acl = ((XincoCoreNode)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
+                    temp_acl = ((XincoCoreNode) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
                 }
                 if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
-                    temp_acl = ((XincoCoreData)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
+                    temp_acl = ((XincoCoreData) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_acl();
                 }
                 //check if an ACE already exists for selected group
-                for (i=0;i<temp_acl.size();i++) {
-                    if (((XincoCoreACE)temp_acl.elementAt(i)).getXinco_core_group_id() == ((XincoCoreGroup)this.explorer.getSession().getServerGroups().elementAt(this.groupList.getSelectedIndex())).getId()) {
+                for (i = 0; i < temp_acl.size(); i++) {
+                    if (((XincoCoreACE) temp_acl.elementAt(i)).getXinco_core_group_id() == ((XincoCoreGroup) this.explorer.getSession().getServerGroups().elementAt(this.groupList.getSelectedIndex())).getId()) {
                         throw new XincoException(this.explorer.getResourceBundle().getString("window.acl.groupexists"));
                     }
                 }
                 //create new ACE
                 XincoCoreACE newace = new XincoCoreACE();
-                newace.setXinco_core_group_id(((XincoCoreGroup)this.explorer.getSession().getServerGroups().elementAt(this.groupList.getSelectedIndex())).getId());
+                newace.setXinco_core_group_id(((XincoCoreGroup) this.explorer.getSession().getServerGroups().elementAt(this.groupList.getSelectedIndex())).getId());
                 if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
-                    newace.setXinco_core_node_id(((XincoCoreNode)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
+                    newace.setXinco_core_node_id(((XincoCoreNode) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
                 }
                 if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
-                    newace.setXinco_core_data_id(((XincoCoreData)this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
+                    newace.setXinco_core_data_id(((XincoCoreData) this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId());
                 }
                 newace.setRead_permission(this.Read.isSelected());
                 newace.setWrite_permission(this.Write.isSelected());
                 newace.setExecute_permission(this.Execute.isSelected());
                 newace.setAdmin_permission(this.Admin.isSelected());
-                if ((newace = this.explorer.getSession().getXinco().setXincoCoreACE(newace,this.explorer.getSession().getUser())) == null) {
+                if ((newace = this.explorer.getSession().getXinco().setXincoCoreACE(newace, this.explorer.getSession().getUser())) == null) {
                     throw new XincoException(this.explorer.getResourceBundle().getString("error.noadminpermission"));
                 }
                 //add ACE to ACL and reload
@@ -419,7 +435,6 @@ public class ACLDialog extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_AddACEActionPerformed
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ACLWarning;
     private javax.swing.JButton AddACE;
@@ -436,5 +451,4 @@ public class ACLDialog extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
-    
 }
