@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2006 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -36,22 +36,22 @@
  *
  * Created on September 25, 2006, 6:16 PM
  */
+
 package com.bluecubs.xinco.client.dialogs;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
+import com.bluecubs.xinco.core.XincoCoreUser;
 import com.bluecubs.xinco.core.XincoException;
+import java.sql.Timestamp;
 import javax.swing.JOptionPane;
 
 /**
  * User Dialog
  * @author Javier A. Ortiz
  */
-public class UserDialog extends AbstractDialog {
-
-    private XincoExplorer explorer = null;
-    private boolean isAged = false;
-
+public class UserDialog extends javax.swing.JDialog {
+    private XincoExplorer explorer=null;
+    private boolean isAged=false;
     /**
      * Creates new form UserDialog
      * @param parent Dialog's parent.
@@ -59,15 +59,15 @@ public class UserDialog extends AbstractDialog {
      * @param explorer Related XincoExplorer
      * @param aged Boolean: Is the user's password aged out?
      */
-    public UserDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer, boolean aged) {
+    public UserDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer,boolean aged) {
         super(parent, modal);
-        this.explorer = explorer;
-        this.isAged = aged;
+        this.explorer=explorer;
+        this.isAged=aged;
         initComponents();
         initialize();
         setLocationRelativeTo(null);
         //Do not allow to close the window. User MUST change password!
-        if (this.isAged) {
+        if(this.isAged){
             setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
             this.cancel.setEnabled(false);
             this.name.setEnabled(false);
@@ -75,37 +75,35 @@ public class UserDialog extends AbstractDialog {
             this.email.setEnabled(false);
         }
     }
-
-    private void initialize() {
-        String text = null;
+    
+    private void initialize(){
+        String text=null;
         setTitle(explorer.getResourceBundle().getString("window.userinfo"));
         //processing independent of creation
-        this.id.setText("" + explorer.getSession().getUser().getId());
+        this.id.setText("" + explorer.getSession().user.getId());
         this.idLabel.setText(explorer.getResourceBundle().getString("general.id") + ":");
-        this.username.setText("" + explorer.getSession().getUser().getUsername());
+        this.username.setText("" + explorer.getSession().user.getUsername());
         this.usernameLabel.setText(explorer.getResourceBundle().getString("general.username") + ":");
-        if (this.isAged) {
+        if(this.isAged)
             this.password.setText("");
-        } else {
-            this.password.setText("" + explorer.getSession().getUser().getUserpassword());
-        }
+        else
+            this.password.setText("" + explorer.getSession().user.getUserpassword());
         this.passwordLabel.setText(explorer.getResourceBundle().getString("general.password") + ":");
-        if (this.isAged) {
+        if(this.isAged)
             this.verification.setText("");
-        } else {
-            this.verification.setText("" + explorer.getSession().getUser().getUserpassword());
-        }
+        else
+            this.verification.setText("" + explorer.getSession().user.getUserpassword());
         this.verificationLabel.setText(explorer.getResourceBundle().getString("general.verifypassword") + ":");
-        this.name.setText("" + explorer.getSession().getUser().getFirstname());
+        this.name.setText("" + explorer.getSession().user.getFirstname());
         this.nameLabel.setText(explorer.getResourceBundle().getString("window.userinfo.firstname") + ":");
-        this.lastname.setText("" + explorer.getSession().getUser().getName());
+        this.lastname.setText("" + explorer.getSession().user.getName());
         this.lastnameLabel.setText(explorer.getResourceBundle().getString("window.userinfo.lastname") + ":");
-        this.email.setText("" + explorer.getSession().getUser().getEmail());
+        this.email.setText("" + explorer.getSession().user.getEmail());
         this.emailLabel.setText(explorer.getResourceBundle().getString("window.userinfo.email") + ":");
-        if (explorer.getSession().getUser().getStatus_number() == 1) {
+        if (explorer.getSession().user.getStatus_number() == 1) {
             text = explorer.getResourceBundle().getString("general.status.open") + "";
         }
-        if (explorer.getSession().getUser().getStatus_number() == 2) {
+        if (explorer.getSession().user.getStatus_number() == 2) {
             text = explorer.getResourceBundle().getString("general.status.locked") + " (-)";
         }
         this.status.setText(text);
@@ -114,7 +112,7 @@ public class UserDialog extends AbstractDialog {
         this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
         setLocationRelativeTo(null);
     }
-
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -275,43 +273,41 @@ public class UserDialog extends AbstractDialog {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         //Can't cancel if the password have aged out
-        if (!this.isAged) {
+        if(!this.isAged)
             setVisible(false);
-        }
     }//GEN-LAST:event_cancelActionPerformed
-
-    @SuppressWarnings("empty-statement")
+    
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         if ((new String(password.getPassword())).equals(new String(verification.getPassword()))) {
             try {
                 if (this.isAged &&
-                        !this.explorer.getSession().getXinco().checkXincoCoreUserNewPassword(new String(password.getPassword()),
-                        this.explorer.getSession().getUser(),
-                        null)) {
-                    this.explorer.getSession().getXinco().checkXincoCoreUserNewPassword(new String(password.getPassword()), this.explorer.getSession().getUser(),
-                            null);
+                    !this.explorer.getSession().xinco.checkXincoCoreUserNewPassword(new String(password.getPassword()),
+                                                                                    this.explorer.getSession().user,
+                                                                                    null)) {
+                    this.explorer.getSession().xinco.checkXincoCoreUserNewPassword(new String(password.getPassword()),
+                                                                                                      this.explorer.getSession().user,
+                                                                                                      null);
                     throw new XincoException(explorer.getResourceBundle().getString("password.unusable"));
                 }
-                explorer.getUser().setId(explorer.getSession().getUser().getId());
-                explorer.getUser().setUsername(explorer.getSession().getUser().getUsername());
+                explorer.getUser().setId(explorer.getSession().user.getId());
+                explorer.getUser().setUsername(explorer.getSession().user.getUsername());
                 explorer.getUser().setUserpassword(new String(password.getPassword()));
                 explorer.getUser().setFirstname(name.getText());
                 explorer.getUser().setName(lastname.getText());
                 explorer.getUser().setEmail(email.getText());
-                explorer.getUser().setXinco_core_groups(explorer.getSession().getUser().getXinco_core_groups());
-                explorer.getUser().setStatus_number(explorer.getSession().getUser().getStatus_number());
+                explorer.getUser().setXinco_core_groups(explorer.getSession().user.getXinco_core_groups());
+                explorer.getUser().setStatus_number(explorer.getSession().user.getStatus_number());
                 explorer.getUser().setChange(true);
                 explorer.getUser().setUserpassword(new String(password.getPassword()));
                 ChangeReasonDialog crd = null;
                 boolean enable;
-                if (isAged) {
+                if (isAged)
                     enable = false;
-                } else {
+                else
                     enable = true;
-                }
                 this.email.setEnabled(enable);
                 this.lastname.setEditable(enable);
                 this.name.setEditable(enable);
@@ -320,9 +316,10 @@ public class UserDialog extends AbstractDialog {
                 // Prompt for change reason
                 if (!isAged) {
                     crd = new ChangeReasonDialog(new javax.swing.JFrame(),
-                            true, explorer);
+                                                 true, explorer);
                     crd.setVisible(true);
-                    while (!crd.done);
+                    while (!crd.done)
+                        ;
                 }
                 explorer.getUser().setChangerID(explorer.getUser().getId());
                 explorer.getUser().setWriteGroups(true);
@@ -331,22 +328,23 @@ public class UserDialog extends AbstractDialog {
                 if (isAged) {
                     explorer.getUser().setReason("audit.user.account.aged");
                     explorer.getUser().setStatus_number(4);
-                } else {
+                } else
                     explorer.getUser().setReason(crd.getReason());
-                }
-                explorer.getSession().setUser(explorer.getSession().getXinco().setXincoCoreUser(explorer.getUser(), explorer.getSession().getUser()));
+                explorer.getSession().user = explorer.getSession().xinco.setXincoCoreUser(explorer.getUser(),
+                                                                    explorer.getSession().user);
                 // set plain-text password
-                explorer.getSession().getUser().setUserpassword(explorer.getUser().getUserpassword());
+                explorer.getSession().user.setUserpassword(explorer.getUser().getUserpassword());
                 // update transaction info
                 explorer.jLabelInternalFrameInformationText.setText(explorer.getResourceBundle().getString("window.userinfo.updatesuccess"));
                 setVisible(false);
             } catch (Exception ue) {
-                JOptionPane.showMessageDialog(this, explorer.getResourceBundle().getString("window.userinfo.updatefailed") + " " + explorer.getResourceBundle().getString("general.reason") + ": " + ue.toString(), explorer.getResourceBundle().getString("general.error"), JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, explorer.getResourceBundle().getString("window.userinfo.updatefailed") + " " + explorer.getResourceBundle().getString("general.reason") +  ": " + ue.toString(), explorer.getResourceBundle().getString("general.error"), JOptionPane.WARNING_MESSAGE);
             }
         } else {
             JOptionPane.showMessageDialog(this, explorer.getResourceBundle().getString("window.userinfo.passwordmismatch"), explorer.getResourceBundle().getString("general.error"), JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_saveActionPerformed
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;
     private javax.swing.JTextField email;
@@ -368,4 +366,5 @@ public class UserDialog extends AbstractDialog {
     private javax.swing.JPasswordField verification;
     private javax.swing.JLabel verificationLabel;
     // End of variables declaration//GEN-END:variables
+    
 }

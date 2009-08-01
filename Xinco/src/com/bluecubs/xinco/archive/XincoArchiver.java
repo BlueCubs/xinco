@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2005 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -36,7 +36,6 @@
 package com.bluecubs.xinco.archive;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
-import com.bluecubs.xinco.core.OPCode;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreLogServer;
@@ -49,7 +48,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
 /**
@@ -74,7 +72,6 @@ public class XincoArchiver {
     static FileInputStream fcis = null;
     static FileOutputStream fcos = null;
     static byte[] fcbuf = null;
-    static ResourceBundle rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
 
     private XincoArchiver() {
     }
@@ -128,8 +125,8 @@ public class XincoArchiver {
             xlog_temp = ((XincoCoreLogServer) xdata_temp.getXinco_core_logs().elementAt(xdata_temp.getXinco_core_logs().size() - 1));
             if (xlog_temp != null) {
                 xlog_temp.setId(0);
-                xlog_temp.setOp_code(OPCode.ARCHIVED.ordinal() + 1);
-                xlog_temp.setOp_description(rb.getString(OPCode.getOPCode(xlog_temp.getOp_code()).getName() + "!"));
+                xlog_temp.setOp_code(8);
+                xlog_temp.setOp_description("Archived!");
                 xlog_temp.setXinco_core_user_id(1);
                 xlog_temp.write2DB(DBM);
             }

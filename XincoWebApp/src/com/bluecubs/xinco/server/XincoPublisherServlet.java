@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2006 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -181,7 +181,8 @@ public class XincoPublisherServlet extends HttpServlet {
             try {
                 response.setContentType("unknown/unknown");
                 OutputStream out = response.getOutputStream();
-                FileInputStream in = new FileInputStream(XincoCoreDataServer.getLastMajorVersionDataPath(core_data_id, DBM));
+                FileInputStream in = new FileInputStream(XincoCoreDataServer.getXincoCoreDataPath(DBM.config.FileRepositoryPath,
+                        core_data_id, "" + core_data_id));
                 byte[] buf = new byte[4096];
                 int len;
                 while ((len = in.read(buf)) > 0) {
@@ -189,10 +190,9 @@ public class XincoPublisherServlet extends HttpServlet {
                 }
                 in.close();
             } catch (Exception e) {
-                PrintWriter out = response.getWriter();
-                out.println(e);
+                System.out.println(e);
             }
-            //end FILE output
+        //end FILE output
 
         } else {
             // begin HTML output
@@ -236,11 +236,7 @@ public class XincoPublisherServlet extends HttpServlet {
                     try {
                         XincoCoreDataServer xdata_temp = null;
                         Statement stmt = DBM.con.createStatement();
-                        //Only display data with at least one major version
-                        ResultSet rs = stmt.executeQuery("SELECT DISTINCT xcd.id, xcd.designation " +
-                                "FROM xinco_core_data xcd, xinco_core_ace xca, xinco_core_log xcl WHERE xcd.id=xca.xinco_core_data_id AND " +
-                                "xcd.id=xcl.xinco_core_data_id AND(xcd.status_number=5 OR (xca.xinco_core_group_id=3 AND xca.read_permission=1)) " +
-                                " and xcl.version_mid='0' ORDER BY xcd.designation");
+                        ResultSet rs = stmt.executeQuery("SELECT DISTINCT xcd.id, xcd.designation FROM xinco_core_data xcd, xinco_core_ace xca WHERE xcd.id=xca.xinco_core_data_id AND (xcd.status_number=5 OR (xca.xinco_core_group_id=3 AND xca.read_permission=1)) ORDER BY xcd.designation");
                         while (rs.next()) {
                             xdata_temp = new XincoCoreDataServer(rs.getInt("id"), DBM);
                             temp_server_url = request.getRequestURL().toString();
