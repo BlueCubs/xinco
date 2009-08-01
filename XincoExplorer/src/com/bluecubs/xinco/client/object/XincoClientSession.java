@@ -35,6 +35,7 @@
  */
 package com.bluecubs.xinco.client.object;
 
+import com.bluecubs.xinco.client.XincoExplorer;
 import java.util.Vector;
 
 import com.bluecubs.xinco.core.*;
@@ -44,22 +45,23 @@ import com.bluecubs.xinco.service.*;
  * XincoClientSession
  */
 public class XincoClientSession {
+
     /**
      * Server data type
      */
     private String serviceEndpoint = "";
     private XincoCoreUser user = null;
     private //web service
-    /**
-     * Xinco Service
-     */
-    XincoService xincoService = null;
+            /**
+             * Xinco Service
+             */
+            XincoService xincoService = null;
     private Xinco xinco = null;
     private XincoClientRepository xincoClientRepository = null;
     private /**
-     * Server version
-     */
-    XincoVersion serverVersion = null;
+             * Server version
+             */
+            XincoVersion serverVersion = null;
     private Vector serverGroups = null;
     private Vector serverLanguages = null;
     private Vector serverDatatypes = null;
@@ -67,24 +69,25 @@ public class XincoClientSession {
      * Current tree node selection
      */
     private XincoMutableTreeNode currentTreeNodeSelection = null;
-
     /**
      * Status
      */
     private Vector clipboardTreeNodeSelection = null;	//0 = not connected
     private Vector currentSearchResult = null;
     private int status = 0;
+
     /**
      * XincoClientSession
      * 1 = connecting...
      * 2 = connected
      * 3 = disconnecting
+     * @param e
      */
-    public XincoClientSession() {
+    public XincoClientSession(XincoExplorer e) {
         serviceEndpoint = "";
         user = new XincoCoreUser();
         //init repository
-        xincoClientRepository = new XincoClientRepository();
+        xincoClientRepository = new XincoClientRepository(e);
         serverVersion = new XincoVersion();
         serverGroups = new Vector();
         serverLanguages = new Vector();
@@ -92,6 +95,12 @@ public class XincoClientSession {
         clipboardTreeNodeSelection = new Vector();
         currentSearchResult = new Vector();
         status = 0;
+    }
+
+    /**
+     * Constructor
+     */
+    protected XincoClientSession() {
     }
 
     public XincoMutableTreeNode getCurrentTreeNodeSelection() {
@@ -190,10 +199,10 @@ public class XincoClientSession {
      * @param xinco_service the xinco_service to set
      */
     public void setXincoService( //web service
-    /**
-     * Xinco Service
-     */
-    XincoService xinco_service) {
+            /**
+             * Xinco Service
+             */
+            XincoService xinco_service) {
         this.xincoService = xinco_service;
     }
 
@@ -215,9 +224,9 @@ public class XincoClientSession {
      * @param server_version the server_version to set
      */
     public void setServeVersion( /**
-     * Server version
-     */
-    XincoVersion server_version) {
+             * Server version
+             */
+            XincoVersion server_version) {
         this.setServerVersion(server_version);
     }
 
@@ -281,9 +290,9 @@ public class XincoClientSession {
      * @param serverVersion the serverVersion to set
      */
     public void setServerVersion( /**
-     * Server version
-     */
-    XincoVersion serverVersion) {
+             * Server version
+             */
+            XincoVersion serverVersion) {
         this.serverVersion = serverVersion;
     }
 

@@ -39,6 +39,7 @@
 package com.bluecubs.xinco.client.dialogs;
 
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.OPCode;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreLog;
@@ -49,7 +50,7 @@ import javax.swing.JOptionPane;
  * Log Dialog
  * @author Javier A. Ortiz
  */
-public class LogDialog extends javax.swing.JDialog {
+public class LogDialog extends AbstractDialog {
 
     private XincoExplorer explorer = null;
     private int log_index = 0;
@@ -123,7 +124,7 @@ public class LogDialog extends javax.swing.JDialog {
         if (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == OPCode.COMMENT_COMMENT.ordinal() + 1 ||
                 ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == OPCode.MODIFICATION.ordinal() + 1) {
             versionLow.setText("" + (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_low() + 1));
-        } 
+        }
     }
 
     /** This method is called from within the constructor to

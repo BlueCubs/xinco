@@ -19,9 +19,9 @@
  * More information on: http://www.bluecubs.org
  *************************************************************
  *
- * Name:            importThread
+ * Name:            XincoImportThread
  *
- * Description:     importThread
+ * Description:     XincoImportThread
  *
  * Original Author: Javier A. Ortiz
  * Date:            2007
@@ -32,7 +32,7 @@
  * 
  *
  *************************************************************
- * importThread.java
+ * XincoImportThread.java
  *
  * Created on January 9, 2007, 3:52 PM
  */
@@ -52,7 +52,7 @@ import javax.swing.tree.TreePath;
  *
  * @author Javier A. Ortiz
  */
-public class importThread extends Thread {
+public class XincoImportThread extends Thread {
     private XincoExplorer explorer;
     @Override
     public void run() {

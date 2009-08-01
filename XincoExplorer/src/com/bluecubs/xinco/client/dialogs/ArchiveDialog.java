@@ -36,11 +36,11 @@
  *
  * Created on January 5, 2007, 9:17 AM
  */
-
 package com.bluecubs.xinco.client.dialogs;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreData;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -52,16 +52,22 @@ import javax.swing.DefaultComboBoxModel;
  *
  * @author  Javier A. Ortiz
  */
-public class ArchiveDialog extends javax.swing.JDialog {
+public class ArchiveDialog extends AbstractDialog {
+
     private XincoExplorer explorer;
     private ResourceBundle xerb;
-    /** Creates new form ArchiveDialog */
+
+    /** Creates new form ArchiveDialog
+     * @param parent
+     * @param modal
+     * @param explorer
+     */
     public ArchiveDialog(java.awt.Frame parent, boolean modal, final XincoExplorer explorer) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
-        this.explorer=explorer;
-        this.xerb=this.explorer.getResourceBundle();
+        this.explorer = explorer;
+        this.xerb = this.explorer.getResourceBundle();
         this.revisionModelLabel.setText(xerb.getString("window.archive.revisionmodel") + ":");
         this.revisionModelCheckbox.setSelected(true);
         this.archiveModelLabel.setText(xerb.getString("window.archive.archivingmodel") + ":");
@@ -70,6 +76,7 @@ public class ArchiveDialog extends javax.swing.JDialog {
         this.archiveModelDropDown.setBounds(120, 40, 250, 20);
         this.archiveModelDropDown.setEditable(false);
         this.archiveModelDropDown.addActionListener(new java.awt.event.ActionListener() {
+
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 if (archiveModelDropDown.getSelectedIndex() == 1) {
                     yearTextBox.setEnabled(true);
@@ -93,14 +100,15 @@ public class ArchiveDialog extends javax.swing.JDialog {
         this.dayAmount.setText(xerb.getString("window.archive.archivedays") + ":");
         okButton.setText(xerb.getString("general.continue"));
         okButton.addActionListener(new java.awt.event.ActionListener() {
+
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 //update archiving options of selected data
                 if (revisionModelCheckbox.isSelected()) {
-                    ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(1);
+                    ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(1);
                 } else {
-                    ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(0);
+                    ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(0);
                 }
-                ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(4)).setAttrib_unsignedint(archiveModelDropDown.getSelectedIndex());
+                ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(4)).setAttrib_unsignedint(archiveModelDropDown.getSelectedIndex());
                 int temp_year_int = 0;
                 int temp_month_int = 0;
                 int temp_day_int = 0;
@@ -113,14 +121,14 @@ public class ArchiveDialog extends javax.swing.JDialog {
                     Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
                     cal.set(Calendar.DST_OFFSET, 0);
                     cal.set(Calendar.YEAR, temp_year_int);
-                    cal.set(Calendar.MONTH, (temp_month_int-1));
+                    cal.set(Calendar.MONTH, (temp_month_int - 1));
                     cal.set(Calendar.DAY_OF_MONTH, temp_day_int);
                     cal.set(Calendar.HOUR_OF_DAY, 0);
                     cal.set(Calendar.MINUTE, 0);
                     cal.set(Calendar.SECOND, 0);
-                    ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(5)).setAttrib_datetime(cal);
+                    ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(5)).setAttrib_datetime(cal);
                     temp_days_int = Integer.parseInt(dayAmountTextBox.getText());
-                    ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(6)).setAttrib_unsignedint(temp_days_int);
+                    ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(6)).setAttrib_unsignedint(temp_days_int);
                     //close dialog
                     explorer.set_global_dialog_return_value(1);
                     setVisible(false);
@@ -130,12 +138,13 @@ public class ArchiveDialog extends javax.swing.JDialog {
         });
         cancelButton.setText(xerb.getString("general.cancel"));
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
+
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 setVisible(false);
             }
         });
         //processing independent of creation
-        if (((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(3)).getAttrib_unsignedint() == 0) {
+        if (((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(3)).getAttrib_unsignedint() == 0) {
             revisionModelCheckbox.setSelected(false);
         } else {
             revisionModelCheckbox.setSelected(true);
@@ -145,18 +154,19 @@ public class ArchiveDialog extends javax.swing.JDialog {
         dcbm.addElement(xerb.getString("window.archive.archivingmodel.none"));
         dcbm.addElement(xerb.getString("window.archive.archivingmodel.archivedate"));
         dcbm.addElement(xerb.getString("window.archive.archivingmodel.archivedays"));
-        archiveModelDropDown.setSelectedIndex((int)((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(4)).getAttrib_unsignedint());
+        archiveModelDropDown.setSelectedIndex((int) ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(4)).getAttrib_unsignedint());
         //set date / days
         //convert clone from remote time to local time
-        Calendar cal = (Calendar)((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(5)).getAttrib_datetime().clone();
-        Calendar realcal = ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(5)).getAttrib_datetime();
+        Calendar cal = (Calendar) ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(5)).getAttrib_datetime().clone();
+        Calendar realcal = ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(5)).getAttrib_datetime();
         Calendar ngc = new GregorianCalendar();
-        cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - realcal.get(Calendar.ZONE_OFFSET)) - (ngc.get(Calendar.DST_OFFSET) + realcal.get(Calendar.DST_OFFSET)) );
+        cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - realcal.get(Calendar.ZONE_OFFSET)) - (ngc.get(Calendar.DST_OFFSET) + realcal.get(Calendar.DST_OFFSET)));
         yearTextBox.setText("" + cal.get(Calendar.YEAR));
         monthTextBox.setText("" + (cal.get(Calendar.MONTH) + 1));
         dayTextBox.setText("" + cal.get(Calendar.DAY_OF_MONTH));
-        dayAmountTextBox.setText("" + ((XincoAddAttribute)((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(6)).getAttrib_unsignedint());
+        dayAmountTextBox.setText("" + ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(6)).getAttrib_unsignedint());
     }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -277,7 +287,6 @@ public class ArchiveDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox archiveModelDropDown;
     private javax.swing.JLabel archiveModelLabel;
@@ -292,5 +301,4 @@ public class ArchiveDialog extends javax.swing.JDialog {
     private javax.swing.JLabel revisionModelLabel;
     private javax.swing.JTextField yearTextBox;
     // End of variables declaration//GEN-END:variables
-    
 }
