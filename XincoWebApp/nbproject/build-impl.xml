@@ -19,7 +19,6 @@
         -->
 <project xmlns:webproject1="http://www.netbeans.org/ns/web-project/1" xmlns:webproject2="http://www.netbeans.org/ns/web-project/2" xmlns:webproject3="http://www.netbeans.org/ns/web-project/3" basedir=".." default="default" name="xinco-impl">
     <import file="jaxws-build.xml"/>
-    <import file="rest-build.xml"/>
     <import file="ant-deploy.xml"/>
     <fail message="Please build using Ant 1.7.1 or higher.">
         <condition>
@@ -431,7 +430,7 @@ exists or setup the property manually. For example like this:
             <fileset dir="${persistence.xml.dir}" includes="persistence.xml"/>
         </copy>
     </target>
-    <target depends="-rest-post-compile" name="-post-compile">
+    <target name="-post-compile">
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
     </target>
@@ -558,8 +557,6 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.xercesImpl.jar-3}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.xercesImpl.jar-3" todir="${dist.ear.dir}"/>
         <copyfiles files="${file.reference.xmlParserAPIs.jar-1}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.xmlParserAPIs.jar-1" todir="${dist.ear.dir}"/>
         <copyfiles files="${reference.XincoExplorer.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.reference.XincoExplorer.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${libs.restapi.classpath}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.libs.restapi.classpath" todir="${dist.ear.dir}"/>
-        <copyfiles files="${libs.jaxws21.classpath}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.libs.jaxws21.classpath" todir="${dist.ear.dir}"/>
         <copyfiles files="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${reference.Xinco.jar}" todir="${build.web.dir}/client"/>
@@ -580,7 +577,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
         <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${manifest.reference.Xinco.jar} ${manifest.file.reference.activation.jar-1} ${manifest.file.reference.axis-ant.jar} ${manifest.file.reference.axis.jar} ${manifest.file.reference.commons-collections-2.1.1.jar} ${manifest.file.reference.commons-dbcp-1.2.1.jar} ${manifest.file.reference.commons-discovery-0.2.jar} ${manifest.file.reference.commons-logging-1.0.4.jar} ${manifest.file.reference.commons-pool-1.2.jar} ${manifest.file.reference.jaxrpc.jar} ${manifest.file.reference.Lius-1.0.jar} ${manifest.file.reference.log4j-1.2.15.jar} ${manifest.file.reference.lucene-1.4-final.jar} ${manifest.file.reference.lucene-core-2.2.0.jar} ${manifest.file.reference.lucene-demos-1.4-final.jar} ${manifest.file.reference.lucene-demos-2.2.0.jar} ${manifest.file.reference.mail.jar-1} ${manifest.file.reference.PDFBox-0.6.7a.jar} ${manifest.file.reference.poi-2.5.1-final-20040804.jar} ${manifest.file.reference.saaj.jar} ${manifest.file.reference.servlet-api.jar} ${manifest.file.reference.tm-extractors-0.4.jar} ${manifest.file.reference.wsdl4j-1.5.1.jar} ${manifest.file.reference.xercesImpl.jar-3} ${manifest.file.reference.xmlParserAPIs.jar-1} ${manifest.reference.XincoExplorer.jar} ${manifest.libs.restapi.classpath} ${manifest.libs.jaxws21.classpath} "/>
+            <attribute name="Class-Path" value="${manifest.reference.Xinco.jar} ${manifest.file.reference.activation.jar-1} ${manifest.file.reference.axis-ant.jar} ${manifest.file.reference.axis.jar} ${manifest.file.reference.commons-collections-2.1.1.jar} ${manifest.file.reference.commons-dbcp-1.2.1.jar} ${manifest.file.reference.commons-discovery-0.2.jar} ${manifest.file.reference.commons-logging-1.0.4.jar} ${manifest.file.reference.commons-pool-1.2.jar} ${manifest.file.reference.jaxrpc.jar} ${manifest.file.reference.Lius-1.0.jar} ${manifest.file.reference.log4j-1.2.15.jar} ${manifest.file.reference.lucene-1.4-final.jar} ${manifest.file.reference.lucene-core-2.2.0.jar} ${manifest.file.reference.lucene-demos-1.4-final.jar} ${manifest.file.reference.lucene-demos-2.2.0.jar} ${manifest.file.reference.mail.jar-1} ${manifest.file.reference.PDFBox-0.6.7a.jar} ${manifest.file.reference.poi-2.5.1-final-20040804.jar} ${manifest.file.reference.saaj.jar} ${manifest.file.reference.servlet-api.jar} ${manifest.file.reference.tm-extractors-0.4.jar} ${manifest.file.reference.wsdl4j-1.5.1.jar} ${manifest.file.reference.xercesImpl.jar-3} ${manifest.file.reference.xmlParserAPIs.jar-1} ${manifest.reference.XincoExplorer.jar} "/>
         </manifest>
     </target>
     <target depends="init" name="library-inclusion-in-archive" unless="dist.ear.dir">
@@ -610,8 +607,6 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.xercesImpl.jar-3}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.xmlParserAPIs.jar-1}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${reference.XincoExplorer.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${libs.restapi.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${libs.jaxws21.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${reference.Xinco.jar}" todir="${build.web.dir}/client"/>

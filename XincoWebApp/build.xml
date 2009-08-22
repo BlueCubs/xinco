@@ -64,10 +64,73 @@
     nbproject/build-impl.xml file. 
     -->
     <target name="-pre-dist">
-        <signjar alias="${keystore.alias}" keystore="${keystore.file}" storepass="${keystore.password}">
+        <signjar alias="${keystore.alias}" keystore="${keystore.file}" storepass="${keystore.password}" lazy="true">
             <fileset dir="${build.dir}/web/client">
                 <include name="**/*.jar"/>
             </fileset>
         </signjar>
+    </target>
+
+    <target name="release" depends="dist">
+        <delete dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}"/>
+        <delete>
+            <fileset dir="${dist}/" includes="**/*.gz"/>
+        </delete>
+        <!-- Create release folder-->
+        <mkdir dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}"/>
+        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/db">
+            <fileset dir="../DB">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/docs">
+            <fileset dir="../Docs">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}">
+            <fileset dir=".">
+                <include name="**/*.txt"/>
+                <include name="LICENSE"/>
+                <exclude name="readme.txt"/>
+            </fileset>
+        </copy>
+        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/key" file=".blueCubsKeystore"/>
+        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps" file="PackXincoToWAR.bat"/>
+        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps" file="PackXincoToWAR.sh"/>
+        <mkdir dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps/xinco"/>
+        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps/xinco">
+            <fileset dir="build/web/">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <tar destfile="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}.tar.gz" compression="gzip" longfile="truncate">
+            <tarfileset dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}" prefix="xinco-DMS-${version_high}.${version_mid}.${version_low}">
+                <exclude name="**/.svn/**"/>
+            </tarfileset>
+        </tar>
+        <delete dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}"/>
+    </target>
+
+    <target name="-pre-init">
+        <mkdir dir="${lib}"/>
+        <echo>Updating version...</echo>
+		<!-- We update the version number -->
+        <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties" flags="s"
+			match="version.high?=(.*)"
+			replace="version.high = ${version_high}"
+			byline="true"/>
+        <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
+			match="version.mid?=(.*)"
+			replace="version.mid = ${version_mid}"
+			byline="true"/>
+        <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
+			match="version.low?=(.*)"
+			replace="version.low = ${version_low}"
+			byline="true"/>
+        <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
+			match="version.postfix?=(.*)"
+			replace="version.postfix = ${version_postfix}"
+			byline="true"/>
     </target>
 </project>
