@@ -90,7 +90,7 @@
         </copy>
         <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}">
             <fileset dir=".">
-                <include name="**/*.txt"/>
+                <include name="*.txt"/>
                 <include name="LICENSE"/>
                 <exclude name="readme.txt"/>
             </fileset>
