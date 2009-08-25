@@ -64,7 +64,7 @@
     nbproject/build-impl.xml file. 
     -->
     <target name="-pre-dist">
-        <signjar alias="${keystore.alias}" keystore="${keystore.file}" storepass="${keystore.password}" lazy="true">
+        <signjar alias="${keystore.alias}" keystore="${keystore.file}" storepass="${keystore.password}">
             <fileset dir="${build.dir}/web/client">
                 <include name="**/*.jar"/>
             </fileset>
