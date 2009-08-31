@@ -11,6 +11,27 @@ More information on: http://www.bluecubs.org
 
 ===============================
 
+============================
+xinco DMS - Version 2.00.05:
+============================
+
+- There is some internationalization changes in the database that needs translating (I did English and Spanish) but won't affect other users since the default values (English) are the current behavior.
+
+- Upgraded design documents from DBDesigner to the new MySQL Workbench.
+
+- The guide was updated as well.
+
+- Automatic version increments based on action performed (still open for creation so you can check in a document as 2.1.0 for example.
+
+- User selects if the change is major or minor, this updates the version number accordingly.
+
+- Removed reason dialog from checkout workflow
+
+- Commenting or modifying metadata updated the version low number.
+
+- Web app only sees latest major version (i.e. 3.0.0 or 3.1.0) (This provides the hiding of interim versions!)
+
+- XincoExplorer now displays XincoData with the proper icon (if is a pdf it'll display the OS icon for pdf!)
 
 ============================
 xinco DMS - Version 2.00.04:
