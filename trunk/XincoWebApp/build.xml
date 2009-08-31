@@ -64,6 +64,11 @@
     nbproject/build-impl.xml file. 
     -->
     <target name="-pre-dist">
+        <!--Make sure the jars are not signed-->
+        <unjar dest="${dist}/unsign">
+            <fileset dir="${build.dir}/web/client" includes="**/*.jar"/>
+        </unjar>
+        <delete dir="${dist}/unsign"/>
         <signjar alias="${keystore.alias}" keystore="${keystore.file}" storepass="${keystore.password}">
             <fileset dir="${build.dir}/web/client">
                 <include name="**/*.jar"/>
