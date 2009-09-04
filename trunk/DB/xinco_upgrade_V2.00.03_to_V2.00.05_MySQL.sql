@@ -1,30 +1,30 @@
-UPDATE xinco_core_data_typeSET DESIGNATION = 'general.data.type.file' WHERE ID =1;
+UPDATE `xinco`.`xinco_core_data_type` SET DESIGNATION = 'general.data.type.file' WHERE ID =1;
 
-UPDATE xinco_core_data_typeSET DESIGNATION = 'general.data.type.text' WHERE ID =2;
+UPDATE `xinco`.`xinco_core_data_type` SET DESIGNATION = 'general.data.type.text' WHERE ID =2;
 
-UPDATE xinco_core_data_typeSET DESIGNATION = 'general.data.type.URL' WHERE ID =3;
+UPDATE `xinco`.`xinco_core_data_type` SET DESIGNATION = 'general.data.type.URL' WHERE ID =3;
 
-UPDATE xinco_core_data_typeSET DESIGNATION = 'general.data.type.contact' WHERE ID =4;
+UPDATE `xinco`.`xinco_core_data_type` SET DESIGNATION = 'general.data.type.contact' WHERE ID =4;
 
-UPDATE xinco_core_data_typeSET description = 'general.data.type.file.description' WHERE ID =1;
+UPDATE `xinco`.`xinco_core_data_type` SET description = 'general.data.type.file.description' WHERE ID =1;
 
-UPDATE xinco_core_data_typeSET description = 'general.data.type.text.description' WHERE ID =2;
+UPDATE `xinco`.`xinco_core_data_type` SET description = 'general.data.type.text.description' WHERE ID =2;
 
-UPDATE xinco_core_data_typeSET description = 'general.data.type.URL.description' WHERE ID =3;
+UPDATE `xinco`.`xinco_core_data_type` SET description = 'general.data.type.URL.description' WHERE ID =3;
 
-UPDATE xinco_core_data_typeSET description = 'general.data.type.contact.description' WHERE ID =4;
+UPDATE `xinco`.`xinco_core_data_type` SET description = 'general.data.type.contact.description' WHERE ID =4;
 
-UPDATE xinco_core_groupSET DESIGNATION = 'general.group.admin' WHERE ID =1;
+UPDATE `xinco`.`xinco_core_group` SET DESIGNATION = 'general.group.admin' WHERE ID =1;
 
-UPDATE xinco_core_groupSET DESIGNATION = 'general.group.allusers' WHERE ID =2;
+UPDATE `xinco`.`xinco_core_group` SET DESIGNATION = 'general.group.allusers' WHERE ID =2;
 
-UPDATE xinco_core_groupSET DESIGNATION = 'general.group.public' WHERE ID =3;
+UPDATE `xinco`.`xinco_core_group` SET DESIGNATION = 'general.group.public' WHERE ID =3;
 
-alter table xinco_core_user add unique (username);
+alter table `xinco`.`xinco_core_user` add unique (username);
 
-alter table xinco_core_groupadd unique (designation);
+alter table `xinco`.`xinco_core_group` add unique (designation);
 
-ALTER TABLE xinco_core_data_type_attribute CHANGE COLUMN `size` `attr_size` INTEGER UNSIGNED NOT NULL DEFAULT 0;
+ALTER TABLE `xinco`.`xinco_core_data_type_attribute` CHANGE COLUMN `size` `attr_size` INTEGER UNSIGNED NOT NULL DEFAULT 0;
 
 ALTER TABLE `xinco`.`xinco_core_data_type_attribute_t` CHANGE COLUMN `size` `attr_size` INTEGER UNSIGNED NOT NULL DEFAULT 0;
 
