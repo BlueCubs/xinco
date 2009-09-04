@@ -33,6 +33,8 @@ xinco DMS - Version 2.00.05:
 
 - XincoExplorer now displays XincoData with the proper icon (if is a pdf it'll display the OS icon for pdf!)
 
+- XincoExplorer has drag 'n drop functionality
+
 ============================
 xinco DMS - Version 2.00.04:
 ============================
