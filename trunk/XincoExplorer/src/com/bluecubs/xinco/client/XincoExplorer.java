@@ -129,7 +129,7 @@ import org.apache.axis.utils.ByteArrayOutputStream;
 /**
  * XincoExplorer
  */
-public class XincoExplorer extends JFrame implements ActionListener, MouseListener{
+public class XincoExplorer extends JFrame implements ActionListener, MouseListener {
 
     //language resources, XincoExplorerResourceBundle
     private ResourceBundle xerb = null;
@@ -1053,7 +1053,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             xincoClientSession.setServeGroups(xincoClientSession.getXinco().getAllXincoCoreGroups(xincoClientSession.getUser()));
                             xincoClientSession.setServerLanguages(xincoClientSession.getXinco().getAllXincoCoreLanguages(xincoClientSession.getUser()));
                             for (i = 0; i < xincoClientSession.getUser().getXinco_core_groups().size(); i++) {
-                                status_string_1 = status_string_1 + "      + " + xerb.getString(((XincoCoreGroup) xincoClientSession.getUser().getXinco_core_groups().elementAt(i)).getDesignation()) + "\n";
+                                String label = ((XincoCoreGroup) xincoClientSession.getUser().getXinco_core_groups().elementAt(i)).getDesignation();
+                                status_string_1 = status_string_1 + "      + " + (xerb.getString(label) == null ? label : xerb.getString(label)) + "\n";
                             }
                             for (i = 0; i < xincoClientSession.getServerDatatypes().size(); i++) {
                                 status_string_2 += "      + " + xerb.getString(((XincoCoreDataType) xincoClientSession.getServerDatatypes().elementAt(i)).getDesignation()) + "\n";

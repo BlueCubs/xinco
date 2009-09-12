@@ -909,7 +909,8 @@ public class XincoAdminServlet extends HttpServlet {
                 for (i = 0; i < allgroups.size(); i++) {
                     out.println("<tr>");
                     out.println("<td class=\"text\">" + ((XincoCoreGroupServer) allgroups.elementAt(i)).getId() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreGroupServer) allgroups.elementAt(i)).getDesignation() + "</td>");
+                    String label = ((XincoCoreGroupServer) allgroups.elementAt(i)).getDesignation();
+                    out.println("<td class=\"text\">" + rb.getString(label) == null ? label : rb.getString(label) + "</td>");
                     out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminGroupsSelect=" +
                             ((XincoCoreGroupServer) allgroups.elementAt(i)).getId() +
                             "&list=" + request.getParameter("list") + "\" class=\"link\">[" +
@@ -1361,7 +1362,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println(rb.getString("message.warning.attribute.remove"));
                     out.write("</title>\n");
                     out.println("<link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>");
-            out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
+                    out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
                     out.write("    </head>\n");
                     out.write("    <body>\n");
                     out.write("        \n");
