@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<project name="xinco" default="default" basedir=".">
+    <description>Builds, tests, and runs the project xinco.</description>
+    <import file="nbproject/build-impl.xml"/>
+    <property file="build.ant.properties"/>
+    <!--
+
+    There exist several targets which are by default empty and which can be 
+    used for execution of your tasks. These targets are usually executed 
+    before and after some main targets. They are: 
+
+      -pre-init:                 called before initialization of project properties 
+      -post-init:                called after initialization of project properties 
+      -pre-compile:              called before javac compilation 
+      -post-compile:             called after javac compilation 
+      -pre-compile-single:       called before javac compilation of single file
+      -post-compile-single:      called after javac compilation of single file
+      -pre-compile-test:         called before javac compilation of JUnit tests
+      -post-compile-test:        called after javac compilation of JUnit tests
+      -pre-compile-test-single:  called before javac compilation of single JUnit test
+      -post-compile-test-single: called after javac compilation of single JUunit test
+      -pre-dist:                 called before jar building 
+      -post-dist:                called after jar building 
+      -post-clean:               called after cleaning build products 
+      -pre-run-deploy:           called before deploying
+      -post-run-deploy:          called after deploying
+
+    Example of pluging an obfuscator after the compilation could look like 
+
+        <target name="post-compile">
+            <obfuscate>
+                <fileset dir="${build.classes.dir}"/>
+            </obfuscate>
+        </target>
+
+    For list of available properties check the imported 
+    nbproject/build-impl.xml file. 
+
+
+    Other way how to customize the build is by overriding existing main targets.
+    The target of interest are: 
+
+      init-macrodef-javac:    defines macro for javac compilation
+      init-macrodef-junit:   defines macro for junit execution
+      init-macrodef-debug:    defines macro for class debugging
+      do-dist:                jar archive building
+      run:                    execution of project 
+      javadoc-build:          javadoc generation 
+
+    Example of overriding the target for project execution could look like 
+
+        <target name="run" depends="<PROJNAME>-impl.jar">
+            <exec dir="bin" executable="launcher.exe">
+                <arg file="${dist.jar}"/>
+            </exec>
+        </target>
+
+    Notice that overridden target depends on jar target and not only on 
+    compile target as regular run target does. Again, for list of available 
+    properties which you can use check the target you are overriding in 
+    nbproject/build-impl.xml file. 
+    -->
+    <target name="-pre-dist">
+        <!--Make sure the jars are not signed-->
+        <unjar dest="${dist}/unsign">
+            <fileset dir="${build.dir}/web/client" includes="**/*.jar"/>
+        </unjar>
+        <delete dir="${dist}/unsign"/>
+        <signjar alias="${keystore.alias}" keystore="${keystore.file}" storepass="${keystore.password}">
+            <fileset dir="${build.dir}/web/client">
+                <include name="**/*.jar"/>
+            </fileset>
+        </signjar>
+    </target>
+
+    <target name="release" depends="dist">
+        <delete dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}"/>
+        <delete>
+            <fileset dir="${dist}/" includes="**/*.gz"/>
+        </delete>
+        <!-- Create release folder-->
+        <mkdir dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}"/>
+        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/db">
+            <fileset dir="../DB">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/docs">
+            <fileset dir="../Docs">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}">
+            <fileset dir=".">
+                <include name="*.txt"/>
+                <include name="LICENSE"/>
+                <exclude name="readme.txt"/>
+            </fileset>
+        </copy>
+        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/key" file=".blueCubsKeystore"/>
+        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps" file="PackXincoToWAR.bat"/>
+        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps" file="PackXincoToWAR.sh"/>
+        <mkdir dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps/xinco"/>
+        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps/xinco">
+            <fileset dir="build/web/">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <tar destfile="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}.tar.gz" compression="gzip" longfile="truncate">
+            <tarfileset dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}" prefix="xinco-DMS-${version_high}.${version_mid}.${version_low}">
+                <exclude name="**/.svn/**"/>
+            </tarfileset>
+        </tar>
+        <delete dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}"/>
+    </target>
+
+    <target name="-pre-init">
+        <mkdir dir="${lib}"/>
+        <echo>Updating version...</echo>
+		<!-- We update the version number -->
+        <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties" flags="s"
+			match="version.high?=(.*)"
+			replace="version.high = ${version_high}"
+			byline="true"/>
+        <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
+			match="version.mid?=(.*)"
+			replace="version.mid = ${version_mid}"
+			byline="true"/>
+        <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
+			match="version.low?=(.*)"
+			replace="version.low = ${version_low}"
+			byline="true"/>
+        <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
+			match="version.postfix?=(.*)"
+			replace="version.postfix = ${version_postfix}"
+			byline="true"/>
+    </target>
+</project>
