@@ -15,7 +15,7 @@
  *
  *************************************************************
  * This project supports the blueCubs vision of giving back
- * to the community cin exchange for free software!
+ * to the community in exchange for free software!
  * More information on: http://www.bluecubs.org
  *************************************************************
  *
