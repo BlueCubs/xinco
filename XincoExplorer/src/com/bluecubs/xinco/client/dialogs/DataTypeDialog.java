@@ -73,7 +73,10 @@ public class DataTypeDialog extends AbstractDialog {
             DefaultListModel dlm = new DefaultListModel();
             dlm.removeAllElements();
             for (i = 0; i < explorer.getSession().getServerDatatypes().size(); i++) {
-                text = ((XincoCoreDataType) explorer.getSession().getServerDatatypes().elementAt(i)).getDesignation() + " (" + ((XincoCoreDataType) explorer.getSession().getServerDatatypes().elementAt(i)).getDescription() + ")";
+                String desc = ((XincoCoreDataType) explorer.getSession().getServerDatatypes().elementAt(i)).getDescription();
+                String designation=((XincoCoreDataType) explorer.getSession().getServerDatatypes().elementAt(i)).getDesignation();
+                text =  (explorer.getResourceBundle().getString(designation) == null ? designation : explorer.getResourceBundle().getString(designation))
+                        + " (" + (explorer.getResourceBundle().getString(desc) == null ? desc : explorer.getResourceBundle().getString(desc)) + ")";
                 dlm.addElement(text);
                 if (((XincoCoreDataType) explorer.getSession().getServerDatatypes().elementAt(i)).getId() == ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId()) {
                     this.dataType.setSelectedIndex(i);
