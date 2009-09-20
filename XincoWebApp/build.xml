@@ -94,33 +94,36 @@
             </fileset>
         </copy>
         <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}">
-            <fileset dir=".">
+            <fileset dir="./release">
                 <include name="*.txt"/>
                 <include name="LICENSE"/>
-                <exclude name="readme.txt"/>
             </fileset>
         </copy>
         <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/key" file=".blueCubsKeystore"/>
-        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps" file="PackXincoToWAR.bat"/>
-        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps" file="PackXincoToWAR.sh"/>
+        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps" file="./release/PackXincoToWAR.bat"/>
+        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps" file="./release/PackXincoToWAR.sh"/>
         <mkdir dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps/xinco"/>
         <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps/xinco">
             <fileset dir="build/web/">
                 <include name="**/*"/>
             </fileset>
         </copy>
-        <tar destfile="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}.tar.gz" compression="gzip" longfile="truncate">
-            <tarfileset dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}" prefix="xinco-DMS-${version_high}.${version_mid}.${version_low}">
+        <zip destfile="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}.zip">
+            <zipfileset dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}" prefix="xinco-DMS-${version_high}.${version_mid}.${version_low}">
                 <exclude name="**/.svn/**"/>
-            </tarfileset>
-        </tar>
+            </zipfileset>
+        </zip>
+        <!--Create XincoExplorer Stand alone Client-->
+        <mkdir dir="${dist}/XincoExplorer Stand Alone Client"/>
+        <copy todir="${dist}/XincoExplorer Stand Alone Client" file="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps/xinco/client/XincoExplorer.jar"/>
         <delete dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}"/>
     </target>
 
     <target name="-pre-init">
         <mkdir dir="${lib}"/>
-        <echo>Updating version...</echo>
-		<!-- We update the version number -->
+        <echo>Updating version in Xinco/src/com/bluecubs/xinco/settings/settings.properties to: '${version_high}.${version_mid}.${version_low} ${version_postfix}'</echo>
+        <echo>To change this, change file build.ant.properties in xinco/</echo>
+		<!-- We update the version number (Xinco project)-->
         <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties" flags="s"
 			match="version.high?=(.*)"
 			replace="version.high = ${version_high}"
