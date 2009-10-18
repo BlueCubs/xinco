@@ -169,6 +169,10 @@
             </and>
         </condition>
         <property name="runmain.jvmargs" value=""/>
+        <path id="endorsed.classpath.path" path="${endorsed.classpath}"/>
+        <condition else="" property="endorsed.classpath.cmd.line.arg" value="-Xbootclasspath/p:'${toString:endorsed.classpath.path}'">
+            <length length="0" string="${endorsed.classpath}" when="greater"/>
+        </condition>
     </target>
     <target depends="init" name="-init-cos" unless="deploy.on.save">
         <condition property="deploy.on.save" value="true">
@@ -231,6 +235,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
                     <classpath>
                         <path path="@{classpath}"/>
                     </classpath>
+                    <compilerarg line="${endorsed.classpath.cmd.line.arg}"/>
                     <compilerarg line="${javac.compilerargs} ${javac.compilerargs.jaxws}"/>
                     <customize/>
                 </javac>
@@ -258,6 +263,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
                     </syspropertyset>
                     <formatter type="brief" usefile="false"/>
                     <formatter type="xml"/>
+                    <jvmarg line="${endorsed.classpath.cmd.line.arg}"/>
                     <jvmarg line="${runmain.jvmargs}"/>
                 </junit>
             </sequential>
@@ -270,6 +276,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
             <element name="customize" optional="true"/>
             <sequential>
                 <java classname="@{classname}" fork="true">
+                    <jvmarg line="${endorsed.classpath.cmd.line.arg}"/>
                     <jvmarg line="${runmain.jvmargs}"/>
                     <classpath>
                         <path path="@{classpath}:${j2ee.platform.classpath}"/>
@@ -347,6 +354,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
             <element name="customize" optional="true"/>
             <sequential>
                 <java classname="@{classname}" fork="true">
+                    <jvmarg line="${endorsed.classpath.cmd.line.arg}"/>
                     <jvmarg line="${debug-args-line}"/>
                     <jvmarg value="-Xrunjdwp:transport=${debug-transport},address=${jpda.address}"/>
                     <jvmarg line="${runmain.jvmargs}"/>
@@ -531,32 +539,32 @@ exists or setup the property manually. For example like this:
     </target>
     <target depends="init,compile,compile-jsps,-pre-dist,-do-dist-with-manifest,-do-dist-without-manifest" name="do-dist"/>
     <target depends="init" if="dist.ear.dir" name="library-inclusion-in-manifest">
-        <copyfiles files="${reference.Xinco.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.reference.Xinco.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.activation.jar-1}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.activation.jar-1" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.axis-ant.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.axis-ant.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.axis.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.axis.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.commons-collections-2.1.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.commons-collections-2.1.1.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.commons-dbcp-1.2.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.commons-dbcp-1.2.1.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.commons-discovery-0.2.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.commons-discovery-0.2.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.commons-logging-1.0.4.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.commons-logging-1.0.4.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.commons-pool-1.2.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.commons-pool-1.2.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.jaxrpc.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.jaxrpc.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.Lius-1.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.Lius-1.0.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.log4j-1.2.15.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.log4j-1.2.15.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.lucene-1.4-final.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.lucene-1.4-final.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.lucene-core-2.2.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.lucene-core-2.2.0.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.lucene-demos-1.4-final.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.lucene-demos-1.4-final.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.lucene-demos-2.2.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.lucene-demos-2.2.0.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.mail.jar-1}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.mail.jar-1" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.PDFBox-0.6.7a.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.PDFBox-0.6.7a.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.poi-2.5.1-final-20040804.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.poi-2.5.1-final-20040804.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.saaj.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.saaj.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.servlet-api.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.servlet-api.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.tm-extractors-0.4.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.tm-extractors-0.4.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.wsdl4j-1.5.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.wsdl4j-1.5.1.jar" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.xercesImpl.jar-3}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.xercesImpl.jar-3" todir="${dist.ear.dir}"/>
-        <copyfiles files="${file.reference.xmlParserAPIs.jar-1}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.file.reference.xmlParserAPIs.jar-1" todir="${dist.ear.dir}"/>
-        <copyfiles files="${reference.XincoExplorer.jar}" iftldtodir="${build.web.dir}/WEB-INF" manifestproperty="manifest.reference.XincoExplorer.jar" todir="${dist.ear.dir}"/>
+        <copyfiles files="${reference.Xinco.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.activation.jar-1}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.axis-ant.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.axis.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.commons-collections-2.1.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.commons-dbcp-1.2.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.commons-discovery-0.2.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.commons-logging-1.0.4.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.commons-pool-1.2.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.jaxrpc.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.Lius-1.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.log4j-1.2.15.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.lucene-1.4-final.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.lucene-core-2.2.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.lucene-demos-1.4-final.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.lucene-demos-2.2.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.mail.jar-1}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.PDFBox-0.6.7a.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.poi-2.5.1-final-20040804.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.saaj.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.servlet-api.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.tm-extractors-0.4.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.wsdl4j-1.5.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.xercesImpl.jar-3}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${file.reference.xmlParserAPIs.jar-1}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
+        <copyfiles files="${reference.XincoExplorer.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}"/>
         <copyfiles files="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${reference.Xinco.jar}" todir="${build.web.dir}/client"/>
@@ -567,18 +575,17 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.jaxrpc.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.liquidlnf.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.mail.jar-2}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.napkinlaf.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.saaj.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.napkinlaf-1.2.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.substance.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.swing-layout-1.0.3.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.wsdl4j-1.5.1.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.xercesImpl.jar-4}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.xmlParserAPIs.jar-2}" todir="${build.web.dir}/client"/>
         <copyfiles files="${reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.JTattoo.jar}" todir="${build.web.dir}/client"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
-        <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${manifest.reference.Xinco.jar} ${manifest.file.reference.activation.jar-1} ${manifest.file.reference.axis-ant.jar} ${manifest.file.reference.axis.jar} ${manifest.file.reference.commons-collections-2.1.1.jar} ${manifest.file.reference.commons-dbcp-1.2.1.jar} ${manifest.file.reference.commons-discovery-0.2.jar} ${manifest.file.reference.commons-logging-1.0.4.jar} ${manifest.file.reference.commons-pool-1.2.jar} ${manifest.file.reference.jaxrpc.jar} ${manifest.file.reference.Lius-1.0.jar} ${manifest.file.reference.log4j-1.2.15.jar} ${manifest.file.reference.lucene-1.4-final.jar} ${manifest.file.reference.lucene-core-2.2.0.jar} ${manifest.file.reference.lucene-demos-1.4-final.jar} ${manifest.file.reference.lucene-demos-2.2.0.jar} ${manifest.file.reference.mail.jar-1} ${manifest.file.reference.PDFBox-0.6.7a.jar} ${manifest.file.reference.poi-2.5.1-final-20040804.jar} ${manifest.file.reference.saaj.jar} ${manifest.file.reference.servlet-api.jar} ${manifest.file.reference.tm-extractors-0.4.jar} ${manifest.file.reference.wsdl4j-1.5.1.jar} ${manifest.file.reference.xercesImpl.jar-3} ${manifest.file.reference.xmlParserAPIs.jar-1} ${manifest.reference.XincoExplorer.jar} "/>
-        </manifest>
+        <manifest file="${build.web.dir}/META-INF/MANIFEST.MF"/>
     </target>
     <target depends="init" name="library-inclusion-in-archive" unless="dist.ear.dir">
         <copyfiles files="${reference.Xinco.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
@@ -617,14 +624,15 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.jaxrpc.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.liquidlnf.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.mail.jar-2}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.napkinlaf.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.saaj.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.napkinlaf-1.2.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.substance.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.swing-layout-1.0.3.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.wsdl4j-1.5.1.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.xercesImpl.jar-4}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.xmlParserAPIs.jar-2}" todir="${build.web.dir}/client"/>
         <copyfiles files="${reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.JTattoo.jar}" todir="${build.web.dir}/client"/>
     </target>
     <target depends="init,compile,compile-jsps,-pre-dist,library-inclusion-in-manifest" if="do.tmp.war.package" name="do-ear-dist">
         <dirname file="${dist.ear.war}" property="dist.jar.dir"/>

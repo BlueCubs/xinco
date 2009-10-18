@@ -910,16 +910,19 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<tr>");
                     out.println("<td class=\"text\">" + ((XincoCoreGroupServer) allgroups.elementAt(i)).getId() + "</td>");
                     String label = ((XincoCoreGroupServer) allgroups.elementAt(i)).getDesignation();
-                    out.println("<td class=\"text\">" + rb.getString(label) == null ? label : rb.getString(label) + "</td>");
+                    try{
+                        label=rb.getString(label);
+                    }catch (java.util.MissingResourceException e){
+                        //Nothing to translate
+                    }
+                    out.println("<td class=\"text\">" + label + "</td>");
                     out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminGroupsSelect=" +
                             ((XincoCoreGroupServer) allgroups.elementAt(i)).getId() +
                             "&list=" + request.getParameter("list") + "\" class=\"link\">[" +
                             rb.getString("general.edit") + "]</a></td>");
                     out.println("</tr>");
                 }
-
                 out.println("</table>");
-
             }
 
             if (current_location.compareTo("GroupAdminSingle") == 0) {
@@ -931,11 +934,19 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
                     out.println("<tr>");
                     out.println("<td class=\"text\">" + rb.getString("general.name") + ":</td>");
-                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditGroupName\" size=\"40\" value=\"" + temp_group.getDesignation() + "\"/></td>");
+                    String designation=temp_group.getDesignation();
+                    try{
+                        designation=rb.getString(temp_group.getDesignation());
+                    }catch (java.util.MissingResourceException e){
+                        //Nothing to translate
+                    }
+                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditGroupName\" size=\"40\" value=\"" + designation + "\"/></td>");
                     out.println("</tr>");
                     out.println("<tr>");
                     out.println("<td class=\"text\">&nbsp;</td>");
-                    out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogEditGroupID\" value=\"" + current_group_selection + "\"/><input type=\"submit\" name=\"DialogEditGroupSubmit\" value=\"" +
+                    out.println("<td class=\"text\"><input type='hidden' name='list' value='" + 
+                            request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogEditGroupID\" value=\"" + 
+                            current_group_selection + "\"/><input type=\"submit\" name=\"DialogEditGroupSubmit\" value=\"" +
                             rb.getString("general.save") + "!\"/></td>");
                     out.println("</tr>");
                     out.println("</table>");

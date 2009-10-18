@@ -5,6 +5,7 @@
 <project name="XincoExplorer" default="default" basedir=".">
     <description>Builds, tests, and runs the project XincoExplorer.</description>
     <import file="nbproject/build-impl.xml"/>
+    <property file="build.ant.properties"/>
     <!--
 
     There exist several targets which are by default empty and which can be 
@@ -66,5 +67,80 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <target name="-post-jar">
+        <antcall target="create jnlp"/>
+    </target>
+
+    <target name="-check-for-master.jnlp">
+        <available file="XincoExplorerMaster.jnlp" property="master.jnlp.exists"/>
+    </target>
+    
+    <target name="jnlp-init-generate-master" depends="-check-for-master.jnlp" unless="master.jnlp.exists">
+        <echo file="XincoExplorerMaster.jnlp"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!--
+###############################################################################
+#
+# @(#)XincoExplorer.jnlp
+#
+# JNLP File for XincoExplorer
+#
+###############################################################################
+ -->
+<!-- ### IMPORTANT: Change codebase to where your client will be deployed to!                         ### -->
+<!-- ###            e.g. http://your_domain:8080/xinco/client or http://192.168.0.1:8080/xinco/client ### -->
+
+<jnlp codebase="http://localhost:8080/xinco/client" href="XincoExplorer.jnlp" spec="0.2 1.0">
+  <information>
+    <title>XincoExplorer</title>
+    <vendor>blueCubs.com</vendor>
+    <homepage href="http://www.xinco.org"/>
+    <description>XincoExplorer - Client of xinco, the Core of Information and Document Management</description>
+    <description kind="short">XincoExplorer - Client of xinco, the Core of Information and Document Management</description>
+    <icon href="blueCubsIcon.gif"/>
+    <offline-allowed/>
+    <shortcut online="true">
+    </shortcut>
+  </information>
+  <resources locale="" os="">
+<!-- The following line will be replaced with an automatically generated list of resources: -->
+<!--$${jnlp.resources}-->
+  </resources>
+  <security>
+    <!-- all permissions required on Client-Computer -->
+    <all-permissions/>
+  </security>
+  <application-desc main-class="com.bluecubs.xinco.client.XincoExplorer"/>
+</jnlp>
+]]>
+        </echo>
+    </target>
+    <target name="create jnlp" depends="jnlp-init-generate-master">
+        <echo file="resources.xml"><![CDATA[
+    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.5.0+" java-vm-args="-Xmx512m"/>
+    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.6.0+" java-vm-args="-Xmx512m"/>
+    <!-- required libraries, ALL SIGNED -->
+    <jar download="eager" href="XincoExplorer.jar" main="true"/>
+    <jar href="Xinco.jar"/>]]>
+        </echo>
+        <path id="build.classpath">
+            <fileset dir="${lib}">
+                <include name="*.jar" />
+            </fileset>
+        </path>
+        <!-- convert classpath to a flat list/string for use in manifest task -->
+        <pathconvert property="mf.classpath" pathsep="&quot;/&gt;&#13;&#10;&lt;jar href=&quot;">
+            <path refid="build.classpath" />
+            <flattenmapper />
+        </pathconvert>
+        <echo file="resources.xml" append="true">&lt;jar href=&quot;${mf.classpath}&quot;/&gt;</echo>
+        <loadfile property="jnlp.resources" srcfile="resources.xml"/>
+        <copy file="XincoExplorerMaster.jnlp" tofile="${jnlp.dest.dir}/XincoExplorer.jnlp" overwrite="true">
+            <filterchain>
+                <replacestring from="&lt;!--$${jnlp.resources}--&gt;" to="${jnlp.resources}"/>
+                <replacestring from="$${jnlp.resources}" to="${jnlp.resources}"/>
+            </filterchain>
+        </copy>
+        <delete file="resources.xml"/>
+    </target>
 </project>
 

@@ -25,27 +25,7 @@
   </information>
   <resources locale="" os="">
 <!-- The following line will be replaced with an automatically generated list of resources: -->
-
-    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.5.0+" java-vm-args="-Xmx512m"/>
-    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.6.0+" java-vm-args="-Xmx512m"/>
-    <!-- required libraries, ALL SIGNED -->
-    <jar download="eager" href="XincoExplorer.jar" main="true"/>
-    <jar href="Xinco.jar"/>
-        <jar href="JTattoo.jar"/>
-<jar href="activation.jar"/>
-<jar href="axis.jar"/>
-<jar href="commons-discovery-0.2.jar"/>
-<jar href="commons-logging-1.0.4.jar"/>
-<jar href="jaxrpc.jar"/>
-<jar href="liquidlnf.jar"/>
-<jar href="mail.jar"/>
-<jar href="napkinlaf-1.2.jar"/>
-<jar href="saaj.jar"/>
-<jar href="substance.jar"/>
-<jar href="swing-layout-1.0.3.jar"/>
-<jar href="wsdl4j-1.5.1.jar"/>
-<jar href="xercesImpl.jar"/>
-<jar href="xmlParserAPIs.jar"/>
+<!--${jnlp.resources}-->
   </resources>
   <security>
     <!-- all permissions required on Client-Computer -->

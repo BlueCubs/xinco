@@ -135,6 +135,7 @@ is divided into following sections:
         <property name="javadoc.preview" value="true"/>
         <property name="application.args" value=""/>
         <property name="source.encoding" value="${file.encoding}"/>
+        <property name="runtime.encoding" value="${source.encoding}"/>
         <condition property="javadoc.encoding.used" value="${javadoc.encoding}">
             <and>
                 <isset property="javadoc.encoding"/>
@@ -150,11 +151,9 @@ is divided into following sections:
         <condition property="do.depend.true">
             <istrue value="${do.depend}"/>
         </condition>
-        <condition else="" property="javac.compilerargs.jaxws" value="-Djava.endorsed.dirs='${jaxws.endorsed.dir}'">
-            <and>
-                <isset property="jaxws.endorsed.dir"/>
-                <available file="nbproject/jaxws-build.xml"/>
-            </and>
+        <path id="endorsed.classpath.path" path="${endorsed.classpath}"/>
+        <condition else="" property="endorsed.classpath.cmd.line.arg" value="-Xbootclasspath/p:'${toString:endorsed.classpath.path}'">
+            <length length="0" string="${endorsed.classpath}" when="greater"/>
         </condition>
     </target>
     <target name="-post-init">
@@ -205,7 +204,8 @@ is divided into following sections:
                     <classpath>
                         <path path="@{classpath}"/>
                     </classpath>
-                    <compilerarg line="${javac.compilerargs} ${javac.compilerargs.jaxws}"/>
+                    <compilerarg line="${endorsed.classpath.cmd.line.arg}"/>
+                    <compilerarg line="${javac.compilerargs}"/>
                     <customize/>
                 </javac>
             </sequential>
@@ -259,6 +259,7 @@ is divided into following sections:
                     </syspropertyset>
                     <formatter type="brief" usefile="false"/>
                     <formatter type="xml"/>
+                    <jvmarg line="${endorsed.classpath.cmd.line.arg}"/>
                     <jvmarg line="${run.jvmargs}"/>
                 </junit>
             </sequential>
@@ -315,10 +316,11 @@ is divided into following sections:
             <element name="customize" optional="true"/>
             <sequential>
                 <java classname="@{classname}" dir="${work.dir}" fork="true">
+                    <jvmarg line="${endorsed.classpath.cmd.line.arg}"/>
                     <jvmarg line="${debug-args-line}"/>
                     <jvmarg value="-Xrunjdwp:transport=${debug-transport},address=${jpda.address}"/>
-                    <jvmarg value="-Dfile.encoding=${source.encoding}"/>
-                    <redirector errorencoding="${source.encoding}" inputencoding="${source.encoding}" outputencoding="${source.encoding}"/>
+                    <jvmarg value="-Dfile.encoding=${runtime.encoding}"/>
+                    <redirector errorencoding="${runtime.encoding}" inputencoding="${runtime.encoding}" outputencoding="${runtime.encoding}"/>
                     <jvmarg line="${run.jvmargs}"/>
                     <classpath>
                         <path path="@{classpath}"/>
@@ -339,8 +341,9 @@ is divided into following sections:
             <element name="customize" optional="true"/>
             <sequential>
                 <java classname="@{classname}" dir="${work.dir}" fork="true">
-                    <jvmarg value="-Dfile.encoding=${source.encoding}"/>
-                    <redirector errorencoding="${source.encoding}" inputencoding="${source.encoding}" outputencoding="${source.encoding}"/>
+                    <jvmarg line="${endorsed.classpath.cmd.line.arg}"/>
+                    <jvmarg value="-Dfile.encoding=${runtime.encoding}"/>
+                    <redirector errorencoding="${runtime.encoding}" inputencoding="${runtime.encoding}" outputencoding="${runtime.encoding}"/>
                     <jvmarg line="${run.jvmargs}"/>
                     <classpath>
                         <path path="@{classpath}"/>
