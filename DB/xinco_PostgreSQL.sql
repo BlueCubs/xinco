@@ -45,8 +45,7 @@ CREATE INDEX xinco_core_group_index_status ON xinco_core_group (status_number);
 
 INSERT INTO xinco_core_group VALUES (1, 'Administrators', 1);     
 INSERT INTO xinco_core_group VALUES (2, 'AllUsers', 1);   
-INSERT INTO xinco_core_group VALUES (3, 'Public', 1);    
-
+INSERT INTO xinco_core_group VALUES (3, 'Public', 1);     
 
 CREATE TABLE xinco_id (
   tablename VARCHAR(255) NOT NULL,
@@ -150,7 +149,7 @@ CREATE TABLE xinco_core_data_type_attribute (
   attribute_id INTEGER NOT NULL,
   designation VARCHAR(255) NOT NULL,
   data_type VARCHAR(255) NOT NULL,
-  size INTEGER NOT NULL,
+  attr_size INTEGER NOT NULL,
   PRIMARY KEY(xinco_core_data_type_id, attribute_id),
   FOREIGN KEY(xinco_core_data_type_id)
     REFERENCES xinco_core_data_type(id)
@@ -327,11 +326,7 @@ INSERT INTO xinco_core_ace VALUES (16, 1, NULL, 4, NULL, 1, 1, 1, 1);
 INSERT INTO xinco_core_ace VALUES (17, NULL, 1, 4, NULL, 1, 1, 1, 1);           
 INSERT INTO xinco_core_ace VALUES (18, NULL, 2, 4, NULL, 1, 0, 0, 0);           
 
-INSERT INTO xinco_core_ace VALUES (19, NULL, 3, 1, NULL, 1, 0, 0, 0);             
-INSERT INTO xinco_core_ace VALUES (20, NULL, 3, 4, NULL, 1, 0, 0, 0);             
-INSERT INTO xinco_core_ace VALUES (21, NULL, 3, NULL, 1, 1, 0, 0, 0);             
-INSERT INTO xinco_core_ace VALUES (22, NULL, 3, NULL, 2, 1, 0, 0, 0);             
-
+INSERT INTO xinco_core_ace VALUES (19, NULL, 3, 1, NULL, 1, 0, 0, 0);              INSERT INTO xinco_core_ace VALUES (20, NULL, 3, 4, NULL, 1, 0, 0, 0);              INSERT INTO xinco_core_ace VALUES (21, NULL, 3, NULL, 1, 1, 0, 0, 0);              INSERT INTO xinco_core_ace VALUES (22, NULL, 3, NULL, 2, 1, 0, 0, 0);              
 
 CREATE TABLE xinco_add_attribute (
   xinco_core_data_id INTEGER NOT NULL,
@@ -715,7 +710,7 @@ CREATE TABLE xinco_core_data_type_attribute_t (
   attribute_id INTEGER NOT NULL,
   designation VARCHAR(255) NOT NULL,
   data_type VARCHAR(255) NOT NULL,
-  size INTEGER NOT NULL,
+  attr_size INTEGER NOT NULL,
   PRIMARY KEY(record_id)
 )
 ;

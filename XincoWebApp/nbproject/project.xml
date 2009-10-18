@@ -156,11 +156,11 @@
                     <path-in-war>client</path-in-war>
                 </library>
                 <library>
-                    <file>${file.reference.napkinlaf.jar}</file>
+                    <file>${file.reference.saaj.jar-1}</file>
                     <path-in-war>client</path-in-war>
                 </library>
                 <library>
-                    <file>${file.reference.saaj.jar-1}</file>
+                    <file>${file.reference.napkinlaf-1.2.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
                 <library>
@@ -185,6 +185,10 @@
                 </library>
                 <library>
                     <file>${reference.XincoExplorer.jar}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+                <library>
+                    <file>${file.reference.JTattoo.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
             </web-module-additional-libraries>

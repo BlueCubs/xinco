@@ -330,6 +330,11 @@ public class XincoRepositoryActionHandler {
                 String[] list = new String[explorer.getSession().getServerGroups().size()];
                 for (i = 0; i < explorer.getSession().getServerGroups().size(); i++) {
                     list[i] = (new String(((XincoCoreGroup) explorer.getSession().getServerGroups().elementAt(i)).getDesignation()));
+                    try {
+                        list[i] = explorer.getResourceBundle().getString(list[i]);
+                    } catch (java.util.MissingResourceException ex) {
+                        //Nothing to translate
+                    }
                 }
                 ((ACLDialog) AbstractDialogACL).setACLGroupModel(list);
                 //fill ACL
@@ -408,12 +413,12 @@ public class XincoRepositoryActionHandler {
 
         public void actionPerformed(ActionEvent e) {
             if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
-                    XincoDownloadThread downloadT = new XincoDownloadThread();
-                    downloadT.setXincoExplorer(explorer);
-                    downloadT.start();
-                } else {
-                    explorer.doDataWizard(7);
-                }
+                XincoDownloadThread downloadT = new XincoDownloadThread();
+                downloadT.setXincoExplorer(explorer);
+                downloadT.start();
+            } else {
+                explorer.doDataWizard(7);
+            }
         }
     }
 
@@ -550,11 +555,11 @@ public class XincoRepositoryActionHandler {
      * @param dragNdrop
      */
     public void insertNode(boolean dragNdrop) {
-        if (((explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) &&
-                !dragNdrop) ||
-                ((explorer.getJTreeRepository().getPreviousTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) &&
-                dragNdrop) &&
-                (explorer.getSession().getClipboardTreeNodeSelection() != null)) {
+        if (((explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class)
+                && !dragNdrop)
+                || ((explorer.getJTreeRepository().getPreviousTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class)
+                && dragNdrop)
+                && (explorer.getSession().getClipboardTreeNodeSelection() != null)) {
             int old_parentNodeId = 0;
             int i;
             int cb_size;
@@ -596,11 +601,11 @@ public class XincoRepositoryActionHandler {
                             // undo modification
                             ((XincoCoreNode) tempNode.getUserObject()).setXinco_core_node_id(old_parentNodeId);
                             JOptionPane.showMessageDialog(explorer,
-                                    xerb.getString("error.movefolderfailed") +
-                                    " " +
-                                    xerb.getString("general.reason") +
-                                    ": " +
-                                    rmie.toString(),
+                                    xerb.getString("error.movefolderfailed")
+                                    + " "
+                                    + xerb.getString("general.reason")
+                                    + ": "
+                                    + rmie.toString(),
                                     xerb.getString("general.error"),
                                     JOptionPane.WARNING_MESSAGE);
                             break;
@@ -652,17 +657,17 @@ public class XincoRepositoryActionHandler {
                                 newlog.setXinco_core_user_id(explorer.getSession().getUser().getId());
                                 newlog.setOp_code(2);
                                 if (!dragNdrop) {
-                                    newlog.setOp_description(xerb.getString("menu.edit.movedtofolder") + " " +
-                                            ((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getDesignation() + " (" +
-                                            ((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId() + ") " +
-                                            xerb.getString("general.by") + " " +
-                                            explorer.getSession().getUser().getUsername());
+                                    newlog.setOp_description(xerb.getString("menu.edit.movedtofolder") + " "
+                                            + ((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getDesignation() + " ("
+                                            + ((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId() + ") "
+                                            + xerb.getString("general.by") + " "
+                                            + explorer.getSession().getUser().getUsername());
                                 } else {
-                                    newlog.setOp_description(xerb.getString("menu.edit.movedtofolder") + " " +
-                                            ((XincoCoreNode) explorer.getJTreeRepository().getTargetTreeNode().getUserObject()).getDesignation() + " (" +
-                                            ((XincoCoreNode) explorer.getJTreeRepository().getTargetTreeNode().getUserObject()).getId() + ") " +
-                                            xerb.getString("general.by") + " " +
-                                            explorer.getSession().getUser().getUsername());
+                                    newlog.setOp_description(xerb.getString("menu.edit.movedtofolder") + " "
+                                            + ((XincoCoreNode) explorer.getJTreeRepository().getTargetTreeNode().getUserObject()).getDesignation() + " ("
+                                            + ((XincoCoreNode) explorer.getJTreeRepository().getTargetTreeNode().getUserObject()).getId() + ") "
+                                            + xerb.getString("general.by") + " "
+                                            + explorer.getSession().getUser().getUsername());
                                 }
                                 newlog.setOp_datetime(null);
                                 newlog.setVersion(((XincoCoreLog) oldlogs.elementAt(oldlogs.size() - 1)).getVersion());
@@ -676,11 +681,11 @@ public class XincoRepositoryActionHandler {
                             // undo modification
                             ((XincoCoreData) tempNode.getUserObject()).setXinco_core_node_id(old_parentNodeId);
                             JOptionPane.showMessageDialog(explorer,
-                                    xerb.getString("error.movedatafailed") +
-                                    " " +
-                                    xerb.getString("general.reason") +
-                                    ": " +
-                                    rmie.toString(),
+                                    xerb.getString("error.movedatafailed")
+                                    + " "
+                                    + xerb.getString("general.reason")
+                                    + ": "
+                                    + rmie.toString(),
                                     xerb.getString("general.error"),
                                     JOptionPane.WARNING_MESSAGE);
                             break;
