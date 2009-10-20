@@ -257,7 +257,7 @@
         :cleanup
         </echo>
         <!--Copy jars-->
-        <copy todir="${dist}/XincoExplorer Stand Alone Client/">
+        <copy todir="${dist}/XincoExplorer Stand Alone Client/lib/">
             <fileset dir="build/web/client">
                 <include name="**/*.jar"/>
             </fileset>
