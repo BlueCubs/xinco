@@ -3,7 +3,6 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
 CREATE SCHEMA IF NOT EXISTS `xinco` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
-SHOW WARNINGS;
 USE `xinco`;
 
 -- -----------------------------------------------------
@@ -11,7 +10,6 @@ USE `xinco`;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_add_attribute_t` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_add_attribute_t` (
   `record_id` INT(10) UNSIGNED NOT NULL ,
   `xinco_core_data_id` INT(10) UNSIGNED NOT NULL ,
@@ -26,14 +24,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_add_attribute_t` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_ace_t`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_ace_t` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_ace_t` (
   `record_id` INT(10) UNSIGNED NOT NULL ,
   `id` INT(10) UNSIGNED NOT NULL ,
@@ -49,14 +45,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_ace_t` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_data_t`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_data_t` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_t` (
   `record_id` INT(10) UNSIGNED NOT NULL ,
   `id` INT(10) UNSIGNED NOT NULL ,
@@ -69,14 +63,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_t` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_data_type_attribute_t`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_data_type_attribute_t` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_type_attribute_t` (
   `record_id` INT(10) UNSIGNED NOT NULL ,
   `xinco_core_data_type_id` INT(10) UNSIGNED NOT NULL ,
@@ -88,14 +80,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_type_attribute_t` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_data_type_t`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_data_type_t` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_type_t` (
   `record_id` INT(10) UNSIGNED NOT NULL ,
   `id` INT(10) UNSIGNED NOT NULL ,
@@ -105,14 +95,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_type_t` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_group_t`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_group_t` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_group_t` (
   `record_id` INT(10) UNSIGNED NOT NULL ,
   `id` INT(10) UNSIGNED NOT NULL ,
@@ -122,14 +110,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_group_t` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_language_t`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_language_t` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_language_t` (
   `record_id` INT(10) UNSIGNED NOT NULL ,
   `id` INT(10) UNSIGNED NOT NULL ,
@@ -139,14 +125,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_language_t` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_node_t`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_node_t` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_node_t` (
   `record_id` INT(10) UNSIGNED NOT NULL ,
   `id` INT(10) UNSIGNED NOT NULL ,
@@ -158,14 +142,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_node_t` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_user`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_user` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user` (
   `id` INT UNSIGNED NOT NULL ,
   `username` VARCHAR(255) NOT NULL ,
@@ -184,14 +166,12 @@ COMMENT = 'Status: \nopen = 1 \nlocked = 2 \n'
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_user_has_xinco_core_group_t`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_user_has_xinco_core_group_t` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_has_xinco_core_group_t` (
   `record_id` INT(10) UNSIGNED NOT NULL ,
   `xinco_core_user_id` INT(10) UNSIGNED NOT NULL ,
@@ -201,14 +181,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_has_xinco_core_group_t` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_user_t`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_user_t` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_t` (
   `record_id` INT(10) UNSIGNED NOT NULL ,
   `id` INT(10) UNSIGNED NOT NULL ,
@@ -224,14 +202,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_t` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_user_modified_record`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_user_modified_record` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_modified_record` (
   `id` INT(10) UNSIGNED NOT NULL ,
   `record_id` INT(10) UNSIGNED NOT NULL ,
@@ -246,14 +222,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_modified_record` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_language`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_language` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_language` (
   `id` INT UNSIGNED NOT NULL ,
   `sign` VARCHAR(255) NOT NULL ,
@@ -262,14 +236,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_language` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_node`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_node` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_node` (
   `id` INT UNSIGNED NOT NULL ,
   `xinco_core_node_id` INT UNSIGNED NULL ,
@@ -295,14 +267,12 @@ COMMENT = 'Status:\nopen = 1\nlocked = 2\narchived = 3\n'
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_data_type`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_data_type` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_type` (
   `id` INT UNSIGNED NOT NULL ,
   `designation` VARCHAR(255) NOT NULL ,
@@ -311,14 +281,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_type` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_data`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_data` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data` (
   `id` INT UNSIGNED NOT NULL ,
   `xinco_core_node_id` INT UNSIGNED NOT NULL ,
@@ -350,14 +318,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_user`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_user` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user` (
   `id` INT UNSIGNED NOT NULL ,
   `username` VARCHAR(255) NOT NULL ,
@@ -376,14 +342,12 @@ COMMENT = 'Status: \nopen = 1 \nlocked = 2 \n'
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_group`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_group` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_group` (
   `id` INT UNSIGNED NOT NULL ,
   `designation` VARCHAR(255) NOT NULL ,
@@ -395,14 +359,12 @@ COMMENT = 'Status:  \nopen = 1  \nlocked = 2  \n'
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_ace`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_ace` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_ace` (
   `id` INT UNSIGNED NOT NULL ,
   `xinco_core_user_id` INT UNSIGNED NULL ,
@@ -441,14 +403,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_ace` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_user_has_xinco_core_group`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_user_has_xinco_core_group` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_has_xinco_core_group` (
   `xinco_core_user_id` INT UNSIGNED NOT NULL ,
   `xinco_core_group_id` INT UNSIGNED NOT NULL ,
@@ -471,14 +431,12 @@ COMMENT = 'Status:  \nopen = 1  \nlocked = 2  \n'
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_id`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_id` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_id` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `tablename` VARCHAR(255) NOT NULL ,
@@ -487,14 +445,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_id` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_add_attribute`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_add_attribute` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_add_attribute` (
   `xinco_core_data_id` INT UNSIGNED NOT NULL ,
   `attribute_id` INT UNSIGNED NOT NULL ,
@@ -514,14 +470,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_add_attribute` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_data_type_attribute`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_data_type_attribute` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_type_attribute` (
   `xinco_core_data_type_id` INT UNSIGNED NOT NULL ,
   `attribute_id` INT UNSIGNED NOT NULL ,
@@ -538,14 +492,12 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_type_attribute` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_log`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_log` ;
 
-SHOW WARNINGS;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_log` (
   `id` INT UNSIGNED NOT NULL ,
   `xinco_core_data_id` INT UNSIGNED NOT NULL ,
@@ -573,7 +525,6 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_log` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
-SHOW WARNINGS;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
@@ -624,7 +575,7 @@ COMMIT;
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
 USE `xinco`;
-INSERT INTO `xinco_core_data` (`id`, `xinco_core_node_id`, `xinco_core_language_id`, `xinco_core_data_type_id`, `designation`, `status_number`) VALUES (1, 1, 2, 2, 'Apache License 2.0', 5);
+INSERT INTO `xinco_core_data` (`id`, `xinco_core_node_id`, `xinco_core_language_id`, `xinco_core_data_type_id`, `designation`, `status_number`) VALUES (1, 1, 2, 3, 'Apache License 2.0', 5);
 INSERT INTO `xinco_core_data` (`id`, `xinco_core_node_id`, `xinco_core_language_id`, `xinco_core_data_type_id`, `designation`, `status_number`) VALUES (2, 1, 2, 3, 'xinco.org', 1);
 
 COMMIT;
@@ -634,9 +585,9 @@ COMMIT;
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
 USE `xinco`;
-INSERT INTO `xinco_core_user`(1, 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', 1, 0, now());
-INSERT INTO `xinco_core_user`(2, 'user', MD5('user'), 'User', 'Default', 'user@xinco.org', 1, 0, now());
-INSERT INTO `xinco_core_user`(3, 'bluecubs', MD5('bluecubs'), 'System', 'User', 'info@bluecubs.com', 1, 0, now());
+INSERT INTO `xinco_core_user` VALUES (1, 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', 1, 0, now());
+INSERT INTO `xinco_core_user` VALUES(2, 'user', MD5('user'), 'User', 'Default', 'user@xinco.org', 1, 0, now());
+INSERT INTO `xinco_core_user` VALUES (3, 'bluecubs', MD5('bluecubs'), 'System', 'User', 'info@bluecubs.com', 1, 0, now());
 
 COMMIT;
 
@@ -707,6 +658,16 @@ INSERT INTO `xinco_id` (`id`, `tablename`, `last_id`) VALUES (6, 'xinco_core_dat
 INSERT INTO `xinco_id` (`id`, `tablename`, `last_id`) VALUES (7, 'xinco_core_ace', 1000);
 INSERT INTO `xinco_id` (`id`, `tablename`, `last_id`) VALUES (8, 'xinco_core_log', 1000);
 INSERT INTO `xinco_id` (`id`, `tablename`, `last_id`) VALUES (9, 'xinco_core_user_modified_record', 0);
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_add_attribute`
+-- -----------------------------------------------------
+SET AUTOCOMMIT=0;
+USE `xinco`;
+INSERT INTO `xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES (2, 1, 0, 0, 0, 'http://www.xinco.org', '', 0);
+INSERT INTO `xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES (1, 1, 0, 0, 0, 'http://www.apache.org/licenses/LICENSE-2.0.html', '', 0);
 
 COMMIT;
 

@@ -193,10 +193,10 @@
         </pathconvert>
         <!--Create XincoExplorer.sh-->
         <echo file="${dist}/XincoExplorer Stand Alone Client/XincoExplorer.sh" append="false">#!/bin/sh
-            java -cp "${mf.classpath}" com.bluecubs.xinco.client.XincoExplorer
+            java -cp "lib\${mf.classpath}" com.bluecubs.xinco.client.XincoExplorer
         </echo>
         <!--Create XincoExplorer.bat-->
-        <echo file="${dist}/XincoExplorer Stand Alone Client/XincoExplorer.bat" append="false">java -cp "${mf.classpath}" com.bluecubs.xinco.client.XincoExplorer</echo>
+        <echo file="${dist}/XincoExplorer Stand Alone Client/XincoExplorer.bat" append="false">java -cp "lib\${mf.classpath}" com.bluecubs.xinco.client.XincoExplorer</echo>
         <!--Create XincoExplorerHTTPS.bat-->
         <echo file="${dist}/XincoExplorer Stand Alone Client/XincoExplorerHTTPS.bat" append="false">@rem # XincoExplorer for use over SSL/HTTPS
         @rem # ====================================
@@ -206,7 +206,7 @@
         @rem #
         @rem # The server's certificate must be provided by your system administrator!
         @rem #
-        java -cp "${mf.classpath}" com.bluecubs.xinco.client.XincoExplorer
+        java -cp "lib\${mf.classpath}" com.bluecubs.xinco.client.XincoExplorer
         </echo>
         <!--Create XincoExplorerHTTPS.sh-->
         <echo file="${dist}/XincoExplorer Stand Alone Client/XincoExplorerHTTPS.sh" append="false">#!/bin/sh
@@ -218,7 +218,7 @@
         #
         # The server's certificate must be provided by your system administrator!
         #
-        java -cp "${mf.classpath}" com.bluecubs.xinco.client.XincoExplorer
+        java -cp "lib\${mf.classpath}" com.bluecubs.xinco.client.XincoExplorer
         </echo>
         <!--Create XincoExplorerProxy.bat-->
         <echo file="${dist}/XincoExplorer Stand Alone Client/XincoExplorerProxy.bat" append="false">@rem # XincoExplorer for use behind a Firewall / HTTP-Proxy
@@ -229,7 +229,7 @@
         @rem # -Dhttp.proxyPort=3128           # TCP-Port of your Proxy
         @rem #
         @rem # For more options, please consult Java docs...
-        java -cp "${mf.classpath}"  -Dhttp.proxyHost=192.168.50.9 -Dhttp.proxyPort=3128 com.bluecubs.xinco.client.XincoExplorer
+        java -cp "lib\${mf.classpath}"  -Dhttp.proxyHost=192.168.50.9 -Dhttp.proxyPort=3128 com.bluecubs.xinco.client.XincoExplorer
         </echo>
         <!--Create XincoExplorerProxy.sh-->
         <echo file="${dist}/XincoExplorer Stand Alone Client/XincoExplorerProxy.sh" append="false">#!/bin/sh
@@ -241,7 +241,7 @@
         # -Dhttp.proxyPort=3128           # TCP-Port of your Proxy
         #
         # For more options, please consult Java docs...
-        java -cp "${mf.classpath}"  -Dhttp.proxyHost=192.168.50.9 -Dhttp.proxyPort=3128 com.bluecubs.xinco.client.XincoExplorer
+        java -cp "lib\${mf.classpath}"  -Dhttp.proxyHost=192.168.50.9 -Dhttp.proxyPort=3128 com.bluecubs.xinco.client.XincoExplorer
         </echo>
         <!--Create genkeys.bat-->
         <echo file="${dist}/XincoExplorer Stand Alone Client/genkeys.bat" append="false">@echo off
