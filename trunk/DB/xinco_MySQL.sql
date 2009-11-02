@@ -699,7 +699,7 @@ COMMIT;
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
 USE `xinco`;
-INSERT INTO `xinco_core_log`(1, 1, 1, 1, now(), 'Creation!', 1, 0, 0, '');
-INSERT INTO `xinco_core_log`(2, 2, 1, 1, now(), 'Creation!', 1, 0, 0, '');
+INSERT INTO `xinco_core_log` values(1, 1, 1, 1, now(), 'Creation!', 1, 0, 0, '');
+INSERT INTO `xinco_core_log` values(2, 2, 1, 1, now(), 'Creation!', 1, 0, 0, '');
 
 COMMIT;
