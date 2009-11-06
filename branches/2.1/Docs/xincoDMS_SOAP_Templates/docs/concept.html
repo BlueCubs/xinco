@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+  <head>
+    <meta name="author" content="Georg Wittberger" />
+    <meta name="description" content="SOAP templates for xincoDMS documentation and user manual" />
+    <meta name="keywords" content="xinco, xincoDMS, DMS, XML, SOAP, document, management, system, Java, open, source" />
+    <meta name="robots" content="index,follow" />
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <meta http-equiv="content-style-type" content="text/css" />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <title>SOAP templates for xincoDMS - Concept of the SOAP templates</title>
+  </head>
+  <body>
+    <h1>Concept of the SOAP templates</h1>
+    <p>The SOAP templates for xincoDMS have been extracted from the low-level communication between the XincoExplorer
+    client and the document management server. This process was well supported by the SOAPMonitor applet which is
+    available to any modern Apache Axis implementation.</p>
+    <p>Originally this step of monitoring the fundamental XML-based communication between client application and
+    web service has been taken in order to get an idea how to interact with the xincoDMS server from a programming
+    language other than Java. In the particular project the server should be queried by a Visual Basic 6.0
+    application which did not support the xincoDMS API of course but neither supported SOAP as well. So the only
+    way to knock the two systems into transmission was to go down to the basics of the SOAP communication.</p>
+    <p>After the SOAP messages exchanged between client and server had been monitored by the SOAPMonitor applet they
+    were optimized and simplified a little bit because Axis produces quite horrible XML documents. Even now the files
+    are still filled with lots of namespace definitions and prefixes. This makes handling the SOAP templates a little
+    bit more difficult since you might get confused or disoriented very easily. If you want to explore the files in
+    a text editor I highly recommend you one with node folding like
+    <a href="http://notepad-plus.sourceforge.net/">Notepad++</a>. This can help you not to lose yourself in the
+    large document.</p>
+    <p>For every interaction with the xincoDMS server there is a certain SOAP operation. Some tasks even require
+    more than one request to complete the action. There is a set of pre-configured SOAP templates available in
+    this package. Naturally you will have to put in adequate values at some positions in the document. There are
+    help files for each SOAP template which describe the operation and what values need to be configured before
+    sending the request to the server. The easiest way to cope with this XML modification is to use XPath. If you
+    are not familiar with this technique then now is the right time to learn more about this query language. Do
+    not even think of navigating through the SOAP messages element by element. You would get frustrated very soon.</p>
+    <p>If your programming language offers a DOM implementation (e.g. VB.NET and C# do so) you can parse the SOAP
+    template into a DOM object and use XPath to modify the required parameters. Then just send this XML code via
+    HTTP to the xincoDMS web service and wait for the response. Since the answer is also an XML document you can
+    parse it into a DOM object as well and fetch the desired results with respective XPath queries.</p>
+    <p><a href="index.html">Back to the table of contents</a></p>
+  </body>
+</html>
