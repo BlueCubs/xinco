@@ -12,20 +12,14 @@
   <!-- ### url: jdbc:postgresql://localhost:5432/xinco                 ###-->
   <!-- ### driverClassName: org.postgresql.Driver                      ###-->
   <!-- ###################################################################-->
-  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" 
-  factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="100" 
-  maxIdle="30" maxWait="10000" name="jdbc/XincoDB" password="" 
-  type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true"
-  username="root"/>
+  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB" password="" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true" username="root"/>
   <!-- #################### ################ ####################-->
-
   <ResourceParams name="jdbc/XincoDB">
     <parameter>
       <name>factory</name>
       <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
     </parameter>
   </ResourceParams>
-
   <!-- #################### PLEASE CONFIGURE ####################-->
   <!-- Full Path where xinco saves files:                        -->
   <Environment name="xinco/FileRepositoryPath" override="false" type="java.lang.String" value="C:\Xinco\file_repository\"/>
@@ -42,7 +36,6 @@
   <!-- Setting for content list in XincoPublisher (in order to force browsing): -->
   <Environment name="setting.allowpublisherlist" override="false" type="java.lang.String" value="True"/>
   <!-- #################### ################ ####################-->
-
   <!-- ################# Optional Configuration #################-->
   <!-- File Extensions of Documents to be indexed with a special Indexer: (seperate with ;) -->
   <Environment name="xinco/FileIndexerCount" override="false" type="java.lang.Integer" value="5"/>
@@ -59,7 +52,6 @@
   <!-- Files with different extensions will be indexed as text, excluding the ones below: (seperate with ;) -->
   <Environment name="xinco/IndexNoIndex" override="false" type="java.lang.String" value=";aac;ac3;ace;ade;adp;aif;aifc;aiff;amf;arc;arj;asx;au;avi;b64;bh;bmp;bz;bz2;cab;cda;chm;class;com;div;divx;ear;exe;far;fla;gif;gz;hlp;ico;;iso;jar;jpe;jpeg;jpg;lha;lzh;mda;mdb;mde;mdn;mdt;mdw;mid;midi;mim;mod;mov;mp1;mp2;mp2v;mp3;mp4;mpa;mpe;mpeg;mpg;mpg4;mpv2;msi;ntx;ocx;ogg;ogm;okt;pae;pcx;pk3;png;pot;ppa;pps;ppt;pwz;qwk;ra;ram;rar;raw;rep;rm;rmi;snd;swf;swt;tar;taz;tbz;tbz2;tgz;tif;tiff;uu;uue;vxd;war;wav;wbm;wbmp;wma;wmd;wmf;wmv;xpi;xxe;z;zip;zoo;;;"/>
   <!-- ################# ###################### #################-->
-
   <!-- ################# Optional Configuration #################-->
   <!-- Database JNDI Name -->
   <Environment name="xinco/JNDIDB" override="false" type="java.lang.String" value="java:comp/env/jdbc/XincoDB"/>

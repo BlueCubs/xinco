@@ -525,7 +525,21 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_log` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_setting`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_setting` ;
 
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_setting` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `description` VARCHAR(45) NOT NULL ,
+  `int_value` INT UNSIGNED NULL DEFAULT NULL ,
+  `string_value` VARCHAR(255) NULL DEFAULT NULL ,
+  `bool_value` TINYINT(1) NULL ,
+  `long_value` BIGINT NULL ,
+  PRIMARY KEY (`id`) )
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
@@ -658,6 +672,7 @@ INSERT INTO `xinco_id` (`id`, `tablename`, `last_id`) VALUES (6, 'xinco_core_dat
 INSERT INTO `xinco_id` (`id`, `tablename`, `last_id`) VALUES (7, 'xinco_core_ace', 1000);
 INSERT INTO `xinco_id` (`id`, `tablename`, `last_id`) VALUES (8, 'xinco_core_log', 1000);
 INSERT INTO `xinco_id` (`id`, `tablename`, `last_id`) VALUES (9, 'xinco_core_user_modified_record', 0);
+INSERT INTO `xinco_id` (`id`, `tablename`, `last_id`) VALUES (10, 'xinco_setting', 1000);
 
 COMMIT;
 
@@ -701,5 +716,40 @@ SET AUTOCOMMIT=0;
 USE `xinco`;
 INSERT INTO `xinco_core_log` values(1, 1, 1, 1, now(), 'Creation!', 1, 0, 0, '');
 INSERT INTO `xinco_core_log` values(2, 2, 1, 1, now(), 'Creation!', 1, 0, 0, '');
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_setting`
+-- -----------------------------------------------------
+SET AUTOCOMMIT=0;
+USE `xinco`;
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (1, 'password.aging', 120, null, 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (2, 'password.attempts', 3, null, 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (3, 'password.unusable_period', 365, null, 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (4, 'general.copyright.date', 0, '2004-2009', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (5, 'setting.enable.savepassword', null, null, 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (6, 'system.password', null, 'system', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (7, 'xinco/FileRepositoryPath', null, 'C:\\Temp\\xinco\\file_repository\\', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (8, 'xinco/FileIndexPath', null, 'C:\\Temp\\xinco\\file_repository\\index\\', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (9, 'xinco/FileArchivePath', null, 'C:\\Temp\\xinco\\file_repository\\archive\\', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (10, 'xinco/FileArchivePeriod', null, null, 0, 14400000);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (11, 'xinco/FileIndexer_1_Class', null, 'com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (12, 'xinco/FileIndexer_1_Ext', null, 'pdf', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (13, 'xinco/FileIndexer_2_Class', null, 'com.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftWord', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (14, 'xinco/FileIndexer_2_Ext', null, 'doc', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (15, 'xinco/FileIndexer_3_Class', null, 'com.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftExcel', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (16, 'xinco/FileIndexer_3_Ext', null, 'xls', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (17, 'xinco/FileIndexer_4_Class', null, 'com.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftPowerpoint', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (18, 'xinco/FileIndexer_4_Ext', null, 'ppt', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (19, 'xinco/FileIndexer_5_Class', null, 'com.bluecubs.xinco.index.filetypes.XincoIndexHTML', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (20, 'xinco/FileIndexer_5_Ext', null, 'asp;htm;html;jsf;jsp;php;php3;php4', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (21, 'xinco/IndexNoIndex', null, ';aac;ac3;ace;ade;adp;aif;aifc;aiff;amf;arc;arj;asx;au;avi;b64;bh;bmp;bz;bz2;cab;cda;chm;class;com;div;divx;ear;exe;far;fla;gif;gz;hlp;ico;;iso;jar;jpe;jpeg;jpg;lha;lzh;mda;mdb;mde;mdn;mdt;mdw;mid;midi;mim;mod;mov;mp1;mp2;mp2v;mp3;mp4;mpa;mpe;mpeg;mpg;mpg4;mpv2;msi;ntx;ocx;ogg;ogm;okt;pae;pcx;pk3;png;pot;ppa;pps;ppt;pwz;qwk;ra;ram;rar;raw;rep;rm;rmi;snd;swf;swt;tar;taz;tbz;tbz2;tgz;tif;tiff;uu;uue;vxd;war;wav;wbm;wbmp;wma;wmd;wmf;wmv;xpi;xxe;z;zip;zoo;;;', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (22, 'xinco/MaxSearchResult', 100, null, 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (23, 'setting.email.host', null, 'smtp.bluecubs.com', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (23, 'setting.email.user', null, 'info@bluecubs.com', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (25, 'setting.email.password', null, 'password', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (26, 'setting.email.port', 25, null, 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (27, 'setting.allowoutsidelinks', null, null, 1, 0);
 
 COMMIT;

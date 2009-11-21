@@ -33,63 +33,81 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.XincoCoreLog;
+import com.bluecubs.xinco.core.XincoCoreUser;
+import com.bluecubs.xinco.core.XincoVersion;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLogJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
 import java.util.Vector;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
-import java.sql.*;
-
-import com.bluecubs.xinco.core.*;
+import java.util.HashMap;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class XincoCoreLogServer extends XincoCoreLog {
+
+    private static List result;
+    private static HashMap parameters = new HashMap();
     private XincoCoreUser user;
     //create single log object for data structures
-    public XincoCoreLogServer(int attrID, XincoDBManager DBM) throws XincoException {
-        
+
+    public XincoCoreLogServer(int attrID) throws XincoException {
         try {
-            
-            Statement stmt = DBM.con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_log WHERE id=" + attrID);
-            
+            parameters.clear();
+            parameters.put("id", attrID);
+            result = XincoDBManager.namedQuery("XincoCoreLog.findById", parameters);
             //throw exception if no result found
-            int RowCount = 0;
-            while (rs.next()) {
-                RowCount++;
-                setId(rs.getInt("id"));
-                setXinco_core_data_id(rs.getInt("xinco_core_data_id"));
-                setXinco_core_user_id(rs.getInt("xinco_core_user_id"));
-                setOp_code(rs.getInt("op_code"));
+            if (result.size() > 0) {
+                com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl =
+                        (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) result.get(0);
+                setId(xcl.getId());
+                setXinco_core_data_id(xcl.getXincoCoreDataId().getId());
+                setXinco_core_user_id(xcl.getXincoCoreUserId().getId());
+                setOp_code(xcl.getOpCode());
                 setOp_datetime(new GregorianCalendar());
-                getOp_datetime().setTime(rs.getTimestamp("op_datetime"));
-                setOp_description(rs.getString("op_description"));
+                getOp_datetime().setTime(xcl.getOpDatetime());
+                setOp_description(xcl.getOpDescription());
                 setVersion(new XincoVersion());
-                getVersion().setVersion_high(rs.getInt("version_high"));
-                getVersion().setVersion_mid(rs.getInt("version_mid"));
-                getVersion().setVersion_low(rs.getInt("version_low"));
-                getVersion().setVersion_postfix(rs.getString("version_postfix"));
-            }
-            if (RowCount < 1) {
+                getVersion().setVersion_high(xcl.getVersionHigh());
+                getVersion().setVersion_mid(xcl.getVersionMid());
+                getVersion().setVersion_low(xcl.getVersionLow());
+                getVersion().setVersion_postfix(xcl.getVersionPostfix());
+            } else {
                 throw new XincoException();
             }
-            
-            stmt.close();
-            
         } catch (Exception e) {
-            throw new XincoException();
+            e.printStackTrace();
+            throw new XincoException(e.getMessage());
         }
-        
     }
-    
-    public void setUser(XincoCoreUserServer user){
-        this.user=user;
+
+    private XincoCoreLogServer(com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl) {
+        setId(xcl.getId());
+        setXinco_core_data_id(xcl.getXincoCoreDataId().getId());
+        setXinco_core_user_id(xcl.getXincoCoreUserId().getId());
+        setOp_code(xcl.getOpCode());
+        setOp_datetime(new GregorianCalendar());
+        getOp_datetime().setTime(xcl.getOpDatetime());
+        setOp_description(xcl.getOpDescription());
+        setVersion(new XincoVersion());
+        getVersion().setVersion_high(xcl.getVersionHigh());
+        getVersion().setVersion_mid(xcl.getVersionMid());
+        getVersion().setVersion_low(xcl.getVersionLow());
+        getVersion().setVersion_postfix(xcl.getVersionPostfix());
     }
-    
+
+    public void setUser(XincoCoreUserServer user) {
+        this.user = user;
+        setXinco_core_user_id(user.getId());
+    }
+
     //create single log object for data structures
-    public XincoCoreLogServer(int attrID, int attrCDID, int attrUID, int attrOC, Calendar attrODT,  String attrOD, int attrVH, int attrVM, int attrVL, String attrVP) throws XincoException {
-        
+    public XincoCoreLogServer(int attrID, int attrCDID, int attrUID, int attrOC, Calendar attrODT, String attrOD, int attrVH, int attrVM, int attrVL, String attrVP) throws XincoException {
         setId(attrID);
         setXinco_core_data_id(attrCDID);
         setXinco_core_user_id(attrUID);
@@ -101,66 +119,66 @@ public class XincoCoreLogServer extends XincoCoreLog {
         getVersion().setVersion_mid(attrVM);
         getVersion().setVersion_low(attrVL);
         getVersion().setVersion_postfix(attrVP);
-        
     }
-    
+
     //write to db
-    public int write2DB(XincoDBManager DBM) throws XincoException {
-        
+    public int write2DB() throws XincoException {
         try {
-            
+            XincoCoreLogJpaController controller = new XincoCoreLogJpaController();
+            com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl;
             if (getId() > 0) {
-                Statement stmt = DBM.con.createStatement();
-                XincoCoreAuditServer audit= new XincoCoreAuditServer();
                 ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
-                audit.updateAuditTrail("xinco_core_log",new String [] {"id ="+getId()},
-                        DBM,xerb.getString("audit.log.change"),this.getChangerID());
-                stmt.executeUpdate("UPDATE xinco_core_log SET xinco_core_data_id=" + getXinco_core_data_id() + ", xinco_core_user_id=" + getXinco_core_user_id() + ", op_code=" + getOp_code() + ", op_datetime=now(), op_description='" + getOp_description().replaceAll("'","\\\\'") + "', version_high=" + getVersion().getVersion_high() + ", version_mid=" + getVersion().getVersion_mid() + ", version_low=" + getVersion().getVersion_low() + ", version_postfix='" + getVersion().getVersion_postfix().replaceAll("'","\\\\'") + "' WHERE id=" + getId());
-                stmt.close();
+                xcl = controller.findXincoCoreLog(getId());
+                xcl.setXincoCoreDataId(new XincoCoreDataJpaController().findXincoCoreData(getXinco_core_data_id()));
+                xcl.setXincoCoreUserId(new XincoCoreUserJpaController().findXincoCoreUser(getXinco_core_user_id()));
+                xcl.setOpCode(getOp_code());
+                xcl.setOpDatetime(new Date());
+                xcl.setOpDescription(getOp_description().replaceAll("'", "\\\\'"));
+                xcl.setVersionHigh(getVersion().getVersion_high());
+                xcl.setVersionMid(getVersion().getVersion_mid());
+                xcl.setVersionLow(getVersion().getVersion_low());
+                xcl.setVersionPostfix(getVersion().getVersion_postfix().replaceAll("'", "\\\\'"));
+                controller.edit(xcl);
             } else {
-                setId(DBM.getNewID("xinco_core_log"));
-                
-                Statement stmt = DBM.con.createStatement();
-                stmt.executeUpdate("INSERT INTO xinco_core_log VALUES (" + getId() + ", " + getXinco_core_data_id() + ", " + getXinco_core_user_id() + ", " + getOp_code() + ", now(), '" + getOp_description().replaceAll("'","\\\\'") + "', " + getVersion().getVersion_high() + ", " + getVersion().getVersion_mid() + ", " + getVersion().getVersion_low() + ", '" + getVersion().getVersion_postfix().replaceAll("'","\\\\'") + "')");
-                stmt.close();
+                setId(XincoDBManager.getNewID("xinco_core_log"));
+                xcl = new com.bluecubs.xinco.core.server.persistence.XincoCoreLog(getId());
+                xcl.setXincoCoreDataId(new XincoCoreDataJpaController().findXincoCoreData(getXinco_core_data_id()));
+                xcl.setXincoCoreUserId(new XincoCoreUserJpaController().findXincoCoreUser(getXinco_core_user_id()));
+                xcl.setOpCode(getOp_code());
+                xcl.setOpDatetime(new Date());
+                xcl.setOpDescription(getOp_description().replaceAll("'", "\\\\'"));
+                xcl.setVersionHigh(getVersion().getVersion_high());
+                xcl.setVersionMid(getVersion().getVersion_mid());
+                xcl.setVersionLow(getVersion().getVersion_low());
+                xcl.setVersionPostfix(getVersion().getVersion_postfix().replaceAll("'", "\\\\'"));
+                controller.create(xcl);
             }
-            
-            DBM.con.commit();
-            
         } catch (Exception e) {
-            try {
-                DBM.con.rollback();
-            } catch (Exception erollback) {
-            }
-            throw new XincoException();
+            throw new XincoException(e.getMessage());
         }
-        
         return getId();
-        
     }
-    
+
     //create complete log list for data
-    public static Vector getXincoCoreLogs(int attrID, XincoDBManager DBM) {
-        
+    public static Vector getXincoCoreLogs(int attrID) {
+
         Vector core_log = new Vector();
         GregorianCalendar cal = new GregorianCalendar();
-        
+
         try {
-            Statement stmt = DBM.con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_log WHERE xinco_core_data_id=" + attrID);
-            
-            while (rs.next()) {
+            result = XincoDBManager.createdQuery("SELECT xcl FROM XincoCoreLog xcl WHERE xcl.xincoCoreDataId.id=" + attrID);
+
+            while (result.size() > 0) {
+                com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl =
+                        (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) result.get(0);
                 cal = new GregorianCalendar();
-                cal.setTime( rs.getTimestamp("op_datetime"));
-                core_log.addElement(new XincoCoreLogServer(rs.getInt("id"), rs.getInt("xinco_core_data_id"), rs.getInt("xinco_core_user_id"), rs.getInt("op_code"), cal, rs.getString("op_description"), rs.getInt("version_high"), rs.getInt("version_mid"), rs.getInt("version_low"), rs.getString("version_postfix")));
+                cal.setTime(xcl.getOpDatetime());
+                core_log.addElement(new XincoCoreLogServer(xcl));
+                result.remove(0);
             }
-            
-            stmt.close();
         } catch (Exception e) {
             core_log.removeAllElements();
         }
-        
         return core_log;
     }
-    
 }

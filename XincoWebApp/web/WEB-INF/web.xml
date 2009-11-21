@@ -35,13 +35,14 @@
         <servlet-class>com.bluecubs.xinco.server.XincoCronServlet</servlet-class>
         <load-on-startup>10</load-on-startup>
     </servlet>
-    
-    <servlet>
+
+     <servlet>
         <servlet-name>AxisServlet</servlet-name>
         <display-name>Apache-Axis Servlet</display-name>
         <servlet-class>
-            org.apache.axis.transport.http.AxisServlet
+            org.apache.axis2.transport.http.AxisServlet
         </servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
     
     <servlet>
@@ -54,19 +55,17 @@
     </servlet>
     
     <servlet>
-        <servlet-name>SOAPMonitorService</servlet-name>
-        <display-name>SOAPMonitorService</display-name>
-        <servlet-class>
-            org.apache.axis.monitor.SOAPMonitorService
-        </servlet-class>
-        <init-param>
-            <param-name>SOAPMonitorPort</param-name>
-            <param-value>5001</param-value>
-        </init-param>
-        <load-on-startup>100</load-on-startup>
-    </servlet>
-    
-    
+       <servlet-name>SOAPMonitorService</servlet-name>
+       <display-name>SOAPMonitorService</display-name>
+       <servlet-class>
+         org.apache.axis2.soapmonitor.servlet.SOAPMonitorService
+       </servlet-class>
+       <init-param>
+          <param-name>SOAPMonitorPort</param-name>
+          <param-value>5001</param-value>
+       </init-param>
+       <load-on-startup>100</load-on-startup>
+    </servlet> 
     
     <servlet-mapping>
         <servlet-name>XincoAdminServlet</servlet-name>

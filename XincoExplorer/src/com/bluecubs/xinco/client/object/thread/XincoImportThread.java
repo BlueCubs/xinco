@@ -41,7 +41,7 @@ package com.bluecubs.xinco.client.object.thread;
 
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.core.XincoCoreNode;
-import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.XincoException;
 import java.io.File;
 import java.util.ResourceBundle;
 import javax.swing.JFileChooser;

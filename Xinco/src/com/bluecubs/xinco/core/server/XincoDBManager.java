@@ -35,68 +35,65 @@
  */
 package com.bluecubs.xinco.core.server;
 
-import javax.sql.DataSource;
-import javax.naming.InitialContext;
+import java.util.Map;
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
+import com.bluecubs.xinco.core.server.persistence.XincoId;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoIdJpaController;
 import java.io.PrintWriter;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map.Entry;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 public class XincoDBManager {
 
-    public Connection con;
-    public XincoConfigSingletonServer config;
+    private static EntityManagerFactory emf;
+    private static Map<String, Object> properties;
+    //load compiled configuartion
+    public static XincoConfigSingletonServer config= XincoConfigSingletonServer.getInstance();
     public static int count = 0;
+
     private int EmailLink = 1, DataLink = 2;
-    private ResourceBundle lrb = null;
+    private ResourceBundle lrb =  ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
     private Locale loc = null;
+    private String puName;
+    private static HashMap parameters=new HashMap();
 
     public XincoDBManager() throws Exception {
-        lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
-        //load compiled configuartion
-        config = XincoConfigSingletonServer.getInstance();
-        DataSource datasource = (DataSource) (new InitialContext()).lookup(config.JNDIDB);
-        con = datasource.getConnection();
-        con.setAutoCommit(false);
         count++;
     }
 
-    public int getNewID(String attrTN) throws Exception {
-
+    public static int getNewID(String attrTN) throws Exception {
         int newID = 0;
-        Statement stmt;
-
-        stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_id WHERE tablename='" + attrTN + "'");
-        while (rs.next()) {
-            newID = rs.getInt("last_id") + 1;
+        parameters.clear();
+        parameters.put("tablename", attrTN);
+        List list = namedQuery("XincoId.findByTablename",parameters);
+        if (list.size() > 0) {
+            XincoId xid = ((XincoId) list.get(0));
+            newID = xid.getLastId() + 1;
+            xid.setLastId(newID);
+            new XincoIdJpaController().edit(xid);
         }
-        stmt.close();
-
-        stmt = con.createStatement();
-        stmt.executeUpdate("UPDATE xinco_id SET last_id=last_id+1 WHERE tablename='" + attrTN + "'");
-        stmt.close();
-
         return newID;
-
     }
 
     @Override
     protected void finalize() throws Throwable {
         try {
             count--;
-            con.close();
         } finally {
-            if (!con.isClosed()) {
-                count++;
-            }
             super.finalize();
         }
     }
@@ -125,8 +122,7 @@ public class XincoDBManager {
                         value = "******************************";
                     }
                     if (i == size && details) {
-                        out.println("<td><form action='Detail.jsp' method='post'><input type='submit' value='Get Details' onclick='Detail.jsp'><input type='hidden' name = 'key' value='" +
-                                value + "'><input type='hidden' name='Page' value='ProcessData.jsp'></form></td>");
+                        out.println("<td><form action='Detail.jsp' method='post'><input type='submit' value='Get Details' onclick='Detail.jsp'><input type='hidden' name = 'key' value='" + value + "'><input type='hidden' name='Page' value='ProcessData.jsp'></form></td>");
                     } else {
                         if (i == columnAsLink && linkType == this.EmailLink) {
                             if (value == null) {
@@ -139,8 +135,7 @@ public class XincoDBManager {
                             if (value == null) {
                                 out.println("<td>No code available</td>");
                             } else {
-                                out.println("<td>" + value + "</td><td><form action='Detail.jsp' method='post'><input type='submit' value='Get Details' onclick='Detail.jsp'><input type='hidden' name = 'key' value='" +
-                                        value + "'><input type='hidden' name='Page' value='Codes.jsp'></form></td>");
+                                out.println("<td>" + value + "</td><td><form action='Detail.jsp' method='post'><input type='submit' value='Get Details' onclick='Detail.jsp'><input type='hidden' name = 'key' value='" + value + "'><input type='hidden' name='Page' value='Codes.jsp'></form></td>");
                             }
                         } else {
                             if (value == null) {
@@ -232,5 +227,69 @@ public class XincoDBManager {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * @return the emf
+     */
+    public static EntityManagerFactory getEntityManagerFactory() {
+        emf=Persistence.createEntityManagerFactory("XincoPU");
+        return emf;
+    }
+
+    private static EntityManager getEntityManager() {
+        EntityManager em = getEntityManagerFactory().createEntityManager();
+        properties = em.getProperties();
+        return em;
+    }
+
+    public static List createdQuery(String query) {
+        return createdQuery(query, null);
+    }
+
+    public static List createdQuery(String query, HashMap parameters) {
+        getEntityManager().getTransaction().begin();
+        Query q = getEntityManager().createQuery(query);
+        if (parameters != null) {
+            Iterator entries = parameters.entrySet().iterator();
+            while (entries.hasNext()) {
+                Entry e = (Entry) entries.next();
+                q.setParameter(e.getKey().toString(), e.getValue());
+            }
+        }
+        return q.getResultList();
+    }
+
+    public static List namedQuery(String query) {
+        return namedQuery(query, null);
+    }
+
+    public static List namedQuery(String query, HashMap parameters) {
+        getEntityManager().getTransaction().begin();
+        Query q = getEntityManager().createNamedQuery(query);
+        if (parameters != null) {
+            Iterator entries = parameters.entrySet().iterator();
+            while (entries.hasNext()) {
+                Entry e = (Entry) entries.next();
+                q.setParameter(e.getKey().toString(), e.getValue());
+            }
+        }
+        return q.getResultList();
+    }
+
+    static void close() {
+        getEntityManager().close();
+        getEntityManagerFactory().close();
+    }
+
+    public static EntityTransaction getTransaction() {
+        return getEntityManager().getTransaction();
+    }
+
+    /**
+     * @return the puName
+     */
+    public String getPersistenceUnitName() {
+        return puName;
     }
 }
