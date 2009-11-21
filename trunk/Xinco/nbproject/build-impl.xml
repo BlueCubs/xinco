@@ -155,7 +155,10 @@ is divided into following sections:
         <condition else="" property="endorsed.classpath.cmd.line.arg" value="-Xbootclasspath/p:'${toString:endorsed.classpath.path}'">
             <length length="0" string="${endorsed.classpath}" when="greater"/>
         </condition>
-        <property name="javac.fork" value="false"/>
+        <path id="endorsed.classpath.path" path="${endorsed.classpath}"/>
+        <condition else="" property="endorsed.classpath.cmd.line.arg" value="-Xbootclasspath/p:${toString:endorsed.classpath.path}">
+            <length length="0" string="${endorsed.classpath}" when="greater"/>
+        </condition>
     </target>
     <target name="-post-init">
         <!-- Empty placeholder for easier customization. -->

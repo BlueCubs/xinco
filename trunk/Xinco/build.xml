@@ -10,11 +10,15 @@
 <project name="Xinco" default="default" basedir=".">
     <description>Builds, tests, and runs the project Xinco.</description>
     <import file="nbproject/build-impl.xml"/>
+    <property file="build.ant.properties"/>
     <!--
-
-    There exist several targets which are by default empty and which can be 
-    used for execution of your tasks. These targets are usually executed 
-    before and after some main targets. They are: 
+    Used in axis2 tasks
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+    -->
+    <!--
+    There exist several targets which are by default empty and which can be
+    used for execution of your tasks. These targets are usually executed
+    before and after some main targets. They are:
 
       -pre-init:                 called before initialization of project properties
       -post-init:                called after initialization of project properties
@@ -40,12 +44,12 @@
             </obfuscate>
         </target>
 
-    For list of available properties check the imported 
-    nbproject/build-impl.xml file. 
+    For list of available properties check the imported
+    nbproject/build-impl.xml file.
 
 
     Another way to customize the build is by overriding existing main targets.
-    The targets of interest are: 
+    The targets of interest are:
 
       -init-macrodef-javac:     defines macro for javac compilation
       -init-macrodef-junit:     defines macro for junit execution
@@ -53,7 +57,7 @@
       -init-macrodef-java:      defines macro for class execution
       -do-jar-with-manifest:    JAR building (if you are using a manifest)
       -do-jar-without-manifest: JAR building (if you are not using a manifest)
-      run:                      execution of project 
+      run:                      execution of project
       -javadoc-build:           Javadoc generation
       test-report:              JUnit report generation
 
@@ -65,10 +69,70 @@
             </exec>
         </target>
 
-    Notice that the overridden target depends on the jar target and not only on 
-    the compile target as the regular run target does. Again, for a list of available 
+    Notice that the overridden target depends on the jar target and not only on
+    the compile target as the regular run target does. Again, for a list of available
     properties which you can use, check the target you are overriding in the
-    nbproject/build-impl.xml file. 
+    nbproject/build-impl.xml file.
 
     -->
+    <path id="axis.classpath">
+        <pathelement location="build/classes"/>
+        <fileset dir="${axis.home}/lib">
+            <include name="**/*.jar"/>
+        </fileset>
+        <pathelement location="${build.classes}"/>
+    </path>
+    <path id="axis_client.classpath">
+        <pathelement location="build/classes"/>
+        <fileset dir="${axis.home}">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="lib">
+            <include name="*.jar"/>
+        </fileset>
+        <pathelement location="${build.classes}"/>
+    </path>
+    <target name="wsdl2java" depends="copy-XincoSkeleton">
+        <!--Define axis.classpath in build.ant.properties and obviously have axis
+        libraries were specified-->
+        <!--Make a copy of the current XincoSkeleton-->
+        <antcall target="copy-XincoSkeleton"/>
+        <!--Delete the current services folder-->
+        <delete>
+            <fileset dir="src/com/bluecubs/xinco/service" includes="*.*"/>
+        </delete>
+        <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
+            <classpath refid="axis.classpath"/>
+            <arg value="-d"/>
+            <arg value="adb"/>
+            <arg value="-uri"/>
+            <arg file="xml-resources/axis2/META-INF/Xinco.wsdl"/>
+            <arg value="-ss"/>
+            <arg value="-uw"/>
+            <arg value="-g"/>
+            <arg value="-sd"/>
+            <arg value="-o"/>
+            <arg file=""/>
+            <arg value="-p"/>
+            <arg value="com.bluecubs.xinco.service"/>
+        </java>
+        <!--Overwrite the new file with the backup-->
+        <if>
+            <equals arg1="${XincoSkeleton.present}" arg2="true"/>
+            <then>
+                <copy file="src/com/bluecubs/xinco/service/backup/XincoSkeleton.java" tofile="src/com/bluecubs/xinco/service/XincoSkeleton.java" overwrite="true"/>
+                <delete dir="src/com/bluecubs/xinco/service/backup"/>
+            </then>
+        </if>
+    </target>
+    <target name="copy-XincoSkeleton">
+        <available file="src/com/bluecubs/xinco/service/XincoSkeleton.java" property="XincoSkeleton.present"/>
+        <if>
+            <equals arg1="${XincoSkeleton.present}" arg2="true"/>
+            <then>
+                <mkdir dir="src/com/bluecubs/xinco/service/backup/"/>
+                <copy file="src/com/bluecubs/xinco/service/XincoSkeleton.java" tofile="src/com/bluecubs/xinco/service/backup/XincoSkeleton.java" overwrite="true"/>
+            </then>
+        </if>
+    </target>
 </project>

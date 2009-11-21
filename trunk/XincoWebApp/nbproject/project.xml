@@ -2,194 +2,135 @@
 <project xmlns="http://www.netbeans.org/ns/project/1">
     <type>org.netbeans.modules.web.project</type>
     <configuration>
-        <buildExtensions xmlns="http://www.netbeans.org/ns/ant-build-extender/1">
-            <extension file="jaxws-build.xml" id="jaxws"/>
-        </buildExtensions>
         <data xmlns="http://www.netbeans.org/ns/web-project/3">
             <name>xinco</name>
             <minimum-ant-version>1.6</minimum-ant-version>
             <web-module-libraries>
-                <library>
+                <library dirs="200">
                     <file>${reference.Xinco.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
-                    <file>${file.reference.activation.jar-1}</file>
+                <library dirs="200">
+                    <file>${reference.XincoExplorer.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
-                    <file>${file.reference.axis-ant.jar}</file>
+                <library dirs="200">
+                    <file>${libs.eclipselink.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
-                    <file>${file.reference.axis.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.commons-collections-2.1.1.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.commons-dbcp-1.2.1.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.commons-discovery-0.2.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
-                    <file>${file.reference.commons-logging-1.0.4.jar}</file>
+                <library dirs="200">
+                    <file>${file.reference.commons-logging-1.1.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.commons-pool-1.2.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.jaxrpc.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.Lius-1.0.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.log4j-1.2.15.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.lucene-1.4-final.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.lucene-core-2.2.0.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
-                    <file>${file.reference.lucene-demos-1.4-final.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.lucene-demos-2.2.0.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.mail.jar-1}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.PDFBox-0.6.7a.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.poi-2.5.1-final-20040804.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
-                    <file>${file.reference.saaj.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.servlet-api.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.tm-extractors-0.4.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
-                <library>
-                    <file>${file.reference.wsdl4j-1.5.1.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library>
-                    <file>${file.reference.xercesImpl.jar-3}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library>
-                    <file>${file.reference.xmlParserAPIs.jar-1}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library>
-                    <file>${reference.XincoExplorer.jar}</file>
+                <library dirs="200">
+                    <file>${file.reference.Base64-0.91.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
             <web-module-additional-libraries>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.XincoExplorer.jnlp-2}</file>
                     <path-in-war>client</path-in-war>
                 </library>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.blueCubsIcon.gif-1}</file>
                     <path-in-war>client</path-in-war>
                 </library>
-                <library>
+                <library dirs="200">
                     <file>${reference.Xinco.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
-                <library>
-                    <file>${file.reference.activation.jar-2}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library>
-                    <file>${file.reference.axis.jar-1}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library>
-                    <file>${file.reference.commons-discovery-0.2.jar-1}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library>
-                    <file>${file.reference.commons-logging-1.0.4.jar-1}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library>
-                    <file>${file.reference.jaxrpc.jar-1}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library>
-                    <file>${file.reference.liquidlnf.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library>
-                    <file>${file.reference.mail.jar-2}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library>
-                    <file>${file.reference.saaj.jar-1}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library>
-                    <file>${file.reference.napkinlaf-1.2.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library>
-                    <file>${file.reference.substance.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library>
-                    <file>${file.reference.swing-layout-1.0.3.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library>
-                    <file>${file.reference.wsdl4j-1.5.1.jar-1}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library>
-                    <file>${file.reference.xercesImpl.jar-4}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library>
-                    <file>${file.reference.xmlParserAPIs.jar-2}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library>
+                <library dirs="200">
                     <file>${reference.XincoExplorer.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
-                <library>
+                <library dirs="200">
                     <file>${file.reference.JTattoo.jar}</file>
                     <path-in-war>client</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.liquidlnf.jar}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.mail.jar-2}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.napkinlaf-1.2.jar}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.substance.jar}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.swing-layout-1.0.3.jar}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.axis2-1.5.1-lib}</file>
+                    <path-in-war>/</path-in-war>
                 </library>
             </web-module-additional-libraries>
             <source-roots>

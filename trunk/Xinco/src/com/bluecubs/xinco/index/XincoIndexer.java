@@ -50,25 +50,20 @@ import com.bluecubs.xinco.core.server.*;
  */
 public class XincoIndexer {
 
-    public static synchronized boolean indexXincoCoreData(XincoCoreData d, boolean index_content, XincoDBManager dbm) {
-
+    public static synchronized boolean indexXincoCoreData(XincoCoreData d, boolean index_content) {
         IndexWriter writer = null;
-
         try {
-
             //check if document exists in index and delete
-            XincoIndexer.removeXincoCoreData(d, dbm);
-
+            XincoIndexer.removeXincoCoreData(d);
             //add document to index
             try {
-                writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), false);
+                writer = new IndexWriter(XincoDBManager.config.FileIndexPath, new StandardAnalyzer(), false);
             } catch (Exception ie) {
-                writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), true);
+                writer = new IndexWriter(XincoDBManager.config.FileIndexPath, new StandardAnalyzer(), true);
             }
-            writer.addDocument(XincoDocument.getXincoDocument(d, index_content, dbm));
+            writer.addDocument(XincoDocument.getXincoDocument(d, index_content));
             //writer.optimize();
             writer.close();
-
         } catch (Exception e) {
             if (writer != null) {
                 try {
@@ -78,17 +73,14 @@ public class XincoIndexer {
             }
             return false;
         }
-
         return true;
     }
 
-    public static synchronized boolean removeXincoCoreData(XincoCoreData d, XincoDBManager dbm) {
-
+    public static synchronized boolean removeXincoCoreData(XincoCoreData d) {
         IndexReader reader = null;
-
         //check if document exists in index and delete
         try {
-            reader = IndexReader.open(dbm.config.FileIndexPath);
+            reader = IndexReader.open(XincoDBManager.config.FileIndexPath);
             reader.delete(new Term("id", "" + d.getId()));
             reader.close();
         } catch (Exception re) {
@@ -100,21 +92,16 @@ public class XincoIndexer {
             }
             return false;
         }
-
         return true;
     }
 
-    public static synchronized boolean optimizeIndex(XincoDBManager dbm) {
-
+    public static synchronized boolean optimizeIndex() {
         IndexWriter writer = null;
-
         try {
-
             //optimize index
-            writer = new IndexWriter(dbm.config.FileIndexPath, new StandardAnalyzer(), false);
+            writer = new IndexWriter(XincoDBManager.config.FileIndexPath, new StandardAnalyzer(), false);
             writer.optimize();
             writer.close();
-
         } catch (Exception e) {
             if (writer != null) {
                 try {
@@ -124,19 +111,15 @@ public class XincoIndexer {
             }
             return false;
         }
-
         return true;
     }
 
-    public static synchronized Vector findXincoCoreData(String s, int l, XincoDBManager dbm) {
-
+    public static synchronized Vector findXincoCoreData(String s, int l) {
         int i = 0;
         Vector v = new Vector();
         Searcher searcher = null;
-
         try {
-
-            searcher = new IndexSearcher(dbm.config.FileIndexPath);
+            searcher = new IndexSearcher(XincoDBManager.config.FileIndexPath);
             Analyzer analyzer = new StandardAnalyzer();
 
             //add language to query
@@ -149,15 +132,14 @@ public class XincoIndexer {
 
             for (i = 0; i < hits.length(); i++) {
                 try {
-                    v.addElement(new XincoCoreDataServer(Integer.parseInt(hits.doc(i).get("id")), dbm));
+                    v.addElement(new XincoCoreDataServer(Integer.parseInt(hits.doc(i).get("id"))));
                 } catch (Exception xcde) {
-                // don't add non-existing data
+                    // don't add non-existing data
                 }
-                if (i >= dbm.config.MaxSearchResult) {
+                if (i >= XincoDBManager.config.MaxSearchResult) {
                     break;
                 }
             }
-
             searcher.close();
 
         } catch (Exception e) {
@@ -169,7 +151,6 @@ public class XincoIndexer {
             }
             return null;
         }
-
         return v;
     }
 

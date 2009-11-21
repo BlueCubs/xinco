@@ -34,16 +34,18 @@
  */
 package com.bluecubs.xinco.tools;
 
+import com.twiek.Utils.Base64;
 import java.io.UnsupportedEncodingException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
-import org.apache.axis.encoding.Base64;
 
 /**
  *
@@ -110,14 +112,12 @@ public class XincoCrypter {
             byte[] enc = ecipher.doFinal(utf8);
 
             // Encode bytes to base64 to get a string
-            return Base64.encode(enc);
+            return Base64.encode(enc.toString());
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(XincoCrypter.class.getName()).log(Level.SEVERE, null, ex);
         } catch (javax.crypto.BadPaddingException e) {
             e.printStackTrace();
         } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (java.io.IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -131,7 +131,7 @@ public class XincoCrypter {
     public String decrypt(String str) {
         try {
             // Decode base64 to get bytes
-            byte[] dec = Base64.decode(str);
+            byte[] dec = Base64.decode(str).getBytes();
 
             // Decrypt
             byte[] utf8 = dcipher.doFinal(dec);

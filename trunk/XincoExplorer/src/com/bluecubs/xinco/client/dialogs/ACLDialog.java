@@ -44,7 +44,7 @@ import com.bluecubs.xinco.core.XincoCoreACE;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreNode;
-import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.XincoException;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
