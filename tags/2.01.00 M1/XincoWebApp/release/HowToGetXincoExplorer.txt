@@ -1,0 +1,39 @@
+===============================
+=  How to get XincoExplorer   =
+===============================
+
+This product is distributed under the Apache License, Version 2.0.
+By installing and using the product, you agree to the terms of the license!
+
+This project supports the blueCubs vision of giving back
+to the community in exchange for free software!
+More information on: http://www.bluecubs.org
+
+===============================
+
+No installation is required for XincoExplorer, the client of the xinco Document Management System!
+It is started from the web via Java Web Start, included in Java Runtime Environment (JRE) 1.5 and greater.
+
+Get Java from: http://java.sun.com
+
+Once downloaded, it is started from your own computer and only checks for updates when connected to the internet!
+
+===============================
+
+2 ways to start XincoExplorer:
+
+
+1) Start XincoExplorer directly from: http://www.xinco.org
+
+
+2) Every server distribution contains the client XincoExplorer
+   You should be able to start it directly from the server you want to access!
+
+
+IMPORTANT: In order to access multiple servers, you need to get XincoExplorer only ONCE!
+           There is no need to start and download it seperately from every server you want to access!
+
+REMEMBER: One Client for all Servers! xinco is like FTP, but with the powerful features of a Document Management System!
+
+
+
