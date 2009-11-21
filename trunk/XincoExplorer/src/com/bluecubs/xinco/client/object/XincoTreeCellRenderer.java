@@ -78,21 +78,21 @@ public class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
                     switch (((XincoCoreData) (node.getUserObject())).getXinco_core_data_type().getId()) {
                         case 1:
                             try {
-                                setIcon(xfm.getIcon16(ext));
+                                setIcon(xfm.getIcon(ext));
                             } catch (NullPointerException e) {
                                 setIcon(getLeafIcon());
                             }
                             break;
                         case 2:
                             try {
-                                setIcon(xfm.getIcon16(".txt"));
+                                setIcon(xfm.getIcon(".txt"));
                             } catch (NullPointerException e) {
                                 setIcon(getLeafIcon());
                             }
                             break;
                         case 3:
                             try {
-                                setIcon(xfm.getIcon16(".html"));
+                                setIcon(xfm.getIcon(".html"));
                             } catch (NullPointerException e) {
                                 setIcon(getLeafIcon());
                             }
