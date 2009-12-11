@@ -58,7 +58,7 @@
        <servlet-name>SOAPMonitorService</servlet-name>
        <display-name>SOAPMonitorService</display-name>
        <servlet-class>
-         org.apache.axis2.soapmonitor.servlet.SOAPMonitorService
+         org.apache.axis.monitor.SOAPMonitorService
        </servlet-class>
        <init-param>
           <param-name>SOAPMonitorPort</param-name>

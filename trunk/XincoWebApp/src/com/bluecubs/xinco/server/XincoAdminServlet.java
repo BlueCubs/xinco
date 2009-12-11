@@ -63,7 +63,6 @@ import com.bluecubs.xinco.core.server.persistence.XincoCoreUser;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserHasXincoCoreGroupJpaController;
 import com.bluecubs.xinco.index.XincoIndexer;
-import com.bluecubs.xinco.tools.MD5;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;

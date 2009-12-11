@@ -51,6 +51,9 @@ import java.util.Map.Entry;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -62,24 +65,44 @@ public class XincoDBManager {
     private static EntityManagerFactory emf;
     private static Map<String, Object> properties;
     //load compiled configuartion
-    public static XincoConfigSingletonServer config= XincoConfigSingletonServer.getInstance();
+    public static XincoConfigSingletonServer config;
     public static int count = 0;
-
     private int EmailLink = 1, DataLink = 2;
-    private ResourceBundle lrb =  ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+    private static ResourceBundle lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
     private Locale loc = null;
     private String puName;
-    private static HashMap parameters=new HashMap();
+    private static HashMap<String, Object> parameters = new HashMap<String, Object>();
+    private static boolean locked = false;
+    private static boolean usingContext = false;
+
+    static{
+        config = XincoConfigSingletonServer.getInstance();
+        config.loadSettings();
+    }
 
     public XincoDBManager() throws Exception {
         count++;
+    }
+
+    /**
+     * @return the locked
+     */
+    public static boolean isLocked() {
+        return locked;
+    }
+
+    /**
+     * @param aLocked the locked to set
+     */
+    public static void setLocked(boolean aLocked) {
+        locked = aLocked;
     }
 
     public static int getNewID(String attrTN) throws Exception {
         int newID = 0;
         parameters.clear();
         parameters.put("tablename", attrTN);
-        List list = namedQuery("XincoId.findByTablename",parameters);
+        List<Object> list = namedQuery("XincoId.findByTablename", parameters);
         if (list.size() > 0) {
             XincoId xid = ((XincoId) list.get(0));
             newID = xid.getLastId() + 1;
@@ -158,7 +181,7 @@ public class XincoDBManager {
     /** Returns the column names of the query in an HTML table format for use
      * as header for a table produced by the drawTable method.
      * @param rs
-     * @return 
+     * @return
      */
     public StringTokenizer getColumnNamesList(ResultSet rs) {
         String list = "";
@@ -201,8 +224,9 @@ public class XincoDBManager {
         return header;
     }
 
-    /*Replace a string with contents of resource bundle is applicable
-     *Used to transform db contents to human readable form.
+    /*
+     * Replace a string with contents of resource bundle if applicable
+     * Used to transform db contents to human readable form.
      */
     private String canReplace(String s) {
         if (s == null) {
@@ -230,47 +254,90 @@ public class XincoDBManager {
     }
 
     /**
-     * @return the emf
+     * @return the Entity Manager Factory
+     * @throws XincoException
      */
-    public static EntityManagerFactory getEntityManagerFactory() {
-        emf=Persistence.createEntityManagerFactory("XincoPU");
+    public static EntityManagerFactory getEntityManagerFactory() throws XincoException {
+        try {
+            //Use the context defined Database connection
+            (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
+            emf = Persistence.createEntityManagerFactory(config.JNDIDB);
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.FINE,
+                    "Using context defined database connection: " + config.JNDIDB);
+            usingContext = true;
+        } catch (Exception e) {
+            if (!usingContext) {
+                Logger.getLogger(XincoDBManager.class.getName()).log(Level.FINE,
+                        "Manually specified connection parameters. "
+                        + "Using pre-defined persistence unit: XincoPU");
+                emf = Persistence.createEntityManagerFactory("XincoPU");
+            } else {
+                Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE,
+                        "Context doesn't exist. Check your configuration.", e);
+        }
+        }
         return emf;
     }
 
-    private static EntityManager getEntityManager() {
-        EntityManager em = getEntityManagerFactory().createEntityManager();
-        properties = em.getProperties();
+    private static EntityManager getEntityManager() throws XincoException {
+        if (!isLocked()) {
+            return getProtectedEntityManager();
+        } else {
+            throw new XincoException(lrb.getString("message.locked"));
+        }
+    }
+
+    protected static EntityManager getProtectedEntityManager() {
+        EntityManager em = null;
+        try {
+            em = getEntityManagerFactory().createEntityManager();
+            properties = em.getProperties();
+        } catch (XincoException ex) {
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return em;
     }
 
-    public static List createdQuery(String query) {
+    public static List<Object> createdQuery(String query) throws XincoException {
         return createdQuery(query, null);
     }
 
-    public static List createdQuery(String query, HashMap parameters) {
+    @SuppressWarnings("unchecked")
+    public static List<Object> createdQuery(String query, HashMap<String, Object> parameters) throws XincoException {
         getEntityManager().getTransaction().begin();
         Query q = getEntityManager().createQuery(query);
         if (parameters != null) {
-            Iterator entries = parameters.entrySet().iterator();
+            Iterator<Map.Entry<String, Object>> entries = parameters.entrySet().iterator();
             while (entries.hasNext()) {
-                Entry e = (Entry) entries.next();
+                Entry<String, Object> e = entries.next();
                 q.setParameter(e.getKey().toString(), e.getValue());
             }
         }
         return q.getResultList();
     }
 
-    public static List namedQuery(String query) {
-        return namedQuery(query, null);
+    public static List<Object> namedQuery(String query) throws XincoException {
+        return protectedNamedQuery(query, null, false);
     }
 
-    public static List namedQuery(String query, HashMap parameters) {
-        getEntityManager().getTransaction().begin();
-        Query q = getEntityManager().createNamedQuery(query);
+    public static List<Object> namedQuery(String query, HashMap<String, Object> parameters) throws XincoException {
+        return protectedNamedQuery(query, parameters, false);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected static List<Object> protectedNamedQuery(String query, HashMap<String, Object> parameters, boolean locked) throws XincoException {
+        Query q = null;
+        if (isLocked() && locked) {
+            getProtectedEntityManager().getTransaction().begin();
+            q = getProtectedEntityManager().createNamedQuery(query);
+        } else {
+            getEntityManager().getTransaction().begin();
+            q = getEntityManager().createNamedQuery(query);
+        }
         if (parameters != null) {
-            Iterator entries = parameters.entrySet().iterator();
+            Iterator<Map.Entry<String, Object>> entries = parameters.entrySet().iterator();
             while (entries.hasNext()) {
-                Entry e = (Entry) entries.next();
+                Entry<String, Object> e = entries.next();
                 q.setParameter(e.getKey().toString(), e.getValue());
             }
         }
@@ -278,11 +345,15 @@ public class XincoDBManager {
     }
 
     static void close() {
-        getEntityManager().close();
-        getEntityManagerFactory().close();
+        try {
+            getEntityManager().close();
+            getEntityManagerFactory().close();
+        } catch (XincoException ex) {
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    public static EntityTransaction getTransaction() {
+    public static EntityTransaction getTransaction() throws XincoException {
         return getEntityManager().getTransaction();
     }
 

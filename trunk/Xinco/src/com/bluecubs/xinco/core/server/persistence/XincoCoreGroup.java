@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import com.bluecubs.xinco.core.server.AuditedEntityListener;
@@ -28,9 +27,15 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @EntityListeners(AuditedEntityListener.class)
-@Table(name = "xinco_core_group", uniqueConstraints = {@UniqueConstraint(columnNames = {"designation"})})
-@NamedQueries({@NamedQuery(name = "XincoCoreGroup.findAll", query = "SELECT x FROM XincoCoreGroup x"), @NamedQuery(name = "XincoCoreGroup.findById", query = "SELECT x FROM XincoCoreGroup x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreGroup.findByDesignation", query = "SELECT x FROM XincoCoreGroup x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreGroup.findByStatusNumber", query = "SELECT x FROM XincoCoreGroup x WHERE x.statusNumber = :statusNumber")})
+@Table(name = "xinco_core_group", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"designation"})})
+@NamedQueries({
+    @NamedQuery(name = "XincoCoreGroup.findAll", query = "SELECT x FROM XincoCoreGroup x"),
+    @NamedQuery(name = "XincoCoreGroup.findById", query = "SELECT x FROM XincoCoreGroup x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreGroup.findByDesignation", query = "SELECT x FROM XincoCoreGroup x WHERE x.designation = :designation"),
+    @NamedQuery(name = "XincoCoreGroup.findByStatusNumber", query = "SELECT x FROM XincoCoreGroup x WHERE x.statusNumber = :statusNumber")})
 public class XincoCoreGroup extends XincoAuditedObject implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -124,5 +129,4 @@ public class XincoCoreGroup extends XincoAuditedObject implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreGroup[id=" + id + "]";
     }
-
 }

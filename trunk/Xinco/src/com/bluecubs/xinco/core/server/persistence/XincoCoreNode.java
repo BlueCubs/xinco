@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import com.bluecubs.xinco.core.server.AuditedEntityListener;
@@ -22,6 +21,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.eclipse.persistence.annotations.PrivateOwned;
 
 /**
  *
@@ -30,8 +30,13 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "xinco_core_node")
 @EntityListeners(AuditedEntityListener.class)
-@NamedQueries({@NamedQuery(name = "XincoCoreNode.findAll", query = "SELECT x FROM XincoCoreNode x"), @NamedQuery(name = "XincoCoreNode.findById", query = "SELECT x FROM XincoCoreNode x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreNode.findByDesignation", query = "SELECT x FROM XincoCoreNode x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreNode.findByStatusNumber", query = "SELECT x FROM XincoCoreNode x WHERE x.statusNumber = :statusNumber")})
+@NamedQueries({
+    @NamedQuery(name = "XincoCoreNode.findAll", query = "SELECT x FROM XincoCoreNode x"),
+    @NamedQuery(name = "XincoCoreNode.findById", query = "SELECT x FROM XincoCoreNode x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreNode.findByDesignation", query = "SELECT x FROM XincoCoreNode x WHERE x.designation = :designation"),
+    @NamedQuery(name = "XincoCoreNode.findByStatusNumber", query = "SELECT x FROM XincoCoreNode x WHERE x.statusNumber = :statusNumber")})
 public class XincoCoreNode extends XincoAuditedObject implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -46,12 +51,13 @@ public class XincoCoreNode extends XincoAuditedObject implements Serializable {
     @JoinColumn(name = "xinco_core_language_id", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private XincoCoreLanguage xincoCoreLanguageId;
-    @OneToMany(mappedBy = "xincoCoreNodeId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreNodeId", fetch = FetchType.LAZY)
     private List<XincoCoreNode> xincoCoreNodeList;
     @JoinColumn(name = "xinco_core_node_id", referencedColumnName = "id")
+    @PrivateOwned
     @ManyToOne(fetch = FetchType.LAZY)
     private XincoCoreNode xincoCoreNodeId;
-    @OneToMany(mappedBy = "xincoCoreNodeId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreNodeId", fetch = FetchType.LAZY)
     private List<XincoCoreAce> xincoCoreAceList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreNodeId", fetch = FetchType.LAZY)
     private List<XincoCoreData> xincoCoreDataList;
@@ -157,5 +163,4 @@ public class XincoCoreNode extends XincoAuditedObject implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreNode[id=" + id + "]";
     }
-
 }

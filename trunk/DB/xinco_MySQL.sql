@@ -212,8 +212,8 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_modified_record` (
   `id` INT(10) UNSIGNED NOT NULL ,
   `record_id` INT(10) UNSIGNED NOT NULL ,
   `mod_Time` TIMESTAMP NOT NULL ,
-  `mod_Reason` VARCHAR(255) NULL ,
-  PRIMARY KEY (`id`, `record_id`) ,
+  `mod_Reason` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`record_id`, `id`) ,
   CONSTRAINT `fk_{66203500-79C5-4ABB-AF2B-546B0D7CD657}`
     FOREIGN KEY (`id` )
     REFERENCES `xinco`.`xinco_core_user` (`id` )
@@ -525,6 +525,7 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_log` (
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
+
 -- -----------------------------------------------------
 -- Table `xinco`.`xinco_setting`
 -- -----------------------------------------------------
@@ -534,12 +535,31 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_setting` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `description` VARCHAR(45) NOT NULL ,
   `int_value` INT UNSIGNED NULL DEFAULT NULL ,
-  `string_value` VARCHAR(255) NULL DEFAULT NULL ,
+  `string_value` TEXT NULL DEFAULT NULL ,
   `bool_value` TINYINT(1) NULL ,
   `long_value` BIGINT NULL ,
-  PRIMARY KEY (`id`) )
-PACK_KEYS = 0
-ROW_FORMAT = DEFAULT;
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `unique` (`description` ASC) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_setting_t`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_setting_t` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_setting_t` (
+  `record_id` INT(10) NOT NULL ,
+  `id` INT NOT NULL ,
+  `description` VARCHAR(45) NOT NULL ,
+  `int_value` INT UNSIGNED NULL DEFAULT NULL ,
+  `string_value` TEXT NULL DEFAULT NULL ,
+  `bool_value` TINYINT(1) NULL ,
+  `long_value` BIGINT NULL ,
+  PRIMARY KEY (`record_id`) )
+ENGINE = InnoDB;
+
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
@@ -599,9 +619,9 @@ COMMIT;
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
 USE `xinco`;
-INSERT INTO `xinco_core_user` VALUES (1, 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', 1, 0, now());
-INSERT INTO `xinco_core_user` VALUES(2, 'user', MD5('user'), 'User', 'Default', 'user@xinco.org', 1, 0, now());
-INSERT INTO `xinco_core_user` VALUES (3, 'bluecubs', MD5('bluecubs'), 'System', 'User', 'info@bluecubs.com', 1, 0, now());
+INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Administrator', 'Xinco', 'admin@xinco.org', 1, 0, now());
+INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (2, 'user', 'ee11cbb19052e40b07aac0ca060c23ee', 'User', 'Default', 'user@xinco.org', 1, 0, now());
+INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (3, 'bluecubs', 'a1681d95b94018a6721432c774bcef13', 'System', 'User', 'info@bluecubs.com', 1, 0, now());
 
 COMMIT;
 
@@ -681,8 +701,8 @@ COMMIT;
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
 USE `xinco`;
-INSERT INTO `xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES (2, 1, 0, 0, 0, 'http://www.xinco.org', '', 0);
-INSERT INTO `xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES (1, 1, 0, 0, 0, 'http://www.apache.org/licenses/LICENSE-2.0.html', '', 0);
+INSERT INTO `xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES (2, 1, 0, 0, 0, 'http://www.xinco.org', '', now());
+INSERT INTO `xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES (1, 1, 0, 0, 0, 'http://www.apache.org/licenses/LICENSE-2.0.html', '', now());
 
 COMMIT;
 
@@ -714,8 +734,8 @@ COMMIT;
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
 USE `xinco`;
-INSERT INTO `xinco_core_log` values(1, 1, 1, 1, now(), 'Creation!', 1, 0, 0, '');
-INSERT INTO `xinco_core_log` values(2, 2, 1, 1, now(), 'Creation!', 1, 0, 0, '');
+INSERT INTO `xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES (1, 1, 1, 1, now(), 'Creation!', 1, 0, 0, '');
+INSERT INTO `xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES (2, 2, 1, 1, now(), 'Creation!', 1, 0, 0, '');
 
 COMMIT;
 
@@ -747,9 +767,12 @@ INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (21, 'xinco/IndexNoIndex', null, ';aac;ac3;ace;ade;adp;aif;aifc;aiff;amf;arc;arj;asx;au;avi;b64;bh;bmp;bz;bz2;cab;cda;chm;class;com;div;divx;ear;exe;far;fla;gif;gz;hlp;ico;;iso;jar;jpe;jpeg;jpg;lha;lzh;mda;mdb;mde;mdn;mdt;mdw;mid;midi;mim;mod;mov;mp1;mp2;mp2v;mp3;mp4;mpa;mpe;mpeg;mpg;mpg4;mpv2;msi;ntx;ocx;ogg;ogm;okt;pae;pcx;pk3;png;pot;ppa;pps;ppt;pwz;qwk;ra;ram;rar;raw;rep;rm;rmi;snd;swf;swt;tar;taz;tbz;tbz2;tgz;tif;tiff;uu;uue;vxd;war;wav;wbm;wbmp;wma;wmd;wmf;wmv;xpi;xxe;z;zip;zoo;;;', 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (22, 'xinco/MaxSearchResult', 100, null, 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (23, 'setting.email.host', null, 'smtp.bluecubs.com', 0, 0);
-INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (23, 'setting.email.user', null, 'info@bluecubs.com', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (24, 'setting.email.user', null, 'info@bluecubs.com', 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (25, 'setting.email.password', null, 'password', 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (26, 'setting.email.port', 25, null, 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (27, 'setting.allowoutsidelinks', null, null, 1, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (28, 'setting.backup.path', null, 'C:\\Temp\\xinco\\backup\\', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (29, 'xinco/FileIndexOptimizerPeriod', null, null, 0, 14400000);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (30, 'setting.allowpublisherlist', null, null, 1, 0);
 
 COMMIT;

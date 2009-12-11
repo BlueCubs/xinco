@@ -1,50 +1,43 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package com.bluecubs.xinco.core.server.persistence;
 
-import com.bluecubs.xinco.core.server.AuditedEntityListener;
-import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.EntityListeners;
-import javax.persistence.UniqueConstraint;
 
 /**
  *
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 @Entity
-@Table(name = "xinco_setting", uniqueConstraints = {
-  @UniqueConstraint(columnNames = {"description"})})
-@EntityListeners(AuditedEntityListener.class)
+@Table(name = "xinco_setting_t")
 @NamedQueries({
-  @NamedQuery(name = "XincoSetting.findAll",
-  query = "SELECT x FROM XincoSetting x"),
-  @NamedQuery(name = "XincoSetting.findById",
-  query = "SELECT x FROM XincoSetting x WHERE x.id = :id"),
-  @NamedQuery(name = "XincoSetting.findByDescription",
-  query = "SELECT x FROM XincoSetting x WHERE x.description = :description"),
-  @NamedQuery(name = "XincoSetting.findByIntValue",
-  query = "SELECT x FROM XincoSetting x WHERE x.intValue = :intValue"),
-  @NamedQuery(name = "XincoSetting.findByBoolValue",
-  query = "SELECT x FROM XincoSetting x WHERE x.boolValue = :boolValue"),
-  @NamedQuery(name = "XincoSetting.findByLongValue",
-  query = "SELECT x FROM XincoSetting x WHERE x.longValue = :longValue")})
-public class XincoSetting extends XincoAuditedObject implements Serializable {
-
+  @NamedQuery(name = "XincoSettingT.findAll", query = "SELECT x FROM XincoSettingT x"),
+  @NamedQuery(name = "XincoSettingT.findByRecordId", query = "SELECT x FROM XincoSettingT x WHERE x.recordId = :recordId"),
+  @NamedQuery(name = "XincoSettingT.findById", query = "SELECT x FROM XincoSettingT x WHERE x.id = :id"),
+  @NamedQuery(name = "XincoSettingT.findByDescription", query = "SELECT x FROM XincoSettingT x WHERE x.description = :description"),
+  @NamedQuery(name = "XincoSettingT.findByIntValue", query = "SELECT x FROM XincoSettingT x WHERE x.intValue = :intValue"),
+  @NamedQuery(name = "XincoSettingT.findByBoolValue", query = "SELECT x FROM XincoSettingT x WHERE x.boolValue = :boolValue"),
+  @NamedQuery(name = "XincoSettingT.findByLongValue", query = "SELECT x FROM XincoSettingT x WHERE x.longValue = :longValue")})
+public class XincoSettingT implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Basic(optional = false)
+  @Column(name = "record_id", nullable = false)
+  private Integer recordId;
   @Basic(optional = false)
   @Column(name = "id", nullable = false)
-  private Integer id;
+  private int id;
   @Basic(optional = false)
   @Column(name = "description", nullable = false, length = 45)
   private String description;
@@ -58,18 +51,32 @@ public class XincoSetting extends XincoAuditedObject implements Serializable {
   @Column(name = "long_value")
   private Long longValue;
 
-  public XincoSetting() {
+  public XincoSettingT() {
   }
 
-  public XincoSetting(String description) {
+  public XincoSettingT(Integer recordId) {
+    this.recordId = recordId;
+  }
+
+  public XincoSettingT(Integer recordId, int id, String description) {
+    this.recordId = recordId;
+    this.id = id;
     this.description = description;
   }
 
-  public Integer getId() {
+  public Integer getRecordId() {
+    return recordId;
+  }
+
+  public void setRecordId(Integer recordId) {
+    this.recordId = recordId;
+  }
+
+  public int getId() {
     return id;
   }
 
-  public void setId(Integer id) {
+  public void setId(int id) {
     this.id = id;
   }
 
@@ -116,18 +123,18 @@ public class XincoSetting extends XincoAuditedObject implements Serializable {
   @Override
   public int hashCode() {
     int hash = 0;
-    hash += (id != null ? id.hashCode() : 0);
+    hash += (recordId != null ? recordId.hashCode() : 0);
     return hash;
   }
 
   @Override
   public boolean equals(Object object) {
     // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof XincoSetting)) {
+    if (!(object instanceof XincoSettingT)) {
       return false;
     }
-    XincoSetting other = (XincoSetting) object;
-    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+    XincoSettingT other = (XincoSettingT) object;
+    if ((this.recordId == null && other.recordId != null) || (this.recordId != null && !this.recordId.equals(other.recordId))) {
       return false;
     }
     return true;
@@ -135,6 +142,7 @@ public class XincoSetting extends XincoAuditedObject implements Serializable {
 
   @Override
   public String toString() {
-    return "com.bluecubs.xinco.core.server.persistence.XincoSetting[id=" + id + "]";
+    return "com.bluecubs.xinco.core.server.persistence.XincoSettingT[recordId=" + recordId + "]";
   }
+
 }

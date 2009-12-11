@@ -43,6 +43,10 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.analysis.*;
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.server.*;
+import java.io.File;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.store.SimpleFSDirectory;
+import org.apache.lucene.util.Version;
 
 /**
  * This class handles document indexing for xinco.
@@ -57,9 +61,9 @@ public class XincoIndexer {
             XincoIndexer.removeXincoCoreData(d);
             //add document to index
             try {
-                writer = new IndexWriter(XincoDBManager.config.FileIndexPath, new StandardAnalyzer(), false);
+                writer = new IndexWriter(new SimpleFSDirectory(new File(XincoDBManager.config.FileIndexPath)), new StandardAnalyzer(Version.LUCENE_CURRENT), false, IndexWriter.MaxFieldLength.UNLIMITED);
             } catch (Exception ie) {
-                writer = new IndexWriter(XincoDBManager.config.FileIndexPath, new StandardAnalyzer(), true);
+                writer = new IndexWriter(new SimpleFSDirectory(new File(XincoDBManager.config.FileIndexPath)), new StandardAnalyzer(Version.LUCENE_CURRENT), true, IndexWriter.MaxFieldLength.UNLIMITED);
             }
             writer.addDocument(XincoDocument.getXincoDocument(d, index_content));
             //writer.optimize();
@@ -80,8 +84,8 @@ public class XincoIndexer {
         IndexReader reader = null;
         //check if document exists in index and delete
         try {
-            reader = IndexReader.open(XincoDBManager.config.FileIndexPath);
-            reader.delete(new Term("id", "" + d.getId()));
+            reader = IndexReader.open(new SimpleFSDirectory(new File(XincoDBManager.config.FileIndexPath)));
+            reader.deleteDocuments(new Term("id", "" + d.getId()));
             reader.close();
         } catch (Exception re) {
             if (reader != null) {
@@ -99,7 +103,10 @@ public class XincoIndexer {
         IndexWriter writer = null;
         try {
             //optimize index
-            writer = new IndexWriter(XincoDBManager.config.FileIndexPath, new StandardAnalyzer(), false);
+            writer = new IndexWriter(new SimpleFSDirectory(
+                    new File(XincoDBManager.config.FileIndexPath)),
+                    new StandardAnalyzer(Version.LUCENE_CURRENT), false,
+                    IndexWriter.MaxFieldLength.UNLIMITED);
             writer.optimize();
             writer.close();
         } catch (Exception e) {
@@ -119,20 +126,23 @@ public class XincoIndexer {
         Vector v = new Vector();
         Searcher searcher = null;
         try {
-            searcher = new IndexSearcher(XincoDBManager.config.FileIndexPath);
-            Analyzer analyzer = new StandardAnalyzer();
+            searcher = new IndexSearcher(new SimpleFSDirectory(new File(XincoDBManager.config.FileIndexPath)));
+            Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
 
             //add language to query
             if (l != 0) {
                 s = s + " AND language:" + l;
             }
-            Query query = QueryParser.parse(s, "designation", analyzer);
-
-            Hits hits = searcher.search(query);
-
-            for (i = 0; i < hits.length(); i++) {
+            QueryParser parser = new QueryParser(Version.LUCENE_CURRENT, "designation", analyzer);
+            Query query = parser.parse(s);
+            TopScoreDocCollector collector =
+                    TopScoreDocCollector.create(XincoDBManager.config.MaxSearchResult, false);
+            searcher.search(query, collector);
+            ScoreDoc[] hits = collector.topDocs().scoreDocs;
+            for (i = 0; i < collector.getTotalHits(); i++) {
+                Document doc = searcher.doc(hits[i].doc);
                 try {
-                    v.addElement(new XincoCoreDataServer(Integer.parseInt(hits.doc(i).get("id"))));
+                    v.addElement(new XincoCoreDataServer(Integer.parseInt(doc.get("id"))));
                 } catch (Exception xcde) {
                     // don't add non-existing data
                 }
