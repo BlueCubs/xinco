@@ -160,9 +160,9 @@ public class XincoCoreLogServer extends XincoCoreLog {
     }
 
     //create complete log list for data
-    public static Vector getXincoCoreLogs(int attrID) {
+    public static Vector<XincoCoreLogServer> getXincoCoreLogs(int attrID) {
 
-        Vector core_log = new Vector();
+        Vector<XincoCoreLogServer> core_log = new Vector<XincoCoreLogServer>();
         GregorianCalendar cal = new GregorianCalendar();
 
         try {

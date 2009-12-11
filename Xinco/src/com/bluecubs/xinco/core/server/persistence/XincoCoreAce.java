@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.CascadeType;
 
 /**
  *
@@ -58,7 +59,7 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private XincoCoreData xincoCoreDataId;
     @JoinColumn(name = "xinco_core_group_id", referencedColumnName = "id", nullable = true)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private XincoCoreGroup xincoCoreGroupId;
     @JoinColumn(name = "xinco_core_node_id", referencedColumnName = "id", nullable = true)
     @ManyToOne(fetch = FetchType.LAZY)
