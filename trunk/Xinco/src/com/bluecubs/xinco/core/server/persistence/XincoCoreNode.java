@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bluecubs.xinco.core.server.persistence;
 
 import com.bluecubs.xinco.core.server.AuditedEntityListener;
@@ -51,15 +47,15 @@ public class XincoCoreNode extends XincoAuditedObject implements Serializable {
     @JoinColumn(name = "xinco_core_language_id", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private XincoCoreLanguage xincoCoreLanguageId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreNodeId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreNodeId", fetch = FetchType.LAZY)
     private List<XincoCoreNode> xincoCoreNodeList;
     @JoinColumn(name = "xinco_core_node_id", referencedColumnName = "id")
     @PrivateOwned
     @ManyToOne(fetch = FetchType.LAZY)
     private XincoCoreNode xincoCoreNodeId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreNodeId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreNodeId", fetch = FetchType.LAZY)
     private List<XincoCoreAce> xincoCoreAceList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreNodeId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreNodeId", fetch = FetchType.LAZY)
     private List<XincoCoreData> xincoCoreDataList;
 
     public XincoCoreNode() {

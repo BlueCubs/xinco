@@ -41,9 +41,9 @@ public class XincoCoreLanguage extends XincoAuditedObject implements Serializabl
     @Basic(optional = false)
     @Column(name = "designation", nullable = false, length = 255)
     private String designation;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguageId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreLanguageId", fetch = FetchType.LAZY)
     private List<XincoCoreNode> xincoCoreNodeList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguageId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreLanguageId", fetch = FetchType.LAZY)
     private List<XincoCoreData> xincoCoreDataList;
 
     public XincoCoreLanguage() {

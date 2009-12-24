@@ -35,7 +35,9 @@
  */
 package com.bluecubs.xinco.core.server;
 
-public class XincoException extends Exception {
+import java.util.List;
+
+public class XincoException extends Error {
 
     String xinco_message = "";
 
@@ -47,6 +49,12 @@ public class XincoException extends Exception {
     public XincoException(String s) {
         super(s);
         xinco_message = s;
+    }
+
+    public XincoException(List<String> messages) {
+        for (String s : messages) {
+            xinco_message += s + "\n";
+        }
     }
 
     @Override

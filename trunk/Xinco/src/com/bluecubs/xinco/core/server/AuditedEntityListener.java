@@ -183,7 +183,7 @@ public class AuditedEntityListener {
                 }
             }
         } catch (PreexistingEntityException e) {
-            //Probably trying to reuse the recordID (this can happen in nested
+            //Probably trying to reuse the recordID (this can happen in nested)
             e.printStackTrace();
             throw new XincoException(e.getLocalizedMessage());
         }

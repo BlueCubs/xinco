@@ -87,11 +87,11 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
     private Date lastModified;
     @OneToMany(mappedBy = "xincoCoreUserId", fetch = FetchType.LAZY)
     private List<XincoCoreAce> xincoCoreAceList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreUserId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreUserId", fetch = FetchType.LAZY)
     private List<XincoCoreLog> xincoCoreLogList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreUser", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreUser", fetch = FetchType.LAZY)
     private List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreUser", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreUser", fetch = FetchType.LAZY)
     private List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordList;
 
     public XincoCoreUser() {

@@ -70,12 +70,12 @@ public class XincoDBManager {
     private int EmailLink = 1, DataLink = 2;
     private static ResourceBundle lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
     private Locale loc = null;
-    private String puName;
+    protected String puName;
     private static HashMap<String, Object> parameters = new HashMap<String, Object>();
     private static boolean locked = false;
     private static boolean usingContext = false;
 
-    static{
+    static {
         config = XincoConfigSingletonServer.getInstance();
         config.loadSettings();
     }
@@ -274,7 +274,7 @@ public class XincoDBManager {
             } else {
                 Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE,
                         "Context doesn't exist. Check your configuration.", e);
-        }
+            }
         }
         return emf;
     }
@@ -304,8 +304,18 @@ public class XincoDBManager {
 
     @SuppressWarnings("unchecked")
     public static List<Object> createdQuery(String query, HashMap<String, Object> parameters) throws XincoException {
-        getEntityManager().getTransaction().begin();
-        Query q = getEntityManager().createQuery(query);
+        return protectedCreatedQuery(query, parameters, false);
+    }
+
+    public static List<Object> protectedCreatedQuery(String query, HashMap<String, Object> parameters, boolean locked) throws XincoException {
+        Query q = null;
+        if (isLocked() && locked) {
+            getProtectedEntityManager().getTransaction().begin();
+            q = getProtectedEntityManager().createQuery(query);
+        } else {
+            getEntityManager().getTransaction().begin();
+            q = getEntityManager().createQuery(query);
+        }
         if (parameters != null) {
             Iterator<Map.Entry<String, Object>> entries = parameters.entrySet().iterator();
             while (entries.hasNext()) {
