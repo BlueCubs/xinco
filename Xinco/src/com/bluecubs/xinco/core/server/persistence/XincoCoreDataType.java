@@ -41,9 +41,9 @@ public class XincoCoreDataType extends XincoAuditedObject implements Serializabl
     @Basic(optional = false)
     @Column(name = "description", nullable = false, length = 255)
     private String description;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreDataType", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreDataType", fetch = FetchType.LAZY)
     private List<XincoCoreDataTypeAttribute> xincoCoreDataTypeAttributeList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreDataTypeId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreDataTypeId", fetch = FetchType.LAZY)
     private List<XincoCoreData> xincoCoreDataList;
 
     public XincoCoreDataType() {

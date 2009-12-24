@@ -70,7 +70,9 @@ public class XincoBackupManager {
         tables.add("XincoCoreData");
         tables.add("XincoCoreUser");
         tables.add("XincoCoreUserModifiedRecord");
+        tables.add("XincoCoreGroup");
         tables.add("XincoCoreAce");
+        tables.add("XincoCoreUserHasXincoCoreGroup");
         tables.add("XincoAddAttribute");
         tables.add("XincoCoreDataTypeAttribute");
         tables.add("XincoCoreLog");
@@ -86,7 +88,7 @@ public class XincoBackupManager {
     private static void setDBSystemDir(String systemDir) {
         // Set the db system directory.
         System.setProperty("derby.system.home", systemDir);
-        Logger.getLogger(XincoBackupManager.class.getName()).log(Level.INFO, "Derby home set as: " + systemDir);
+        Logger.getLogger(XincoBackupManager.class.getName()).log(Level.INFO, "Derby home set at: " + systemDir);
         try {
             //Start the embeded DB
             Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
@@ -124,6 +126,22 @@ public class XincoBackupManager {
             File backupNewDir = new File(backupPath + System.getProperty("file.separator")
                     + format.format(new Date()));
             backupNewDir.mkdirs();
+            /*
+             * Make sure there's no derby database stuff in the folder.
+             * Any previous interrupted backup might left corrupted database files.
+             */
+            File tempDir = new File(backupNewDir.getAbsolutePath()
+                    + System.getProperty("file.separator") + "xinco");
+            if (tempDir.exists()) {
+                Logger.getLogger(XincoBackupManager.class.getName()).log(Level.INFO,
+                        "Deleting potentially corrupted database files at: " + tempDir);
+                FileUtils.deleteDirectory(tempDir);
+                //Delete Derby log file
+                FileUtils.forceDelete(new File(backupNewDir.getAbsolutePath()
+                        + System.getProperty("file.separator") + "derby.log"));
+                Logger.getLogger(XincoBackupManager.class.getName()).log(Level.INFO,
+                        "Done!");
+            }
             /**
              * Prepare system to use derby
              */
@@ -160,6 +178,7 @@ public class XincoBackupManager {
             XincoDBManager.setLocked(false);
             return false;
         } catch (Exception ex) {
+            ex.printStackTrace();
             Logger.getLogger(XincoBackupManager.class.getName()).log(Level.SEVERE, null, ex);
             XincoDBManager.setLocked(false);
             return false;
@@ -264,7 +283,7 @@ public class XincoBackupManager {
                 }
                 dest.getTransaction().commit();
             } catch (ClassNotFoundException ex) {
-                Logger.getLogger(XincoBackupManager.class.getName()).log(Level.SEVERE, null, ex);
+                throw new XincoException("No persistence enitiy defined for table: "+table);
             }
         }
         stats.put(table, i);
@@ -370,6 +389,13 @@ public class XincoBackupManager {
                     "Load complete!");
             //Stop Derby database in order to delete
             DriverManager.getConnection("jdbc:derby:;shutdown=true");
+            Logger.getLogger(XincoBackupManager.class.getName()).log(Level.INFO,
+                    "Delete temp folder!");
+            try {
+                FileUtils.deleteDirectory(new File(System.getProperty("derby.system.home")));
+            } catch (IOException ex) {
+                Logger.getLogger(XincoBackupManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } catch (SQLException e) {
             //When the database shuts down it'll throw an exception
         } finally {
@@ -387,6 +413,9 @@ public class XincoBackupManager {
 
     private static void unzipBackup(XincoBackupFile backup) {
         try {
+            //Make sure that the temp directory is empty before unzipping
+            FileUtils.deleteDirectory(new File(backupPath
+                    + System.getProperty("file.separator") + "Temp"));
             byte[] buf = new byte[1024];
             ZipInputStream zipinputstream = null;
             ZipEntry zipentry;
@@ -398,7 +427,7 @@ public class XincoBackupManager {
             while (zipentry != null) {
                 //for each entry to be extracted
                 String entryName = zipentry.getName();
-                Logger.getLogger(XincoBackupManager.class.getName()).log(Level.FINE,
+                Logger.getLogger(XincoBackupManager.class.getName()).log(Level.INFO,
                         "Extracting file: " + entryName);
                 int n;
                 FileOutputStream fileoutputstream;
@@ -445,26 +474,53 @@ public class XincoBackupManager {
     }
 
     private static void clearTable(String table, EntityManager target) throws XincoException {
-        List<Object> result;
-        result = target.createNamedQuery(table + ".findAll").getResultList();
-        Logger.getLogger(XincoBackupManager.class.getName()).log(Level.INFO, "Cleaning table: " + table);
-        int i = 0;
-        for (Object o : result) {
-            i++;
+        try {
+            List<Object> result;
+            result = target.createNamedQuery(table + ".findAll").getResultList();
+            Logger.getLogger(XincoBackupManager.class.getName()).log(Level.INFO, "Cleaning table: " + table);
+            int i = 0;
+            Class<?> serverClass = null;
+            boolean special = false;
             try {
-                Class<?> persistenceClass = Class.forName("com.bluecubs.xinco.core.server.persistence." + table);
-                target.getTransaction().begin();
-                target.remove(persistenceClass.cast(o));
-                target.getTransaction().commit();
+                serverClass = Class.forName("com.bluecubs.xinco.core.server." + table + "Server");
+                special = serverClass.newInstance() instanceof XincoCRUDSpecialCase;
             } catch (ClassNotFoundException ex) {
-                Logger.getLogger(XincoBackupManager.class.getName()).log(Level.SEVERE, null, ex);
+                try {
+                    //Class doesn't exist, try in the add folder
+                    serverClass = Class.forName("com.bluecubs.xinco.add.server." + table + "Server");
+                    special = serverClass.newInstance() instanceof XincoCRUDSpecialCase;
+                } catch (ClassNotFoundException ex1) {
+                } catch (InstantiationException ex1) {
+                } catch (NoClassDefFoundError ex1) {
+                }
+            } catch (InstantiationException ex) {
+            } catch (NoClassDefFoundError ex) {
             }
+            if (serverClass != null && special) {
+                ((XincoCRUDSpecialCase) serverClass.newInstance()).clearTable();
+                special = false;
+            } else {
+                for (Object o : result) {
+                    i++;
+                    try {
+                        Class<?> persistenceClass = Class.forName("com.bluecubs.xinco.core.server.persistence." + table);
+                        target.getTransaction().begin();
+                        target.remove(persistenceClass.cast(o));
+                        target.getTransaction().commit();
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(XincoBackupManager.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            result = target.createNamedQuery(table + ".findAll").getResultList();
+            assert result.size() == 0 : "Unable to delete entities: " + result.size();
+            stats.put(table, i);
+            Logger.getLogger(XincoBackupManager.class.getName()).log(Level.INFO, "Cleaning table: " + table + " completed! Amount of records removed: " + i);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(XincoBackupManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(XincoBackupManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        result = target.createNamedQuery(table + ".findAll").getResultList();
-        assert result.size() == 0 : "Unable to delete entities: " + result.size();
-        stats.put(table, i);
-        Logger.getLogger(XincoBackupManager.class.getName()).log(Level.FINE, "Cleaning table: "
-                + table + " completed! Amount of records removed: " + i);
     }
 
     /**

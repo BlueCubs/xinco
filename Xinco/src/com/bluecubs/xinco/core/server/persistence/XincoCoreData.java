@@ -49,7 +49,7 @@ public class XincoCoreData extends XincoAuditedObject implements Serializable {
     private int statusNumber;
     @OneToMany(mappedBy = "xincoCoreDataId", fetch = FetchType.LAZY)
     private List<XincoCoreAce> xincoCoreAceList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreDataId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreDataId", fetch = FetchType.LAZY)
     private List<XincoCoreLog> xincoCoreLogList;
     @JoinColumn(name = "xinco_core_data_type_id", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -60,7 +60,7 @@ public class XincoCoreData extends XincoAuditedObject implements Serializable {
     @JoinColumn(name = "xinco_core_node_id", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private XincoCoreNode xincoCoreNodeId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreData", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreData", fetch = FetchType.LAZY)
     private List<XincoAddAttribute> xincoAddAttributeList;
 
     public XincoCoreData() {

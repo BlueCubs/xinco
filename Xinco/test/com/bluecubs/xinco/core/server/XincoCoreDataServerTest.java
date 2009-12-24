@@ -43,6 +43,7 @@ public class XincoCoreDataServerTest extends TestCase {
             assertTrue(instance.deleteFromDB() == 0);
         } catch (XincoException ex) {
             Logger.getLogger(XincoCoreDataServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
         }
     }
 

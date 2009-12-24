@@ -4,6 +4,7 @@ import com.bluecubs.xinco.core.server.AuditedEntityListener;
 import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import java.io.Serializable;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -14,7 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.CascadeType;
 
 /**
  *
@@ -24,18 +24,12 @@ import javax.persistence.CascadeType;
 @Table(name = "xinco_core_ace")
 @EntityListeners(AuditedEntityListener.class)
 @NamedQueries({
-    @NamedQuery(name = "XincoCoreAce.findAll",
-    query = "SELECT x FROM XincoCoreAce x"),
-    @NamedQuery(name = "XincoCoreAce.findById",
-    query = "SELECT x FROM XincoCoreAce x WHERE x.id = :id"),
-    @NamedQuery(name = "XincoCoreAce.findByReadPermission",
-    query = "SELECT x FROM XincoCoreAce x WHERE x.readPermission = :readPermission"),
-    @NamedQuery(name = "XincoCoreAce.findByWritePermission",
-    query = "SELECT x FROM XincoCoreAce x WHERE x.writePermission = :writePermission"),
-    @NamedQuery(name = "XincoCoreAce.findByExecutePermission",
-    query = "SELECT x FROM XincoCoreAce x WHERE x.executePermission = :executePermission"),
-    @NamedQuery(name = "XincoCoreAce.findByAdminPermission",
-    query = "SELECT x FROM XincoCoreAce x WHERE x.adminPermission = :adminPermission")})
+    @NamedQuery(name = "XincoCoreAce.findAll", query = "SELECT x FROM XincoCoreAce x"),
+    @NamedQuery(name = "XincoCoreAce.findById", query = "SELECT x FROM XincoCoreAce x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreAce.findByReadPermission", query = "SELECT x FROM XincoCoreAce x WHERE x.readPermission = :readPermission"),
+    @NamedQuery(name = "XincoCoreAce.findByWritePermission", query = "SELECT x FROM XincoCoreAce x WHERE x.writePermission = :writePermission"),
+    @NamedQuery(name = "XincoCoreAce.findByExecutePermission", query = "SELECT x FROM XincoCoreAce x WHERE x.executePermission = :executePermission"),
+    @NamedQuery(name = "XincoCoreAce.findByAdminPermission", query = "SELECT x FROM XincoCoreAce x WHERE x.adminPermission = :adminPermission")})
 public class XincoCoreAce extends XincoAuditedObject implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -59,7 +53,7 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private XincoCoreData xincoCoreDataId;
     @JoinColumn(name = "xinco_core_group_id", referencedColumnName = "id", nullable = true)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     private XincoCoreGroup xincoCoreGroupId;
     @JoinColumn(name = "xinco_core_node_id", referencedColumnName = "id", nullable = true)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -123,6 +117,14 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
         this.adminPermission = adminPermission;
     }
 
+    public XincoCoreNode getXincoCoreNodeId() {
+        return xincoCoreNodeId;
+    }
+
+    public void setXincoCoreNodeId(XincoCoreNode xincoCoreNodeId) {
+        this.xincoCoreNodeId = xincoCoreNodeId;
+    }
+
     public XincoCoreData getXincoCoreDataId() {
         return xincoCoreDataId;
     }
@@ -137,14 +139,6 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
 
     public void setXincoCoreGroupId(XincoCoreGroup xincoCoreGroupId) {
         this.xincoCoreGroupId = xincoCoreGroupId;
-    }
-
-    public XincoCoreNode getXincoCoreNodeId() {
-        return xincoCoreNodeId;
-    }
-
-    public void setXincoCoreNodeId(XincoCoreNode xincoCoreNodeId) {
-        this.xincoCoreNodeId = xincoCoreNodeId;
     }
 
     public XincoCoreUser getXincoCoreUserId() {

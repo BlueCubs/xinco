@@ -11,7 +11,6 @@ import com.bluecubs.xinco.core.server.persistence.controller.exceptions.Preexist
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
@@ -24,7 +23,7 @@ import javax.persistence.criteria.Root;
 public class XincoCoreNodeTJpaController {
 
     public XincoCoreNodeTJpaController() {
-        emf = Persistence.createEntityManagerFactory("XincoPU");
+        emf = com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory();
     }
     private EntityManagerFactory emf = null;
 

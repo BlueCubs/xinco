@@ -114,7 +114,6 @@ public class XincoConfigSingletonServer {
             allowPublisherList = XincoSettingServer.getSetting("setting.allowpublisherlist").isBool_value();
             MaxSearchResult = XincoSettingServer.getSetting("xinco/MaxSearchResult").getInt_value();
         } catch (Exception e) {
-            e.printStackTrace();
             Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.WARNING,
                         "Error loading configuration! Using defaults...", e);
             FileRepositoryPath = "";

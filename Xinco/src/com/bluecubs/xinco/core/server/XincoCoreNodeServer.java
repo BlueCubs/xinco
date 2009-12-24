@@ -45,13 +45,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class XincoCoreNodeServer extends XincoCoreNode {
+public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpecialCase {
 
     private static List result;
     private static HashMap parameters = new HashMap();
     //create node object for data structures
 
+    public XincoCoreNodeServer(){
+    }
+
+    @SuppressWarnings("unchecked")
     public XincoCoreNodeServer(int attrID) throws XincoException {
         try {
             parameters.clear();
@@ -101,9 +107,9 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreNodeId.id"));
         } catch (Exception e) {
             setXinco_core_language(null);
-            ((Vector) getXinco_core_acl()).removeAllElements();
-            ((Vector) getXinco_core_nodes()).removeAllElements();
-            ((Vector) getXinco_core_data()).removeAllElements();
+            (getXinco_core_acl()).removeAllElements();
+            (getXinco_core_nodes()).removeAllElements();
+            (getXinco_core_data()).removeAllElements();
             throw new XincoException(e.getMessage());
         }
     }
@@ -178,15 +184,15 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 fillXincoCoreNodes();
                 fillXincoCoreData();
                 //start recursive deletion
-                for (i = 0; i < ((Vector) getXinco_core_nodes()).size(); i++) {
-                    ((XincoCoreNodeServer) ((Vector) getXinco_core_nodes()).elementAt(i)).deleteFromDB(true, userID);
+                for (i = 0; i < (getXinco_core_nodes()).size(); i++) {
+                    ((XincoCoreNodeServer) (getXinco_core_nodes()).elementAt(i)).deleteFromDB(true, userID);
                 }
-                for (i = 0; i < ((Vector) getXinco_core_data()).size(); i++) {
-                    XincoIndexer.removeXincoCoreData((XincoCoreDataServer) ((Vector) getXinco_core_data()).elementAt(i));
+                for (i = 0; i < (getXinco_core_data()).size(); i++) {
+                    XincoIndexer.removeXincoCoreData((XincoCoreDataServer) (getXinco_core_data()).elementAt(i));
                     XincoCoreDataServer.removeFromDB(userID,
-                            ((XincoCoreDataServer) ((Vector) getXinco_core_data()).elementAt(i)).getId());
-                    ((XincoCoreDataServer) ((Vector) getXinco_core_data()).elementAt(i)).setChangerID(userID);
-                    ((XincoCoreDataServer) ((Vector) getXinco_core_data()).elementAt(i)).deleteFromDB();
+                            ((XincoCoreDataServer) (getXinco_core_data()).elementAt(i)).getId());
+                    ((XincoCoreDataServer) (getXinco_core_data()).elementAt(i)).setChangerID(userID);
+                    ((XincoCoreDataServer) (getXinco_core_data()).elementAt(i)).deleteFromDB();
                 }
             }
         } catch (Exception e) {
@@ -199,10 +205,10 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             result = XincoDBManager.createdQuery("SELECT xcn FROM XincoCoreNode xcn "
                     + "WHERE xcn.xincoCoreNodeId.id = " + getId() + " ORDER BY xcn.designation");
             for (Object o : result) {
-                ((Vector) getXinco_core_nodes()).addElement(new XincoCoreNodeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o));
+                (getXinco_core_nodes()).addElement(new XincoCoreNodeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o));
             }
         } catch (Exception e) {
-            ((Vector) getXinco_core_nodes()).removeAllElements();
+            (getXinco_core_nodes()).removeAllElements();
         }
 
     }
@@ -211,10 +217,10 @@ public class XincoCoreNodeServer extends XincoCoreNode {
         try {
             result = XincoDBManager.createdQuery("SELECT xcd FROM XincoCoreData xcd WHERE xcd.xincoCoreNodeId.id = " + getId() + " ORDER BY xcd.designation");
             for (Object o : result) {
-                ((Vector) getXinco_core_data()).addElement(new XincoCoreDataServer((com.bluecubs.xinco.core.server.persistence.XincoCoreData) o));
+                (getXinco_core_data()).addElement(new XincoCoreDataServer((com.bluecubs.xinco.core.server.persistence.XincoCoreData) o));
             }
         } catch (Exception e) {
-            ((Vector) getXinco_core_data()).removeAllElements();
+            (getXinco_core_data()).removeAllElements();
         }
     }
 
@@ -265,5 +271,39 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             nodes.removeAllElements();
         }
         return nodes;
+    }
+
+    @Override
+    public void clearTable() {
+        try {
+            /**
+             * All nodes are linked except the root. So we need to start deleting the leaves first.
+             */
+            while (new XincoCoreNodeJpaController().findXincoCoreNodeEntities().size() > 0) {
+                for (com.bluecubs.xinco.core.server.persistence.XincoCoreNode xcn : getLeaves()) {
+                    new XincoCoreNodeJpaController().destroy(xcn.getId());
+                }
+            }
+        } catch (XincoException ex) {
+            Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private Vector<com.bluecubs.xinco.core.server.persistence.XincoCoreNode> getLeaves() throws XincoException {
+        Vector<com.bluecubs.xinco.core.server.persistence.XincoCoreNode> leaves =
+                new Vector<com.bluecubs.xinco.core.server.persistence.XincoCoreNode>();
+        result = XincoDBManager.protectedCreatedQuery("select x from XincoCoreNode x " +
+                "where x.id not in (select y.xincoCoreNodeId.id from XincoCoreNode y " +
+                "where y.xincoCoreNodeId is not null)",null,true);
+        if (result.size() == 0) {
+            //Check if the root is there
+            for (Object o : new XincoCoreNodeJpaController().findXincoCoreNodeEntities()) {
+                leaves.add((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o);
+            }
+        }
+        for (Object o : result) {
+            leaves.add((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o);
+        }
+        return leaves;
     }
 }
