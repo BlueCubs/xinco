@@ -1,5 +1,5 @@
 /**
- *Copyright 2006 blueCubs.com
+ *Copyright 2009 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ public class XincoAdminServlet extends HttpServlet {
 
     /** Initializes the servlet.
      * @param config
-     * @throws javax.servlet.ServletException 
+     * @throws javax.servlet.ServletException
      */
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -101,7 +101,7 @@ public class XincoAdminServlet extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      * @throws javax.servlet.ServletException
-     * @throws java.io.IOException 
+     * @throws java.io.IOException
      */
     @SuppressWarnings("unchecked")
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -909,16 +909,20 @@ public class XincoAdminServlet extends HttpServlet {
                 for (i = 0; i < allgroups.size(); i++) {
                     out.println("<tr>");
                     out.println("<td class=\"text\">" + ((XincoCoreGroupServer) allgroups.elementAt(i)).getId() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreGroupServer) allgroups.elementAt(i)).getDesignation() + "</td>");
+                    String label = ((XincoCoreGroupServer) allgroups.elementAt(i)).getDesignation();
+                    try{
+                        label=rb.getString(label);
+                    }catch (java.util.MissingResourceException e){
+                        //Nothing to translate
+                    }
+                    out.println("<td class=\"text\">" + label + "</td>");
                     out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminGroupsSelect=" +
                             ((XincoCoreGroupServer) allgroups.elementAt(i)).getId() +
                             "&list=" + request.getParameter("list") + "\" class=\"link\">[" +
                             rb.getString("general.edit") + "]</a></td>");
                     out.println("</tr>");
                 }
-
                 out.println("</table>");
-
             }
 
             if (current_location.compareTo("GroupAdminSingle") == 0) {
@@ -930,11 +934,19 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
                     out.println("<tr>");
                     out.println("<td class=\"text\">" + rb.getString("general.name") + ":</td>");
-                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditGroupName\" size=\"40\" value=\"" + temp_group.getDesignation() + "\"/></td>");
+                    String designation=temp_group.getDesignation();
+                    try{
+                        designation=rb.getString(temp_group.getDesignation());
+                    }catch (java.util.MissingResourceException e){
+                        //Nothing to translate
+                    }
+                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditGroupName\" size=\"40\" value=\"" + designation + "\"/></td>");
                     out.println("</tr>");
                     out.println("<tr>");
                     out.println("<td class=\"text\">&nbsp;</td>");
-                    out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogEditGroupID\" value=\"" + current_group_selection + "\"/><input type=\"submit\" name=\"DialogEditGroupSubmit\" value=\"" +
+                    out.println("<td class=\"text\"><input type='hidden' name='list' value='" + 
+                            request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogEditGroupID\" value=\"" + 
+                            current_group_selection + "\"/><input type=\"submit\" name=\"DialogEditGroupSubmit\" value=\"" +
                             rb.getString("general.save") + "!\"/></td>");
                     out.println("</tr>");
                     out.println("</table>");
@@ -1361,7 +1373,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println(rb.getString("message.warning.attribute.remove"));
                     out.write("</title>\n");
                     out.println("<link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>");
-            out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
+                    out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
                     out.write("    </head>\n");
                     out.write("    <body>\n");
                     out.write("        \n");
@@ -1523,8 +1535,9 @@ public class XincoAdminServlet extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      * @throws javax.servlet.ServletException
-     * @throws java.io.IOException 
+     * @throws java.io.IOException
      */
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
@@ -1534,15 +1547,18 @@ public class XincoAdminServlet extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      * @throws javax.servlet.ServletException
-     * @throws java.io.IOException 
+     * @throws java.io.IOException
      */
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
     /** Returns a short description of the servlet.
+     * @return
      */
+    @Override
     public String getServletInfo() {
         return rb.getString("message.servlet.info");
     }

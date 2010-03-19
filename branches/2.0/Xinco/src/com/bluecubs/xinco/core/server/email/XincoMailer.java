@@ -17,7 +17,6 @@ import com.bluecubs.xinco.core.server.XincoDBManager;
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.util.*;
-import java.io.*;
 
 public class XincoMailer {
     private XincoDBManager DBM;
@@ -59,7 +58,7 @@ public class XincoMailer {
         Properties props = new Properties();
         props.put("mail.smtp.host", SMTP_HOST_NAME);
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.port", this.port);
+        props.put("mail.smtp.port", port);
         props.put("mail.smtp.starttls.enable","true");
         props.put("mail.smtp.auth ", "true ");
         
@@ -95,6 +94,7 @@ public class XincoMailer {
      */
     private class SMTPAuthenticator extends javax.mail.Authenticator {
         
+        @Override
         public PasswordAuthentication getPasswordAuthentication() {
             String username = SMTP_AUTH_USER;
             String password = SMTP_AUTH_PWD;

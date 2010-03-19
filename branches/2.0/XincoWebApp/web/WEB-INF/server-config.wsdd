@@ -25,7 +25,7 @@
   <service name="Xinco" provider="java:RPC" style="rpc" use="encoded">
       <parameter name="wsdlTargetNamespace" value="urn:Xinco"/>
       <parameter name="wsdlServiceElement" value="XincoService"/>
-      <parameter name="schemaUnqualified" value="http://add.xinco.bluecubs.com,http://core.xinco.bluecubs.com,http://xml.apache.org/xml-soap"/>
+      <parameter name="schemaUnqualified" value="http://core.xinco.bluecubs.com,http://xml.apache.org/xml-soap,http://add.xinco.bluecubs.com"/>
       <parameter name="wsdlServicePort" value="Xinco"/>
       <parameter name="className" value="com.bluecubs.xinco.service.XincoSoapBindingSkeleton"/>
       <parameter name="wsdlPortType" value="Xinco"/>
@@ -35,32 +35,8 @@
 
       <typeMapping
         xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoCoreDataType"
-        type="java:com.bluecubs.xinco.core.XincoCoreDataType"
-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-      />
-      <typeMapping
-        xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoVersion"
-        type="java:com.bluecubs.xinco.core.XincoVersion"
-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-      />
-      <typeMapping
-        xmlns:ns="http://core.xinco.bluecubs.com"
         qname="ns:XincoCoreLanguage"
         type="java:com.bluecubs.xinco.core.XincoCoreLanguage"
-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-      />
-      <typeMapping
-        xmlns:ns="http://add.xinco.bluecubs.com"
-        qname="ns:XincoAddAttribute"
-        type="java:com.bluecubs.xinco.add.XincoAddAttribute"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
@@ -75,16 +51,24 @@
       />
       <typeMapping
         xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoCoreData"
-        type="java:com.bluecubs.xinco.core.XincoCoreData"
+        qname="ns:XincoCoreDataTypeAttribute"
+        type="java:com.bluecubs.xinco.core.XincoCoreDataTypeAttribute"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
       />
       <typeMapping
         xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoCoreDataTypeAttribute"
-        type="java:com.bluecubs.xinco.core.XincoCoreDataTypeAttribute"
+        qname="ns:XincoCoreNode"
+        type="java:com.bluecubs.xinco.core.XincoCoreNode"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://core.xinco.bluecubs.com"
+        qname="ns:XincoCoreDataType"
+        type="java:com.bluecubs.xinco.core.XincoCoreDataType"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
@@ -99,8 +83,8 @@
       />
       <typeMapping
         xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoCoreLog"
-        type="java:com.bluecubs.xinco.core.XincoCoreLog"
+        qname="ns:XincoVersion"
+        type="java:com.bluecubs.xinco.core.XincoVersion"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
@@ -115,8 +99,24 @@
       />
       <typeMapping
         xmlns:ns="http://core.xinco.bluecubs.com"
-        qname="ns:XincoCoreNode"
-        type="java:com.bluecubs.xinco.core.XincoCoreNode"
+        qname="ns:XincoCoreData"
+        type="java:com.bluecubs.xinco.core.XincoCoreData"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://add.xinco.bluecubs.com"
+        qname="ns:XincoAddAttribute"
+        type="java:com.bluecubs.xinco.add.XincoAddAttribute"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://core.xinco.bluecubs.com"
+        qname="ns:XincoCoreLog"
+        type="java:com.bluecubs.xinco.core.XincoCoreLog"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"

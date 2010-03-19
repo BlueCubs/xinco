@@ -12,7 +12,7 @@
     </head>
     <body>
         <center>
-            <span class="text"><br><img src="resources/images/blueCubs.gif" border="0"/>
+            <span class="text"><br><img src="resources/images/blueCubs.gif" border="0" alt="Blue Cubs"/>
                 <br><span class="bigtext">xinco DMS - the Core of Information and Document Management</span>
                 <br><br>
                 
