@@ -1,5 +1,5 @@
 /**
- *Copyright 2006 blueCubs.com
+ *Copyright 2009 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class XincoCronServlet extends HttpServlet {
 
     /** Initializes the servlet.
      * @param config
-     * @throws javax.servlet.ServletException 
+     * @throws javax.servlet.ServletException
      */
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -83,14 +83,13 @@ public class XincoCronServlet extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      * @throws javax.servlet.ServletException
-     * @throws java.io.IOException 
+     * @throws java.io.IOException
      */
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
             db = new XincoDBManager();
         } catch (Exception e) {
-
         }
         Locale loc = null;
         try {
@@ -230,7 +229,7 @@ public class XincoCronServlet extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      * @throws javax.servlet.ServletException
-     * @throws java.io.IOException 
+     * @throws java.io.IOException
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -242,7 +241,7 @@ public class XincoCronServlet extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      * @throws javax.servlet.ServletException
-     * @throws java.io.IOException 
+     * @throws java.io.IOException
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -251,7 +250,7 @@ public class XincoCronServlet extends HttpServlet {
     }
 
     /** Returns a short description of the servlet.
-     * @return 
+     * @return
      */
     @Override
     public String getServletInfo() {

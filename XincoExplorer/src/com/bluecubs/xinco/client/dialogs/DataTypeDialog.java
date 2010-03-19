@@ -1,5 +1,5 @@
 /**
- *Copyright 2006 blueCubs.com
+ *Copyright 2009 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -36,21 +36,22 @@
  *
  * Created on November 22, 2006, 8:44 AM
  */
-
 package com.bluecubs.xinco.client.dialogs;
 
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataType;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon; 
 
 /**
  * Data Type Dialog
  * @author Javier A. Ortiz
  */
-public class DataTypeDialog extends javax.swing.JDialog {
-    private XincoExplorer explorer=null;
+public class DataTypeDialog extends AbstractDialog {
+
+    private XincoExplorer explorer = null;
+
     /**
      * Creates new form DataTypeDialog
      * @param parent Dialog's parent.
@@ -61,7 +62,7 @@ public class DataTypeDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
-        this.explorer=explorer;
+        this.explorer = explorer;
         setTitle(explorer.getResourceBundle().getString("window.datatype"));
         this.continueButton.setText(explorer.getResourceBundle().getString("general.continue"));
         this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
@@ -71,10 +72,13 @@ public class DataTypeDialog extends javax.swing.JDialog {
         if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject() != null) {
             DefaultListModel dlm = new DefaultListModel();
             dlm.removeAllElements();
-            for (i=0;i<explorer.getSession().server_datatypes.size();i++) {
-                text = ((XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(i)).getDesignation() + " (" + ((XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(i)).getDescription() + ")";
+            for (i = 0; i < explorer.getSession().getServerDatatypes().size(); i++) {
+                String desc = ((XincoCoreDataType) explorer.getSession().getServerDatatypes().elementAt(i)).getDescription();
+                String designation=((XincoCoreDataType) explorer.getSession().getServerDatatypes().elementAt(i)).getDesignation();
+                text =  (explorer.getResourceBundle().getString(designation) == null ? designation : explorer.getResourceBundle().getString(designation))
+                        + " (" + (explorer.getResourceBundle().getString(desc) == null ? desc : explorer.getResourceBundle().getString(desc)) + ")";
                 dlm.addElement(text);
-                if (((XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(i)).getId() == ((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId()) {
+                if (((XincoCoreDataType) explorer.getSession().getServerDatatypes().elementAt(i)).getId() == ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId()) {
                     this.dataType.setSelectedIndex(i);
                 }
             }
@@ -82,7 +86,7 @@ public class DataTypeDialog extends javax.swing.JDialog {
         }
         setVisible(false);
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -150,17 +154,16 @@ public class DataTypeDialog extends javax.swing.JDialog {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         setVisible(false);
     }//GEN-LAST:event_cancelActionPerformed
-    
+
     private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
-        ((XincoCoreData)explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).setXinco_core_data_type((XincoCoreDataType)explorer.getSession().server_datatypes.elementAt(this.dataType.getSelectedIndex()));
+        ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).setXinco_core_data_type((XincoCoreDataType) explorer.getSession().getServerDatatypes().elementAt(this.dataType.getSelectedIndex()));
         explorer.set_global_dialog_return_value(1);
         setVisible(false);
     }//GEN-LAST:event_continueButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;
     private javax.swing.JButton continueButton;
@@ -168,5 +171,4 @@ public class DataTypeDialog extends javax.swing.JDialog {
     private javax.swing.JLabel dataTypeLabel;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
-    
 }

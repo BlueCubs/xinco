@@ -1,5 +1,5 @@
 /**
- *Copyright 2004 blueCubs.com
+ *Copyright 2009 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@
  *
  *************************************************************
  */
-package com.bluecubs.xinco.client;
+package com.bluecubs.xinco.client.object;
 
 /**
  * XincoClientConnectionProfile

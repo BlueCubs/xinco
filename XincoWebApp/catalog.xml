@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="file:/E:/Documents%20and%20Settings/javydreamercsw/My%20Documents/NetBeans%20Projects/Xinco/Xinco%202.0.3/Xinco/src/com/bluecubs/xinco/service/Xinco.wsdl" uri="src/conf/xml-resources/web-service-references/Xinco/wsdl/Xinco.wsdl"/>
+</catalog>
