@@ -45,7 +45,7 @@ import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreLanguage;
 import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoCoreNode;
-import com.bluecubs.xinco.core.server.XincoException;
+import com.bluecubs.xinco.core.XincoException;
 import java.awt.event.ActionEvent;
 import java.util.ResourceBundle;
 import java.util.Vector;

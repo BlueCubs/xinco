@@ -110,7 +110,7 @@ public class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
                     if (getIcon() == null) {
                         setIcon(getLeafIcon());
                     }
-                } else {
+                }else{
                     setIcon(getDefaultClosedIcon());
                 }
             }

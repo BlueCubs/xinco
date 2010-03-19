@@ -39,6 +39,7 @@ import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoCoreUser;
+import java.rmi.RemoteException;
 import javax.swing.JOptionPane;
 
 /**
@@ -181,8 +182,7 @@ public class LockDialog extends AbstractDialog {
                 }
                 this.explorer.setLock(false);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (RemoteException ex) {
         }
         this.password.setText("");
         this.username.setText("");

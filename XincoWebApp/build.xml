@@ -6,29 +6,30 @@
     <description>Builds, tests, and runs the project xinco.</description>
     <import file="nbproject/build-impl.xml"/>
     <property file="build.ant.properties"/>
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
     <!--
 
-    There exist several targets which are by default empty and which can be
-    used for execution of your tasks. These targets are usually executed
-    before and after some main targets. They are:
+    There exist several targets which are by default empty and which can be 
+    used for execution of your tasks. These targets are usually executed 
+    before and after some main targets. They are: 
 
-      -pre-init:                 called before initialization of project properties
-      -post-init:                called after initialization of project properties
-      -pre-compile:              called before javac compilation
-      -post-compile:             called after javac compilation
+      -pre-init:                 called before initialization of project properties 
+      -post-init:                called after initialization of project properties 
+      -pre-compile:              called before javac compilation 
+      -post-compile:             called after javac compilation 
       -pre-compile-single:       called before javac compilation of single file
       -post-compile-single:      called after javac compilation of single file
       -pre-compile-test:         called before javac compilation of JUnit tests
       -post-compile-test:        called after javac compilation of JUnit tests
       -pre-compile-test-single:  called before javac compilation of single JUnit test
       -post-compile-test-single: called after javac compilation of single JUunit test
-      -pre-dist:                 called before jar building
-      -post-dist:                called after jar building
-      -post-clean:               called after cleaning build products
+      -pre-dist:                 called before jar building 
+      -post-dist:                called after jar building 
+      -post-clean:               called after cleaning build products 
       -pre-run-deploy:           called before deploying
       -post-run-deploy:          called after deploying
 
-    Example of pluging an obfuscator after the compilation could look like
+    Example of pluging an obfuscator after the compilation could look like 
 
         <target name="post-compile">
             <obfuscate>
@@ -36,21 +37,21 @@
             </obfuscate>
         </target>
 
-    For list of available properties check the imported
-    nbproject/build-impl.xml file.
+    For list of available properties check the imported 
+    nbproject/build-impl.xml file. 
 
 
     Other way how to customize the build is by overriding existing main targets.
-    The target of interest are:
+    The target of interest are: 
 
       init-macrodef-javac:    defines macro for javac compilation
       init-macrodef-junit:   defines macro for junit execution
       init-macrodef-debug:    defines macro for class debugging
       do-dist:                jar archive building
-      run:                    execution of project
-      javadoc-build:          javadoc generation
+      run:                    execution of project 
+      javadoc-build:          javadoc generation 
 
-    Example of overriding the target for project execution could look like
+    Example of overriding the target for project execution could look like 
 
         <target name="run" depends="<PROJNAME>-impl.jar">
             <exec dir="bin" executable="launcher.exe">
@@ -58,10 +59,10 @@
             </exec>
         </target>
 
-    Notice that overridden target depends on jar target and not only on
-    compile target as regular run target does. Again, for list of available
-    properties which you can use check the target you are overriding in
-    nbproject/build-impl.xml file.
+    Notice that overridden target depends on jar target and not only on 
+    compile target as regular run target does. Again, for list of available 
+    properties which you can use check the target you are overriding in 
+    nbproject/build-impl.xml file. 
     -->
 
     <macrodef name="unsignjar">
@@ -69,7 +70,7 @@
         <attribute name="jar"/>
 
         <sequential>
-            <!-- Remove any existing signatures from a JAR file. -->
+	<!-- Remove any existing signatures from a JAR file. -->
             <tempfile prefix="usignjar-" destdir="${build.dir}/web/client" property="temp.file"/>
             <echo message="Removing signatures from JAR: @{jar}"/>
             <mkdir dir="${temp.file}"/>
@@ -85,16 +86,16 @@
 
             <delete file="@{jar}" failonerror="true"/>
 
-            <!-- Touch it in case the file didn't have a manifest.
+        <!-- Touch it in case the file didn't have a manifest.
              Otherwise the JAR task below will fail if the manifest
-             file doesn't exist. -->
+	     file doesn't exist. -->
             <mkdir dir="${temp.file}/META-INF"/>
             <touch file="${temp.file}/META-INF/MANIFEST.MF"/>
 
             <jar destfile="@{jar}"
-                 basedir="${temp.file}"
-                 includes="**"
-                 manifest="${temp.file}/META-INF/MANIFEST.MF"/>
+            basedir="${temp.file}"
+            includes="**"
+            manifest="${temp.file}/META-INF/MANIFEST.MF"/>
 
             <delete dir="${temp.file}" failonerror="true"/>
         </sequential>
@@ -123,7 +124,13 @@
         </signjar>
     </target>
 
-    <target name="release" depends="dist,unsign_client_libraries, sign_client_libraries" description="Create the release packages of Xinco">
+    <target name="-pre-dist" depends="unsign_client_libraries, sign_client_libraries"/>
+
+    <target name="-post-dist">
+        <antcall target="release"/>
+    </target>
+
+    <target name="release" description="Create the release packages of Xinco">
         <delete dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}"/>
         <delete>
             <fileset dir="${dist}/" includes="**/*.gz"/>
@@ -155,7 +162,7 @@
                 <include name="**/*"/>
             </fileset>
         </copy>
-        <zip destfile="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low} ${version_postfix}.zip">
+        <zip destfile="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}.zip">
             <zipfileset dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}" prefix="xinco-DMS-${version_high}.${version_mid}.${version_low}">
                 <exclude name="**/.svn/**"/>
             </zipfileset>
@@ -192,62 +199,62 @@
         <echo file="${dist}/XincoExplorer Stand Alone Client/XincoExplorer.bat" append="false">java -cp "lib\${mf.classpath}" com.bluecubs.xinco.client.XincoExplorer</echo>
         <!--Create XincoExplorerHTTPS.bat-->
         <echo file="${dist}/XincoExplorer Stand Alone Client/XincoExplorerHTTPS.bat" append="false">@rem # XincoExplorer for use over SSL/HTTPS
-            @rem # ====================================
-            @rem #
-            @rem # When using self-signed certificates you need to import the server's certificate
-            @rem # into your client keystore by running the script: genkeys.bat
-            @rem #
-            @rem # The server's certificate must be provided by your system administrator!
-            @rem #
-            java -cp "lib\${mf.classpath}" com.bluecubs.xinco.client.XincoExplorer
+        @rem # ====================================
+        @rem #
+        @rem # When using self-signed certificates you need to import the server's certificate
+        @rem # into your client keystore by running the script: genkeys.bat
+        @rem #
+        @rem # The server's certificate must be provided by your system administrator!
+        @rem #
+        java -cp "lib\${mf.classpath}" com.bluecubs.xinco.client.XincoExplorer
         </echo>
         <!--Create XincoExplorerHTTPS.sh-->
         <echo file="${dist}/XincoExplorer Stand Alone Client/XincoExplorerHTTPS.sh" append="false">#!/bin/sh
-            # XincoExplorer for use over SSL/HTTPS
-            # ====================================
-            #
-            # You need to import the server's certificate
-            # into your client keystore by running the script: genkeys.bat
-            #
-            # The server's certificate must be provided by your system administrator!
-            #
-            java -cp "lib\${mf.classpath}" com.bluecubs.xinco.client.XincoExplorer
+        # XincoExplorer for use over SSL/HTTPS
+        # ====================================
+        #
+        # You need to import the server's certificate
+        # into your client keystore by running the script: genkeys.bat
+        #
+        # The server's certificate must be provided by your system administrator!
+        #
+        java -cp "lib\${mf.classpath}" com.bluecubs.xinco.client.XincoExplorer
         </echo>
         <!--Create XincoExplorerProxy.bat-->
         <echo file="${dist}/XincoExplorer Stand Alone Client/XincoExplorerProxy.bat" append="false">@rem # XincoExplorer for use behind a Firewall / HTTP-Proxy
-            @rem # ====================================================
-            @rem #
-            @rem # Please edit proxy options in command line:
-            @rem # -Dhttp.proxyHost=192.168.50.9   # IP-Adress or Name of your Proxy
-            @rem # -Dhttp.proxyPort=3128           # TCP-Port of your Proxy
-            @rem #
-            @rem # For more options, please consult Java docs...
-            java -cp "lib\${mf.classpath}"  -Dhttp.proxyHost=192.168.50.9 -Dhttp.proxyPort=3128 com.bluecubs.xinco.client.XincoExplorer
+        @rem # ====================================================
+        @rem #
+        @rem # Please edit proxy options in command line:
+        @rem # -Dhttp.proxyHost=192.168.50.9   # IP-Adress or Name of your Proxy
+        @rem # -Dhttp.proxyPort=3128           # TCP-Port of your Proxy
+        @rem #
+        @rem # For more options, please consult Java docs...
+        java -cp "lib\${mf.classpath}"  -Dhttp.proxyHost=192.168.50.9 -Dhttp.proxyPort=3128 com.bluecubs.xinco.client.XincoExplorer
         </echo>
         <!--Create XincoExplorerProxy.sh-->
         <echo file="${dist}/XincoExplorer Stand Alone Client/XincoExplorerProxy.sh" append="false">#!/bin/sh
-            # XincoExplorer for use behind a Firewall / HTTP-Proxy
-            # ====================================================
-            #
-            # Please edit proxy options in command line:
-            # -Dhttp.proxyHost=192.168.50.9   # IP-Adress or Name of your Proxy
-            # -Dhttp.proxyPort=3128           # TCP-Port of your Proxy
-            #
-            # For more options, please consult Java docs...
-            java -cp "lib\${mf.classpath}"  -Dhttp.proxyHost=192.168.50.9 -Dhttp.proxyPort=3128 com.bluecubs.xinco.client.XincoExplorer
+        # XincoExplorer for use behind a Firewall / HTTP-Proxy
+        # ====================================================
+        #
+        # Please edit proxy options in command line:
+        # -Dhttp.proxyHost=192.168.50.9   # IP-Adress or Name of your Proxy
+        # -Dhttp.proxyPort=3128           # TCP-Port of your Proxy
+        #
+        # For more options, please consult Java docs...
+        java -cp "lib\${mf.classpath}"  -Dhttp.proxyHost=192.168.50.9 -Dhttp.proxyPort=3128 com.bluecubs.xinco.client.XincoExplorer
         </echo>
         <!--Create genkeys.bat-->
         <echo file="${dist}/XincoExplorer Stand Alone Client/genkeys.bat" append="false">@echo off
 
-            if not "%JAVA_HOME%" == "" goto gotJavaHome
-            echo You must set JAVA_HOME to point at your Java Development Kit installation
-            goto cleanup
-            :gotJavaHome
+        if not "%JAVA_HOME%" == "" goto gotJavaHome
+        echo You must set JAVA_HOME to point at your Java Development Kit installation
+        goto cleanup
+        :gotJavaHome
 
-            echo Importing Server's certificate into Client's keystore
-            %java_home%\bin\keytool -import -v -trustcacerts -alias tomcat -file server.cer -keystore client.keystore -keypass changeit -storepass changeit
+        echo Importing Server's certificate into Client's keystore
+        %java_home%\bin\keytool -import -v -trustcacerts -alias tomcat -file server.cer -keystore client.keystore -keypass changeit -storepass changeit
 
-            :cleanup
+        :cleanup
         </echo>
         <!--Copy jars-->
         <copy todir="${dist}/XincoExplorer Stand Alone Client/lib/">
@@ -256,36 +263,36 @@
             </fileset>
         </copy>
         <!--Make zip-->
-        <zip destfile="${dist}/XincoExplorerStandalone-${version_high}.${version_mid}.${version_low} ${version_postfix}.zip">
-            <zipfileset dir="${dist}/XincoExplorer Stand Alone Client" prefix="XincoExplorerStandalone-${version_high}.${version_mid}.${version_low} ${version_postfix}"/>
+        <zip destfile="${dist}/XincoExplorerStandalone-${version_high}.${version_mid}.${version_low}.zip">
+            <zipfileset dir="${dist}/XincoExplorer Stand Alone Client" prefix="XincoExplorerStandalone-${version_high}.${version_mid}.${version_low}"/>
         </zip>
         <delete dir="${dist}/XincoExplorer Stand Alone Client"/>
     </target>
 
     <target name="-pre-init">
         <mkdir dir="${lib}"/>
-        <echo>Updating version to: '${version_high}.${version_mid}.${version_low} ${version_postfix}'</echo>
+        <echo>Updating version in Xinco/src/com/bluecubs/xinco/settings/settings.properties to: '${version_high}.${version_mid}.${version_low} ${version_postfix}'</echo>
         <echo>To change this, change file build.ant.properties in xinco/</echo>
-        <!-- We update the version number (Xinco project)-->
+	<!-- We update the version number (Xinco project)-->
         <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties" flags="s"
-                       match="version.high?=?(.*)"
-                       replace="version.high = ${version_high}"
-                       byline="true"/>
+			match="version.high?=?(.*)"
+			replace="version.high = ${version_high}"
+			byline="true"/>
         <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
-                       match="version.mid?=?(.*)"
-                       replace="version.mid = ${version_mid}"
-                       byline="true"/>
+			match="version.mid?=?(.*)"
+			replace="version.mid = ${version_mid}"
+			byline="true"/>
         <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
-                       match="version.low?=?(.*)"
-                       replace="version.low = ${version_low}"
-                       byline="true"/>
+			match="version.low?=?(.*)"
+			replace="version.low = ${version_low}"
+			byline="true"/>
         <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
-                       match="version.postfix?=?(.*)"
-                       replace="version.postfix = ${version_postfix}"
-                       byline="true"/>
+			match="version.postfix?=?(.*)"
+			replace="version.postfix = ${version_postfix}"
+			byline="true"/>
         <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
-                       match="version.postfix?=?_"
-                       replace="version.postfix ="
-                       byline="true"/>
+			match="version.postfix?=?_"
+			replace="version.postfix ="
+			byline="true"/>
     </target>
 </project>

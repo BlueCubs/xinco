@@ -52,7 +52,6 @@ public class XincoIndexOptimizeThread extends Thread {
     public long index_period = 604800000; //Weekly
 
     @Override
-    @SuppressWarnings("static-access")
     public void run() {
         firstRun = new GregorianCalendar();
         while (true) {
@@ -64,10 +63,12 @@ public class XincoIndexOptimizeThread extends Thread {
                 if (index_period == 0) {
                     break;
                 }
-                XincoIndexer.optimizeIndex();
+                XincoIndexer.optimizeIndex(DBM);
                 lastRun = new GregorianCalendar();
+                DBM.con.close();
+                DBM = null;
             } catch (Exception e) {
-                //continue, wait and try again...
+            //continue, wait and try again...
             }
             try {
                 Thread.sleep(index_period);

@@ -43,7 +43,7 @@ import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreLanguage;
 import com.bluecubs.xinco.core.XincoCoreNode;
-import com.bluecubs.xinco.core.server.XincoException;
+import com.bluecubs.xinco.core.XincoException;
 import java.util.Locale;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
