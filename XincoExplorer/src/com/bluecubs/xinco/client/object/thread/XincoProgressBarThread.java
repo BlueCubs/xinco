@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  * Description:     XincoProgressBarThread
  *
  * Original Author: Javier A. Ortiz
- * Date:            2007
+ * Date:            2010
  *
  * Modifications:
  *
@@ -34,7 +34,7 @@
  *************************************************************
  * XincoProgressBarThread.java
  *
- * Created on January 22, 2007, 3:31 PM
+ * Created on January 22, 2010, 3:31 PM
  */
 
 package com.bluecubs.xinco.client.object.thread;

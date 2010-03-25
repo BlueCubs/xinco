@@ -1,5 +1,5 @@
 /**
- *Copyright 2007 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  * Description:     Xinco JTree
  *
  * Original Author: Javier A. Ortiz
- * Date:            May 18, 2007, 9:34 AM
+ * Date:            May 18, 2010, 9:34 AM
  *
  * Modifications:
  *

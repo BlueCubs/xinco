@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -84,7 +84,6 @@ public class DataTypeDialog extends AbstractDialog {
             }
             this.dataType.setModel(dlm);
         }
-        setVisible(false);
     }
 
     /** This method is called from within the constructor to

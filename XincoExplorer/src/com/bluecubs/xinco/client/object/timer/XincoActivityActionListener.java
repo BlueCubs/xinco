@@ -1,5 +1,5 @@
 /**
- *Copyright 2007 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  * Description:     XincoActivityActionListener
  *
  * Original Author: Javier A. Ortiz
- * Date:            March 12, 2007, 11:05 AM
+ * Date:            March 12, 2010, 11:05 AM
  *
  * Modifications:
  *

@@ -1,5 +1,5 @@
 /**
- *Copyright 2008 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  * Description:     Abstract class with common methods for Dialogs within Xinco Explorer.
  *
  * Original Author: Javier A. Ortiz
- * Date:            2008
+ * Date:            2010
  *
  * Modifications:
  *

@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -33,72 +33,53 @@
  *
  *************************************************************
  */
+
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.core.XincoCoreACE;
-import com.bluecubs.xinco.core.XincoCoreGroup;
-import com.bluecubs.xinco.core.XincoCoreUser;
 import java.util.Vector;
+import java.sql.*;
 
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreAceJpaController;
-import java.util.HashMap;
-import java.util.List;
+import com.bluecubs.xinco.core.*;
 
 public class XincoCoreACEServer extends XincoCoreACE {
-
-    private int userID = 1;
-    private HashMap parameters = new HashMap();
-    private static List result;
+    private int userID=1;
     //create single ace object for data structures
-
-    public XincoCoreACEServer(int attrID) throws XincoException {
-
+    public XincoCoreACEServer(int attrID, XincoDBManager DBM) throws XincoException {
+        
         try {
-            XincoCoreAceJpaController controller = new XincoCoreAceJpaController();
-            com.bluecubs.xinco.core.server.persistence.XincoCoreAce ace = controller.findXincoCoreAce(attrID);
-            if (controller.findXincoCoreAce(attrID) != null) {
-                setId(ace.getId());
-                setXinco_core_user_id(ace.getXincoCoreUserId().getId());
-                setXinco_core_group_id(ace.getXincoCoreGroupId().getId());
-                setXinco_core_node_id(ace.getXincoCoreNodeId().getId());
-                setXinco_core_data_id(ace.getXincoCoreDataId().getId());
-                setRead_permission(ace.getReadPermission());
-                setWrite_permission(ace.getWritePermission());
-                setExecute_permission(ace.getExecutePermission());
-                setAdmin_permission(ace.getAdminPermission());
-            } else {
+            
+            Statement stmt = DBM.con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_ace WHERE id=" + attrID);
+            
+            //throw exception if no result found
+            int RowCount = 0;
+            while (rs.next()) {
+                RowCount++;
+                setId(rs.getInt("id"));
+                setXinco_core_user_id(rs.getInt("xinco_core_user_id"));
+                setXinco_core_group_id(rs.getInt("xinco_core_group_id"));
+                setXinco_core_node_id(rs.getInt("xinco_core_node_id"));
+                setXinco_core_data_id(rs.getInt("xinco_core_data_id"));
+                setRead_permission(rs.getBoolean("read_permission"));
+                setWrite_permission(rs.getBoolean("write_permission"));
+                setExecute_permission(rs.getBoolean("execute_permission"));
+                setAdmin_permission(rs.getBoolean("admin_permission"));
+            }
+            if (RowCount < 1) {
                 throw new XincoException();
             }
-
+            
+            stmt.close();
+            
         } catch (Exception e) {
             throw new XincoException();
         }
-
+        
     }
-
-    public XincoCoreACEServer(com.bluecubs.xinco.core.server.persistence.XincoCoreAce ace) {
-        setId(ace.getId());
-        if (ace.getXincoCoreUserId() != null) {
-            setXinco_core_user_id(ace.getXincoCoreUserId().getId());
-        }
-        if (ace.getXincoCoreGroupId() != null) {
-            setXinco_core_group_id(ace.getXincoCoreGroupId().getId());
-        }
-        if (ace.getXincoCoreNodeId() != null) {
-            setXinco_core_node_id(ace.getXincoCoreNodeId().getId());
-        }
-        if (ace.getXincoCoreDataId() != null) {
-            setXinco_core_data_id(ace.getXincoCoreDataId().getId());
-        }
-        setRead_permission(ace.getReadPermission());
-        setWrite_permission(ace.getWritePermission());
-        setExecute_permission(ace.getExecutePermission());
-        setAdmin_permission(ace.getAdminPermission());
-    }
-
+    
     //create single ace object for data structures
     public XincoCoreACEServer(int attrID, int attrUID, int attrGID, int attrNID, int attrDID, boolean attrRP, boolean attrWP, boolean attrEP, boolean attrAP) throws XincoException {
-
+        
         setId(attrID);
         setXinco_core_user_id(attrUID);
         setXinco_core_group_id(attrGID);
@@ -108,109 +89,159 @@ public class XincoCoreACEServer extends XincoCoreACE {
         setWrite_permission(attrWP);
         setExecute_permission(attrEP);
         setAdmin_permission(attrAP);
-
+        
     }
-
+    
     //write to db
-    public int write2DB() throws XincoException {
+    public int write2DB(XincoDBManager DBM) throws XincoException {
+        
         try {
-            com.bluecubs.xinco.core.server.persistence.XincoCoreAce ace;
-            boolean create = false;
+            
+            String xcuid = "";
+            String xcgid = "";
+            String xcnid = "";
+            String xcdid = "";
+            
+            int rp = 0;
+            int wp = 0;
+            int xp = 0;
+            int ap = 0;
+            
+            //set values of nullable attributes
+            if (getXinco_core_user_id() == 0) {
+                xcuid = "NULL";
+            } else {
+                xcuid = "" + getXinco_core_user_id();
+            }
+            if (getXinco_core_group_id() == 0) {
+                xcgid = "NULL";
+            } else {
+                xcgid = "" + getXinco_core_group_id();
+            }
+            if (getXinco_core_node_id() == 0) {
+                xcnid = "NULL";
+            } else {
+                xcnid = "" + getXinco_core_node_id();
+            }
+            if (getXinco_core_data_id() == 0) {
+                xcdid = "NULL";
+            } else {
+                xcdid = "" + getXinco_core_data_id();
+            }
+            
+            //convert boolean to 0/1
+            if (isRead_permission()) {
+                rp = 1;
+            }
+            if (isWrite_permission()) {
+                wp = 1;
+            }
+            if (isExecute_permission()) {
+                xp = 1;
+            }
+            if (isAdmin_permission()) {
+                ap = 1;
+            }
+            
+            XincoCoreAuditServer audit= new XincoCoreAuditServer();
+            
             if (getId() > 0) {
-                parameters.clear();
-                parameters.put("id", getId());
-                result = XincoDBManager.namedQuery("XincoCoreAce.findById", parameters);
-                ace = (com.bluecubs.xinco.core.server.persistence.XincoCoreAce) result.get(0);
+                Statement stmt = DBM.con.createStatement();
+                audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+getId()},
+                        DBM,"window.acl",this.getChangerID());
+                stmt.executeUpdate("UPDATE xinco_core_ace SET xinco_core_user_id=" + xcuid +
+                        ", xinco_core_group_id=" + xcgid + ", xinco_core_node_id=" + xcnid +
+                        ", xinco_core_data_id=" + xcdid + ", read_permission=" + rp +
+                        ", write_permission=" + wp + ", execute_permission=" + xp +
+                        ", admin_permission=" + ap + " WHERE id=" + getId());
+                stmt.close();
             } else {
-                setId(XincoDBManager.getNewID("xinco_core_ace"));
-                ace = new com.bluecubs.xinco.core.server.persistence.XincoCoreAce(getId());
-                create = true;
+                setId(DBM.getNewID("xinco_core_ace"));
+                
+                //System.out.println("New ACE");
+                Statement stmt = DBM.con.createStatement();
+                stmt.executeUpdate("INSERT INTO xinco_core_ace VALUES (" + getId() + ", " + xcuid + ", " + xcgid + ", " + xcnid + ", " + xcdid + ", " + rp + ", " + wp + ", " + xp + ", " + ap + ")");
+                stmt.close();
             }
-            if (getXinco_core_user_id() != 0) {
-                ace.setXincoCoreUserId(new com.bluecubs.xinco.core.server.persistence.XincoCoreUser(getXinco_core_user_id()));
-            }
-            if (getXinco_core_group_id() != 0) {
-                ace.setXincoCoreGroupId(new com.bluecubs.xinco.core.server.persistence.XincoCoreGroup(getXinco_core_group_id()));
-            }
-            if (getXinco_core_node_id() != 0) {
-                ace.setXincoCoreNodeId(new com.bluecubs.xinco.core.server.persistence.XincoCoreNode(getXinco_core_node_id()));
-            }
-            if (getXinco_core_data_id() != 0) {
-                ace.setXincoCoreDataId(new com.bluecubs.xinco.core.server.persistence.XincoCoreData(getXinco_core_data_id()));
-            }
-            ace.setReadPermission(isRead_permission());
-            ace.setWritePermission(isWrite_permission());
-            ace.setExecutePermission(isExecute_permission());
-            ace.setAdminPermission(isAdmin_permission());
-            if (create) {
-                new XincoCoreAceJpaController().create(ace);
-            } else {
-                new XincoCoreAceJpaController().edit(ace);
-            }
+            
+            DBM.con.commit();
+            
         } catch (Exception e) {
-            throw new XincoException(e.getMessage());
+            try {
+                DBM.con.rollback();
+            } catch (Exception erollback) {
+            }
+            throw new XincoException();
         }
-
+        
         return getId();
-
+        
     }
-
+    
     //remove from db
-    public static int removeFromDB(XincoCoreACE attrCACE, int userID) throws XincoException {
+    public static int removeFromDB(XincoCoreACE attrCACE, XincoDBManager DBM, int userID) throws XincoException {
+        
         try {
-            XincoCoreAceJpaController controller = new XincoCoreAceJpaController();
-            controller.destroy(attrCACE.getId());
+            Statement stmt = DBM.con.createStatement();
+            XincoCoreAuditServer audit= new XincoCoreAuditServer();
+            audit.updateAuditTrail("xinco_core_ace",new String [] {"id ="+attrCACE.getId()},
+                    DBM,"audit.general.delete",userID);
+            stmt.executeUpdate("DELETE FROM xinco_core_ace WHERE id=" + attrCACE.getId());
+            stmt.close();
+            
+            DBM.con.commit();
+            
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new XincoException(e.getMessage());
-        }
-        return 0;
-    }
-
-    //create complete ACL for node or data
-    public static Vector getXincoCoreACL(int attrID, String attrT) {
-        Vector core_acl = new Vector();
-        try {
-            result = XincoDBManager.createdQuery("SELECT xca FROM XincoCoreAce xca WHERE xca." + attrT
-                    + "=" + attrID + "");
-            //TODO: Uncomment when bug is fixed
-            /**
-             * This is an eclipselink bug (https://bugs.eclipse.org/bugs/show_bug.cgi?id=294092)
-             * Leave commented while its fixed.
-             */
-            // ORDER BY xca.xincoCoreUserId.id, xca.xincoCoreGroupId.id, "
-            //                    + "xca.xincoCoreNodeId.id, xca.xincoCoreDataId.id
-            for (Object o : result) {
-                com.bluecubs.xinco.core.server.persistence.XincoCoreAce ace =
-                        (com.bluecubs.xinco.core.server.persistence.XincoCoreAce) o;
-                core_acl.addElement(new XincoCoreACEServer(ace));
+            try {
+                DBM.con.rollback();
+            } catch (Exception erollback) {
             }
-        } catch (Exception e) {
             e.printStackTrace();
+            throw new XincoException();
+        }
+        
+        return 0;
+        
+    }
+    
+    //create complete ACL for node or data
+    public static Vector getXincoCoreACL(int attrID, String attrT, XincoDBManager DBM) {
+        
+        Vector core_acl = new Vector();
+        
+        try {
+            Statement stmt = DBM.con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_ace WHERE " + attrT + "=" + attrID + " ORDER BY xinco_core_user_id, xinco_core_group_id, xinco_core_node_id, xinco_core_data_id");
+            
+            while (rs.next()) {
+                core_acl.addElement(new XincoCoreACEServer(rs.getInt("id"), rs.getInt("xinco_core_user_id"), rs.getInt("xinco_core_group_id"), rs.getInt("xinco_core_node_id"), rs.getInt("xinco_core_data_id"), rs.getBoolean("read_permission"), rs.getBoolean("write_permission"), rs.getBoolean("execute_permission"), rs.getBoolean("admin_permission")));
+            }
+            
+            stmt.close();
+        } catch (Exception e) {
             core_acl.removeAllElements();
         }
+        
         return core_acl;
     }
-
+    
     //check access by comparing user / user groups to ACL and return permissions
     public static XincoCoreACE checkAccess(XincoCoreUser attrU, Vector attrACL) {
-
+        
         int i = 0;
         int j = 0;
         boolean match_ace = false;
         XincoCoreACE core_ace = new XincoCoreACE();
-
-        for (i = 0; i < attrACL.size(); i++) {
+        
+        for (i=0;i<attrACL.size();i++) {
             //reset match_ace
             match_ace = false;
             //check if user is mentioned in ACE
-            if (((XincoCoreACE) attrACL.elementAt(i)).getXinco_core_user_id() == attrU.getId()) {
-                match_ace = true;
-            }
+            if (((XincoCoreACE)attrACL.elementAt(i)).getXinco_core_user_id() == attrU.getId()) { match_ace = true; }
             //check if group of user is mentioned in ACE
             if (!match_ace) {
-                for (j = 0; j < attrU.getXinco_core_groups().size(); j++) {
-                    if (((XincoCoreACE) attrACL.elementAt(i)).getXinco_core_group_id() == ((XincoCoreGroup) attrU.getXinco_core_groups().elementAt(j)).getId()) {
+                for (j=0;j<attrU.getXinco_core_groups().size();j++) {
+                    if (((XincoCoreACE)attrACL.elementAt(i)).getXinco_core_group_id() == ((XincoCoreGroup)attrU.getXinco_core_groups().elementAt(j)).getId()) {
                         match_ace = true;
                         break;
                     }
@@ -220,19 +251,19 @@ public class XincoCoreACEServer extends XincoCoreACE {
             if (match_ace) {
                 //modify read permission
                 if (!core_ace.isRead_permission()) {
-                    core_ace.setRead_permission(((XincoCoreACE) attrACL.elementAt(i)).isRead_permission());
+                    core_ace.setRead_permission(((XincoCoreACE)attrACL.elementAt(i)).isRead_permission());
                 }
                 //modify write permission
                 if (!core_ace.isWrite_permission()) {
-                    core_ace.setWrite_permission(((XincoCoreACE) attrACL.elementAt(i)).isWrite_permission());
+                    core_ace.setWrite_permission(((XincoCoreACE)attrACL.elementAt(i)).isWrite_permission());
                 }
                 //modify execute permission
                 if (!core_ace.isExecute_permission()) {
-                    core_ace.setExecute_permission(((XincoCoreACE) attrACL.elementAt(i)).isExecute_permission());
+                    core_ace.setExecute_permission(((XincoCoreACE)attrACL.elementAt(i)).isExecute_permission());
                 }
                 //modify admin permission
                 if (!core_ace.isAdmin_permission()) {
-                    core_ace.setAdmin_permission(((XincoCoreACE) attrACL.elementAt(i)).isAdmin_permission());
+                    core_ace.setAdmin_permission(((XincoCoreACE)attrACL.elementAt(i)).isAdmin_permission());
                 }
             }
         }
@@ -240,6 +271,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
     }
 
     public void setUserId(int i) {
-        this.userID = i;
+        this.userID=i;
     }
+    
 }
