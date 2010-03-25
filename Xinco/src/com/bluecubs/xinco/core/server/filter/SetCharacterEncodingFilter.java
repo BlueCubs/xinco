@@ -1,5 +1,5 @@
 /**
- *Copyright February 20, 2007
+ *Copyright February 20, 2010
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  * Description:     SetCharacterEncodingFilter
  *
  * Original Author: Leo-Fan.aq
- * Date:            February 20, 2007, 1:35
+ * Date:            February 20, 2010, 1:35
  *
  * Modifications:
  *

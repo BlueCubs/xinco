@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -33,110 +33,83 @@
  *
  *************************************************************
  */
+
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.core.XincoCoreGroup;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreGroupJpaController;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.sql.*;
+
+import com.bluecubs.xinco.core.*;
 
 public class XincoCoreGroupServer extends XincoCoreGroup {
-
-    private static List result;
-    private static HashMap parameters = new HashMap();
+    
     //create group object for data structures
-
-    public XincoCoreGroupServer(int attrID) throws XincoException {
+    public XincoCoreGroupServer(int attrID, XincoDBManager DBM) throws XincoException {
         try {
-            parameters.clear();
-            parameters.put("id", attrID);
-            result = XincoDBManager.namedQuery("XincoCoreGroup.findById", parameters);
+            Statement stmt = DBM.con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_group WHERE id=" + attrID);
             //throw exception if no result found
-            if (result.size() > 0) {
-                com.bluecubs.xinco.core.server.persistence.XincoCoreGroup xcg =
-                        (com.bluecubs.xinco.core.server.persistence.XincoCoreGroup) result.get(0);
-                setId(xcg.getId());
-                setDesignation(xcg.getDesignation());
-                setStatus_number(xcg.getStatusNumber());
-            } else {
+            int RowCount = 0;
+            while (rs.next()) {
+                RowCount++;
+                setId(rs.getInt("id"));
+                setDesignation(rs.getString("designation"));
+                setStatus_number(rs.getInt("status_number"));
+            }
+            if (RowCount < 1) {
                 throw new XincoException();
             }
+            stmt.close();
         } catch (Exception e) {
             throw new XincoException(e.getMessage());
         }
     }
-
+    
     //create group object for data structures
     public XincoCoreGroupServer(int attrID, String attrD, int attrSN) throws XincoException {
         setId(attrID);
         setDesignation(attrD);
         setStatus_number(attrSN);
     }
-
-    public XincoCoreGroupServer(com.bluecubs.xinco.core.server.persistence.XincoCoreGroup xcg) {
-        setId(xcg.getId());
-        setDesignation(xcg.getDesignation());
-        setStatus_number(xcg.getStatusNumber());
-    }
-
+    
     //write to db
-    public int write2DB() throws XincoException {
+    public int write2DB(XincoDBManager DBM) throws XincoException{
         try {
-            XincoCoreGroupJpaController controller = new XincoCoreGroupJpaController();
+            Statement stmt;
             if (getId() > 0) {
-                com.bluecubs.xinco.core.server.persistence.XincoCoreGroup xcg =
-                        controller.findXincoCoreGroup(getId());
-                xcg.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
-                xcg.setStatusNumber(getStatus_number());
-                xcg.setModificationReason("audit.general.modified");
-                xcg.setModifierId(getChangerID());
-                xcg.setModificationTime(new Timestamp(new Date().getTime()));
-                controller.edit(xcg);
+                XincoCoreAuditServer audit= new XincoCoreAuditServer();
+                audit.updateAuditTrail("xinco_core_group",new String [] {"id ="+getId()},
+                        DBM,"audit.coregroup.change",this.getChangerID());
+                stmt = DBM.con.createStatement();
+                stmt.executeUpdate("UPDATE xinco_core_group SET designation='" + getDesignation().replaceAll("'","\\\\'") + "', status_number=" + getStatus_number() + " WHERE id=" + getId());
+                stmt.close();
             } else {
-                setId(XincoDBManager.getNewID("xinco_core_group"));
-                com.bluecubs.xinco.core.server.persistence.XincoCoreGroup xcg =
-                        new com.bluecubs.xinco.core.server.persistence.XincoCoreGroup(getId());
-                xcg.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
-                xcg.setStatusNumber(getStatus_number());
-                xcg.setModificationReason("audit.general.create");
-                xcg.setModifierId(getChangerID());
-                xcg.setModificationTime(new Timestamp(new Date().getTime()));
-                controller.create(xcg);
+                setId(DBM.getNewID("xinco_core_group"));
+                stmt = DBM.con.createStatement();
+                stmt.executeUpdate("INSERT INTO xinco_core_group VALUES (" + getId() + ", '" + getDesignation().replaceAll("'","\\\\'") + "', " + getStatus_number() + ")");
+                stmt.close();
             }
+            DBM.con.commit();
         } catch (Exception e) {
-            throw new XincoException(e.getMessage());
+            try {
+                DBM.con.rollback();
+            } catch (Exception erollback) {
+            }
+            throw new XincoException();
         }
         return getId();
     }
-
-    public static int deleteFromDB(XincoCoreGroup group){
-        try {
-            new XincoCoreGroupJpaController().destroy(group.getId());
-            return 0;
-        } catch (IllegalOrphanException ex) {
-            Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.SEVERE, null, ex);
-            return -1;
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.SEVERE, null, ex);
-            return -1;
-        }
-    }
-
+    
     //create complete list of groups
-    public static Vector getXincoCoreGroups() {
+    public static Vector getXincoCoreGroups(XincoDBManager DBM) {
         Vector coreGroups = new Vector();
         try {
-            result = XincoDBManager.createdQuery("SELECT xcg FROM XincoCoreGroup xcg ORDER BY xcg.designation");
-            for(Object o: result) {
-                coreGroups.addElement(new XincoCoreGroupServer((com.bluecubs.xinco.core.server.persistence.XincoCoreGroup) o));
+            Statement stmt = DBM.con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_group ORDER BY designation");
+            while (rs.next()) {
+                coreGroups.addElement(new XincoCoreGroupServer(rs.getInt("id"), rs.getString("designation"), rs.getInt("status_number")));
             }
+            stmt.close();
         } catch (Exception e) {
             coreGroups.removeAllElements();
         }

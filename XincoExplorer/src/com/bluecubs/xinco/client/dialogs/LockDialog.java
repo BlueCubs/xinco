@@ -1,5 +1,5 @@
 /**
- *Copyright 2007 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  * Description:     Lock Dialog
  *
  * Original Author: Javier A. Ortiz
- * Date:            March 12, 2007, 11:09 AM
+ * Date:            March 12, 2010, 11:09 AM
  *
  * Modifications:
  *
@@ -39,6 +39,7 @@ import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoCoreUser;
+import java.rmi.RemoteException;
 import javax.swing.JOptionPane;
 
 /**
@@ -181,8 +182,7 @@ public class LockDialog extends AbstractDialog {
                 }
                 this.explorer.setLock(false);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (RemoteException ex) {
         }
         this.password.setText("");
         this.username.setText("");

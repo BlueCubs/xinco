@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  * Description:     Search Dialog
  *
  * Original Author: Javier A. Ortiz
- * Date:            2007
+ * Date:            2010
  *
  * Modifications:
  *
@@ -34,7 +34,7 @@
  *************************************************************
  * SearchDialog.java
  *
- * Created on January 27, 2007, 8:45 AM
+ * Created on January 27, 2010, 8:45 AM
  */
 package com.bluecubs.xinco.client.dialogs;
 
@@ -47,7 +47,7 @@ import com.bluecubs.xinco.core.XincoCoreDataType;
 import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.XincoCoreLanguage;
 import com.bluecubs.xinco.core.XincoCoreNode;
-import com.bluecubs.xinco.core.server.XincoException;
+import com.bluecubs.xinco.core.XincoException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Vector;

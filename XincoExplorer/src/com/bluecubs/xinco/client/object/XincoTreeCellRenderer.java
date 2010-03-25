@@ -1,5 +1,5 @@
 /**
- *Copyright 2007 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  * Description:     XincoTreeCellRenderer
  *
  * Original Author: Javier A. Ortiz
- * Date:            May 25, 2007, 10:01 AM
+ * Date:            May 25, 2010, 10:01 AM
  *
  * Modifications:
  *
@@ -110,7 +110,7 @@ public class XincoTreeCellRenderer extends DefaultTreeCellRenderer {
                     if (getIcon() == null) {
                         setIcon(getLeafIcon());
                     }
-                } else {
+                }else{
                     setIcon(getDefaultClosedIcon());
                 }
             }
