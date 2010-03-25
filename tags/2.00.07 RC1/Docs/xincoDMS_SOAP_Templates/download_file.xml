@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns1="urn:Xinco" xmlns:ns2="http://core.xinco.bluecubs.com" xmlns:ns3="http://xml.apache.org/xml-soap">
+  <soapenv:Body>
+    <ns1:downloadXincoCoreData soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+      <ns1:arg0 soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="ns2:XincoCoreData">
+        <designation xsi:type="xsd:string"/>
+        <xinco_core_acl xsi:type="ns3:Vector" xsi:nil="true"/>
+        <changerID soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">0</changerID>
+        <xinco_core_data_type soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="ns2:XincoCoreDataType"/>
+        <xinco_core_language soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="ns2:XincoCoreLanguage">
+          <designation xsi:type="xsd:string">unknown</designation>
+          <changerID soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">0</changerID>
+          <id soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">1</id>
+          <sign xsi:type="xsd:string">n/a</sign>
+        </xinco_core_language>
+        <xinco_core_node_id soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">0</xinco_core_node_id>
+        <id soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">FILE-ID</id>
+        <status_number soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">1</status_number>
+        <xinco_add_attributes xsi:type="ns3:Vector" xsi:nil="true"/>
+        <xinco_core_logs soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="ns3:Vector">
+          <item soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="ns2:XincoCoreLog">
+            <id soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">LOG-ID</id>
+            <op_code soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">OPERATION-CODE</op_code>
+            <changerID soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">0</changerID>
+            <op_datetime xsi:type="xsd:dateTime">2007-01-01T00:00:00.000Z</op_datetime>
+            <op_description xsi:type="xsd:string">LOG-DESCRIPTION</op_description>
+            <version soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="ns2:XincoVersion">
+              <version_high soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">1</version_high>
+              <version_low soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">0</version_low>
+              <version_mid soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">0</version_mid>
+              <version_postfix xsi:type="xsd:string"/>
+            </version>
+            <xinco_core_data_id soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">FILE-ID</xinco_core_data_id>
+            <xinco_core_user_id soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">USER-ID</xinco_core_user_id>
+          </item>
+        </xinco_core_logs>
+      </ns1:arg0>
+      <ns1:arg1 soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="ns2:XincoCoreUser">
+        <change soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:boolean">false</change>
+        <changerID soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">0</changerID>
+        <email xsi:type="xsd:string"/>
+        <firstname xsi:type="xsd:string"/>
+        <id soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">0</id>
+        <name xsi:type="xsd:string"/>
+        <reason xsi:type="xsd:string"/>
+        <status_number soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:int">1</status_number>
+        <username xsi:type="xsd:string">USERNAME</username>
+        <userpassword xsi:type="xsd:string">PASSWORD</userpassword>
+        <writeGroups soapenc:root="0" soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="xsd:boolean">false</writeGroups>
+        <xinco_core_groups xsi:type="ns3:Vector" xsi:nil="true"/>
+      </ns1:arg1>
+    </ns1:downloadXincoCoreData>
+  </soapenv:Body>
+</soapenv:Envelope>
