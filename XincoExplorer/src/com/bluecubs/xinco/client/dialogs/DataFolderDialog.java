@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -122,9 +122,8 @@ public class DataFolderDialog extends AbstractDialog {
             if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 3) {
                 text = explorer.getResourceBundle().getString("general.status.archived") + " (->)";
             }
-            this.state.setText(text);
+            state.setText(text);
         }
-        setVisible(true);
     }
 
     /** This method is called from within the constructor to

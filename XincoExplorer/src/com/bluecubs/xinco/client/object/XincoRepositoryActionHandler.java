@@ -1,5 +1,5 @@
 /**
- *Copyright 2007 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  * Description:     XincoActionHandler
  *
  * Original Author: Javier A. Ortiz
- * Date:            February 23, 2007, 3:44 PM
+ * Date:            February 23, 2010, 3:44 PM
  *
  * Modifications:
  *

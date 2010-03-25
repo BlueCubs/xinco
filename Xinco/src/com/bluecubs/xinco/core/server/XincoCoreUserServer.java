@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@
  * Alexander Manes 11/12/2006         Moved the new user features to core class
  * Javier A. Ortiz 11/20/2006         Undo previous changes and corrected a bug that increased twice 
  *                                    the attempts in the DB when wrong password was used
- * Javier A. Ortiz 01/08/2007         
+ * Javier A. Ortiz 01/08/2010         
  *************************************************************
  */
 package com.bluecubs.xinco.core.server;

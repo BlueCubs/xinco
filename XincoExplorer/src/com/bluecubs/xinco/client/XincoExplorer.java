@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except cin compliance with the License.
@@ -1378,6 +1378,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             AbstractDialogFolder = new DataFolderDialog(null, true, this);
             addDialog(AbstractDialogFolder);
         }
+        //Issue #2972311
+        AbstractDialogFolder.setVisible(true);
         return AbstractDialogFolder;
     }
 
@@ -1404,6 +1406,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             AbstractDialogACL = new ACLDialog(new javax.swing.JFrame(), true, this);
             addDialog(AbstractDialogACL);
         }
+        //Issue #2972311
+        AbstractDialogACL.setVisible(true);
         return AbstractDialogACL;
     }
 
@@ -1576,6 +1580,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             AbstractDialogData = new DataDialog(null, true, this);
             addDialog(AbstractDialogData);
         }
+        AbstractDialogData.setVisible(true);
         return AbstractDialogData;
     }
 
@@ -1589,6 +1594,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             AbstractDialogLog = new LogDialog(null, true, this, editableVersion);
             addDialog(AbstractDialogLog);
         }
+        AbstractDialogLog.setVisible(true);
         return AbstractDialogLog;
     }
 
@@ -2640,6 +2646,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             AbstractDialogAddAttributesText = new AddAttributeText(null, true, false, this);
             addDialog(AbstractDialogAddAttributesText);
         }
+        //Issue #2972311
+        AbstractDialogAddAttributesText.setVisible(true);
         return AbstractDialogAddAttributesText;
     }
 
@@ -2876,6 +2884,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             AbstractDialogArchive.setResizable(false);
             addDialog(AbstractDialogArchive);
         }
+        //Issue #2972311
+        AbstractDialogArchive.setVisible(true);
         return AbstractDialogArchive;
     }
 

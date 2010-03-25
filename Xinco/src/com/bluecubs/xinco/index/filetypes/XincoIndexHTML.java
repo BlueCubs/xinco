@@ -1,5 +1,5 @@
 /**
- *Copyright 2005 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * Javier A. Ortiz  09/11/2007        HTMLParser(File) deprecated. Modified to HTMLParser(FileInputStream)
+ * Javier A. Ortiz  09/11/2010        HTMLParser(File) deprecated. Modified to HTMLParser(FileInputStream)
  *
  *************************************************************
  */
