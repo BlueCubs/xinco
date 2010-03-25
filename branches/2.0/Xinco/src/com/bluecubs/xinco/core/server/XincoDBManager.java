@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@
  * Modifications:
  *
  * Who?             When?             What?
- * Javier A. Ortiz  01/04/2007        Added methods for result set manipulation and formating
+ * Javier A. Ortiz  01/04/2010        Added methods for result set manipulation and formating
  *
  *************************************************************
  */

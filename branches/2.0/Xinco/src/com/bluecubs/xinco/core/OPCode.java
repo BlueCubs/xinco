@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  * Description:     OPCode enumeration
  *
  * Original Author: Javier A. Ortiz
- * Date:            2009
+ * Date:            2010
  *
  * Modifications:
  *
