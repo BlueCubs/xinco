@@ -188,6 +188,7 @@
     </target>
 
     <target name="create-stand-alone-dist">
+        <trim input="xinco-DMS-${version_high}.${version_mid}.${version_low} ${version_postfix}" property="dist.name" />
         <!--Create XincoExplorer Stand alone Client-->
         <mkdir dir="${dist}/XincoExplorer Stand Alone Client"/>
         <!--Copy files in stand alone client folder-->
@@ -278,7 +279,7 @@
             </fileset>
         </copy>
         <!--Make zip-->
-        <zip destfile="${dist}/XincoExplorerStandalone-${version_high}.${version_mid}.${version_low}.zip">
+        <zip destfile="${dist}/${dist.name}.zip">
             <zipfileset dir="${dist}/XincoExplorer Stand Alone Client" prefix="XincoExplorerStandalone-${version_high}.${version_mid}.${version_low}"/>
         </zip>
         <delete dir="${dist}/XincoExplorer Stand Alone Client"/>

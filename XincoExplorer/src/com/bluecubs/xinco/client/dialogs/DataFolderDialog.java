@@ -242,6 +242,7 @@ public class DataFolderDialog extends AbstractDialog {
             explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(temp_node);
         }
         setVisible(false);
+        designation.setText(explorer.getResourceBundle().getString("general.newfolder"));
     }//GEN-LAST:event_cancelActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
@@ -290,6 +291,7 @@ public class DataFolderDialog extends AbstractDialog {
                     JOptionPane.WARNING_MESSAGE);
         }
         setVisible(false);
+        designation.setText(explorer.getResourceBundle().getString("general.newfolder"));
     }//GEN-LAST:event_saveActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;
