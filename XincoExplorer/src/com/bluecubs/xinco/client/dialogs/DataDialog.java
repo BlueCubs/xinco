@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -251,6 +251,7 @@ public class DataDialog extends AbstractDialog {
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         setVisible(false);
+        designation.setText(explorer.getResourceBundle().getString("general.newdata"));
     }//GEN-LAST:event_cancelActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
@@ -259,6 +260,7 @@ public class DataDialog extends AbstractDialog {
         ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).setXinco_core_language(((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(this.language.getSelectedIndex())));
         explorer.set_global_dialog_return_value(1);
         setVisible(false);
+        designation.setText(explorer.getResourceBundle().getString("general.newdata"));
     }//GEN-LAST:event_saveActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;

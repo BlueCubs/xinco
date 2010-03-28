@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreLanguage;
 import com.bluecubs.xinco.core.XincoCoreNode;
-import com.bluecubs.xinco.core.server.XincoException;
+import com.bluecubs.xinco.core.XincoException;
 import java.util.Locale;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
@@ -122,9 +122,8 @@ public class DataFolderDialog extends AbstractDialog {
             if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 3) {
                 text = explorer.getResourceBundle().getString("general.status.archived") + " (->)";
             }
-            this.state.setText(text);
+            state.setText(text);
         }
-        setVisible(true);
     }
 
     /** This method is called from within the constructor to
@@ -243,6 +242,7 @@ public class DataFolderDialog extends AbstractDialog {
             explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(temp_node);
         }
         setVisible(false);
+        designation.setText(explorer.getResourceBundle().getString("general.newfolder"));
     }//GEN-LAST:event_cancelActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
@@ -291,6 +291,7 @@ public class DataFolderDialog extends AbstractDialog {
                     JOptionPane.WARNING_MESSAGE);
         }
         setVisible(false);
+        designation.setText(explorer.getResourceBundle().getString("general.newfolder"));
     }//GEN-LAST:event_saveActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;
