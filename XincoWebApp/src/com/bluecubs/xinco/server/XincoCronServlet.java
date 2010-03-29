@@ -126,7 +126,7 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
         out.println("</head>");
 
-        out.println("<body " + (!XincoDBManager.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' " : " ") + ">");
+        out.println("<body " + (!db.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' " : " ") + ">");
         out.println("<center>");
         out.println("<span class=\"text\">");
 
@@ -207,7 +207,7 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<td class=\"text\">&copy; " + lrb.getString("general.copyright.date") + ", " +
                 //Avoid external links if general.setting.allowoutsidelinks is set to false
                 //Security bug
-                (XincoDBManager.config.isAllowOutsideLinks() ? lrb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
+                (db.config.isAllowOutsideLinks() ? lrb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='" +
                 lrb.getString("message.admin.main.backtomain") + "' />" +

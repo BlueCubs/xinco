@@ -1,5 +1,5 @@
 /**
- *Copyright 2007 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  * Description:     Add Attribute Text
  *
  * Original Author: Javier A. Ortiz
- * Date:            2007
+ * Date:            2010
  *
  * Modifications:
  *
@@ -76,8 +76,7 @@ public class AddAttributeText extends AbstractDialog {
         } else {
             save.setEnabled(false);
         }
-        addTextArea(text);
-        showMe();
+        addTextArea(text,"");
     }
 
     /**
@@ -96,10 +95,8 @@ public class AddAttributeText extends AbstractDialog {
         this.viewOnly = viewOnly;
     }
 
-    /**
-     * Show dialog
-     */
-    private void showMe() {
+    @Override
+    public void setToDefaults() {
         XincoMutableTreeNode node = explorer.getSession().getCurrentTreeNodeSelection();
         Vector attr = ((XincoCoreData) node.getUserObject()).getXinco_add_attributes();
         if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() != 2) {
@@ -121,7 +118,6 @@ public class AddAttributeText extends AbstractDialog {
             text.setText(((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(0)).getAttrib_text());
         }
         jScrollPane1.setLocation(0, 0);
-        setVisible(true);
     }
 
     /** This method is called from within the constructor to

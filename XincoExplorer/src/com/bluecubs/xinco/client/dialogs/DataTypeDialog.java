@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -64,9 +64,13 @@ public class DataTypeDialog extends AbstractDialog {
         setLocationRelativeTo(null);
         this.explorer = explorer;
         setTitle(explorer.getResourceBundle().getString("window.datatype"));
-        this.continueButton.setText(explorer.getResourceBundle().getString("general.continue"));
-        this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
-        this.dataTypeLabel.setText(explorer.getResourceBundle().getString("window.datatype.datatype") + ":");
+        continueButton.setText(explorer.getResourceBundle().getString("general.continue"));
+        cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
+        dataTypeLabel.setText(explorer.getResourceBundle().getString("window.datatype.datatype") + ":");
+    }
+
+    @Override
+    public void setToDefaults() {
         int i = 0;
         String text = "";
         if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject() != null) {
@@ -74,17 +78,16 @@ public class DataTypeDialog extends AbstractDialog {
             dlm.removeAllElements();
             for (i = 0; i < explorer.getSession().getServerDatatypes().size(); i++) {
                 String desc = ((XincoCoreDataType) explorer.getSession().getServerDatatypes().elementAt(i)).getDescription();
-                String designation=((XincoCoreDataType) explorer.getSession().getServerDatatypes().elementAt(i)).getDesignation();
-                text =  (explorer.getResourceBundle().getString(designation) == null ? designation : explorer.getResourceBundle().getString(designation))
+                String designation = ((XincoCoreDataType) explorer.getSession().getServerDatatypes().elementAt(i)).getDesignation();
+                text = (explorer.getResourceBundle().getString(designation) == null ? designation : explorer.getResourceBundle().getString(designation))
                         + " (" + (explorer.getResourceBundle().getString(desc) == null ? desc : explorer.getResourceBundle().getString(desc)) + ")";
                 dlm.addElement(text);
                 if (((XincoCoreDataType) explorer.getSession().getServerDatatypes().elementAt(i)).getId() == ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId()) {
                     this.dataType.setSelectedIndex(i);
                 }
             }
-            this.dataType.setModel(dlm);
+            dataType.setModel(dlm);
         }
-        setVisible(false);
     }
 
     /** This method is called from within the constructor to

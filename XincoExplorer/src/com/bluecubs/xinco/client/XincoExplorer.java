@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except cin compliance with the License.
@@ -61,6 +61,7 @@ import com.bluecubs.xinco.client.object.menu.XincoMenuRepository;
 import com.bluecubs.xinco.client.object.menu.XincoPopUpMenuRepository;
 import com.bluecubs.xinco.client.object.thread.XincoProgressBarThread;
 import com.bluecubs.xinco.client.object.timer.XincoActivityTimer;
+import com.bluecubs.xinco.core.OPCode;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataType;
 import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
@@ -69,9 +70,8 @@ import com.bluecubs.xinco.core.XincoCoreLanguage;
 import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoCoreUser;
-import com.bluecubs.xinco.core.server.XincoException;
+import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoVersion;
-import com.bluecubs.xinco.core.server.OPCode;
 import com.bluecubs.xinco.service.XincoServiceLocator;
 import com.bluecubs.xinco.service.XincoSoapBindingStub;
 import java.awt.event.ActionEvent;
@@ -1378,6 +1378,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             AbstractDialogFolder = new DataFolderDialog(null, true, this);
             addDialog(AbstractDialogFolder);
         }
+        //Issue #2972311
+        AbstractDialogFolder.setVisible(true);
         return AbstractDialogFolder;
     }
 
@@ -1404,6 +1406,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             AbstractDialogACL = new ACLDialog(new javax.swing.JFrame(), true, this);
             addDialog(AbstractDialogACL);
         }
+        //Issue #2972311
+        AbstractDialogACL.setVisible(true);
         return AbstractDialogACL;
     }
 
@@ -1576,6 +1580,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             AbstractDialogData = new DataDialog(null, true, this);
             addDialog(AbstractDialogData);
         }
+        AbstractDialogData.setVisible(true);
         return AbstractDialogData;
     }
 
@@ -1589,6 +1594,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             AbstractDialogLog = new LogDialog(null, true, this, editableVersion);
             addDialog(AbstractDialogLog);
         }
+        AbstractDialogLog.setVisible(true);
         return AbstractDialogLog;
     }
 
@@ -1997,9 +2003,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         //for text -> show text editing dialog
                         //text = 2
                         if (((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId() == 2) {
-                            AbstractDialogAddAttributesText = getAbstractDialogAddAttributesText();
                             setGlobal_dialog_return_value(0);
-                            AbstractDialogAddAttributesText.setVisible(true);
+                            AbstractDialogAddAttributesText = getAbstractDialogAddAttributesText();
                             if (getGlobal_dialog_return_value() == 0) {
                                 this.progressBar.hide();
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
@@ -2042,9 +2047,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                         newlog.getVersion().setVersion_postfix("");
                         ((XincoCoreData) newnode.getUserObject()).setXinco_core_logs(new Vector());
                         ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().addElement(newlog);
-                        AbstractDialogLog = getAbstractDialogLog(true);
                         setGlobal_dialog_return_value(0);
-                        AbstractDialogLog.setVisible(true);
+                        AbstractDialogLog = getAbstractDialogLog(true);
                         if (getGlobal_dialog_return_value() == 0) {
                             this.progressBar.hide();
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
@@ -2087,9 +2091,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                             ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().addElement(newlog);
                             //Nothing to do in log dialog for checkout...
                             if (wizard_type != 4) {
-                                AbstractDialogLog = getAbstractDialogLog(false);
                                 setGlobal_dialog_return_value(0);
-                                AbstractDialogLog.setVisible(true);
+                                AbstractDialogLog = getAbstractDialogLog(false);
                                 if (getGlobal_dialog_return_value() == 0) {
                                     this.progressBar.hide();
                                     throw new XincoException(xerb.getString("datawizard.updatecancel"));
@@ -2129,9 +2132,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
                     if ((wizard_type == 1) || (wizard_type == 2)) {
 
                         //step 4: edit data details
-                        AbstractDialogData = getAbstractDialogData();
                         setGlobal_dialog_return_value(0);
-                        AbstractDialogData.setVisible(true);
+                        AbstractDialogData = getAbstractDialogData();
                         if (getGlobal_dialog_return_value() == 0) {
                             this.progressBar.hide();
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
@@ -2139,9 +2141,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
 
                         //step 4b: edit archiving options of files
                         if (((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId() == 1) {
-                            AbstractDialogArchive = getAbstractDialogArchive();
                             setGlobal_dialog_return_value(0);
-                            AbstractDialogArchive.setVisible(true);
+                            AbstractDialogArchive = getAbstractDialogArchive();
                             if (getGlobal_dialog_return_value() == 0) {
                                 this.progressBar.hide();
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
@@ -2576,29 +2577,15 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     /**
      * This method sets current path and filename
      *
-     * @param s String representing path
+     * @param path String representing path
      */
-    public void setCurrentPath(String s) {
-        if (!(s.substring(s.length() - 1).equals(System.getProperty("file.separator")))) {
-            s = s + System.getProperty("file.separator");
+    public void setCurrentPath(String path) {
+        if (!(path.substring(path.length() - 1).equals(System.getProperty("file.separator")))) {
+            path = path + System.getProperty("file.separator");
         }
         current_filename = "";
-        current_path = s;
-        current_fullpath = s;
-    }
-
-    /**
-     * This method initializes jContentPaneDialogUser
-     *
-     * @return javax.swing.JPanel
-     */
-    private javax.swing.JPanel getJContentPaneDialogUser() {
-        if (jContentPaneDialogUser == null) {
-            jContentPaneDialogUser = new javax.swing.JPanel();
-            jContentPaneDialogUser.setLayout(null);
-            getAbstractDialogUser(false);
-        }
-        return jContentPaneDialogUser;
+        current_path = path;
+        current_fullpath = path;
     }
 
     /**
@@ -2608,26 +2595,12 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      */
     private void getAbstractDialogUser(boolean aged) {
         if (userDialog == null) {
-            userDialog = new UserDialog(new javax.swing.JFrame(), true, this, aged);
+            userDialog = new UserDialog(null, true, this, aged);
             addDialog(userDialog);
+        }else{
+            userDialog.setIsAged(aged);
         }
         userDialog.setVisible(true);
-    }
-
-    /**
-     * This method initializes jContentPaneDialogAddAttributesText
-     *
-     * @return javax.swing.JPanel
-     */
-    private javax.swing.JPanel getJContentPaneDialogAddAttributesText() {
-        if (jContentPaneDialogAddAttributesText == null) {
-            jContentPaneDialogAddAttributesText = new javax.swing.JPanel();
-            jContentPaneDialogAddAttributesText.setLayout(null);
-            jContentPaneDialogAddAttributesText.add(getJScrollPaneDialogAddAttributesText(), null);
-            jContentPaneDialogAddAttributesText.add(getJButtonDialogAddAttributesTextSave(), null);
-            jContentPaneDialogAddAttributesText.add(getJButtonDialogAddAttributesTextCancel(), null);
-        }
-        return jContentPaneDialogAddAttributesText;
     }
 
     /**
@@ -2640,6 +2613,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             AbstractDialogAddAttributesText = new AddAttributeText(null, true, false, this);
             addDialog(AbstractDialogAddAttributesText);
         }
+        //Issue #2972311
+        AbstractDialogAddAttributesText.setVisible(true);
         return AbstractDialogAddAttributesText;
     }
 
@@ -2876,6 +2851,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             AbstractDialogArchive.setResizable(false);
             addDialog(AbstractDialogArchive);
         }
+        //Issue #2972311
+        AbstractDialogArchive.setVisible(true);
         return AbstractDialogArchive;
     }
 
@@ -3021,8 +2998,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
      * Reset activity timer
      */
     public void resetTimer() {
-        if (this.isLock()) {
-            this.getAbstractDialogLock();
+        if (isLock()) {
+            getAbstractDialogLock();
         } else if (getXat() != null) {
             getXat().getActivityTimer().restart();
         }

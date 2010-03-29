@@ -6,6 +6,7 @@
     <description>Builds, tests, and runs the project xinco.</description>
     <import file="nbproject/build-impl.xml"/>
     <property file="build.ant.properties"/>
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
     <!--
 
     There exist several targets which are by default empty and which can be
@@ -63,7 +64,21 @@
     properties which you can use check the target you are overriding in
     nbproject/build-impl.xml file.
     -->
-
+    <macrodef name="trim">
+        <attribute name="input" />
+        <attribute name="property" />
+        <sequential>
+            <tempfile property="temp.file" />
+            <echo file="${temp.file}" message="@{input}" />
+            <move file="${temp.file}" tofile="${temp.file}.2">
+                <filterchain>
+                    <trim/>
+                </filterchain>
+            </move>
+            <loadfile property="@{property}" srcFile="${temp.file}.2" />
+            <delete file="${temp.file}.2" failonerror="false" />
+        </sequential>
+    </macrodef>
     <macrodef name="unsignjar">
 
         <attribute name="jar"/>
@@ -123,49 +138,57 @@
         </signjar>
     </target>
 
-    <target name="release" depends="dist,unsign_client_libraries, sign_client_libraries" description="Create the release packages of Xinco">
-        <delete dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}"/>
+    <target name="-pre-dist" depends="unsign_client_libraries, sign_client_libraries"/>
+
+    <target name="-post-dist">
+        <antcall target="release"/>
+    </target>
+
+    <target name="release" description="Create the release packages of Xinco">
+        <trim input="xinco-DMS-${version_high}.${version_mid}.${version_low} ${version_postfix}" property="dist.name" />
+        <delete dir="${dist}/${dist.name}"/>
         <delete>
-            <fileset dir="${dist}/" includes="**/*.gz"/>
+            <fileset dir="${dist}/" includes="**/*.zip"/>
         </delete>
         <!-- Create release folder-->
-        <mkdir dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}"/>
-        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/db">
+        <mkdir dir="${dist}/${dist.name}"/>
+        <copy todir="${dist}/${dist.name}/db">
             <fileset dir="../DB">
                 <include name="**/*"/>
             </fileset>
         </copy>
-        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/docs">
+        <copy todir="${dist}/${dist.name}/docs">
             <fileset dir="../Docs">
                 <include name="**/*"/>
             </fileset>
         </copy>
-        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}">
+        <copy todir="${dist}/${dist.name}">
             <fileset dir="./release">
                 <include name="*.txt"/>
                 <include name="LICENSE"/>
             </fileset>
         </copy>
-        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/key" file=".blueCubsKeystore"/>
-        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps" file="./release/PackXincoToWAR.bat"/>
-        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps" file="./release/PackXincoToWAR.sh"/>
-        <mkdir dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps/xinco"/>
-        <copy todir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}/webapps/xinco">
+        <copy todir="${dist}/${dist.name}/key" file=".blueCubsKeystore"/>
+        <copy todir="${dist}/${dist.name}/webapps" file="./release/PackXincoToWAR.bat"/>
+        <copy todir="${dist}/${dist.name}/webapps" file="./release/PackXincoToWAR.sh"/>
+        <mkdir dir="${dist}/${dist.name}/webapps/xinco"/>
+        <copy todir="${dist}/${dist.name}/webapps/xinco">
             <fileset dir="build/web/">
                 <include name="**/*"/>
             </fileset>
         </copy>
-        <zip destfile="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low} ${version_postfix}.zip">
-            <zipfileset dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}" prefix="xinco-DMS-${version_high}.${version_mid}.${version_low}">
+        <zip destfile="${dist}/${dist.name}.zip">
+            <zipfileset dir="${dist}/${dist.name}" prefix="${dist.name}">
                 <exclude name="**/.svn/**"/>
             </zipfileset>
         </zip>
         <antcall target="create-stand-alone-dist"/>
-        <delete dir="${dist}/xinco-DMS-${version_high}.${version_mid}.${version_low}"/>
-        <echo>Xinco version ${version_high}.${version_mid}.${version_low} ${version_postfix} release packages available in distribution folder!</echo>
+        <delete dir="${dist}/${dist.name}"/>
+        <echo>Xinco version ${dist.name} release packages available in distribution folder!</echo>
     </target>
 
     <target name="create-stand-alone-dist">
+        <trim input="xinco-DMS-${version_high}.${version_mid}.${version_low} ${version_postfix}" property="dist.name" />
         <!--Create XincoExplorer Stand alone Client-->
         <mkdir dir="${dist}/XincoExplorer Stand Alone Client"/>
         <!--Copy files in stand alone client folder-->
@@ -256,15 +279,16 @@
             </fileset>
         </copy>
         <!--Make zip-->
-        <zip destfile="${dist}/XincoExplorerStandalone-${version_high}.${version_mid}.${version_low} ${version_postfix}.zip">
-            <zipfileset dir="${dist}/XincoExplorer Stand Alone Client" prefix="XincoExplorerStandalone-${version_high}.${version_mid}.${version_low} ${version_postfix}"/>
+        <trim input="XincoExplorerStandAlone-${version_high}.${version_mid}.${version_low} ${version_postfix}" property="standalone.dist.name" />
+        <zip destfile="${dist}/${standalone.dist.name}.zip">
+            <zipfileset dir="${dist}/XincoExplorer Stand Alone Client" prefix="XincoExplorerStandalone-${version_high}.${version_mid}.${version_low}"/>
         </zip>
         <delete dir="${dist}/XincoExplorer Stand Alone Client"/>
     </target>
 
     <target name="-pre-init">
         <mkdir dir="${lib}"/>
-        <echo>Updating version to: '${version_high}.${version_mid}.${version_low} ${version_postfix}'</echo>
+        <echo>Updating version in Xinco/src/com/bluecubs/xinco/settings/settings.properties to: '${version_high}.${version_mid}.${version_low} ${version_postfix}'</echo>
         <echo>To change this, change file build.ant.properties in xinco/</echo>
         <!-- We update the version number (Xinco project)-->
         <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties" flags="s"
