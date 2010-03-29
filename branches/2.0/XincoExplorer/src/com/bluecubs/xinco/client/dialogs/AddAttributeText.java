@@ -76,7 +76,7 @@ public class AddAttributeText extends AbstractDialog {
         } else {
             save.setEnabled(false);
         }
-        addTextArea(text);
+        addTextArea(text,"");
     }
 
     /**
@@ -96,7 +96,7 @@ public class AddAttributeText extends AbstractDialog {
     }
 
     @Override
-    public void setVisible(boolean b) {
+    public void setToDefaults() {
         XincoMutableTreeNode node = explorer.getSession().getCurrentTreeNodeSelection();
         Vector attr = ((XincoCoreData) node.getUserObject()).getXinco_add_attributes();
         if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() != 2) {
@@ -118,8 +118,6 @@ public class AddAttributeText extends AbstractDialog {
             text.setText(((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(0)).getAttrib_text());
         }
         jScrollPane1.setLocation(0, 0);
-        //Don't callthe method again.Meant tocallits super class counterpart.
-        super.setVisible(b);
     }
 
     /** This method is called from within the constructor to

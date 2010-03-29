@@ -61,14 +61,14 @@ public class LockDialog extends AbstractDialog {
         this.explorer = e;
         setLocationRelativeTo(null);
         initComponents();
-        this.passwordLabel.setText(explorer.getResourceBundle().getString("general.password"));
-        this.disconnect.setText(explorer.getResourceBundle().getString("menu.disconnect"));
-        this.connect.setText(explorer.getResourceBundle().getString("menu.connection.connect"));
-        this.setTitle(explorer.getResourceBundle().getString("general.login"));
-        this.passwordLabel.setText(explorer.getResourceBundle().getString("general.password"));
-        this.usernameLabel.setText(explorer.getResourceBundle().getString("general.username"));
-        addTextField(username);
-        addTextField(password);
+        passwordLabel.setText(explorer.getResourceBundle().getString("general.password"));
+        disconnect.setText(explorer.getResourceBundle().getString("menu.disconnect"));
+        connect.setText(explorer.getResourceBundle().getString("menu.connection.connect"));
+        setTitle(explorer.getResourceBundle().getString("general.login"));
+        passwordLabel.setText(explorer.getResourceBundle().getString("general.password"));
+        usernameLabel.setText(explorer.getResourceBundle().getString("general.username"));
+        addTextField(username,"");
+        addTextField(password,"");
     }
 
     /** This method is called from within the constructor to

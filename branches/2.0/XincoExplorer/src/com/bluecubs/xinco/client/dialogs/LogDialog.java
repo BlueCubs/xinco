@@ -79,14 +79,18 @@ public class LogDialog extends AbstractDialog {
         reasonLabel.setText(explorer.getResourceBundle().getString("general.reason"));
         minorChange.setText(explorer.getResourceBundle().getString("general.minor"));
         minorChange.setToolTipText(explorer.getResourceBundle().getString("general.minor.tooltip"));
+    }
+
+    @Override
+    public void setToDefaults() {
         //processing independent of creation
         if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject() != null) {
             //For some reason
             log_index = ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().size() - 1;
             //Only enabled for checkin, modify and/or comment
-            reason.setEnabled(((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == OPCode.CHECKIN.ordinal() + 1 ||
-                    ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == OPCode.COMMENT_COMMENT.ordinal() + 1 ||
-                    ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == OPCode.MODIFICATION.ordinal() + 1);
+            reason.setEnabled(((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == OPCode.CHECKIN.ordinal() + 1
+                    || ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == OPCode.COMMENT_COMMENT.ordinal() + 1
+                    || ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == OPCode.MODIFICATION.ordinal() + 1);
             action.setText(((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_description());
             versionHigh.setText("" + (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_high()));
             versionMid.setText("" + (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_mid()));
@@ -121,8 +125,8 @@ public class LogDialog extends AbstractDialog {
             }
         }
         //Increase low after adding a comment or changing metadata
-        if (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == OPCode.COMMENT_COMMENT.ordinal() + 1 ||
-                ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == OPCode.MODIFICATION.ordinal() + 1) {
+        if (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == OPCode.COMMENT_COMMENT.ordinal() + 1
+                || ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == OPCode.MODIFICATION.ordinal() + 1) {
             versionLow.setText("" + (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_low() + 1));
         }
     }
@@ -303,8 +307,8 @@ public class LogDialog extends AbstractDialog {
             String text = "";
             log_index = ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().size() - 1;
             //Reason really needed only for checkin
-            text = action.getText() + " " +
-                    (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == 3 ? explorer.getResourceBundle().getString("general.status.checkedout") : this.reason.getText());
+            text = action.getText() + " "
+                    + (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == 3 ? explorer.getResourceBundle().getString("general.status.checkedout") : this.reason.getText());
             ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).setOp_description(text);
             text = versionHigh.getText();
             try {

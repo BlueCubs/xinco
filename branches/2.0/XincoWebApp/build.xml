@@ -279,7 +279,8 @@
             </fileset>
         </copy>
         <!--Make zip-->
-        <zip destfile="${dist}/${dist.name}.zip">
+        <trim input="XincoExplorerStandAlone-${version_high}.${version_mid}.${version_low} ${version_postfix}" property="standalone.dist.name" />
+        <zip destfile="${dist}/${standalone.dist.name}.zip">
             <zipfileset dir="${dist}/XincoExplorer Stand Alone Client" prefix="XincoExplorerStandalone-${version_high}.${version_mid}.${version_low}"/>
         </zip>
         <delete dir="${dist}/XincoExplorer Stand Alone Client"/>
