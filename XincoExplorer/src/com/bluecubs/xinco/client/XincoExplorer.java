@@ -2597,6 +2597,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         if (userDialog == null) {
             userDialog = new UserDialog(null, true, this, aged);
             addDialog(userDialog);
+        }else{
+            userDialog.setIsAged(aged);
         }
         userDialog.setVisible(true);
     }

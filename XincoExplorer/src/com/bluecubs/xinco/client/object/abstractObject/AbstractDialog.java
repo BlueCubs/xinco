@@ -35,7 +35,8 @@
  */
 package com.bluecubs.xinco.client.object.abstractObject;
 
-import java.util.Vector;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -47,9 +48,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public abstract class AbstractDialog extends javax.swing.JDialog {
 
-    private Vector textFields = new Vector();
-    private Vector textAreas = new Vector();
-    private Vector tables = new Vector();
+    private HashMap<JTextField, String> textFields = new HashMap<JTextField, String>();
+    private HashMap<JTextArea, String> textAreas = new HashMap<JTextArea, String>();
+    private HashMap<JTable, DefaultTableModel> tables = new HashMap<JTable, DefaultTableModel>();
 
     /**
      * Constructor
@@ -61,10 +62,13 @@ public abstract class AbstractDialog extends javax.swing.JDialog {
     }
 
     /**
-     * Get a vector containing the fields of this Dialog
-     * @return Vector containing the fields of this Dialog
+     * Get a HashMap<JTextField, String> containing the fields of this Dialog
+     * and their default values.
+     *
+     * @return HashMap<JTextField, String> containing the fields of this Dialog
+     * and their default values
      */
-    public Vector getTextFields() {
+    public HashMap<JTextField, String> getTextFields() {
         return textFields;
     }
 
@@ -72,15 +76,18 @@ public abstract class AbstractDialog extends javax.swing.JDialog {
      * Set text fields
      * @param textFields 
      */
-    public void setTextFields(Vector textFields) {
+    public void setTextFields(HashMap<JTextField, String> textFields) {
         this.textFields = textFields;
     }
 
     /**
-     * Get a vector containing the text areas of this Dialog
-     * @return Vector containing the text areas of this Dialog
+     * Get a HashMap<JTextArea, String> containing the fields of this Dialog
+     * and their default values.
+     *
+     * @return HashMap<JTextArea, String> containing the fields of this Dialog
+     * and their default values
      */
-    public Vector getTextAreas() {
+    public HashMap<JTextArea, String> getTextAreas() {
         return textAreas;
     }
 
@@ -88,15 +95,18 @@ public abstract class AbstractDialog extends javax.swing.JDialog {
      * Set text areas
      * @param textAreas
      */
-    public void setTextAreas(Vector textAreas) {
+    public void setTextAreas(HashMap<JTextArea, String> textAreas) {
         this.textAreas = textAreas;
     }
 
     /**
-     * Get a vector containing the tables of this Dialog
-     * @return Vector containing the tables of this Dialog
+     * Get a HashMap<JTable, DefaultTableModel> containing the fields of this Dialog
+     * and their default values.
+     *
+     * @return HashMap<JTable, DefaultTableModel> containing the fields of this Dialog
+     * and their default values
      */
-    public Vector getTables() {
+    public HashMap<JTable, DefaultTableModel> getTables() {
         return tables;
     }
 
@@ -104,51 +114,74 @@ public abstract class AbstractDialog extends javax.swing.JDialog {
      * Set tables
      * @param tables
      */
-    public void setTables(Vector tables) {
+    public void setTables(HashMap<JTable, DefaultTableModel> tables) {
         this.tables = tables;
     }
 
     /**
      * Add a text field or password field
      * @param field
+     * @param defaultValue
      */
     @SuppressWarnings("unchecked")
-    public void addTextField(JTextField field) {
-        getTextFields().add(field);
+    public void addTextField(JTextField field, String defaultValue) {
+        getTextFields().put(field, defaultValue);
     }
 
     /**
      * Add a text area
      * @param area
+     * @param defaultValue
      */
     @SuppressWarnings("unchecked")
-    public void addTextArea(JTextArea area) {
-        getTextAreas().add(area);
+    public void addTextArea(JTextArea area, String defaultValue) {
+        getTextAreas().put(area, defaultValue);
     }
 
     /**
      * Add a table
-     * @param table 
+     * @param table
+     * @param defaultValue
      */
     @SuppressWarnings("unchecked")
-    public void addTable(JTable table) {
-        getTables().add(table);
+    public void addTable(JTable table, DefaultTableModel defaultValue) {
+        getTables().put(table, defaultValue);
     }
 
     /**
      * Clear contents of all fields and/or areas in the dialog
      */
-    @SuppressWarnings("unchecked")
     public void clearDialog() {
-        for (int i = 0; i < getTextFields().size(); i++) {
-            ((JTextField) getTextFields().get(i)).setText("");
+        for (Entry<JTextField, String> e : getTextFields().entrySet()) {
+            e.getKey().setText("");
         }
-        for (int i = 0; i < getTextAreas().size(); i++) {
-            ((JTextArea) getTextAreas().get(i)).setText("");
+        for (Entry<JTextArea, String> e : getTextAreas().entrySet()) {
+            e.getKey().setText("");
         }
-        for (int i = 0; i < getTables().size(); i++) {
-            DefaultTableModel dm = (DefaultTableModel) ((JTable) getTables().get(i)).getModel();
+        for (Entry<JTable, DefaultTableModel> e : getTables().entrySet()) {
+            DefaultTableModel dm = (DefaultTableModel) e.getKey().getModel();
             dm.getDataVector().removeAllElements();
         }
+    }
+
+    public void setToDefaults() {
+        for (Entry<JTextField, String> e : getTextFields().entrySet()) {
+            e.getKey().setText(e.getValue());
+        }
+        for (Entry<JTextArea, String> e : getTextAreas().entrySet()) {
+            e.getKey().setText(e.getValue());
+        }
+        for (Entry<JTable, DefaultTableModel> e : getTables().entrySet()) {
+            e.getKey().setModel(e.getValue());
+        }
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        if (b) {
+            clearDialog();
+            setToDefaults();
+        }
+        super.setVisible(b);
     }
 }

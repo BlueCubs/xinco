@@ -69,13 +69,14 @@ public class ChangeReasonDialog extends AbstractDialog {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
-        this.user = explorer.getSession().getUser();
+        user = explorer.getSession().getUser();
         this.explorer = explorer;
         setTitle(explorer.getResourceBundle().getString("window.changereason.title"));
-        this.reasonLabel.setText(explorer.getResourceBundle().getString("window.changereason.label"));
-        this.save.setText(explorer.getResourceBundle().getString("general.save") + "!");
-        this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
+        reasonLabel.setText(explorer.getResourceBundle().getString("window.changereason.label"));
+        save.setText(explorer.getResourceBundle().getString("general.save") + "!");
+        cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
         setLocationRelativeTo(null);
+        addTextArea(reason,"");
     }
 
     /**
@@ -83,7 +84,7 @@ public class ChangeReasonDialog extends AbstractDialog {
      * @return Specified reason.
      */
     public String getReason() {
-        return this.reasonS;
+        return reasonS;
     }
 
     /** This method is called from within the constructor to
