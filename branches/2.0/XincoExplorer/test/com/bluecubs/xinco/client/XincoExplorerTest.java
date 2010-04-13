@@ -5,6 +5,7 @@
 package com.bluecubs.xinco.client;
 
 import com.bluecubs.xinco.client.object.XincoClientConnectionProfile;
+import java.util.Locale;
 import java.util.Vector;
 import junit.framework.TestCase;
 
@@ -66,7 +67,7 @@ public class XincoExplorerTest extends TestCase {
         //add Pluggable Look and Feel
         xincoClientConfig.addElement(new String("javax.swing.plaf.metal.MetalLookAndFeel"));
         //add locale
-        xincoClientConfig.addElement("x");
+        xincoClientConfig.addElement(Locale.getDefault());
         //add version
         xincoClientConfig.addElement(XincoExplorer.ConfigFileVersion + 1);
         try {
