@@ -235,6 +235,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     //lock = false - work normally
     private boolean lock = false;
     private XincoActivityTimer xat = null;
+    public static final int ConfigFileVersion = 1;
 
     /**
      * This is the default constructor
@@ -2597,7 +2598,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         if (userDialog == null) {
             userDialog = new UserDialog(null, true, this, aged);
             addDialog(userDialog);
-        }else{
+        } else {
             userDialog.setIsAged(aged);
         }
         userDialog.setVisible(true);
@@ -2779,6 +2780,21 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
             }
             //delete old settings
             (new File("xincoClientConnectionProfiles.dat")).delete();
+            //Check version
+            if (xincoClientConfig.size() >= 3) {
+                //Version element is present
+                if ((Integer) xincoClientConfig.get(2) > ConfigFileVersion) //We're handling a newer version of the config file. Create default!
+                {
+                    throw new XincoException("Unable to handle configuration version: "
+                            + (Integer) xincoClientConfig.get(2)
+                            + ". Current supported version: " + ConfigFileVersion);
+                }
+            }
+            if (xincoClientConfig.size() < 3) {
+                throw new XincoException("Unable to handle configuration version: "
+                        + (Integer) xincoClientConfig.get(2)
+                        + ". Current supported version: " + ConfigFileVersion);
+            }
         } catch (Exception ioe) {
             //error handling
             //create config
@@ -2797,7 +2813,7 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
     }
 
     @SuppressWarnings("unchecked")
-    private void createDefaultConfiguration(boolean modifyProfiles) {
+    protected void createDefaultConfiguration(boolean modifyProfiles) {
         xincoClientConfig = new Vector();
         xincoClientConfig.add(new Vector());
         if (modifyProfiles) {
@@ -2837,6 +2853,8 @@ public class XincoExplorer extends JFrame implements ActionListener, MouseListen
         xincoClientConfig.addElement(new String("javax.swing.plaf.metal.MetalLookAndFeel"));
         //add locale
         xincoClientConfig.addElement(Locale.getDefault());
+        //add version
+        xincoClientConfig.addElement(ConfigFileVersion);
     }
 
     /**
