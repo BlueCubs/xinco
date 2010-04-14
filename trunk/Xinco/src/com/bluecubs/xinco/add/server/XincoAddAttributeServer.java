@@ -43,12 +43,14 @@ import java.util.GregorianCalendar;
 import com.bluecubs.xinco.core.server.*;
 import com.bluecubs.xinco.core.server.persistence.XincoAddAttributePK;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaController;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class XincoAddAttributeServer extends XincoAddAttribute {
 
+    private static final long serialVersionUID = 1L;
     private static List result;
     //create add attribute object for data structures
 
@@ -128,7 +130,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
             }
             com.bluecubs.xinco.core.server.persistence.XincoAddAttribute xaa =
                     new com.bluecubs.xinco.core.server.persistence.XincoAddAttribute();
-            xaa.setXincoCoreData(new com.bluecubs.xinco.core.server.persistence.XincoCoreData(getXinco_core_data_id()));
+            xaa.setXincoCoreData(new XincoCoreDataJpaController().findXincoCoreData(getXinco_core_data_id()));
             xaa.setXincoAddAttributePK(new XincoAddAttributePK());
             xaa.getXincoAddAttributePK().setXincoCoreDataId(xaa.getXincoCoreData().getId());
             xaa.getXincoAddAttributePK().setAttributeId(getAttribute_id());

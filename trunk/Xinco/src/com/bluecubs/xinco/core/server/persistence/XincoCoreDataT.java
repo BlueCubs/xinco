@@ -1,18 +1,16 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 
 /**
  *
@@ -20,11 +18,24 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "xinco_core_data_t")
-@NamedQueries({@NamedQuery(name = "XincoCoreDataT.findAll", query = "SELECT x FROM XincoCoreDataT x"), @NamedQuery(name = "XincoCoreDataT.findByRecordId", query = "SELECT x FROM XincoCoreDataT x WHERE x.recordId = :recordId"), @NamedQuery(name = "XincoCoreDataT.findById", query = "SELECT x FROM XincoCoreDataT x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreDataT.findByXincoCoreNodeId", query = "SELECT x FROM XincoCoreDataT x WHERE x.xincoCoreNodeId = :xincoCoreNodeId"), @NamedQuery(name = "XincoCoreDataT.findByXincoCoreLanguageId", query = "SELECT x FROM XincoCoreDataT x WHERE x.xincoCoreLanguageId = :xincoCoreLanguageId"), @NamedQuery(name = "XincoCoreDataT.findByXincoCoreDataTypeId", query = "SELECT x FROM XincoCoreDataT x WHERE x.xincoCoreDataTypeId = :xincoCoreDataTypeId"), @NamedQuery(name = "XincoCoreDataT.findByDesignation", query = "SELECT x FROM XincoCoreDataT x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreDataT.findByStatusNumber", query = "SELECT x FROM XincoCoreDataT x WHERE x.statusNumber = :statusNumber")})
+@NamedQueries({
+    @NamedQuery(name = "XincoCoreDataT.findAll", query = "SELECT x FROM XincoCoreDataT x"),
+    @NamedQuery(name = "XincoCoreDataT.findByRecordId", query = "SELECT x FROM XincoCoreDataT x WHERE x.recordId = :recordId"),
+    @NamedQuery(name = "XincoCoreDataT.findById", query = "SELECT x FROM XincoCoreDataT x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreDataT.findByXincoCoreNodeId", query = "SELECT x FROM XincoCoreDataT x WHERE x.xincoCoreNodeId = :xincoCoreNodeId"),
+    @NamedQuery(name = "XincoCoreDataT.findByXincoCoreLanguageId", query = "SELECT x FROM XincoCoreDataT x WHERE x.xincoCoreLanguageId = :xincoCoreLanguageId"),
+    @NamedQuery(name = "XincoCoreDataT.findByXincoCoreDataTypeId", query = "SELECT x FROM XincoCoreDataT x WHERE x.xincoCoreDataTypeId = :xincoCoreDataTypeId"),
+    @NamedQuery(name = "XincoCoreDataT.findByDesignation", query = "SELECT x FROM XincoCoreDataT x WHERE x.designation = :designation"),
+    @NamedQuery(name = "XincoCoreDataT.findByStatusNumber", query = "SELECT x FROM XincoCoreDataT x WHERE x.statusNumber = :statusNumber")})
 public class XincoCoreDataT implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XCDRECORDIDKEYGEN")
+    @TableGenerator(name = "XCUDECORDIDKEYGEN", table = "xinco_id",
+    pkColumnName = "tablename", valueColumnName = "last_id",
+    pkColumnValue = "xinco_core_user_modified_record", initialValue = 1, allocationSize = 1)
     @Column(name = "record_id", nullable = false)
     private Integer recordId;
     @Basic(optional = false)
@@ -49,12 +60,7 @@ public class XincoCoreDataT implements Serializable {
     public XincoCoreDataT() {
     }
 
-    public XincoCoreDataT(Integer recordId) {
-        this.recordId = recordId;
-    }
-
-    public XincoCoreDataT(Integer recordId, int id, int xincoCoreNodeId, int xincoCoreLanguageId, int xincoCoreDataTypeId, String designation, int statusNumber) {
-        this.recordId = recordId;
+    public XincoCoreDataT(int id, int xincoCoreNodeId, int xincoCoreLanguageId, int xincoCoreDataTypeId, String designation, int statusNumber) {
         this.id = id;
         this.xincoCoreNodeId = xincoCoreNodeId;
         this.xincoCoreLanguageId = xincoCoreLanguageId;
@@ -128,7 +134,7 @@ public class XincoCoreDataT implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        
         if (!(object instanceof XincoCoreDataT)) {
             return false;
         }
@@ -143,5 +149,4 @@ public class XincoCoreDataT implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataT[recordId=" + recordId + "]";
     }
-
 }

@@ -283,9 +283,23 @@
                        match="version.postfix?=?(.*)"
                        replace="version.postfix = ${version_postfix}"
                        byline="true"/>
+        <!--If postfix is empty, remove the empty space-->
         <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
-                       match="version.postfix?=?_"
+                       match="version.postfix\s*=.*$"
                        replace="version.postfix ="
+                       byline="true"/>
+        <replaceregexp file="../Xinco/nbproject/project.properties"
+                       match="mf.version.spec?=?(.*)"
+                       replace="mf.version.spec = ${version_high}.${version_mid}.${version_low} ${version_postfix}"
+                       byline="true"/>
+        <replaceregexp file="../Xinco/nbproject/project.properties"
+                       match="mf.version.impl?=?(.*)"
+                       replace="mf.version.impl = ${version_high}.${version_mid}.${version_low} ${version_postfix}"
+                       byline="true"/>
+        <!--If postfix is empty, remove the empty space-->
+        <replaceregexp file="../Xinco/nbproject/project.properties"
+                       match="^(mf\.version\.(impl|spec))\s*=.*$"
+                       replace="\1 = ${version_high}.${version_mid}.${version_low}"
                        byline="true"/>
     </target>
 </project>

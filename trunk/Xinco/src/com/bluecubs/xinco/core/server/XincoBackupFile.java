@@ -14,39 +14,40 @@ import java.util.logging.Logger;
  */
 public class XincoBackupFile extends File {
 
-  private Date backupDate;
-  private File backupFile;
+    private static final long serialVersionUID = 1L;
+    private Date backupDate;
+    private File backupFile;
 
-  public XincoBackupFile(File backupFile) {
-    super(backupFile.getAbsolutePath());
-    this.backupFile = backupFile;
-    SimpleDateFormat format = new SimpleDateFormat("MM dd yyyy hh-mm-ss");
-    String fileName=backupFile.getName();
-    fileName=fileName.substring("Xinco Backup".length()+1);
-    try {
-      backupDate = format.parse(fileName);
-    } catch (ParseException ex) {
-      Logger.getLogger(XincoBackupFile.class.getName()).log(Level.SEVERE, null, ex);
+    public XincoBackupFile(File backupFile) {
+        super(backupFile.getAbsolutePath());
+        this.backupFile = backupFile;
+        SimpleDateFormat format = new SimpleDateFormat("MM dd yyyy hh-mm-ss");
+        String fileName = backupFile.getName();
+        fileName = fileName.substring("Xinco Backup".length() + 1);
+        try {
+            backupDate = format.parse(fileName);
+        } catch (ParseException ex) {
+            Logger.getLogger(XincoBackupFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-  }
 
-  /**
-   * @return the backupDate
-   */
-  public Date getBackupDate() {
-    return backupDate;
-  }
+    /**
+     * @return the backupDate
+     */
+    public Date getBackupDate() {
+        return backupDate;
+    }
 
-  /**
-   * @return the backupFile
-   */
-  public File getBackupFile() {
-    return backupFile;
-  }
+    /**
+     * @return the backupFile
+     */
+    public File getBackupFile() {
+        return backupFile;
+    }
 
-  @Override
-  public String toString() {
-    return "File name: "+backupFile.getName()+"\n"
-            +"Backup time: "+backupDate;
-  }
+    @Override
+    public String toString() {
+        return "File name: " + backupFile.getName() + "\n"
+                + "Backup time: " + backupDate;
+    }
 }

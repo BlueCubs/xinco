@@ -85,7 +85,6 @@ public class AuditedEntityListener {
             if (!XincoDBManager.isLocked()) {
                 if (o instanceof AuditedObject) {
                     Logger.getLogger(AuditedEntityListener.class.getName()).log(Level.FINEST, "Creating audit trail for " + o);
-                    record_ID = XincoDBManager.getNewID("xinco_core_user_modified_record");
                     modifier = new XincoCoreUserJpaController().findXincoCoreUser(((AuditedObject) o).getModifierId());
                     boolean updated = false;
                     if (modifier == null) {
@@ -94,68 +93,84 @@ public class AuditedEntityListener {
                     }
                     if (o instanceof XincoCoreUser) {
                         XincoCoreUser user = (XincoCoreUser) o;
-                        new XincoCoreUserTJpaController().create(new XincoCoreUserT(record_ID, user.getId(), user.getUsername(), user.getUserpassword(),
+                        XincoCoreUserT temp = new XincoCoreUserT(user.getId(), user.getUsername(), user.getUserpassword(),
                                 user.getName(), user.getFirstname(), user.getEmail(), user.getStatusNumber(),
-                                user.getAttempts(), new Timestamp(user.getLastModified().getTime())));
+                                user.getAttempts(), new Timestamp(user.getLastModified().getTime()));
+                        new XincoCoreUserTJpaController().create(temp);
+                        record_ID = temp.getRecordId();
                         updated = true;
                     }
                     if (o instanceof XincoCoreNode) {
                         XincoCoreNode node = (XincoCoreNode) o;
-                        new XincoCoreNodeTJpaController().create(new XincoCoreNodeT(record_ID, node.getId(),
+                        XincoCoreNodeT temp = new XincoCoreNodeT(node.getId(),
                                 node.getXincoCoreNodeId() == null ? 0 : node.getXincoCoreNodeId().getId(),
                                 node.getXincoCoreLanguageId() == null ? 1 : node.getXincoCoreLanguageId().getId(),
-                                node.getDesignation(), node.getStatusNumber()));
+                                node.getDesignation(), node.getStatusNumber());
+                        new XincoCoreNodeTJpaController().create(temp);
+                        record_ID = temp.getRecordId();
                         updated = true;
                     }
                     if (o instanceof XincoCoreLanguage) {
                         XincoCoreLanguage lang = (XincoCoreLanguage) o;
-                        new XincoCoreLanguageTJpaController().create(new XincoCoreLanguageT(record_ID, lang.getId(),
-                                lang.getSign(), lang.getDesignation()));
+                        XincoCoreLanguageT temp = new XincoCoreLanguageT(lang.getId(),
+                                lang.getSign(), lang.getDesignation());
+                        new XincoCoreLanguageTJpaController().create(temp);
+                        record_ID = temp.getRecordId();
                         updated = true;
                     }
                     if (o instanceof XincoCoreGroup) {
                         XincoCoreGroup group = (XincoCoreGroup) o;
-                        new XincoCoreGroupTJpaController().create(new XincoCoreGroupT(record_ID, group.getId(),
-                                group.getDesignation(), group.getStatusNumber()));
+                        XincoCoreGroupT temp = new XincoCoreGroupT(group.getId(),
+                                group.getDesignation(), group.getStatusNumber());
+                        new XincoCoreGroupTJpaController().create(temp);
+                        record_ID = temp.getRecordId();
                         updated = true;
                     }
                     if (o instanceof XincoCoreDataType) {
                         XincoCoreDataType group = (XincoCoreDataType) o;
-                        new XincoCoreDataTypeTJpaController().create(new XincoCoreDataTypeT(record_ID, group.getId(),
-                                group.getDesignation(), group.getDescription()));
+                        XincoCoreDataTypeT temp = new XincoCoreDataTypeT(group.getId(),
+                                group.getDesignation(), group.getDescription());
+                        new XincoCoreDataTypeTJpaController().create(temp);
+                        record_ID = temp.getRecordId();
                         updated = true;
                     }
                     if (o instanceof XincoCoreDataTypeAttribute) {
                         XincoCoreDataTypeAttribute attr = (XincoCoreDataTypeAttribute) o;
-                        new XincoCoreDataTypeAttributeTJpaController().create(new XincoCoreDataTypeAttributeT(record_ID,
+                        XincoCoreDataTypeAttributeT temp = new XincoCoreDataTypeAttributeT(
                                 attr.getXincoCoreDataTypeAttributePK().getXincoCoreDataTypeId(),
                                 attr.getXincoCoreDataTypeAttributePK().getAttributeId(),
-                                attr.getDesignation(), attr.getDataType(), attr.getAttrSize()));
+                                attr.getDesignation(), attr.getDataType(), attr.getAttrSize());
+                        new XincoCoreDataTypeAttributeTJpaController().create(temp);
+                        record_ID = temp.getRecordId();
                         updated = true;
                     }
                     if (o instanceof XincoCoreData) {
                         XincoCoreData data = (XincoCoreData) o;
-                        new XincoCoreDataTJpaController().create(new XincoCoreDataT(record_ID,
+                        XincoCoreDataT temp = new XincoCoreDataT(
                                 data.getId(),
                                 data.getXincoCoreNodeId().getId(),
                                 data.getXincoCoreLanguageId().getId(),
                                 data.getXincoCoreDataTypeId().getId(),
-                                data.getDesignation(), data.getStatusNumber()));
+                                data.getDesignation(), data.getStatusNumber());
+                        new XincoCoreDataTJpaController().create(temp);
+                        record_ID = temp.getRecordId();
                         updated = true;
                     }
                     if (o instanceof XincoCoreAce) {
                         XincoCoreAce ace = (XincoCoreAce) o;
-                        new XincoCoreAceTJpaController().create(new XincoCoreAceT(record_ID,
+                        XincoCoreAceT temp = new XincoCoreAceT(
                                 ace.getId(),
                                 ace.getReadPermission(),
                                 ace.getWritePermission(),
                                 ace.getExecutePermission(),
-                                ace.getAdminPermission()));
+                                ace.getAdminPermission());
+                        new XincoCoreAceTJpaController().create(temp);
+                        record_ID = temp.getRecordId();
                         updated = true;
                     }
                     if (o instanceof XincoAddAttribute) {
                         XincoAddAttribute attr = (XincoAddAttribute) o;
-                        new XincoAddAttributeTJpaController().create(new XincoAddAttributeT(record_ID,
+                        XincoAddAttributeT temp = new XincoAddAttributeT(
                                 attr.getXincoAddAttributePK().getAttributeId(),
                                 attr.getXincoAddAttributePK().getAttributeId(),
                                 attr.getAttribInt(),
@@ -163,12 +178,14 @@ public class AuditedEntityListener {
                                 attr.getAttribDouble(),
                                 attr.getAttribVarchar(),
                                 attr.getAttribText(),
-                                attr.getAttribDatetime()));
+                                attr.getAttribDatetime());
+                        new XincoAddAttributeTJpaController().create(temp);
+                        record_ID = temp.getRecordId();
                         updated = true;
                     }
                     if (o instanceof XincoSetting) {
                         XincoSetting setting = (XincoSetting) o;
-                        XincoSettingT temp = new XincoSettingT(record_ID,
+                        XincoSettingT temp = new XincoSettingT(
                                 setting.getId(),
                                 setting.getDescription());
                         temp.setBoolValue(setting.getBoolValue());
@@ -176,6 +193,7 @@ public class AuditedEntityListener {
                         temp.setLongValue(setting.getLongValue());
                         temp.setStringValue(setting.getStringValue());
                         new XincoSettingTJpaController().create(temp);
+                        record_ID = temp.getRecordId();
                         updated = true;
                     } else if (!updated) {
                         throw new XincoException(o + " is an Auditable Object but it's processing logic is not implemented yet!");

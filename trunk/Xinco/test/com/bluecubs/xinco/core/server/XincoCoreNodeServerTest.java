@@ -77,7 +77,7 @@ public class XincoCoreNodeServerTest extends TestCase {
         try {
             System.out.println("fillXincoCoreNodes");
             XincoCoreNodeServer instance = new XincoCoreNodeServer(1);
-            assertTrue(((Vector)instance.getXinco_core_nodes()).size() > 0);
+            assertTrue((instance.getXinco_core_nodes()).size() > 0);
         } catch (Exception e) {
             e.printStackTrace();
             fail();
@@ -92,7 +92,7 @@ public class XincoCoreNodeServerTest extends TestCase {
             System.out.println("fillXincoCoreData");
             XincoCoreNodeServer instance = new XincoCoreNodeServer(1);
             instance.fillXincoCoreData();
-            assertTrue(((Vector)instance.getXinco_core_data()).size() > 0);
+            assertTrue((instance.getXinco_core_data()).size() > 0);
         } catch (Exception e) {
             e.printStackTrace();
             fail();

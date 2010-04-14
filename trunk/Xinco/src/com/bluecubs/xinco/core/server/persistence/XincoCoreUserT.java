@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
@@ -10,10 +5,13 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -28,6 +26,10 @@ public class XincoCoreUserT implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XCURECORDIDKEYGEN")
+    @TableGenerator(name = "XCURECORDIDKEYGEN", table = "xinco_id",
+    pkColumnName = "tablename", valueColumnName = "last_id",
+    pkColumnValue = "xinco_core_user_modified_record", initialValue = 1, allocationSize = 1)
     @Column(name = "record_id", nullable = false)
     private Integer recordId;
     @Basic(optional = false)
@@ -62,12 +64,7 @@ public class XincoCoreUserT implements Serializable {
     public XincoCoreUserT() {
     }
 
-    public XincoCoreUserT(Integer recordId) {
-        this.recordId = recordId;
-    }
-
-    public XincoCoreUserT(Integer recordId, int id, String username, String userpassword, String name, String firstname, String email, int statusNumber, int attempts, Date lastModified) {
-        this.recordId = recordId;
+    public XincoCoreUserT(int id, String username, String userpassword, String name, String firstname, String email, int statusNumber, int attempts, Date lastModified) {
         this.id = id;
         this.username = username;
         this.userpassword = userpassword;
@@ -168,7 +165,7 @@ public class XincoCoreUserT implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        
         if (!(object instanceof XincoCoreUserT)) {
             return false;
         }

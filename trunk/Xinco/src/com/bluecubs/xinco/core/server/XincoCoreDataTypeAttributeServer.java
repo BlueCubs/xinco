@@ -43,6 +43,7 @@ import com.bluecubs.xinco.core.server.persistence.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributePK;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeAttributeJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeJpaController;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -50,7 +51,7 @@ import java.util.List;
 
 public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute {
 
-    private static int changer = 0;
+    private static final long serialVersionUID = 1L;
     private static List result;
     //create data type attribute object for data structures
 
@@ -105,7 +106,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             xcdta.setModificationReason("audit.general.created");
             xcdta.setModifierId(getChangerID());
             xcdta.setModificationTime(new Timestamp(new Date().getTime()));
-            xcdta.setXincoCoreDataType(new com.bluecubs.xinco.core.server.persistence.XincoCoreDataType(getXinco_core_data_type_id()));
+            xcdta.setXincoCoreDataType(new XincoCoreDataTypeJpaController().findXincoCoreDataType(getXinco_core_data_type_id()));
             new XincoCoreDataTypeAttributeJpaController().create(xcdta);
             result = XincoDBManager.createdQuery("Select xcd from XincoCoreData xcd where xcd.xincoCoreDataTypeId.id=" + getXinco_core_data_type_id());
             for (Object o : result) {

@@ -50,11 +50,12 @@ import java.util.logging.Logger;
 
 public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpecialCase {
 
+    private static final long serialVersionUID = 1L;
     private static List result;
     private static HashMap parameters = new HashMap();
     //create node object for data structures
 
-    public XincoCoreNodeServer(){
+    public XincoCoreNodeServer() {
     }
 
     @SuppressWarnings("unchecked")
@@ -146,11 +147,8 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpeci
                 xcn.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.edit(xcn);
             } else {
-                setId(XincoDBManager.getNewID("xinco_core_node"));
-                xcn = new com.bluecubs.xinco.core.server.persistence.XincoCoreNode(getId());
-                if (getXinco_core_node_id() == 0) {
-                    xcn.setXincoCoreNodeId(controller.findXincoCoreNode(getXinco_core_node_id()));
-                }
+                xcn = new com.bluecubs.xinco.core.server.persistence.XincoCoreNode();
+                xcn.setXincoCoreNodeId(controller.findXincoCoreNode(getXinco_core_node_id()));
                 xcn.setXincoCoreLanguageId(new XincoCoreLanguageJpaController().findXincoCoreLanguage(getXinco_core_language().getId()));
                 xcn.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
                 xcn.setStatusNumber(getStatus_number());
@@ -158,6 +156,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpeci
                 xcn.setModifierId(getChangerID());
                 xcn.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.create(xcn);
+                setId(xcn.getId());
             }
         } catch (Exception e) {
             throw new XincoException(e.getMessage());
@@ -292,9 +291,9 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpeci
     private Vector<com.bluecubs.xinco.core.server.persistence.XincoCoreNode> getLeaves() throws XincoException {
         Vector<com.bluecubs.xinco.core.server.persistence.XincoCoreNode> leaves =
                 new Vector<com.bluecubs.xinco.core.server.persistence.XincoCoreNode>();
-        result = XincoDBManager.protectedCreatedQuery("select x from XincoCoreNode x " +
-                "where x.id not in (select y.xincoCoreNodeId.id from XincoCoreNode y " +
-                "where y.xincoCoreNodeId is not null)",null,true);
+        result = XincoDBManager.protectedCreatedQuery("select x from XincoCoreNode x "
+                + "where x.id not in (select y.xincoCoreNodeId.id from XincoCoreNode y "
+                + "where y.xincoCoreNodeId is not null)", null, true);
         if (result.size() == 0) {
             //Check if the root is there
             for (Object o : new XincoCoreNodeJpaController().findXincoCoreNodeEntities()) {

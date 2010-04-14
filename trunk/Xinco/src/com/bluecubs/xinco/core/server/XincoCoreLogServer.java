@@ -51,6 +51,7 @@ import java.util.ResourceBundle;
 
 public class XincoCoreLogServer extends XincoCoreLog {
 
+    private static final long serialVersionUID = 1L;
     private static List result;
     private static HashMap parameters = new HashMap();
     private XincoCoreUser user;
@@ -140,8 +141,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 xcl.setVersionPostfix(getVersion().getVersion_postfix().replaceAll("'", "\\\\'"));
                 controller.edit(xcl);
             } else {
-                setId(XincoDBManager.getNewID("xinco_core_log"));
-                xcl = new com.bluecubs.xinco.core.server.persistence.XincoCoreLog(getId());
+                xcl = new com.bluecubs.xinco.core.server.persistence.XincoCoreLog();
                 xcl.setXincoCoreDataId(new XincoCoreDataJpaController().findXincoCoreData(getXinco_core_data_id()));
                 xcl.setXincoCoreUserId(new XincoCoreUserJpaController().findXincoCoreUser(getXinco_core_user_id()));
                 xcl.setOpCode(getOp_code());
@@ -152,6 +152,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 xcl.setVersionLow(getVersion().getVersion_low());
                 xcl.setVersionPostfix(getVersion().getVersion_postfix().replaceAll("'", "\\\\'"));
                 controller.create(xcl);
+                setId(xcl.getId());
             }
         } catch (Exception e) {
             throw new XincoException(e.getMessage());

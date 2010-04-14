@@ -38,8 +38,7 @@ public class XincoCoreGroupServerTest extends TestCase {
         try {
             System.out.println("write2DB");
             XincoCoreGroupServer instance = new XincoCoreGroupServer(0,"Test",1);
-            int result = instance.write2DB();
-            assertTrue(result>0);
+            assertTrue(instance.write2DB()>0);
             XincoCoreGroupServer.deleteFromDB(instance);
         } catch (XincoException ex) {
             Logger.getLogger(XincoCoreGroupServerTest.class.getName()).log(Level.SEVERE, null, ex);

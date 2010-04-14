@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bluecubs.xinco.core.server;
 
 import java.util.Vector;
@@ -29,6 +25,7 @@ public class XincoSettingServerTest extends TestCase {
 
     /**
      * Test of write2DB method, of class XincoSettingServer.
+     * @throws Exception
      */
     public void testWrite2DB() throws Exception {
         try {
@@ -51,6 +48,7 @@ public class XincoSettingServerTest extends TestCase {
 
     /**
      * Test of getSetting method, of class XincoSettingServer.
+     * @throws Exception
      */
     public void testGetSetting() throws Exception {
         System.out.println("getSetting");
@@ -60,6 +58,7 @@ public class XincoSettingServerTest extends TestCase {
 
     /**
      * Test of getSettings method, of class XincoSettingServer.
+     * @throws Exception 
      */
     public void testGetSettings() throws Exception {
         System.out.println("getSettings");

@@ -1,18 +1,16 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 
 /**
  *
@@ -20,11 +18,21 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "xinco_core_user_has_xinco_core_group_t")
-@NamedQueries({@NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findAll", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x"), @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findByRecordId", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x WHERE x.recordId = :recordId"), @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findByXincoCoreUserId", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x WHERE x.xincoCoreUserId = :xincoCoreUserId"), @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findByXincoCoreGroupId", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x WHERE x.xincoCoreGroupId = :xincoCoreGroupId"), @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findByStatusNumber", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x WHERE x.statusNumber = :statusNumber")})
+@NamedQueries({
+    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findAll", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x"),
+    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findByRecordId", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x WHERE x.recordId = :recordId"),
+    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findByXincoCoreUserId", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x WHERE x.xincoCoreUserId = :xincoCoreUserId"),
+    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findByXincoCoreGroupId", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x WHERE x.xincoCoreGroupId = :xincoCoreGroupId"),
+    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findByStatusNumber", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x WHERE x.statusNumber = :statusNumber")})
 public class XincoCoreUserHasXincoCoreGroupT implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XCUHXCGRECORDIDKEYGEN")
+    @TableGenerator(name = "XCUHXCGRECORDIDKEYGEN", table = "xinco_id",
+    pkColumnName = "tablename", valueColumnName = "last_id",
+    pkColumnValue = "xinco_core_user_modified_record", initialValue = 1, allocationSize = 1)
     @Column(name = "record_id", nullable = false)
     private Integer recordId;
     @Basic(optional = false)
@@ -40,12 +48,7 @@ public class XincoCoreUserHasXincoCoreGroupT implements Serializable {
     public XincoCoreUserHasXincoCoreGroupT() {
     }
 
-    public XincoCoreUserHasXincoCoreGroupT(Integer recordId) {
-        this.recordId = recordId;
-    }
-
-    public XincoCoreUserHasXincoCoreGroupT(Integer recordId, int xincoCoreUserId, int xincoCoreGroupId, int statusNumber) {
-        this.recordId = recordId;
+    public XincoCoreUserHasXincoCoreGroupT(int xincoCoreUserId, int xincoCoreGroupId, int statusNumber) {
         this.xincoCoreUserId = xincoCoreUserId;
         this.xincoCoreGroupId = xincoCoreGroupId;
         this.statusNumber = statusNumber;
@@ -92,7 +95,7 @@ public class XincoCoreUserHasXincoCoreGroupT implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        
         if (!(object instanceof XincoCoreUserHasXincoCoreGroupT)) {
             return false;
         }
@@ -107,5 +110,4 @@ public class XincoCoreUserHasXincoCoreGroupT implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupT[recordId=" + recordId + "]";
     }
-
 }

@@ -65,6 +65,7 @@ import java.util.logging.Logger;
 //-1 = aged password modified, ready to turn unlocked
 public class XincoCoreUserServer extends XincoCoreUser {
 
+    private static final long serialVersionUID = 1L;
     private boolean hashPassword = true;
     private boolean increaseAttempts = false;
     private ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages"), settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
@@ -345,7 +346,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     setLastModified(ts);
                     setChange(false);
                 } else {
-                    ts = (Timestamp) getLastModified();
+                    ts = getLastModified();
                 }
                 setLastModified(ts);
                 //Sometimes password got re-hashed
@@ -370,10 +371,9 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 xcu.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.edit(xcu);
             } else {
-                setId(XincoDBManager.getNewID("xinco_core_user"));
                 ts = new Timestamp(System.currentTimeMillis());
                 com.bluecubs.xinco.core.server.persistence.XincoCoreUser xcu =
-                        new com.bluecubs.xinco.core.server.persistence.XincoCoreUser(getId(),
+                        new com.bluecubs.xinco.core.server.persistence.XincoCoreUser(
                         getUsername().replaceAll("'", "\\\\'"), getUserpassword(), getName().replaceAll("'", "\\\\'"),
                         getFirstname().replaceAll("'", "\\\\'"), getEmail().replaceAll("'", "\\\\'"),
                         getStatus_number(), getAttempts(), getLastModified());
@@ -381,6 +381,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 xcu.setModifierId(getChangerID());
                 xcu.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.create(xcu);
+                setId(xcu.getId());
             }
             if (isWriteGroups()) {
                 writeXincoCoreGroups();

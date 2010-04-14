@@ -39,6 +39,7 @@ import java.util.List;
 
 public class XincoException extends Error {
 
+    private static final long serialVersionUID = 1L;
     String xinco_message = "";
 
     public XincoException() {
