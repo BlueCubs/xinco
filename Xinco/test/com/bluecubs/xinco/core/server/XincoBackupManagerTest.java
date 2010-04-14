@@ -61,7 +61,7 @@ public class XincoBackupManagerTest extends TestCase {
             assertTrue(stats.size() == afterStats.size());
             for (Entry e : stats.entrySet()) {
                 System.out.println("Comparing stats for table: " + e.getKey());
-                System.out.println("Before: "+e.getKey() + ", Now: " + e.getValue() + ": " + afterStats.get((String) e.getKey()));
+                System.out.println("Before: "+e.getKey() + ", Now: " + e.getValue() + "Then: " + afterStats.get((String) e.getKey()));
                 assertTrue(e.getValue() == afterStats.get((String) e.getKey()));
             }
         } catch (Exception e) {

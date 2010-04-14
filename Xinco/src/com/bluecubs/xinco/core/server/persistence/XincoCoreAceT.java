@@ -1,18 +1,16 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 
 /**
  *
@@ -20,11 +18,27 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "xinco_core_ace_t")
-@NamedQueries({@NamedQuery(name = "XincoCoreAceT.findAll", query = "SELECT x FROM XincoCoreAceT x"), @NamedQuery(name = "XincoCoreAceT.findByRecordId", query = "SELECT x FROM XincoCoreAceT x WHERE x.recordId = :recordId"), @NamedQuery(name = "XincoCoreAceT.findById", query = "SELECT x FROM XincoCoreAceT x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreAceT.findByXincoCoreUserId", query = "SELECT x FROM XincoCoreAceT x WHERE x.xincoCoreUserId = :xincoCoreUserId"), @NamedQuery(name = "XincoCoreAceT.findByXincoCoreGroupId", query = "SELECT x FROM XincoCoreAceT x WHERE x.xincoCoreGroupId = :xincoCoreGroupId"), @NamedQuery(name = "XincoCoreAceT.findByXincoCoreNodeId", query = "SELECT x FROM XincoCoreAceT x WHERE x.xincoCoreNodeId = :xincoCoreNodeId"), @NamedQuery(name = "XincoCoreAceT.findByXincoCoreDataId", query = "SELECT x FROM XincoCoreAceT x WHERE x.xincoCoreDataId = :xincoCoreDataId"), @NamedQuery(name = "XincoCoreAceT.findByReadPermission", query = "SELECT x FROM XincoCoreAceT x WHERE x.readPermission = :readPermission"), @NamedQuery(name = "XincoCoreAceT.findByWritePermission", query = "SELECT x FROM XincoCoreAceT x WHERE x.writePermission = :writePermission"), @NamedQuery(name = "XincoCoreAceT.findByExecutePermission", query = "SELECT x FROM XincoCoreAceT x WHERE x.executePermission = :executePermission"), @NamedQuery(name = "XincoCoreAceT.findByAdminPermission", query = "SELECT x FROM XincoCoreAceT x WHERE x.adminPermission = :adminPermission")})
+@NamedQueries({
+    @NamedQuery(name = "XincoCoreAceT.findAll", query = "SELECT x FROM XincoCoreAceT x"),
+    @NamedQuery(name = "XincoCoreAceT.findByRecordId", query = "SELECT x FROM XincoCoreAceT x WHERE x.recordId = :recordId"),
+    @NamedQuery(name = "XincoCoreAceT.findById", query = "SELECT x FROM XincoCoreAceT x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreAceT.findByXincoCoreUserId", query = "SELECT x FROM XincoCoreAceT x WHERE x.xincoCoreUserId = :xincoCoreUserId"),
+    @NamedQuery(name = "XincoCoreAceT.findByXincoCoreGroupId", query = "SELECT x FROM XincoCoreAceT x WHERE x.xincoCoreGroupId = :xincoCoreGroupId"),
+    @NamedQuery(name = "XincoCoreAceT.findByXincoCoreNodeId", query = "SELECT x FROM XincoCoreAceT x WHERE x.xincoCoreNodeId = :xincoCoreNodeId"),
+    @NamedQuery(name = "XincoCoreAceT.findByXincoCoreDataId", query = "SELECT x FROM XincoCoreAceT x WHERE x.xincoCoreDataId = :xincoCoreDataId"),
+    @NamedQuery(name = "XincoCoreAceT.findByReadPermission", query = "SELECT x FROM XincoCoreAceT x WHERE x.readPermission = :readPermission"),
+    @NamedQuery(name = "XincoCoreAceT.findByWritePermission", query = "SELECT x FROM XincoCoreAceT x WHERE x.writePermission = :writePermission"),
+    @NamedQuery(name = "XincoCoreAceT.findByExecutePermission", query = "SELECT x FROM XincoCoreAceT x WHERE x.executePermission = :executePermission"),
+    @NamedQuery(name = "XincoCoreAceT.findByAdminPermission", query = "SELECT x FROM XincoCoreAceT x WHERE x.adminPermission = :adminPermission")})
 public class XincoCoreAceT implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XCARECORDIDKEYGEN")
+    @TableGenerator(name = "XCARECORDIDKEYGEN", table = "xinco_id",
+    pkColumnName = "tablename", valueColumnName = "last_id",
+    pkColumnValue = "xinco_core_user_modified_record", initialValue = 1, allocationSize = 1)
     @Column(name = "record_id", nullable = false)
     private Integer recordId;
     @Basic(optional = false)
@@ -54,12 +68,7 @@ public class XincoCoreAceT implements Serializable {
     public XincoCoreAceT() {
     }
 
-    public XincoCoreAceT(Integer recordId) {
-        this.recordId = recordId;
-    }
-
-    public XincoCoreAceT(Integer recordId, int id, boolean readPermission, boolean writePermission, boolean executePermission, boolean adminPermission) {
-        this.recordId = recordId;
+    public XincoCoreAceT(int id, boolean readPermission, boolean writePermission, boolean executePermission, boolean adminPermission) {
         this.id = id;
         this.readPermission = readPermission;
         this.writePermission = writePermission;
@@ -156,7 +165,7 @@ public class XincoCoreAceT implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        
         if (!(object instanceof XincoCoreAceT)) {
             return false;
         }
@@ -171,5 +180,4 @@ public class XincoCoreAceT implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreAceT[recordId=" + recordId + "]";
     }
-
 }

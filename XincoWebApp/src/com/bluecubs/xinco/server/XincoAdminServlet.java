@@ -81,6 +81,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class XincoAdminServlet extends HttpServlet {
+    private static final long serialVersionUID = 8298807323616744276L;
 
     private ResourceBundle rb;
     private ResourceBundle settings;

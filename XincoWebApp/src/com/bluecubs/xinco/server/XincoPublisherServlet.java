@@ -49,6 +49,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class XincoPublisherServlet extends HttpServlet {
+    private static final long serialVersionUID = 8477785363028064435L;
 
     private ResourceBundle rb;
     private XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
@@ -165,32 +166,28 @@ public class XincoPublisherServlet extends HttpServlet {
                 fileDownload = false;
             }
         }
-
+        PrintWriter out = response.getWriter();
         //generate specific output
         if (fileDownload) { // begin FILE output
             try {
                 response.setContentType("unknown/unknown");
-                OutputStream out = response.getOutputStream();
+                OutputStream outS = response.getOutputStream();
                 FileInputStream in = new FileInputStream(XincoCoreDataServer.getLastMajorVersionDataPath(core_data_id));
                 byte[] buf = new byte[4096];
                 int len;
                 while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
+                    outS.write(buf, 0, len);
                 }
                 in.close();
             } catch (Exception e) {
-                PrintWriter out = response.getWriter();
                 out.println(e);
             }
             //end FILE output
 
         } else {
             // begin HTML output
-
             //start output
             response.setContentType("text/html");
-            PrintWriter out = response.getWriter();
-
             //show header
             out.println("<html>");
             out.println("<head>");
@@ -208,9 +205,7 @@ public class XincoPublisherServlet extends HttpServlet {
             out.println("<body " + (!XincoDBManager.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' " : " ") + ">");
             out.println("<center>");
             out.println("<span class=\"text\">");
-
             out.println("");
-
             //show main menu
             if (core_data_id == 0) {
                 out.println("<br>");
@@ -242,9 +237,9 @@ public class XincoPublisherServlet extends HttpServlet {
                             }
                             out.println("<tr>");
                             out.println("<td class=\"text\">" + xdata_temp.getDesignation()
-                                    + " (" + (rb.containsKey(xdata_temp.getXinco_core_data_type().getDesignation()) ?
-                                        rb.getString(xdata_temp.getXinco_core_data_type().getDesignation()) :
-                                        xdata_temp.getXinco_core_data_type().getDesignation()) + " | "
+                                    + " (" + (rb.containsKey(xdata_temp.getXinco_core_data_type().getDesignation())
+                                    ? rb.getString(xdata_temp.getXinco_core_data_type().getDesignation())
+                                    : xdata_temp.getXinco_core_data_type().getDesignation()) + " | "
                                     + xdata_temp.getXinco_core_language().getSign() + ")" + "</td>");
                             out.println("<td class=\"text\"><a href=\"" + "XincoPublisher/" + xdata_temp.getId()
                                     + "/" + temp_url + "?list=" + request.getParameter("list") + "\" target=\"_blank\">"

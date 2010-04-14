@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
@@ -16,6 +11,8 @@ import javax.persistence.Embeddable;
  */
 @Embeddable
 public class XincoCoreDataTypeAttributePK implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     @Basic(optional = false)
     @Column(name = "xinco_core_data_type_id", nullable = false)
     private int xincoCoreDataTypeId;
@@ -50,14 +47,14 @@ public class XincoCoreDataTypeAttributePK implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (int) xincoCoreDataTypeId;
-        hash += (int) attributeId;
+        hash += xincoCoreDataTypeId;
+        hash += attributeId;
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+
         if (!(object instanceof XincoCoreDataTypeAttributePK)) {
             return false;
         }
@@ -75,5 +72,4 @@ public class XincoCoreDataTypeAttributePK implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributePK[xincoCoreDataTypeId=" + xincoCoreDataTypeId + ", attributeId=" + attributeId + "]";
     }
-
 }

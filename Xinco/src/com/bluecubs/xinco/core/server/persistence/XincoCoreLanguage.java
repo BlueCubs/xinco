@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import com.bluecubs.xinco.core.server.AuditedEntityListener;
@@ -15,11 +10,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 
 /**
  *
@@ -33,6 +31,10 @@ public class XincoCoreLanguage extends XincoAuditedObject implements Serializabl
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "LANGKEYGEN")
+    @TableGenerator(name = "LANGKEYGEN", table = "xinco_id",
+    pkColumnName = "tablename", valueColumnName = "last_id",
+    pkColumnValue = "xinco_core_language", initialValue = 1001, allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Integer id;
     @Basic(optional = false)
@@ -47,10 +49,6 @@ public class XincoCoreLanguage extends XincoAuditedObject implements Serializabl
     private List<XincoCoreData> xincoCoreDataList;
 
     public XincoCoreLanguage() {
-    }
-
-    public XincoCoreLanguage(Integer id) {
-        this.id = id;
     }
 
     public XincoCoreLanguage(Integer id, String sign, String designation) {
@@ -108,7 +106,7 @@ public class XincoCoreLanguage extends XincoAuditedObject implements Serializabl
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        
         if (!(object instanceof XincoCoreLanguage)) {
             return false;
         }

@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
@@ -16,6 +11,8 @@ import javax.persistence.Embeddable;
  */
 @Embeddable
 public class XincoCoreUserModifiedRecordPK implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     @Basic(optional = false)
     @Column(name = "id", nullable = false)
     private int id;
@@ -50,14 +47,14 @@ public class XincoCoreUserModifiedRecordPK implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (int) id;
-        hash += (int) recordId;
+        hash += id;
+        hash += recordId;
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+
         if (!(object instanceof XincoCoreUserModifiedRecordPK)) {
             return false;
         }
@@ -75,5 +72,4 @@ public class XincoCoreUserModifiedRecordPK implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecordPK[id=" + id + ", recordId=" + recordId + "]";
     }
-
 }

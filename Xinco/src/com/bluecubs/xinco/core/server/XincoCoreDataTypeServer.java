@@ -36,7 +36,6 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoCoreDataType;
-import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
@@ -50,6 +49,7 @@ import java.util.logging.Logger;
 
 public class XincoCoreDataTypeServer extends XincoCoreDataType {
 
+    private static final long serialVersionUID = 1L;
     private static List result;
     private static HashMap parameters = new HashMap();
     //create data type object for data structures
@@ -120,16 +120,15 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
                 xcdt.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.edit(xcdt);
             } else {
-                setId(XincoDBManager.getNewID("xinco_core_data_type"));
                 com.bluecubs.xinco.core.server.persistence.XincoCoreDataType xcdt =
-                        new com.bluecubs.xinco.core.server.persistence.XincoCoreDataType(getId());
+                        new com.bluecubs.xinco.core.server.persistence.XincoCoreDataType();
                 xcdt.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
                 xcdt.setDescription(getDescription().replaceAll("'", "\\\\'"));
-                xcdt.setId(getId());
                 xcdt.setModificationReason("audit.general.created");
                 xcdt.setModifierId(getChangerID());
                 xcdt.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.create(xcdt);
+                setId(xcdt.getId());
             }
         } catch (Exception e) {
             throw new XincoException(e.getMessage());

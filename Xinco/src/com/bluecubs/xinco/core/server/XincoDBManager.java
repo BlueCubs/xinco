@@ -37,8 +37,6 @@ package com.bluecubs.xinco.core.server;
 
 import java.util.Map;
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
-import com.bluecubs.xinco.core.server.persistence.XincoId;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoIdJpaController;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -96,20 +94,6 @@ public class XincoDBManager {
      */
     public static void setLocked(boolean aLocked) {
         locked = aLocked;
-    }
-
-    public static int getNewID(String attrTN) throws Exception {
-        int newID = 0;
-        parameters.clear();
-        parameters.put("tablename", attrTN);
-        List<Object> list = namedQuery("XincoId.findByTablename", parameters);
-        if (list.size() > 0) {
-            XincoId xid = ((XincoId) list.get(0));
-            newID = xid.getLastId() + 1;
-            xid.setLastId(newID);
-            new XincoIdJpaController().edit(xid);
-        }
-        return newID;
     }
 
     @Override
@@ -262,8 +246,9 @@ public class XincoDBManager {
             //Use the context defined Database connection
             (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
             emf = Persistence.createEntityManagerFactory(config.JNDIDB);
-            Logger.getLogger(XincoDBManager.class.getName()).log(Level.FINE,
-                    "Using context defined database connection: " + config.JNDIDB);
+            Logger.getLogger(XincoDBManager.class.getName()).
+                    log(Level.FINE, "Using context defined database connection: {0}",
+                    config.JNDIDB);
             usingContext = true;
         } catch (Exception e) {
             if (!usingContext) {

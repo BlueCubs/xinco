@@ -49,6 +49,7 @@ import java.util.logging.Logger;
 
 public class XincoCoreGroupServer extends XincoCoreGroup {
 
+    private static final long serialVersionUID = 1L;
     private static List result;
     private static HashMap parameters = new HashMap();
     //create group object for data structures
@@ -100,15 +101,15 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
                 xcg.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.edit(xcg);
             } else {
-                setId(XincoDBManager.getNewID("xinco_core_group"));
                 com.bluecubs.xinco.core.server.persistence.XincoCoreGroup xcg =
-                        new com.bluecubs.xinco.core.server.persistence.XincoCoreGroup(getId());
+                        new com.bluecubs.xinco.core.server.persistence.XincoCoreGroup();
                 xcg.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
                 xcg.setStatusNumber(getStatus_number());
                 xcg.setModificationReason("audit.general.create");
                 xcg.setModifierId(getChangerID());
                 xcg.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.create(xcg);
+                setId(xcg.getId());
             }
         } catch (Exception e) {
             throw new XincoException(e.getMessage());
@@ -116,7 +117,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
         return getId();
     }
 
-    public static int deleteFromDB(XincoCoreGroup group){
+    public static int deleteFromDB(XincoCoreGroup group) {
         try {
             new XincoCoreGroupJpaController().destroy(group.getId());
             return 0;
@@ -134,7 +135,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
         Vector coreGroups = new Vector();
         try {
             result = XincoDBManager.createdQuery("SELECT xcg FROM XincoCoreGroup xcg ORDER BY xcg.designation");
-            for(Object o: result) {
+            for (Object o : result) {
                 coreGroups.addElement(new XincoCoreGroupServer((com.bluecubs.xinco.core.server.persistence.XincoCoreGroup) o));
             }
         } catch (Exception e) {

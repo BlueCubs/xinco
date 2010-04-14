@@ -35,8 +35,8 @@
  */
 package com.bluecubs.xinco.add.client;
 
+import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.XincoException;
-import com.bluecubs.xinco.add.*;
 
 public class XincoAddAttributeClient extends XincoAddAttribute {
 

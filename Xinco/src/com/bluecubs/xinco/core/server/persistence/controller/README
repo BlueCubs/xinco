@@ -1,0 +1,8 @@
+Make sure to replace the following in the controller classes so it uses the same
+Persistence unit that XincoDBManager is using:
+
+Replace:
+emf = Persistence.createEntityManagerFactory("XincoPU");
+
+with:
+emf = com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory();

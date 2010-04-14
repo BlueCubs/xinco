@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junit.framework.Test;
@@ -16,7 +15,9 @@ import junit.framework.TestSuite;
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 public class XincoCoreUserServerTest extends TestCase {
-private String originalPassword;
+
+    private String originalPassword;
+
     public XincoCoreUserServerTest(String testName) {
         super(testName);
     }
@@ -79,7 +80,6 @@ private String originalPassword;
         assertTrue(XincoCoreUserServer.getXincoCoreUsers().size() > 0);
     }
 
-    
     /**
      * Test of isPasswordUsable method, of class XincoCoreUserServer.
      */
@@ -89,9 +89,9 @@ private String originalPassword;
             String newPass = "test";
             XincoCoreUserServer instance = new XincoCoreUserServer(1);
             instance.setReason("Test");
-            originalPassword=instance.getUserpassword();
+            originalPassword = instance.getUserpassword();
             //Check against current password
-            assertFalse(instance.isPasswordUsable(instance.getUserpassword(),false));
+            assertFalse(instance.isPasswordUsable(instance.getUserpassword(), false));
             //Check against recently updated password
             instance.setUserpassword(newPass);
             instance.setHashPassword(true);
@@ -99,10 +99,10 @@ private String originalPassword;
             assertFalse(instance.isPasswordUsable(newPass));
             //Change last modified out of invalid range
             GregorianCalendar cal = new GregorianCalendar();
-            int val=Integer.valueOf(ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings").getString("password.aging"))+1;
+            int val = Integer.valueOf(ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings").getString("password.aging")) + 1;
             cal.add(GregorianCalendar.DATE, -val);
             instance.setLastModified(new Timestamp(cal.getTimeInMillis()));
-            instance.setUserpassword(newPass+"*");
+            instance.setUserpassword(newPass + "*");
             instance.setHashPassword(true);
             instance.write2DB();
             assertTrue(instance.isPasswordUsable(newPass));
@@ -122,8 +122,8 @@ private String originalPassword;
     public void testLogin() {
         try {
             System.out.println("Login");
-            XincoCoreUserServer instance = new XincoCoreUserServer("admin","admin");
-            assertTrue(((Vector)instance.getXinco_core_groups()).size() >= 0);
+            XincoCoreUserServer instance = new XincoCoreUserServer("admin", "admin");
+            assertTrue((instance.getXinco_core_groups()).size() >= 0);
         } catch (XincoException ex) {
             Logger.getLogger(XincoCoreUserServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();

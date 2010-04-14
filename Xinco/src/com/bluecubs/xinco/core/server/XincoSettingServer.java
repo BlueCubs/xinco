@@ -15,6 +15,7 @@ import java.util.logging.Logger;
  */
 public class XincoSettingServer extends XincoSetting {
 
+    private static final long serialVersionUID = 1L;
     private static HashMap<String, Object> parameters = new HashMap<String, Object>();
     private static List<Object> result;
 
@@ -63,7 +64,6 @@ public class XincoSettingServer extends XincoSetting {
                 controller.edit(s);
             } else {
                 s = new com.bluecubs.xinco.core.server.persistence.XincoSetting();
-                s.setId(XincoDBManager.getNewID("xinco_setting"));
                 s.setDescription(getDescription());
                 s.setBoolValue(isBool_value());
                 s.setIntValue(getInt_value());

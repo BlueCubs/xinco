@@ -53,6 +53,7 @@ import java.util.List;
 
 public class XincoCoreDataServer extends XincoCoreData {
 
+    private static final long serialVersionUID = 1L;
     private XincoCoreUserServer user;
     private static HashMap parameters = new HashMap();
     private static List result;
@@ -172,9 +173,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                 xcd.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.edit(xcd);
             } else {
-                setId(XincoDBManager.getNewID("xinco_core_data"));
                 com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd = new com.bluecubs.xinco.core.server.persistence.XincoCoreData();
-                xcd.setId(getId());
                 parameters.clear();
                 parameters.put("id", this.getXinco_core_node_id());
                 xcd.setXincoCoreNodeId((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) XincoDBManager.namedQuery("XincoCoreNode.findById", parameters).get(0));
@@ -190,6 +189,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                 xcd.setModifierId(getChangerID());
                 xcd.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.create(xcd);
+                setId(xcd.getId());
             }
             //Update add attributes
             for (i = 0; i < getXinco_add_attributes().size(); i++) {
@@ -202,10 +202,10 @@ public class XincoCoreDataServer extends XincoCoreData {
                         ((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttribute_id()));
                 xaa.setAttribInt(((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_int());
                 xaa.setAttribUnsignedint(((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint());
-                xaa.setAttribDouble(((XincoAddAttribute)  getXinco_add_attributes().elementAt(i)).getAttrib_double());
-                xaa.setAttribVarchar(((XincoAddAttribute)  getXinco_add_attributes().elementAt(i)).getAttrib_varchar());
-                xaa.setAttribText(((XincoAddAttribute)  getXinco_add_attributes().elementAt(i)).getAttrib_text());
-                xaa.setAttribDatetime(((XincoAddAttribute)  getXinco_add_attributes().elementAt(i)).getAttrib_datetime().getTime());
+                xaa.setAttribDouble(((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_double());
+                xaa.setAttribVarchar(((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_varchar());
+                xaa.setAttribText(((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_text());
+                xaa.setAttribDatetime(((XincoAddAttribute) getXinco_add_attributes().elementAt(i)).getAttrib_datetime().getTime());
                 new XincoAddAttributeJpaController().edit(xaa);
             }
         } catch (Exception e) {

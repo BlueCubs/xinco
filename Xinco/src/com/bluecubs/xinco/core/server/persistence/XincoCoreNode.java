@@ -10,6 +10,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -17,6 +19,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 import org.eclipse.persistence.annotations.PrivateOwned;
 
 /**
@@ -36,6 +39,10 @@ public class XincoCoreNode extends XincoAuditedObject implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "NODEKEYGEN")
+    @TableGenerator(name = "NODEKEYGEN", table = "xinco_id",
+    pkColumnName = "tablename", valueColumnName = "last_id",
+    pkColumnValue = "xinco_core_node", initialValue = 1001, allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Integer id;
     @Basic(optional = false)
@@ -59,10 +66,6 @@ public class XincoCoreNode extends XincoAuditedObject implements Serializable {
     private List<XincoCoreData> xincoCoreDataList;
 
     public XincoCoreNode() {
-    }
-
-    public XincoCoreNode(Integer id) {
-        this.id = id;
     }
 
     public XincoCoreNode(Integer id, String designation, int statusNumber) {
@@ -144,7 +147,7 @@ public class XincoCoreNode extends XincoAuditedObject implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        
         if (!(object instanceof XincoCoreNode)) {
             return false;
         }
