@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+  <head>
+    <meta name="author" content="Georg Wittberger" />
+    <meta name="description" content="SOAP templates for xincoDMS documentation and user manual" />
+    <meta name="keywords" content="xinco, xincoDMS, DMS, XML, SOAP, document, management, system, Java, open, source" />
+    <meta name="robots" content="index,follow" />
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <meta http-equiv="content-style-type" content="text/css" />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <title>SOAP templates for xincoDMS - upload_file.xml</title>
+  </head>
+  <body>
+    <h1>upload_file.xml</h1>
+    <p>This SOAP request marks the final step in the process of file upload or check-in. It allows you to transfer
+    the binary data of the file to the xincoDMS repository.</p>
+    <p>The response contains a value which should be equal to the filesize (in bytes) on successful transfer.</p>
+    <p><b>Important note:</b> The binary data is transfered in Base64 encoding. You have to perform the appropriate
+    transformation manually.</p>
+    <p>Remember that uploading or checking-in a data object is done in multiple steps. Be sure to follow this
+    process:</p>
+    <ol>
+      <li>Create the file on the server using <a href="create_file.html">create_file.xml</a> or check-in the file
+      using <a href="checkin_file.html">checkin_file.xml</a></li>
+      <li>Create a log entry for the creation/check-in using <a href="create_log.html">create_log.xml</a></li>
+      <li>Upload the binary data using this SOAP request</li>
+    </ol>
+    <h2>Basic parameters</h2>
+    <p>The text content of the following element nodes has to be adjusted:</p>
+    <table cellspacing="0">
+      <colgroup>
+        <col width="50%" />
+        <col width="50%" />
+      </colgroup>
+      <thead>
+        <tr><th>XPath query</th><th>Value</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/designation</td>
+          <td><b>Name</b> of the file you are uploading</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/changerID</td>
+          <td>Internal <b>ID of the user</b> performing the file upload (e.g. 1001)</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_core_node_id</td>
+          <td>Internal <b>ID of the parent</b> folder containing the file (e.g. 1001)</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/id</td>
+          <td>Internal <b>ID</b> of the file to be uploaded. This can be obtained by the
+          <a href="create_file.html">create_file.xml</a> request.</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in1</td>
+          <td>Base64-encoded binary data of the file</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in2/username</td>
+          <td><b>Username</b> of the user performing the operation</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in2/userpassword</td>
+          <td><b>Password</b> of the user performing the operation</td>
+        </tr>
+      </tbody>
+    </table>
+    <h2>Setting the meta-information</h2>
+    <p>Although already configured in the previous steps of the upload/check-in process you have to fill in the
+    additional attributes (meta-information) in this request as well. It is highly recommended to reuse the values
+    from the previous creation or check-in request. You may query each XincoAddAttribute object by its
+    &lt;attribute_id&gt; element using these conditional XPath expressions:</p>
+    <table cellspacing="0">
+      <colgroup>
+        <col width="50%" />
+        <col width="50%" />
+      </colgroup>
+      <thead>
+        <tr><th>XPath query</th><th>Value</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_add_attributes/item[attribute_id/text() = '1']</td>
+          <td><b>Name</b> of the file<br />
+          <br />
+          Set the text content of the &lt;attrib_varchar&gt; child to the designation of the file.</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_add_attributes/item[attribute_id/text() = '2']</td>
+          <td><b>Size</b> of the file (in bytes)<br />
+          <br />
+          Set the text content of the &lt;attrib_unsignedint&gt; child to the filesize in bytes.</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_add_attributes/item[attribute_id/text() = '3']</td>
+          <td><b>Checksum</b> of the file<br />
+          <br />
+          This feature is currently not supported by xincoDMS.</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_add_attributes/item[attribute_id/text() = '4']</td>
+          <td><b>Revision model</b> of the file (keep old versions)<br />
+          <br />
+          Set the text content of the &lt;attrib_unsignedint&gt; child to 1 if you want to enable the revision
+          model for this file (keep old versions) or to 0 to disable this feature.</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_add_attributes/item[attribute_id/text() = '5']</td>
+          <td><b>Archiving model</b> of the file<br />
+          <br />
+          Set the text content of the &lt;attrib_unsignedint&gt; child to 1 if you want to enable archiving for
+          this file or 0 to disable it.</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_add_attributes/item[attribute_id/text() = '6']</td>
+          <td>Last <b>archiving date</b> of the file<br />
+          <br />
+          Set the text content of the &lt;attrib_datetime&gt; child to the last date the file was archived or skip
+          it if you do not use archiving. Date syntax: YYYY-MM-DDTHH:MM:SS.DDDZ</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_add_attributes/item[attribute_id/text() = '7']</td>
+          <td><b>Archiving interval</b> of the file (in days)<br />
+          <br />
+          Set the text content of the &lt;attrib_unsignedint&gt; child to a value defining the number of days
+          between archiving operations or leave it out if you do not use archiving.</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_add_attributes/item[attribute_id/text() = '8']</td>
+          <td><b>Archiving location</b> of the file<br />
+          <br />
+          Set the text content of the &lt;attrib_text&gt; child to the desired archiving location or leave just
+          skip this item if you do not use archiving.</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_add_attributes/item[attribute_id/text() = '9']</td>
+          <td><b>Description</b> of the file<br />
+          <br />
+          Set the text content of the &lt;attrib_varchar&gt; child to the description of the file.</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_add_attributes/item[attribute_id/text() = '10']</td>
+          <td><b>Keyword 1</b> of the file<br />
+          <br />
+          Set the text content of the &lt;attrib_varchar&gt; child to the first keyword of the file.</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_add_attributes/item[attribute_id/text() = '11']</td>
+          <td><b>Keyword 2</b> of the file<br />
+          <br />
+          Set the text content of the &lt;attrib_varchar&gt; child to the second keyword of the file.</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_add_attributes/item[attribute_id/text() = '12']</td>
+          <td><b>Keyword 3</b> of the file<br />
+          <br />
+          Set the text content of the &lt;attrib_varchar&gt; child to the third keyword of the file.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><b>Important note:</b> The text content of the &lt;xinco_core_data_id&gt; child element in each &lt;item&gt;
+    node must be set to the internal <b>ID</b> of the file you are uploading.</p>
+    <h2>Reusing the log entry for the operation</h2>
+    <p>The previously created log entry for the file creation/check-in must be put into this template again.
+    Therefore you have to modify the text content of the following elements:</p>
+    <table cellspacing="0">
+      <colgroup>
+        <col width="50%" />
+        <col width="50%" />
+      </colgroup>
+      <thead>
+        <tr><th>XPath query</th><th>Value</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_core_logs/item/id</td>
+          <td>Internal <b>ID of the log entry</b> created for this file operation (e.g. 1001)</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_core_logs/item/op_code</td>
+          <td><b>Operation code</b> for this file operation. Set to 1 for the creation of a new file or to 5 for
+          check-in.</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_core_logs/item/changerID</td>
+          <td>Internal <b>ID of the user</b> performing this operation. This can be obtained via the
+          <a href="get_user_info.html">get_user_info.xml</a> request.</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_core_logs/item/op_description</td>
+          <td><b>Log description</b> for this file operation. Here you can provide a brief description of what
+          you did to the file.</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_core_logs/item/version/version_high</td>
+          <td><b>Major version</b> of the file at this state</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_core_logs/item/version/version_low</td>
+          <td><b>Revision</b> of the file at this state</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_core_logs/item/version/version_mid</td>
+          <td><b>Minor version</b> of the file at this state</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_core_logs/item/version/version_postfix</td>
+          <td><b>Version postfix</b> of the file at this state (e.g. Beta)</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_core_logs/item/xinco_core_data_id</td>
+          <td>Internal <b>ID</b> of the file you are uploading (e.g. 1001)</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_core_logs/item/xinco_core_user_id</td>
+          <td>Internal <b>ID of the user</b> performing this operation. This can be obtained via the
+          <a href="get_user_info.html">get_user_info.xml</a> request.</td>
+        </tr>
+      </tbody>
+    </table>
+    <h2>Language settings</h2>
+    <p>If you want to set the language of this file object you have to adjust the following nodes as well. By
+    default the language is pre-configured to be &quot;unknown&quot;.</p>
+    <table cellspacing="0">
+      <colgroup>
+        <col width="50%" />
+        <col width="50%" />
+      </colgroup>
+      <thead>
+        <tr><th>XPath query</th><th>Value</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_core_language/designation</td>
+          <td><b>Name</b> of the desired language<br />
+          <br />
+          Predefined values in the xincoDMS basic installation:<br />
+          unknown, English, German, French, Italian, Spanish, Russian</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_core_language/id</td>
+          <td>Internal <b>ID</b> of the desired language<br />
+          <br />
+          Predefined values in the xincoDMS basic installation:<br />
+          1 = unknown<br />
+          2 = English<br />
+          3 = German<br />
+          4 = French<br />
+          5 = Italian<br />
+          6 = Spanish<br />
+          7 = Russian</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:uploadXincoCoreData/in0/xinco_core_language/sign</td>
+          <td><b>Abbreviation</b> of the desired language<br />
+          <br />
+          Predefined values in the xincoDMS basic installation:<br />
+          n/a = unknown<br />
+          en = English<br />
+          de = German<br />
+          fr = French<br />
+          it = Italian<br />
+          es = Spanish<br />
+          ru = Russian</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><b>Hint:</b> Each of the XPath queries above will return an element node. To modify its content you will
+    have to go down to its text node which is typically the first child. Be prepared that some elements might not
+    have a text node by default. You may have to create a child text node first.</p>
+    <p><a href="index.html">Back to the table of contents</a></p>
+  </body>
+</html>

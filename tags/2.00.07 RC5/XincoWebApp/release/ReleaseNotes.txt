@@ -1,0 +1,218 @@
+===============================
+=  Release Notes: xinco DMS   =
+===============================
+
+This product is distributed under the Apache License, Version 2.0.
+By installing and using the product, you agree to the terms of the license!
+
+This project supports the blueCubs vision of giving back
+to the community in exchange for free software!
+More information on: http://www.bluecubs.org
+
+===============================
+
+============================
+xinco DMS - Version 2.00.05:
+============================
+
+- There is some internationalization changes in the database that needs translating (I did English and Spanish) but won't affect other users since the default values (English) are the current behavior.
+
+- Upgraded design documents from DBDesigner to the new MySQL Workbench.
+
+- The guide was updated as well.
+
+- Automatic version increments based on action performed (still open for creation so you can check in a document as 2.1.0 for example.
+
+- User selects if the change is major or minor, this updates the version number accordingly.
+
+- Removed reason dialog from checkout workflow
+
+- Commenting or modifying metadata updated the version low number.
+
+- Web app only sees latest major version (i.e. 3.0.0 or 3.1.0) (This provides the hiding of interim versions!)
+
+- XincoExplorer now displays XincoData with the proper icon (if is a pdf it'll display the OS icon for pdf!)
+
+- XincoExplorer has drag 'n drop functionality
+
+============================
+xinco DMS - Version 2.00.04:
+============================
+
+- XincoExplorer: added download of entire folder structures (files + subfolders)
+
+- added locale: Polish
+
+- various bugfixes
+
+
+============================
+xinco DMS - Version 2.00.03:
+============================
+
+- significant performance optimizations
+
+- added locale: Italian
+
+- various bugfixes
+
+
+============================
+xinco DMS - Version 2.00.02:
+============================
+
+- bugfix: XincoAdmin corrupted passwords
+
+- added locale: Simplified Chinese
+
+
+============================
+xinco DMS - Version 2.00.01:
+============================
+
+- bugfix: archiving service
+
+- bugfix: audit trail view in XincoAdmin
+
+- bugfix: XincoExplorer login
+
+
+============================
+xinco DMS - Version 2.00.00:
+============================
+
+- FDA 21 CFR part 11 compliance (both XincoAdmin & XincoExplorer)
+  - password aging
+  - automatic lockout after certain amount of failed attempts
+  - not able to repeat a password in certain amount of time
+  - the new audit trail system
+  - audit trail view feature included in XincoAdmin
+
+- XincoAdmin completely internationalized
+
+- XincoPublisher completely internationalized
+
+- XincoCron completely internationalized
+
+- internal File Repository is structured hierarchically
+
+- XincoExplorer refactored
+
+- new Napkin & Substance look & feel available for XincoExplorer
+
+- Progress bar for lenghty operations like login, upload & download, search
+
+- new localizations: Spanish, Brazilian Portuguese
+
+- ...
+
+
+===========================
+xinco DMS - Version 1.11.0:
+===========================
+
+- XincoExplorer: preview of files by double-clicking
+
+- Trash is non-viewable, except for admins
+
+- objects inherit access rights from parent folders
+
+- XincoAdmin: edit languages
+
+- XincoAdmin: edit data type attributes
+
+
+===========================
+xinco DMS - Version 1.10.0:
+===========================
+
+- Support for both MySQL and PostgreSQL
+
+- added new group "Public"
+
+- Publish data by setting status to "Published"
+  or granting read access to new group "Public"
+
+- XincoPublisher can either list all published data
+  or browse publicly available folders and data
+
+- XincoAdmin can reset user passwords to "123456"
+
+- bug fixes
+
+
+==========================
+xinco DMS - Version 1.9.1:
+==========================
+
+- Dutch language support
+
+- Language selection dialog upon startup
+
+- compatibility with Tomcat 5.5
+
+- bug fixes
+
+
+==========================
+xinco DMS - Version 1.9.0:
+==========================
+
+- File Transfer using SOAP with Attachments
+  (client and server are backward compatible)
+
+- storage location of file repository and search index separated
+  to optimize use of network storage devices (NAS, SAN)
+
+- context menu in XincoExplorer
+
+- data commenting
+
+
+================================================
+xinco DMS - Version 1.8.5 - Cummulative Patch 2:
+================================================
+
+- Fixed bug in XincoExplorer:
+  - menu items labeled incorrectly -> fixed!
+
+- Fixed bug in xinco DMS Server:
+  - DB connections stayed open -> connection pool was exhausted after some time -> fixed!
+
+
+================================================
+xinco DMS - Version 1.8.5 - Cummulative Patch 1:
+================================================
+
+- Fixed bug in XincoExplorer
+
+- Fixed bug in xinco DMS Server
+
+
+==========================
+xinco DMS - Version 1.8.5:
+==========================
+
+- Added plugin interface for indexing special file types...
+
+- ...therefore xinco's configuration in [xinco]/webapps/xinco/META-INF/context.xml
+  has changed completely!!!
+
+  Please use the new context.xml when upgrading!!!
+
+- Added indexing of Microsoft Powerpoint documents
+
+
+==========================
+xinco DMS - Version 1.8.0:
+==========================
+
+- Added archiving support for files
+
+- xinco's configuration in [xinco]/webapps/xinco/META-INF/context.xml
+  was extended by archiving settings.
+
+  Please use the new context.xml when upgrading!!!
+
+- Added periodic index optimization which runs in the background every 4 hours
+  and after rebuilding the index from XincoAdmin
