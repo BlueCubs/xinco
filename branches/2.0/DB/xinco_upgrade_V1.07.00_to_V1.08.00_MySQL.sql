@@ -1,10 +1,15 @@
 UPDATE xinco_core_data_type_attribute SET attribute_id=attribute_id+5 WHERE xinco_core_data_type_id=1 AND attribute_id>=4 AND attribute_id<=7;
 
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 4, 'Revision_Model', 'unsignedint', 0);       
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 5, 'Archiving_Model', 'unsignedint', 0);       
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 6, 'Archiving_Date', 'datetime', 0);      
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 7, 'Archiving_Days', 'unsignedint', 0);      
-INSERT INTO xinco_core_data_type_attribute VALUES (1, 8, 'Archiving_Location', 'text', 0);      
+INSERT INTO xinco_core_data_type_attribute VALUES (1, 4, 'Revision_Model', 'unsignedint', 0);       
+
+INSERT INTO xinco_core_data_type_attribute VALUES (1, 5, 'Archiving_Model', 'unsignedint', 0);       
+
+INSERT INTO xinco_core_data_type_attribute VALUES (1, 6, 'Archiving_Date', 'datetime', 0);      
+
+INSERT INTO xinco_core_data_type_attribute VALUES (1, 7, 'Archiving_Days', 'unsignedint', 0);      
+
+INSERT INTO xinco_core_data_type_attribute VALUES (1, 8, 'Archiving_Location', 'text', 0);      
+
 
 
 
