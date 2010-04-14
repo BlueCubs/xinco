@@ -13,8 +13,5 @@
             </test-roots>
         </data>
         <data xmlns="http://www.netbeans.org/ns/jmx/1" version="0.4"/>
-        <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
-            <word>Xinco</word>
-        </spellchecker-wordlist>
     </configuration>
 </project>

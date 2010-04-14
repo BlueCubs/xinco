@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<endpoints version="2.0" xmlns="http://java.sun.com/xml/ns/jax-ws/ri/runtime">
-    <endpoint
-        name='Xinco'
-        implementation='com.bluecubs.xinco.core.service.Xinco'
-        binding="http://java.sun.com/xml/ns/jaxws/2003/05/soap/bindings/HTTP/"
-        url-pattern='/xinco'/>
-</endpoints>

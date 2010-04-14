@@ -1,5 +1,5 @@
 /**
- *Copyright 2005 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -47,7 +47,6 @@ public class XincoIndexText implements XincoIndexFileType {
         super();
     }
 
-    @Override
     public Reader getFileContentReader(File f) {
         Reader reader = null;
         FileInputStream is = null;
@@ -72,7 +71,6 @@ public class XincoIndexText implements XincoIndexFileType {
         return reader;
     }
 
-    @Override
     public String getFileContentString(File f) {
         return null;
     }

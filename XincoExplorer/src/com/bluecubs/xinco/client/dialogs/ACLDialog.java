@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ import com.bluecubs.xinco.core.XincoCoreACE;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreNode;
-import com.bluecubs.xinco.core.server.XincoException;
+import com.bluecubs.xinco.core.XincoException;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
@@ -81,6 +81,14 @@ public class ACLDialog extends AbstractDialog {
         this.aclAddLabel.setText(explorer.getResourceBundle().getString("window.acl.grouplabel"));
         this.aclRemoveLabel.setText(explorer.getResourceBundle().getString("window.acl.removeacelabel"));
         setLocationRelativeTo(null);
+        //fill group list
+        loadACLGroupListACL();
+        //fill ACL
+        reloadACLListACL();
+    }
+
+    @Override
+    public void setToDefaults() {
         //fill group list
         loadACLGroupListACL();
         //fill ACL

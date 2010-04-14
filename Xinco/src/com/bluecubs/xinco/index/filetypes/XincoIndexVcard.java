@@ -1,5 +1,5 @@
 /**
- *Copyright 2007 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@
  *
  *************************************************************
  */
+
 package com.bluecubs.xinco.index.filetypes;
 
 import java.io.File;
@@ -76,15 +77,14 @@ import lius.index.application.VCardIndexer;
 /**
  *Adapted by Javier Ortiz
  */
-public class XincoIndexVcard extends VCardIndexer implements XincoIndexFileType {
+public class XincoIndexVcard extends VCardIndexer implements XincoIndexFileType{
 
-    @Override
     public Reader getFileContentReader(File f) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
     public String getFileContentString(File f) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
 }

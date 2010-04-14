@@ -1,14 +1,18 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.bluecubs.xinco.tools;
 
+import com.bluecubs.xinco.core.XincoException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Replaces the MD5 encryption available in MySQL and makes it universal for all
- * databases.
- * @author Javier A. Ortiz <javier.ortiz.78@gmail.com>
+ *
+ * @author Javier A. Ortiz
  */
 public class MD5 {
 
@@ -20,24 +24,24 @@ public class MD5 {
             for (int i = 0; i < args.length; i++) {
                 try {
                     System.out.println("MD5 (" + args[i] + ") = " + encrypt(args[i]));
-                } catch (Exception ex) {
+                } catch (XincoException ex) {
                     Logger.getLogger(MD5.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         } else {
             try {
                 System.out.println("MD5 (admin) = " + encrypt("admin"));
-            } catch (Exception ex) {
+            } catch (XincoException ex) {
                 Logger.getLogger(MD5.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
 
-    public static String encrypt(String text) throws Exception {
+    public static String encrypt(String text) throws XincoException {
         try {
             algorithm = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException nsae) {
-            throw new Exception("Cannot find digest algorithm");
+            throw new XincoException("Cannot find digest algorithm");
         }
         byte[] defaultBytes = text.getBytes();
         algorithm.reset();
