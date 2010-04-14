@@ -189,8 +189,8 @@ public class XincoPublisherServlet extends HttpServlet {
                 }
                 in.close();
             } catch (Exception e) {
-                PrintWriter out = response.getWriter();
-                out.println(e);
+                //Can't call both getWriter() and getOutputStream()
+                e.printStackTrace();
             }
             //end FILE output
 

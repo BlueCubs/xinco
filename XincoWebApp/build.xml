@@ -6,7 +6,11 @@
     <description>Builds, tests, and runs the project xinco.</description>
     <import file="nbproject/build-impl.xml"/>
     <property file="build.ant.properties"/>
-    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+            <pathelement location="tools/ant-contrib-1.0b3.jar"/>
+        </classpath>
+    </taskdef>
     <!--
 
     There exist several targets which are by default empty and which can be
@@ -138,13 +142,7 @@
         </signjar>
     </target>
 
-    <target name="-pre-dist" depends="unsign_client_libraries, sign_client_libraries"/>
-
-    <target name="-post-dist">
-        <antcall target="release"/>
-    </target>
-
-    <target name="release" description="Create the release packages of Xinco">
+    <target name="release" description="Create the release packages of Xinco" depends="dist, unsign_client_libraries, sign_client_libraries">
         <trim input="xinco-DMS-${version_high}.${version_mid}.${version_low} ${version_postfix}" property="dist.name" />
         <delete dir="${dist}/${dist.name}"/>
         <delete>
