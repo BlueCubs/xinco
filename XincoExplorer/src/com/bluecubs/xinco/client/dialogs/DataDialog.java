@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -65,13 +65,17 @@ public class DataDialog extends AbstractDialog {
         setLocationRelativeTo(null);
         this.explorer = explorer;
         setTitle(explorer.getResourceBundle().getString("window.datadetails"));
-        this.save.setText(explorer.getResourceBundle().getString("general.save") + "!");
-        this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
-        this.idLabel.setText(explorer.getResourceBundle().getString("general.id") + ":");
-        this.designationLabel.setText(explorer.getResourceBundle().getString("general.designation") + ":");
-        this.languageLabel.setText(explorer.getResourceBundle().getString("general.language") + ":");
-        this.statusLabel.setText(explorer.getResourceBundle().getString("general.status") + ":");
+        save.setText(explorer.getResourceBundle().getString("general.save") + "!");
+        cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
+        idLabel.setText(explorer.getResourceBundle().getString("general.id") + ":");
+        designationLabel.setText(explorer.getResourceBundle().getString("general.designation") + ":");
+        languageLabel.setText(explorer.getResourceBundle().getString("general.language") + ":");
+        statusLabel.setText(explorer.getResourceBundle().getString("general.status") + ":");
+    }
 
+    @Override
+    public void setToDefaults() {
+        //Now we catch any recent change since is re-populated each time is made visible
         //processing independent of creation
         int i = 0;
         String text = "";
@@ -81,8 +85,8 @@ public class DataDialog extends AbstractDialog {
             text = "" + ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId();
             this.id.setText(text);
             text = "" + ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getDesignation();
-            this.designation.setText(text);
-            this.designation.selectAll();
+            designation.setText(text);
+            designation.selectAll();
             DefaultListModel dlm = new DefaultListModel();
             dlm.removeAllElements();
             for (i = 0; i < explorer.getSession().getServerLanguages().size(); i++) {
@@ -100,13 +104,13 @@ public class DataDialog extends AbstractDialog {
                     }
                 }
             }
-            this.language.setModel(dlm);
+            language.setModel(dlm);
             if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId() == 0) {
                 if (selection == -1) {
                     selection = alt_selection;
                 }
             }
-            this.language.setSelectedIndex(selection);
+            language.setSelectedIndex(selection);
             language.ensureIndexIsVisible(language.getSelectedIndex());
             if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 1) {
                 text = explorer.getResourceBundle().getString("general.status.open") + "";
@@ -123,7 +127,7 @@ public class DataDialog extends AbstractDialog {
             if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 5) {
                 text = explorer.getResourceBundle().getString("general.status.published") + " (WWW)";
             }
-            this.status.setText(text);
+            status.setText(text);
         }
     }
 
@@ -251,6 +255,7 @@ public class DataDialog extends AbstractDialog {
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         setVisible(false);
+        designation.setText(explorer.getResourceBundle().getString("general.newdata"));
     }//GEN-LAST:event_cancelActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
@@ -259,6 +264,7 @@ public class DataDialog extends AbstractDialog {
         ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).setXinco_core_language(((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(this.language.getSelectedIndex())));
         explorer.set_global_dialog_return_value(1);
         setVisible(false);
+        designation.setText(explorer.getResourceBundle().getString("general.newdata"));
     }//GEN-LAST:event_saveActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;

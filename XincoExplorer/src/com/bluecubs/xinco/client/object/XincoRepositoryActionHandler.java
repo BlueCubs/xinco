@@ -1,5 +1,5 @@
 /**
- *Copyright 2007 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  * Description:     XincoActionHandler
  *
  * Original Author: Javier A. Ortiz
- * Date:            February 23, 2007, 3:44 PM
+ * Date:            February 23, 2010, 3:44 PM
  *
  * Modifications:
  *
@@ -41,11 +41,10 @@ import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.client.object.thread.XincoDownloadThread;
 import com.bluecubs.xinco.client.object.thread.XincoImportThread;
 import com.bluecubs.xinco.core.XincoCoreData;
-import com.bluecubs.xinco.core.XincoCoreGroup;
 import com.bluecubs.xinco.core.XincoCoreLanguage;
 import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoCoreNode;
-import com.bluecubs.xinco.core.server.XincoException;
+import com.bluecubs.xinco.core.XincoException;
 import java.awt.event.ActionEvent;
 import java.util.ResourceBundle;
 import java.util.Vector;
@@ -54,7 +53,6 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
-import javax.swing.ListModel;
 import javax.swing.tree.TreePath;
 
 /**
@@ -320,26 +318,11 @@ public class XincoRepositoryActionHandler {
         }
 
         public void actionPerformed(ActionEvent e) {
-            int i = 0, j = 0;
-            ListModel dlm;
             if (explorer.getSession().getCurrentTreeNodeSelection() != null) {
                 //open ACL dialog
                 AbstractDialog AbstractDialogACL = explorer.getAbstractDialogACL();
-                //fill group list
-                dlm = (((ACLDialog) AbstractDialogACL).getACLGroupModel());
-                String[] list = new String[explorer.getSession().getServerGroups().size()];
-                for (i = 0; i < explorer.getSession().getServerGroups().size(); i++) {
-                    list[i] = (new String(((XincoCoreGroup) explorer.getSession().getServerGroups().elementAt(i)).getDesignation()));
-                    try {
-                        list[i] = explorer.getResourceBundle().getString(list[i]);
-                    } catch (java.util.MissingResourceException ex) {
-                        //Nothing to translate
-                    }
-                }
-                ((ACLDialog) AbstractDialogACL).setACLGroupModel(list);
                 //fill ACL
                 ((ACLDialog) AbstractDialogACL).reloadACLListACL();
-                AbstractDialogACL.setVisible(true);
             }
         }
     }

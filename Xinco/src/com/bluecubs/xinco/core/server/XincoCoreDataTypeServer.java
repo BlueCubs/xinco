@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -33,119 +33,72 @@
  *
  *************************************************************
  */
+
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.core.XincoCoreDataType;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeJpaController;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.sql.*;
+
+import com.bluecubs.xinco.core.*;
 
 public class XincoCoreDataTypeServer extends XincoCoreDataType {
-
-    private static final long serialVersionUID = 1L;
-    private static List result;
-    private static HashMap parameters = new HashMap();
+    
     //create data type object for data structures
-
-    public XincoCoreDataTypeServer(int attrID) throws XincoException {
+    public XincoCoreDataTypeServer(int attrID, XincoDBManager DBM) throws XincoException {
+        
         try {
-            parameters.clear();
-            parameters.put("id", attrID);
-            result = XincoDBManager.namedQuery("XincoCoreDataType.findById", parameters);
-            //throw exception if no result found
-            if (result.size() > 0) {
-                com.bluecubs.xinco.core.server.persistence.XincoCoreDataType xcdt =
-                        (com.bluecubs.xinco.core.server.persistence.XincoCoreDataType) result.get(0);
-                setId(xcdt.getId());
-                setDesignation(xcdt.getDesignation());
-                setDescription(xcdt.getDescription());
-                setXinco_core_data_type_attributes(XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(getId()));
-            } else {
-                throw new XincoException();
-            }
-        } catch (Exception e) {
-            throw new XincoException();
-        }
-    }
+            Statement stmt = DBM.con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data_type WHERE id=" + attrID);
 
-    private XincoCoreDataTypeServer(com.bluecubs.xinco.core.server.persistence.XincoCoreDataType xcdt) {
-        setId(xcdt.getId());
-        setDesignation(xcdt.getDesignation());
-        setDescription(xcdt.getDescription());
-        setXinco_core_data_type_attributes(XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(getId()));
+			//throw exception if no result found
+			int RowCount = 0;
+            while (rs.next()) {
+				RowCount++;
+                setId(rs.getInt("id"));
+                setDesignation(rs.getString("designation"));
+                setDescription(rs.getString("description"));
+				setXinco_core_data_type_attributes(XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(getId(), DBM));
+            }
+			if (RowCount < 1) {
+				throw new XincoException();
+			}
+
+            stmt.close();
+        } catch (Exception e) {
+        	throw new XincoException();
+        }
+        
     }
 
     //create data type object for data structures
     public XincoCoreDataTypeServer(int attrID, String attrD, String attrDESC, Vector attrA) throws XincoException {
+        
         setId(attrID);
         setDesignation(attrD);
         setDescription(attrDESC);
-        setXinco_core_data_type_attributes(attrA);
+		setXinco_core_data_type_attributes(attrA);
+        
     }
-
+    
     //create complete list of data types
-    public static Vector getXincoCoreDataTypes() {
+    public static Vector getXincoCoreDataTypes(XincoDBManager DBM) {
+        
         Vector coreDataTypes = new Vector();
+        
         try {
-            result = XincoDBManager.createdQuery("SELECT xcdt FROM XincoCoreDataType xcdt ORDER BY xcdt.designation");
-            while (result.size() > 0) {
-                coreDataTypes.addElement(new XincoCoreDataTypeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreDataType) result.get(0)));
-                result.remove(0);
+            Statement stmt = DBM.con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_core_data_type ORDER BY designation");
+
+            while (rs.next()) {
+                coreDataTypes.addElement(new XincoCoreDataTypeServer(rs.getInt("id"), rs.getString("designation"), rs.getString("description"), XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(rs.getInt("id"), DBM)));
             }
+
+            stmt.close();
         } catch (Exception e) {
             coreDataTypes.removeAllElements();
         }
+
         return coreDataTypes;
     }
 
-    //write to db
-    public int write2DB() throws XincoException {
-        try {
-            XincoCoreDataTypeJpaController controller = new XincoCoreDataTypeJpaController();
-            if (getId() > 0) {
-                com.bluecubs.xinco.core.server.persistence.XincoCoreDataType xcdt =
-                        controller.findXincoCoreDataType(getId());
-                xcdt.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
-                xcdt.setDescription(getDescription().replaceAll("'", "\\\\'"));
-                xcdt.setId(getId());
-                xcdt.setModificationReason("audit.general.modified");
-                xcdt.setModifierId(getChangerID());
-                xcdt.setModificationTime(new Timestamp(new Date().getTime()));
-                controller.edit(xcdt);
-            } else {
-                com.bluecubs.xinco.core.server.persistence.XincoCoreDataType xcdt =
-                        new com.bluecubs.xinco.core.server.persistence.XincoCoreDataType();
-                xcdt.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
-                xcdt.setDescription(getDescription().replaceAll("'", "\\\\'"));
-                xcdt.setModificationReason("audit.general.created");
-                xcdt.setModifierId(getChangerID());
-                xcdt.setModificationTime(new Timestamp(new Date().getTime()));
-                controller.create(xcdt);
-                setId(xcdt.getId());
-            }
-        } catch (Exception e) {
-            throw new XincoException(e.getMessage());
-        }
-        return getId();
-    }
-
-    public static int deleteFromDB(XincoCoreDataType xcdt) {
-        try {
-            new XincoCoreDataTypeJpaController().destroy(xcdt.getId());
-            return 0;
-        } catch (IllegalOrphanException ex) {
-            Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.SEVERE, null, ex);
-            return -1;
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.SEVERE, null, ex);
-            return -1;
-        }
-    }
 }
