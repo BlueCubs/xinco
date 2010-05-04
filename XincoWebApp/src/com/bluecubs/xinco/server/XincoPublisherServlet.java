@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -49,8 +49,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class XincoPublisherServlet extends HttpServlet {
-    private static final long serialVersionUID = 8477785363028064435L;
 
+    private static final long serialVersionUID = 8477785363028064435L;
     private ResourceBundle rb;
     private XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
     private List result;
@@ -277,7 +277,7 @@ public class XincoPublisherServlet extends HttpServlet {
                                 // print current path
                                 if (!(request.getParameter("Path") == null)) {
                                     temp_path = request.getParameter("Path");
-                                    temp_path = new String(Base64.decode(temp_path));
+                                    temp_path = Base64.decode(temp_path);
                                     out.println("<tr>");
                                     out.println("<td colspan=\"2\" class=\"text\"><b>" + rb.getString("general.path") + "</b> " + temp_path + "</td>");
                                     out.println("</tr>");
@@ -373,7 +373,7 @@ public class XincoPublisherServlet extends HttpServlet {
                         out.println("</tr>");
                     }
                     out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path=" + (Base64.encode(new String("xincoRoot"))) + "&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.xincopublisher.browse") + "</td>");
+                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path=" + (Base64.encode("xincoRoot")) + "&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.xincopublisher.browse") + "</td>");
                     out.println("</tr>");
                 }
                 out.println("<tr>");

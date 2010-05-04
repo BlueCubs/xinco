@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -81,8 +81,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class XincoAdminServlet extends HttpServlet {
-    private static final long serialVersionUID = 8298807323616744276L;
 
+    private static final long serialVersionUID = 8298807323616744276L;
     private ResourceBundle rb;
     private ResourceBundle settings;
     private XincoCoreUserServer login_user = null;
@@ -243,12 +243,8 @@ public class XincoAdminServlet extends HttpServlet {
                             temp_user.write2DB();
                             throw new XincoException(rb.getString("password.attempt.limitReached"));
                         }
-                        loginex.printStackTrace();
                         throw new XincoException(rb.getString("password.login.fail"));
                     }
-                }
-                if (temp_user.getXinco_core_groups()==null) {
-                    throw new XincoException(rb.getString("password.login.notAdminGroup"));
                 }
                 //check for admin group
                 for (i = 0; i < temp_user.getXinco_core_groups().size(); i++) {
@@ -612,10 +608,11 @@ public class XincoAdminServlet extends HttpServlet {
                         request.getParameter("user").substring(0,
                         request.getParameter("user").length() - 1));
                 temp_user = new XincoCoreUserServer((XincoCoreUser) XincoDBManager.namedQuery("XincoCoreUser.findByUsername", parameters).get(0));
-            }catch (Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            boolean passwordIsUsable = temp_user.isPasswordUsable(request.getParameter("confirm"));
+            //issue # 2994751: Unable to reproduce but this should take care of the NPE at this line atleast.
+            boolean passwordIsUsable = temp_user == null ? false : temp_user.isPasswordUsable(request.getParameter("confirm"));
             if (!request.getParameter("new").equals(request.getParameter("confirm"))) {
                 //show welcome message
                 out.println("<br><center><img src='resources/images/blueCubs.gif' border=\"0\"/>");
@@ -710,7 +707,7 @@ public class XincoAdminServlet extends HttpServlet {
             out.println("</form>");
         } else if (status == 2) {
             //Password must be changed
-            out.println("<br><img src='resources/images/blueCubsS.gif' border=\"0\"/>");
+            out.println("<br><img src='resources/images/blueCubs.gif' border=\"0\"/>");
             out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
             out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
             out.println(rb.getString("password.aged") + "<br><br>"
@@ -1380,30 +1377,6 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("        \n");
                     out.write("        <center><h1>");
                     out.write("        ");
-//TODO: Replace the audit report system
-//                    ResultSet rs;
-//                    DatabaseMetaData meta = dbm.con.getMetaData();
-//                    String[] types = {
-//                        "TABLE"
-//                    };
-//                    rs = meta.getTables(null, null, null, types);
-//                    out.println("<center><table border='0'><tbody><thead><tr><th>"
-//                            + rb.getString("general.table") + "</th><th>"
-//                            + rb.getString("general.audit.action") + "</th></tr>");
-//                    while (rs.next()) {
-//                        if (!rs.getString("TABLE_NAME").endsWith("_t")
-//                                && !rs.getString("TABLE_NAME").equals("xinco_id")
-//                                && !rs.getString("TABLE_NAME").equals("xinco_core_log")
-//                                && !rs.getString("TABLE_NAME").equals("xinco_core_user_modified_record")
-//                                && rs.getString("TABLE_NAME").startsWith("xinco")
-//                                && !rs.getString("TABLE_NAME").equals("xinco_core_user_has_xinco_core_group")) {
-//                            out.println("<form action='XincoAdmin?MenuAudit=AuditQuery' method='POST'>");
-//                            out.println("<tr><td>" + rs.getString("TABLE_NAME") + "</td><td><center><input type='submit' value='"
-//                                    + rb.getString("general.continue") + "'/></center></td></tr>"
-//                                    + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='table' value='" + rs.getString("TABLE_NAME") + "' /></form>");
-//                        }
-//                    }
-//                    out.println("</tbody></table></center>");
 
                     out.write("\n");
                     out.write("    </body>\n");
@@ -1432,11 +1405,11 @@ public class XincoAdminServlet extends HttpServlet {
                     File indexDirectoryFile = null;
                     String[] indexDirectoryFileList = null;
                     boolean index_directory_deleted = false;
-                    indexDirectory = new File(XincoDBManager.config.FileIndexPath);
+                    indexDirectory = new File(dbm.config.FileIndexPath);
                     if (indexDirectory.exists()) {
                         indexDirectoryFileList = indexDirectory.list();
                         for (i = 0; i < indexDirectoryFileList.length; i++) {
-                            indexDirectoryFile = new File(XincoDBManager.config.FileIndexPath + indexDirectoryFileList[i]);
+                            indexDirectoryFile = new File(dbm.config.FileIndexPath + indexDirectoryFileList[i]);
                             indexDirectoryFile.delete();
                         }
                         index_directory_deleted = indexDirectory.delete();
@@ -1463,9 +1436,9 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("</tr>");
                     XincoCoreDataServer xdata_temp = null;
                     boolean index_result = false;
-                    result=XincoDBManager.createdQuery("SELECT x FROM XincoCoreData x ORDER BY x.designation");
-                    for(Object o: result) {
-                        xdata_temp = new XincoCoreDataServer((XincoCoreData)o);
+                    result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreData x ORDER BY x.designation");
+                    for (Object o : result) {
+                        xdata_temp = new XincoCoreDataServer((XincoCoreData) o);
                         index_result = XincoIndexer.indexXincoCoreData(xdata_temp, true);
                         out.println("<tr>");
                         out.println("<td class=\"text\">" + xdata_temp.getDesignation() + "</td>");

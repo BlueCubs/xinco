@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -71,12 +71,16 @@ public class DataFolderDialog extends AbstractDialog {
         setLocationRelativeTo(null);
         this.explorer = explorer;
         setTitle(explorer.getResourceBundle().getString("window.folder"));
-        this.save.setText(explorer.getResourceBundle().getString("general.save") + "!");
-        this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
-        this.designationLabel.setText(explorer.getResourceBundle().getString("general.designation"));
-        this.idLabel.setText(explorer.getResourceBundle().getString("general.id"));
-        this.languageLabel.setText(explorer.getResourceBundle().getString("general.language"));
-        this.stateLabel.setText(explorer.getResourceBundle().getString("general.status"));
+        save.setText(explorer.getResourceBundle().getString("general.save") + "!");
+        cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
+        designationLabel.setText(explorer.getResourceBundle().getString("general.designation"));
+        idLabel.setText(explorer.getResourceBundle().getString("general.id"));
+        languageLabel.setText(explorer.getResourceBundle().getString("general.language"));
+        stateLabel.setText(explorer.getResourceBundle().getString("general.status"));
+    }
+
+    @Override
+    public void setToDefaults() {
         //processing independent of creation
         int i = 0;
         String text = "";
@@ -84,10 +88,10 @@ public class DataFolderDialog extends AbstractDialog {
         int alt_selection = 0;
         if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject() != null) {
             text = "" + ((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId();
-            this.id.setText(text);
+            id.setText(text);
             text = "" + ((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getDesignation();
-            this.designation.setText(text);
-            this.designation.selectAll();
+            designation.setText(text);
+            designation.selectAll();
             DefaultListModel dlm = new DefaultListModel();
             dlm.removeAllElements();
             for (i = 0; i < explorer.getSession().getServerLanguages().size(); i++) {
@@ -105,14 +109,14 @@ public class DataFolderDialog extends AbstractDialog {
                     }
                 }
             }
-            this.language.setModel(dlm);
+            language.setModel(dlm);
             if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId() == 0) {
                 if (selection == -1) {
                     selection = alt_selection;
                 }
             }
-            this.language.setSelectedIndex(selection);
-            this.language.ensureIndexIsVisible(this.language.getSelectedIndex());
+            language.setSelectedIndex(selection);
+            language.ensureIndexIsVisible(language.getSelectedIndex());
             if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 1) {
                 text = explorer.getResourceBundle().getString("general.status.open") + "";
             }
@@ -122,9 +126,8 @@ public class DataFolderDialog extends AbstractDialog {
             if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 3) {
                 text = explorer.getResourceBundle().getString("general.status.archived") + " (->)";
             }
-            this.state.setText(text);
+            state.setText(text);
         }
-        setVisible(true);
     }
 
     /** This method is called from within the constructor to
@@ -243,6 +246,7 @@ public class DataFolderDialog extends AbstractDialog {
             explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(temp_node);
         }
         setVisible(false);
+        designation.setText(explorer.getResourceBundle().getString("general.newfolder"));
     }//GEN-LAST:event_cancelActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
@@ -263,8 +267,8 @@ public class DataFolderDialog extends AbstractDialog {
             // optimize node size
             newnode.setXinco_core_nodes(new Vector());
             newnode.setXinco_core_data(new Vector());
-            if ((newnode = explorer.getSession().getXinco().setXincoCoreNode(newnode, explorer.getSession().getUser())) ==
-                    null) {
+            if ((newnode = explorer.getSession().getXinco().setXincoCoreNode(newnode, explorer.getSession().getUser()))
+                    == null) {
                 throw new XincoException(explorer.getResourceBundle().getString("error.nowritepermission"));
             }
             // update to modified user object
@@ -285,12 +289,13 @@ public class DataFolderDialog extends AbstractDialog {
                 explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(temp_node);
             }
             JOptionPane.showMessageDialog(explorer,
-                    explorer.getResourceBundle().getString("window.folder.updatefailed") +
-                    " " + explorer.getResourceBundle().getString("general.reason") + ": " +
-                    rmie.toString(), explorer.getResourceBundle().getString("general.error"),
+                    explorer.getResourceBundle().getString("window.folder.updatefailed")
+                    + " " + explorer.getResourceBundle().getString("general.reason") + ": "
+                    + rmie.toString(), explorer.getResourceBundle().getString("general.error"),
                     JOptionPane.WARNING_MESSAGE);
         }
         setVisible(false);
+        designation.setText(explorer.getResourceBundle().getString("general.newfolder"));
     }//GEN-LAST:event_saveActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;

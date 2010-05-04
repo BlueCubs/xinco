@@ -173,9 +173,6 @@
                     <file>${file.reference.swing-layout-1.0.3.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
-                <library dirs="200">
-                    <file>${war.ear.name=xinco.war}</file>
-                </library>
             </web-module-additional-libraries>
             <source-roots>
                 <root id="src.src.dir" name="Source Packages"/>

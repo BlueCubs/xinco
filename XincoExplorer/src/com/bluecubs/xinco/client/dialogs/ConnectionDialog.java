@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@
  */
 package com.bluecubs.xinco.client.dialogs;
 
+import com.bluecubs.xinco.client.ConfigElement;
 import com.bluecubs.xinco.client.object.XincoClientConnectionProfile;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
@@ -95,17 +96,17 @@ public class ConnectionDialog extends AbstractDialog {
                 int sel;
                 sel = profileList.getSelectedIndex();
                 if (sel >= 0) {
-                    profileName.setText(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(sel)).profile_name);
-                    endpoint.setText(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(sel)).service_endpoint);
-                    username.setText(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(sel)).username);
-                    password.setText(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(sel)).password);
-                    savePW.setSelected(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(sel)).save_password);
+                    profileName.setText(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(sel)).profile_name);
+                    endpoint.setText(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(sel)).service_endpoint);
+                    username.setText(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(sel)).username);
+                    password.setText(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(sel)).password);
+                    savePW.setSelected(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(sel)).save_password);
                 }
             }
         });
         dlm = (DefaultListModel) this.profileList.getModel();
-        for (int i = 0; i < ((Vector) explorer.getConfig().elementAt(0)).size(); i++) {
-            dlm.addElement(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(i)).toString());
+        for (int i = 0; i < ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).size(); i++) {
+            dlm.addElement(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(i)).toString());
         }
     }
 
@@ -280,15 +281,15 @@ public class ConnectionDialog extends AbstractDialog {
         explorer.getSession().setStatus(1);
         //update profile
         if (this.profileList.getSelectedIndex() >= 0) {
-            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).profile_name = this.profileName.getText();
-            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).service_endpoint = this.endpoint.getText();
-            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).username = this.username.getText();
+            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).profile_name = this.profileName.getText();
+            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).service_endpoint = this.endpoint.getText();
+            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).username = this.username.getText();
             if (this.savePW.isSelected()) {
-                ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).password = new String(this.password.getPassword());
+                ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).password = new String(this.password.getPassword());
             } else {
-                ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).password = "";
+                ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).password = "";
             }
-            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).save_password = this.savePW.isSelected();
+            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).save_password = this.savePW.isSelected();
         }
         //save profiles
         explorer.saveConfig();
@@ -300,7 +301,7 @@ public class ConnectionDialog extends AbstractDialog {
         DefaultListModel dlm = (DefaultListModel) this.profileList.getModel();
         sel = this.profileList.getSelectedIndex();
         if (sel >= 0) {
-            ((Vector) explorer.getConfig().elementAt(0)).removeElementAt(sel);
+            ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).removeElementAt(sel);
             dlm.removeElementAt(sel);
         }
     }//GEN-LAST:event_deleteProfileActionPerformed
@@ -310,22 +311,22 @@ public class ConnectionDialog extends AbstractDialog {
         DefaultListModel dlm = (DefaultListModel) this.profileList.getModel();
         //update profile
         if (this.profileList.getSelectedIndex() >= 0) {
-            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).profile_name = this.profileName.getText();
-            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).service_endpoint = this.endpoint.getText();
-            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).username = this.username.getText();
+            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).profile_name = this.profileName.getText();
+            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).service_endpoint = this.endpoint.getText();
+            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).username = this.username.getText();
             if (this.savePW.isSelected()) {
-                ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).password = new String(this.password.getPassword());
+                ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).password = new String(this.password.getPassword());
             } else {
-                ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).password = "";
+                ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).password = "";
             }
-            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().elementAt(0)).elementAt(this.profileList.getSelectedIndex())).save_password = this.savePW.isSelected();
-            dlm.setElementAt(new String(this.profileName.getText()), this.profileList.getSelectedIndex());
+            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).save_password = this.savePW.isSelected();
+            dlm.setElementAt( this.profileName.getText(), this.profileList.getSelectedIndex());
         }
         XincoClientConnectionProfile ccp = new XincoClientConnectionProfile();
         ccp.profile_name = explorer.getResourceBundle().getString("window.connection.newprofile");
-        ((Vector) explorer.getConfig().elementAt(0)).add(ccp);
-        dlm.addElement(new String(ccp.toString()));
-        this.profileList.setSelectedIndex(((Vector) explorer.getConfig().elementAt(0)).size() - 1);
+        ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).add(ccp);
+        dlm.addElement(ccp.toString());
+        this.profileList.setSelectedIndex(((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1);
     }//GEN-LAST:event_CreateActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Cancel;

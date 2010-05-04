@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -67,15 +67,15 @@ public class ArchiveDialog extends AbstractDialog {
         initComponents();
         setLocationRelativeTo(null);
         this.explorer = explorer;
-        this.xerb = this.explorer.getResourceBundle();
-        this.revisionModelLabel.setText(xerb.getString("window.archive.revisionmodel") + ":");
-        this.revisionModelCheckbox.setSelected(true);
-        this.archiveModelLabel.setText(xerb.getString("window.archive.archivingmodel") + ":");
+        xerb = this.explorer.getResourceBundle();
+        revisionModelLabel.setText(xerb.getString("window.archive.revisionmodel") + ":");
+        revisionModelCheckbox.setSelected(true);
+        archiveModelLabel.setText(xerb.getString("window.archive.archivingmodel") + ":");
         DefaultComboBoxModel dcbm = new DefaultComboBoxModel();
-        this.archiveModelDropDown.setModel(dcbm);
-        this.archiveModelDropDown.setBounds(120, 40, 250, 20);
-        this.archiveModelDropDown.setEditable(false);
-        this.archiveModelDropDown.addActionListener(new java.awt.event.ActionListener() {
+        archiveModelDropDown.setModel(dcbm);
+        archiveModelDropDown.setBounds(120, 40, 250, 20);
+        archiveModelDropDown.setEditable(false);
+        archiveModelDropDown.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 if (archiveModelDropDown.getSelectedIndex() == 1) {
@@ -96,8 +96,8 @@ public class ArchiveDialog extends AbstractDialog {
                 }
             }
         });
-        this.dateLabel.setText(xerb.getString("window.archive.archivedate") + ":");
-        this.dayAmount.setText(xerb.getString("window.archive.archivedays") + ":");
+        dateLabel.setText(xerb.getString("window.archive.archivedate") + ":");
+        dayAmount.setText(xerb.getString("window.archive.archivedays") + ":");
         okButton.setText(xerb.getString("general.continue"));
         okButton.addActionListener(new java.awt.event.ActionListener() {
 
@@ -143,6 +143,10 @@ public class ArchiveDialog extends AbstractDialog {
                 setVisible(false);
             }
         });
+    }
+
+    @Override
+    public void setToDefaults() {
         //processing independent of creation
         if (((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(3)).getAttrib_unsignedint() == 0) {
             revisionModelCheckbox.setSelected(false);
@@ -150,10 +154,10 @@ public class ArchiveDialog extends AbstractDialog {
             revisionModelCheckbox.setSelected(true);
         }
         //fill archiving model list
-        dcbm.removeAllElements();
-        dcbm.addElement(xerb.getString("window.archive.archivingmodel.none"));
-        dcbm.addElement(xerb.getString("window.archive.archivingmodel.archivedate"));
-        dcbm.addElement(xerb.getString("window.archive.archivingmodel.archivedays"));
+        ((DefaultComboBoxModel) archiveModelDropDown.getModel()).removeAllElements();
+        ((DefaultComboBoxModel) archiveModelDropDown.getModel()).addElement(xerb.getString("window.archive.archivingmodel.none"));
+        ((DefaultComboBoxModel) archiveModelDropDown.getModel()).addElement(xerb.getString("window.archive.archivingmodel.archivedate"));
+        ((DefaultComboBoxModel) archiveModelDropDown.getModel()).addElement(xerb.getString("window.archive.archivingmodel.archivedays"));
         archiveModelDropDown.setSelectedIndex((int) ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(4)).getAttrib_unsignedint());
         //set date / days
         //convert clone from remote time to local time

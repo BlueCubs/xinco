@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -81,6 +81,14 @@ public class ACLDialog extends AbstractDialog {
         this.aclAddLabel.setText(explorer.getResourceBundle().getString("window.acl.grouplabel"));
         this.aclRemoveLabel.setText(explorer.getResourceBundle().getString("window.acl.removeacelabel"));
         setLocationRelativeTo(null);
+        //fill group list
+        loadACLGroupListACL();
+        //fill ACL
+        reloadACLListACL();
+    }
+
+    @Override
+    public void setToDefaults() {
         //fill group list
         loadACLGroupListACL();
         //fill ACL
