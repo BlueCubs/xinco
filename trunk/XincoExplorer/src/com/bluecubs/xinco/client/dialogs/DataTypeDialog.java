@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -64,9 +64,13 @@ public class DataTypeDialog extends AbstractDialog {
         setLocationRelativeTo(null);
         this.explorer = explorer;
         setTitle(explorer.getResourceBundle().getString("window.datatype"));
-        this.continueButton.setText(explorer.getResourceBundle().getString("general.continue"));
-        this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
-        this.dataTypeLabel.setText(explorer.getResourceBundle().getString("window.datatype.datatype") + ":");
+        continueButton.setText(explorer.getResourceBundle().getString("general.continue"));
+        cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
+        dataTypeLabel.setText(explorer.getResourceBundle().getString("window.datatype.datatype") + ":");
+    }
+
+    @Override
+    public void setToDefaults() {
         int i = 0;
         String text = "";
         if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject() != null) {
@@ -82,9 +86,8 @@ public class DataTypeDialog extends AbstractDialog {
                     this.dataType.setSelectedIndex(i);
                 }
             }
-            this.dataType.setModel(dlm);
+            dataType.setModel(dlm);
         }
-        setVisible(false);
     }
 
     /** This method is called from within the constructor to

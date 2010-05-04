@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -51,7 +51,6 @@ import com.bluecubs.xinco.core.server.XincoException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Vector;
-import javax.swing.ListModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.TreePath;
 
@@ -76,17 +75,17 @@ public class SearchDialog extends AbstractDialog {
         this.explorer = e;
         this.xerb = this.explorer.getResourceBundle();
         setTitle(xerb.getString("window.search"));
-        this.queryLabel.setText(xerb.getString("window.search.query") + ":");
-        this.languageLabel.setText(xerb.getString("general.language") + ":");
-        this.builderLabel.setText(xerb.getString("window.search.querybuilder") + ":");
-        this.systemOptionsValueLabel.setText(xerb.getString("window.search.querybuilderhintslabel"));
-        this.systemOptionsLabel.setText(xerb.getString("window.search.querybuilderhints"));
-        this.searchButton.setText(xerb.getString("window.search.addtoquery"));
-        this.allLanguagesCheckBox.setText(xerb.getString("window.search.alllanguages"));
-        this.searchButton.setText(xerb.getString("window.search"));
-        this.goToSelectionButton.setText(xerb.getString("window.search.gotoselection"));
-        this.addToQueryButton.setText(xerb.getString("window.search.addtoquery"));
-        this.resetButton.setText(xerb.getString("general.reset"));
+        queryLabel.setText(xerb.getString("window.search.query") + ":");
+        languageLabel.setText(xerb.getString("general.language") + ":");
+        builderLabel.setText(xerb.getString("window.search.querybuilder") + ":");
+        systemOptionsValueLabel.setText(xerb.getString("window.search.querybuilderhintslabel"));
+        systemOptionsLabel.setText(xerb.getString("window.search.querybuilderhints"));
+        searchButton.setText(xerb.getString("window.search.addtoquery"));
+        allLanguagesCheckBox.setText(xerb.getString("window.search.alllanguages"));
+        searchButton.setText(xerb.getString("window.search"));
+        goToSelectionButton.setText(xerb.getString("window.search.gotoselection"));
+        addToQueryButton.setText(xerb.getString("window.search.addtoquery"));
+        resetButton.setText(xerb.getString("general.reset"));
         String[] cn = {xerb.getString("window.search.table.designation"), xerb.getString("window.search.table.path")};
         resultTable.setModel(new DefaultTableModel(new Object[][]{},
                 new String[]{xerb.getString("window.search.table.designation"),
@@ -99,7 +98,11 @@ public class SearchDialog extends AbstractDialog {
                 return canEdit[columnIndex];
             }
         });
-        this.languageList.setEnabled(!this.allLanguagesCheckBox.isSelected());
+        languageList.setEnabled(!allLanguagesCheckBox.isSelected());
+    }
+
+    @Override
+    public void setToDefaults() {
         //processing independent of creation
         int i = 0;
         int j = 0;
@@ -107,11 +110,11 @@ public class SearchDialog extends AbstractDialog {
         int selection = -1;
         int alt_selection = 0;
         XincoCoreDataType xcdt = null;
-        this.operatorComboBox.setSelectedIndex(0);
+        operatorComboBox.setSelectedIndex(0);
         //load fields
-        this.optionsComboBox.removeAllItems();
-        this.optionsComboBox.addItem(" ");
-        this.optionsComboBox.addItem(xerb.getString("window.search.filecontent") + " (file)");
+        optionsComboBox.removeAllItems();
+        optionsComboBox.addItem(" ");
+        optionsComboBox.addItem(xerb.getString("window.search.filecontent") + " (file)");
         text = "";
         for (i = 0; i < explorer.getSession().getServerDatatypes().size(); i++) {
             xcdt = (XincoCoreDataType) explorer.getSession().getServerDatatypes().elementAt(i);
@@ -122,7 +125,6 @@ public class SearchDialog extends AbstractDialog {
         }
         this.optionsComboBox.setSelectedIndex(0);
         //load languages
-        ListModel dlm = languageList.getModel();
         languageList.removeAll();
         final Vector list = new Vector();
         selection = -1;
@@ -141,7 +143,7 @@ public class SearchDialog extends AbstractDialog {
         if (selection == -1) {
             selection = alt_selection;
         }
-        this.languageList.setModel(new javax.swing.AbstractListModel() {
+        languageList.setModel(new javax.swing.AbstractListModel() {
 
             Vector strings = list;
 
@@ -153,9 +155,9 @@ public class SearchDialog extends AbstractDialog {
                 return strings.get(i);
             }
         });
-        this.languageList.setSelectedIndex(selection);
-        this.languageList.ensureIndexIsVisible(this.languageList.getSelectedIndex());
-        this.setBounds(0, 0, (new Double(getToolkit().getScreenSize().getWidth())).intValue() - 100,
+        languageList.setSelectedIndex(selection);
+        languageList.ensureIndexIsVisible(languageList.getSelectedIndex());
+        setBounds(0, 0, (new Double(getToolkit().getScreenSize().getWidth())).intValue() - 100,
                 (new Double(getToolkit().getScreenSize().getHeight())).intValue() - 75);
     }
 

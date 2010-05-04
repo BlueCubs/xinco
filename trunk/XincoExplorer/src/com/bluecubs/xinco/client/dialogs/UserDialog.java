@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -62,17 +62,21 @@ public class UserDialog extends AbstractDialog {
     public UserDialog(java.awt.Frame parent, boolean modal, XincoExplorer explorer, boolean aged) {
         super(parent, modal);
         this.explorer = explorer;
-        this.isAged = aged;
+        isAged = aged;
         initComponents();
         initialize();
         setLocationRelativeTo(null);
+    }
+
+    @Override
+    public void setToDefaults() {
         //Do not allow to close the window. User MUST change password!
-        if (this.isAged) {
+        if (isAged) {
             setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-            this.cancel.setEnabled(false);
-            this.name.setEnabled(false);
-            this.lastname.setEnabled(false);
-            this.email.setEnabled(false);
+            cancel.setEnabled(false);
+            name.setEnabled(false);
+            lastname.setEnabled(false);
+            email.setEnabled(false);
         }
     }
 
@@ -287,8 +291,8 @@ public class UserDialog extends AbstractDialog {
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         if ((new String(password.getPassword())).equals(new String(verification.getPassword()))) {
             try {
-                if (this.isAged &&
-                        !this.explorer.getSession().getXinco().checkXincoCoreUserNewPassword(new String(password.getPassword()),
+                if (this.isAged
+                        && !this.explorer.getSession().getXinco().checkXincoCoreUserNewPassword(new String(password.getPassword()),
                         this.explorer.getSession().getUser(),
                         null)) {
                     this.explorer.getSession().getXinco().checkXincoCoreUserNewPassword(new String(password.getPassword()), this.explorer.getSession().getUser(),
@@ -368,4 +372,11 @@ public class UserDialog extends AbstractDialog {
     private javax.swing.JPasswordField verification;
     private javax.swing.JLabel verificationLabel;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * @param isAged the isAged to set
+     */
+    public void setIsAged(boolean isAged) {
+        this.isAged = isAged;
+    }
 }

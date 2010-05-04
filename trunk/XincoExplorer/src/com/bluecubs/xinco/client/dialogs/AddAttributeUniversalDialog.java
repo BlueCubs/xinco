@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -68,19 +68,18 @@ public class AddAttributeUniversalDialog extends AbstractDialog {
         setTitle(explorer.getResourceBundle().getString("window.addattributesuniversal"));
         setBounds(200, 200, 600, 540);
         setLocationRelativeTo(null);
-        this.cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
-        this.save.setText(explorer.getResourceBundle().getString("general.save") + "!");
+        cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
+        save.setText(explorer.getResourceBundle().getString("general.save") + "!");
+    }
 
+    @Override
+    public void setToDefaults() {
+        //processing independent of creation
         String[] cn = {explorer.getResourceBundle().getString("general.attribute"), explorer.getResourceBundle().getString("general.details")};
         int i = 0, j = 0, start = 0;
         //reset selection
         table.editCellAt(-1, -1);
-        //processing independent of creation
-        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 1) {
-            this.save.setEnabled(true);
-        } else {
-            this.save.setEnabled(false);
-        }
+        save.setEnabled(((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 1);
         DefaultTableModel dtm = new DefaultTableModel(cn, 0);
         j = dtm.getRowCount();
         for (i = 0; i < j; i++) {
