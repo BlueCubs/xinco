@@ -206,14 +206,14 @@ public class XincoAdminServlet extends HttpServlet {
                 } catch (Exception loginex) {
                     //Wrong password or username
                     Statement stmt = dbm.con.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT id FROM xinco_core_user WHERE username='" +
-                            request.getParameter("DialogLoginUsername") + "' AND status_number<>2");
+                    ResultSet rs = stmt.executeQuery("SELECT id FROM xinco_core_user WHERE username='"
+                            + request.getParameter("DialogLoginUsername") + "' AND status_number<>2");
                     //Check if the username is correct if not just throw the wrong login message
                     if (!rs.next()) {
                         throw new XincoException("Login " + rb.getString("general.fail") + " Username and/or Password may be incorrect!");
                     }
-                    rs = stmt.executeQuery("SELECT id FROM xinco_core_user WHERE username='" +
-                            request.getParameter("DialogLoginUsername") + "'");
+                    rs = stmt.executeQuery("SELECT id FROM xinco_core_user WHERE username='"
+                            + request.getParameter("DialogLoginUsername") + "'");
                     if (rs.next()) {
                         temp_user = new XincoCoreUserServer(rs.getInt("id"), dbm);
                         long attempts = Long.parseLong(settings.getString("password.attempts"));
@@ -326,24 +326,24 @@ public class XincoAdminServlet extends HttpServlet {
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //switch to Audit Menu
-        if (request.getParameter("MenuAudit") != null &&
-                request.getParameter("MenuAudit").equals("AuditMenu")) {
+        if (request.getParameter("MenuAudit") != null
+                && request.getParameter("MenuAudit").equals("AuditMenu")) {
             current_location = "AuditMenu";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
             current_location_desc = rb.getString("message.location.desc.auditmenu");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //switch to Audit Query
-        if (request.getParameter("MenuAudit") != null &&
-                request.getParameter("MenuAudit").equals("AuditQuery")) {
+        if (request.getParameter("MenuAudit") != null
+                && request.getParameter("MenuAudit").equals("AuditQuery")) {
             current_location = "AuditQuery";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
             current_location_desc = rb.getString("message.location.desc.auditquery");
             session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
         }
         //switch to Audit Table
-        if (request.getParameter("MenuAudit") != null &&
-                request.getParameter("MenuAudit").equals("AuditTable")) {
+        if (request.getParameter("MenuAudit") != null
+                && request.getParameter("MenuAudit").equals("AuditTable")) {
             current_location = "AuditTable";
             session.setAttribute("XincoAdminServlet.current_location", current_location);
             current_location_desc = rb.getString("message.location.desc.auditresult");
@@ -616,16 +616,17 @@ public class XincoAdminServlet extends HttpServlet {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            boolean passwordIsUsable = temp_user.isPasswordUsable(request.getParameter("confirm"));
+            //issue # 2994751: Unable to reproduce but this should take care of the NPE at this line atleast.
+            boolean passwordIsUsable = temp_user == null ? false : temp_user.isPasswordUsable(request.getParameter("confirm"));
             if (!request.getParameter("new").equals(request.getParameter("confirm"))) {
                 //show welcome message
                 out.println("<br><center><img src='resources/images/blueCubs.gif' border=\"0\"/>");
                 out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
                 out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
-                out.println(rb.getString("password.noMatch") + "<br><br>" +
-                        "<input type='submit' value='" + rb.getString("general.continue") + "' name='changePassword' />");
-                out.println("<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='user' value=" +
-                        request.getParameter("id") + "/>");
+                out.println(rb.getString("password.noMatch") + "<br><br>"
+                        + "<input type='submit' value='" + rb.getString("general.continue") + "' name='changePassword' />");
+                out.println("<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='user' value="
+                        + request.getParameter("id") + "/>");
                 out.println("</form></center>");
                 return;
             }
@@ -634,10 +635,10 @@ public class XincoAdminServlet extends HttpServlet {
                 out.println("<br><center><img src='resources/images/blueCubs.gif' border=\"0\"/>");
                 out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
                 out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
-                out.println(rb.getString("password.unusable") + "<br><br>" +
-                        "<input type='submit' value='" + rb.getString("general.continue") + "' name='changePassword' />");
-                out.println("<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='user' value=" +
-                        request.getParameter("user") + "/>");
+                out.println(rb.getString("password.unusable") + "<br><br>"
+                        + "<input type='submit' value='" + rb.getString("general.continue") + "' name='changePassword' />");
+                out.println("<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='user' value="
+                        + request.getParameter("user") + "/>");
                 out.println("</form></center>");
                 return;
             } else {
@@ -673,9 +674,9 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>");
         out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
         out.println("</head>");
-        out.println("<body " + (!dbm.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' " : " ") +
-                "onload=\"if (document.forms[0] != null) { if (document.forms[0].elements[0] != null) " +
-                "{ document.forms[0].elements[0].focus(); } }\">");
+        out.println("<body " + (!dbm.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' " : " ")
+                + "onload=\"if (document.forms[0] != null) { if (document.forms[0].elements[0] != null) "
+                + "{ document.forms[0].elements[0].focus(); } }\">");
 
         out.println("<center>");
         out.println("<span class=\"text\">");
@@ -704,20 +705,20 @@ public class XincoAdminServlet extends HttpServlet {
             out.println("</tr>");
             out.println("<tr>");
             out.println("<td class=\"text\">&nbsp;</td>");
-            out.println("<td class=\"text\"><input type=\"submit\" name=\"DialogLoginSubmit\" value=\"" + rb.getString("general.login") + "\"/>" +
-                    "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></td>");
+            out.println("<td class=\"text\"><input type=\"submit\" name=\"DialogLoginSubmit\" value=\"" + rb.getString("general.login") + "\"/>"
+                    + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></td>");
             out.println("</tr>");
             out.println("</table>");
             out.println("</form>");
         } else if (status == 2) {
             //Password must be changed
-            out.println("<br><img src='resources/images/blueCubsS.gif' border=\"0\"/>");
+            out.println("<br><img src='resources/images/blueCubs.gif' border=\"0\"/>");
             out.println("<br><span class=\"bigtext\">XincoAdmin</span><br><br>");
             out.println("<form name='changePassword' action='changePassword.jsp' method='post'>");
-            out.println(rb.getString("password.aged") + "<br><br>" +
-                    "<input type='submit' value='" + rb.getString("general.continue") + "' name='changePassword' />");
-            out.println("<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='user' value=" +
-                    request.getParameter("DialogLoginUsername") + "/>");
+            out.println(rb.getString("password.aged") + "<br><br>"
+                    + "<input type='submit' value='" + rb.getString("general.continue") + "' name='changePassword' />");
+            out.println("<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='user' value="
+                    + request.getParameter("DialogLoginUsername") + "/>");
             out.println("</form>");
         } else {
             //show main menu
@@ -821,8 +822,8 @@ public class XincoAdminServlet extends HttpServlet {
                 out.println("</tr>");
                 out.println("<tr>");
                 out.println("<td class=\"text\">&nbsp;</td>");
-                out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"submit\" name=\"DialogNewUserSubmit\" value=\"" +
-                        rb.getString("general.add.user") + "\"/></td>");
+                out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"submit\" name=\"DialogNewUserSubmit\" value=\""
+                        + rb.getString("general.add.user") + "\"/></td>");
                 out.println("</tr>");
                 out.println("</table>");
                 out.println("</form>");
@@ -852,20 +853,20 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getName() + "</td>");
                     out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getEmail() + "</td>");
                     if (((XincoCoreUserServer) allusers.elementAt(i)).getStatus_number() == 1) {
-                        out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminUsersLock=" +
-                                ((XincoCoreUserServer) allusers.elementAt(i)).getId() +
-                                "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.lock") +
-                                "]</a>&nbsp;<a href=\"XincoAdmin?DialogAdminUsersResetPW=" +
-                                ((XincoCoreUserServer) allusers.elementAt(i)).getId() +
-                                "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.password.reset") + "*]</a></td>");
+                        out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminUsersLock="
+                                + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
+                                + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.lock")
+                                + "]</a>&nbsp;<a href=\"XincoAdmin?DialogAdminUsersResetPW="
+                                + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
+                                + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.password.reset") + "*]</a></td>");
                     }
                     if (((XincoCoreUserServer) allusers.elementAt(i)).getStatus_number() == 2) {
-                        out.println("<td class=\"text\"><b>" + rb.getString("general.status.locked") + "</b> <a href=\"XincoAdmin?DialogAdminUsersUnlock=" +
-                                ((XincoCoreUserServer) allusers.elementAt(i)).getId() +
-                                "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.unlock") +
-                                "]</a>&nbsp;<a href=\"XincoAdmin?DialogAdminUsersResetPW=" +
-                                ((XincoCoreUserServer) allusers.elementAt(i)).getId() +
-                                "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.password.reset") + "*]</a></td>");
+                        out.println("<td class=\"text\"><b>" + rb.getString("general.status.locked") + "</b> <a href=\"XincoAdmin?DialogAdminUsersUnlock="
+                                + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
+                                + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.unlock")
+                                + "]</a>&nbsp;<a href=\"XincoAdmin?DialogAdminUsersResetPW="
+                                + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
+                                + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.password.reset") + "*]</a></td>");
                     }
                     out.println("</tr>");
                 }
@@ -891,8 +892,8 @@ public class XincoAdminServlet extends HttpServlet {
                 out.println("</tr>");
                 out.println("<tr>");
                 out.println("<td class=\"text\">&nbsp;</td>");
-                out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"submit\" name=\"DialogNewGroupSubmit\" value=\"" +
-                        rb.getString("general.add.group") + "\"/></td>");
+                out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"submit\" name=\"DialogNewGroupSubmit\" value=\""
+                        + rb.getString("general.add.group") + "\"/></td>");
                 out.println("</tr>");
                 out.println("</table>");
                 out.println("</form>");
@@ -910,16 +911,16 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<tr>");
                     out.println("<td class=\"text\">" + ((XincoCoreGroupServer) allgroups.elementAt(i)).getId() + "</td>");
                     String label = ((XincoCoreGroupServer) allgroups.elementAt(i)).getDesignation();
-                    try{
-                        label=rb.getString(label);
-                    }catch (java.util.MissingResourceException e){
+                    try {
+                        label = rb.getString(label);
+                    } catch (java.util.MissingResourceException e) {
                         //Nothing to translate
                     }
                     out.println("<td class=\"text\">" + label + "</td>");
-                    out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminGroupsSelect=" +
-                            ((XincoCoreGroupServer) allgroups.elementAt(i)).getId() +
-                            "&list=" + request.getParameter("list") + "\" class=\"link\">[" +
-                            rb.getString("general.edit") + "]</a></td>");
+                    out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminGroupsSelect="
+                            + ((XincoCoreGroupServer) allgroups.elementAt(i)).getId()
+                            + "&list=" + request.getParameter("list") + "\" class=\"link\">["
+                            + rb.getString("general.edit") + "]</a></td>");
                     out.println("</tr>");
                 }
                 out.println("</table>");
@@ -934,20 +935,20 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
                     out.println("<tr>");
                     out.println("<td class=\"text\">" + rb.getString("general.name") + ":</td>");
-                    String designation=temp_group.getDesignation();
-                    try{
-                        designation=rb.getString(temp_group.getDesignation());
-                    }catch (java.util.MissingResourceException e){
+                    String designation = temp_group.getDesignation();
+                    try {
+                        designation = rb.getString(temp_group.getDesignation());
+                    } catch (java.util.MissingResourceException e) {
                         //Nothing to translate
                     }
                     out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditGroupName\" size=\"40\" value=\"" + designation + "\"/></td>");
                     out.println("</tr>");
                     out.println("<tr>");
                     out.println("<td class=\"text\">&nbsp;</td>");
-                    out.println("<td class=\"text\"><input type='hidden' name='list' value='" + 
-                            request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogEditGroupID\" value=\"" + 
-                            current_group_selection + "\"/><input type=\"submit\" name=\"DialogEditGroupSubmit\" value=\"" +
-                            rb.getString("general.save") + "!\"/></td>");
+                    out.println("<td class=\"text\"><input type='hidden' name='list' value='"
+                            + request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogEditGroupID\" value=\""
+                            + current_group_selection + "\"/><input type=\"submit\" name=\"DialogEditGroupSubmit\" value=\""
+                            + rb.getString("general.save") + "!\"/></td>");
                     out.println("</tr>");
                     out.println("</table>");
                     out.println("</form>");
@@ -991,10 +992,10 @@ public class XincoAdminServlet extends HttpServlet {
                         out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getFirstname() + "</td>");
                         out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getName() + "</td>");
                         out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getEmail() + "</td>");
-                        out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogEditGroupRemoveUser=" +
-                                ((XincoCoreUserServer) allusers.elementAt(i)).getId() +
-                                "&list=" + request.getParameter("list") +
-                                "\" class=\"link\">[" + rb.getString("general.group.removeuser") + "]</a></td>");
+                        out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogEditGroupRemoveUser="
+                                + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
+                                + "&list=" + request.getParameter("list")
+                                + "\" class=\"link\">[" + rb.getString("general.group.removeuser") + "]</a></td>");
                         out.println("</tr>");
                     }
                 }
@@ -1028,10 +1029,10 @@ public class XincoAdminServlet extends HttpServlet {
                         out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getFirstname() + "</td>");
                         out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getName() + "</td>");
                         out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.elementAt(i)).getEmail() + "</td>");
-                        out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogEditGroupAddUser=" +
-                                ((XincoCoreUserServer) allusers.elementAt(i)).getId() +
-                                "&list=" + request.getParameter("list") +
-                                "\" class=\"link\">[" + rb.getString("general.group.adduser") + "]</a></td>");
+                        out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogEditGroupAddUser="
+                                + ((XincoCoreUserServer) allusers.elementAt(i)).getId()
+                                + "&list=" + request.getParameter("list")
+                                + "\" class=\"link\">[" + rb.getString("general.group.adduser") + "]</a></td>");
                         out.println("</tr>");
                     }
                 }
@@ -1069,8 +1070,8 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("</tr>");
                     out.println("<tr>");
                     out.println("<td class=\"text\">&nbsp;</td>");
-                    out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogEditUserProfileID\" value=\"" +
-                            current_user_selection + "\"/><input type=\"submit\" name=\"DialogEditUserProfileSubmit\" value=\"" + rb.getString("general.save") + "!\"/></td>");
+                    out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogEditUserProfileID\" value=\""
+                            + current_user_selection + "\"/><input type=\"submit\" name=\"DialogEditUserProfileSubmit\" value=\"" + rb.getString("general.save") + "!\"/></td>");
                     out.println("</tr>");
                     out.println("</table>");
                     out.println("</form>");
@@ -1094,8 +1095,8 @@ public class XincoAdminServlet extends HttpServlet {
                 out.println("</tr>");
                 out.println("<tr>");
                 out.println("<td class=\"text\">&nbsp;</td>");
-                out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"submit\" name=\"DialogNewLanguageSubmit\" value=\"" +
-                        rb.getString("general.add.language") + "\"/></td>");
+                out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"submit\" name=\"DialogNewLanguageSubmit\" value=\""
+                        + rb.getString("general.add.language") + "\"/></td>");
                 out.println("</tr>");
                 out.println("</table>");
                 out.println("</form>");
@@ -1123,10 +1124,10 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<td class=\"text\">" + ((XincoCoreLanguageServer) alllanguages.elementAt(i)).getDesignation() + "</td>");
                     is_used = XincoCoreLanguageServer.isLanguageUsed((XincoCoreLanguageServer) alllanguages.elementAt(i), dbm);
                     if (!is_used) {
-                        out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminLanguagesDelete=" +
-                                ((XincoCoreLanguageServer) alllanguages.elementAt(i)).getId() +
-                                "&list=" + request.getParameter("list") +
-                                "\" class=\"link\">[" + rb.getString("general.delete") + "]</a></td>");
+                        out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminLanguagesDelete="
+                                + ((XincoCoreLanguageServer) alllanguages.elementAt(i)).getId()
+                                + "&list=" + request.getParameter("list")
+                                + "\" class=\"link\">[" + rb.getString("general.delete") + "]</a></td>");
                     } else {
                         out.println("<td class=\"text\">&nbsp;</td>");
                     }
@@ -1136,8 +1137,8 @@ public class XincoAdminServlet extends HttpServlet {
                 out.println("<td colspan=\"4\" class=\"text\">&nbsp;</td>");
                 out.println("</tr>");
                 out.println("<tr>");
-                out.println("<td colspan=\"4\" class=\"text\">" +
-                        rb.getString("error.language.delete.referenced") + "</td>");
+                out.println("<td colspan=\"4\" class=\"text\">"
+                        + rb.getString("error.language.delete.referenced") + "</td>");
                 out.println("</tr>");
                 out.println("</table>");
             }
@@ -1157,9 +1158,9 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<td class=\"text\">" + ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getId() + "</td>");
                     out.println("<td class=\"text\">" + ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDesignation() + "</td>");
                     out.println("<td class=\"text\">" + ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDescription() + "</td>");
-                    out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminDataTypeSelect=" +
-                            ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getId() +
-                            "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.edit") + "]</a></td>");
+                    out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminDataTypeSelect="
+                            + ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getId()
+                            + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.edit") + "]</a></td>");
                     out.println("</tr>");
                 }
                 out.println("</table>");
@@ -1188,9 +1189,9 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("</tr>");
                     out.println("<tr>");
                     out.println("<td class=\"text\">&nbsp;</td>");
-                    out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogNewAttributeDataTypeID\" value=\"" +
-                            current_datatype_selection + "\"/><input type=\"submit\" name=\"DialogNewAttributeSubmit\" value=\"" +
-                            rb.getString("general.add.attribute") + "\"/></td>");
+                    out.println("<td class=\"text\"><input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type=\"hidden\" name=\"DialogNewAttributeDataTypeID\" value=\""
+                            + current_datatype_selection + "\"/><input type=\"submit\" name=\"DialogNewAttributeSubmit\" value=\""
+                            + rb.getString("general.add.attribute") + "\"/></td>");
                     out.println("</tr>");
                     out.println("</table>");
                     out.println("</form>");
@@ -1228,9 +1229,9 @@ public class XincoAdminServlet extends HttpServlet {
                         if (((current_datatype_selection == 1) && (((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getAttribute_id() <= 8)) || ((current_datatype_selection == 2) && (((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getAttribute_id() <= 1)) || ((current_datatype_selection == 3) && (((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getAttribute_id() <= 1))) {
                             out.println("<td class=\"text\">&nbsp;</td>");
                         } else {
-                            out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogEditAttributesRemoveAttributeId=" +
-                                    ((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getAttribute_id() +
-                                    "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.delete") + "*]</a></td>");
+                            out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogEditAttributesRemoveAttributeId="
+                                    + ((XincoCoreDataTypeAttributeServer) temp_datatype.getXinco_core_data_type_attributes().elementAt(i)).getAttribute_id()
+                                    + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.delete") + "*]</a></td>");
                         }
                         out.println("</tr>");
                     }
@@ -1276,13 +1277,13 @@ public class XincoAdminServlet extends HttpServlet {
                     if (request.getParameter("table").equals("xinco_core_data_type_attribute")) {
                         column = "xinco_core_data_type_id";
                     }
-                    rs = dbm.con.createStatement().executeQuery("select * from " + request.getParameter("table") +
-                            "_t a, (select concat(concat(a.firstname , ' ' ), a.name) as \"" +
-                            rb.getString("general.user") + "\" , b.mod_time as \"" + rb.getString("general.audit.modtime") +
-                            "\" ,b.mod_reason as \"" + rb.getString("general.reason") + "\" ,b.record_id " +
-                            "from xinco_core_user a,xinco_core_user_modified_record b where a.id=b.id " +
-                            ") b where b.record_id =a.record_id and a." + column +
-                            " = '" + request.getParameter("id") + "' order by a.record_id desc");
+                    rs = dbm.con.createStatement().executeQuery("select * from " + request.getParameter("table")
+                            + "_t a, (select concat(concat(a.firstname , ' ' ), a.name) as \""
+                            + rb.getString("general.user") + "\" , b.mod_time as \"" + rb.getString("general.audit.modtime")
+                            + "\" ,b.mod_reason as \"" + rb.getString("general.reason") + "\" ,b.record_id "
+                            + "from xinco_core_user a,xinco_core_user_modified_record b where a.id=b.id "
+                            + ") b where b.record_id =a.record_id and a." + column
+                            + " = '" + request.getParameter("id") + "' order by a.record_id desc");
                     dbm.drawTable(rs, response.getWriter(), dbm.getColumnNames(rs),
                             "<center>" + rb.getString("general.audit.results").replaceAll("%i",
                             request.getParameter("id")).replaceAll("%t",
@@ -1331,21 +1332,21 @@ public class XincoAdminServlet extends HttpServlet {
                     if (request.getParameter("table").equals("xinco_core_data_type_attribute")) {
                         column = "xinco_core_data_type_id";
                     }
-                    rs = dbm.con.createStatement().executeQuery("select distinct * from " + request.getParameter("table") +
-                            " where " + column + " in (select distinct " + column + " from " + request.getParameter("table") + "_t)");
+                    rs = dbm.con.createStatement().executeQuery("select distinct * from " + request.getParameter("table")
+                            + " where " + column + " in (select distinct " + column + " from " + request.getParameter("table") + "_t)");
                     dbm.drawTable(rs, response.getWriter(), dbm.getColumnNames(rs), "", -1, false, -1);
                     rs = dbm.con.createStatement().executeQuery("select distinct " + column + " from " + request.getParameter("table") + "_t");
                     out.println("<form action='XincoAdmin?MenuAudit=AuditTable' method='POST'>");
-                    rs = dbm.con.createStatement().executeQuery("select distinct " + column + " from " +
-                            request.getParameter("table") + "_t");
+                    rs = dbm.con.createStatement().executeQuery("select distinct " + column + " from "
+                            + request.getParameter("table") + "_t");
                     out.println("Select record id: ");
                     out.println("<select name='id'>");
                     while (rs.next()) {
                         out.println("<option >" + rs.getString(1) + "</option>");
                     }
                     out.println("</select>");
-                    out.println("<br><br><input type='submit' value='" + rb.getString("menu.view") + "' />" +
-                            "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='table' value=" + request.getParameter("table") + " /></form>");
+                    out.println("<br><br><input type='submit' value='" + rb.getString("menu.view") + "' />"
+                            + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='table' value=" + request.getParameter("table") + " /></form>");
 
                     out.write("\n");
                     out.write("        </center>\n");
@@ -1386,20 +1387,20 @@ public class XincoAdminServlet extends HttpServlet {
                         "TABLE"
                     };
                     rs = meta.getTables(null, null, null, types);
-                    out.println("<center><table border='0'><tbody><thead><tr><th>" +
-                            rb.getString("general.table") + "</th><th>" +
-                            rb.getString("general.audit.action") + "</th></tr>");
+                    out.println("<center><table border='0'><tbody><thead><tr><th>"
+                            + rb.getString("general.table") + "</th><th>"
+                            + rb.getString("general.audit.action") + "</th></tr>");
                     while (rs.next()) {
-                        if (!rs.getString("TABLE_NAME").endsWith("_t") &&
-                                !rs.getString("TABLE_NAME").equals("xinco_id") &&
-                                !rs.getString("TABLE_NAME").equals("xinco_core_log") &&
-                                !rs.getString("TABLE_NAME").equals("xinco_core_user_modified_record") &&
-                                rs.getString("TABLE_NAME").startsWith("xinco") &&
-                                !rs.getString("TABLE_NAME").equals("xinco_core_user_has_xinco_core_group")) {
+                        if (!rs.getString("TABLE_NAME").endsWith("_t")
+                                && !rs.getString("TABLE_NAME").equals("xinco_id")
+                                && !rs.getString("TABLE_NAME").equals("xinco_core_log")
+                                && !rs.getString("TABLE_NAME").equals("xinco_core_user_modified_record")
+                                && rs.getString("TABLE_NAME").startsWith("xinco")
+                                && !rs.getString("TABLE_NAME").equals("xinco_core_user_has_xinco_core_group")) {
                             out.println("<form action='XincoAdmin?MenuAudit=AuditQuery' method='POST'>");
-                            out.println("<tr><td>" + rs.getString("TABLE_NAME") + "</td><td><center><input type='submit' value='" +
-                                    rb.getString("general.continue") + "'/></center></td></tr>" +
-                                    "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='table' value='" + rs.getString("TABLE_NAME") + "' /></form>");
+                            out.println("<tr><td>" + rs.getString("TABLE_NAME") + "</td><td><center><input type='submit' value='"
+                                    + rb.getString("general.continue") + "'/></center></td></tr>"
+                                    + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='table' value='" + rs.getString("TABLE_NAME") + "' /></form>");
                         }
                     }
                     out.println("</tbody></table></center>");
@@ -1455,10 +1456,10 @@ public class XincoAdminServlet extends HttpServlet {
 
                     //select all data
                     out.println("<tr>");
-                    out.println("<td class=\"text\"><b>" +
-                            rb.getString("message.data.sort.designation") + "</b></td>");
-                    out.println("<td class=\"text\"><b>" +
-                            rb.getString("message.indexing.status") + "</b></td>");
+                    out.println("<td class=\"text\"><b>"
+                            + rb.getString("message.data.sort.designation") + "</b></td>");
+                    out.println("<td class=\"text\"><b>"
+                            + rb.getString("message.indexing.status") + "</b></td>");
                     out.println("</tr>");
                     XincoCoreDataServer xdata_temp = null;
                     boolean index_result = false;
@@ -1504,17 +1505,17 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; " + rb.getString("general.copyright.date") + ", " +
-                //Avoid external links if general.setting.allowoutsidelinks is set to false
+        out.println("<td class=\"text\">&copy; " + rb.getString("general.copyright.date") + ", "
+                + //Avoid external links if general.setting.allowoutsidelinks is set to false
                 //Security bug
                 (dbm.config.isAllowOutsideLinks() ? rb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
         out.println("</tr>");
-        out.println("</table><tr><form action='menu.jsp'><input type='submit' value='" +
-                rb.getString("message.admin.main.backtomain") + "' />" +
-                "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></form></tr>" +
-                "<tr><FORM><INPUT TYPE='button' VALUE='" + rb.getString("message.admin.main.back") +
-                "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value='" +
-                request.getParameter("list") + "'/></FORM></tr>");
+        out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"
+                + rb.getString("message.admin.main.backtomain") + "' />"
+                + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></form></tr>"
+                + "<tr><FORM><INPUT TYPE='button' VALUE='" + rb.getString("message.admin.main.back")
+                + "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value='"
+                + request.getParameter("list") + "'/></FORM></tr>");
         out.println("</span>");
         out.println("</center>");
         out.println("</body>");
