@@ -129,6 +129,11 @@ public class LogDialog extends AbstractDialog {
                 || ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == OPCode.MODIFICATION.ordinal() + 1) {
             versionLow.setText("" + (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_low() + 1));
         }
+        //Issue #2997808:Don't allow 0.0.0 versions
+        int majorV = ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_high();
+        int midV = (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_mid());
+        int lowV = (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_low());
+        versionHigh.setText("" + (majorV == 0 && midV == 0 && lowV == 0 ? 1 : majorV));
     }
 
     /** This method is called from within the constructor to
