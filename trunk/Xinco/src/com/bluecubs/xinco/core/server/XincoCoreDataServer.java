@@ -138,9 +138,10 @@ public class XincoCoreDataServer extends XincoCoreData {
         parameters.clear();
         parameters.put("xcdi", xinco_core_data_id);
         parameters.put("opcode", OPCode.CHECKIN.ordinal() + 1);
+        parameters.put("opcode2", OPCode.CREATION.ordinal() + 1);
         result = XincoDBManager.createdQuery("select xcl from XincoCoreLog xcl"
                 + "where xcl.xincoCoreDataId.id =:xcdi and xcl.versionMid='0' "
-                + "and xcl.opCode=:opcode order by xcl.id desc");
+                + "and (xcl.opCode=:opcode or xcl.opCode=:opcode2) order by xcl.id desc");
         if (result.size() > 0) {
             com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd = (com.bluecubs.xinco.core.server.persistence.XincoCoreData) result.get(0);
             XincoCoreLogServer log = new XincoCoreLogServer(xcd.getId());
