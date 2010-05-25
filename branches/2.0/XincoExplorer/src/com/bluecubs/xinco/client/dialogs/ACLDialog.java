@@ -53,7 +53,7 @@ import javax.swing.ListModel;
  * ACL Dialog
  * @author Javier A. Ortiz
  */
-public class ACLDialog extends AbstractDialog {
+public final class ACLDialog extends AbstractDialog {
 
     private XincoExplorer explorer = null;
     private Vector temp_acl = null;
@@ -89,6 +89,7 @@ public class ACLDialog extends AbstractDialog {
 
     @Override
     public void setToDefaults() {
+        super.setToDefaults();
         //fill group list
         loadACLGroupListACL();
         //fill ACL

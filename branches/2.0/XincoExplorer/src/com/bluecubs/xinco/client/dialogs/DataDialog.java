@@ -75,6 +75,7 @@ public class DataDialog extends AbstractDialog {
 
     @Override
     public void setToDefaults() {
+        super.setToDefaults();
         //Now we catch any recent change since is re-populated each time is made visible
         //processing independent of creation
         int i = 0;
