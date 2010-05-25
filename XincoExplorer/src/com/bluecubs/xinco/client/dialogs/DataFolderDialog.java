@@ -81,6 +81,7 @@ public class DataFolderDialog extends AbstractDialog {
 
     @Override
     public void setToDefaults() {
+        super.setToDefaults();
         //processing independent of creation
         int i = 0;
         String text = "";

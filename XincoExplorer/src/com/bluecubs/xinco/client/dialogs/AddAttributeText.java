@@ -97,6 +97,7 @@ public class AddAttributeText extends AbstractDialog {
 
     @Override
     public void setToDefaults() {
+        super.setToDefaults();
         XincoMutableTreeNode node = explorer.getSession().getCurrentTreeNodeSelection();
         Vector attr = ((XincoCoreData) node.getUserObject()).getXinco_add_attributes();
         if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() != 2) {
