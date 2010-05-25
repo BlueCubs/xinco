@@ -70,6 +70,7 @@ public class UserDialog extends AbstractDialog {
 
     @Override
     public void setToDefaults() {
+        super.setToDefaults();
         //Do not allow to close the window. User MUST change password!
         if (isAged) {
             setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);

@@ -71,6 +71,7 @@ public class DataTypeDialog extends AbstractDialog {
 
     @Override
     public void setToDefaults() {
+        super.setToDefaults();
         int i = 0;
         String text = "";
         if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject() != null) {

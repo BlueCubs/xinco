@@ -79,10 +79,18 @@ public class LogDialog extends AbstractDialog {
         reasonLabel.setText(explorer.getResourceBundle().getString("general.reason"));
         minorChange.setText(explorer.getResourceBundle().getString("general.minor"));
         minorChange.setToolTipText(explorer.getResourceBundle().getString("general.minor.tooltip"));
+        textAreas.put(reason, "");
+        textFields.put(action, ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_description());
+        textFields.put(versionHigh, "" + (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_high()));
+        textFields.put(versionMid, "" + (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_mid()));
+        textFields.put(versionLow, "" + (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_low()));
+        textFields.put(versionPostfix, "" + ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_postfix());
+        textFields.put(versionPostfixExplanation, "");
     }
 
     @Override
     public void setToDefaults() {
+        super.setToDefaults();
         //processing independent of creation
         if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject() != null) {
             //For some reason
@@ -110,6 +118,16 @@ public class LogDialog extends AbstractDialog {
         versionHigh.setEditable(editableVersion);
         versionMid.setEditable(editableVersion);
         versionLow.setEditable(editableVersion);
+        //Issue #2997808:Don't allow 0.0.0 versions
+        int majorV = ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_high();
+        int midV = (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_mid());
+        int lowV = (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_low());
+        versionHigh.setText("" + (majorV == 0 && midV == 0 && lowV == 0 ? 1 : majorV));
+        //Increase low after adding a comment or changing metadata
+        if (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == OPCode.COMMENT_COMMENT.ordinal() + 1
+                || ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == OPCode.MODIFICATION.ordinal() + 1) {
+            versionLow.setText("" + (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_low() + 1));
+        }
         if (minorChange.isEnabled()) {
             if (minorChange.isSelected()) {
                 versionHigh.setText("" + (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_high()));
@@ -124,16 +142,6 @@ public class LogDialog extends AbstractDialog {
                 versionPostfix.setText("");
             }
         }
-        //Increase low after adding a comment or changing metadata
-        if (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == OPCode.COMMENT_COMMENT.ordinal() + 1
-                || ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getOp_code() == OPCode.MODIFICATION.ordinal() + 1) {
-            versionLow.setText("" + (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_low() + 1));
-        }
-        //Issue #2997808:Don't allow 0.0.0 versions
-        int majorV = ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_high();
-        int midV = (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_mid());
-        int lowV = (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_logs().elementAt(log_index)).getVersion().getVersion_low());
-        versionHigh.setText("" + (majorV == 0 && midV == 0 && lowV == 0 ? 1 : majorV));
     }
 
     /** This method is called from within the constructor to

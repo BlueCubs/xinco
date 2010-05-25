@@ -48,9 +48,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public abstract class AbstractDialog extends javax.swing.JDialog {
 
-    private HashMap<JTextField, String> textFields = new HashMap<JTextField, String>();
-    private HashMap<JTextArea, String> textAreas = new HashMap<JTextArea, String>();
-    private HashMap<JTable, DefaultTableModel> tables = new HashMap<JTable, DefaultTableModel>();
+    protected HashMap<JTextField, String> textFields = new HashMap<JTextField, String>();
+    protected HashMap<JTextArea, String> textAreas = new HashMap<JTextArea, String>();
+    protected HashMap<JTable, DefaultTableModel> tables = new HashMap<JTable, DefaultTableModel>();
 
     /**
      * Constructor

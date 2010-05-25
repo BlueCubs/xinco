@@ -74,6 +74,7 @@ public class AddAttributeUniversalDialog extends AbstractDialog {
 
     @Override
     public void setToDefaults() {
+        super.setToDefaults();
         //processing independent of creation
         String[] cn = {explorer.getResourceBundle().getString("general.attribute"), explorer.getResourceBundle().getString("general.details")};
         int i = 0, j = 0, start = 0;
