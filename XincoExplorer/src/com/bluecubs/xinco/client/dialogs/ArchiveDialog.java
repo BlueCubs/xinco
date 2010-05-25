@@ -147,6 +147,7 @@ public class ArchiveDialog extends AbstractDialog {
 
     @Override
     public void setToDefaults() {
+        super.setToDefaults();
         //processing independent of creation
         if (((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(3)).getAttrib_unsignedint() == 0) {
             revisionModelCheckbox.setSelected(false);

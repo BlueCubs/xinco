@@ -89,6 +89,7 @@ public class ACLDialog extends AbstractDialog {
 
     @Override
     public void setToDefaults() {
+        super.setToDefaults();
         //fill group list
         loadACLGroupListACL();
         //fill ACL
