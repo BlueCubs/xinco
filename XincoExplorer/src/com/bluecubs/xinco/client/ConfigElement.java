@@ -37,6 +37,6 @@ public enum ConfigElement {
     //Don't reorder items in this list as they would break importing older versions of files.
     CONNECTION_PROFILE,
     LAF,
-    LANGUAGE,
+    LOCALE,
     VERSION
 }
