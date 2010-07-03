@@ -24,19 +24,18 @@
  * Description:     XincoProgressBarThread
  *
  * Original Author: Javier A. Ortiz
- * Date:            2010
+ * Date:            2007
  *
  * Modifications:
  *
  * Who?             When?             What?
- * 
+ *
  *
  *************************************************************
  * XincoProgressBarThread.java
  *
- * Created on January 22, 2010, 3:31 PM
+ * Created on January 22, 2007, 3:31 PM
  */
-
 package com.bluecubs.xinco.client.object.thread;
 
 import com.bluecubs.xinco.client.object.*;
@@ -46,27 +45,53 @@ import com.bluecubs.xinco.client.XincoExplorer;
  *
  * @author Javier A. Ortiz
  */
-public class XincoProgressBarThread extends Thread{
+public class XincoProgressBarThread extends Thread {
+
     private XincoExplorer explorer;
     private XincoProgressBar progressBar;
+    private boolean initialized=false;
+
     @Override
     public void run() {
-        progressBar=new XincoProgressBar(this.explorer);
+        progressBar = new XincoProgressBar(explorer);
         progressBar.pack();
         progressBar.setVisible(true);
+        setInitialized(true);
     }
+
     /** Creates a new instance of XincoProgressBarThread */
     public XincoProgressBarThread(XincoExplorer e) {
-        this.explorer=e;
+        this.explorer = e;
     }
+
     public void hide() {
         progressBar.setVisible(false);
     }
+
     public void show() {
         progressBar.setVisible(true);
         progressBar.repaint();
     }
-    public void setTitle(String t){
+
+    public void setTitle(String t) {
         progressBar.setTitle(t);
+    }
+
+    public boolean isVisible() {
+        return progressBar.isVisible();
+    }
+
+    /**
+     * @return the initialized
+     */
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    /**
+     * @param initialized the initialized to set
+     */
+    public void setInitialized(boolean initialized) {
+        this.initialized = initialized;
     }
 }

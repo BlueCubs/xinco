@@ -259,9 +259,9 @@ public class DataFolderDialog extends AbstractDialog {
             insertnewnode = true;
         }
         //set altered values
-        newnode.setDesignation(this.designation.getText());
-        if (this.language.getSelectedIndex() < 0) {
-            this.language.setSelectedIndex(0);
+        newnode.setDesignation(designation.getText());
+        if (language.getSelectedIndex() < 0) {
+            language.setSelectedIndex(0);
         }
         newnode.setXinco_core_language(((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(this.language.getSelectedIndex())));
         try {
