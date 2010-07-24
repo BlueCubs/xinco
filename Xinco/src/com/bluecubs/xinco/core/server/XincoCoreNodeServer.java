@@ -136,7 +136,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 } else {
                     xcnid = "" + getXinco_core_node_id();
                 }
-                stmt.executeUpdate("INSERT INTO xinco_core_node VALUES (" + getId() + ", " + getXinco_core_node_id() + ", " + getXinco_core_language().getId() + ", '" + getDesignation().replaceAll("'","\\\\'") + "', " + getStatus_number() + ")");
+                stmt.executeUpdate("INSERT INTO xinco_core_node VALUES (" + getId() + ", " + xcnid + ", " + getXinco_core_language().getId() + ", '" + getDesignation().replaceAll("'","\\\\'") + "', " + getStatus_number() + ")");
                 stmt.close();
             }
             
