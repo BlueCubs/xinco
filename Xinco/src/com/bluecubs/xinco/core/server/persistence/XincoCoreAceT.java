@@ -31,7 +31,6 @@ import javax.persistence.TableGenerator;
     @NamedQuery(name = "XincoCoreAceT.findByExecutePermission", query = "SELECT x FROM XincoCoreAceT x WHERE x.executePermission = :executePermission"),
     @NamedQuery(name = "XincoCoreAceT.findByAdminPermission", query = "SELECT x FROM XincoCoreAceT x WHERE x.adminPermission = :adminPermission")})
 public class XincoCoreAceT implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -180,4 +179,5 @@ public class XincoCoreAceT implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreAceT[recordId=" + recordId + "]";
     }
+
 }

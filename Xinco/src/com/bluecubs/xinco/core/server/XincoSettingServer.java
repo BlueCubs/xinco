@@ -19,6 +19,9 @@ public class XincoSettingServer extends XincoSetting {
     private static HashMap<String, Object> parameters = new HashMap<String, Object>();
     private static List<Object> result;
 
+    protected XincoSettingServer() {
+    }
+
     public XincoSettingServer(int id, String description, int int_value, String string_value, boolean bool_value, int changerID, long long_value, Vector xinco_settings) {
         super(id, description, int_value, string_value, bool_value, changerID, long_value, xinco_settings);
     }
@@ -85,7 +88,7 @@ public class XincoSettingServer extends XincoSetting {
             new XincoSettingJpaController().destroy(setting.getId());
             return 0;
         } catch (NonexistentEntityException ex) {
-            Logger.getLogger(XincoSettingServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoSettingServer.class.getSimpleName()).log(Level.SEVERE, null, ex);
             return -1;
         }
     }

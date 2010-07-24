@@ -27,7 +27,6 @@ import javax.persistence.TableGenerator;
     @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByDataType", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.dataType = :dataType"),
     @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByAttrSize", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.attrSize = :attrSize")})
 public class XincoCoreDataTypeAttributeT implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)

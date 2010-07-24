@@ -50,9 +50,9 @@ public class XincoCoreGroup extends XincoAuditedObject implements Serializable {
     @Basic(optional = false)
     @Column(name = "status_number", nullable = false)
     private int statusNumber;
-    @OneToMany(mappedBy = "xincoCoreGroupId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "xincoCoreGroup")
     private List<XincoCoreAce> xincoCoreAceList;
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreGroup", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreGroup")
     private List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList;
 
     public XincoCoreGroup() {

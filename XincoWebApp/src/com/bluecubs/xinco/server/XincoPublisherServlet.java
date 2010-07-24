@@ -37,16 +37,25 @@ package com.bluecubs.xinco.server;
 
 import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
-import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import com.bluecubs.xinco.core.*;
-import com.bluecubs.xinco.core.server.*;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreLog;
+import com.bluecubs.xinco.core.XincoCoreACE;
+import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
+import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import com.twiek.Utils.Base64;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class XincoPublisherServlet extends HttpServlet {
 
@@ -226,7 +235,7 @@ public class XincoPublisherServlet extends HttpServlet {
                                 + "x.xincoCoreDataId.statusNumber=5 or (xca.xincoCoreGroupId.id=3 and xca.readPermission=1)"
                                 + " and x.versionMid='0' order by x.xincoCoreDataId.designation");
                         for (Object o : result) {
-                            xdata_temp = new XincoCoreDataServer(((XincoCoreLog) o).getXincoCoreDataId());
+                            xdata_temp = new XincoCoreDataServer(((XincoCoreData) o));
                             temp_server_url = request.getRequestURL().toString();
                             temp_url = "";
                             //file = 1

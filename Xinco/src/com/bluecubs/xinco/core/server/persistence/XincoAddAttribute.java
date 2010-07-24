@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bluecubs.xinco.core.server.persistence;
 
 import com.bluecubs.xinco.core.server.AuditedEntityListener;
@@ -12,7 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -58,7 +53,7 @@ public class XincoAddAttribute extends XincoAuditedObject implements Serializabl
     @Temporal(TemporalType.TIMESTAMP)
     private Date attribDatetime;
     @JoinColumn(name = "xinco_core_data_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     private XincoCoreData xincoCoreData;
 
     public XincoAddAttribute() {
@@ -145,6 +140,7 @@ public class XincoAddAttribute extends XincoAuditedObject implements Serializabl
 
     @Override
     public boolean equals(Object object) {
+        
         if (!(object instanceof XincoAddAttribute)) {
             return false;
         }
@@ -159,4 +155,5 @@ public class XincoAddAttribute extends XincoAuditedObject implements Serializabl
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoAddAttribute[xincoAddAttributePK=" + xincoAddAttributePK + "]";
     }
+
 }

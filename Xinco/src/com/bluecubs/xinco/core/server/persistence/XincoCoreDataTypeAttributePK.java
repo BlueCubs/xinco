@@ -11,8 +11,6 @@ import javax.persistence.Embeddable;
  */
 @Embeddable
 public class XincoCoreDataTypeAttributePK implements Serializable {
-
-    private static final long serialVersionUID = 1L;
     @Basic(optional = false)
     @Column(name = "xinco_core_data_type_id", nullable = false)
     private int xincoCoreDataTypeId;
@@ -47,8 +45,8 @@ public class XincoCoreDataTypeAttributePK implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += xincoCoreDataTypeId;
-        hash += attributeId;
+        hash += (int) xincoCoreDataTypeId;
+        hash += (int) attributeId;
         return hash;
     }
 

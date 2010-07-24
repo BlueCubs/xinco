@@ -6,7 +6,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -21,7 +20,12 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "xinco_core_user_modified_record")
-@NamedQueries({@NamedQuery(name = "XincoCoreUserModifiedRecord.findAll", query = "SELECT x FROM XincoCoreUserModifiedRecord x"), @NamedQuery(name = "XincoCoreUserModifiedRecord.findById", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.xincoCoreUserModifiedRecordPK.id = :id"), @NamedQuery(name = "XincoCoreUserModifiedRecord.findByRecordId", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.xincoCoreUserModifiedRecordPK.recordId = :recordId"), @NamedQuery(name = "XincoCoreUserModifiedRecord.findByModTime", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.modTime = :modTime"), @NamedQuery(name = "XincoCoreUserModifiedRecord.findByModReason", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.modReason = :modReason")})
+@NamedQueries({
+    @NamedQuery(name = "XincoCoreUserModifiedRecord.findAll", query = "SELECT x FROM XincoCoreUserModifiedRecord x"),
+    @NamedQuery(name = "XincoCoreUserModifiedRecord.findById", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.xincoCoreUserModifiedRecordPK.id = :id"),
+    @NamedQuery(name = "XincoCoreUserModifiedRecord.findByRecordId", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.xincoCoreUserModifiedRecordPK.recordId = :recordId"),
+    @NamedQuery(name = "XincoCoreUserModifiedRecord.findByModTime", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.modTime = :modTime"),
+    @NamedQuery(name = "XincoCoreUserModifiedRecord.findByModReason", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.modReason = :modReason")})
 public class XincoCoreUserModifiedRecord implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -30,10 +34,11 @@ public class XincoCoreUserModifiedRecord implements Serializable {
     @Column(name = "mod_Time", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date modTime;
-    @Column(name = "mod_Reason", length = 255)
+    @Basic(optional = false)
+    @Column(name = "mod_Reason", nullable = false, length = 255)
     private String modReason;
     @JoinColumn(name = "id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     private XincoCoreUser xincoCoreUser;
 
     public XincoCoreUserModifiedRecord() {
@@ -108,5 +113,4 @@ public class XincoCoreUserModifiedRecord implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecord[xincoCoreUserModifiedRecordPK=" + xincoCoreUserModifiedRecordPK + "]";
     }
-
 }

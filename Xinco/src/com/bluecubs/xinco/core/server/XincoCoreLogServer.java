@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -47,7 +47,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class XincoCoreLogServer extends XincoCoreLog {
 
@@ -55,6 +56,9 @@ public class XincoCoreLogServer extends XincoCoreLog {
     private static List result;
     private static HashMap parameters = new HashMap();
     private XincoCoreUser user;
+
+    protected XincoCoreLogServer() {
+    }
     //create single log object for data structures
 
     public XincoCoreLogServer(int attrID) throws XincoException {
@@ -67,8 +71,8 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl =
                         (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) result.get(0);
                 setId(xcl.getId());
-                setXinco_core_data_id(xcl.getXincoCoreDataId().getId());
-                setXinco_core_user_id(xcl.getXincoCoreUserId().getId());
+                setXinco_core_data_id(xcl.getXincoCoreData().getId());
+                setXinco_core_user_id(xcl.getXincoCoreUser().getId());
                 setOp_code(xcl.getOpCode());
                 setOp_datetime(new GregorianCalendar());
                 getOp_datetime().setTime(xcl.getOpDatetime());
@@ -89,8 +93,8 @@ public class XincoCoreLogServer extends XincoCoreLog {
 
     private XincoCoreLogServer(com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl) {
         setId(xcl.getId());
-        setXinco_core_data_id(xcl.getXincoCoreDataId().getId());
-        setXinco_core_user_id(xcl.getXincoCoreUserId().getId());
+        setXinco_core_data_id(xcl.getXincoCoreData().getId());
+        setXinco_core_user_id(xcl.getXincoCoreUser().getId());
         setOp_code(xcl.getOpCode());
         setOp_datetime(new GregorianCalendar());
         getOp_datetime().setTime(xcl.getOpDatetime());
@@ -128,10 +132,9 @@ public class XincoCoreLogServer extends XincoCoreLog {
             XincoCoreLogJpaController controller = new XincoCoreLogJpaController();
             com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl;
             if (getId() > 0) {
-                ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 xcl = controller.findXincoCoreLog(getId());
-                xcl.setXincoCoreDataId(new XincoCoreDataJpaController().findXincoCoreData(getXinco_core_data_id()));
-                xcl.setXincoCoreUserId(new XincoCoreUserJpaController().findXincoCoreUser(getXinco_core_user_id()));
+                xcl.setXincoCoreData(new XincoCoreDataJpaController().findXincoCoreData(getXinco_core_data_id()));
+                xcl.setXincoCoreUser(new XincoCoreUserJpaController().findXincoCoreUser(getXinco_core_user_id()));
                 xcl.setOpCode(getOp_code());
                 xcl.setOpDatetime(new Date());
                 xcl.setOpDescription(getOp_description().replaceAll("'", "\\\\'"));
@@ -142,8 +145,8 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 controller.edit(xcl);
             } else {
                 xcl = new com.bluecubs.xinco.core.server.persistence.XincoCoreLog();
-                xcl.setXincoCoreDataId(new XincoCoreDataJpaController().findXincoCoreData(getXinco_core_data_id()));
-                xcl.setXincoCoreUserId(new XincoCoreUserJpaController().findXincoCoreUser(getXinco_core_user_id()));
+                xcl.setXincoCoreData(new XincoCoreDataJpaController().findXincoCoreData(getXinco_core_data_id()));
+                xcl.setXincoCoreUser(new XincoCoreUserJpaController().findXincoCoreUser(getXinco_core_user_id()));
                 xcl.setOpCode(getOp_code());
                 xcl.setOpDatetime(new Date());
                 xcl.setOpDescription(getOp_description().replaceAll("'", "\\\\'"));
@@ -167,17 +170,17 @@ public class XincoCoreLogServer extends XincoCoreLog {
         GregorianCalendar cal = new GregorianCalendar();
 
         try {
-            result = XincoDBManager.createdQuery("SELECT xcl FROM XincoCoreLog xcl WHERE xcl.xincoCoreDataId.id=" + attrID);
+            result = XincoDBManager.createdQuery("SELECT xcl FROM XincoCoreLog xcl WHERE xcl.xincoCoreData.id=" + attrID);
 
-            while (result.size() > 0) {
+            for (Object o:result) {
                 com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl =
-                        (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) result.get(0);
+                        (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) o;
                 cal = new GregorianCalendar();
                 cal.setTime(xcl.getOpDatetime());
                 core_log.addElement(new XincoCoreLogServer(xcl));
-                result.remove(0);
             }
         } catch (Exception e) {
+            Logger.getLogger(XincoCoreLogServer.class.getSimpleName()).log(Level.SEVERE, null, e);
             core_log.removeAllElements();
         }
         return core_log;

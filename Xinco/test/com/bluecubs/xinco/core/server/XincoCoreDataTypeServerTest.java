@@ -10,7 +10,7 @@ import junit.framework.TestSuite;
  *
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
-public class XincoCoreDataTypeServerTest extends TestCase {
+public class XincoCoreDataTypeServerTest extends XincoTestCase {
 
     public XincoCoreDataTypeServerTest(String testName) {
         super(testName);
@@ -20,17 +20,6 @@ public class XincoCoreDataTypeServerTest extends TestCase {
         TestSuite suite = new TestSuite(XincoCoreDataTypeServerTest.class);
         return suite;
     }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     /**
      * Test of getXincoCoreDataTypes method, of class XincoCoreDataTypeServer.
      */
@@ -41,7 +30,7 @@ public class XincoCoreDataTypeServerTest extends TestCase {
             assertTrue(instance.write2DB() > 0);
             XincoCoreDataTypeServer.deleteFromDB(instance);
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreGroupServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoCoreGroupServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
             fail();
         }
     }

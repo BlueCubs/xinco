@@ -9,7 +9,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -50,23 +49,25 @@ public class XincoCoreData extends XincoAuditedObject implements Serializable {
     @Basic(optional = false)
     @Column(name = "status_number", nullable = false)
     private int statusNumber;
-    @OneToMany(mappedBy = "xincoCoreDataId", fetch = FetchType.LAZY)
-    private List<XincoCoreAce> xincoCoreAceList;
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreDataId", fetch = FetchType.LAZY)
-    private List<XincoCoreLog> xincoCoreLogList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreData")
+    private List<XincoCoreDataHasDependency> xincoCoreDataHasDependencyList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreData1")
+    private List<XincoCoreDataHasDependency> xincoCoreDataHasDependencyList1;
     @JoinColumn(name = "xinco_core_data_type_id", referencedColumnName = "id", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private XincoCoreDataType xincoCoreDataTypeId;
+    @ManyToOne(optional = false)
+    private XincoCoreDataType xincoCoreDataType;
     @JoinColumn(name = "xinco_core_language_id", referencedColumnName = "id", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private XincoCoreLanguage xincoCoreLanguageId;
+    @ManyToOne(optional = false)
+    private XincoCoreLanguage xincoCoreLanguage;
     @JoinColumn(name = "xinco_core_node_id", referencedColumnName = "id", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private XincoCoreNode xincoCoreNodeId;
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreData", fetch = FetchType.LAZY)
-    private List<XincoAddAttribute> xincoAddAttributeList;
+    @ManyToOne(optional = false)
+    private XincoCoreNode xincoCoreNode;
 
     public XincoCoreData() {
+    }
+
+    public XincoCoreData(Integer id) {
+        this.id = id;
     }
 
     public XincoCoreData(Integer id, String designation, int statusNumber) {
@@ -77,6 +78,10 @@ public class XincoCoreData extends XincoAuditedObject implements Serializable {
 
     public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getDesignation() {
@@ -95,52 +100,44 @@ public class XincoCoreData extends XincoAuditedObject implements Serializable {
         this.statusNumber = statusNumber;
     }
 
-    public List<XincoCoreAce> getXincoCoreAceList() {
-        return xincoCoreAceList;
+    public List<XincoCoreDataHasDependency> getXincoCoreDataHasDependencyList() {
+        return xincoCoreDataHasDependencyList;
     }
 
-    public void setXincoCoreAceList(List<XincoCoreAce> xincoCoreAceList) {
-        this.xincoCoreAceList = xincoCoreAceList;
+    public void setXincoCoreDataHasDependencyList(List<XincoCoreDataHasDependency> xincoCoreDataHasDependencyList) {
+        this.xincoCoreDataHasDependencyList = xincoCoreDataHasDependencyList;
     }
 
-    public List<XincoCoreLog> getXincoCoreLogList() {
-        return xincoCoreLogList;
+    public List<XincoCoreDataHasDependency> getXincoCoreDataHasDependencyList1() {
+        return xincoCoreDataHasDependencyList1;
     }
 
-    public void setXincoCoreLogList(List<XincoCoreLog> xincoCoreLogList) {
-        this.xincoCoreLogList = xincoCoreLogList;
+    public void setXincoCoreDataHasDependencyList1(List<XincoCoreDataHasDependency> xincoCoreDataHasDependencyList1) {
+        this.xincoCoreDataHasDependencyList1 = xincoCoreDataHasDependencyList1;
     }
 
-    public XincoCoreDataType getXincoCoreDataTypeId() {
-        return xincoCoreDataTypeId;
+    public XincoCoreDataType getXincoCoreDataType() {
+        return xincoCoreDataType;
     }
 
-    public void setXincoCoreDataTypeId(XincoCoreDataType xincoCoreDataTypeId) {
-        this.xincoCoreDataTypeId = xincoCoreDataTypeId;
+    public void setXincoCoreDataType(XincoCoreDataType xincoCoreDataType) {
+        this.xincoCoreDataType = xincoCoreDataType;
     }
 
-    public XincoCoreLanguage getXincoCoreLanguageId() {
-        return xincoCoreLanguageId;
+    public XincoCoreLanguage getXincoCoreLanguage() {
+        return xincoCoreLanguage;
     }
 
-    public void setXincoCoreLanguageId(XincoCoreLanguage xincoCoreLanguageId) {
-        this.xincoCoreLanguageId = xincoCoreLanguageId;
+    public void setXincoCoreLanguage(XincoCoreLanguage xincoCoreLanguage) {
+        this.xincoCoreLanguage = xincoCoreLanguage;
     }
 
-    public XincoCoreNode getXincoCoreNodeId() {
-        return xincoCoreNodeId;
+    public XincoCoreNode getXincoCoreNode() {
+        return xincoCoreNode;
     }
 
-    public void setXincoCoreNodeId(XincoCoreNode xincoCoreNodeId) {
-        this.xincoCoreNodeId = xincoCoreNodeId;
-    }
-
-    public List<XincoAddAttribute> getXincoAddAttributeList() {
-        return xincoAddAttributeList;
-    }
-
-    public void setXincoAddAttributeList(List<XincoAddAttribute> xincoAddAttributeList) {
-        this.xincoAddAttributeList = xincoAddAttributeList;
+    public void setXincoCoreNode(XincoCoreNode xincoCoreNode) {
+        this.xincoCoreNode = xincoCoreNode;
     }
 
     @Override
@@ -152,7 +149,7 @@ public class XincoCoreData extends XincoAuditedObject implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoCoreData)) {
             return false;
         }
@@ -167,4 +164,5 @@ public class XincoCoreData extends XincoAuditedObject implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreData[id=" + id + "]";
     }
+
 }

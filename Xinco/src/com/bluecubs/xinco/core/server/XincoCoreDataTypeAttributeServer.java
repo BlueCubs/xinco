@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -47,12 +47,16 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeJp
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 
 public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute {
 
     private static final long serialVersionUID = 1L;
     private static List result;
+
+    protected XincoCoreDataTypeAttributeServer() {
+    }
     //create data type attribute object for data structures
 
     public XincoCoreDataTypeAttributeServer(int attrID1, int attrID2) throws XincoException {
@@ -108,19 +112,22 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             xcdta.setModificationTime(new Timestamp(new Date().getTime()));
             xcdta.setXincoCoreDataType(new XincoCoreDataTypeJpaController().findXincoCoreDataType(getXinco_core_data_type_id()));
             new XincoCoreDataTypeAttributeJpaController().create(xcdta);
-            result = XincoDBManager.createdQuery("Select xcd from XincoCoreData xcd where xcd.xincoCoreDataTypeId.id=" + getXinco_core_data_type_id());
+            result = XincoDBManager.createdQuery("Select xcd from XincoCoreData xcd where xcd.xincoCoreDataType.id=" + getXinco_core_data_type_id());
             for (Object o : result) {
                 com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd =
                         (com.bluecubs.xinco.core.server.persistence.XincoCoreData) o;
                 GregorianCalendar cal = new GregorianCalendar();
                 cal.setTime(new Date());
-                for (XincoAddAttribute attr : xcd.getXincoAddAttributeList()) {
+                HashMap<String, Object> parameters = new HashMap<String, Object>();
+                parameters.put("xincoCoreDataId", xcd.getId());
+                XincoDBManager.namedQuery("XincoAddAttribute.findByXincoCoreDataId", parameters);
+                for (Object object : XincoDBManager.namedQuery("XincoAddAttribute.findByXincoCoreDataId", parameters)) {
+                    XincoAddAttribute attr = (XincoAddAttribute) object;
                     new XincoAddAttributeServer(xcd.getId(), attr.getXincoAddAttributePK().getAttributeId(), 0, 0, 0.0, "", "", cal).write2DB();
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new XincoException();
+            throw new XincoException(e.getMessage());
         }
         return getAttribute_id();
     }
@@ -129,7 +136,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
     public static int deleteFromDB(XincoCoreDataTypeAttribute attrCDTA, int userID) throws XincoException {
         try {
             result = XincoDBManager.createdQuery("SELECT x FROM XincoAddAttribute x WHERE x.xincoAddAttributePK.attributeId =" + attrCDTA.getAttribute_id()
-                    + " and x.xincoAddAttributePK.xincoCoreDataId IN (Select xcd.id from XincoCoreData xcd where xcd.xincoCoreDataTypeId.id=" + attrCDTA.getXinco_core_data_type_id() + ")");
+                    + " and x.xincoAddAttributePK.xincoCoreDataId IN (Select xcd.id from XincoCoreData xcd where xcd.xincoCoreDataType.id=" + attrCDTA.getXinco_core_data_type_id() + ")");
             for (Object o : result) {
                 com.bluecubs.xinco.core.server.persistence.XincoAddAttribute xaa =
                         (com.bluecubs.xinco.core.server.persistence.XincoAddAttribute) o;
@@ -143,8 +150,7 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
                 new XincoCoreDataTypeAttributeJpaController().destroy(xcdta.getXincoCoreDataTypeAttributePK());
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new XincoException();
+            throw new XincoException(e.getMessage());
         }
         return 0;
     }
@@ -161,7 +167,6 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
                 result.remove(0);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             coreDataTypeAttributes.removeAllElements();
         }
         return coreDataTypeAttributes;

@@ -12,11 +12,11 @@ import com.bluecubs.xinco.core.server.persistence.controller.exceptions.Preexist
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreDataType;
 
 /**
  *
@@ -42,16 +42,7 @@ public class XincoCoreDataTypeAttributeJpaController {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            XincoCoreDataType xincoCoreDataType = xincoCoreDataTypeAttribute.getXincoCoreDataType();
-            if (xincoCoreDataType != null) {
-                xincoCoreDataType = em.getReference(xincoCoreDataType.getClass(), xincoCoreDataType.getId());
-                xincoCoreDataTypeAttribute.setXincoCoreDataType(xincoCoreDataType);
-            }
             em.persist(xincoCoreDataTypeAttribute);
-            if (xincoCoreDataType != null) {
-                xincoCoreDataType.getXincoCoreDataTypeAttributeList().add(xincoCoreDataTypeAttribute);
-                xincoCoreDataType = em.merge(xincoCoreDataType);
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findXincoCoreDataTypeAttribute(xincoCoreDataTypeAttribute.getXincoCoreDataTypeAttributePK()) != null) {
@@ -71,22 +62,7 @@ public class XincoCoreDataTypeAttributeJpaController {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            XincoCoreDataTypeAttribute persistentXincoCoreDataTypeAttribute = em.find(XincoCoreDataTypeAttribute.class, xincoCoreDataTypeAttribute.getXincoCoreDataTypeAttributePK());
-            XincoCoreDataType xincoCoreDataTypeOld = persistentXincoCoreDataTypeAttribute.getXincoCoreDataType();
-            XincoCoreDataType xincoCoreDataTypeNew = xincoCoreDataTypeAttribute.getXincoCoreDataType();
-            if (xincoCoreDataTypeNew != null) {
-                xincoCoreDataTypeNew = em.getReference(xincoCoreDataTypeNew.getClass(), xincoCoreDataTypeNew.getId());
-                xincoCoreDataTypeAttribute.setXincoCoreDataType(xincoCoreDataTypeNew);
-            }
             xincoCoreDataTypeAttribute = em.merge(xincoCoreDataTypeAttribute);
-            if (xincoCoreDataTypeOld != null && !xincoCoreDataTypeOld.equals(xincoCoreDataTypeNew)) {
-                xincoCoreDataTypeOld.getXincoCoreDataTypeAttributeList().remove(xincoCoreDataTypeAttribute);
-                xincoCoreDataTypeOld = em.merge(xincoCoreDataTypeOld);
-            }
-            if (xincoCoreDataTypeNew != null && !xincoCoreDataTypeNew.equals(xincoCoreDataTypeOld)) {
-                xincoCoreDataTypeNew.getXincoCoreDataTypeAttributeList().add(xincoCoreDataTypeAttribute);
-                xincoCoreDataTypeNew = em.merge(xincoCoreDataTypeNew);
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -115,11 +91,6 @@ public class XincoCoreDataTypeAttributeJpaController {
                 xincoCoreDataTypeAttribute.getXincoCoreDataTypeAttributePK();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The xincoCoreDataTypeAttribute with id " + id + " no longer exists.", enfe);
-            }
-            XincoCoreDataType xincoCoreDataType = xincoCoreDataTypeAttribute.getXincoCoreDataType();
-            if (xincoCoreDataType != null) {
-                xincoCoreDataType.getXincoCoreDataTypeAttributeList().remove(xincoCoreDataTypeAttribute);
-                xincoCoreDataType = em.merge(xincoCoreDataType);
             }
             em.remove(xincoCoreDataTypeAttribute);
             em.getTransaction().commit();

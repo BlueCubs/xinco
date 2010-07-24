@@ -89,7 +89,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -164,7 +163,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     //session object
     private XincoClientSession xincoClientSession = null;
     //connection profiles
-    private ArrayList xincoClientConfig = null;
+    private Vector xincoClientConfig = null;
     //current path and filename
     private String current_filename = "";
     public String current_path = "";
@@ -230,13 +229,15 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     //Size of menu actions
     private int actionSize = 19;
     private XincoExplorer.refreshThread rThread;
-    private ArrayList<AbstractDialog> dialogs = null;
+    private Vector<AbstractDialog> dialogs = null;
     private LockDialog lockDialog = null;
     //Status of the explorer: lock = true - idle time limit exceeded, user must log cin again to continue use
     //lock = false - work normally
     private boolean lock = false;
     private XincoActivityTimer xat = null;
     public static final int ConfigFileVersion = 1;
+    private boolean recoverFromBackup = false;
+    public static final String CONFIG_NAME = "xincoClientConfig.dat";
 
     /**
      * This is the default constructor
@@ -262,7 +263,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         getJDialogLocale().setVisible(true);
         Locale loc = null;
         try {
-            String list = ((Locale) xincoClientConfig.get(ConfigElement.LANGUAGE.ordinal())).toString();
+            String list = ((Locale) xincoClientConfig.get(ConfigElement.LOCALE.ordinal())).toString();
             String[] locales;
             locales = list.split("_");
             switch (locales.length) {
@@ -379,8 +380,8 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             } catch (Exception le) {
             }
             dlm.addElement(text);
-            if ((locales[i].compareTo(((Locale) xincoClientConfig.get(ConfigElement.LANGUAGE.ordinal())).toString()) == 0)
-                    || (locales[i].compareTo(((Locale) xincoClientConfig.get(ConfigElement.LANGUAGE.ordinal())).getLanguage()) == 0)) {
+            if ((locales[i].compareTo(((Locale) xincoClientConfig.get(ConfigElement.LOCALE.ordinal())).toString()) == 0)
+                    || (locales[i].compareTo(((Locale) xincoClientConfig.get(ConfigElement.LOCALE.ordinal())).getLanguage()) == 0)) {
                 selection = i;
             }
             if (locales[i].compareTo("en") == 0) {
@@ -448,7 +449,8 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                         String[] locales;
                         lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
                         locales = lrb.getString("AvailableLocales").split(",");
-                        xincoClientConfig.add(ConfigElement.LANGUAGE.ordinal(), new Locale(locales[jListDialogLocale.getSelectedIndex()]));
+                        xincoClientConfig.remove(ConfigElement.LOCALE.ordinal());
+                        xincoClientConfig.add(ConfigElement.LOCALE.ordinal(), new Locale(locales[jListDialogLocale.getSelectedIndex()]));
                         saveConfig();
                         JDialogLocale.setVisible(false);
                     }
@@ -1086,8 +1088,8 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                     getAbstractDialogConnection();
                     DefaultListModel dlm = (DefaultListModel) dialogConnection.getProfileList().getModel();
                     dlm.removeAllElements();
-                    for (i = 0; i < ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size(); i++) {
-                        dlm.addElement(((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(i)).toString());
+                    for (i = 0; i < ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size(); i++) {
+                        dlm.addElement(((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(i)).toString());
                     }
                     //establish connection and login
                     if (xincoClientSession.getStatus() == 1) {
@@ -1097,7 +1099,11 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             xincoClientSession.setServeVersion(xincoClientSession.getXinco().getXincoServerVersion());
                             //check if client and server versions match (high AND mid must match!)
                             if ((xincoClientVersion.getVersion_high() != xincoClientSession.getServerVersion().getVersion_high()) || (xincoClientVersion.getVersion_mid() != xincoClientSession.getServerVersion().getVersion_mid())) {
-                                throw new XincoException(xerb.getString("menu.connection.error.serverversion") + " " + xincoClientSession.getServerVersion().getVersion_high() + "." + xincoClientSession.getServerVersion().getVersion_mid() + ".x");
+                                //Let the user know!
+                                String mess = xerb.getString("menu.connection.error.serverversion") + " " + xincoClientSession.getServerVersion().getVersion_high() + "." + xincoClientSession.getServerVersion().getVersion_mid() + ".x";
+                                mess = mess.replaceAll("%v", xincoClientVersion.getVersion_high() + "." + xincoClientVersion.getVersion_mid() + "." + xincoClientVersion.getVersion_low());
+                                JOptionPane.showMessageDialog(XincoExplorer.this, mess, mess, JOptionPane.WARNING_MESSAGE);
+                                throw new XincoException(mess);
                             }
                             if ((temp = xincoClientSession.getXinco().getCurrentXincoCoreUser(xincoClientSession.getUser().getUsername(), xincoClientSession.getUser().getUserpassword())) == null) {
                                 throw new XincoException(xerb.getString("menu.connection.error.user"));
@@ -1111,7 +1117,11 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             newuser.setUsername(temp.getUsername());
                             newuser.setUserpassword(temp.getUserpassword());
                             xincoClientSession.setUser(xincoClientSession.getXinco().getCurrentXincoCoreUser(newuser.getUsername(), newuser.getUserpassword()));
-                            progressBar.start();
+                            if (!progressBar.isInitialized()) {
+                                progressBar.start();
+                            }else{
+                                progressBar.show();
+                            }
                             xincoClientSession.setServerDatatypes(xincoClientSession.getXinco().getAllXincoCoreDataTypes(xincoClientSession.getUser()));
                             xincoClientSession.setServeGroups(xincoClientSession.getXinco().getAllXincoCoreGroups(xincoClientSession.getUser()));
                             xincoClientSession.setServerLanguages(xincoClientSession.getXinco().getAllXincoCoreLanguages(xincoClientSession.getUser()));
@@ -1130,6 +1140,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             loginT = new loginThread();
                             loginT.start();
                         } catch (Exception cone) {
+                            Logger.getLogger(ConnectionDialog.class.getSimpleName()).log(Level.SEVERE, null, cone);
                             xincoClientSession.setStatus(0);
                             markConnectionStatus();
                             JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("menu.connection.failed") + " " + xerb.getString("general.reason") + ": " + cone.toString(), xerb.getString("menu.connection.failed"), JOptionPane.WARNING_MESSAGE);
@@ -1220,18 +1231,6 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     }
 
     /**
-     * This method initializes jContentPaneDialogConnection
-     *
-     * @return javax.swing.JPanel
-     */
-    private void getJContentPaneDialogConnection() {
-        if (this.dialogConnection == null) {
-            this.dialogConnection = new ConnectionDialog(new javax.swing.JFrame(),
-                    true, this);
-        }
-    }
-
-    /**
      * This method initializes AbstractDialogConnection
      *
      * @return AbstractDialog
@@ -1250,12 +1249,12 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         return this.xerb;
     }
 
-    public ArrayList getConfig() {
+    public Vector getConfig() {
         return xincoClientConfig;
     }
 
     /**
-     * This method marks menues, etc. according to connection status
+     * This method marks menus, etc. according to connection status
      *
      */
     public void markConnectionStatus() {
@@ -1942,7 +1941,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                     setGlobal_dialog_return_value(0);
                     AbstractDialogDataType.setVisible(true);
                     if (getGlobal_dialog_return_value() == 0) {
-                        this.progressBar.hide();
+                        progressBar.hide();
                         throw new XincoException(xerb.getString("datawizard.updatecancel"));
                     }
 
@@ -1975,7 +1974,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                     if ((wizard_type == 3)
                             && ((((XincoCoreData) newnode.getUserObject()).getXinco_core_data_type().getId() == 1)
                             && (((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().size() <= 3))) {
-                        this.progressBar.hide();
+                        progressBar.hide();
                         throw new XincoException(xerb.getString("datawizard.noaddattributes"));
                     }
 
@@ -1995,7 +1994,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             int result = fc.showOpenDialog(XincoExplorer.this);
 
                             if (result != JFileChooser.APPROVE_OPTION) {
-                                this.progressBar.hide();
+                                progressBar.hide();
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                             setCurrentPathFilename(fc.getSelectedFile().getPath());
@@ -2007,7 +2006,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             setGlobal_dialog_return_value(0);
                             AbstractDialogAddAttributesText = getAbstractDialogAddAttributesText();
                             if (getGlobal_dialog_return_value() == 0) {
-                                this.progressBar.hide();
+                                progressBar.hide();
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                         }
@@ -2026,7 +2025,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             setGlobal_dialog_return_value(0);
                             AbstractDialogAddAttributesUniversal.setVisible(true);
                             if (getGlobal_dialog_return_value() == 0) {
-                                this.progressBar.hide();
+                                progressBar.hide();
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                         }
@@ -2051,7 +2050,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                         setGlobal_dialog_return_value(0);
                         AbstractDialogLog = getAbstractDialogLog(true);
                         if (getGlobal_dialog_return_value() == 0) {
-                            this.progressBar.hide();
+                            progressBar.hide();
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
                         }
                         newlog.setOp_description(newlog.getOp_description() + " (" + xerb.getString("general.user") + ": " + xincoClientSession.getUser().getUsername() + ")");
@@ -2095,7 +2094,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                                 setGlobal_dialog_return_value(0);
                                 AbstractDialogLog = getAbstractDialogLog(false);
                                 if (getGlobal_dialog_return_value() == 0) {
-                                    this.progressBar.hide();
+                                    progressBar.hide();
                                     throw new XincoException(xerb.getString("datawizard.updatecancel"));
                                 }
                             }
@@ -2120,7 +2119,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             result = fc.showOpenDialog(XincoExplorer.this);
                         }
                         if (result != JFileChooser.APPROVE_OPTION) {
-                            this.progressBar.hide();
+                            progressBar.hide();
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
                         }
                         setCurrentPathFilename(fc.getSelectedFile().getPath());
@@ -2136,7 +2135,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                         setGlobal_dialog_return_value(0);
                         AbstractDialogData = getAbstractDialogData();
                         if (getGlobal_dialog_return_value() == 0) {
-                            this.progressBar.hide();
+                            progressBar.hide();
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
                         }
 
@@ -2145,7 +2144,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             setGlobal_dialog_return_value(0);
                             AbstractDialogArchive = getAbstractDialogArchive();
                             if (getGlobal_dialog_return_value() == 0) {
-                                this.progressBar.hide();
+                                progressBar.hide();
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                         }
@@ -2321,7 +2320,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                                 ((XincoCoreData) newnode.getUserObject()).setXinco_core_logs(DataLogVector);
                             }
                             JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("datawizard.filedownloadfailed"), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
-                            this.progressBar.hide();
+                            progressBar.hide();
                             throw (ce);
                         }
 
@@ -2470,7 +2469,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             + " " + xerb.getString("general.reason") + ": "
                             + we.toString(), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
                 }
-                this.progressBar.hide();
+                progressBar.hide();
             }
         }
     }
@@ -2722,6 +2721,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
      */
     public void saveConfig() {
         try {
+            //Save configuration
             java.io.FileOutputStream fout =
                     new java.io.FileOutputStream(System.getProperty("user.home")
                     + System.getProperty("file.separator") + "xincoClientConfig.dat");
@@ -2729,9 +2729,17 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             os.writeObject(xincoClientConfig);
             os.close();
             fout.close();
+            //Feature Request # 3024502
+            //Now save a backup
+            fout = new java.io.FileOutputStream(System.getProperty("user.home")
+                    + System.getProperty("file.separator") + "xincoClientConfig.dat.bak");
+            os = new java.io.ObjectOutputStream(fout);
+            os.writeObject(xincoClientConfig);
+            os.close();
+            fout.close();
         } catch (Exception ioe) {
             //error handling
-            System.out.println("Unable to write Profiles-File!");
+            Logger.getLogger(ConnectionDialog.class.getSimpleName()).log(Level.SEVERE, "Unable to write Profiles-File!", ioe);
         }
     }
 
@@ -2741,12 +2749,13 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
      * @return void
      */
     @SuppressWarnings("unchecked")
-    private void loadConfig() {
+    private void loadConfig(String file) {
         Vector tmp_vector_old = new Vector();
         try {
             Vector tmp_vector;
             FileInputStream fin;
             ObjectInputStream ois;
+            Object object;
             //get old settings
             try {
                 fin = new FileInputStream("xincoClientConnectionProfiles.dat");
@@ -2755,22 +2764,41 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                     while ((tmp_vector = (Vector) ois.readObject()) != null) {
                         tmp_vector_old = tmp_vector;
                     }
+                    while ((object = ois.readObject()) != null) {
+                        if (object instanceof Vector) {
+                            tmp_vector_old = (Vector) object;
+                        } else if (object instanceof Vector) {
+                            tmp_vector_old = new Vector();
+                            tmp_vector_old.addAll((Vector) object);
+                        }
+                    }
                 } catch (Exception ioe3) {
-                    Logger.getLogger(XincoExplorer.class.getSimpleName()).log(Level.FINE, "No old settings.");
+                    Logger.getLogger(XincoExplorer.class.getSimpleName()).log(Level.FINE, "No old settings.", ioe3);
                 }
                 ois.close();
                 fin.close();
             } catch (Exception ioe2) {
                 tmp_vector_old = null;
+                Logger.getLogger(XincoExplorer.class.getSimpleName()).log(Level.FINE, "No old settings.", ioe2);
             }
-            fin = new FileInputStream(System.getProperty("user.home") + System.getProperty("file.separator") + "xincoClientConfig.dat");
+            fin = new FileInputStream(System.getProperty("user.home") + System.getProperty("file.separator") + file);
             ois = new ObjectInputStream(fin);
             try {
-                while ((tmp_vector = (Vector) ois.readObject()) != null) {
-                    xincoClientConfig.clear();
-                    xincoClientConfig.addAll(tmp_vector);
+                while ((object = ois.readObject()) != null) {
+                    if (xincoClientConfig == null) {
+                        xincoClientConfig = new Vector();
+                    } else {
+                        xincoClientConfig.clear();
+                    }
+                    if (object instanceof Vector) {
+                        tmp_vector = (Vector) object;
+                        xincoClientConfig.addAll(tmp_vector);
+                    } else if (object instanceof Vector) {
+                        xincoClientConfig.addAll((Vector) object);
+                    }
                 }
             } catch (Exception ioe3) {
+                Logger.getLogger(ConnectionDialog.class.getSimpleName()).log(Level.FINE, null, ioe3);
             }
             ois.close();
             fin.close();
@@ -2779,14 +2807,16 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                 xincoClientConfig.add(ConfigElement.CONNECTION_PROFILE.ordinal(), tmp_vector_old);
             }
             //delete old settings
-            (new File("xincoClientConnectionProfiles.dat")).delete();
+            (new File(CONFIG_NAME)).delete();
             //Check version
             if (xincoClientConfig.size() >= ConfigElement.values().length) {
                 //Version element is present
                 if ((Integer) xincoClientConfig.get(ConfigElement.VERSION.ordinal()) > ConfigFileVersion) //We're handling a newer version of the config file.
                 {
                     JOptionPane.showMessageDialog(this,
-                            xerb.getString("error.configversion").replaceAll("%c", "" + ConfigFileVersion).replaceAll("%n", "" + (Integer) xincoClientConfig.get(ConfigElement.VERSION.ordinal())),
+                            xerb.getString("error.configversion").replaceAll("%c", ""
+                            + ConfigFileVersion).replaceAll("%n", ""
+                            + (Integer) xincoClientConfig.get(ConfigElement.VERSION.ordinal())),
                             xerb.getString("general.warning"),
                             JOptionPane.WARNING_MESSAGE);
                     //Add version to old files
@@ -2798,64 +2828,100 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                 }
             } else if (xincoClientConfig.size() < ConfigElement.values().length) {
                 //Add version to old files
-                xincoClientConfig.add(ConfigFileVersion, ConfigElement.VERSION.ordinal());
+                xincoClientConfig.add(ConfigFileVersion);
+            }
+            if (recoverFromBackup) {
+                Logger.getLogger(ConnectionDialog.class.getSimpleName()).log(Level.FINE, "Recovered from backup!");
             }
         } catch (Exception ioe) {
+            //Feature Request # 3024502
+            Logger.getLogger(ConnectionDialog.class.getSimpleName()).log(Level.FINE, ioe.getLocalizedMessage(), ioe);
+            if (!recoverFromBackup) {
+                Logger.getLogger(ConnectionDialog.class.getSimpleName()).log(Level.FINE, "Trying to retrieve from backup");
+                File backup = new File(System.getProperty("user.home")
+                        + System.getProperty("file.separator") + "xincoClientConfig.dat.bak");
+                if (backup.exists()) {
+                    Logger.getLogger(ConnectionDialog.class.getSimpleName()).log(Level.FINE, "Backup file found!");
+                    //Delete old one, is not working anyways
+                    (new File(System.getProperty("user.home")
+                            + System.getProperty("file.separator") + "xincoClientConfig.dat")).delete();
+                    backup.renameTo(new File(System.getProperty("user.home")
+                            + System.getProperty("file.separator") + "xincoClientConfig.dat"));
+                } else {
+                    Logger.getLogger(ConnectionDialog.class.getSimpleName()).log(Level.FINE, "No backup file found!");
+                }
+                recoverFromBackup = true;
+                //Now retry with the recovered file...
+                loadConfig(file);
+                return;
+            }
             //error handling
+            Logger.getLogger(ConnectionDialog.class.getSimpleName()).log(Level.FINE, "Unable to recover from backup, create a new file...");
             //create config
-            xincoClientConfig = new ArrayList();
+            xincoClientConfig = new Vector();
             //add connection profiles
-            xincoClientConfig.add(new ArrayList());
+            xincoClientConfig.add(new Vector());
             //insert old settings
             if (tmp_vector_old != null) {
                 xincoClientConfig.add(ConfigElement.CONNECTION_PROFILE.ordinal(), tmp_vector_old);
                 //delete old settings
-                (new File("xincoClientConnectionProfiles.dat")).delete();
+                (new File(CONFIG_NAME)).delete();
             } else {
                 createDefaultConfiguration(true);
             }
         }
     }
 
+    //Feature Request # 3024502
+    /**
+     * This method loads the configuration
+     *
+     * @return void
+     */
+    @SuppressWarnings("unchecked")
+    private void loadConfig() {
+        loadConfig(CONFIG_NAME);
+    }
+
     @SuppressWarnings("unchecked")
     protected void createDefaultConfiguration(boolean modifyProfiles) {
-        xincoClientConfig = new ArrayList();
-        xincoClientConfig.add(new ArrayList());
+        xincoClientConfig = new Vector();
+        xincoClientConfig.add(new Vector());
         if (modifyProfiles) {
             //insert default connection profiles
-            ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).add(new XincoClientConnectionProfile());
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).profile_name = "xinco Demo User";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).service_endpoint = "http://xinco.org:8080/xinco_demo/services/Xinco";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).username = "user";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).password = "user";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).save_password = true;
-            ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).add(new XincoClientConnectionProfile());
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).profile_name = "xinco Demo Admin";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).service_endpoint = "http://xinco.org:8080/xinco_demo/services/Xinco";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).username = "admin";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).password = "admin";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).save_password = true;
-            ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).add(new XincoClientConnectionProfile());
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).profile_name = "Template Profile";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).service_endpoint = "http://[server_domain]:8080/xinco/services/Xinco";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).username = "your_username";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).password = "your_password";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).save_password = true;
-            ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).add(new XincoClientConnectionProfile());
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).profile_name = "Admin (localhost)";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).service_endpoint = "http://localhost:8080/xinco/services/Xinco";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).username = "admin";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).password = "admin";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).save_password = true;
-            ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).add(new XincoClientConnectionProfile());
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).profile_name = "User (localhost)";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).service_endpoint = "http://localhost:8080/xinco/services/Xinco";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).username = "user";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).password = "user";
-            ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).save_password = true;
+            ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).add(new XincoClientConnectionProfile());
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).profile_name = "xinco Demo User";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).service_endpoint = "http://xinco.org:8080/xinco_demo/services/Xinco";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).username = "user";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).password = "user";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).save_password = true;
+            ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).add(new XincoClientConnectionProfile());
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).profile_name = "xinco Demo Admin";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).service_endpoint = "http://xinco.org:8080/xinco_demo/services/Xinco";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).username = "admin";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).password = "admin";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).save_password = true;
+            ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).add(new XincoClientConnectionProfile());
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).profile_name = "Template Profile";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).service_endpoint = "http://[server_domain]:8080/xinco/services/Xinco";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).username = "your_username";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).password = "your_password";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).save_password = true;
+            ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).add(new XincoClientConnectionProfile());
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).profile_name = "Admin (localhost)";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).service_endpoint = "http://localhost:8080/xinco/services/Xinco";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).username = "admin";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).password = "admin";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).save_password = true;
+            ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).add(new XincoClientConnectionProfile());
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).profile_name = "User (localhost)";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).service_endpoint = "http://localhost:8080/xinco/services/Xinco";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).username = "user";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).password = "user";
+            ((XincoClientConnectionProfile) ((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((Vector) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).save_password = true;
         }
         //add Pluggable Look and Feel
-        xincoClientConfig.add(new String("javax.swing.plaf.metal.MetalLookAndFeel"));
+        xincoClientConfig.add("javax.swing.plaf.metal.MetalLookAndFeel");
         //add locale
         xincoClientConfig.add(Locale.getDefault());
         //add version
@@ -2960,11 +3026,11 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
 
     /**
      * Convenience method
-     * @return ArrayList containing XincoExplorer's dialogs
+     * @return Vector containing XincoExplorer's dialogs
      */
-    public ArrayList getDialogs() {
+    public Vector getDialogs() {
         if (dialogs == null) {
-            dialogs = new ArrayList();
+            dialogs = new Vector();
         }
         return dialogs;
     }

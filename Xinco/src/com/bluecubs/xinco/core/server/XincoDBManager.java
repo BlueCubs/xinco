@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -37,10 +37,14 @@ package com.bluecubs.xinco.core.server;
 
 import java.util.Map;
 import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -57,29 +61,29 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import scriptella.execution.EtlExecutor;
 
 public class XincoDBManager {
 
     private static EntityManagerFactory emf;
     private static Map<String, Object> properties;
     //load compiled configuartion
-    public static XincoConfigSingletonServer config;
+    public final static XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
     public static int count = 0;
     private int EmailLink = 1, DataLink = 2;
     private static ResourceBundle lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
     private Locale loc = null;
-    protected String puName;
+    protected static String puName;
     private static HashMap<String, Object> parameters = new HashMap<String, Object>();
     private static boolean locked = false;
     private static boolean usingContext = false;
-
-    static {
-        config = XincoConfigSingletonServer.getInstance();
-        config.loadSettings();
-    }
+    private static boolean initDone = false;
 
     public XincoDBManager() throws Exception {
         count++;
+        config.loadSettings();
+        //Test: create pdf rendering
+//        FileConverter.createPDFRendering(1);
     }
 
     /**
@@ -232,9 +236,64 @@ public class XincoDBManager {
             try {
                 lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.getLogger(XincoDBManager.class.getSimpleName()).log(Level.SEVERE,
+                        e.getLocalizedMessage());
             }
         }
+    }
+
+    /**
+     * @param aPU the PU to set
+     */
+    public static void setPU(String aPU) {
+        puName = aPU;
+        Logger.getLogger(XincoDBManager.class.getSimpleName()).log(Level.INFO,
+                "Changed persistence unit name to: {0}", puName);
+        //Set it to null so it's recreated with new Persistence Unit next time is requested.
+        emf = null;
+        getEntityManagerFactory();
+    }
+
+    private static void runInitSQL() {
+        if (!initDone) {
+            try {
+                Logger.getLogger(XincoDBManager.class.getSimpleName()).log(Level.INFO,
+                        "Running initialization script...");
+                EtlExecutor.newExecutor(XincoDBManager.class.getResource("db/scripts/init.xml"),
+                        XincoBackupManager.getScriptellaProperties(emf, 1)).execute();
+                Logger.getLogger(XincoDBManager.class.getSimpleName()).log(Level.INFO,
+                        "Done!");
+                initDone = true;
+            } catch (Exception e) {
+                Logger.getLogger(XincoDBManager.class.getSimpleName()).log(Level.SEVERE, null, e);
+                throw new XincoException(e.getLocalizedMessage());
+            }
+        }
+    }
+
+    private static ArrayList<String> readFileAsString(String filePath) throws java.io.IOException {
+        InputStream in = XincoDBManager.class.getResourceAsStream(filePath);
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        String line;
+        ArrayList<String> statements = new ArrayList<String>();
+        String temp = "";
+        while ((line = br.readLine()) != null) {
+            line = line.trim();
+            if (!line.startsWith("-") && line.endsWith(";")) {
+                if (temp.isEmpty()) {
+                    //We got a one line statement, just add it
+                    statements.add(line);
+                } else {
+                    //We have some accumulation
+                    statements.add(temp + line);
+                    temp = "";
+                }
+            } else if (!line.startsWith("-")) {
+                //We got part of a multine statement, accumulate until we have the whole statement
+                temp += line;
+            }
+        }
+        return statements;
     }
 
     /**
@@ -242,23 +301,27 @@ public class XincoDBManager {
      * @throws XincoException
      */
     public static EntityManagerFactory getEntityManagerFactory() throws XincoException {
-        try {
-            //Use the context defined Database connection
-            (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
-            emf = Persistence.createEntityManagerFactory(config.JNDIDB);
-            Logger.getLogger(XincoDBManager.class.getName()).
-                    log(Level.FINE, "Using context defined database connection: {0}",
-                    config.JNDIDB);
-            usingContext = true;
-        } catch (Exception e) {
-            if (!usingContext) {
-                Logger.getLogger(XincoDBManager.class.getName()).log(Level.FINE,
-                        "Manually specified connection parameters. "
-                        + "Using pre-defined persistence unit: XincoPU");
-                emf = Persistence.createEntityManagerFactory("XincoPU");
-            } else {
-                Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE,
-                        "Context doesn't exist. Check your configuration.", e);
+        if (emf == null) {
+            try {
+                //Use the context defined Database connection
+                (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
+                emf = Persistence.createEntityManagerFactory(config.JNDIDB);
+                Logger.getLogger(XincoDBManager.class.getSimpleName()).
+                        log(Level.FINER, "Using context defined database connection: {0}",
+                        config.JNDIDB);
+                usingContext = true;
+                runInitSQL();
+            } catch (Exception e) {
+                if (!usingContext) {
+                    Logger.getLogger(XincoDBManager.class.getSimpleName()).log(Level.WARNING,
+                            "Manually specified connection parameters. "
+                            + "Using pre-defined persistence unit: {0}", puName);
+                    emf = Persistence.createEntityManagerFactory(puName);
+                    runInitSQL();
+                } else {
+                    Logger.getLogger(XincoDBManager.class.getSimpleName()).log(Level.SEVERE,
+                            "Context doesn't exist. Check your configuration.", e);
+                }
             }
         }
         return emf;
@@ -278,7 +341,7 @@ public class XincoDBManager {
             em = getEntityManagerFactory().createEntityManager();
             properties = em.getProperties();
         } catch (XincoException ex) {
-            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoDBManager.class.getSimpleName()).log(Level.SEVERE, null, ex);
         }
         return em;
     }
@@ -344,7 +407,7 @@ public class XincoDBManager {
             getEntityManager().close();
             getEntityManagerFactory().close();
         } catch (XincoException ex) {
-            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoDBManager.class.getSimpleName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -9,7 +9,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,9 +23,13 @@ import javax.persistence.TableGenerator;
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 @Entity
-@Table(name = "xinco_core_data_type")
 @EntityListeners(AuditedEntityListener.class)
-@NamedQueries({@NamedQuery(name = "XincoCoreDataType.findAll", query = "SELECT x FROM XincoCoreDataType x"), @NamedQuery(name = "XincoCoreDataType.findById", query = "SELECT x FROM XincoCoreDataType x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreDataType.findByDesignation", query = "SELECT x FROM XincoCoreDataType x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreDataType.findByDescription", query = "SELECT x FROM XincoCoreDataType x WHERE x.description = :description")})
+@Table(name = "xinco_core_data_type")
+@NamedQueries({
+    @NamedQuery(name = "XincoCoreDataType.findAll", query = "SELECT x FROM XincoCoreDataType x"),
+    @NamedQuery(name = "XincoCoreDataType.findById", query = "SELECT x FROM XincoCoreDataType x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreDataType.findByDesignation", query = "SELECT x FROM XincoCoreDataType x WHERE x.designation = :designation"),
+    @NamedQuery(name = "XincoCoreDataType.findByDescription", query = "SELECT x FROM XincoCoreDataType x WHERE x.description = :description")})
 public class XincoCoreDataType extends XincoAuditedObject implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -43,12 +46,14 @@ public class XincoCoreDataType extends XincoAuditedObject implements Serializabl
     @Basic(optional = false)
     @Column(name = "description", nullable = false, length = 255)
     private String description;
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreDataType", fetch = FetchType.LAZY)
-    private List<XincoCoreDataTypeAttribute> xincoCoreDataTypeAttributeList;
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreDataTypeId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreDataType")
     private List<XincoCoreData> xincoCoreDataList;
 
     public XincoCoreDataType() {
+    }
+
+    public XincoCoreDataType(Integer id) {
+        this.id = id;
     }
 
     public XincoCoreDataType(Integer id, String designation, String description) {
@@ -81,14 +86,6 @@ public class XincoCoreDataType extends XincoAuditedObject implements Serializabl
         this.description = description;
     }
 
-    public List<XincoCoreDataTypeAttribute> getXincoCoreDataTypeAttributeList() {
-        return xincoCoreDataTypeAttributeList;
-    }
-
-    public void setXincoCoreDataTypeAttributeList(List<XincoCoreDataTypeAttribute> xincoCoreDataTypeAttributeList) {
-        this.xincoCoreDataTypeAttributeList = xincoCoreDataTypeAttributeList;
-    }
-
     public List<XincoCoreData> getXincoCoreDataList() {
         return xincoCoreDataList;
     }
@@ -106,7 +103,7 @@ public class XincoCoreDataType extends XincoAuditedObject implements Serializabl
 
     @Override
     public boolean equals(Object object) {
-        
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoCoreDataType)) {
             return false;
         }

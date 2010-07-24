@@ -7,10 +7,10 @@ package com.bluecubs.xinco.core.server.persistence.controller;
 
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeT;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
@@ -31,18 +31,13 @@ public class XincoCoreDataTypeTJpaController {
         return emf.createEntityManager();
     }
 
-    public void create(XincoCoreDataTypeT xincoCoreDataTypeT) throws PreexistingEntityException, Exception {
+    public void create(XincoCoreDataTypeT xincoCoreDataTypeT) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             em.persist(xincoCoreDataTypeT);
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findXincoCoreDataTypeT(xincoCoreDataTypeT.getRecordId()) != null) {
-                throw new PreexistingEntityException("XincoCoreDataTypeT " + xincoCoreDataTypeT + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();

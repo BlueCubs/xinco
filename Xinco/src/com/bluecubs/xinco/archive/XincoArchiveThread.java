@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -101,7 +101,7 @@ public class XincoArchiveThread extends Thread {
         try {
             int querycount = 0;
             String[] query = new String[2];
-            query[querycount] = new String("SELECT DISTINCT xcd.id FROM XincoCoreData xcd, XincoAddAttribute xaa1, XincoAddAttribute xaa2 "
+            query[querycount] = "SELECT DISTINCT xcd.id FROM XincoCoreData xcd, XincoAddAttribute xaa1, XincoAddAttribute xaa2 "
                     + "WHERE xcd.xincoCoreDataTypeId = 1 "
                     + "AND xcd.statusNumber <> 3 "
                     + "AND xcd.id = xaa1.xincoCoreDataId "
@@ -110,10 +110,10 @@ public class XincoArchiveThread extends Thread {
                     + "AND xaa1.attribUnsignedint = 1 "
                     + "AND xaa2.attributeId = 6 "
                     + "AND xaa2.attribDatetime < now() "
-                    + "ORDER BY xcd.id");
+                    + "ORDER BY xcd.id";
             querycount++;
 
-            query[querycount] = new String("SELECT DISTINCT xcd.id FROM XincoCoreData xcd, XincoAddAttribute xaa1, XincoAddAttribute xaa2, XincoCoreLog xcl "
+            query[querycount] = "SELECT DISTINCT xcd.id FROM XincoCoreData xcd, XincoAddAttribute xaa1, XincoAddAttribute xaa2, XincoCoreLog xcl "
                     + "WHERE xcd.xinco_core_data_type_id = 1 "
                     + "AND xcd.status_number <> 3 "
                     + "AND xcd.id = xaa1.xincoCoreDataId "
@@ -123,7 +123,7 @@ public class XincoArchiveThread extends Thread {
                     + "AND xaa1.attribUnsignedint = 2 "
                     + "AND xaa2.attributeId = 7 "
                     + "AND ADDDATE(DATE(xcl.opDatetime), xaa2.attribUnsignedint) < now() "
-                    + "ORDER BY xcd.id");
+                    + "ORDER BY xcd.id";
             querycount++;
 
             for (j = 0; j < querycount; j++) {

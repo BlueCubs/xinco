@@ -8,9 +8,9 @@ package com.bluecubs.xinco.core.server.persistence.controller;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreGroup;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
@@ -35,7 +35,7 @@ public class XincoCoreGroupJpaController {
         return emf.createEntityManager();
     }
 
-    public void create(XincoCoreGroup xincoCoreGroup) throws PreexistingEntityException, Exception {
+    public void create(XincoCoreGroup xincoCoreGroup) {
         if (xincoCoreGroup.getXincoCoreAceList() == null) {
             xincoCoreGroup.setXincoCoreAceList(new ArrayList<XincoCoreAce>());
         }
@@ -60,12 +60,12 @@ public class XincoCoreGroupJpaController {
             xincoCoreGroup.setXincoCoreUserHasXincoCoreGroupList(attachedXincoCoreUserHasXincoCoreGroupList);
             em.persist(xincoCoreGroup);
             for (XincoCoreAce xincoCoreAceListXincoCoreAce : xincoCoreGroup.getXincoCoreAceList()) {
-                XincoCoreGroup oldXincoCoreGroupIdOfXincoCoreAceListXincoCoreAce = xincoCoreAceListXincoCoreAce.getXincoCoreGroupId();
-                xincoCoreAceListXincoCoreAce.setXincoCoreGroupId(xincoCoreGroup);
+                XincoCoreGroup oldXincoCoreGroupOfXincoCoreAceListXincoCoreAce = xincoCoreAceListXincoCoreAce.getXincoCoreGroup();
+                xincoCoreAceListXincoCoreAce.setXincoCoreGroup(xincoCoreGroup);
                 xincoCoreAceListXincoCoreAce = em.merge(xincoCoreAceListXincoCoreAce);
-                if (oldXincoCoreGroupIdOfXincoCoreAceListXincoCoreAce != null) {
-                    oldXincoCoreGroupIdOfXincoCoreAceListXincoCoreAce.getXincoCoreAceList().remove(xincoCoreAceListXincoCoreAce);
-                    oldXincoCoreGroupIdOfXincoCoreAceListXincoCoreAce = em.merge(oldXincoCoreGroupIdOfXincoCoreAceListXincoCoreAce);
+                if (oldXincoCoreGroupOfXincoCoreAceListXincoCoreAce != null) {
+                    oldXincoCoreGroupOfXincoCoreAceListXincoCoreAce.getXincoCoreAceList().remove(xincoCoreAceListXincoCoreAce);
+                    oldXincoCoreGroupOfXincoCoreAceListXincoCoreAce = em.merge(oldXincoCoreGroupOfXincoCoreAceListXincoCoreAce);
                 }
             }
             for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroup : xincoCoreGroup.getXincoCoreUserHasXincoCoreGroupList()) {
@@ -78,11 +78,6 @@ public class XincoCoreGroupJpaController {
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findXincoCoreGroup(xincoCoreGroup.getId()) != null) {
-                throw new PreexistingEntityException("XincoCoreGroup " + xincoCoreGroup + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -129,18 +124,18 @@ public class XincoCoreGroupJpaController {
             xincoCoreGroup = em.merge(xincoCoreGroup);
             for (XincoCoreAce xincoCoreAceListOldXincoCoreAce : xincoCoreAceListOld) {
                 if (!xincoCoreAceListNew.contains(xincoCoreAceListOldXincoCoreAce)) {
-                    xincoCoreAceListOldXincoCoreAce.setXincoCoreGroupId(null);
+                    xincoCoreAceListOldXincoCoreAce.setXincoCoreGroup(null);
                     xincoCoreAceListOldXincoCoreAce = em.merge(xincoCoreAceListOldXincoCoreAce);
                 }
             }
             for (XincoCoreAce xincoCoreAceListNewXincoCoreAce : xincoCoreAceListNew) {
                 if (!xincoCoreAceListOld.contains(xincoCoreAceListNewXincoCoreAce)) {
-                    XincoCoreGroup oldXincoCoreGroupIdOfXincoCoreAceListNewXincoCoreAce = xincoCoreAceListNewXincoCoreAce.getXincoCoreGroupId();
-                    xincoCoreAceListNewXincoCoreAce.setXincoCoreGroupId(xincoCoreGroup);
+                    XincoCoreGroup oldXincoCoreGroupOfXincoCoreAceListNewXincoCoreAce = xincoCoreAceListNewXincoCoreAce.getXincoCoreGroup();
+                    xincoCoreAceListNewXincoCoreAce.setXincoCoreGroup(xincoCoreGroup);
                     xincoCoreAceListNewXincoCoreAce = em.merge(xincoCoreAceListNewXincoCoreAce);
-                    if (oldXincoCoreGroupIdOfXincoCoreAceListNewXincoCoreAce != null && !oldXincoCoreGroupIdOfXincoCoreAceListNewXincoCoreAce.equals(xincoCoreGroup)) {
-                        oldXincoCoreGroupIdOfXincoCoreAceListNewXincoCoreAce.getXincoCoreAceList().remove(xincoCoreAceListNewXincoCoreAce);
-                        oldXincoCoreGroupIdOfXincoCoreAceListNewXincoCoreAce = em.merge(oldXincoCoreGroupIdOfXincoCoreAceListNewXincoCoreAce);
+                    if (oldXincoCoreGroupOfXincoCoreAceListNewXincoCoreAce != null && !oldXincoCoreGroupOfXincoCoreAceListNewXincoCoreAce.equals(xincoCoreGroup)) {
+                        oldXincoCoreGroupOfXincoCoreAceListNewXincoCoreAce.getXincoCoreAceList().remove(xincoCoreAceListNewXincoCoreAce);
+                        oldXincoCoreGroupOfXincoCoreAceListNewXincoCoreAce = em.merge(oldXincoCoreGroupOfXincoCoreAceListNewXincoCoreAce);
                     }
                 }
             }
@@ -197,7 +192,7 @@ public class XincoCoreGroupJpaController {
             }
             List<XincoCoreAce> xincoCoreAceList = xincoCoreGroup.getXincoCoreAceList();
             for (XincoCoreAce xincoCoreAceListXincoCoreAce : xincoCoreAceList) {
-                xincoCoreAceListXincoCoreAce.setXincoCoreGroupId(null);
+                xincoCoreAceListXincoCoreAce.setXincoCoreGroup(null);
                 xincoCoreAceListXincoCoreAce = em.merge(xincoCoreAceListXincoCoreAce);
             }
             em.remove(xincoCoreGroup);

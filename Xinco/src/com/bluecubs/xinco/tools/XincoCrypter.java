@@ -114,7 +114,7 @@ public class XincoCrypter {
             // Encode bytes to base64 to get a string
             return Base64.encode(enc.toString());
         } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(XincoCrypter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoCrypter.class.getSimpleName()).log(Level.SEVERE, null, ex);
         } catch (javax.crypto.BadPaddingException e) {
             e.printStackTrace();
         } catch (IllegalBlockSizeException e) {

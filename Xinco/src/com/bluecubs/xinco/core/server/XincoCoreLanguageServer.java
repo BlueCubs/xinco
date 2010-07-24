@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -48,6 +48,9 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     private static final long serialVersionUID = 1L;
     private HashMap parameters = new HashMap();
     private static List result;
+
+    protected XincoCoreLanguageServer() {
+    }
     //create language object for data structures
 
     public XincoCoreLanguageServer(int attrID) throws XincoException {
@@ -63,7 +66,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
                 setSign(xcl.getSign());
                 setDesignation(xcl.getDesignation());
             } else {
-                throw new XincoException();
+                throw new XincoException("Xinco Core language with id: "+attrID+" not found!");
             }
         } catch (Exception e) {
             throw new XincoException();
@@ -141,9 +144,9 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     public static boolean isLanguageUsed(XincoCoreLanguage xcl) {
         boolean is_used = false;
         try {
-            is_used = ((Long) XincoDBManager.createdQuery("select count(xcn) from XincoCoreNode xcn where xcn.xincoCoreLanguageId.id = " + xcl.getId()).get(0)) > 0;
+            is_used = ((Long) XincoDBManager.createdQuery("select count(xcn) from XincoCoreNode xcn where xcn.xincoCoreLanguage.id = " + xcl.getId()).get(0)) > 0;
             if (!is_used) {
-                is_used = ((Long) XincoDBManager.createdQuery("select count(xcd) from XincoCoreData xcd where xcd.xincoCoreLanguageId.id = " + xcl.getId()).get(0)) > 0;
+                is_used = ((Long) XincoDBManager.createdQuery("select count(xcd) from XincoCoreData xcd where xcd.xincoCoreLanguage.id = " + xcl.getId()).get(0)) > 0;
             }
         } catch (Exception e) {
             e.printStackTrace();

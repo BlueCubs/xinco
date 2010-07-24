@@ -7,22 +7,12 @@ import junit.framework.TestCase;
  *
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
-public class XincoSettingServerTest extends TestCase {
+public class XincoSettingServerTest extends XincoTestCase {
 
     public XincoSettingServerTest(String testName) {
         super(testName);
     }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    
     /**
      * Test of write2DB method, of class XincoSettingServer.
      * @throws Exception

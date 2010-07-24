@@ -50,18 +50,17 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="connect" min="-2" pref="102" max="-2" attributes="0"/>
+                              <EmptySpace pref="56" max="32767" attributes="0"/>
+                              <Component id="Cancel" min="-2" pref="90" max="-2" attributes="0"/>
+                          </Group>
                           <Component id="savePW" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="password" alignment="0" pref="248" max="32767" attributes="1"/>
                           <Component id="username" alignment="0" pref="248" max="32767" attributes="1"/>
                           <Component id="endpoint" alignment="0" pref="248" max="32767" attributes="1"/>
                           <Component id="profileName" alignment="0" pref="248" max="32767" attributes="1"/>
                       </Group>
-                  </Group>
-                  <Group type="102" alignment="0" max="-2" attributes="0">
-                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
-                      <Component id="connect" min="-2" pref="102" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="72" max="-2" attributes="0"/>
-                      <Component id="Cancel" min="-2" pref="90" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
@@ -108,8 +107,8 @@
               </Group>
               <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="connect" alignment="3" max="32767" attributes="0"/>
                   <Component id="Cancel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="connect" alignment="3" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
           </Group>

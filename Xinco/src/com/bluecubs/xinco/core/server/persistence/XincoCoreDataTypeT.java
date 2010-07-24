@@ -111,4 +111,5 @@ public class XincoCoreDataTypeT implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeT[recordId=" + recordId + "]";
     }
+
 }

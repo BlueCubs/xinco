@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -147,8 +147,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
             controller.create(xaa);
         } catch (Exception e) {
             //no commit or rollback -> CoreData manages exceptions!
-            e.printStackTrace();
-            throw new XincoException();
+            throw new XincoException(e.getMessage());
         }
         return 1;
     }

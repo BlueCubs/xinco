@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
@@ -9,7 +5,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -23,16 +18,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "xinco_core_user_has_xinco_core_group")
 @NamedQueries({
-    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroup.findAll",
-    query = "SELECT x FROM XincoCoreUserHasXincoCoreGroup x"),
-    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroup.findByXincoCoreUserId",
-    query = "SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreUserId = :xincoCoreUserId"),
-    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroup.findByXincoCoreGroupId",
-    query = "SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreGroupId = :xincoCoreGroupId"),
-    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroup.findByStatusNumber",
-    query = "SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE x.statusNumber = :statusNumber")})
+    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroup.findAll", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroup x"),
+    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroup.findByXincoCoreUserId", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreUserId = :xincoCoreUserId"),
+    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroup.findByXincoCoreGroupId", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreGroupId = :xincoCoreGroupId"),
+    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroup.findByStatusNumber", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroup x WHERE x.statusNumber = :statusNumber")})
 public class XincoCoreUserHasXincoCoreGroup implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected XincoCoreUserHasXincoCoreGroupPK xincoCoreUserHasXincoCoreGroupPK;
@@ -40,21 +30,23 @@ public class XincoCoreUserHasXincoCoreGroup implements Serializable {
     @Column(name = "status_number", nullable = false)
     private int statusNumber;
     @JoinColumn(name = "xinco_core_group_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     private XincoCoreGroup xincoCoreGroup;
     @JoinColumn(name = "xinco_core_user_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     private XincoCoreUser xincoCoreUser;
 
     public XincoCoreUserHasXincoCoreGroup() {
     }
 
-    public XincoCoreUserHasXincoCoreGroup(XincoCoreUserHasXincoCoreGroupPK xincoCoreUserHasXincoCoreGroupPK) {
-        this.xincoCoreUserHasXincoCoreGroupPK = xincoCoreUserHasXincoCoreGroupPK;
+    public XincoCoreUserHasXincoCoreGroup(int id, XincoCoreGroup xcg) {
+        this.xincoCoreGroup=xcg;
+        this.xincoCoreUserHasXincoCoreGroupPK = new XincoCoreUserHasXincoCoreGroupPK(id, xcg.getId());
     }
 
-    public XincoCoreUserHasXincoCoreGroup(XincoCoreUserHasXincoCoreGroupPK xincoCoreUserHasXincoCoreGroupPK, int statusNumber) {
-        this.xincoCoreUserHasXincoCoreGroupPK = xincoCoreUserHasXincoCoreGroupPK;
+    public XincoCoreUserHasXincoCoreGroup(int id, XincoCoreGroup xcg, int statusNumber) {
+        this.xincoCoreGroup=xcg;
+        this.xincoCoreUserHasXincoCoreGroupPK = new XincoCoreUserHasXincoCoreGroupPK(id, xcg.getId());
         this.statusNumber = statusNumber;
     }
 
@@ -93,7 +85,7 @@ public class XincoCoreUserHasXincoCoreGroup implements Serializable {
     public void setXincoCoreUser(XincoCoreUser xincoCoreUser) {
         this.xincoCoreUser = xincoCoreUser;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;

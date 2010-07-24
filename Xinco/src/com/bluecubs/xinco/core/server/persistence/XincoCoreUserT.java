@@ -21,7 +21,18 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "xinco_core_user_t")
-@NamedQueries({@NamedQuery(name = "XincoCoreUserT.findAll", query = "SELECT x FROM XincoCoreUserT x"), @NamedQuery(name = "XincoCoreUserT.findByRecordId", query = "SELECT x FROM XincoCoreUserT x WHERE x.recordId = :recordId"), @NamedQuery(name = "XincoCoreUserT.findById", query = "SELECT x FROM XincoCoreUserT x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreUserT.findByUsername", query = "SELECT x FROM XincoCoreUserT x WHERE x.username = :username"), @NamedQuery(name = "XincoCoreUserT.findByUserpassword", query = "SELECT x FROM XincoCoreUserT x WHERE x.userpassword = :userpassword"), @NamedQuery(name = "XincoCoreUserT.findByName", query = "SELECT x FROM XincoCoreUserT x WHERE x.name = :name"), @NamedQuery(name = "XincoCoreUserT.findByFirstname", query = "SELECT x FROM XincoCoreUserT x WHERE x.firstname = :firstname"), @NamedQuery(name = "XincoCoreUserT.findByEmail", query = "SELECT x FROM XincoCoreUserT x WHERE x.email = :email"), @NamedQuery(name = "XincoCoreUserT.findByStatusNumber", query = "SELECT x FROM XincoCoreUserT x WHERE x.statusNumber = :statusNumber"), @NamedQuery(name = "XincoCoreUserT.findByAttempts", query = "SELECT x FROM XincoCoreUserT x WHERE x.attempts = :attempts"), @NamedQuery(name = "XincoCoreUserT.findByLastModified", query = "SELECT x FROM XincoCoreUserT x WHERE x.lastModified = :lastModified")})
+@NamedQueries({
+    @NamedQuery(name = "XincoCoreUserT.findAll", query = "SELECT x FROM XincoCoreUserT x"),
+    @NamedQuery(name = "XincoCoreUserT.findByRecordId", query = "SELECT x FROM XincoCoreUserT x WHERE x.recordId = :recordId"),
+    @NamedQuery(name = "XincoCoreUserT.findById", query = "SELECT x FROM XincoCoreUserT x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreUserT.findByUsername", query = "SELECT x FROM XincoCoreUserT x WHERE x.username = :username"),
+    @NamedQuery(name = "XincoCoreUserT.findByUserpassword", query = "SELECT x FROM XincoCoreUserT x WHERE x.userpassword = :userpassword"),
+    @NamedQuery(name = "XincoCoreUserT.findByName", query = "SELECT x FROM XincoCoreUserT x WHERE x.name = :name"),
+    @NamedQuery(name = "XincoCoreUserT.findByFirstname", query = "SELECT x FROM XincoCoreUserT x WHERE x.firstname = :firstname"),
+    @NamedQuery(name = "XincoCoreUserT.findByEmail", query = "SELECT x FROM XincoCoreUserT x WHERE x.email = :email"),
+    @NamedQuery(name = "XincoCoreUserT.findByStatusNumber", query = "SELECT x FROM XincoCoreUserT x WHERE x.statusNumber = :statusNumber"),
+    @NamedQuery(name = "XincoCoreUserT.findByAttempts", query = "SELECT x FROM XincoCoreUserT x WHERE x.attempts = :attempts"),
+    @NamedQuery(name = "XincoCoreUserT.findByLastModified", query = "SELECT x FROM XincoCoreUserT x WHERE x.lastModified = :lastModified")})
 public class XincoCoreUserT implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -180,5 +191,4 @@ public class XincoCoreUserT implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserT[recordId=" + recordId + "]";
     }
-
 }

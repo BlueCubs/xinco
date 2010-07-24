@@ -8,21 +8,19 @@ package com.bluecubs.xinco.core.server.persistence.controller;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreDataType;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataType;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreNode;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreAce;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependency;
 import java.util.ArrayList;
 import java.util.List;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreLog;
-import com.bluecubs.xinco.core.server.persistence.XincoAddAttribute;
 
 /**
  *
@@ -39,99 +37,76 @@ public class XincoCoreDataJpaController {
         return emf.createEntityManager();
     }
 
-    public void create(XincoCoreData xincoCoreData) throws PreexistingEntityException, Exception {
-        if (xincoCoreData.getXincoCoreAceList() == null) {
-            xincoCoreData.setXincoCoreAceList(new ArrayList<XincoCoreAce>());
+    public void create(XincoCoreData xincoCoreData) {
+        if (xincoCoreData.getXincoCoreDataHasDependencyList() == null) {
+            xincoCoreData.setXincoCoreDataHasDependencyList(new ArrayList<XincoCoreDataHasDependency>());
         }
-        if (xincoCoreData.getXincoCoreLogList() == null) {
-            xincoCoreData.setXincoCoreLogList(new ArrayList<XincoCoreLog>());
-        }
-        if (xincoCoreData.getXincoAddAttributeList() == null) {
-            xincoCoreData.setXincoAddAttributeList(new ArrayList<XincoAddAttribute>());
+        if (xincoCoreData.getXincoCoreDataHasDependencyList1() == null) {
+            xincoCoreData.setXincoCoreDataHasDependencyList1(new ArrayList<XincoCoreDataHasDependency>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            XincoCoreDataType xincoCoreDataTypeId = xincoCoreData.getXincoCoreDataTypeId();
-            if (xincoCoreDataTypeId != null) {
-                xincoCoreDataTypeId = em.getReference(xincoCoreDataTypeId.getClass(), xincoCoreDataTypeId.getId());
-                xincoCoreData.setXincoCoreDataTypeId(xincoCoreDataTypeId);
+            XincoCoreLanguage xincoCoreLanguage = xincoCoreData.getXincoCoreLanguage();
+            if (xincoCoreLanguage != null) {
+                xincoCoreLanguage = em.getReference(xincoCoreLanguage.getClass(), xincoCoreLanguage.getId());
+                xincoCoreData.setXincoCoreLanguage(xincoCoreLanguage);
             }
-            XincoCoreLanguage xincoCoreLanguageId = xincoCoreData.getXincoCoreLanguageId();
-            if (xincoCoreLanguageId != null) {
-                xincoCoreLanguageId = em.getReference(xincoCoreLanguageId.getClass(), xincoCoreLanguageId.getId());
-                xincoCoreData.setXincoCoreLanguageId(xincoCoreLanguageId);
+            XincoCoreDataType xincoCoreDataType = xincoCoreData.getXincoCoreDataType();
+            if (xincoCoreDataType != null) {
+                xincoCoreDataType = em.getReference(xincoCoreDataType.getClass(), xincoCoreDataType.getId());
+                xincoCoreData.setXincoCoreDataType(xincoCoreDataType);
             }
-            XincoCoreNode xincoCoreNodeId = xincoCoreData.getXincoCoreNodeId();
-            if (xincoCoreNodeId != null) {
-                xincoCoreNodeId = em.getReference(xincoCoreNodeId.getClass(), xincoCoreNodeId.getId());
-                xincoCoreData.setXincoCoreNodeId(xincoCoreNodeId);
+            XincoCoreNode xincoCoreNode = xincoCoreData.getXincoCoreNode();
+            if (xincoCoreNode != null) {
+                xincoCoreNode = em.getReference(xincoCoreNode.getClass(), xincoCoreNode.getId());
+                xincoCoreData.setXincoCoreNode(xincoCoreNode);
             }
-            List<XincoCoreAce> attachedXincoCoreAceList = new ArrayList<XincoCoreAce>();
-            for (XincoCoreAce xincoCoreAceListXincoCoreAceToAttach : xincoCoreData.getXincoCoreAceList()) {
-                xincoCoreAceListXincoCoreAceToAttach = em.getReference(xincoCoreAceListXincoCoreAceToAttach.getClass(), xincoCoreAceListXincoCoreAceToAttach.getId());
-                attachedXincoCoreAceList.add(xincoCoreAceListXincoCoreAceToAttach);
+            List<XincoCoreDataHasDependency> attachedXincoCoreDataHasDependencyList = new ArrayList<XincoCoreDataHasDependency>();
+            for (XincoCoreDataHasDependency xincoCoreDataHasDependencyListXincoCoreDataHasDependencyToAttach : xincoCoreData.getXincoCoreDataHasDependencyList()) {
+                xincoCoreDataHasDependencyListXincoCoreDataHasDependencyToAttach = em.getReference(xincoCoreDataHasDependencyListXincoCoreDataHasDependencyToAttach.getClass(), xincoCoreDataHasDependencyListXincoCoreDataHasDependencyToAttach.getXincoCoreDataHasDependencyPK());
+                attachedXincoCoreDataHasDependencyList.add(xincoCoreDataHasDependencyListXincoCoreDataHasDependencyToAttach);
             }
-            xincoCoreData.setXincoCoreAceList(attachedXincoCoreAceList);
-            List<XincoCoreLog> attachedXincoCoreLogList = new ArrayList<XincoCoreLog>();
-            for (XincoCoreLog xincoCoreLogListXincoCoreLogToAttach : xincoCoreData.getXincoCoreLogList()) {
-                xincoCoreLogListXincoCoreLogToAttach = em.getReference(xincoCoreLogListXincoCoreLogToAttach.getClass(), xincoCoreLogListXincoCoreLogToAttach.getId());
-                attachedXincoCoreLogList.add(xincoCoreLogListXincoCoreLogToAttach);
+            xincoCoreData.setXincoCoreDataHasDependencyList(attachedXincoCoreDataHasDependencyList);
+            List<XincoCoreDataHasDependency> attachedXincoCoreDataHasDependencyList1 = new ArrayList<XincoCoreDataHasDependency>();
+            for (XincoCoreDataHasDependency xincoCoreDataHasDependencyList1XincoCoreDataHasDependencyToAttach : xincoCoreData.getXincoCoreDataHasDependencyList1()) {
+                xincoCoreDataHasDependencyList1XincoCoreDataHasDependencyToAttach = em.getReference(xincoCoreDataHasDependencyList1XincoCoreDataHasDependencyToAttach.getClass(), xincoCoreDataHasDependencyList1XincoCoreDataHasDependencyToAttach.getXincoCoreDataHasDependencyPK());
+                attachedXincoCoreDataHasDependencyList1.add(xincoCoreDataHasDependencyList1XincoCoreDataHasDependencyToAttach);
             }
-            xincoCoreData.setXincoCoreLogList(attachedXincoCoreLogList);
-            List<XincoAddAttribute> attachedXincoAddAttributeList = new ArrayList<XincoAddAttribute>();
-            for (XincoAddAttribute xincoAddAttributeListXincoAddAttributeToAttach : xincoCoreData.getXincoAddAttributeList()) {
-                xincoAddAttributeListXincoAddAttributeToAttach = em.getReference(xincoAddAttributeListXincoAddAttributeToAttach.getClass(), xincoAddAttributeListXincoAddAttributeToAttach.getXincoAddAttributePK());
-                attachedXincoAddAttributeList.add(xincoAddAttributeListXincoAddAttributeToAttach);
-            }
-            xincoCoreData.setXincoAddAttributeList(attachedXincoAddAttributeList);
+            xincoCoreData.setXincoCoreDataHasDependencyList1(attachedXincoCoreDataHasDependencyList1);
             em.persist(xincoCoreData);
-            if (xincoCoreDataTypeId != null) {
-                xincoCoreDataTypeId.getXincoCoreDataList().add(xincoCoreData);
-                xincoCoreDataTypeId = em.merge(xincoCoreDataTypeId);
+            if (xincoCoreLanguage != null) {
+                xincoCoreLanguage.getXincoCoreDataList().add(xincoCoreData);
+                xincoCoreLanguage = em.merge(xincoCoreLanguage);
             }
-            if (xincoCoreLanguageId != null) {
-                xincoCoreLanguageId.getXincoCoreDataList().add(xincoCoreData);
-                xincoCoreLanguageId = em.merge(xincoCoreLanguageId);
+            if (xincoCoreDataType != null) {
+                xincoCoreDataType.getXincoCoreDataList().add(xincoCoreData);
+                xincoCoreDataType = em.merge(xincoCoreDataType);
             }
-            if (xincoCoreNodeId != null) {
-                xincoCoreNodeId.getXincoCoreDataList().add(xincoCoreData);
-                xincoCoreNodeId = em.merge(xincoCoreNodeId);
+            if (xincoCoreNode != null) {
+                xincoCoreNode.getXincoCoreDataList().add(xincoCoreData);
+                xincoCoreNode = em.merge(xincoCoreNode);
             }
-            for (XincoCoreAce xincoCoreAceListXincoCoreAce : xincoCoreData.getXincoCoreAceList()) {
-                XincoCoreData oldXincoCoreDataIdOfXincoCoreAceListXincoCoreAce = xincoCoreAceListXincoCoreAce.getXincoCoreDataId();
-                xincoCoreAceListXincoCoreAce.setXincoCoreDataId(xincoCoreData);
-                xincoCoreAceListXincoCoreAce = em.merge(xincoCoreAceListXincoCoreAce);
-                if (oldXincoCoreDataIdOfXincoCoreAceListXincoCoreAce != null) {
-                    oldXincoCoreDataIdOfXincoCoreAceListXincoCoreAce.getXincoCoreAceList().remove(xincoCoreAceListXincoCoreAce);
-                    oldXincoCoreDataIdOfXincoCoreAceListXincoCoreAce = em.merge(oldXincoCoreDataIdOfXincoCoreAceListXincoCoreAce);
+            for (XincoCoreDataHasDependency xincoCoreDataHasDependencyListXincoCoreDataHasDependency : xincoCoreData.getXincoCoreDataHasDependencyList()) {
+                XincoCoreData oldXincoCoreDataOfXincoCoreDataHasDependencyListXincoCoreDataHasDependency = xincoCoreDataHasDependencyListXincoCoreDataHasDependency.getXincoCoreData();
+                xincoCoreDataHasDependencyListXincoCoreDataHasDependency.setXincoCoreData(xincoCoreData);
+                xincoCoreDataHasDependencyListXincoCoreDataHasDependency = em.merge(xincoCoreDataHasDependencyListXincoCoreDataHasDependency);
+                if (oldXincoCoreDataOfXincoCoreDataHasDependencyListXincoCoreDataHasDependency != null) {
+                    oldXincoCoreDataOfXincoCoreDataHasDependencyListXincoCoreDataHasDependency.getXincoCoreDataHasDependencyList().remove(xincoCoreDataHasDependencyListXincoCoreDataHasDependency);
+                    oldXincoCoreDataOfXincoCoreDataHasDependencyListXincoCoreDataHasDependency = em.merge(oldXincoCoreDataOfXincoCoreDataHasDependencyListXincoCoreDataHasDependency);
                 }
             }
-            for (XincoCoreLog xincoCoreLogListXincoCoreLog : xincoCoreData.getXincoCoreLogList()) {
-                XincoCoreData oldXincoCoreDataIdOfXincoCoreLogListXincoCoreLog = xincoCoreLogListXincoCoreLog.getXincoCoreDataId();
-                xincoCoreLogListXincoCoreLog.setXincoCoreDataId(xincoCoreData);
-                xincoCoreLogListXincoCoreLog = em.merge(xincoCoreLogListXincoCoreLog);
-                if (oldXincoCoreDataIdOfXincoCoreLogListXincoCoreLog != null) {
-                    oldXincoCoreDataIdOfXincoCoreLogListXincoCoreLog.getXincoCoreLogList().remove(xincoCoreLogListXincoCoreLog);
-                    oldXincoCoreDataIdOfXincoCoreLogListXincoCoreLog = em.merge(oldXincoCoreDataIdOfXincoCoreLogListXincoCoreLog);
-                }
-            }
-            for (XincoAddAttribute xincoAddAttributeListXincoAddAttribute : xincoCoreData.getXincoAddAttributeList()) {
-                XincoCoreData oldXincoCoreDataOfXincoAddAttributeListXincoAddAttribute = xincoAddAttributeListXincoAddAttribute.getXincoCoreData();
-                xincoAddAttributeListXincoAddAttribute.setXincoCoreData(xincoCoreData);
-                xincoAddAttributeListXincoAddAttribute = em.merge(xincoAddAttributeListXincoAddAttribute);
-                if (oldXincoCoreDataOfXincoAddAttributeListXincoAddAttribute != null) {
-                    oldXincoCoreDataOfXincoAddAttributeListXincoAddAttribute.getXincoAddAttributeList().remove(xincoAddAttributeListXincoAddAttribute);
-                    oldXincoCoreDataOfXincoAddAttributeListXincoAddAttribute = em.merge(oldXincoCoreDataOfXincoAddAttributeListXincoAddAttribute);
+            for (XincoCoreDataHasDependency xincoCoreDataHasDependencyList1XincoCoreDataHasDependency : xincoCoreData.getXincoCoreDataHasDependencyList1()) {
+                XincoCoreData oldXincoCoreData1OfXincoCoreDataHasDependencyList1XincoCoreDataHasDependency = xincoCoreDataHasDependencyList1XincoCoreDataHasDependency.getXincoCoreData1();
+                xincoCoreDataHasDependencyList1XincoCoreDataHasDependency.setXincoCoreData1(xincoCoreData);
+                xincoCoreDataHasDependencyList1XincoCoreDataHasDependency = em.merge(xincoCoreDataHasDependencyList1XincoCoreDataHasDependency);
+                if (oldXincoCoreData1OfXincoCoreDataHasDependencyList1XincoCoreDataHasDependency != null) {
+                    oldXincoCoreData1OfXincoCoreDataHasDependencyList1XincoCoreDataHasDependency.getXincoCoreDataHasDependencyList1().remove(xincoCoreDataHasDependencyList1XincoCoreDataHasDependency);
+                    oldXincoCoreData1OfXincoCoreDataHasDependencyList1XincoCoreDataHasDependency = em.merge(oldXincoCoreData1OfXincoCoreDataHasDependencyList1XincoCoreDataHasDependency);
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findXincoCoreData(xincoCoreData.getId()) != null) {
-                throw new PreexistingEntityException("XincoCoreData " + xincoCoreData + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -145,132 +120,106 @@ public class XincoCoreDataJpaController {
             em = getEntityManager();
             em.getTransaction().begin();
             XincoCoreData persistentXincoCoreData = em.find(XincoCoreData.class, xincoCoreData.getId());
-            XincoCoreDataType xincoCoreDataTypeIdOld = persistentXincoCoreData.getXincoCoreDataTypeId();
-            XincoCoreDataType xincoCoreDataTypeIdNew = xincoCoreData.getXincoCoreDataTypeId();
-            XincoCoreLanguage xincoCoreLanguageIdOld = persistentXincoCoreData.getXincoCoreLanguageId();
-            XincoCoreLanguage xincoCoreLanguageIdNew = xincoCoreData.getXincoCoreLanguageId();
-            XincoCoreNode xincoCoreNodeIdOld = persistentXincoCoreData.getXincoCoreNodeId();
-            XincoCoreNode xincoCoreNodeIdNew = xincoCoreData.getXincoCoreNodeId();
-            List<XincoCoreAce> xincoCoreAceListOld = persistentXincoCoreData.getXincoCoreAceList();
-            List<XincoCoreAce> xincoCoreAceListNew = xincoCoreData.getXincoCoreAceList();
-            List<XincoCoreLog> xincoCoreLogListOld = persistentXincoCoreData.getXincoCoreLogList();
-            List<XincoCoreLog> xincoCoreLogListNew = xincoCoreData.getXincoCoreLogList();
-            List<XincoAddAttribute> xincoAddAttributeListOld = persistentXincoCoreData.getXincoAddAttributeList();
-            List<XincoAddAttribute> xincoAddAttributeListNew = xincoCoreData.getXincoAddAttributeList();
+            XincoCoreLanguage xincoCoreLanguageOld = persistentXincoCoreData.getXincoCoreLanguage();
+            XincoCoreLanguage xincoCoreLanguageNew = xincoCoreData.getXincoCoreLanguage();
+            XincoCoreDataType xincoCoreDataTypeOld = persistentXincoCoreData.getXincoCoreDataType();
+            XincoCoreDataType xincoCoreDataTypeNew = xincoCoreData.getXincoCoreDataType();
+            XincoCoreNode xincoCoreNodeOld = persistentXincoCoreData.getXincoCoreNode();
+            XincoCoreNode xincoCoreNodeNew = xincoCoreData.getXincoCoreNode();
+            List<XincoCoreDataHasDependency> xincoCoreDataHasDependencyListOld = persistentXincoCoreData.getXincoCoreDataHasDependencyList();
+            List<XincoCoreDataHasDependency> xincoCoreDataHasDependencyListNew = xincoCoreData.getXincoCoreDataHasDependencyList();
+            List<XincoCoreDataHasDependency> xincoCoreDataHasDependencyList1Old = persistentXincoCoreData.getXincoCoreDataHasDependencyList1();
+            List<XincoCoreDataHasDependency> xincoCoreDataHasDependencyList1New = xincoCoreData.getXincoCoreDataHasDependencyList1();
             List<String> illegalOrphanMessages = null;
-            for (XincoCoreLog xincoCoreLogListOldXincoCoreLog : xincoCoreLogListOld) {
-                if (!xincoCoreLogListNew.contains(xincoCoreLogListOldXincoCoreLog)) {
+            for (XincoCoreDataHasDependency xincoCoreDataHasDependencyListOldXincoCoreDataHasDependency : xincoCoreDataHasDependencyListOld) {
+                if (!xincoCoreDataHasDependencyListNew.contains(xincoCoreDataHasDependencyListOldXincoCoreDataHasDependency)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain XincoCoreLog " + xincoCoreLogListOldXincoCoreLog + " since its xincoCoreDataId field is not nullable.");
+                    illegalOrphanMessages.add("You must retain XincoCoreDataHasDependency " + xincoCoreDataHasDependencyListOldXincoCoreDataHasDependency + " since its xincoCoreData field is not nullable.");
                 }
             }
-            for (XincoAddAttribute xincoAddAttributeListOldXincoAddAttribute : xincoAddAttributeListOld) {
-                if (!xincoAddAttributeListNew.contains(xincoAddAttributeListOldXincoAddAttribute)) {
+            for (XincoCoreDataHasDependency xincoCoreDataHasDependencyList1OldXincoCoreDataHasDependency : xincoCoreDataHasDependencyList1Old) {
+                if (!xincoCoreDataHasDependencyList1New.contains(xincoCoreDataHasDependencyList1OldXincoCoreDataHasDependency)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain XincoAddAttribute " + xincoAddAttributeListOldXincoAddAttribute + " since its xincoCoreData field is not nullable.");
+                    illegalOrphanMessages.add("You must retain XincoCoreDataHasDependency " + xincoCoreDataHasDependencyList1OldXincoCoreDataHasDependency + " since its xincoCoreData1 field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            if (xincoCoreDataTypeIdNew != null) {
-                xincoCoreDataTypeIdNew = em.getReference(xincoCoreDataTypeIdNew.getClass(), xincoCoreDataTypeIdNew.getId());
-                xincoCoreData.setXincoCoreDataTypeId(xincoCoreDataTypeIdNew);
+            if (xincoCoreLanguageNew != null) {
+                xincoCoreLanguageNew = em.getReference(xincoCoreLanguageNew.getClass(), xincoCoreLanguageNew.getId());
+                xincoCoreData.setXincoCoreLanguage(xincoCoreLanguageNew);
             }
-            if (xincoCoreLanguageIdNew != null) {
-                xincoCoreLanguageIdNew = em.getReference(xincoCoreLanguageIdNew.getClass(), xincoCoreLanguageIdNew.getId());
-                xincoCoreData.setXincoCoreLanguageId(xincoCoreLanguageIdNew);
+            if (xincoCoreDataTypeNew != null) {
+                xincoCoreDataTypeNew = em.getReference(xincoCoreDataTypeNew.getClass(), xincoCoreDataTypeNew.getId());
+                xincoCoreData.setXincoCoreDataType(xincoCoreDataTypeNew);
             }
-            if (xincoCoreNodeIdNew != null) {
-                xincoCoreNodeIdNew = em.getReference(xincoCoreNodeIdNew.getClass(), xincoCoreNodeIdNew.getId());
-                xincoCoreData.setXincoCoreNodeId(xincoCoreNodeIdNew);
+            if (xincoCoreNodeNew != null) {
+                xincoCoreNodeNew = em.getReference(xincoCoreNodeNew.getClass(), xincoCoreNodeNew.getId());
+                xincoCoreData.setXincoCoreNode(xincoCoreNodeNew);
             }
-            List<XincoCoreAce> attachedXincoCoreAceListNew = new ArrayList<XincoCoreAce>();
-            for (XincoCoreAce xincoCoreAceListNewXincoCoreAceToAttach : xincoCoreAceListNew) {
-                xincoCoreAceListNewXincoCoreAceToAttach = em.getReference(xincoCoreAceListNewXincoCoreAceToAttach.getClass(), xincoCoreAceListNewXincoCoreAceToAttach.getId());
-                attachedXincoCoreAceListNew.add(xincoCoreAceListNewXincoCoreAceToAttach);
+            List<XincoCoreDataHasDependency> attachedXincoCoreDataHasDependencyListNew = new ArrayList<XincoCoreDataHasDependency>();
+            for (XincoCoreDataHasDependency xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach : xincoCoreDataHasDependencyListNew) {
+                xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach = em.getReference(xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach.getClass(), xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach.getXincoCoreDataHasDependencyPK());
+                attachedXincoCoreDataHasDependencyListNew.add(xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach);
             }
-            xincoCoreAceListNew = attachedXincoCoreAceListNew;
-            xincoCoreData.setXincoCoreAceList(xincoCoreAceListNew);
-            List<XincoCoreLog> attachedXincoCoreLogListNew = new ArrayList<XincoCoreLog>();
-            for (XincoCoreLog xincoCoreLogListNewXincoCoreLogToAttach : xincoCoreLogListNew) {
-                xincoCoreLogListNewXincoCoreLogToAttach = em.getReference(xincoCoreLogListNewXincoCoreLogToAttach.getClass(), xincoCoreLogListNewXincoCoreLogToAttach.getId());
-                attachedXincoCoreLogListNew.add(xincoCoreLogListNewXincoCoreLogToAttach);
+            xincoCoreDataHasDependencyListNew = attachedXincoCoreDataHasDependencyListNew;
+            xincoCoreData.setXincoCoreDataHasDependencyList(xincoCoreDataHasDependencyListNew);
+            List<XincoCoreDataHasDependency> attachedXincoCoreDataHasDependencyList1New = new ArrayList<XincoCoreDataHasDependency>();
+            for (XincoCoreDataHasDependency xincoCoreDataHasDependencyList1NewXincoCoreDataHasDependencyToAttach : xincoCoreDataHasDependencyList1New) {
+                xincoCoreDataHasDependencyList1NewXincoCoreDataHasDependencyToAttach = em.getReference(xincoCoreDataHasDependencyList1NewXincoCoreDataHasDependencyToAttach.getClass(), xincoCoreDataHasDependencyList1NewXincoCoreDataHasDependencyToAttach.getXincoCoreDataHasDependencyPK());
+                attachedXincoCoreDataHasDependencyList1New.add(xincoCoreDataHasDependencyList1NewXincoCoreDataHasDependencyToAttach);
             }
-            xincoCoreLogListNew = attachedXincoCoreLogListNew;
-            xincoCoreData.setXincoCoreLogList(xincoCoreLogListNew);
-            List<XincoAddAttribute> attachedXincoAddAttributeListNew = new ArrayList<XincoAddAttribute>();
-            for (XincoAddAttribute xincoAddAttributeListNewXincoAddAttributeToAttach : xincoAddAttributeListNew) {
-                xincoAddAttributeListNewXincoAddAttributeToAttach = em.getReference(xincoAddAttributeListNewXincoAddAttributeToAttach.getClass(), xincoAddAttributeListNewXincoAddAttributeToAttach.getXincoAddAttributePK());
-                attachedXincoAddAttributeListNew.add(xincoAddAttributeListNewXincoAddAttributeToAttach);
-            }
-            xincoAddAttributeListNew = attachedXincoAddAttributeListNew;
-            xincoCoreData.setXincoAddAttributeList(xincoAddAttributeListNew);
+            xincoCoreDataHasDependencyList1New = attachedXincoCoreDataHasDependencyList1New;
+            xincoCoreData.setXincoCoreDataHasDependencyList1(xincoCoreDataHasDependencyList1New);
             xincoCoreData = em.merge(xincoCoreData);
-            if (xincoCoreDataTypeIdOld != null && !xincoCoreDataTypeIdOld.equals(xincoCoreDataTypeIdNew)) {
-                xincoCoreDataTypeIdOld.getXincoCoreDataList().remove(xincoCoreData);
-                xincoCoreDataTypeIdOld = em.merge(xincoCoreDataTypeIdOld);
+            if (xincoCoreLanguageOld != null && !xincoCoreLanguageOld.equals(xincoCoreLanguageNew)) {
+                xincoCoreLanguageOld.getXincoCoreDataList().remove(xincoCoreData);
+                xincoCoreLanguageOld = em.merge(xincoCoreLanguageOld);
             }
-            if (xincoCoreDataTypeIdNew != null && !xincoCoreDataTypeIdNew.equals(xincoCoreDataTypeIdOld)) {
-                xincoCoreDataTypeIdNew.getXincoCoreDataList().add(xincoCoreData);
-                xincoCoreDataTypeIdNew = em.merge(xincoCoreDataTypeIdNew);
+            if (xincoCoreLanguageNew != null && !xincoCoreLanguageNew.equals(xincoCoreLanguageOld)) {
+                xincoCoreLanguageNew.getXincoCoreDataList().add(xincoCoreData);
+                xincoCoreLanguageNew = em.merge(xincoCoreLanguageNew);
             }
-            if (xincoCoreLanguageIdOld != null && !xincoCoreLanguageIdOld.equals(xincoCoreLanguageIdNew)) {
-                xincoCoreLanguageIdOld.getXincoCoreDataList().remove(xincoCoreData);
-                xincoCoreLanguageIdOld = em.merge(xincoCoreLanguageIdOld);
+            if (xincoCoreDataTypeOld != null && !xincoCoreDataTypeOld.equals(xincoCoreDataTypeNew)) {
+                xincoCoreDataTypeOld.getXincoCoreDataList().remove(xincoCoreData);
+                xincoCoreDataTypeOld = em.merge(xincoCoreDataTypeOld);
             }
-            if (xincoCoreLanguageIdNew != null && !xincoCoreLanguageIdNew.equals(xincoCoreLanguageIdOld)) {
-                xincoCoreLanguageIdNew.getXincoCoreDataList().add(xincoCoreData);
-                xincoCoreLanguageIdNew = em.merge(xincoCoreLanguageIdNew);
+            if (xincoCoreDataTypeNew != null && !xincoCoreDataTypeNew.equals(xincoCoreDataTypeOld)) {
+                xincoCoreDataTypeNew.getXincoCoreDataList().add(xincoCoreData);
+                xincoCoreDataTypeNew = em.merge(xincoCoreDataTypeNew);
             }
-            if (xincoCoreNodeIdOld != null && !xincoCoreNodeIdOld.equals(xincoCoreNodeIdNew)) {
-                xincoCoreNodeIdOld.getXincoCoreDataList().remove(xincoCoreData);
-                xincoCoreNodeIdOld = em.merge(xincoCoreNodeIdOld);
+            if (xincoCoreNodeOld != null && !xincoCoreNodeOld.equals(xincoCoreNodeNew)) {
+                xincoCoreNodeOld.getXincoCoreDataList().remove(xincoCoreData);
+                xincoCoreNodeOld = em.merge(xincoCoreNodeOld);
             }
-            if (xincoCoreNodeIdNew != null && !xincoCoreNodeIdNew.equals(xincoCoreNodeIdOld)) {
-                xincoCoreNodeIdNew.getXincoCoreDataList().add(xincoCoreData);
-                xincoCoreNodeIdNew = em.merge(xincoCoreNodeIdNew);
+            if (xincoCoreNodeNew != null && !xincoCoreNodeNew.equals(xincoCoreNodeOld)) {
+                xincoCoreNodeNew.getXincoCoreDataList().add(xincoCoreData);
+                xincoCoreNodeNew = em.merge(xincoCoreNodeNew);
             }
-            for (XincoCoreAce xincoCoreAceListOldXincoCoreAce : xincoCoreAceListOld) {
-                if (!xincoCoreAceListNew.contains(xincoCoreAceListOldXincoCoreAce)) {
-                    xincoCoreAceListOldXincoCoreAce.setXincoCoreDataId(null);
-                    xincoCoreAceListOldXincoCoreAce = em.merge(xincoCoreAceListOldXincoCoreAce);
-                }
-            }
-            for (XincoCoreAce xincoCoreAceListNewXincoCoreAce : xincoCoreAceListNew) {
-                if (!xincoCoreAceListOld.contains(xincoCoreAceListNewXincoCoreAce)) {
-                    XincoCoreData oldXincoCoreDataIdOfXincoCoreAceListNewXincoCoreAce = xincoCoreAceListNewXincoCoreAce.getXincoCoreDataId();
-                    xincoCoreAceListNewXincoCoreAce.setXincoCoreDataId(xincoCoreData);
-                    xincoCoreAceListNewXincoCoreAce = em.merge(xincoCoreAceListNewXincoCoreAce);
-                    if (oldXincoCoreDataIdOfXincoCoreAceListNewXincoCoreAce != null && !oldXincoCoreDataIdOfXincoCoreAceListNewXincoCoreAce.equals(xincoCoreData)) {
-                        oldXincoCoreDataIdOfXincoCoreAceListNewXincoCoreAce.getXincoCoreAceList().remove(xincoCoreAceListNewXincoCoreAce);
-                        oldXincoCoreDataIdOfXincoCoreAceListNewXincoCoreAce = em.merge(oldXincoCoreDataIdOfXincoCoreAceListNewXincoCoreAce);
+            for (XincoCoreDataHasDependency xincoCoreDataHasDependencyListNewXincoCoreDataHasDependency : xincoCoreDataHasDependencyListNew) {
+                if (!xincoCoreDataHasDependencyListOld.contains(xincoCoreDataHasDependencyListNewXincoCoreDataHasDependency)) {
+                    XincoCoreData oldXincoCoreDataOfXincoCoreDataHasDependencyListNewXincoCoreDataHasDependency = xincoCoreDataHasDependencyListNewXincoCoreDataHasDependency.getXincoCoreData();
+                    xincoCoreDataHasDependencyListNewXincoCoreDataHasDependency.setXincoCoreData(xincoCoreData);
+                    xincoCoreDataHasDependencyListNewXincoCoreDataHasDependency = em.merge(xincoCoreDataHasDependencyListNewXincoCoreDataHasDependency);
+                    if (oldXincoCoreDataOfXincoCoreDataHasDependencyListNewXincoCoreDataHasDependency != null && !oldXincoCoreDataOfXincoCoreDataHasDependencyListNewXincoCoreDataHasDependency.equals(xincoCoreData)) {
+                        oldXincoCoreDataOfXincoCoreDataHasDependencyListNewXincoCoreDataHasDependency.getXincoCoreDataHasDependencyList().remove(xincoCoreDataHasDependencyListNewXincoCoreDataHasDependency);
+                        oldXincoCoreDataOfXincoCoreDataHasDependencyListNewXincoCoreDataHasDependency = em.merge(oldXincoCoreDataOfXincoCoreDataHasDependencyListNewXincoCoreDataHasDependency);
                     }
                 }
             }
-            for (XincoCoreLog xincoCoreLogListNewXincoCoreLog : xincoCoreLogListNew) {
-                if (!xincoCoreLogListOld.contains(xincoCoreLogListNewXincoCoreLog)) {
-                    XincoCoreData oldXincoCoreDataIdOfXincoCoreLogListNewXincoCoreLog = xincoCoreLogListNewXincoCoreLog.getXincoCoreDataId();
-                    xincoCoreLogListNewXincoCoreLog.setXincoCoreDataId(xincoCoreData);
-                    xincoCoreLogListNewXincoCoreLog = em.merge(xincoCoreLogListNewXincoCoreLog);
-                    if (oldXincoCoreDataIdOfXincoCoreLogListNewXincoCoreLog != null && !oldXincoCoreDataIdOfXincoCoreLogListNewXincoCoreLog.equals(xincoCoreData)) {
-                        oldXincoCoreDataIdOfXincoCoreLogListNewXincoCoreLog.getXincoCoreLogList().remove(xincoCoreLogListNewXincoCoreLog);
-                        oldXincoCoreDataIdOfXincoCoreLogListNewXincoCoreLog = em.merge(oldXincoCoreDataIdOfXincoCoreLogListNewXincoCoreLog);
-                    }
-                }
-            }
-            for (XincoAddAttribute xincoAddAttributeListNewXincoAddAttribute : xincoAddAttributeListNew) {
-                if (!xincoAddAttributeListOld.contains(xincoAddAttributeListNewXincoAddAttribute)) {
-                    XincoCoreData oldXincoCoreDataOfXincoAddAttributeListNewXincoAddAttribute = xincoAddAttributeListNewXincoAddAttribute.getXincoCoreData();
-                    xincoAddAttributeListNewXincoAddAttribute.setXincoCoreData(xincoCoreData);
-                    xincoAddAttributeListNewXincoAddAttribute = em.merge(xincoAddAttributeListNewXincoAddAttribute);
-                    if (oldXincoCoreDataOfXincoAddAttributeListNewXincoAddAttribute != null && !oldXincoCoreDataOfXincoAddAttributeListNewXincoAddAttribute.equals(xincoCoreData)) {
-                        oldXincoCoreDataOfXincoAddAttributeListNewXincoAddAttribute.getXincoAddAttributeList().remove(xincoAddAttributeListNewXincoAddAttribute);
-                        oldXincoCoreDataOfXincoAddAttributeListNewXincoAddAttribute = em.merge(oldXincoCoreDataOfXincoAddAttributeListNewXincoAddAttribute);
+            for (XincoCoreDataHasDependency xincoCoreDataHasDependencyList1NewXincoCoreDataHasDependency : xincoCoreDataHasDependencyList1New) {
+                if (!xincoCoreDataHasDependencyList1Old.contains(xincoCoreDataHasDependencyList1NewXincoCoreDataHasDependency)) {
+                    XincoCoreData oldXincoCoreData1OfXincoCoreDataHasDependencyList1NewXincoCoreDataHasDependency = xincoCoreDataHasDependencyList1NewXincoCoreDataHasDependency.getXincoCoreData1();
+                    xincoCoreDataHasDependencyList1NewXincoCoreDataHasDependency.setXincoCoreData1(xincoCoreData);
+                    xincoCoreDataHasDependencyList1NewXincoCoreDataHasDependency = em.merge(xincoCoreDataHasDependencyList1NewXincoCoreDataHasDependency);
+                    if (oldXincoCoreData1OfXincoCoreDataHasDependencyList1NewXincoCoreDataHasDependency != null && !oldXincoCoreData1OfXincoCoreDataHasDependencyList1NewXincoCoreDataHasDependency.equals(xincoCoreData)) {
+                        oldXincoCoreData1OfXincoCoreDataHasDependencyList1NewXincoCoreDataHasDependency.getXincoCoreDataHasDependencyList1().remove(xincoCoreDataHasDependencyList1NewXincoCoreDataHasDependency);
+                        oldXincoCoreData1OfXincoCoreDataHasDependencyList1NewXincoCoreDataHasDependency = em.merge(oldXincoCoreData1OfXincoCoreDataHasDependencyList1NewXincoCoreDataHasDependency);
                     }
                 }
             }
@@ -304,42 +253,37 @@ public class XincoCoreDataJpaController {
                 throw new NonexistentEntityException("The xincoCoreData with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            List<XincoCoreLog> xincoCoreLogListOrphanCheck = xincoCoreData.getXincoCoreLogList();
-            for (XincoCoreLog xincoCoreLogListOrphanCheckXincoCoreLog : xincoCoreLogListOrphanCheck) {
+            List<XincoCoreDataHasDependency> xincoCoreDataHasDependencyListOrphanCheck = xincoCoreData.getXincoCoreDataHasDependencyList();
+            for (XincoCoreDataHasDependency xincoCoreDataHasDependencyListOrphanCheckXincoCoreDataHasDependency : xincoCoreDataHasDependencyListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This XincoCoreData (" + xincoCoreData + ") cannot be destroyed since the XincoCoreLog " + xincoCoreLogListOrphanCheckXincoCoreLog + " in its xincoCoreLogList field has a non-nullable xincoCoreDataId field.");
+                illegalOrphanMessages.add("This XincoCoreData (" + xincoCoreData + ") cannot be destroyed since the XincoCoreDataHasDependency " + xincoCoreDataHasDependencyListOrphanCheckXincoCoreDataHasDependency + " in its xincoCoreDataHasDependencyList field has a non-nullable xincoCoreData field.");
             }
-            List<XincoAddAttribute> xincoAddAttributeListOrphanCheck = xincoCoreData.getXincoAddAttributeList();
-            for (XincoAddAttribute xincoAddAttributeListOrphanCheckXincoAddAttribute : xincoAddAttributeListOrphanCheck) {
+            List<XincoCoreDataHasDependency> xincoCoreDataHasDependencyList1OrphanCheck = xincoCoreData.getXincoCoreDataHasDependencyList1();
+            for (XincoCoreDataHasDependency xincoCoreDataHasDependencyList1OrphanCheckXincoCoreDataHasDependency : xincoCoreDataHasDependencyList1OrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This XincoCoreData (" + xincoCoreData + ") cannot be destroyed since the XincoAddAttribute " + xincoAddAttributeListOrphanCheckXincoAddAttribute + " in its xincoAddAttributeList field has a non-nullable xincoCoreData field.");
+                illegalOrphanMessages.add("This XincoCoreData (" + xincoCoreData + ") cannot be destroyed since the XincoCoreDataHasDependency " + xincoCoreDataHasDependencyList1OrphanCheckXincoCoreDataHasDependency + " in its xincoCoreDataHasDependencyList1 field has a non-nullable xincoCoreData1 field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            XincoCoreDataType xincoCoreDataTypeId = xincoCoreData.getXincoCoreDataTypeId();
-            if (xincoCoreDataTypeId != null) {
-                xincoCoreDataTypeId.getXincoCoreDataList().remove(xincoCoreData);
-                xincoCoreDataTypeId = em.merge(xincoCoreDataTypeId);
+            XincoCoreLanguage xincoCoreLanguage = xincoCoreData.getXincoCoreLanguage();
+            if (xincoCoreLanguage != null) {
+                xincoCoreLanguage.getXincoCoreDataList().remove(xincoCoreData);
+                xincoCoreLanguage = em.merge(xincoCoreLanguage);
             }
-            XincoCoreLanguage xincoCoreLanguageId = xincoCoreData.getXincoCoreLanguageId();
-            if (xincoCoreLanguageId != null) {
-                xincoCoreLanguageId.getXincoCoreDataList().remove(xincoCoreData);
-                xincoCoreLanguageId = em.merge(xincoCoreLanguageId);
+            XincoCoreDataType xincoCoreDataType = xincoCoreData.getXincoCoreDataType();
+            if (xincoCoreDataType != null) {
+                xincoCoreDataType.getXincoCoreDataList().remove(xincoCoreData);
+                xincoCoreDataType = em.merge(xincoCoreDataType);
             }
-            XincoCoreNode xincoCoreNodeId = xincoCoreData.getXincoCoreNodeId();
-            if (xincoCoreNodeId != null) {
-                xincoCoreNodeId.getXincoCoreDataList().remove(xincoCoreData);
-                xincoCoreNodeId = em.merge(xincoCoreNodeId);
-            }
-            List<XincoCoreAce> xincoCoreAceList = xincoCoreData.getXincoCoreAceList();
-            for (XincoCoreAce xincoCoreAceListXincoCoreAce : xincoCoreAceList) {
-                xincoCoreAceListXincoCoreAce.setXincoCoreDataId(null);
-                xincoCoreAceListXincoCoreAce = em.merge(xincoCoreAceListXincoCoreAce);
+            XincoCoreNode xincoCoreNode = xincoCoreData.getXincoCoreNode();
+            if (xincoCoreNode != null) {
+                xincoCoreNode.getXincoCoreDataList().remove(xincoCoreData);
+                xincoCoreNode = em.merge(xincoCoreNode);
             }
             em.remove(xincoCoreData);
             em.getTransaction().commit();
