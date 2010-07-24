@@ -32,28 +32,17 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "xinco_core_user", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"username"})})
 @NamedQueries({
-    @NamedQuery(name = "XincoCoreUser.findAll",
-    query = "SELECT x FROM XincoCoreUser x"),
-    @NamedQuery(name = "XincoCoreUser.findById",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.id = :id"),
-    @NamedQuery(name = "XincoCoreUser.findByUsername",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.username = :username"),
-    @NamedQuery(name = "XincoCoreUser.findByUserpassword",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.userpassword = :userpassword"),
-    @NamedQuery(name = "XincoCoreUser.findByName",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.name = :name"),
-    @NamedQuery(name = "XincoCoreUser.findByFirstname",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.firstname = :firstname"),
-    @NamedQuery(name = "XincoCoreUser.findByEmail",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.email = :email"),
-    @NamedQuery(name = "XincoCoreUser.findByStatusNumber",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.statusNumber = :statusNumber"),
-    @NamedQuery(name = "XincoCoreUser.findByAttempts",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.attempts = :attempts"),
-    @NamedQuery(name = "XincoCoreUser.findByLastModified",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.lastModified = :lastModified")})
+    @NamedQuery(name = "XincoCoreUser.findAll", query = "SELECT x FROM XincoCoreUser x"),
+    @NamedQuery(name = "XincoCoreUser.findById", query = "SELECT x FROM XincoCoreUser x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreUser.findByUsername", query = "SELECT x FROM XincoCoreUser x WHERE x.username = :username"),
+    @NamedQuery(name = "XincoCoreUser.findByUserpassword", query = "SELECT x FROM XincoCoreUser x WHERE x.userpassword = :userpassword"),
+    @NamedQuery(name = "XincoCoreUser.findByName", query = "SELECT x FROM XincoCoreUser x WHERE x.name = :name"),
+    @NamedQuery(name = "XincoCoreUser.findByFirstname", query = "SELECT x FROM XincoCoreUser x WHERE x.firstname = :firstname"),
+    @NamedQuery(name = "XincoCoreUser.findByEmail", query = "SELECT x FROM XincoCoreUser x WHERE x.email = :email"),
+    @NamedQuery(name = "XincoCoreUser.findByStatusNumber", query = "SELECT x FROM XincoCoreUser x WHERE x.statusNumber = :statusNumber"),
+    @NamedQuery(name = "XincoCoreUser.findByAttempts", query = "SELECT x FROM XincoCoreUser x WHERE x.attempts = :attempts"),
+    @NamedQuery(name = "XincoCoreUser.findByLastModified", query = "SELECT x FROM XincoCoreUser x WHERE x.lastModified = :lastModified")})
 public class XincoCoreUser extends XincoAuditedObject implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -88,14 +77,14 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
     @Column(name = "last_modified", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date lastModified;
-    @OneToMany(mappedBy = "xincoCoreUserId", fetch = FetchType.LAZY)
-    private List<XincoCoreAce> xincoCoreAceList;
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreUserId", fetch = FetchType.LAZY)
-    private List<XincoCoreLog> xincoCoreLogList;
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreUser", fetch = FetchType.LAZY)
-    private List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList1;
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreUser", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreUser")
     private List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordList;
+    @OneToMany(mappedBy = "xincoCoreUser")
+    private List<XincoCoreAce> xincoCoreAceList;
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreUser")
+    private List<XincoCoreLog> xincoCoreLogList;
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreUser")
+    private List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList;
 
     public XincoCoreUser() {
     }
@@ -184,6 +173,14 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
         this.lastModified = lastModified;
     }
 
+    public List<XincoCoreUserModifiedRecord> getXincoCoreUserModifiedRecordList() {
+        return xincoCoreUserModifiedRecordList;
+    }
+
+    public void setXincoCoreUserModifiedRecordList(List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordList) {
+        this.xincoCoreUserModifiedRecordList = xincoCoreUserModifiedRecordList;
+    }
+
     public List<XincoCoreAce> getXincoCoreAceList() {
         return xincoCoreAceList;
     }
@@ -200,20 +197,12 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
         this.xincoCoreLogList = xincoCoreLogList;
     }
 
-    public List<XincoCoreUserHasXincoCoreGroup> getXincoCoreUserHasXincoCoreGroupList1() {
-        return xincoCoreUserHasXincoCoreGroupList1;
+    public List<XincoCoreUserHasXincoCoreGroup> getXincoCoreUserHasXincoCoreGroupList() {
+        return xincoCoreUserHasXincoCoreGroupList;
     }
 
-    public void setXincoCoreUserHasXincoCoreGroupList1(List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList1) {
-        this.xincoCoreUserHasXincoCoreGroupList1 = xincoCoreUserHasXincoCoreGroupList1;
-    }
-
-    public List<XincoCoreUserModifiedRecord> getXincoCoreUserModifiedRecordList() {
-        return xincoCoreUserModifiedRecordList;
-    }
-
-    public void setXincoCoreUserModifiedRecordList(List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordList) {
-        this.xincoCoreUserModifiedRecordList = xincoCoreUserModifiedRecordList;
+    public void setXincoCoreUserHasXincoCoreGroupList(List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList) {
+        this.xincoCoreUserHasXincoCoreGroupList = xincoCoreUserHasXincoCoreGroupList;
     }
 
     @Override

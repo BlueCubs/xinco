@@ -25,7 +25,6 @@ import javax.persistence.TableGenerator;
     @NamedQuery(name = "XincoCoreGroupT.findByDesignation", query = "SELECT x FROM XincoCoreGroupT x WHERE x.designation = :designation"),
     @NamedQuery(name = "XincoCoreGroupT.findByStatusNumber", query = "SELECT x FROM XincoCoreGroupT x WHERE x.statusNumber = :statusNumber")})
 public class XincoCoreGroupT implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)

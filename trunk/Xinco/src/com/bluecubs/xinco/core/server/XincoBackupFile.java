@@ -27,7 +27,7 @@ public class XincoBackupFile extends File {
         try {
             backupDate = format.parse(fileName);
         } catch (ParseException ex) {
-            Logger.getLogger(XincoBackupFile.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoBackupFile.class.getSimpleName()).log(Level.SEVERE, null, ex);
         }
     }
 

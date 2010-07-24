@@ -2,6 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package com.bluecubs.xinco.core.server.persistence.controller;
 
 import com.bluecubs.xinco.core.server.persistence.XincoAddAttribute;
@@ -11,11 +12,11 @@ import com.bluecubs.xinco.core.server.persistence.controller.exceptions.Preexist
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 
 /**
  *
@@ -41,16 +42,7 @@ public class XincoAddAttributeJpaController {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            XincoCoreData xincoCoreData = xincoAddAttribute.getXincoCoreData();
-            if (xincoCoreData != null) {
-                xincoCoreData = em.getReference(xincoCoreData.getClass(), xincoCoreData.getId());
-                xincoAddAttribute.setXincoCoreData(xincoCoreData);
-            }
             em.persist(xincoAddAttribute);
-            if (xincoCoreData != null) {
-                xincoCoreData.getXincoAddAttributeList().add(xincoAddAttribute);
-                xincoCoreData = em.merge(xincoCoreData);
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findXincoAddAttribute(xincoAddAttribute.getXincoAddAttributePK()) != null) {
@@ -70,22 +62,7 @@ public class XincoAddAttributeJpaController {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            XincoAddAttribute persistentXincoAddAttribute = em.find(XincoAddAttribute.class, xincoAddAttribute.getXincoAddAttributePK());
-            XincoCoreData xincoCoreDataOld = persistentXincoAddAttribute.getXincoCoreData();
-            XincoCoreData xincoCoreDataNew = xincoAddAttribute.getXincoCoreData();
-            if (xincoCoreDataNew != null) {
-                xincoCoreDataNew = em.getReference(xincoCoreDataNew.getClass(), xincoCoreDataNew.getId());
-                xincoAddAttribute.setXincoCoreData(xincoCoreDataNew);
-            }
             xincoAddAttribute = em.merge(xincoAddAttribute);
-            if (xincoCoreDataOld != null && !xincoCoreDataOld.equals(xincoCoreDataNew)) {
-                xincoCoreDataOld.getXincoAddAttributeList().remove(xincoAddAttribute);
-                xincoCoreDataOld = em.merge(xincoCoreDataOld);
-            }
-            if (xincoCoreDataNew != null && !xincoCoreDataNew.equals(xincoCoreDataOld)) {
-                xincoCoreDataNew.getXincoAddAttributeList().add(xincoAddAttribute);
-                xincoCoreDataNew = em.merge(xincoCoreDataNew);
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -114,11 +91,6 @@ public class XincoAddAttributeJpaController {
                 xincoAddAttribute.getXincoAddAttributePK();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The xincoAddAttribute with id " + id + " no longer exists.", enfe);
-            }
-            XincoCoreData xincoCoreData = xincoAddAttribute.getXincoCoreData();
-            if (xincoCoreData != null) {
-                xincoCoreData.getXincoAddAttributeList().remove(xincoAddAttribute);
-                xincoCoreData = em.merge(xincoCoreData);
             }
             em.remove(xincoAddAttribute);
             em.getTransaction().commit();
@@ -174,4 +146,5 @@ public class XincoAddAttributeJpaController {
             em.close();
         }
     }
+
 }

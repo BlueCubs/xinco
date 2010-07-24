@@ -10,7 +10,7 @@ import junit.framework.TestSuite;
  *
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
-public class XincoCoreLanguageServerTest extends TestCase {
+public class XincoCoreLanguageServerTest extends XincoTestCase {
 
     public XincoCoreLanguageServerTest(String testName) {
         super(testName);
@@ -20,17 +20,7 @@ public class XincoCoreLanguageServerTest extends TestCase {
         TestSuite suite = new TestSuite(XincoCoreLanguageServerTest.class);
         return suite;
     }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    
     /**
      * Test of write2DB method, of class XincoCoreLanguageServer.
      */
@@ -43,7 +33,7 @@ public class XincoCoreLanguageServerTest extends TestCase {
             instance = new XincoCoreLanguageServer(id);
             assertTrue(XincoCoreLanguageServer.deleteFromDB(instance, 1) == 0);
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreLanguageServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoCoreLanguageServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
             fail();
         }
     }
@@ -65,7 +55,7 @@ public class XincoCoreLanguageServerTest extends TestCase {
             assertFalse(XincoCoreLanguageServer.isLanguageUsed(new XincoCoreLanguageServer(3)));
             assertTrue(XincoCoreLanguageServer.isLanguageUsed(new XincoCoreLanguageServer(2)));
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreLanguageServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoCoreLanguageServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
             fail();
         }
     }

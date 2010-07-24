@@ -8,17 +8,16 @@ package com.bluecubs.xinco.core.server.persistence.controller;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataType;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import java.util.ArrayList;
 import java.util.List;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 
 /**
  *
@@ -35,10 +34,7 @@ public class XincoCoreDataTypeJpaController {
         return emf.createEntityManager();
     }
 
-    public void create(XincoCoreDataType xincoCoreDataType) throws PreexistingEntityException, Exception {
-        if (xincoCoreDataType.getXincoCoreDataTypeAttributeList() == null) {
-            xincoCoreDataType.setXincoCoreDataTypeAttributeList(new ArrayList<XincoCoreDataTypeAttribute>());
-        }
+    public void create(XincoCoreDataType xincoCoreDataType) {
         if (xincoCoreDataType.getXincoCoreDataList() == null) {
             xincoCoreDataType.setXincoCoreDataList(new ArrayList<XincoCoreData>());
         }
@@ -46,12 +42,6 @@ public class XincoCoreDataTypeJpaController {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            List<XincoCoreDataTypeAttribute> attachedXincoCoreDataTypeAttributeList = new ArrayList<XincoCoreDataTypeAttribute>();
-            for (XincoCoreDataTypeAttribute xincoCoreDataTypeAttributeListXincoCoreDataTypeAttributeToAttach : xincoCoreDataType.getXincoCoreDataTypeAttributeList()) {
-                xincoCoreDataTypeAttributeListXincoCoreDataTypeAttributeToAttach = em.getReference(xincoCoreDataTypeAttributeListXincoCoreDataTypeAttributeToAttach.getClass(), xincoCoreDataTypeAttributeListXincoCoreDataTypeAttributeToAttach.getXincoCoreDataTypeAttributePK());
-                attachedXincoCoreDataTypeAttributeList.add(xincoCoreDataTypeAttributeListXincoCoreDataTypeAttributeToAttach);
-            }
-            xincoCoreDataType.setXincoCoreDataTypeAttributeList(attachedXincoCoreDataTypeAttributeList);
             List<XincoCoreData> attachedXincoCoreDataList = new ArrayList<XincoCoreData>();
             for (XincoCoreData xincoCoreDataListXincoCoreDataToAttach : xincoCoreDataType.getXincoCoreDataList()) {
                 xincoCoreDataListXincoCoreDataToAttach = em.getReference(xincoCoreDataListXincoCoreDataToAttach.getClass(), xincoCoreDataListXincoCoreDataToAttach.getId());
@@ -59,30 +49,16 @@ public class XincoCoreDataTypeJpaController {
             }
             xincoCoreDataType.setXincoCoreDataList(attachedXincoCoreDataList);
             em.persist(xincoCoreDataType);
-            for (XincoCoreDataTypeAttribute xincoCoreDataTypeAttributeListXincoCoreDataTypeAttribute : xincoCoreDataType.getXincoCoreDataTypeAttributeList()) {
-                XincoCoreDataType oldXincoCoreDataTypeOfXincoCoreDataTypeAttributeListXincoCoreDataTypeAttribute = xincoCoreDataTypeAttributeListXincoCoreDataTypeAttribute.getXincoCoreDataType();
-                xincoCoreDataTypeAttributeListXincoCoreDataTypeAttribute.setXincoCoreDataType(xincoCoreDataType);
-                xincoCoreDataTypeAttributeListXincoCoreDataTypeAttribute = em.merge(xincoCoreDataTypeAttributeListXincoCoreDataTypeAttribute);
-                if (oldXincoCoreDataTypeOfXincoCoreDataTypeAttributeListXincoCoreDataTypeAttribute != null) {
-                    oldXincoCoreDataTypeOfXincoCoreDataTypeAttributeListXincoCoreDataTypeAttribute.getXincoCoreDataTypeAttributeList().remove(xincoCoreDataTypeAttributeListXincoCoreDataTypeAttribute);
-                    oldXincoCoreDataTypeOfXincoCoreDataTypeAttributeListXincoCoreDataTypeAttribute = em.merge(oldXincoCoreDataTypeOfXincoCoreDataTypeAttributeListXincoCoreDataTypeAttribute);
-                }
-            }
             for (XincoCoreData xincoCoreDataListXincoCoreData : xincoCoreDataType.getXincoCoreDataList()) {
-                XincoCoreDataType oldXincoCoreDataTypeIdOfXincoCoreDataListXincoCoreData = xincoCoreDataListXincoCoreData.getXincoCoreDataTypeId();
-                xincoCoreDataListXincoCoreData.setXincoCoreDataTypeId(xincoCoreDataType);
+                XincoCoreDataType oldXincoCoreDataTypeOfXincoCoreDataListXincoCoreData = xincoCoreDataListXincoCoreData.getXincoCoreDataType();
+                xincoCoreDataListXincoCoreData.setXincoCoreDataType(xincoCoreDataType);
                 xincoCoreDataListXincoCoreData = em.merge(xincoCoreDataListXincoCoreData);
-                if (oldXincoCoreDataTypeIdOfXincoCoreDataListXincoCoreData != null) {
-                    oldXincoCoreDataTypeIdOfXincoCoreDataListXincoCoreData.getXincoCoreDataList().remove(xincoCoreDataListXincoCoreData);
-                    oldXincoCoreDataTypeIdOfXincoCoreDataListXincoCoreData = em.merge(oldXincoCoreDataTypeIdOfXincoCoreDataListXincoCoreData);
+                if (oldXincoCoreDataTypeOfXincoCoreDataListXincoCoreData != null) {
+                    oldXincoCoreDataTypeOfXincoCoreDataListXincoCoreData.getXincoCoreDataList().remove(xincoCoreDataListXincoCoreData);
+                    oldXincoCoreDataTypeOfXincoCoreDataListXincoCoreData = em.merge(oldXincoCoreDataTypeOfXincoCoreDataListXincoCoreData);
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findXincoCoreDataType(xincoCoreDataType.getId()) != null) {
-                throw new PreexistingEntityException("XincoCoreDataType " + xincoCoreDataType + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -96,37 +72,20 @@ public class XincoCoreDataTypeJpaController {
             em = getEntityManager();
             em.getTransaction().begin();
             XincoCoreDataType persistentXincoCoreDataType = em.find(XincoCoreDataType.class, xincoCoreDataType.getId());
-            List<XincoCoreDataTypeAttribute> xincoCoreDataTypeAttributeListOld = persistentXincoCoreDataType.getXincoCoreDataTypeAttributeList();
-            List<XincoCoreDataTypeAttribute> xincoCoreDataTypeAttributeListNew = xincoCoreDataType.getXincoCoreDataTypeAttributeList();
             List<XincoCoreData> xincoCoreDataListOld = persistentXincoCoreDataType.getXincoCoreDataList();
             List<XincoCoreData> xincoCoreDataListNew = xincoCoreDataType.getXincoCoreDataList();
             List<String> illegalOrphanMessages = null;
-            for (XincoCoreDataTypeAttribute xincoCoreDataTypeAttributeListOldXincoCoreDataTypeAttribute : xincoCoreDataTypeAttributeListOld) {
-                if (!xincoCoreDataTypeAttributeListNew.contains(xincoCoreDataTypeAttributeListOldXincoCoreDataTypeAttribute)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain XincoCoreDataTypeAttribute " + xincoCoreDataTypeAttributeListOldXincoCoreDataTypeAttribute + " since its xincoCoreDataType field is not nullable.");
-                }
-            }
             for (XincoCoreData xincoCoreDataListOldXincoCoreData : xincoCoreDataListOld) {
                 if (!xincoCoreDataListNew.contains(xincoCoreDataListOldXincoCoreData)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain XincoCoreData " + xincoCoreDataListOldXincoCoreData + " since its xincoCoreDataTypeId field is not nullable.");
+                    illegalOrphanMessages.add("You must retain XincoCoreData " + xincoCoreDataListOldXincoCoreData + " since its xincoCoreDataType field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            List<XincoCoreDataTypeAttribute> attachedXincoCoreDataTypeAttributeListNew = new ArrayList<XincoCoreDataTypeAttribute>();
-            for (XincoCoreDataTypeAttribute xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttributeToAttach : xincoCoreDataTypeAttributeListNew) {
-                xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttributeToAttach = em.getReference(xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttributeToAttach.getClass(), xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttributeToAttach.getXincoCoreDataTypeAttributePK());
-                attachedXincoCoreDataTypeAttributeListNew.add(xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttributeToAttach);
-            }
-            xincoCoreDataTypeAttributeListNew = attachedXincoCoreDataTypeAttributeListNew;
-            xincoCoreDataType.setXincoCoreDataTypeAttributeList(xincoCoreDataTypeAttributeListNew);
             List<XincoCoreData> attachedXincoCoreDataListNew = new ArrayList<XincoCoreData>();
             for (XincoCoreData xincoCoreDataListNewXincoCoreDataToAttach : xincoCoreDataListNew) {
                 xincoCoreDataListNewXincoCoreDataToAttach = em.getReference(xincoCoreDataListNewXincoCoreDataToAttach.getClass(), xincoCoreDataListNewXincoCoreDataToAttach.getId());
@@ -135,25 +94,14 @@ public class XincoCoreDataTypeJpaController {
             xincoCoreDataListNew = attachedXincoCoreDataListNew;
             xincoCoreDataType.setXincoCoreDataList(xincoCoreDataListNew);
             xincoCoreDataType = em.merge(xincoCoreDataType);
-            for (XincoCoreDataTypeAttribute xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttribute : xincoCoreDataTypeAttributeListNew) {
-                if (!xincoCoreDataTypeAttributeListOld.contains(xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttribute)) {
-                    XincoCoreDataType oldXincoCoreDataTypeOfXincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttribute = xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttribute.getXincoCoreDataType();
-                    xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttribute.setXincoCoreDataType(xincoCoreDataType);
-                    xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttribute = em.merge(xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttribute);
-                    if (oldXincoCoreDataTypeOfXincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttribute != null && !oldXincoCoreDataTypeOfXincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttribute.equals(xincoCoreDataType)) {
-                        oldXincoCoreDataTypeOfXincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttribute.getXincoCoreDataTypeAttributeList().remove(xincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttribute);
-                        oldXincoCoreDataTypeOfXincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttribute = em.merge(oldXincoCoreDataTypeOfXincoCoreDataTypeAttributeListNewXincoCoreDataTypeAttribute);
-                    }
-                }
-            }
             for (XincoCoreData xincoCoreDataListNewXincoCoreData : xincoCoreDataListNew) {
                 if (!xincoCoreDataListOld.contains(xincoCoreDataListNewXincoCoreData)) {
-                    XincoCoreDataType oldXincoCoreDataTypeIdOfXincoCoreDataListNewXincoCoreData = xincoCoreDataListNewXincoCoreData.getXincoCoreDataTypeId();
-                    xincoCoreDataListNewXincoCoreData.setXincoCoreDataTypeId(xincoCoreDataType);
+                    XincoCoreDataType oldXincoCoreDataTypeOfXincoCoreDataListNewXincoCoreData = xincoCoreDataListNewXincoCoreData.getXincoCoreDataType();
+                    xincoCoreDataListNewXincoCoreData.setXincoCoreDataType(xincoCoreDataType);
                     xincoCoreDataListNewXincoCoreData = em.merge(xincoCoreDataListNewXincoCoreData);
-                    if (oldXincoCoreDataTypeIdOfXincoCoreDataListNewXincoCoreData != null && !oldXincoCoreDataTypeIdOfXincoCoreDataListNewXincoCoreData.equals(xincoCoreDataType)) {
-                        oldXincoCoreDataTypeIdOfXincoCoreDataListNewXincoCoreData.getXincoCoreDataList().remove(xincoCoreDataListNewXincoCoreData);
-                        oldXincoCoreDataTypeIdOfXincoCoreDataListNewXincoCoreData = em.merge(oldXincoCoreDataTypeIdOfXincoCoreDataListNewXincoCoreData);
+                    if (oldXincoCoreDataTypeOfXincoCoreDataListNewXincoCoreData != null && !oldXincoCoreDataTypeOfXincoCoreDataListNewXincoCoreData.equals(xincoCoreDataType)) {
+                        oldXincoCoreDataTypeOfXincoCoreDataListNewXincoCoreData.getXincoCoreDataList().remove(xincoCoreDataListNewXincoCoreData);
+                        oldXincoCoreDataTypeOfXincoCoreDataListNewXincoCoreData = em.merge(oldXincoCoreDataTypeOfXincoCoreDataListNewXincoCoreData);
                     }
                 }
             }
@@ -187,19 +135,12 @@ public class XincoCoreDataTypeJpaController {
                 throw new NonexistentEntityException("The xincoCoreDataType with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            List<XincoCoreDataTypeAttribute> xincoCoreDataTypeAttributeListOrphanCheck = xincoCoreDataType.getXincoCoreDataTypeAttributeList();
-            for (XincoCoreDataTypeAttribute xincoCoreDataTypeAttributeListOrphanCheckXincoCoreDataTypeAttribute : xincoCoreDataTypeAttributeListOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This XincoCoreDataType (" + xincoCoreDataType + ") cannot be destroyed since the XincoCoreDataTypeAttribute " + xincoCoreDataTypeAttributeListOrphanCheckXincoCoreDataTypeAttribute + " in its xincoCoreDataTypeAttributeList field has a non-nullable xincoCoreDataType field.");
-            }
             List<XincoCoreData> xincoCoreDataListOrphanCheck = xincoCoreDataType.getXincoCoreDataList();
             for (XincoCoreData xincoCoreDataListOrphanCheckXincoCoreData : xincoCoreDataListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This XincoCoreDataType (" + xincoCoreDataType + ") cannot be destroyed since the XincoCoreData " + xincoCoreDataListOrphanCheckXincoCoreData + " in its xincoCoreDataList field has a non-nullable xincoCoreDataTypeId field.");
+                illegalOrphanMessages.add("This XincoCoreDataType (" + xincoCoreDataType + ") cannot be destroyed since the XincoCoreData " + xincoCoreDataListOrphanCheckXincoCoreData + " in its xincoCoreDataList field has a non-nullable xincoCoreDataType field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

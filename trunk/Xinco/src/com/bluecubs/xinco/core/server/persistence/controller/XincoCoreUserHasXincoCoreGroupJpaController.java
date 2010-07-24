@@ -60,7 +60,7 @@ public class XincoCoreUserHasXincoCoreGroupJpaController {
                 xincoCoreGroup = em.merge(xincoCoreGroup);
             }
             if (xincoCoreUser != null) {
-                xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList1().add(xincoCoreUserHasXincoCoreGroup);
+                xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList().add(xincoCoreUserHasXincoCoreGroup);
                 xincoCoreUser = em.merge(xincoCoreUser);
             }
             em.getTransaction().commit();
@@ -106,11 +106,11 @@ public class XincoCoreUserHasXincoCoreGroupJpaController {
                 xincoCoreGroupNew = em.merge(xincoCoreGroupNew);
             }
             if (xincoCoreUserOld != null && !xincoCoreUserOld.equals(xincoCoreUserNew)) {
-                xincoCoreUserOld.getXincoCoreUserHasXincoCoreGroupList1().remove(xincoCoreUserHasXincoCoreGroup);
+                xincoCoreUserOld.getXincoCoreUserHasXincoCoreGroupList().remove(xincoCoreUserHasXincoCoreGroup);
                 xincoCoreUserOld = em.merge(xincoCoreUserOld);
             }
             if (xincoCoreUserNew != null && !xincoCoreUserNew.equals(xincoCoreUserOld)) {
-                xincoCoreUserNew.getXincoCoreUserHasXincoCoreGroupList1().add(xincoCoreUserHasXincoCoreGroup);
+                xincoCoreUserNew.getXincoCoreUserHasXincoCoreGroupList().add(xincoCoreUserHasXincoCoreGroup);
                 xincoCoreUserNew = em.merge(xincoCoreUserNew);
             }
             em.getTransaction().commit();
@@ -149,7 +149,7 @@ public class XincoCoreUserHasXincoCoreGroupJpaController {
             }
             XincoCoreUser xincoCoreUser = xincoCoreUserHasXincoCoreGroup.getXincoCoreUser();
             if (xincoCoreUser != null) {
-                xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList1().remove(xincoCoreUserHasXincoCoreGroup);
+                xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList().remove(xincoCoreUserHasXincoCoreGroup);
                 xincoCoreUser = em.merge(xincoCoreUser);
             }
             em.remove(xincoCoreUserHasXincoCoreGroup);

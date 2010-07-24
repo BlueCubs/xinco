@@ -10,7 +10,7 @@ import junit.framework.TestSuite;
  *
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
-public class XincoCoreDataServerTest extends TestCase {
+public class XincoCoreDataServerTest extends XincoTestCase {
 
     public XincoCoreDataServerTest(String testName) {
         super(testName);
@@ -20,17 +20,7 @@ public class XincoCoreDataServerTest extends TestCase {
         TestSuite suite = new TestSuite(XincoCoreDataServerTest.class);
         return suite;
     }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    
     /**
      * Test of write2DB method, of class XincoCoreDataServer.
      */
@@ -42,7 +32,7 @@ public class XincoCoreDataServerTest extends TestCase {
             System.out.println("deleteFromDB");
             assertTrue(instance.deleteFromDB() == 0);
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreDataServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoCoreDataServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
             fail();
         }
     }
@@ -62,6 +52,6 @@ public class XincoCoreDataServerTest extends TestCase {
         attrSFD = true;
         assertTrue(XincoCoreDataServer.findXincoCoreData(attrS, attrLID, attrSA, attrSFD).size()>0);
         attrS = "none";
-        assertTrue(XincoCoreDataServer.findXincoCoreData(attrS, attrLID, attrSA, attrSFD).size()==0);
+        assertTrue(XincoCoreDataServer.findXincoCoreData(attrS, attrLID, attrSA, attrSFD).isEmpty());
     }
 }

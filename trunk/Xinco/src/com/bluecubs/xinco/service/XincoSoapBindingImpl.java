@@ -33,6 +33,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ResourceBundle;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.CheckedOutputStream;
@@ -61,7 +64,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
             XincoCoreUserServer user = new XincoCoreUserServer(in0, in1);
             return (XincoCoreUser) user;
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoSoapBindingImpl.class.getSimpleName()).log(Level.SEVERE, null, e);
             return null;
         }
     }
@@ -74,7 +77,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
             java.util.Vector v = XincoCoreGroupServer.getXincoCoreGroups();
             return v;
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoSoapBindingImpl.class.getSimpleName()).log(Level.SEVERE, null, e);
             return null;
         }
     }
@@ -87,7 +90,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
             java.util.Vector v = XincoCoreLanguageServer.getXincoCoreLanguages();
             return v;
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoSoapBindingImpl.class.getSimpleName()).log(Level.SEVERE, null, e);
             return null;
         }
     }
@@ -100,7 +103,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
             java.util.Vector v = XincoCoreDataTypeServer.getXincoCoreDataTypes();
             return v;
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoSoapBindingImpl.class.getSimpleName()).log(Level.SEVERE, null, e);
             return null;
         }
     }
@@ -134,7 +137,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
                 return null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoSoapBindingImpl.class.getSimpleName()).log(Level.SEVERE, null, e);
             return null;
         }
     }
@@ -151,7 +154,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
                 return null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoSoapBindingImpl.class.getSimpleName()).log(Level.SEVERE, null, e);
             return null;
         }
     }
@@ -369,12 +372,12 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
                 }
             }
             //check permissions on parents
-            java.util.Vector tvp;
+            java.util.ArrayList<XincoCoreNodeServer> tvp;
             for (int i = 0; i < tv2.size(); i++) {
                 tvp = XincoCoreNodeServer.getXincoCoreNodeParents(((XincoCoreData) tv2.elementAt(i)).getXinco_core_node_id());
                 rp = true;
                 for (int j = 0; j < tvp.size(); j++) {
-                    XincoCoreACE ace = XincoCoreACEServer.checkAccess(user, ((XincoCoreNode) tvp.elementAt(j)).getXinco_core_acl());
+                    XincoCoreACE ace = XincoCoreACEServer.checkAccess(user, ((XincoCoreNode) tvp.get(j)).getXinco_core_acl());
                     if (!ace.isRead_permission()) {
                         rp = false;
                         break;
@@ -385,7 +388,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
                     v2 = new java.util.Vector();
                     v2.add(tv2.elementAt(i));
                     for (int j = tvp.size() - 1; j >= 0; j--) {
-                        v2.add(tvp.elementAt(j));
+                        v2.add(tvp.get(j));
                     }
                     v.add(v2);
                 }
@@ -448,7 +451,8 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
                         }
                     }
                     //load new ACL
-                    node.setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(node.getId(), "xinco_core_node_id"));
+                    node.setXinco_core_acl(new Vector());
+                    node.getXinco_core_acl().addAll(XincoCoreACEServer.getXincoCoreACL(node.getId(), "xinco_core_node_id"));
                 }
                 return (XincoCoreNode) node;
             } else {
@@ -530,7 +534,8 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
                         }
                     }
                     //load new ACL
-                    data.setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(data.getId(), "xinco_core_data_id"));
+                    data.setXinco_core_acl(new Vector());
+                    data.getXinco_core_acl().addAll(XincoCoreACEServer.getXincoCoreACL(data.getId(), "xinco_core_node_id"));
                 }
                 return (XincoCoreData) data;
             } else {
@@ -697,9 +702,9 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco {
         try {
             user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
         } catch (XincoException ex) {
-            ex.printStackTrace();
+            Logger.getLogger(XincoSoapBindingImpl.class.getSimpleName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Logger.getLogger(XincoSoapBindingImpl.class.getSimpleName()).log(Level.SEVERE, null, ex);
         }
         return user.isPasswordUsable(in0);
     }

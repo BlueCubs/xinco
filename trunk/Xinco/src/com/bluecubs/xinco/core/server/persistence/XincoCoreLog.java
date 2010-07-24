@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
@@ -39,7 +35,6 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "XincoCoreLog.findByVersionLow", query = "SELECT x FROM XincoCoreLog x WHERE x.versionLow = :versionLow"),
     @NamedQuery(name = "XincoCoreLog.findByVersionPostfix", query = "SELECT x FROM XincoCoreLog x WHERE x.versionPostfix = :versionPostfix")})
 public class XincoCoreLog implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -67,12 +62,12 @@ public class XincoCoreLog implements Serializable {
     private Integer versionLow;
     @Column(name = "version_postfix", length = 255)
     private String versionPostfix;
-    @JoinColumn(name = "xinco_core_data_id", referencedColumnName = "id", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private XincoCoreData xincoCoreDataId;
     @JoinColumn(name = "xinco_core_user_id", referencedColumnName = "id", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private XincoCoreUser xincoCoreUserId;
+    @ManyToOne(optional = false)
+    private XincoCoreUser xincoCoreUser;
+    @JoinColumn(name = "xinco_core_data_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne(optional = false)
+    private XincoCoreData xincoCoreData;
 
     public XincoCoreLog() {
     }
@@ -148,20 +143,20 @@ public class XincoCoreLog implements Serializable {
         this.versionPostfix = versionPostfix;
     }
 
-    public XincoCoreData getXincoCoreDataId() {
-        return xincoCoreDataId;
+    public XincoCoreUser getXincoCoreUser() {
+        return xincoCoreUser;
     }
 
-    public void setXincoCoreDataId(XincoCoreData xincoCoreDataId) {
-        this.xincoCoreDataId = xincoCoreDataId;
+    public void setXincoCoreUser(XincoCoreUser xincoCoreUser) {
+        this.xincoCoreUser = xincoCoreUser;
     }
 
-    public XincoCoreUser getXincoCoreUserId() {
-        return xincoCoreUserId;
+    public XincoCoreData getXincoCoreData() {
+        return xincoCoreData;
     }
 
-    public void setXincoCoreUserId(XincoCoreUser xincoCoreUserId) {
-        this.xincoCoreUserId = xincoCoreUserId;
+    public void setXincoCoreData(XincoCoreData xincoCoreData) {
+        this.xincoCoreData = xincoCoreData;
     }
 
     @Override

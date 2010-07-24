@@ -14,7 +14,7 @@ import junit.framework.TestSuite;
  *
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
-public class XincoCoreUserServerTest extends TestCase {
+public class XincoCoreUserServerTest extends XincoTestCase {
 
     private String originalPassword;
 
@@ -26,17 +26,7 @@ public class XincoCoreUserServerTest extends TestCase {
         TestSuite suite = new TestSuite(XincoCoreUserServerTest.class);
         return suite;
     }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    
     /**
      * Test of getAttempts method, of class XincoCoreUserServer.
      */
@@ -46,7 +36,7 @@ public class XincoCoreUserServerTest extends TestCase {
             XincoCoreUserServer instance = new XincoCoreUserServer(1);
             assertTrue(instance.getAttempts() >= 0);
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreUserServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoCoreUserServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
             fail();
         }
     }
@@ -67,7 +57,7 @@ public class XincoCoreUserServerTest extends TestCase {
             instance.setAttempts(0);
             instance.write2DB();
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreUserServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoCoreUserServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
             fail();
         }
     }
@@ -125,7 +115,7 @@ public class XincoCoreUserServerTest extends TestCase {
             XincoCoreUserServer instance = new XincoCoreUserServer("admin", "admin");
             assertTrue((instance.getXinco_core_groups()).size() >= 0);
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreUserServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoCoreUserServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
             fail();
         }
     }

@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -41,8 +41,8 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoCoreUser;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreGroup;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupPK;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserT;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserHasXincoCoreGroupJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
@@ -74,6 +74,9 @@ public class XincoCoreUserServer extends XincoCoreUser {
     private static List result;
     private static HashMap parameters = new HashMap();
 
+    protected XincoCoreUserServer() {
+    }
+
     public XincoCoreUserServer(com.bluecubs.xinco.core.server.persistence.XincoCoreUser xcu) {
         setId(xcu.getId());
         setUsername(xcu.getUsername());
@@ -89,7 +92,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
         try {
             fillXincoCoreGroups();
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoCoreUserServer.class.getSimpleName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -114,7 +117,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
         try {
             parameters.clear();
             parameters.put("xincoCoreUserId", getId());
-            result = XincoDBManager.namedQuery("XincoCoreUserHasXincoCoreGroup.findByXincoCoreUserId");
+            result = XincoDBManager.namedQuery("XincoCoreUserHasXincoCoreGroup.findByXincoCoreUserId", parameters);
             XincoCoreUserHasXincoCoreGroupJpaController controller = new XincoCoreUserHasXincoCoreGroupJpaController();
             try {
                 for (Object o : result) {
@@ -125,12 +128,15 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 throw new XincoException();
             }
             for (i = 0; i < getXinco_core_groups().size(); i++) {
+                XincoCoreGroupServer xcgs=(XincoCoreGroupServer) getXinco_core_groups().elementAt(i);
+                parameters.clear();
+                parameters.put("id", xcgs.getId());
+                XincoDBManager.namedQuery("XincoCoreGroup.findById",parameters);
                 controller.create(new XincoCoreUserHasXincoCoreGroup(
-                        new XincoCoreUserHasXincoCoreGroupPK(getId(),
-                        ((XincoCoreGroupServer) getXinco_core_groups().elementAt(i)).getId()), 1));
+                        getId(), (XincoCoreGroup) XincoDBManager.namedQuery(null,parameters).get(0), 1));
             }
         } catch (Exception e) {
-            throw new XincoException();
+            throw new XincoException(e.getLocalizedMessage());
         }
     }
 
@@ -174,7 +180,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     fillXincoCoreGroups();
                 } catch (XincoException ex) {
                     ex.printStackTrace();
-                    Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(XincoCoreUserServer.class.getSimpleName()).log(Level.SEVERE, null, ex);
                 }
             } else {
                 parameters.clear();

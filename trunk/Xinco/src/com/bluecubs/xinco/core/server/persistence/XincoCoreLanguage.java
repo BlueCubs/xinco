@@ -9,7 +9,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +25,11 @@ import javax.persistence.TableGenerator;
 @Entity
 @EntityListeners(AuditedEntityListener.class)
 @Table(name = "xinco_core_language")
-@NamedQueries({@NamedQuery(name = "XincoCoreLanguage.findAll", query = "SELECT x FROM XincoCoreLanguage x"), @NamedQuery(name = "XincoCoreLanguage.findById", query = "SELECT x FROM XincoCoreLanguage x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreLanguage.findBySign", query = "SELECT x FROM XincoCoreLanguage x WHERE x.sign = :sign"), @NamedQuery(name = "XincoCoreLanguage.findByDesignation", query = "SELECT x FROM XincoCoreLanguage x WHERE x.designation = :designation")})
+@NamedQueries({
+    @NamedQuery(name = "XincoCoreLanguage.findAll", query = "SELECT x FROM XincoCoreLanguage x"),
+    @NamedQuery(name = "XincoCoreLanguage.findById", query = "SELECT x FROM XincoCoreLanguage x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreLanguage.findBySign", query = "SELECT x FROM XincoCoreLanguage x WHERE x.sign = :sign"),
+    @NamedQuery(name = "XincoCoreLanguage.findByDesignation", query = "SELECT x FROM XincoCoreLanguage x WHERE x.designation = :designation")})
 public class XincoCoreLanguage extends XincoAuditedObject implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -43,12 +46,16 @@ public class XincoCoreLanguage extends XincoAuditedObject implements Serializabl
     @Basic(optional = false)
     @Column(name = "designation", nullable = false, length = 255)
     private String designation;
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreLanguageId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguage")
     private List<XincoCoreNode> xincoCoreNodeList;
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "xincoCoreLanguageId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguage")
     private List<XincoCoreData> xincoCoreDataList;
 
     public XincoCoreLanguage() {
+    }
+
+    public XincoCoreLanguage(Integer id) {
+        this.id = id;
     }
 
     public XincoCoreLanguage(Integer id, String sign, String designation) {
@@ -106,7 +113,7 @@ public class XincoCoreLanguage extends XincoAuditedObject implements Serializabl
 
     @Override
     public boolean equals(Object object) {
-        
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoCoreLanguage)) {
             return false;
         }

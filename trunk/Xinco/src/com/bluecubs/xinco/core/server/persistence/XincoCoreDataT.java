@@ -28,12 +28,11 @@ import javax.persistence.TableGenerator;
     @NamedQuery(name = "XincoCoreDataT.findByDesignation", query = "SELECT x FROM XincoCoreDataT x WHERE x.designation = :designation"),
     @NamedQuery(name = "XincoCoreDataT.findByStatusNumber", query = "SELECT x FROM XincoCoreDataT x WHERE x.statusNumber = :statusNumber")})
 public class XincoCoreDataT implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "XCDRECORDIDKEYGEN")
-    @TableGenerator(name = "XCUDECORDIDKEYGEN", table = "xinco_id",
+    @TableGenerator(name = "XCDRECORDIDKEYGEN", table = "xinco_id",
     pkColumnName = "tablename", valueColumnName = "last_id",
     pkColumnValue = "xinco_core_user_modified_record", initialValue = 1, allocationSize = 1)
     @Column(name = "record_id", nullable = false)
@@ -149,4 +148,5 @@ public class XincoCoreDataT implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataT[recordId=" + recordId + "]";
     }
+
 }

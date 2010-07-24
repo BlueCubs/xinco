@@ -11,7 +11,6 @@ import javax.persistence.Embeddable;
  */
 @Embeddable
 public class XincoAddAttributePK implements Serializable {
-    private static final long serialVersionUID = 1L;
     @Basic(optional = false)
     @Column(name = "xinco_core_data_id", nullable = false)
     private int xincoCoreDataId;
@@ -46,14 +45,14 @@ public class XincoAddAttributePK implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += xincoCoreDataId;
-        hash += attributeId;
+        hash += (int) xincoCoreDataId;
+        hash += (int) attributeId;
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-
+        
         if (!(object instanceof XincoAddAttributePK)) {
             return false;
         }
@@ -71,4 +70,5 @@ public class XincoAddAttributePK implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoAddAttributePK[xincoCoreDataId=" + xincoCoreDataId + ", attributeId=" + attributeId + "]";
     }
+
 }

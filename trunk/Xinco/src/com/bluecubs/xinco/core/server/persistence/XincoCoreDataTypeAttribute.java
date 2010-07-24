@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import com.bluecubs.xinco.core.server.AuditedEntityListener;
@@ -13,7 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -27,7 +21,13 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "xinco_core_data_type_attribute")
 @EntityListeners(AuditedEntityListener.class)
-@NamedQueries({@NamedQuery(name = "XincoCoreDataTypeAttribute.findAll", query = "SELECT x FROM XincoCoreDataTypeAttribute x"), @NamedQuery(name = "XincoCoreDataTypeAttribute.findByXincoCoreDataTypeId", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId = :xincoCoreDataTypeId"), @NamedQuery(name = "XincoCoreDataTypeAttribute.findByAttributeId", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.xincoCoreDataTypeAttributePK.attributeId = :attributeId"), @NamedQuery(name = "XincoCoreDataTypeAttribute.findByDesignation", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreDataTypeAttribute.findByDataType", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.dataType = :dataType"), @NamedQuery(name = "XincoCoreDataTypeAttribute.findByAttrSize", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.attrSize = :attrSize")})
+@NamedQueries({
+    @NamedQuery(name = "XincoCoreDataTypeAttribute.findAll", query = "SELECT x FROM XincoCoreDataTypeAttribute x"),
+    @NamedQuery(name = "XincoCoreDataTypeAttribute.findByXincoCoreDataTypeId", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId = :xincoCoreDataTypeId"),
+    @NamedQuery(name = "XincoCoreDataTypeAttribute.findByAttributeId", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.xincoCoreDataTypeAttributePK.attributeId = :attributeId"),
+    @NamedQuery(name = "XincoCoreDataTypeAttribute.findByDesignation", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.designation = :designation"),
+    @NamedQuery(name = "XincoCoreDataTypeAttribute.findByDataType", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.dataType = :dataType"),
+    @NamedQuery(name = "XincoCoreDataTypeAttribute.findByAttrSize", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.attrSize = :attrSize")})
 public class XincoCoreDataTypeAttribute extends XincoAuditedObject implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -42,7 +42,7 @@ public class XincoCoreDataTypeAttribute extends XincoAuditedObject implements Se
     @Column(name = "attr_size", nullable = false)
     private int attrSize;
     @JoinColumn(name = "xinco_core_data_type_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     private XincoCoreDataType xincoCoreDataType;
 
     public XincoCoreDataTypeAttribute() {

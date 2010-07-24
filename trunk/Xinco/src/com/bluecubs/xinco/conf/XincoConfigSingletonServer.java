@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -114,7 +114,7 @@ public class XincoConfigSingletonServer {
             allowPublisherList = XincoSettingServer.getSetting("setting.allowpublisherlist").isBool_value();
             MaxSearchResult = XincoSettingServer.getSetting("xinco/MaxSearchResult").getInt_value();
         } catch (Exception e) {
-            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.WARNING,
+            Logger.getLogger(XincoConfigSingletonServer.class.getSimpleName()).log(Level.WARNING,
                         "Error loading configuration! Using defaults...", e);
             FileRepositoryPath = "";
             FileIndexPath = "";

@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -45,8 +45,11 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaCon
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreGroupJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreNodeJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class XincoCoreACEServer extends XincoCoreACE {
 
@@ -54,6 +57,9 @@ public class XincoCoreACEServer extends XincoCoreACE {
     private int userID = 1;
     private HashMap parameters = new HashMap();
     private static List result;
+
+    protected XincoCoreACEServer() {
+    }
     //create single ace object for data structures
 
     public XincoCoreACEServer(int attrID) throws XincoException {
@@ -63,10 +69,10 @@ public class XincoCoreACEServer extends XincoCoreACE {
             com.bluecubs.xinco.core.server.persistence.XincoCoreAce ace = controller.findXincoCoreAce(attrID);
             if (controller.findXincoCoreAce(attrID) != null) {
                 setId(ace.getId());
-                setXinco_core_user_id(ace.getXincoCoreUserId().getId());
-                setXinco_core_group_id(ace.getXincoCoreGroupId().getId());
-                setXinco_core_node_id(ace.getXincoCoreNodeId().getId());
-                setXinco_core_data_id(ace.getXincoCoreDataId().getId());
+                setXinco_core_user_id(ace.getXincoCoreUser().getId());
+                setXinco_core_group_id(ace.getXincoCoreGroup().getId());
+                setXinco_core_node_id(ace.getXincoCoreNode().getId());
+                setXinco_core_data_id(ace.getXincoCoreData().getId());
                 setRead_permission(ace.getReadPermission());
                 setWrite_permission(ace.getWritePermission());
                 setExecute_permission(ace.getExecutePermission());
@@ -74,7 +80,6 @@ public class XincoCoreACEServer extends XincoCoreACE {
             } else {
                 throw new XincoException();
             }
-
         } catch (Exception e) {
             throw new XincoException();
         }
@@ -83,17 +88,17 @@ public class XincoCoreACEServer extends XincoCoreACE {
 
     public XincoCoreACEServer(com.bluecubs.xinco.core.server.persistence.XincoCoreAce ace) {
         setId(ace.getId());
-        if (ace.getXincoCoreUserId() != null) {
-            setXinco_core_user_id(ace.getXincoCoreUserId().getId());
+        if (ace.getXincoCoreUser() != null) {
+            setXinco_core_user_id(ace.getXincoCoreUser().getId());
         }
-        if (ace.getXincoCoreGroupId() != null) {
-            setXinco_core_group_id(ace.getXincoCoreGroupId().getId());
+        if (ace.getXincoCoreGroup() != null) {
+            setXinco_core_group_id(ace.getXincoCoreGroup().getId());
         }
-        if (ace.getXincoCoreNodeId() != null) {
-            setXinco_core_node_id(ace.getXincoCoreNodeId().getId());
+        if (ace.getXincoCoreNode() != null) {
+            setXinco_core_node_id(ace.getXincoCoreNode().getId());
         }
-        if (ace.getXincoCoreDataId() != null) {
-            setXinco_core_data_id(ace.getXincoCoreDataId().getId());
+        if (ace.getXincoCoreData() != null) {
+            setXinco_core_data_id(ace.getXincoCoreData().getId());
         }
         setRead_permission(ace.getReadPermission());
         setWrite_permission(ace.getWritePermission());
@@ -112,7 +117,6 @@ public class XincoCoreACEServer extends XincoCoreACE {
         setWrite_permission(attrWP);
         setExecute_permission(attrEP);
         setAdmin_permission(attrAP);
-
     }
 
     //write to db
@@ -130,16 +134,16 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 create = true;
             }
             if (getXinco_core_user_id() != 0) {
-                ace.setXincoCoreUserId(new XincoCoreUserJpaController().findXincoCoreUser(getXinco_core_user_id()));
+                ace.setXincoCoreUser(new XincoCoreUserJpaController().findXincoCoreUser(getXinco_core_user_id()));
             }
             if (getXinco_core_group_id() != 0) {
-                ace.setXincoCoreGroupId(new XincoCoreGroupJpaController().findXincoCoreGroup(getXinco_core_group_id()));
+                ace.setXincoCoreGroup(new XincoCoreGroupJpaController().findXincoCoreGroup(getXinco_core_group_id()));
             }
             if (getXinco_core_node_id() != 0) {
-                ace.setXincoCoreNodeId(new XincoCoreNodeJpaController().findXincoCoreNode(getXinco_core_node_id()));
+                ace.setXincoCoreNode(new XincoCoreNodeJpaController().findXincoCoreNode(getXinco_core_node_id()));
             }
             if (getXinco_core_data_id() != 0) {
-                ace.setXincoCoreDataId(new XincoCoreDataJpaController().findXincoCoreData(getXinco_core_data_id()));
+                ace.setXincoCoreData(new XincoCoreDataJpaController().findXincoCoreData(getXinco_core_data_id()));
             }
             ace.setReadPermission(isRead_permission());
             ace.setWritePermission(isWrite_permission());
@@ -152,6 +156,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 new XincoCoreAceJpaController().edit(ace);
             }
         } catch (Exception e) {
+            Logger.getLogger(XincoCoreACEServer.class.getSimpleName()).log(Level.SEVERE, null, e);
             throw new XincoException(e.getMessage());
         }
         return getId();
@@ -163,15 +168,14 @@ public class XincoCoreACEServer extends XincoCoreACE {
             XincoCoreAceJpaController controller = new XincoCoreAceJpaController();
             controller.destroy(attrCACE.getId());
         } catch (Exception e) {
-            e.printStackTrace();
             throw new XincoException(e.getMessage());
         }
         return 0;
     }
 
     //create complete ACL for node or data
-    public static Vector getXincoCoreACL(int attrID, String attrT) {
-        Vector core_acl = new Vector();
+    public static ArrayList getXincoCoreACL(int attrID, String attrT) {
+        ArrayList core_acl = new ArrayList();
         try {
             result = XincoDBManager.createdQuery("SELECT xca FROM XincoCoreAce xca WHERE xca." + attrT
                     + "=" + attrID + "");
@@ -185,11 +189,11 @@ public class XincoCoreACEServer extends XincoCoreACE {
             for (Object o : result) {
                 com.bluecubs.xinco.core.server.persistence.XincoCoreAce ace =
                         (com.bluecubs.xinco.core.server.persistence.XincoCoreAce) o;
-                core_acl.addElement(new XincoCoreACEServer(ace));
+                core_acl.add(new XincoCoreACEServer(ace));
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            core_acl.removeAllElements();
+            Logger.getLogger(XincoCoreACEServer.class.getSimpleName()).log(Level.SEVERE, null, e);
+            core_acl.clear();
         }
         return core_acl;
     }

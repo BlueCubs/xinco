@@ -27,7 +27,6 @@ import javax.persistence.TableGenerator;
     @NamedQuery(name = "XincoCoreNodeT.findByDesignation", query = "SELECT x FROM XincoCoreNodeT x WHERE x.designation = :designation"),
     @NamedQuery(name = "XincoCoreNodeT.findByStatusNumber", query = "SELECT x FROM XincoCoreNodeT x WHERE x.statusNumber = :statusNumber")})
 public class XincoCoreNodeT implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)

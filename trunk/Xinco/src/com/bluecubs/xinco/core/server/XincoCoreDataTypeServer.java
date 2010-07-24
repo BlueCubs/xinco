@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -52,6 +52,9 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
     private static final long serialVersionUID = 1L;
     private static List result;
     private static HashMap parameters = new HashMap();
+
+    protected XincoCoreDataTypeServer() {
+    }
     //create data type object for data structures
 
     public XincoCoreDataTypeServer(int attrID) throws XincoException {
@@ -131,6 +134,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
                 setId(xcdt.getId());
             }
         } catch (Exception e) {
+            e.printStackTrace();
             throw new XincoException(e.getMessage());
         }
         return getId();
@@ -141,10 +145,10 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
             new XincoCoreDataTypeJpaController().destroy(xcdt.getId());
             return 0;
         } catch (IllegalOrphanException ex) {
-            Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoCoreGroupServer.class.getSimpleName()).log(Level.SEVERE, null, ex);
             return -1;
         } catch (NonexistentEntityException ex) {
-            Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoCoreGroupServer.class.getSimpleName()).log(Level.SEVERE, null, ex);
             return -1;
         }
     }

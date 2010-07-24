@@ -1,5 +1,5 @@
 /**
- *Copyright 2009 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLanguageJp
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreNodeJpaController;
 import com.bluecubs.xinco.index.XincoIndexer;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +56,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpeci
     private static HashMap parameters = new HashMap();
     //create node object for data structures
 
-    public XincoCoreNodeServer() {
+    protected XincoCoreNodeServer() {
     }
 
     @SuppressWarnings("unchecked")
@@ -69,23 +70,23 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpeci
                 com.bluecubs.xinco.core.server.persistence.XincoCoreNode xcn =
                         (com.bluecubs.xinco.core.server.persistence.XincoCoreNode) result.get(0);
                 setId(xcn.getId());
-                if (xcn.getXincoCoreNodeId() != null) {
-                    setXinco_core_node_id(xcn.getXincoCoreNodeId().getId());
+                if (xcn.getXincoCoreNode() != null) {
+                    setXinco_core_node_id(xcn.getXincoCoreNode().getId());
                 }
-                setXinco_core_language(new XincoCoreLanguageServer(xcn.getXincoCoreLanguageId()));
+                setXinco_core_language(new XincoCoreLanguageServer(xcn.getXincoCoreLanguage()));
                 setDesignation(xcn.getDesignation());
                 setStatus_number(xcn.getStatusNumber());
                 setXinco_core_nodes(new Vector());
                 setXinco_core_data(new Vector());
                 //load acl for this object
-                setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(xcn.getId(), "xincoCoreNodeId.id"));
+                setXinco_core_acl(new Vector());
+                getXinco_core_acl().addAll(XincoCoreACEServer.getXincoCoreACL(xcn.getId(), "xincoCoreData.id"));
                 fillXincoCoreData();
                 fillXincoCoreNodes();
             } else {
-                throw new XincoException();
+                throw new XincoException("Xinco Core Node with id: " + attrID + " not found!");
             }
         } catch (Exception e) {
-            e.printStackTrace();
             setXinco_core_language(null);
             setXinco_core_acl(null);
             setXinco_core_nodes(null);
@@ -105,7 +106,8 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpeci
             setXinco_core_nodes(new Vector());
             setXinco_core_data(new Vector());
             //load acl for this object
-            setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreNodeId.id"));
+            setXinco_core_acl(new Vector());
+            getXinco_core_acl().addAll(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreData.id"));
         } catch (Exception e) {
             setXinco_core_language(null);
             (getXinco_core_acl()).removeAllElements();
@@ -115,18 +117,21 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpeci
         }
     }
 
-    private XincoCoreNodeServer(com.bluecubs.xinco.core.server.persistence.XincoCoreNode xcn) {
+    private XincoCoreNodeServer(com.bluecubs.xinco.core.server.persistence.XincoCoreNode xcn, boolean fill) {
         setId(xcn.getId());
-        setXinco_core_node_id(xcn.getXincoCoreNodeId() == null ? 0 : xcn.getXincoCoreNodeId().getId());
-        setXinco_core_language(new XincoCoreLanguageServer(xcn.getXincoCoreLanguageId()));
+        setXinco_core_node_id(xcn.getXincoCoreNode() == null ? 0 : xcn.getXincoCoreNode().getId());
+        setXinco_core_language(new XincoCoreLanguageServer(xcn.getXincoCoreLanguage()));
         setDesignation(xcn.getDesignation());
         setStatus_number(xcn.getStatusNumber());
         setXinco_core_nodes(new Vector());
         setXinco_core_data(new Vector());
         //load acl for this object
-        setXinco_core_acl(XincoCoreACEServer.getXincoCoreACL(xcn.getId(), "xincoCoreNodeId.id"));
-        fillXincoCoreData();
-        fillXincoCoreNodes();
+        setXinco_core_acl(new Vector());
+        getXinco_core_acl().addAll(XincoCoreACEServer.getXincoCoreACL(xcn.getId(), "xincoCoreData.id"));
+        if (fill) {
+            fillXincoCoreData();
+            fillXincoCoreNodes();
+        }
     }
 
     //write to db
@@ -136,10 +141,10 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpeci
             com.bluecubs.xinco.core.server.persistence.XincoCoreNode xcn;
             if (getId() > 0) {
                 xcn = controller.findXincoCoreNode(getId());
-                if (getXinco_core_node_id() == 0) {
-                    xcn.setXincoCoreNodeId(controller.findXincoCoreNode(getXinco_core_node_id()));
+                if (getXinco_core_node_id() != 0) {
+                    xcn.setXincoCoreNode(controller.findXincoCoreNode(getXinco_core_node_id()));
                 }
-                xcn.setXincoCoreLanguageId(new XincoCoreLanguageJpaController().findXincoCoreLanguage(getXinco_core_language().getId()));
+                xcn.setXincoCoreLanguage(new XincoCoreLanguageJpaController().findXincoCoreLanguage(getXinco_core_language().getId()));
                 xcn.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
                 xcn.setStatusNumber(getStatus_number());
                 xcn.setModificationReason("audit.general.modified");
@@ -148,8 +153,10 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpeci
                 controller.edit(xcn);
             } else {
                 xcn = new com.bluecubs.xinco.core.server.persistence.XincoCoreNode();
-                xcn.setXincoCoreNodeId(controller.findXincoCoreNode(getXinco_core_node_id()));
-                xcn.setXincoCoreLanguageId(new XincoCoreLanguageJpaController().findXincoCoreLanguage(getXinco_core_language().getId()));
+                if (getXinco_core_node_id() != 0) {
+                    xcn.setXincoCoreNode(controller.findXincoCoreNode(getXinco_core_node_id()));
+                }
+                xcn.setXincoCoreLanguage(new XincoCoreLanguageJpaController().findXincoCoreLanguage(getXinco_core_language().getId()));
                 xcn.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
                 xcn.setStatusNumber(getStatus_number());
                 xcn.setModificationReason("audit.general.create");
@@ -159,6 +166,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpeci
                 setId(xcn.getId());
             }
         } catch (Exception e) {
+            Logger.getLogger(XincoCoreNodeServer.class.getSimpleName()).log(Level.SEVERE, null, e);
             throw new XincoException(e.getMessage());
         }
         return getId();
@@ -169,7 +177,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpeci
         int i = 0;
         try {
             if (delete_this) {
-                result = XincoDBManager.createdQuery("Select xca from XincoCoreAce xca where xca.xincoCoreNodeId.id=" + getId());
+                result = XincoDBManager.createdQuery("Select xca from XincoCoreAce xca where xca.xincoCoreNode.id=" + getId());
                 for (Object o : result) {
                     com.bluecubs.xinco.core.server.persistence.XincoCoreAce xca =
                             (com.bluecubs.xinco.core.server.persistence.XincoCoreAce) o;
@@ -195,31 +203,35 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpeci
                 }
             }
         } catch (Exception e) {
+            Logger.getLogger(XincoCoreNodeServer.class.getSimpleName()).log(Level.SEVERE, null, e);
             throw new XincoException(e.getMessage());
         }
     }
 
-    public void fillXincoCoreNodes() {
+    public final void fillXincoCoreNodes() {
         try {
             result = XincoDBManager.createdQuery("SELECT xcn FROM XincoCoreNode xcn "
-                    + "WHERE xcn.xincoCoreNodeId.id = " + getId() + " ORDER BY xcn.designation");
+                    + "WHERE xcn.xincoCoreNode.id = " + getId() + " ORDER BY xcn.designation");
+            getXinco_core_nodes().clear();
             for (Object o : result) {
-                (getXinco_core_nodes()).addElement(new XincoCoreNodeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o));
+                (getXinco_core_nodes()).addElement(new XincoCoreNodeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o, false));
             }
         } catch (Exception e) {
-            (getXinco_core_nodes()).removeAllElements();
+            Logger.getLogger(XincoCoreNodeServer.class.getSimpleName()).log(Level.SEVERE, null, e);
+            getXinco_core_nodes().removeAllElements();
         }
-
     }
 
-    public void fillXincoCoreData() {
+    public final void fillXincoCoreData() {
         try {
-            result = XincoDBManager.createdQuery("SELECT xcd FROM XincoCoreData xcd WHERE xcd.xincoCoreNodeId.id = " + getId() + " ORDER BY xcd.designation");
+            result = XincoDBManager.createdQuery("SELECT xcd FROM XincoCoreData xcd WHERE xcd.xincoCoreNode.id = " + getId() + " ORDER BY xcd.designation");
+            getXinco_core_data().clear();
             for (Object o : result) {
                 (getXinco_core_data()).addElement(new XincoCoreDataServer((com.bluecubs.xinco.core.server.persistence.XincoCoreData) o));
             }
         } catch (Exception e) {
-            (getXinco_core_data()).removeAllElements();
+            Logger.getLogger(XincoCoreNodeServer.class.getSimpleName()).log(Level.SEVERE, null, e);
+            getXinco_core_data().removeAllElements();
         }
     }
 
@@ -227,25 +239,25 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpeci
         Vector nodes = new Vector();
         try {
             result = XincoDBManager.createdQuery("SELECT xcn FROM XincoCoreNode xcn "
-                    + "WHERE xcn.xincoCoreLanguageId.id = " + attrLID + " AND "
-                    + "xcn.designation LIKE '" + attrS + "%' ORDER BY xcn.designation, xcn.xincoCoreLanguageId.id");
+                    + "WHERE xcn.xincoCoreLanguage.id = " + attrLID + " AND "
+                    + "xcn.designation LIKE '" + attrS + "%' ORDER BY xcn.designation, xcn.xincoCoreLanguage.id");
             int i = 0;
             for (Object o : result) {
-                nodes.addElement(new XincoCoreNodeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o));
+                nodes.addElement(new XincoCoreNodeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o, true));
                 i++;
                 if (i >= XincoDBManager.config.MaxSearchResult) {
                     break;
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoCoreNodeServer.class.getSimpleName()).log(Level.SEVERE, null, e);
             nodes.removeAllElements();
         }
         return nodes;
     }
 
-    public static Vector getXincoCoreNodeParents(int attrID) {
-        Vector nodes = new Vector();
+    public static ArrayList<XincoCoreNodeServer> getXincoCoreNodeParents(int attrID) {
+        ArrayList<XincoCoreNodeServer> nodes = new ArrayList<XincoCoreNodeServer>();
         int id;
         try {
             id = attrID;
@@ -253,13 +265,16 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpeci
                 parameters.clear();
                 parameters.put("id", id);
                 result = XincoDBManager.namedQuery("XincoCoreNode.findById", parameters);
+                if (result.isEmpty()) {
+                    throw new XincoException("Xinco Core Node with id: " + id + " not found!");
+                }
                 for (Object o : result) {
-                    nodes.addElement(new XincoCoreNodeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o));
+                    nodes.add(new XincoCoreNodeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o, true));
                     if (id > 1) {
-                        if (((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o).getXincoCoreNodeId() == null) {
+                        if (((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o).getXincoCoreNode() == null) {
                             id = 0;
                         } else {
-                            id = ((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o).getXincoCoreNodeId().getId();
+                            id = ((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o).getXincoCoreNode().getId();
                         }
                     } else {
                         id = 0;
@@ -267,7 +282,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpeci
                 }
             }
         } catch (Exception e) {
-            nodes.removeAllElements();
+            nodes.clear();
         }
         return nodes;
     }
@@ -284,7 +299,7 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpeci
                 }
             }
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreNodeServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoCoreNodeServer.class.getSimpleName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -292,9 +307,9 @@ public class XincoCoreNodeServer extends XincoCoreNode implements XincoCRUDSpeci
         Vector<com.bluecubs.xinco.core.server.persistence.XincoCoreNode> leaves =
                 new Vector<com.bluecubs.xinco.core.server.persistence.XincoCoreNode>();
         result = XincoDBManager.protectedCreatedQuery("select x from XincoCoreNode x "
-                + "where x.id not in (select y.xincoCoreNodeId.id from XincoCoreNode y "
-                + "where y.xincoCoreNodeId is not null)", null, true);
-        if (result.size() == 0) {
+                + "where x.id not in (select y.xincoCoreNode.id from XincoCoreNode y "
+                + "where y.xincoCoreNode is not null)", null, true);
+        if (result.isEmpty()) {
             //Check if the root is there
             for (Object o : new XincoCoreNodeJpaController().findXincoCoreNodeEntities()) {
                 leaves.add((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o);

@@ -7,7 +7,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -55,20 +54,24 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
     @Basic(optional = false)
     @Column(name = "admin_permission", nullable = false)
     private boolean adminPermission;
-    @JoinColumn(name = "xinco_core_data_id", referencedColumnName = "id", nullable = true)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private XincoCoreData xincoCoreDataId;
-    @JoinColumn(name = "xinco_core_group_id", referencedColumnName = "id", nullable = true)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private XincoCoreGroup xincoCoreGroupId;
-    @JoinColumn(name = "xinco_core_node_id", referencedColumnName = "id", nullable = true)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private XincoCoreNode xincoCoreNodeId;
-    @JoinColumn(name = "xinco_core_user_id", referencedColumnName = "id", nullable = true)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private XincoCoreUser xincoCoreUserId;
+    @JoinColumn(name = "xinco_core_data_id", referencedColumnName = "id")
+    @ManyToOne
+    private XincoCoreData xincoCoreData;
+    @JoinColumn(name = "xinco_core_node_id", referencedColumnName = "id")
+    @ManyToOne
+    private XincoCoreNode xincoCoreNode;
+    @JoinColumn(name = "xinco_core_group_id", referencedColumnName = "id")
+    @ManyToOne
+    private XincoCoreGroup xincoCoreGroup;
+    @JoinColumn(name = "xinco_core_user_id", referencedColumnName = "id")
+    @ManyToOne
+    private XincoCoreUser xincoCoreUser;
 
     public XincoCoreAce() {
+    }
+
+    public XincoCoreAce(Integer id) {
+        this.id = id;
     }
 
     public XincoCoreAce(Integer id, boolean readPermission, boolean writePermission, boolean executePermission, boolean adminPermission) {
@@ -119,36 +122,36 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
         this.adminPermission = adminPermission;
     }
 
-    public XincoCoreNode getXincoCoreNodeId() {
-        return xincoCoreNodeId;
+    public XincoCoreData getXincoCoreData() {
+        return xincoCoreData;
     }
 
-    public void setXincoCoreNodeId(XincoCoreNode xincoCoreNodeId) {
-        this.xincoCoreNodeId = xincoCoreNodeId;
+    public void setXincoCoreData(XincoCoreData xincoCoreData) {
+        this.xincoCoreData = xincoCoreData;
     }
 
-    public XincoCoreData getXincoCoreDataId() {
-        return xincoCoreDataId;
+    public XincoCoreNode getXincoCoreNode() {
+        return xincoCoreNode;
     }
 
-    public void setXincoCoreDataId(XincoCoreData xincoCoreDataId) {
-        this.xincoCoreDataId = xincoCoreDataId;
+    public void setXincoCoreNode(XincoCoreNode xincoCoreNode) {
+        this.xincoCoreNode = xincoCoreNode;
     }
 
-    public XincoCoreGroup getXincoCoreGroupId() {
-        return xincoCoreGroupId;
+    public XincoCoreGroup getXincoCoreGroup() {
+        return xincoCoreGroup;
     }
 
-    public void setXincoCoreGroupId(XincoCoreGroup xincoCoreGroupId) {
-        this.xincoCoreGroupId = xincoCoreGroupId;
+    public void setXincoCoreGroup(XincoCoreGroup xincoCoreGroup) {
+        this.xincoCoreGroup = xincoCoreGroup;
     }
 
-    public XincoCoreUser getXincoCoreUserId() {
-        return xincoCoreUserId;
+    public XincoCoreUser getXincoCoreUser() {
+        return xincoCoreUser;
     }
 
-    public void setXincoCoreUserId(XincoCoreUser xincoCoreUserId) {
-        this.xincoCoreUserId = xincoCoreUserId;
+    public void setXincoCoreUser(XincoCoreUser xincoCoreUser) {
+        this.xincoCoreUser = xincoCoreUser;
     }
 
     @Override
@@ -175,4 +178,5 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreAce[id=" + id + "]";
     }
+
 }

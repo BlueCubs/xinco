@@ -215,7 +215,7 @@ public class XincoAdminServlet extends HttpServlet {
                     result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreUser x WHERE x.username='"
                             + request.getParameter("DialogLoginUsername") + "' AND x.statusNumber<>2");
                     //Check if the username is correct if not just throw the wrong login message
-                    if (result.size() == 0) {
+                    if (result.isEmpty()) {
                         throw new XincoException("Login " + rb.getString("general.fail") + " Username and/or Password may be incorrect!");
                     }
                     result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreUser x WHERE x.username='"
@@ -269,7 +269,6 @@ public class XincoAdminServlet extends HttpServlet {
                 current_location_desc = rb.getString("message.location.desc.mainmenu");
                 session.setAttribute("XincoAdminServlet.current_location_desc", current_location_desc);
             } catch (Exception e) {
-                e.printStackTrace();
                 error_message = "[" + global_error_message + " | " + e.toString() + "]";
                 status = 0;
                 session.setAttribute("XincoAdminServlet.status", new Integer(status));
@@ -376,7 +375,7 @@ public class XincoAdminServlet extends HttpServlet {
                     temp_user.setReason("audit.user.account.lock");
                     temp_user.write2DB();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    error_message = "[" + global_error_message + " | " + e.toString() + "]";
                 }
             } else {
                 error_message = rb.getString("error.user.account.lock");
@@ -403,7 +402,7 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_user.setReason("audit.user.account.unlock");
                 temp_user.write2DB();
             } catch (Exception e) {
-                e.printStackTrace();
+                error_message = "[" + global_error_message + " | " + e.toString() + "]";
             }
         }
         //reset user's password
@@ -446,6 +445,8 @@ public class XincoAdminServlet extends HttpServlet {
                 } else {
                     temp_user.setChangerID(login_user.getId());
                 }
+                //Make sure the password is encrypted
+                temp_user.setHashPassword(true);
                 temp_user.setWriteGroups(true);
                 //Register change in audit trail
                 temp_user.setChange(true);
@@ -453,7 +454,7 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_user.setReason("audit.user.account.create");
                 temp_user.write2DB();
             } catch (Exception e) {
-                e.printStackTrace();
+                error_message = "[" + global_error_message + " | " + e.toString() + "]";
             }
         }
         //create new group
@@ -504,10 +505,14 @@ public class XincoAdminServlet extends HttpServlet {
         //add user to group
         if (request.getParameter("DialogEditGroupAddUser") != null) {
             try {
+                parameters.clear();
+                parameters.put(j, current_group_selection);
                 new XincoCoreUserHasXincoCoreGroupJpaController().create(new XincoCoreUserHasXincoCoreGroup(
-                        Integer.parseInt(request.getParameter("DialogEditGroupAddUser")), current_group_selection));
+                        Integer.parseInt(request.getParameter("DialogEditGroupAddUser")),
+                        (com.bluecubs.xinco.core.server.persistence.XincoCoreGroup)
+                        XincoDBManager.namedQuery("XincoCoreGroup.findById",parameters).get(0)));
             } catch (Exception e) {
-                e.printStackTrace();
+                error_message = "[" + global_error_message + " | " + e.toString() + "]";
             }
         }
         //modify user profile
@@ -533,7 +538,7 @@ public class XincoAdminServlet extends HttpServlet {
                 temp_user.setHashPassword(true);
                 temp_user.write2DB();
             } catch (Exception e) {
-                e.printStackTrace();
+                error_message = "[" + global_error_message + " | " + e.toString() + "]";
             }
         }
         //create new language
@@ -609,7 +614,7 @@ public class XincoAdminServlet extends HttpServlet {
                         request.getParameter("user").length() - 1));
                 temp_user = new XincoCoreUserServer((XincoCoreUser) XincoDBManager.namedQuery("XincoCoreUser.findByUsername", parameters).get(0));
             } catch (Exception ex) {
-                ex.printStackTrace();
+                error_message = "[" + global_error_message + " | " + ex.toString() + "]";
             }
             //issue # 2994751: Unable to reproduce but this should take care of the NPE at this line atleast.
             boolean passwordIsUsable = temp_user == null ? false : temp_user.isPasswordUsable(request.getParameter("confirm"));
@@ -656,7 +661,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println(rb.getString("password.changed"));
                     status = 1;
                 } catch (XincoException ex) {
-                    ex.printStackTrace();
+                    error_message = "[" + global_error_message + " | " + ex.toString() + "]";
                 }
             }
         }
@@ -1291,7 +1296,6 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("</html>\n");
                 } catch (Exception e) {
                     global_error_message = global_error_message + e.toString();
-                    e.printStackTrace();
                 }
             }
             if (current_location.compareTo("AuditQuery") == 0) {
@@ -1351,7 +1355,6 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("</html>\n");
                 } catch (Exception e) {
                     global_error_message = global_error_message + e.toString();
-                    e.printStackTrace();
                 }
             }
             if (current_location.compareTo("AuditMenu") == 0) {
@@ -1383,7 +1386,6 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("</html>\n");
                 } catch (Exception e) {
                     global_error_message = global_error_message + e.toString();
-                    e.printStackTrace();
                 }
             }
             if (current_location.compareTo("RebuildIndex") == 0) {
@@ -1405,11 +1407,11 @@ public class XincoAdminServlet extends HttpServlet {
                     File indexDirectoryFile = null;
                     String[] indexDirectoryFileList = null;
                     boolean index_directory_deleted = false;
-                    indexDirectory = new File(dbm.config.FileIndexPath);
+                    indexDirectory = new File(XincoDBManager.config.FileIndexPath);
                     if (indexDirectory.exists()) {
                         indexDirectoryFileList = indexDirectory.list();
                         for (i = 0; i < indexDirectoryFileList.length; i++) {
-                            indexDirectoryFile = new File(dbm.config.FileIndexPath + indexDirectoryFileList[i]);
+                            indexDirectoryFile = new File(XincoDBManager.config.FileIndexPath + indexDirectoryFileList[i]);
                             indexDirectoryFile.delete();
                         }
                         index_directory_deleted = indexDirectory.delete();

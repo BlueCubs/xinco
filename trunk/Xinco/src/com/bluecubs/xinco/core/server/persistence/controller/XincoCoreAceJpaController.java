@@ -7,17 +7,15 @@ package com.bluecubs.xinco.core.server.persistence.controller;
 
 import com.bluecubs.xinco.core.server.persistence.XincoCoreAce;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreGroup;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreNode;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUser;
 
 /**
@@ -35,54 +33,31 @@ public class XincoCoreAceJpaController {
         return emf.createEntityManager();
     }
 
-    public void create(XincoCoreAce xincoCoreAce) throws PreexistingEntityException, Exception {
+    public void create(XincoCoreAce xincoCoreAce) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            XincoCoreData xincoCoreDataId = xincoCoreAce.getXincoCoreDataId();
-            if (xincoCoreDataId != null) {
-                xincoCoreDataId = em.getReference(xincoCoreDataId.getClass(), xincoCoreDataId.getId());
-                xincoCoreAce.setXincoCoreDataId(xincoCoreDataId);
+            XincoCoreGroup xincoCoreGroup = xincoCoreAce.getXincoCoreGroup();
+            if (xincoCoreGroup != null) {
+                xincoCoreGroup = em.getReference(xincoCoreGroup.getClass(), xincoCoreGroup.getId());
+                xincoCoreAce.setXincoCoreGroup(xincoCoreGroup);
             }
-            XincoCoreGroup xincoCoreGroupId = xincoCoreAce.getXincoCoreGroupId();
-            if (xincoCoreGroupId != null) {
-                xincoCoreGroupId = em.getReference(xincoCoreGroupId.getClass(), xincoCoreGroupId.getId());
-                xincoCoreAce.setXincoCoreGroupId(xincoCoreGroupId);
-            }
-            XincoCoreNode xincoCoreNodeId = xincoCoreAce.getXincoCoreNodeId();
-            if (xincoCoreNodeId != null) {
-                xincoCoreNodeId = em.getReference(xincoCoreNodeId.getClass(), xincoCoreNodeId.getId());
-                xincoCoreAce.setXincoCoreNodeId(xincoCoreNodeId);
-            }
-            XincoCoreUser xincoCoreUserId = xincoCoreAce.getXincoCoreUserId();
-            if (xincoCoreUserId != null) {
-                xincoCoreUserId = em.getReference(xincoCoreUserId.getClass(), xincoCoreUserId.getId());
-                xincoCoreAce.setXincoCoreUserId(xincoCoreUserId);
+            XincoCoreUser xincoCoreUser = xincoCoreAce.getXincoCoreUser();
+            if (xincoCoreUser != null) {
+                xincoCoreUser = em.getReference(xincoCoreUser.getClass(), xincoCoreUser.getId());
+                xincoCoreAce.setXincoCoreUser(xincoCoreUser);
             }
             em.persist(xincoCoreAce);
-            if (xincoCoreDataId != null) {
-                xincoCoreDataId.getXincoCoreAceList().add(xincoCoreAce);
-                xincoCoreDataId = em.merge(xincoCoreDataId);
+            if (xincoCoreGroup != null) {
+                xincoCoreGroup.getXincoCoreAceList().add(xincoCoreAce);
+                xincoCoreGroup = em.merge(xincoCoreGroup);
             }
-            if (xincoCoreGroupId != null) {
-                xincoCoreGroupId.getXincoCoreAceList().add(xincoCoreAce);
-                xincoCoreGroupId = em.merge(xincoCoreGroupId);
-            }
-            if (xincoCoreNodeId != null) {
-                xincoCoreNodeId.getXincoCoreAceList().add(xincoCoreAce);
-                xincoCoreNodeId = em.merge(xincoCoreNodeId);
-            }
-            if (xincoCoreUserId != null) {
-                xincoCoreUserId.getXincoCoreAceList().add(xincoCoreAce);
-                xincoCoreUserId = em.merge(xincoCoreUserId);
+            if (xincoCoreUser != null) {
+                xincoCoreUser.getXincoCoreAceList().add(xincoCoreAce);
+                xincoCoreUser = em.merge(xincoCoreUser);
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findXincoCoreAce(xincoCoreAce.getId()) != null) {
-                throw new PreexistingEntityException("XincoCoreAce " + xincoCoreAce + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -96,62 +71,34 @@ public class XincoCoreAceJpaController {
             em = getEntityManager();
             em.getTransaction().begin();
             XincoCoreAce persistentXincoCoreAce = em.find(XincoCoreAce.class, xincoCoreAce.getId());
-            XincoCoreData xincoCoreDataIdOld = persistentXincoCoreAce.getXincoCoreDataId();
-            XincoCoreData xincoCoreDataIdNew = xincoCoreAce.getXincoCoreDataId();
-            XincoCoreGroup xincoCoreGroupIdOld = persistentXincoCoreAce.getXincoCoreGroupId();
-            XincoCoreGroup xincoCoreGroupIdNew = xincoCoreAce.getXincoCoreGroupId();
-            XincoCoreNode xincoCoreNodeIdOld = persistentXincoCoreAce.getXincoCoreNodeId();
-            XincoCoreNode xincoCoreNodeIdNew = xincoCoreAce.getXincoCoreNodeId();
-            XincoCoreUser xincoCoreUserIdOld = persistentXincoCoreAce.getXincoCoreUserId();
-            XincoCoreUser xincoCoreUserIdNew = xincoCoreAce.getXincoCoreUserId();
-            if (xincoCoreDataIdNew != null) {
-                xincoCoreDataIdNew = em.getReference(xincoCoreDataIdNew.getClass(), xincoCoreDataIdNew.getId());
-                xincoCoreAce.setXincoCoreDataId(xincoCoreDataIdNew);
+            XincoCoreGroup xincoCoreGroupOld = persistentXincoCoreAce.getXincoCoreGroup();
+            XincoCoreGroup xincoCoreGroupNew = xincoCoreAce.getXincoCoreGroup();
+            XincoCoreUser xincoCoreUserOld = persistentXincoCoreAce.getXincoCoreUser();
+            XincoCoreUser xincoCoreUserNew = xincoCoreAce.getXincoCoreUser();
+            if (xincoCoreGroupNew != null) {
+                xincoCoreGroupNew = em.getReference(xincoCoreGroupNew.getClass(), xincoCoreGroupNew.getId());
+                xincoCoreAce.setXincoCoreGroup(xincoCoreGroupNew);
             }
-            if (xincoCoreGroupIdNew != null) {
-                xincoCoreGroupIdNew = em.getReference(xincoCoreGroupIdNew.getClass(), xincoCoreGroupIdNew.getId());
-                xincoCoreAce.setXincoCoreGroupId(xincoCoreGroupIdNew);
-            }
-            if (xincoCoreNodeIdNew != null) {
-                xincoCoreNodeIdNew = em.getReference(xincoCoreNodeIdNew.getClass(), xincoCoreNodeIdNew.getId());
-                xincoCoreAce.setXincoCoreNodeId(xincoCoreNodeIdNew);
-            }
-            if (xincoCoreUserIdNew != null) {
-                xincoCoreUserIdNew = em.getReference(xincoCoreUserIdNew.getClass(), xincoCoreUserIdNew.getId());
-                xincoCoreAce.setXincoCoreUserId(xincoCoreUserIdNew);
+            if (xincoCoreUserNew != null) {
+                xincoCoreUserNew = em.getReference(xincoCoreUserNew.getClass(), xincoCoreUserNew.getId());
+                xincoCoreAce.setXincoCoreUser(xincoCoreUserNew);
             }
             xincoCoreAce = em.merge(xincoCoreAce);
-            if (xincoCoreDataIdOld != null && !xincoCoreDataIdOld.equals(xincoCoreDataIdNew)) {
-                xincoCoreDataIdOld.getXincoCoreAceList().remove(xincoCoreAce);
-                xincoCoreDataIdOld = em.merge(xincoCoreDataIdOld);
+            if (xincoCoreGroupOld != null && !xincoCoreGroupOld.equals(xincoCoreGroupNew)) {
+                xincoCoreGroupOld.getXincoCoreAceList().remove(xincoCoreAce);
+                xincoCoreGroupOld = em.merge(xincoCoreGroupOld);
             }
-            if (xincoCoreDataIdNew != null && !xincoCoreDataIdNew.equals(xincoCoreDataIdOld)) {
-                xincoCoreDataIdNew.getXincoCoreAceList().add(xincoCoreAce);
-                xincoCoreDataIdNew = em.merge(xincoCoreDataIdNew);
+            if (xincoCoreGroupNew != null && !xincoCoreGroupNew.equals(xincoCoreGroupOld)) {
+                xincoCoreGroupNew.getXincoCoreAceList().add(xincoCoreAce);
+                xincoCoreGroupNew = em.merge(xincoCoreGroupNew);
             }
-            if (xincoCoreGroupIdOld != null && !xincoCoreGroupIdOld.equals(xincoCoreGroupIdNew)) {
-                xincoCoreGroupIdOld.getXincoCoreAceList().remove(xincoCoreAce);
-                xincoCoreGroupIdOld = em.merge(xincoCoreGroupIdOld);
+            if (xincoCoreUserOld != null && !xincoCoreUserOld.equals(xincoCoreUserNew)) {
+                xincoCoreUserOld.getXincoCoreAceList().remove(xincoCoreAce);
+                xincoCoreUserOld = em.merge(xincoCoreUserOld);
             }
-            if (xincoCoreGroupIdNew != null && !xincoCoreGroupIdNew.equals(xincoCoreGroupIdOld)) {
-                xincoCoreGroupIdNew.getXincoCoreAceList().add(xincoCoreAce);
-                xincoCoreGroupIdNew = em.merge(xincoCoreGroupIdNew);
-            }
-            if (xincoCoreNodeIdOld != null && !xincoCoreNodeIdOld.equals(xincoCoreNodeIdNew)) {
-                xincoCoreNodeIdOld.getXincoCoreAceList().remove(xincoCoreAce);
-                xincoCoreNodeIdOld = em.merge(xincoCoreNodeIdOld);
-            }
-            if (xincoCoreNodeIdNew != null && !xincoCoreNodeIdNew.equals(xincoCoreNodeIdOld)) {
-                xincoCoreNodeIdNew.getXincoCoreAceList().add(xincoCoreAce);
-                xincoCoreNodeIdNew = em.merge(xincoCoreNodeIdNew);
-            }
-            if (xincoCoreUserIdOld != null && !xincoCoreUserIdOld.equals(xincoCoreUserIdNew)) {
-                xincoCoreUserIdOld.getXincoCoreAceList().remove(xincoCoreAce);
-                xincoCoreUserIdOld = em.merge(xincoCoreUserIdOld);
-            }
-            if (xincoCoreUserIdNew != null && !xincoCoreUserIdNew.equals(xincoCoreUserIdOld)) {
-                xincoCoreUserIdNew.getXincoCoreAceList().add(xincoCoreAce);
-                xincoCoreUserIdNew = em.merge(xincoCoreUserIdNew);
+            if (xincoCoreUserNew != null && !xincoCoreUserNew.equals(xincoCoreUserOld)) {
+                xincoCoreUserNew.getXincoCoreAceList().add(xincoCoreAce);
+                xincoCoreUserNew = em.merge(xincoCoreUserNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -182,25 +129,15 @@ public class XincoCoreAceJpaController {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The xincoCoreAce with id " + id + " no longer exists.", enfe);
             }
-            XincoCoreData xincoCoreDataId = xincoCoreAce.getXincoCoreDataId();
-            if (xincoCoreDataId != null) {
-                xincoCoreDataId.getXincoCoreAceList().remove(xincoCoreAce);
-                xincoCoreDataId = em.merge(xincoCoreDataId);
+            XincoCoreGroup xincoCoreGroup = xincoCoreAce.getXincoCoreGroup();
+            if (xincoCoreGroup != null) {
+                xincoCoreGroup.getXincoCoreAceList().remove(xincoCoreAce);
+                xincoCoreGroup = em.merge(xincoCoreGroup);
             }
-            XincoCoreGroup xincoCoreGroupId = xincoCoreAce.getXincoCoreGroupId();
-            if (xincoCoreGroupId != null) {
-                xincoCoreGroupId.getXincoCoreAceList().remove(xincoCoreAce);
-                xincoCoreGroupId = em.merge(xincoCoreGroupId);
-            }
-            XincoCoreNode xincoCoreNodeId = xincoCoreAce.getXincoCoreNodeId();
-            if (xincoCoreNodeId != null) {
-                xincoCoreNodeId.getXincoCoreAceList().remove(xincoCoreAce);
-                xincoCoreNodeId = em.merge(xincoCoreNodeId);
-            }
-            XincoCoreUser xincoCoreUserId = xincoCoreAce.getXincoCoreUserId();
-            if (xincoCoreUserId != null) {
-                xincoCoreUserId.getXincoCoreAceList().remove(xincoCoreAce);
-                xincoCoreUserId = em.merge(xincoCoreUserId);
+            XincoCoreUser xincoCoreUser = xincoCoreAce.getXincoCoreUser();
+            if (xincoCoreUser != null) {
+                xincoCoreUser.getXincoCoreAceList().remove(xincoCoreAce);
+                xincoCoreUser = em.merge(xincoCoreUser);
             }
             em.remove(xincoCoreAce);
             em.getTransaction().commit();

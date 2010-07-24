@@ -1,0 +1,304 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>
+    <connection id="db1" url="$url1" user="$user1" password="$pass1" driver="auto"/>
+    <connection id="db2" url="$url2" user="$user2" password="$pass2" driver="auto"/>
+    <!--Audit Trail Tables-->
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_ace_t;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_ace_t (record_id, id, xinco_core_user_id, 
+                xinco_core_group_id, xinco_core_node_id, xinco_core_data_id, 
+                read_permission, write_permission, execute_permission, 
+                admin_permission) VALUES (?record_id, ?id, ?xinco_core_user_id, 
+                ?xinco_core_group_id, ?xinco_core_node_id, ?xinco_core_data_id, 
+                ?read_permission, ?write_permission, ?execute_permission, ?admin_permission);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_data_t;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_data_t (record_id, id, xinco_core_node_id,
+                xinco_core_language_id, xinco_core_data_type_id,
+                designation, status_number) VALUES (?record_id, ?id, ?xinco_core_node_id,
+                ?xinco_core_language_id, ?xinco_core_data_type_id,
+                ?designation, ?status_number);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_data_type_t;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_data_type_t (record_id, id, designation,
+                description) VALUES (?record_id, ?id, ?designation, ?description);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_group_t;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_group_t (record_id, id, designation,
+                status_number) VALUES (?record_id, ?id, ?designation,
+                ?status_number);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_user_t;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_user_t (record_id, id, username,
+                userpassword, name, firstname, email, status_number,
+                attempts, last_modified) VALUES (?record_id, ?id, ?username,
+                ?userpassword, ?name, ?firstname, ?email, ?status_number,
+                ?attempts, ?last_modified);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_setting_t;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_setting_t (record_id, id, description,
+                int_value, string_value, bool_value, long_value) VALUES (?record_id,
+                ?id, ?description, ?int_value, ?string_value, ?bool_value, ?long_value);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_data_has_dependency_t;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_data_has_dependency_t (record_id,
+                xinco_core_data_parent_id, xinco_core_data_children_id,
+                dependency_type_id) VALUES (?record_id,
+                ?xinco_core_data_parent_id, ?xinco_core_data_children_id,
+                ?dependency_type_id);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_language_t;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_language_t (record_id, id, sign,
+                designation) VALUES (?record_id, ?id, ?sign,
+                ?designation);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_data_type_attribute_t;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_data_type_attribute_t (record_id,
+                xinco_core_data_type_id, attribute_id, designation,
+                data_type, attr_size) VALUES (?record_id,
+                ?xinco_core_data_type_id, ?attribute_id, ?designation,
+                ?data_type, ?attr_size);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_dependency_type_t;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_dependency_type_t (record_id, id,
+                xinco_dependency_behavior_id, designation,
+                description) VALUES (?record_id, ?id, 
+                ?xinco_dependency_behavior_id, ?designation,
+                ?description);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_add_attribute_t;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_add_attribute_t (record_id,
+                xinco_core_data_id, attribute_id, attrib_int,
+                attrib_unsignedint, attrib_double, attrib_varchar,
+                attrib_text, attrib_datetime) VALUES (?record_id,
+                ?xinco_core_data_id, ?attribute_id, ?attrib_int,
+                ?attrib_unsignedint, ?attrib_double, ?attrib_varchar,
+                ?attrib_text, ?attrib_datetime);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_user_has_xinco_core_group_t;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_user_has_xinco_core_group_t (record_id,
+                xinco_core_user_id, xinco_core_group_id, status_number) VALUES
+                (?record_id, ?xinco_core_user_id, ?xinco_core_group_id, ?status_number);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_node_t;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_node_t (record_id, id,
+                xinco_core_node_id, xinco_core_language_id,
+                designation, status_number) VALUES (?record_id, ?id,
+                ?xinco_core_node_id, ?xinco_core_language_id,
+                ?designation, ?status_number);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_setting;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_setting (id, description,
+                int_value, string_value, bool_value, long_value) VALUES (
+                ?id, ?description, ?int_value, ?string_value, ?bool_value, ?long_value);
+        </script>
+    </query>
+
+   <!--********Data Tables*********-->
+
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_language;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_language (id, sign, designation) VALUES
+                (?id, ?sign, ?designation);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_node;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_node (id, xinco_core_node_id,
+                xinco_core_language_id, designation, status_number) VALUES (?id,
+                ?xinco_core_node_id,
+                ?xinco_core_language_id, ?designation, ?status_number);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_data_type;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_data_type (id, designation, description)
+                VALUES (?id, ?designation, ?description);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_dependency_behavior;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_dependency_behavior
+                (id, designation, description) VALUES
+                (?id, ?designation, ?description);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_dependency_type;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_dependency_type (id, xinco_dependency_behavior_id, designation, description)
+                VALUES (?id, ?xinco_dependency_behavior_id, ?designation, ?description);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_data_has_dependency;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_data_has_dependency
+                (xinco_core_data_parent_id, xinco_core_data_children_id,
+                dependency_type_id) VALUES
+                (?xinco_core_data_parent_id, ?xinco_core_data_children_id,
+                ?dependency_type_id);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_data;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_data (id, xinco_core_node_id,
+                xinco_core_language_id, xinco_core_data_type_id,
+                designation, status_number) VALUES (?id, ?xinco_core_node_id,
+                ?xinco_core_language_id, ?xinco_core_data_type_id,
+                ?designation, ?status_number);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_user;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_user (id, username, userpassword, name,
+                firstname, email, status_number, attempts, last_modified) VALUES (?id,
+                ?username, ?userpassword, ?name, ?firstname, ?email, ?status_number,
+                ?attempts, ?last_modified);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_user_modified_record;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_user_modified_record
+                (id, record_id, mod_Time, mod_Reason) VALUES
+                (?id, ?record_id, ?mod_Time, ?mod_Reason);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_group;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_group (id, designation, status_number)
+                VALUES (?id, ?designation, ?status_number);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_ace;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_ace (id, xinco_core_user_id,
+                xinco_core_group_id, xinco_core_node_id,
+                xinco_core_data_id, read_permission, write_permission,
+                execute_permission, admin_permission) VALUES
+                (?id, ?xinco_core_user_id,
+                ?xinco_core_group_id, ?xinco_core_node_id,
+                ?xinco_core_data_id, ?read_permission, ?write_permission,
+                ?execute_permission, ?admin_permission);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_user_has_xinco_core_group;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_user_has_xinco_core_group
+                (xinco_core_user_id, xinco_core_group_id, status_number) VALUES
+                (?xinco_core_user_id, ?xinco_core_group_id, ?status_number);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_add_attribute;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_add_attribute (xinco_core_data_id,
+                attribute_id, attrib_int, attrib_unsignedint,
+                attrib_double, attrib_varchar, attrib_text, attrib_datetime)
+                VALUES (?xinco_core_data_id,
+                ?attribute_id, ?attrib_int, ?attrib_unsignedint,
+                ?attrib_double, ?attrib_varchar, ?attrib_text, ?attrib_datetime);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_data_type_attribute;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_data_type_attribute
+                (xinco_core_data_type_id, attribute_id, designation,
+                data_type, attr_size) VALUES
+                (?xinco_core_data_type_id, ?attribute_id, ?designation,
+                ?data_type, ?attr_size);
+        </script>
+    </query>
+    <query connection-id="db1">
+            SELECT * FROM xinco_core_log;
+            <!-- for each row execute a script -->
+        <script connection-id="db2">
+                INSERT INTO xinco_core_log (id, xinco_core_data_id,
+                xinco_core_user_id, op_code, op_datetime, op_description,
+                version_high, version_mid, version_low, version_postfix)
+                VALUES (?id, ?xinco_core_data_id,
+                ?xinco_core_user_id, ?op_code, ?op_datetime, ?op_description,
+                ?version_high, ?version_mid, ?version_low, ?version_postfix);
+        </script>
+    </query>
+</etl>
+

@@ -22,7 +22,11 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "xinco_id")
-@NamedQueries({@NamedQuery(name = "XincoId.findAll", query = "SELECT x FROM XincoId x"), @NamedQuery(name = "XincoId.findById", query = "SELECT x FROM XincoId x WHERE x.id = :id"), @NamedQuery(name = "XincoId.findByTablename", query = "SELECT x FROM XincoId x WHERE x.tablename = :tablename"), @NamedQuery(name = "XincoId.findByLastId", query = "SELECT x FROM XincoId x WHERE x.lastId = :lastId")})
+@NamedQueries({
+    @NamedQuery(name = "XincoId.findAll", query = "SELECT x FROM XincoId x"),
+    @NamedQuery(name = "XincoId.findById", query = "SELECT x FROM XincoId x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoId.findByTablename", query = "SELECT x FROM XincoId x WHERE x.tablename = :tablename"),
+    @NamedQuery(name = "XincoId.findByLastId", query = "SELECT x FROM XincoId x WHERE x.lastId = :lastId")})
 public class XincoId implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

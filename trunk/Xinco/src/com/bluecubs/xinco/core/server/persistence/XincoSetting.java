@@ -26,20 +26,13 @@ import javax.persistence.UniqueConstraint;
     @UniqueConstraint(columnNames = {"description"})})
 @EntityListeners(AuditedEntityListener.class)
 @NamedQueries({
-    @NamedQuery(name = "XincoSetting.findAll",
-    query = "SELECT x FROM XincoSetting x"),
-    @NamedQuery(name = "XincoSetting.findById",
-    query = "SELECT x FROM XincoSetting x WHERE x.id = :id"),
-    @NamedQuery(name = "XincoSetting.findByDescription",
-    query = "SELECT x FROM XincoSetting x WHERE x.description = :description"),
-    @NamedQuery(name = "XincoSetting.findByIntValue",
-    query = "SELECT x FROM XincoSetting x WHERE x.intValue = :intValue"),
-    @NamedQuery(name = "XincoSetting.findByBoolValue",
-    query = "SELECT x FROM XincoSetting x WHERE x.boolValue = :boolValue"),
-    @NamedQuery(name = "XincoSetting.findByLongValue",
-    query = "SELECT x FROM XincoSetting x WHERE x.longValue = :longValue")})
+    @NamedQuery(name = "XincoSetting.findAll", query = "SELECT x FROM XincoSetting x"),
+    @NamedQuery(name = "XincoSetting.findById", query = "SELECT x FROM XincoSetting x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoSetting.findByDescription", query = "SELECT x FROM XincoSetting x WHERE x.description = :description"),
+    @NamedQuery(name = "XincoSetting.findByIntValue", query = "SELECT x FROM XincoSetting x WHERE x.intValue = :intValue"),
+    @NamedQuery(name = "XincoSetting.findByBoolValue", query = "SELECT x FROM XincoSetting x WHERE x.boolValue = :boolValue"),
+    @NamedQuery(name = "XincoSetting.findByLongValue", query = "SELECT x FROM XincoSetting x WHERE x.longValue = :longValue")})
 public class XincoSetting extends XincoAuditedObject implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "SETTINGKEYGEN")
