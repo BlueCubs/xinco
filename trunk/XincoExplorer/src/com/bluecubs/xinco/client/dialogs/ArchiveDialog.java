@@ -38,15 +38,20 @@
  */
 package com.bluecubs.xinco.client.dialogs;
 
-import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
-import com.bluecubs.xinco.core.XincoCoreData;
+import com.bluecubs.xinco.client.service.XincoAddAttribute;
+import com.bluecubs.xinco.client.service.XincoCoreData;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  *
@@ -102,37 +107,54 @@ public class ArchiveDialog extends AbstractDialog {
         okButton.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent e) {
+                XincoCoreData data = ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject());
+                //update add attributes
+                List<XincoAddAttribute> attributes;
+                if (data.getId() == 0) {
+                    // Is a new data, there's nothing yet in the database.
+                    // Load local values.
+                    attributes = data.getXincoAddAttributes();
+                } else {
+                    attributes = explorer.getSession().getXinco().getXincoAddAttributes(data,
+                            explorer.getSession().getUser());
+                }
                 //update archiving options of selected data
                 if (revisionModelCheckbox.isSelected()) {
-                    ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(1);
+                    ((XincoAddAttribute) attributes.get(3)).setAttribUnsignedint(1);
                 } else {
-                    ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(0);
+                    ((XincoAddAttribute) attributes.get(3)).setAttribUnsignedint(0);
                 }
-                ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(4)).setAttrib_unsignedint(archiveModelDropDown.getSelectedIndex());
+                ((XincoAddAttribute) attributes.get(4)).setAttribUnsignedint(archiveModelDropDown.getSelectedIndex());
                 int temp_year_int = 0;
                 int temp_month_int = 0;
-                int temp_day_int = 0;
-                int temp_days_int = 0;
+                int tempDay_int = 0;
+                int tempDays_int = 0;
                 try {
                     temp_year_int = Integer.parseInt(yearTextBox.getText());
                     temp_month_int = Integer.parseInt(monthTextBox.getText());
-                    temp_day_int = Integer.parseInt(dayTextBox.getText());
+                    tempDay_int = Integer.parseInt(dayTextBox.getText());
                     //set FIXED date: GMT, no DST
                     Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
                     cal.set(Calendar.DST_OFFSET, 0);
                     cal.set(Calendar.YEAR, temp_year_int);
                     cal.set(Calendar.MONTH, (temp_month_int - 1));
-                    cal.set(Calendar.DAY_OF_MONTH, temp_day_int);
+                    cal.set(Calendar.DAY_OF_MONTH, tempDay_int);
                     cal.set(Calendar.HOUR_OF_DAY, 0);
                     cal.set(Calendar.MINUTE, 0);
                     cal.set(Calendar.SECOND, 0);
-                    ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(5)).setAttrib_datetime(cal);
-                    temp_days_int = Integer.parseInt(dayAmountTextBox.getText());
-                    ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(6)).setAttrib_unsignedint(temp_days_int);
+                    GregorianCalendar calendar = new GregorianCalendar();
+                    calendar.setTime(cal.getTime());
+                    DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
+                    ((XincoAddAttribute) attributes.get(5)).setAttribDatetime(
+                            DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
+
+                    tempDays_int = Integer.parseInt(dayAmountTextBox.getText());
+                    ((XincoAddAttribute) attributes.get(6)).setAttribUnsignedint(tempDays_int);
                     //close dialog
-                    explorer.set_global_dialog_return_value(1);
+                    explorer.setGlobalDialogReturnValue(1);
                     setVisible(false);
                 } catch (Exception parseex) {
+                    Logger.getLogger(ArchiveDialog.class.getSimpleName()).log(Level.SEVERE, null, parseex);
                 }
             }
         });
@@ -148,8 +170,18 @@ public class ArchiveDialog extends AbstractDialog {
     @Override
     public void setToDefaults() {
         super.setToDefaults();
+        XincoCoreData data = ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject());
+        List<XincoAddAttribute> attributes;
+        if (data.getId() == 0) {
+            // Is a new data, there's nothing yet in the database.
+            // Load local values.
+            attributes = data.getXincoAddAttributes();
+        } else {
+            attributes = explorer.getSession().getXinco().getXincoAddAttributes(data,
+                    explorer.getSession().getUser());
+        }
         //processing independent of creation
-        if (((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(3)).getAttrib_unsignedint() == 0) {
+        if (attributes.get(3).getAttribUnsignedint() == 0) {
             revisionModelCheckbox.setSelected(false);
         } else {
             revisionModelCheckbox.setSelected(true);
@@ -159,17 +191,17 @@ public class ArchiveDialog extends AbstractDialog {
         ((DefaultComboBoxModel) archiveModelDropDown.getModel()).addElement(xerb.getString("window.archive.archivingmodel.none"));
         ((DefaultComboBoxModel) archiveModelDropDown.getModel()).addElement(xerb.getString("window.archive.archivingmodel.archivedate"));
         ((DefaultComboBoxModel) archiveModelDropDown.getModel()).addElement(xerb.getString("window.archive.archivingmodel.archivedays"));
-        archiveModelDropDown.setSelectedIndex((int) ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(4)).getAttrib_unsignedint());
+        archiveModelDropDown.setSelectedIndex((int) ((XincoAddAttribute) attributes.get(4)).getAttribUnsignedint());
         //set date / days
         //convert clone from remote time to local time
-        Calendar cal = (Calendar) ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(5)).getAttrib_datetime().clone();
-        Calendar realcal = ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(5)).getAttrib_datetime();
+        Calendar cal = (Calendar) ((XMLGregorianCalendar) (attributes.get(5)).getAttribDatetime()).toGregorianCalendar().clone();
+        Calendar realcal = ((XMLGregorianCalendar) (attributes.get(5)).getAttribDatetime()).toGregorianCalendar();
         Calendar ngc = new GregorianCalendar();
         cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - realcal.get(Calendar.ZONE_OFFSET)) - (ngc.get(Calendar.DST_OFFSET) + realcal.get(Calendar.DST_OFFSET)));
         yearTextBox.setText("" + cal.get(Calendar.YEAR));
         monthTextBox.setText("" + (cal.get(Calendar.MONTH) + 1));
         dayTextBox.setText("" + cal.get(Calendar.DAY_OF_MONTH));
-        dayAmountTextBox.setText("" + ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(6)).getAttrib_unsignedint());
+        dayAmountTextBox.setText("" + ((XincoAddAttribute) attributes.get(6)).getAttribUnsignedint());
     }
 
     /** This method is called from within the constructor to

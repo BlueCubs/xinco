@@ -36,11 +36,16 @@
 package com.bluecubs.xinco.client.object;
 
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.service.Xinco;
+import com.bluecubs.xinco.client.service.XincoCoreDataType;
+import com.bluecubs.xinco.client.service.XincoCoreGroup;
+import com.bluecubs.xinco.client.service.XincoCoreLanguage;
+import com.bluecubs.xinco.client.service.XincoCoreUser;
+import com.bluecubs.xinco.client.service.XincoService;
+import com.bluecubs.xinco.client.service.XincoVersion;
 import java.util.ArrayList;
-import java.util.Vector;
+import java.util.List;
 
-import com.bluecubs.xinco.core.*;
-import com.bluecubs.xinco.service.*;
 
 /**
  * XincoClientSession
@@ -63,9 +68,9 @@ public class XincoClientSession {
              * Server version
              */
             XincoVersion serverVersion = null;
-    private Vector serverGroups = null;
-    private Vector serverLanguages = null;
-    private Vector serverDatatypes = null;
+    private ArrayList serverGroups = null;
+    private ArrayList serverLanguages = null;
+    private ArrayList serverDatatypes = null;
     /**
      * Current tree node selection
      */
@@ -73,8 +78,8 @@ public class XincoClientSession {
     /**
      * Status
      */
-    private Vector clipboardTreeNodeSelection = null;	//0 = not connected
-    private Vector currentSearchResult = null;
+    private ArrayList clipboardTreeNodeSelection = null;	//0 = not connected
+    private ArrayList currentSearchResult = null;
     private int status = 0;
 
     /**
@@ -90,11 +95,11 @@ public class XincoClientSession {
         //init repository
         xincoClientRepository = new XincoClientRepository(e);
         serverVersion = new XincoVersion();
-        serverGroups = new Vector();
-        serverLanguages = new Vector();
-        serverDatatypes = new Vector();
-        clipboardTreeNodeSelection = new Vector();
-        currentSearchResult = new Vector();
+        serverGroups = new ArrayList();
+        serverLanguages = new ArrayList();
+        serverDatatypes = new ArrayList();
+        clipboardTreeNodeSelection = new ArrayList();
+        currentSearchResult = new ArrayList();
         status = 0;
     }
 
@@ -157,35 +162,35 @@ public class XincoClientSession {
     /**
      * @return the server_groups
      */
-    public Vector getServerGroups() {
+    public ArrayList getServerGroups() {
         return serverGroups;
     }
 
     /**
      * @return the server_languages
      */
-    public Vector getServerLanguages() {
+    public ArrayList getServerLanguages() {
         return serverLanguages;
     }
 
     /**
      * @return the server_datatypes
      */
-    public Vector getServerDatatypes() {
+    public ArrayList getServerDatatypes() {
         return serverDatatypes;
     }
 
     /**
      * @return the clipboardTreeNodeSelection
      */
-    public Vector getClipboardTreeNodeSelection() {
+    public ArrayList getClipboardTreeNodeSelection() {
         return clipboardTreeNodeSelection;
     }
 
     /**
      * @return the currentSearchResult
      */
-    public Vector getCurrentSearchResult() {
+    public ArrayList getCurrentSearchResult() {
         return currentSearchResult;
     }
 
@@ -222,41 +227,26 @@ public class XincoClientSession {
     }
 
     /**
-     * @param server_version the server_version to set
-     */
-    public void setServeVersion( /**
-             * Server version
-             */
-            XincoVersion server_version) {
-        this.setServerVersion(server_version);
-    }
-
-    /**
-     * @param server_groups the server_groups to set
-     */
-    public void setServeGroups(Vector server_groups) {
-        this.setServerGroups(server_groups);
-    }
-
-    /**
      * @param server_languages the server_languages to set
      */
-    public void setServerLanguages(Vector server_languages) {
-        this.serverLanguages = server_languages;
+    public void setServerLanguages(List<XincoCoreLanguage> server_languages) {
+        this.serverLanguages= new ArrayList<XincoCoreLanguage>();
+        this.serverLanguages.addAll(server_languages);
     }
 
     /**
      * @param clipboardTreeNodeSelection the clipboardTreeNodeSelection to set
      */
-    public void setClipboardTreeNodeSelection(Vector clipboardTreeNodeSelection) {
+    public void setClipboardTreeNodeSelection(ArrayList clipboardTreeNodeSelection) {
         this.clipboardTreeNodeSelection = clipboardTreeNodeSelection;
     }
 
     /**
      * @param currentSearchResult the currentSearchResult to set
      */
-    public void setCurrentSearchResult(Vector currentSearchResult) {
-        this.currentSearchResult = currentSearchResult;
+    public void setCurrentSearchResult(List currentSearchResult) {
+        this.currentSearchResult= new ArrayList();
+        this.currentSearchResult.addAll(currentSearchResult);
     }
 
     /**
@@ -276,8 +266,9 @@ public class XincoClientSession {
     /**
      * @param server_datatypes the server_datatypes to set
      */
-    public void setServerDatatypes(Vector server_datatypes) {
-        this.serverDatatypes = server_datatypes;
+    public void setServerDatatypes(List<XincoCoreDataType> server_datatypes) {
+        this.serverDatatypes= new ArrayList<XincoCoreDataType>();
+        this.serverDatatypes.addAll(server_datatypes);
     }
 
     /**
@@ -300,7 +291,8 @@ public class XincoClientSession {
     /**
      * @param serverGroups the serverGroups to set
      */
-    public void setServerGroups(Vector serverGroups) {
-        this.serverGroups = serverGroups;
+    public void setServerGroups(List<XincoCoreGroup> serverGroups) {
+        this.serverGroups = new ArrayList<XincoCoreGroup>();
+        this.serverGroups.addAll(serverGroups);
     }
 }

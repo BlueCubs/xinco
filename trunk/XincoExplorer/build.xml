@@ -69,7 +69,24 @@
     -->
     <target name="-post-jar">
         <antcall target="create jnlp"/>
-    </target>
+      <basename file="${basedir}" property="project.dir.name"/>
+      <property name="dist.versionized.jar" value="${dist.dir}/${project.dir.name}-${mf.version.spec}.jar" />
+      <echo>*** post-jar: Building ${dist.versionized.jar} with Package Version Information ***</echo>
+
+      <copylibs compress="${jar.compress}" jarfile="${dist.versionized.jar}" runtimeclasspath="${run.classpath.without.build.classes.dir}">
+         <fileset dir="${build.classes.dir}"/>
+         <manifest>
+            <attribute name="Bundle-Version" value="${mf.version.spec}"/>
+            <attribute name="Bundle-Name" value="${application.title}"/>
+            <attribute name="Specification-Title" value="${application.title}"/>
+            <attribute name="Specification-Vendor" value="${application.vendor}"/>
+            <attribute name="Specification-Version" value="${mf.version.spec}"/>
+            <attribute name="Implementation-Title" value="${project.dir.name}"/>
+            <attribute name="Implementation-Vendor" value="${application.vendor}"/>
+            <attribute name="Implementation-Version" value="${mf.version.impl}"/>
+         </manifest>
+      </copylibs>
+   </target>
 
     <target name="-check-for-master.jnlp">
         <available file="XincoExplorerMaster.jnlp" property="master.jnlp.exists"/>

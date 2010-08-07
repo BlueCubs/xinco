@@ -40,8 +40,8 @@ package com.bluecubs.xinco.client.dialogs;
 
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
-import com.bluecubs.xinco.core.XincoCoreUser;
-import com.bluecubs.xinco.core.server.XincoException;
+import com.bluecubs.xinco.client.service.XincoCoreUser;
+import com.bluecubs.xinco.core.XincoException;
 import javax.swing.JOptionPane;
 
 /**

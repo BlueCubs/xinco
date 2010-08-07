@@ -75,66 +75,6 @@
     nbproject/build-impl.xml file.
 
     -->
-    <path id="axis.classpath">
-        <pathelement location="build/classes"/>
-        <fileset dir="${axis.home}/lib">
-            <include name="**/*.jar"/>
-        </fileset>
-        <pathelement location="${build.classes}"/>
-    </path>
-    <path id="axis_client.classpath">
-        <pathelement location="build/classes"/>
-        <fileset dir="${axis.home}">
-            <include name="**/*.jar"/>
-        </fileset>
-        <fileset dir="lib">
-            <include name="*.jar"/>
-        </fileset>
-        <pathelement location="${build.classes}"/>
-    </path>
-    <target name="wsdl2java" depends="copy-XincoSkeleton">
-        <!--Define axis.classpath in build.ant.properties and obviously have axis
-        libraries were specified-->
-        <!--Make a copy of the current XincoSkeleton-->
-        <antcall target="copy-XincoSkeleton"/>
-        <!--Delete the current services folder-->
-        <delete>
-            <fileset dir="src/com/bluecubs/xinco/service" includes="*.*"/>
-        </delete>
-        <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-            <classpath refid="axis.classpath"/>
-            <arg value="-d"/>
-            <arg value="adb"/>
-            <arg value="-uri"/>
-            <arg file="xml-resources/axis2/META-INF/Xinco.wsdl"/>
-            <arg value="-ss"/>
-            <arg value="-uw"/>
-            <arg value="-g"/>
-            <arg value="-sd"/>
-            <arg value="-o"/>
-            <arg file=""/>
-            <arg value="-p"/>
-            <arg value="com.bluecubs.xinco.service"/>
-        </java>
-        <!--Overwrite the new file with the backup-->
-        <if>
-            <equals arg1="${XincoSkeleton.present}" arg2="true"/>
-            <then>
-                <copy file="src/com/bluecubs/xinco/service/backup/XincoSkeleton.java" tofile="src/com/bluecubs/xinco/service/XincoSkeleton.java" overwrite="true"/>
-                <delete dir="src/com/bluecubs/xinco/service/backup"/>
-            </then>
-        </if>
-    </target>
-    <target name="copy-XincoSkeleton">
-        <available file="src/com/bluecubs/xinco/service/XincoSkeleton.java" property="XincoSkeleton.present"/>
-        <if>
-            <equals arg1="${XincoSkeleton.present}" arg2="true"/>
-            <then>
-                <mkdir dir="src/com/bluecubs/xinco/service/backup/"/>
-                <copy file="src/com/bluecubs/xinco/service/XincoSkeleton.java" tofile="src/com/bluecubs/xinco/service/backup/XincoSkeleton.java" overwrite="true"/>
-            </then>
-        </if>
-    </target>
     <target name="-post-jar">
         <basename file="${basedir}" property="project.dir.name"/>
         <property name="dist.versionized.jar" value="${dist.dir}/${project.dir.name}-${mf.version.spec}.jar" />
@@ -153,9 +93,5 @@
                 <attribute name="Implementation-Version" value="${mf.version.impl}"/>
             </manifest>
         </copylibs>
-        <!--
-      <echo>*** post-jar: Generate JavaDoc ***</echo>
-      <antcall target="javadoc" />
-      -->
     </target>
 </project>

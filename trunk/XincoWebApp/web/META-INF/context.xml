@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- #################### xinco DMS Configuration for Tomcat >=5.5 ####################-->
+<!-- #################### xinco DMS Configuration for Tomcat >=5.5 #######-->
 <Context docBase="xinco" path="/xinco" reloadable="true">
   <!-- #################### PLEASE CONFIGURE #############################-->
   <!-- ### Params: username, password, url, driverClassName            ###-->
@@ -12,16 +12,21 @@
   <!-- ### url: jdbc:postgresql://localhost:5432/xinco                 ###-->
   <!-- ### driverClassName: org.postgresql.Driver                      ###-->
   <!-- ###################################################################-->
-  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB" password="" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true" username="root"/>
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver"
+  factory="org.apache.commons.dbcp.BasicDataSourceFactory"
+  maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB"
+  password="" type="javax.sql.DataSource"
+  url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true" username="root"/>
   <!-- #################### ################ ####################-->
-  <ResourceParams name="jdbc/XincoDB">
-    <parameter>
-      <name>factory</name>
-      <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
-    </parameter>
-  </ResourceParams>
+    <ResourceParams name="jdbc/XincoDB">
+        <parameter>
+            <name>factory</name>
+            <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
+        </parameter>
+    </ResourceParams>
   <!-- ################# Optional Configuration #################-->
   <!-- Database JNDI Name -->
-  <Environment name="xinco/JNDIDB" override="false" type="java.lang.String" value="java:comp/env/jdbc/XincoDB"/>
+    <Environment name="xinco/JNDIDB" override="false" type="java.lang.String"
+  value="java:comp/env/jdbc/XincoDB"/>
   <!-- ################# ###################### #################-->
 </Context>

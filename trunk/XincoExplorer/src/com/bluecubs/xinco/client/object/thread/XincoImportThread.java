@@ -40,8 +40,8 @@
 package com.bluecubs.xinco.client.object.thread;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.core.XincoCoreNode;
-import com.bluecubs.xinco.core.server.XincoException;
+import com.bluecubs.xinco.client.service.XincoCoreNode;
+import com.bluecubs.xinco.core.XincoException;
 import java.io.File;
 import java.util.ResourceBundle;
 import javax.swing.JFileChooser;
@@ -65,7 +65,7 @@ public class XincoImportThread extends Thread {
                     try {
                         JFileChooser fc = new JFileChooser();
 
-                        fc.setCurrentDirectory(new File(explorer.current_path));
+                        fc.setCurrentDirectory(new File(explorer.currentPath));
                         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                         // show dialog
                         int result = fc.showOpenDialog(explorer);
@@ -83,7 +83,7 @@ public class XincoImportThread extends Thread {
                                                       JOptionPane.INFORMATION_MESSAGE);
                         explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.progress"));
                         explorer.importContentOfFolder((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject(),
-                                                       new File(explorer.current_path));
+                                                       new File(explorer.currentPath));
                         // select current path
                         explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
                         // update transaction info

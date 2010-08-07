@@ -1,6 +1,6 @@
 package com.bluecubs.xinco.tools;
 
-import com.bluecubs.xinco.core.server.XincoException;
+import com.bluecubs.xinco.core.XincoException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 

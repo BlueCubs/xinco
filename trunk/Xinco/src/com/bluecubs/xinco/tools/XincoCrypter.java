@@ -86,15 +86,20 @@ public class XincoCrypter {
             ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
             dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
         } catch (java.security.InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoCrypter.class.getName()).log(
+                    Level.SEVERE, null, e);
         } catch (java.security.spec.InvalidKeySpecException e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoCrypter.class.getName()).log(
+                    Level.SEVERE, null, e);
         } catch (javax.crypto.NoSuchPaddingException e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoCrypter.class.getName()).log(
+                    Level.SEVERE, null, e);
         } catch (java.security.NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoCrypter.class.getName()).log(
+                    Level.SEVERE, null, e);
         } catch (java.security.InvalidKeyException e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoCrypter.class.getName()).log(
+                    Level.SEVERE, null, e);
         }
     }
 
@@ -114,11 +119,14 @@ public class XincoCrypter {
             // Encode bytes to base64 to get a string
             return Base64.encode(enc.toString());
         } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(XincoCrypter.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XincoCrypter.class.getSimpleName()).log(
+                    Level.SEVERE, null, ex);
         } catch (javax.crypto.BadPaddingException e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoCrypter.class.getName()).log(
+                    Level.SEVERE, null, e);
         } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoCrypter.class.getName()).log(
+                    Level.SEVERE, null, e);
         }
         return null;
     }
@@ -126,7 +134,7 @@ public class XincoCrypter {
     /**
      * Decrypt
      * @param str
-     * @return
+     * @return Decrypted screen
      */
     public String decrypt(String str) {
         try {
@@ -138,13 +146,17 @@ public class XincoCrypter {
             // Decode using utf-8
             return new String(utf8, "UTF8");
         } catch (javax.crypto.BadPaddingException e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoCrypter.class.getName()).log(
+                    Level.SEVERE, null, e);
         } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoCrypter.class.getName()).log(
+                    Level.SEVERE, null, e);
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoCrypter.class.getName()).log(
+                    Level.SEVERE, null, e);
         } catch (java.io.IOException e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoCrypter.class.getName()).log(
+                    Level.SEVERE, null, e);
         }
         return null;
     }
