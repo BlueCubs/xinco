@@ -42,15 +42,18 @@ import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.client.object.thread.XincoProgressBarThread;
-import com.bluecubs.xinco.core.XincoCoreData;
-import com.bluecubs.xinco.core.XincoCoreDataType;
-import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
-import com.bluecubs.xinco.core.XincoCoreLanguage;
-import com.bluecubs.xinco.core.XincoCoreNode;
-import com.bluecubs.xinco.core.server.XincoException;
+import com.bluecubs.xinco.client.service.XincoCoreData;
+import com.bluecubs.xinco.client.service.XincoCoreDataType;
+import com.bluecubs.xinco.client.service.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.client.service.XincoCoreLanguage;
+import com.bluecubs.xinco.client.service.XincoCoreNode;
+import com.bluecubs.xinco.core.XincoException;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.TreePath;
 
@@ -118,26 +121,28 @@ public class SearchDialog extends AbstractDialog {
         optionsComboBox.addItem(xerb.getString("window.search.filecontent") + " (file)");
         text = "";
         for (i = 0; i < explorer.getSession().getServerDatatypes().size(); i++) {
-            xcdt = (XincoCoreDataType) explorer.getSession().getServerDatatypes().elementAt(i);
-            for (j = 0; j < xcdt.getXinco_core_data_type_attributes().size(); j++) {
-                text = ((XincoCoreDataTypeAttribute) xcdt.getXinco_core_data_type_attributes().elementAt(j)).getDesignation();
+            xcdt = (XincoCoreDataType) explorer.getSession().getServerDatatypes().get(i);
+            List<XincoCoreDataTypeAttribute> dataTypeAttributes=
+                    getXincoCoreDataTypeAttribute(xcdt,explorer.getSession().getUser());
+            for (j = 0; j < dataTypeAttributes.size(); j++) {
+                text = ((XincoCoreDataTypeAttribute) dataTypeAttributes.get(j)).getDesignation();
                 this.optionsComboBox.addItem(text);
             }
         }
         this.optionsComboBox.setSelectedIndex(0);
         //load languages
         languageList.removeAll();
-        final Vector list = new Vector();
+        final ArrayList list = new ArrayList();
         selection = -1;
         alt_selection = 0;
         text = "";
         for (i = 0; i < explorer.getSession().getServerLanguages().size(); i++) {
-            text = ((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getSign() + ")";
+            text = ((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getDesignation() + " (" + ((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getSign() + ")";
             list.add(text);
-            if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
+            if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
                 selection = i;
             }
-            if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getId() == 1) {
+            if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getId() == 1) {
                 alt_selection = i;
             }
         }
@@ -146,7 +151,7 @@ public class SearchDialog extends AbstractDialog {
         }
         languageList.setModel(new javax.swing.AbstractListModel() {
 
-            Vector strings = list;
+            ArrayList strings = list;
 
             public int getSize() {
                 return strings.size();
@@ -354,7 +359,7 @@ public class SearchDialog extends AbstractDialog {
         if (resultTable.getSelectedRow() < 0) {
             return;
         }
-        Vector v = (Vector) explorer.getSession().getCurrentSearchResult().elementAt(resultTable.getSelectedRow());
+        ArrayList v = (ArrayList) explorer.getSession().getCurrentSearchResult().get(resultTable.getSelectedRow());
         int i = 0;
         int j = 0;
         int k = 0;
@@ -363,7 +368,7 @@ public class SearchDialog extends AbstractDialog {
             //expand tree to selected result (check root items first, then check all sub-folders)
             XincoMutableTreeNode xmtn = (XincoMutableTreeNode) explorer.getSession().getXincoClientRepository().treemodel.getRoot();
             if (xmtn.getUserObject().getClass() == XincoCoreNode.class) {
-                if (((XincoCoreNode) xmtn.getUserObject()).getId() == ((XincoCoreNode) v.elementAt(1)).getId()) {
+                if (((XincoCoreNode) xmtn.getUserObject()).getId() == ((XincoCoreNode) v.get(1)).getId()) {
                     tp = new TreePath(xmtn.getPath());
                     explorer.jTreeRepository.setSelectionPath(tp);
                     explorer.jTreeRepository.expandPath(tp);
@@ -372,7 +377,7 @@ public class SearchDialog extends AbstractDialog {
                     if (1 == (v.size() - 1)) {
                         for (k = 0; k < xmtn.getChildCount(); k++) {
                             if (((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject().getClass() == XincoCoreData.class) {
-                                if (((XincoCoreData) ((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject()).getId() == ((XincoCoreData) v.elementAt(0)).getId()) {
+                                if (((XincoCoreData) ((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject()).getId() == ((XincoCoreData) v.get(0)).getId()) {
                                     tp = new TreePath(((XincoMutableTreeNode) xmtn.getChildAt(k)).getPath());
                                     explorer.jTreeRepository.setSelectionPath(tp);
                                 }
@@ -384,7 +389,7 @@ public class SearchDialog extends AbstractDialog {
             for (i = 2; i < v.size(); i++) {
                 for (j = 0; j < xmtn.getChildCount(); j++) {
                     if (((XincoMutableTreeNode) xmtn.getChildAt(j)).getUserObject().getClass() == XincoCoreNode.class) {
-                        if (((XincoCoreNode) ((XincoMutableTreeNode) xmtn.getChildAt(j)).getUserObject()).getId() == ((XincoCoreNode) v.elementAt(i)).getId()) {
+                        if (((XincoCoreNode) ((XincoMutableTreeNode) xmtn.getChildAt(j)).getUserObject()).getId() == ((XincoCoreNode) v.get(i)).getId()) {
                             tp = new TreePath(((XincoMutableTreeNode) xmtn.getChildAt(j)).getPath());
                             this.explorer.jTreeRepository.setSelectionPath(tp);
                             this.explorer.jTreeRepository.expandPath(tp);
@@ -394,7 +399,7 @@ public class SearchDialog extends AbstractDialog {
                             if (i == (v.size() - 1)) {
                                 for (k = 0; k < xmtn.getChildCount(); k++) {
                                     if (((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject().getClass() == XincoCoreData.class) {
-                                        if (((XincoCoreData) ((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject()).getId() == ((XincoCoreData) v.elementAt(0)).getId()) {
+                                        if (((XincoCoreData) ((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject()).getId() == ((XincoCoreData) v.get(0)).getId()) {
                                             tp = new TreePath(((XincoMutableTreeNode) xmtn.getChildAt(k)).getPath());
                                             explorer.jTreeRepository.setSelectionPath(tp);
                                         }
@@ -406,7 +411,7 @@ public class SearchDialog extends AbstractDialog {
                 }
             }
         } catch (Exception tee) {
-            tee.printStackTrace();
+            Logger.getLogger(SearchDialog.class.getSimpleName()).log(Level.SEVERE, null, tee);
         }
         this.setVisible(false);
     }//GEN-LAST:event_goToSelectionButtonActionPerformed
@@ -459,7 +464,7 @@ public class SearchDialog extends AbstractDialog {
             XincoCoreLanguage lid = new XincoCoreLanguage();
             lid.setId(0);
             if ((!allLanguagesCheckBox.isSelected()) && (languageList.getSelectedIndex() >= 0)) {
-                lid = (XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(languageList.getSelectedIndex());
+                lid = (XincoCoreLanguage) explorer.getSession().getServerLanguages().get(languageList.getSelectedIndex());
             }
             try {
                 explorer.getSession().setCurrentSearchResult(explorer.getSession().getXinco().findXincoCoreData(queryValueField.getText(), lid, explorer.getSession().getUser()));
@@ -467,7 +472,7 @@ public class SearchDialog extends AbstractDialog {
                     throw new XincoException();
                 }
             } catch (Exception rme) {
-                explorer.getSession().setCurrentSearchResult(new Vector());
+                explorer.getSession().setCurrentSearchResult(new ArrayList());
             }
             //update search result
             String[] rdata = {"", ""};
@@ -477,10 +482,18 @@ public class SearchDialog extends AbstractDialog {
                 dtm.removeRow(0);
             }
             for (i = 0; i < explorer.getSession().getCurrentSearchResult().size(); i++) {
-                rdata[0] = ((XincoCoreData) (((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getDesignation() + " (" + ((XincoCoreData) (((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getXinco_core_data_type().getDesignation() + " | " + ((XincoCoreData) (((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(0))).getXinco_core_language().getSign() + ")";
-                rdata[1] = new String("");
-                for (j = 1; j < ((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).size(); j++) {
-                    rdata[1] = rdata[1] + ((XincoCoreNode) (((Vector) explorer.getSession().getCurrentSearchResult().elementAt(i)).elementAt(j))).getDesignation() + " / ";
+                rdata[0] = ((XincoCoreData) (((ArrayList) 
+                        explorer.getSession().getCurrentSearchResult().get(i)).get(0)))
+                        .getDesignation() + " ("
+                        + ((XincoCoreData) (((ArrayList) explorer.getSession()
+                        .getCurrentSearchResult().get(i)).get(0)))
+                        .getXincoCoreDataType().getDesignation() + " | "
+                        + ((XincoCoreData) (((ArrayList) explorer.getSession()
+                        .getCurrentSearchResult().get(i)).get(0)))
+                        .getXincoCoreLanguage().getSign() + ")";
+                rdata[1] = "";
+                for (j = 1; j < ((ArrayList) explorer.getSession().getCurrentSearchResult().get(i)).size(); j++) {
+                    rdata[1] = rdata[1] + ((XincoCoreNode) (((ArrayList) explorer.getSession().getCurrentSearchResult().get(i)).get(j))).getDesignation() + " / ";
                 }
                 dtm.addRow(rdata);
             }
@@ -508,4 +521,10 @@ public class SearchDialog extends AbstractDialog {
     private javax.swing.JLabel systemOptionsValueLabel;
     private javax.swing.JTextField variableField;
     // End of variables declaration//GEN-END:variables
+
+    private static java.util.List<com.bluecubs.xinco.client.service.XincoCoreDataTypeAttribute> getXincoCoreDataTypeAttribute(com.bluecubs.xinco.client.service.XincoCoreDataType in0, com.bluecubs.xinco.client.service.XincoCoreUser in1) {
+        com.bluecubs.xinco.client.service.XincoService service = new com.bluecubs.xinco.client.service.XincoService();
+        com.bluecubs.xinco.client.service.Xinco port = service.getXincoPort();
+        return port.getXincoCoreDataTypeAttribute(in0, in1);
+    }
 }

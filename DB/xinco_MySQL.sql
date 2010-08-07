@@ -557,7 +557,8 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_dependency_behavior` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `designation` VARCHAR(45) NOT NULL ,
   `description` VARCHAR(45) NULL ,
-  PRIMARY KEY (`id`) )
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `Unique` (`designation` ASC) )
 ENGINE = InnoDB;
 
 
@@ -571,7 +572,7 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_dependency_type` (
   `xinco_dependency_behavior_id` INT NOT NULL ,
   `designation` VARCHAR(45) NOT NULL ,
   `description` VARCHAR(255) NULL ,
-  PRIMARY KEY (`id`, `xinco_dependency_behavior_id`) ,
+  PRIMARY KEY (`id`) ,
   UNIQUE INDEX `designation_UNIQUE` (`designation` ASC) ,
   INDEX `fk_xinco_dependency_type_xinco_dependency_behavior1` (`xinco_dependency_behavior_id` ASC) ,
   CONSTRAINT `fk_xinco_dependency_type_xinco_dependency_behavior1`
@@ -620,6 +621,7 @@ DROP TABLE IF EXISTS `xinco`.`xinco_dependency_type_t` ;
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_dependency_type_t` (
   `record_id` INT(10) NOT NULL ,
   `id` INT NOT NULL ,
+  `xinco_dependency_behavior_id` INT NOT NULL ,
   `designation` VARCHAR(45) NOT NULL ,
   `description` VARCHAR(255) NULL ,
   PRIMARY KEY (`record_id`) )
@@ -654,6 +656,20 @@ AUTO_INCREMENT = 72
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_swedish_ci
 PACK_KEYS = 0;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_dependency_behavior_t`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_dependency_behavior_t` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_dependency_behavior_t` (
+  `record_id` INT(10) NOT NULL ,
+  `id` INT NOT NULL ,
+  `designation` VARCHAR(45) NOT NULL ,
+  `description` VARCHAR(45) NULL ,
+  PRIMARY KEY (`record_id`) )
+ENGINE = InnoDB;
 
 USE `xinco_workflow` ;
 
@@ -871,11 +887,11 @@ COMMIT;
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
 USE `xinco`;
-INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('1', '1', 'dependency.related', 'dependency.related.desc');
-INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('2', '1', 'dependency.component', 'dependency.component.desc');
-INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('3', '2', 'dependency.group', 'dependency.group.desc');
-INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('4', '2', 'dependency.package', 'dependency.package.desc');
-INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('5', '1', 'dependency.rendering', 'dependency.rendering.desc');
-INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('6', '1', 'dependency.supporting', 'dependency.supporting.desc');
+INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('1', NULL, 'dependency.related', 'dependency.related.desc');
+INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('2', NULL, 'dependency.component', 'dependency.component.desc');
+INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('3', NULL, 'dependency.group', 'dependency.group.desc');
+INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('4', NULL, 'dependency.package', 'dependency.package.desc');
+INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('5', NULL, 'dependency.rendering', 'dependency.rendering.desc');
+INSERT INTO `xinco`.`xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('6', NULL, 'dependency.supporting', 'dependency.supporting.desc');
 
 COMMIT;

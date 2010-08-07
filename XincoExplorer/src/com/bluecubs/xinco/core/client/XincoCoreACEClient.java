@@ -35,11 +35,13 @@
  */
 package com.bluecubs.xinco.core.client;
 
-import com.bluecubs.xinco.core.XincoCoreACE;
-import com.bluecubs.xinco.core.XincoCoreGroup;
-import com.bluecubs.xinco.core.XincoCoreUser;
-import com.bluecubs.xinco.core.server.XincoException;
+import com.bluecubs.xinco.client.service.XincoCoreACE;
+import com.bluecubs.xinco.client.service.XincoCoreGroup;
+import com.bluecubs.xinco.client.service.XincoCoreUser;
+import com.bluecubs.xinco.core.XincoException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class XincoCoreACEClient extends XincoCoreACE {
 
@@ -59,13 +61,13 @@ public class XincoCoreACEClient extends XincoCoreACE {
                 //reset match_ace
                 match_ace = false;
                 //check if user is mentioned in ACE
-                if (((XincoCoreACE) attrACL.get(i)).getXinco_core_user_id() == attrU.getId()) {
+                if (((XincoCoreACE) attrACL.get(i)).getXincoCoreUserId() == attrU.getId()) {
                     match_ace = true;
                 }
                 //check if group of user is mentioned in ACE
                 if (!match_ace) {
-                    for (j = 0; j < attrU.getXinco_core_groups().size(); j++) {
-                        if (((XincoCoreACE) attrACL.get(i)).getXinco_core_group_id() == ((XincoCoreGroup) attrU.getXinco_core_groups().get(j)).getId()) {
+                    for (j = 0; j < attrU.getXincoCoreGroups().size(); j++) {
+                        if (((XincoCoreACE) attrACL.get(i)).getXincoCoreGroupId() == ((XincoCoreGroup) attrU.getXincoCoreGroups().get(j)).getId()) {
                             match_ace = true;
                             break;
                         }
@@ -74,25 +76,25 @@ public class XincoCoreACEClient extends XincoCoreACE {
                 //add to rights
                 if (match_ace) {
                     //modify read permission
-                    if (!core_ace.isRead_permission()) {
-                        core_ace.setRead_permission(((XincoCoreACE) attrACL.get(i)).isRead_permission());
+                    if (!core_ace.isReadPermission()) {
+                        core_ace.setReadPermission(((XincoCoreACE) attrACL.get(i)).isReadPermission());
                     }
                     //modify write permission
-                    if (!core_ace.isWrite_permission()) {
-                        core_ace.setWrite_permission(((XincoCoreACE) attrACL.get(i)).isWrite_permission());
+                    if (!core_ace.isWritePermission()) {
+                        core_ace.setWritePermission(((XincoCoreACE) attrACL.get(i)).isWritePermission());
                     }
                     //modify execute permission
-                    if (!core_ace.isExecute_permission()) {
-                        core_ace.setExecute_permission(((XincoCoreACE) attrACL.get(i)).isExecute_permission());
+                    if (!core_ace.isExecutePermission()) {
+                        core_ace.setExecutePermission(((XincoCoreACE) attrACL.get(i)).isExecutePermission());
                     }
                     //modify admin permission
-                    if (!core_ace.isAdmin_permission()) {
-                        core_ace.setAdmin_permission(((XincoCoreACE) attrACL.get(i)).isAdmin_permission());
+                    if (!core_ace.isAdminPermission()) {
+                        core_ace.setAdminPermission(((XincoCoreACE) attrACL.get(i)).isAdminPermission());
                     }
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoCoreACEClient.class.getSimpleName()).log(Level.SEVERE, null, e);
         }
         return core_ace;
     }

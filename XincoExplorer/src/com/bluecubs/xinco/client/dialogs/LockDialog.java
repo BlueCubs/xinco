@@ -37,9 +37,10 @@ package com.bluecubs.xinco.client.dialogs;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
-import com.bluecubs.xinco.core.XincoCoreNode;
-import com.bluecubs.xinco.core.XincoCoreUser;
-import java.rmi.RemoteException;
+import com.bluecubs.xinco.client.service.XincoCoreNode;
+import com.bluecubs.xinco.client.service.XincoCoreUser;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -182,7 +183,8 @@ public class LockDialog extends AbstractDialog {
                 }
                 this.explorer.setLock(false);
             }
-        } catch (RemoteException ex) {
+        } catch (Exception ex) {
+            Logger.getLogger(LockDialog.class.getSimpleName()).log(Level.SEVERE, null, ex);
         }
         this.password.setText("");
         this.username.setText("");

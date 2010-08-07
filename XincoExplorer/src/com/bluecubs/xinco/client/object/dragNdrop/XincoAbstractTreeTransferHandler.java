@@ -36,9 +36,9 @@ package com.bluecubs.xinco.client.object.dragNdrop;
 
 import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.object.XincoJTree;
-import com.bluecubs.xinco.core.XincoCoreACE;
-import com.bluecubs.xinco.core.XincoCoreData;
-import com.bluecubs.xinco.core.XincoCoreNode;
+import com.bluecubs.xinco.client.service.XincoCoreACE;
+import com.bluecubs.xinco.client.service.XincoCoreData;
+import com.bluecubs.xinco.client.service.XincoCoreNode;
 import com.bluecubs.xinco.core.client.XincoCoreACEClient;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
@@ -90,18 +90,18 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
     /* Methods for DragSourceListener */
     public void dragDropEnd(DragSourceDropEvent dsde) {
         if (dsde.getDropSuccess() && dsde.getDropAction() == DnDConstants.ACTION_MOVE && draggedNodeParent != null) {
-            XincoCoreACE temp_ace = new XincoCoreACE();
+            XincoCoreACE tempAce = new XincoCoreACE();
             // get ace
             if (draggedNode.getUserObject().getClass() == XincoCoreNode.class) {
-                temp_ace = XincoCoreACEClient.checkAccess(getTree().getExplorer().getSession().getUser(),
-                        ((XincoCoreNode) draggedNode.getUserObject()).getXinco_core_acl());
+                tempAce = XincoCoreACEClient.checkAccess(getTree().getExplorer().getSession().getUser(),
+                        ((XincoCoreNode) draggedNode.getUserObject()).getXincoCoreAcl());
             }
             if (draggedNode.getUserObject().getClass() == XincoCoreData.class) {
-                temp_ace = XincoCoreACEClient.checkAccess(getTree().getExplorer().getSession().getUser(),
-                        ((XincoCoreData) draggedNode.getUserObject()).getXinco_core_acl());
+                tempAce = XincoCoreACEClient.checkAccess(getTree().getExplorer().getSession().getUser(),
+                        ((XincoCoreData) draggedNode.getUserObject()).getXincoCoreAcl());
             }
             //Drop only if you have write permissions
-            if (temp_ace.isWrite_permission()) {
+            if (tempAce.isWritePermission()) {
                 getTree().getExplorer().getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode) draggedNodeParent);
                 ((DefaultTreeModel) getTree().getModel()).nodeStructureChanged(draggedNodeParent);
                 getTree().expandPath(new TreePath(draggedNodeParent.getPath()));
@@ -253,13 +253,13 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
         }
     }
 
-    private final void paintImage(Point pt) {
+    private void paintImage(Point pt) {
         getTree().paintImmediately(rect2D.getBounds());
         rect2D.setRect((int) pt.getX(), (int) pt.getY(), image.getWidth(), image.getHeight());
         getTree().getGraphics().drawImage(image, (int) pt.getX(), (int) pt.getY(), getTree());
     }
 
-    private final void clearImage() {
+    private void clearImage() {
         getTree().paintImmediately(rect2D.getBounds());
     }
 

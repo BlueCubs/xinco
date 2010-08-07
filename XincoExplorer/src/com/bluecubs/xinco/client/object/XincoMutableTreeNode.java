@@ -36,8 +36,8 @@
 package com.bluecubs.xinco.client.object;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.core.XincoCoreData;
-import com.bluecubs.xinco.core.XincoCoreNode;
+import com.bluecubs.xinco.client.service.XincoCoreData;
+import com.bluecubs.xinco.client.service.XincoCoreNode;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -68,35 +68,35 @@ public class XincoMutableTreeNode extends DefaultMutableTreeNode {
                 if (s == null) {
                     s = super.toString();
                 }
-                status = new String("");
-                if (((XincoCoreNode) getUserObject()).getStatus_number() == 2) {
-                    status = new String(" | -");
+                status = "";
+                if (((XincoCoreNode) getUserObject()).getStatusNumber() == 2) {
+                    status = " | -";
                 }
-                if (((XincoCoreNode) getUserObject()).getStatus_number() == 3) {
-                    status = new String(" | ->");
+                if (((XincoCoreNode) getUserObject()).getStatusNumber() == 3) {
+                    status = " | ->";
                 }
-                return "" + s + " (" + ((XincoCoreNode) getUserObject()).getXinco_core_language().getSign() + status + ")";
+                return "" + s + " (" + ((XincoCoreNode) getUserObject()).getXincoCoreLanguage().getSign() + status + ")";
             }
             if (getUserObject().getClass() == XincoCoreData.class) {
                 s = ((XincoCoreData) getUserObject()).getDesignation();
                 if (s == null) {
                     s = super.toString();
                 }
-                status = new String("");
-                if (((XincoCoreData) getUserObject()).getStatus_number() == 2) {
-                    status = new String(" | -");
+                status = "";
+                if (((XincoCoreData) getUserObject()).getStatusNumber() == 2) {
+                    status = " | -";
                 }
-                if (((XincoCoreData) getUserObject()).getStatus_number() == 3) {
-                    status = new String(" | ->");
+                if (((XincoCoreData) getUserObject()).getStatusNumber() == 3) {
+                    status = " | ->";
                 }
-                if (((XincoCoreData) getUserObject()).getStatus_number() == 4) {
-                    status = new String(" | X");
+                if (((XincoCoreData) getUserObject()).getStatusNumber() == 4) {
+                    status = " | X";
                 }
-                if (((XincoCoreData) getUserObject()).getStatus_number() == 5) {
-                    status = new String(" | WWW");
+                if (((XincoCoreData) getUserObject()).getStatusNumber() == 5) {
+                    status = " | WWW";
                 }
-                return "" + s + " (" + explorer.getResourceBundle().getString(((XincoCoreData) getUserObject()).getXinco_core_data_type().getDesignation()) +
-                        " | " + ((XincoCoreData) getUserObject()).getXinco_core_language().getSign() + status + ")";
+                return "" + s + " (" + explorer.getResourceBundle().getString(((XincoCoreData) getUserObject()).getXincoCoreDataType().getDesignation()) +
+                        " | " + ((XincoCoreData) getUserObject()).getXincoCoreLanguage().getSign() + status + ")";
             }
         }
         return super.toString();

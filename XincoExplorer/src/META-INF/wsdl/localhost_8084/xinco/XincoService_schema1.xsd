@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" targetNamespace="http://service.server.xinco.bluecubs.com/" xmlns:tns="http://service.server.xinco.bluecubs.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="checkXincoCoreUserNewPassword" nillable="true" type="tns:checkXincoCoreUserNewPassword"/>
+
+  <xs:element name="checkXincoCoreUserNewPasswordResponse" nillable="true" type="tns:checkXincoCoreUserNewPasswordResponse"/>
+
+  <xs:element name="doXincoCoreDataCheckin" nillable="true" type="tns:doXincoCoreDataCheckin"/>
+
+  <xs:element name="doXincoCoreDataCheckinResponse" nillable="true" type="tns:doXincoCoreDataCheckinResponse"/>
+
+  <xs:element name="doXincoCoreDataCheckout" nillable="true" type="tns:doXincoCoreDataCheckout"/>
+
+  <xs:element name="doXincoCoreDataCheckoutResponse" nillable="true" type="tns:doXincoCoreDataCheckoutResponse"/>
+
+  <xs:element name="downloadXincoCoreData" nillable="true" type="tns:downloadXincoCoreData"/>
+
+  <xs:element name="downloadXincoCoreDataResponse" nillable="true" type="tns:downloadXincoCoreDataResponse"/>
+
+  <xs:element name="findXincoCoreData" nillable="true" type="tns:findXincoCoreData"/>
+
+  <xs:element name="findXincoCoreDataResponse" nillable="true" type="tns:findXincoCoreDataResponse"/>
+
+  <xs:element name="getAllXincoCoreDataTypes" nillable="true" type="tns:getAllXincoCoreDataTypes"/>
+
+  <xs:element name="getAllXincoCoreDataTypesResponse" nillable="true" type="tns:getAllXincoCoreDataTypesResponse"/>
+
+  <xs:element name="getAllXincoCoreGroups" nillable="true" type="tns:getAllXincoCoreGroups"/>
+
+  <xs:element name="getAllXincoCoreGroupsResponse" nillable="true" type="tns:getAllXincoCoreGroupsResponse"/>
+
+  <xs:element name="getAllXincoCoreLanguages" nillable="true" type="tns:getAllXincoCoreLanguages"/>
+
+  <xs:element name="getAllXincoCoreLanguagesResponse" nillable="true" type="tns:getAllXincoCoreLanguagesResponse"/>
+
+  <xs:element name="getCurrentXincoCoreUser" nillable="true" type="tns:getCurrentXincoCoreUser"/>
+
+  <xs:element name="getCurrentXincoCoreUserResponse" nillable="true" type="tns:getCurrentXincoCoreUserResponse"/>
+
+  <xs:element name="getXincoAddAttributes" nillable="true" type="tns:getXincoAddAttributes"/>
+
+  <xs:element name="getXincoAddAttributesResponse" nillable="true" type="tns:getXincoAddAttributesResponse"/>
+
+  <xs:element name="getXincoCoreData" nillable="true" type="tns:getXincoCoreData"/>
+
+  <xs:element name="getXincoCoreDataResponse" nillable="true" type="tns:getXincoCoreDataResponse"/>
+
+  <xs:element name="getXincoCoreDataType" nillable="true" type="tns:getXincoCoreDataType"/>
+
+  <xs:element name="getXincoCoreDataTypeAttribute" nillable="true" type="tns:getXincoCoreDataTypeAttribute"/>
+
+  <xs:element name="getXincoCoreDataTypeAttributeResponse" nillable="true" type="tns:getXincoCoreDataTypeAttributeResponse"/>
+
+  <xs:element name="getXincoCoreDataTypeResponse" nillable="true" type="tns:getXincoCoreDataTypeResponse"/>
+
+  <xs:element name="getXincoCoreNode" nillable="true" type="tns:getXincoCoreNode"/>
+
+  <xs:element name="getXincoCoreNodeResponse" nillable="true" type="tns:getXincoCoreNodeResponse"/>
+
+  <xs:element name="getXincoCoreNodes" nillable="true" type="tns:getXincoCoreNodes"/>
+
+  <xs:element name="getXincoCoreNodesResponse" nillable="true" type="tns:getXincoCoreNodesResponse"/>
+
+  <xs:element name="getXincoServerVersion" nillable="true" type="tns:getXincoServerVersion"/>
+
+  <xs:element name="getXincoServerVersionResponse" nillable="true" type="tns:getXincoServerVersionResponse"/>
+
+  <xs:element name="getXincoSetting" nillable="true" type="tns:getXincoSetting"/>
+
+  <xs:element name="getXincoSettingResponse" nillable="true" type="tns:getXincoSettingResponse"/>
+
+  <xs:element name="removeXincoCoreACE" nillable="true" type="tns:removeXincoCoreACE"/>
+
+  <xs:element name="removeXincoCoreACEResponse" nillable="true" type="tns:removeXincoCoreACEResponse"/>
+
+  <xs:element name="setXincoCoreACE" nillable="true" type="tns:setXincoCoreACE"/>
+
+  <xs:element name="setXincoCoreACEResponse" nillable="true" type="tns:setXincoCoreACEResponse"/>
+
+  <xs:element name="setXincoCoreData" nillable="true" type="tns:setXincoCoreData"/>
+
+  <xs:element name="setXincoCoreDataResponse" nillable="true" type="tns:setXincoCoreDataResponse"/>
+
+  <xs:element name="setXincoCoreGroup" nillable="true" type="tns:setXincoCoreGroup"/>
+
+  <xs:element name="setXincoCoreGroupResponse" nillable="true" type="tns:setXincoCoreGroupResponse"/>
+
+  <xs:element name="setXincoCoreLanguage" nillable="true" type="tns:setXincoCoreLanguage"/>
+
+  <xs:element name="setXincoCoreLanguageResponse" nillable="true" type="tns:setXincoCoreLanguageResponse"/>
+
+  <xs:element name="setXincoCoreLog" nillable="true" type="tns:setXincoCoreLog"/>
+
+  <xs:element name="setXincoCoreLogResponse" nillable="true" type="tns:setXincoCoreLogResponse"/>
+
+  <xs:element name="setXincoCoreNode" nillable="true" type="tns:setXincoCoreNode"/>
+
+  <xs:element name="setXincoCoreNodeResponse" nillable="true" type="tns:setXincoCoreNodeResponse"/>
+
+  <xs:element name="setXincoCoreUser" nillable="true" type="tns:setXincoCoreUser"/>
+
+  <xs:element name="setXincoCoreUserResponse" nillable="true" type="tns:setXincoCoreUserResponse"/>
+
+  <xs:element name="undoXincoCoreDataCheckout" nillable="true" type="tns:undoXincoCoreDataCheckout"/>
+
+  <xs:element name="undoXincoCoreDataCheckoutResponse" nillable="true" type="tns:undoXincoCoreDataCheckoutResponse"/>
+
+  <xs:element name="uploadXincoCoreData" nillable="true" type="tns:uploadXincoCoreData"/>
+
+  <xs:element name="uploadXincoCoreDataResponse" nillable="true" type="tns:uploadXincoCoreDataResponse"/>
+
+  <xs:complexType name="setXincoCoreUser">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreUser" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="xincoCoreUser">
+    <xs:sequence>
+      <xs:element name="change" type="xs:boolean"/>
+      <xs:element name="changerID" type="xs:int"/>
+      <xs:element name="email" type="xs:string" minOccurs="0"/>
+      <xs:element name="firstname" type="xs:string" minOccurs="0"/>
+      <xs:element name="id" type="xs:int"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="reason" type="xs:string" minOccurs="0"/>
+      <xs:element name="statusNumber" type="xs:int"/>
+      <xs:element name="username" type="xs:string" minOccurs="0"/>
+      <xs:element name="userpassword" type="xs:string" minOccurs="0"/>
+      <xs:element name="writeGroups" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="setXincoCoreUserResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getXincoAddAttributes">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreData" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="xincoCoreData">
+    <xs:sequence>
+      <xs:element name="changerID" type="xs:int"/>
+      <xs:element name="designation" type="xs:string" minOccurs="0"/>
+      <xs:element name="id" type="xs:int"/>
+      <xs:element name="statusNumber" type="xs:int"/>
+      <xs:element name="xincoCoreDataType" type="tns:xincoCoreDataType" minOccurs="0"/>
+      <xs:element name="xincoCoreLanguage" type="tns:xincoCoreLanguage" minOccurs="0"/>
+      <xs:element name="xincoCoreNodeId" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="xincoCoreDataType">
+    <xs:sequence>
+      <xs:element name="changerID" type="xs:int"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+      <xs:element name="designation" type="xs:string" minOccurs="0"/>
+      <xs:element name="id" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="xincoCoreLanguage">
+    <xs:sequence>
+      <xs:element name="changerID" type="xs:int"/>
+      <xs:element name="designation" type="xs:string" minOccurs="0"/>
+      <xs:element name="id" type="xs:int"/>
+      <xs:element name="sign" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getXincoAddAttributesResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoAddAttribute" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="xincoAddAttribute">
+    <xs:sequence>
+      <xs:element name="attribDatetime" type="xs:anySimpleType" minOccurs="0"/>
+      <xs:element name="attribDouble" type="xs:double"/>
+      <xs:element name="attribInt" type="xs:int"/>
+      <xs:element name="attribText" type="xs:string" minOccurs="0"/>
+      <xs:element name="attribUnsignedint" type="xs:long"/>
+      <xs:element name="attribVarchar" type="xs:string" minOccurs="0"/>
+      <xs:element name="attributeId" type="xs:int"/>
+      <xs:element name="change" type="xs:boolean"/>
+      <xs:element name="changerID" type="xs:int"/>
+      <xs:element name="xincoCoreDataId" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getXincoCoreDataType">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreDataType" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getXincoCoreDataTypeResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreDataType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getXincoCoreData">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreData" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getXincoCoreDataResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreData" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="doXincoCoreDataCheckin">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreData" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="doXincoCoreDataCheckinResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreData" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="setXincoCoreACE">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreACE" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="xincoCoreACE">
+    <xs:sequence>
+      <xs:element name="adminPermission" type="xs:boolean"/>
+      <xs:element name="changerID" type="xs:int"/>
+      <xs:element name="executePermission" type="xs:boolean"/>
+      <xs:element name="id" type="xs:int"/>
+      <xs:element name="readPermission" type="xs:boolean"/>
+      <xs:element name="writePermission" type="xs:boolean"/>
+      <xs:element name="xincoCoreDataId" type="xs:int"/>
+      <xs:element name="xincoCoreGroupId" type="xs:int"/>
+      <xs:element name="xincoCoreNodeId" type="xs:int"/>
+      <xs:element name="xincoCoreUserId" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="setXincoCoreACEResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreACE" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="doXincoCoreDataCheckout">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreData" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="doXincoCoreDataCheckoutResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreData" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="setXincoCoreData">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreData" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="setXincoCoreDataResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreData" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getAllXincoCoreLanguages">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getAllXincoCoreLanguagesResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreLanguage" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="setXincoCoreLog">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreLog" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="xincoCoreLog">
+    <xs:sequence>
+      <xs:element name="changerID" type="xs:int"/>
+      <xs:element name="id" type="xs:int"/>
+      <xs:element name="opCode" type="xs:int"/>
+      <xs:element name="opDatetime" type="xs:anySimpleType" minOccurs="0"/>
+      <xs:element name="opDescription" type="xs:string" minOccurs="0"/>
+      <xs:element name="version" type="tns:xincoVersion" minOccurs="0"/>
+      <xs:element name="xincoCoreDataId" type="xs:int"/>
+      <xs:element name="xincoCoreUserId" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="xincoVersion">
+    <xs:sequence>
+      <xs:element name="versionHigh" type="xs:int"/>
+      <xs:element name="versionLow" type="xs:int"/>
+      <xs:element name="versionMid" type="xs:int"/>
+      <xs:element name="versionPostfix" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="setXincoCoreLogResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreLog" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="removeXincoCoreACE">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreACE" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="removeXincoCoreACEResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="checkXincoCoreUserNewPassword">
+    <xs:sequence>
+      <xs:element name="in0" type="xs:string" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+      <xs:element name="in2" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="checkXincoCoreUserNewPasswordResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getAllXincoCoreDataTypes">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getAllXincoCoreDataTypesResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreDataType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="setXincoCoreNode">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreNode" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="xincoCoreNode">
+    <xs:sequence>
+      <xs:element name="changerID" type="xs:int"/>
+      <xs:element name="designation" type="xs:string" minOccurs="0"/>
+      <xs:element name="id" type="xs:int"/>
+      <xs:element name="statusNumber" type="xs:int"/>
+      <xs:element name="xincoCoreLanguage" type="tns:xincoCoreLanguage" minOccurs="0"/>
+      <xs:element name="xincoCoreNodeId" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="setXincoCoreNodeResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreNode" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findXincoCoreData">
+    <xs:sequence>
+      <xs:element name="in0" type="xs:string" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreLanguage" minOccurs="0"/>
+      <xs:element name="in2" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findXincoCoreDataResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:anyType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="setXincoCoreLanguage">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreLanguage" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="setXincoCoreLanguageResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreLanguage" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="downloadXincoCoreData">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreData" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="downloadXincoCoreDataResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:base64Binary" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getAllXincoCoreGroups">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getAllXincoCoreGroupsResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreGroup" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="xincoCoreGroup">
+    <xs:sequence>
+      <xs:element name="changerID" type="xs:int"/>
+      <xs:element name="designation" type="xs:string" minOccurs="0"/>
+      <xs:element name="id" type="xs:int"/>
+      <xs:element name="statusNumber" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getXincoCoreNodes">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreNode" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getXincoCoreNodesResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreNode" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getXincoSetting">
+    <xs:sequence>
+      <xs:element name="in0" type="xs:string" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getXincoSettingResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoSetting" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="xincoSetting">
+    <xs:sequence>
+      <xs:element name="boolValue" type="xs:boolean"/>
+      <xs:element name="changerID" type="xs:int"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+      <xs:element name="id" type="xs:int"/>
+      <xs:element name="intValue" type="xs:int"/>
+      <xs:element name="longValue" type="xs:long"/>
+      <xs:element name="stringValue" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="setXincoCoreGroup">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreGroup" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="setXincoCoreGroupResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreGroup" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getXincoCoreDataTypeAttribute">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreDataType" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getXincoCoreDataTypeAttributeResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreDataTypeAttribute" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="xincoCoreDataTypeAttribute">
+    <xs:sequence>
+      <xs:element name="attributeId" type="xs:int"/>
+      <xs:element name="changerID" type="xs:int"/>
+      <xs:element name="dataType" type="xs:string" minOccurs="0"/>
+      <xs:element name="designation" type="xs:string" minOccurs="0"/>
+      <xs:element name="size" type="xs:int"/>
+      <xs:element name="xincoCoreDataTypeId" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getXincoServerVersion">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="getXincoServerVersionResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoVersion" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="undoXincoCoreDataCheckout">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreData" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="undoXincoCoreDataCheckoutResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreData" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getXincoCoreNode">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreNode" minOccurs="0"/>
+      <xs:element name="in1" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getXincoCoreNodeResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreNode" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="uploadXincoCoreData">
+    <xs:sequence>
+      <xs:element name="in0" type="tns:xincoCoreData" minOccurs="0"/>
+      <xs:element name="in1" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="in2" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="uploadXincoCoreDataResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getCurrentXincoCoreUser">
+    <xs:sequence>
+      <xs:element name="in0" type="xs:string" minOccurs="0"/>
+      <xs:element name="in1" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getCurrentXincoCoreUserResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:xincoCoreUser" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+
