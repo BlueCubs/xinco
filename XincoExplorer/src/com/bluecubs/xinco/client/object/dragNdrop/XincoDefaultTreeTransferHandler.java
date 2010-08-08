@@ -1,5 +1,5 @@
 /**
- *Copyright 2007 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  * Description:     XincoDefaultTreeTransferHandler
  *
  * Original Author: Javier A. Ortiz
- * Date:            May 18, 2007, 2:24 PM
+ * Date:            May 18, 2010, 2:24 PM
  *
  * Modifications:
  *
@@ -35,7 +35,7 @@
 package com.bluecubs.xinco.client.object.dragNdrop;
 
 import com.bluecubs.xinco.client.object.XincoJTree;
-import com.bluecubs.xinco.client.service.XincoCoreData;
+import com.bluecubs.xinco.core.XincoCoreData;
 import java.awt.Point;
 import java.awt.dnd.DnDConstants;
 import javax.swing.tree.DefaultMutableTreeNode;

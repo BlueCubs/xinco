@@ -34,9 +34,7 @@
         <jar href="JTattoo.jar"/>
 <jar href="activation.jar"/>
 <jar href="axis.jar"/>
-<jar href="commons-codec-1.4.jar"/>
 <jar href="commons-discovery-0.2.jar"/>
-<jar href="commons-httpclient-3.1.jar"/>
 <jar href="commons-logging-1.0.4.jar"/>
 <jar href="jaxrpc.jar"/>
 <jar href="liquidlnf.jar"/>

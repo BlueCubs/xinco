@@ -34,18 +34,16 @@
  */
 package com.bluecubs.xinco.tools;
 
-import com.twiek.Utils.Base64;
 import java.io.UnsupportedEncodingException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
+import org.apache.axis.encoding.Base64;
 
 /**
  *
@@ -86,20 +84,15 @@ public class XincoCrypter {
             ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
             dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
         } catch (java.security.InvalidAlgorithmParameterException e) {
-            Logger.getLogger(XincoCrypter.class.getName()).log(
-                    Level.SEVERE, null, e);
+            e.printStackTrace();
         } catch (java.security.spec.InvalidKeySpecException e) {
-            Logger.getLogger(XincoCrypter.class.getName()).log(
-                    Level.SEVERE, null, e);
+            e.printStackTrace();
         } catch (javax.crypto.NoSuchPaddingException e) {
-            Logger.getLogger(XincoCrypter.class.getName()).log(
-                    Level.SEVERE, null, e);
+            e.printStackTrace();
         } catch (java.security.NoSuchAlgorithmException e) {
-            Logger.getLogger(XincoCrypter.class.getName()).log(
-                    Level.SEVERE, null, e);
+            e.printStackTrace();
         } catch (java.security.InvalidKeyException e) {
-            Logger.getLogger(XincoCrypter.class.getName()).log(
-                    Level.SEVERE, null, e);
+            e.printStackTrace();
         }
     }
 
@@ -117,16 +110,15 @@ public class XincoCrypter {
             byte[] enc = ecipher.doFinal(utf8);
 
             // Encode bytes to base64 to get a string
-            return Base64.encode(enc.toString());
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(XincoCrypter.class.getSimpleName()).log(
-                    Level.SEVERE, null, ex);
+            return Base64.encode(enc);
         } catch (javax.crypto.BadPaddingException e) {
-            Logger.getLogger(XincoCrypter.class.getName()).log(
-                    Level.SEVERE, null, e);
+            e.printStackTrace();
         } catch (IllegalBlockSizeException e) {
-            Logger.getLogger(XincoCrypter.class.getName()).log(
-                    Level.SEVERE, null, e);
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -134,29 +126,25 @@ public class XincoCrypter {
     /**
      * Decrypt
      * @param str
-     * @return Decrypted screen
+     * @return
      */
     public String decrypt(String str) {
         try {
             // Decode base64 to get bytes
-            byte[] dec = Base64.decode(str).getBytes();
+            byte[] dec = Base64.decode(str);
 
             // Decrypt
             byte[] utf8 = dcipher.doFinal(dec);
             // Decode using utf-8
             return new String(utf8, "UTF8");
         } catch (javax.crypto.BadPaddingException e) {
-            Logger.getLogger(XincoCrypter.class.getName()).log(
-                    Level.SEVERE, null, e);
+            e.printStackTrace();
         } catch (IllegalBlockSizeException e) {
-            Logger.getLogger(XincoCrypter.class.getName()).log(
-                    Level.SEVERE, null, e);
+            e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
-            Logger.getLogger(XincoCrypter.class.getName()).log(
-                    Level.SEVERE, null, e);
+            e.printStackTrace();
         } catch (java.io.IOException e) {
-            Logger.getLogger(XincoCrypter.class.getName()).log(
-                    Level.SEVERE, null, e);
+            e.printStackTrace();
         }
         return null;
     }

@@ -41,10 +41,11 @@ package com.bluecubs.xinco.client.dialogs;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
-import com.bluecubs.xinco.client.service.XincoCoreLanguage;
-import com.bluecubs.xinco.client.service.XincoCoreNode;
+import com.bluecubs.xinco.core.XincoCoreLanguage;
+import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoException;
 import java.util.Locale;
+import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
@@ -95,16 +96,16 @@ public class DataFolderDialog extends AbstractDialog {
             DefaultListModel dlm = new DefaultListModel();
             dlm.removeAllElements();
             for (i = 0; i < explorer.getSession().getServerLanguages().size(); i++) {
-                text = ((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getDesignation() + " (" + ((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getSign() + ")";
+                text = ((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getSign() + ")";
                 dlm.addElement(text);
-                if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getId() == ((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLanguage().getId()) {
+                if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getId() == ((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_language().getId()) {
                     selection = i;
                 }
                 if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId() == 0) {
-                    if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
+                    if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
                         selection = i;
                     }
-                    if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getId() == 1) {
+                    if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getId() == 1) {
                         alt_selection = i;
                     }
                 }
@@ -117,13 +118,13 @@ public class DataFolderDialog extends AbstractDialog {
             }
             language.setSelectedIndex(selection);
             language.ensureIndexIsVisible(language.getSelectedIndex());
-            if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatusNumber() == 1) {
+            if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 1) {
                 text = explorer.getResourceBundle().getString("general.status.open") + "";
             }
-            if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatusNumber() == 2) {
+            if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 2) {
                 text = explorer.getResourceBundle().getString("general.status.locked") + " (-)";
             }
-            if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatusNumber() == 3) {
+            if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 3) {
                 text = explorer.getResourceBundle().getString("general.status.archived") + " (->)";
             }
             state.setText(text);
@@ -237,13 +238,13 @@ public class DataFolderDialog extends AbstractDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
-        XincoMutableTreeNode tempNode = null;
+        XincoMutableTreeNode temp_node = null;
         //delete new folder from treemodel if not saved to server yet
         if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId() == 0) {
-            tempNode = explorer.getSession().getCurrentTreeNodeSelection();
+            temp_node = explorer.getSession().getCurrentTreeNodeSelection();
             explorer.getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode) explorer.getSession().getCurrentTreeNodeSelection().getParent());
             explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
-            explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(tempNode);
+            explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(temp_node);
         }
         setVisible(false);
         designation.setText(explorer.getResourceBundle().getString("general.newfolder"));
@@ -251,7 +252,7 @@ public class DataFolderDialog extends AbstractDialog {
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         boolean insertnewnode = false;
-        XincoMutableTreeNode tempNode = null;
+        XincoMutableTreeNode temp_node = null;
         XincoCoreNode newnode = (XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject();
         //check if inserting new node
         if (newnode.getId() <= 0) {
@@ -262,11 +263,11 @@ public class DataFolderDialog extends AbstractDialog {
         if (language.getSelectedIndex() < 0) {
             language.setSelectedIndex(0);
         }
-        newnode.setXincoCoreLanguage(((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(this.language.getSelectedIndex())));
+        newnode.setXinco_core_language(((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(this.language.getSelectedIndex())));
         try {
             // optimize node size
-            newnode.getXincoCoreNodes().clear();
-            newnode.getXincoCoreData().clear();
+            newnode.setXinco_core_nodes(new Vector());
+            newnode.setXinco_core_data(new Vector());
             if ((newnode = explorer.getSession().getXinco().setXincoCoreNode(newnode, explorer.getSession().getUser()))
                     == null) {
                 throw new XincoException(explorer.getResourceBundle().getString("error.nowritepermission"));
@@ -283,10 +284,10 @@ public class DataFolderDialog extends AbstractDialog {
         } catch (Exception rmie) {
             //remove new node in case off error
             if (insertnewnode) {
-                tempNode = explorer.getSession().getCurrentTreeNodeSelection();
+                temp_node = explorer.getSession().getCurrentTreeNodeSelection();
                 explorer.getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode) explorer.getSession().getCurrentTreeNodeSelection().getParent());
                 explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
-                explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(tempNode);
+                explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(temp_node);
             }
             JOptionPane.showMessageDialog(explorer,
                     explorer.getResourceBundle().getString("window.folder.updatefailed")
