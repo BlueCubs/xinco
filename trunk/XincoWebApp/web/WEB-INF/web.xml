@@ -52,10 +52,10 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Xinco</servlet-name>
-        <url-pattern>/Xinco</url-pattern>
+        <url-pattern>/services/Xinco</url-pattern>
     </servlet-mapping>
     <session-config>
-        <session-timeout>            30</session-timeout>
+        <session-timeout>30</session-timeout>
     </session-config>
     <mime-mapping>
         <extension>wsdl</extension>
