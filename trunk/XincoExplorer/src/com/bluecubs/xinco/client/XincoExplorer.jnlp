@@ -33,7 +33,6 @@
     <jar href="Xinco.jar"/>
         <jar href="JTattoo.jar"/>
 <jar href="activation.jar"/>
-<jar href="axis.jar"/>
 <jar href="commons-codec-1.4.jar"/>
 <jar href="commons-discovery-0.2.jar"/>
 <jar href="commons-httpclient-3.1.jar"/>
@@ -42,10 +41,8 @@
 <jar href="liquidlnf.jar"/>
 <jar href="mail.jar"/>
 <jar href="napkinlaf-1.2.jar"/>
-<jar href="saaj.jar"/>
 <jar href="substance.jar"/>
 <jar href="swing-layout-1.0.3.jar"/>
-<jar href="wsdl4j-1.5.1.jar"/>
 <jar href="xercesImpl.jar"/>
 <jar href="xmlParserAPIs.jar"/>
   </resources>
