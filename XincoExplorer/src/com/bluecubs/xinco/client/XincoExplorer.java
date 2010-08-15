@@ -78,6 +78,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -120,7 +121,6 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import org.apache.axis.utils.ByteArrayOutputStream;
 
 /**
  * XincoExplorer
@@ -788,7 +788,8 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
      */
     public javax.swing.JTable getJTableRepository() {
         if (jTableRepository == null) {
-            String[] cn = {xerb.getString("window.repository.table.attribute"), xerb.getString("window.repository.table.details")};
+            String[] cn = {xerb.getString("window.repository.table.attribute"),
+            xerb.getString("window.repository.table.details")};
             DefaultTableModel dtm = new DefaultTableModel(cn, 0) {
 
                 @Override
@@ -1105,8 +1106,10 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                                 JOptionPane.showMessageDialog(XincoExplorer.this, mess, mess, JOptionPane.WARNING_MESSAGE);
                                 throw new XincoException(mess);
                             }
-                            if ((temp = xincoClientSession.getXinco().getCurrentXincoCoreUser(xincoClientSession.getUser().getUsername(), xincoClientSession.getUser().getUserpassword())) == null) {
-                                throw new XincoException(xerb.getString("menu.connection.error.user"));
+                            try {
+                                temp = xincoClientSession.getXinco().getCurrentXincoCoreUser(xincoClientSession.getUser().getUsername(), xincoClientSession.getUser().getUserpassword());
+                            } catch (Exception ex) {
+                                throw new Exception(xerb.getString("menu.connection.error.user"));
                             }
                             temp.setUserpassword(xincoClientSession.getUser().getUserpassword());
                             newuser.setEmail(temp.getEmail());
@@ -1117,10 +1120,10 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             newuser.setUsername(temp.getUsername());
                             newuser.setUserpassword(temp.getUserpassword());
                             xincoClientSession.setUser(xincoClientSession.getXinco().getCurrentXincoCoreUser(newuser.getUsername(), newuser.getUserpassword()));
-                            if (!progressBar.isInitialized()) {
-                                progressBar.start();
-                            } else {
+                            if (progressBar.isInitialized()) {
                                 progressBar.show();
+                            } else {
+                                progressBar.start();
                             }
                             xincoClientSession.setServerDatatypes(xincoClientSession.getXinco().getAllXincoCoreDataTypes(xincoClientSession.getUser()));
                             xincoClientSession.setServerGroups(xincoClientSession.getXinco().getAllXincoCoreGroups(xincoClientSession.getUser()));
@@ -1140,12 +1143,17 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             loginT = new loginThread();
                             loginT.start();
                         } catch (Exception cone) {
-                            Logger.getLogger(ConnectionDialog.class.getSimpleName()).log(Level.SEVERE, null, cone);
+                            Logger.getLogger(
+                                    ConnectionDialog.class.getSimpleName()).log(
+                                    Level.SEVERE, "Connection error", cone);
                             xincoClientSession.setStatus(0);
                             markConnectionStatus();
-                            JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("menu.connection.failed")
+                            JOptionPane.showMessageDialog(XincoExplorer.this,
+                                    xerb.getString("menu.connection.failed")
                                     + " " + xerb.getString("general.reason") + ": "
-                                    + cone.toString(), xerb.getString("menu.connection.failed"), JOptionPane.WARNING_MESSAGE);
+                                    + cone.toString(),
+                                    xerb.getString("menu.connection.failed"),
+                                    JOptionPane.WARNING_MESSAGE);
                         }
                     }
                 }
@@ -1184,7 +1192,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         @Override
         public void run() {
             try {
-                StringBuffer status_string = new StringBuffer();
+                StringBuilder status_string = new StringBuilder();
                 temp = xincoClientSession.getXinco().getCurrentXincoCoreUser(xincoClientSession.getUser().getUsername(), xincoClientSession.getUser().getUserpassword());
                 status_string.append(xerb.getString("menu.connection.connectedto")).append(": ").append(xincoClientSession.getServiceEndpoint()).append("\n");
                 status_string.append(xerb.getString("general.serverversion")).append(": ");

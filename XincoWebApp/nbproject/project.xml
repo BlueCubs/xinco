@@ -106,14 +106,6 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.saaj.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.scriptella.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library dirs="200">
                     <file>${file.reference.servlet-api-2.4.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
@@ -153,14 +145,14 @@
                     <file>${reference.XincoExplorer.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
+                <library dirs="200">
+                    <file>${file.reference.gsp.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
             </web-module-libraries>
             <web-module-additional-libraries>
                 <library dirs="200">
                     <file>${file.reference.activation.jar-1}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.axis.jar-1}</file>
                     <path-in-war>client</path-in-war>
                 </library>
                 <library dirs="200">
@@ -200,19 +192,11 @@
                     <path-in-war>client</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.saaj.jar-1}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
                     <file>${file.reference.substance.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
                 <library dirs="200">
                     <file>${file.reference.swing-layout-1.0.3.jar}</file>
-                    <path-in-war>client</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.wsdl4j-1.5.1.jar-1}</file>
                     <path-in-war>client</path-in-war>
                 </library>
                 <library dirs="200">

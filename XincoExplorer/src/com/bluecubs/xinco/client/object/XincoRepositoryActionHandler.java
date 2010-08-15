@@ -67,14 +67,15 @@ public class XincoRepositoryActionHandler {
     private int count = 0;
     private Action[] actions = null;
 
-    /** Creates a new instance of XincoActionHandler
-     * @param e 
+    /**
+     * Creates a new instance of XincoActionHandler
+     * @param explorer
      */
-    public XincoRepositoryActionHandler(XincoExplorer e) {
-        this.explorer = e;
-        this.xerb = e.getResourceBundle();
+    public XincoRepositoryActionHandler(final XincoExplorer explorer) {
+        this.explorer = explorer;
+        this.xerb = explorer.getResourceBundle();
         //Same size as menu Items
-        actions = new Action[e.getActionSize()];
+        actions = new Action[explorer.getActionSize()];
         //0
         actions[count] = new Refresh(xerb.getString("menu.repository.refresh"),
                 this.explorer.getXincoIcon(),

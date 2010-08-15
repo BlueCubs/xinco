@@ -714,6 +714,7 @@ INSERT INTO `xinco`.`xinco_core_data_type` (`id`, `designation`, `description`) 
 INSERT INTO `xinco`.`xinco_core_data_type` (`id`, `designation`, `description`) VALUES ('2', 'general.data.type.text', 'general.data.type.text.description');
 INSERT INTO `xinco`.`xinco_core_data_type` (`id`, `designation`, `description`) VALUES ('3', 'general.data.type.URL', 'general.data.type.URL.description');
 INSERT INTO `xinco`.`xinco_core_data_type` (`id`, `designation`, `description`) VALUES ('4', 'general.data.type.contact', 'general.data.type.contact.description');
+INSERT INTO `xinco`.`xinco_core_data_type` (`id`, `designation`, `description`) VALUES ('5', 'general.data.type.rendering', 'general.data.type.rendering.description');
 
 COMMIT;
 
@@ -806,21 +807,22 @@ COMMIT;
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
 USE `xinco`;
-INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '1', 'File Name', 'varchar', '255');
-INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '2', 'Size', 'unsignedint', '0');
-INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '3', 'Checksum', 'varchar', '255');
-INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '4', 'Revision_Model', 'unsignedint', '0');
-INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '5', 'Archiving_Model', 'unsignedint', '0');
-INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '6', 'Archiving_Date', 'datetime', '0');
-INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '7', 'Archiving_Days', 'unsignedint', '0');
-INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '8', 'Archiving_Location', 'text', '0');
-INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '9', 'Description', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '1', 'general.filename', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '2', 'general.size', 'unsignedint', '0');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '3', 'general.checksum', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '4', 'general.revision.model', 'unsignedint', '0');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '5', 'general.archive.model', 'unsignedint', '0');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '6', 'general.archive.date', 'datetime', '0');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '7', 'general.archive.days', 'unsignedint', '0');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '8', 'general.archive.location', 'text', '0');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '9', 'general.description', 'varchar', '255');
 INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '10', 'Keyword_1', 'varchar', '255');
 INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '11', 'Keyword_2', 'varchar', '255');
 INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '12', 'Keyword_3', 'varchar', '255');
-INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('2', '1', 'Text', 'text', '0');
-INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('3', '1', 'URL', 'varchar', '255');
-INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '1', 'Salutation', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('2', '1', 'general.data.type.text', 'text', '0');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('3', '1', 'general.data.type.URL', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '1', 'general.salutation', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('5', '1', 'general.format', 'varchar', '45');
 
 COMMIT;
 
