@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Javier A. Ortiz Bultr�n <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 public class XincoActionServer extends XincoAction {
 
@@ -28,7 +28,7 @@ public class XincoActionServer extends XincoAction {
         super();
         if (id > 0) {
             //Read from database
-            XincoAction action = new XincoActionJpaController().findXincoAction(getId());
+            XincoAction action = new XincoActionJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoAction(getId());
             setImplementationClass(action.getImplementationClass());
             setName(action.getName());
         }
@@ -43,15 +43,15 @@ public class XincoActionServer extends XincoAction {
         XincoAction action = null;
         try {
             if (getId() != null) {
-                action = new XincoActionJpaController().findXincoAction(getId());
+                action = new XincoActionJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoAction(getId());
                 action.setImplementationClass(getImplementationClass());
                 action.setName(getName());
-                new XincoActionJpaController().edit(action);
+                new XincoActionJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).edit(action);
             } else {
                 action = new XincoAction();
                 action.setImplementationClass(getImplementationClass());
                 action.setName(getName());
-                new XincoActionJpaController().create(action);
+                new XincoActionJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).create(action);
             }
             return action.getId();
         } catch (IllegalOrphanException ex) {
@@ -68,9 +68,9 @@ public class XincoActionServer extends XincoAction {
 
     public static int removeFromDB(XincoAction action) throws XincoWorkflowException {
         //Check if action is being used somewhere else
-        action = new XincoActionJpaController().findXincoAction(action.getId());
+        action = new XincoActionJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoAction(action.getId());
         try {
-            new XincoActionJpaController().destroy(action.getId());
+            new XincoActionJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).destroy(action.getId());
             XincoWorkflowDBManager.deleteEntity(action);
         } catch (IllegalOrphanException ex) {
             Logger.getLogger(XincoActionServer.class.getName()).log(Level.SEVERE, null, ex);

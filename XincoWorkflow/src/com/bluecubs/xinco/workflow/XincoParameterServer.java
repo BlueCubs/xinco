@@ -28,12 +28,12 @@ public class XincoParameterServer extends XincoParameter {
         super();
         if (id > 0 && action_id > 0) {
             //Read from database
-            XincoParameter xp = new XincoParameterJpaController().findXincoParameter(new XincoParameterPK(action_id));
+            XincoParameter xp = new XincoParameterJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoParameter(new XincoParameterPK(action_id));
             setXincoParameterPK(xp.getXincoParameterPK());
             setName(xp.getName());
             setValue(xp.getValue());
             setValueType(xp.getValueType());
-            setXincoAction(new XincoActionJpaController().findXincoAction(xp.getXincoParameterPK().getXincoActionId()));
+            setXincoAction(new XincoActionJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoAction(xp.getXincoParameterPK().getXincoActionId()));
         } else if (id == 0 && action_id > 0) {
             setXincoParameterPK(new XincoParameterPK(action_id));
         }
@@ -44,7 +44,7 @@ public class XincoParameterServer extends XincoParameter {
         setName(xp.getName());
         setValue(xp.getValue());
         setValueType(xp.getValueType());
-        setXincoAction(new XincoActionJpaController().findXincoAction(xp.getXincoParameterPK().getXincoActionId()));
+        setXincoAction(new XincoActionJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoAction(xp.getXincoParameterPK().getXincoActionId()));
     }
 
     public XincoParameterPK write2DB() throws XincoWorkflowException {
@@ -52,20 +52,20 @@ public class XincoParameterServer extends XincoParameter {
         try {
             if (getXincoParameterPK() != null && getXincoParameterPK().getId() != 0
                     && getXincoParameterPK().getXincoActionId() != 0) {
-                xp = new XincoParameterJpaController().findXincoParameter(getXincoParameterPK());
+                xp = new XincoParameterJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoParameter(getXincoParameterPK());
                 setXincoParameterPK(xp.getXincoParameterPK());
                 xp.setName(getName());
                 xp.setValue(getValue());
                 xp.setValueType(getValueType());
-                xp.setXincoAction(new XincoActionJpaController().findXincoAction(getXincoParameterPK().getXincoActionId()));
-                new XincoParameterJpaController().edit(xp);
+                xp.setXincoAction(new XincoActionJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoAction(getXincoParameterPK().getXincoActionId()));
+                new XincoParameterJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).edit(xp);
             } else {
                 xp = new XincoParameter();
                 xp.setName(getName());
                 xp.setValue(getValue());
                 xp.setValueType(getValueType());
-                xp.setXincoAction(new XincoActionJpaController().findXincoAction(getXincoParameterPK().getXincoActionId()));
-                new XincoParameterJpaController().create(xp);
+                xp.setXincoAction(new XincoActionJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoAction(getXincoParameterPK().getXincoActionId()));
+                new XincoParameterJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).create(xp);
             }
             return xp.getXincoParameterPK();
         } catch (IllegalOrphanException ex) {
@@ -82,9 +82,9 @@ public class XincoParameterServer extends XincoParameter {
 
     public static int removeFromDB(XincoParameter xp) throws XincoWorkflowException {
         //Check if action is being used somewhere else
-        xp = new XincoParameterJpaController().findXincoParameter(xp.getXincoParameterPK());
+        xp = new XincoParameterJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoParameter(xp.getXincoParameterPK());
         try {
-            new XincoParameterJpaController().destroy(xp.getXincoParameterPK());
+            new XincoParameterJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).destroy(xp.getXincoParameterPK());
             XincoWorkflowDBManager.deleteEntity(xp);
         } catch (com.bluecubs.xinco.workflow.persistence.controller.exceptions.NonexistentEntityException ex) {
             Logger.getLogger(XincoParameterServer.class.getName()).log(Level.SEVERE, null, ex);

@@ -10,9 +10,9 @@ import com.bluecubs.xinco.workflow.persistence.XincoWorkItemHasXincoStatePK;
 import com.bluecubs.xinco.workflow.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.workflow.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.workflow.persistence.controller.exceptions.PreexistingEntityException;
+import java.io.Serializable;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
@@ -25,12 +25,12 @@ import java.util.List;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public class XincoWorkItemHasXincoStateJpaController {
+public class XincoWorkItemHasXincoStateJpaController implements Serializable {
 
-    public XincoWorkItemHasXincoStateJpaController() {
-        emf = Persistence.createEntityManagerFactory("XincoWorkflowPU");
+    public XincoWorkItemHasXincoStateJpaController(EntityManagerFactory emf) {
+        this.emf = emf;
     }
     private EntityManagerFactory emf = null;
 
@@ -45,9 +45,9 @@ public class XincoWorkItemHasXincoStateJpaController {
         if (xincoWorkItemHasXincoState.getXincoWorkItemParameterList() == null) {
             xincoWorkItemHasXincoState.setXincoWorkItemParameterList(new ArrayList<XincoWorkItemParameter>());
         }
-        xincoWorkItemHasXincoState.getXincoWorkItemHasXincoStatePK().setXincoStateXincoWorkflowVersion(xincoWorkItemHasXincoState.getXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowVersion());
         xincoWorkItemHasXincoState.getXincoWorkItemHasXincoStatePK().setXincoWorkItemId(xincoWorkItemHasXincoState.getXincoWorkflowItem().getId());
         xincoWorkItemHasXincoState.getXincoWorkItemHasXincoStatePK().setXincoStateXincoWorkflowId(xincoWorkItemHasXincoState.getXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowId());
+        xincoWorkItemHasXincoState.getXincoWorkItemHasXincoStatePK().setXincoStateXincoWorkflowVersion(xincoWorkItemHasXincoState.getXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowVersion());
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -100,9 +100,9 @@ public class XincoWorkItemHasXincoStateJpaController {
     }
 
     public void edit(XincoWorkItemHasXincoState xincoWorkItemHasXincoState) throws IllegalOrphanException, NonexistentEntityException, Exception {
-        xincoWorkItemHasXincoState.getXincoWorkItemHasXincoStatePK().setXincoStateXincoWorkflowVersion(xincoWorkItemHasXincoState.getXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowVersion());
         xincoWorkItemHasXincoState.getXincoWorkItemHasXincoStatePK().setXincoWorkItemId(xincoWorkItemHasXincoState.getXincoWorkflowItem().getId());
         xincoWorkItemHasXincoState.getXincoWorkItemHasXincoStatePK().setXincoStateXincoWorkflowId(xincoWorkItemHasXincoState.getXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowId());
+        xincoWorkItemHasXincoState.getXincoWorkItemHasXincoStatePK().setXincoStateXincoWorkflowVersion(xincoWorkItemHasXincoState.getXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowVersion());
         EntityManager em = null;
         try {
             em = getEntityManager();

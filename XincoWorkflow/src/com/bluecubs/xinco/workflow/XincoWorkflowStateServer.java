@@ -25,7 +25,7 @@ public class XincoWorkflowStateServer extends XincoWorkflowState {
 
     public XincoWorkflowStateServer(XincoWorkflowStatePK xincoWorkflowStatePK) {
         super(xincoWorkflowStatePK);
-        XincoWorkflowState s = new XincoWorkflowStateJpaController().findXincoWorkflowState(xincoWorkflowStatePK);
+        XincoWorkflowState s = new XincoWorkflowStateJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoWorkflowState(xincoWorkflowStatePK);
         setName(s.getName());
         setUserLinkList(s.getUserLinkList());
         setSourceXincoStateTransitionsToXincoStateList(s.getSourceXincoStateTransitionsToXincoStateList());
@@ -40,7 +40,7 @@ public class XincoWorkflowStateServer extends XincoWorkflowState {
         XincoWorkflowState s = null;
         try {
             if (getXincoWorkflowStatePK() != null && getXincoWorkflowStatePK().getId() != 0) {
-                s = new XincoWorkflowStateJpaController().findXincoWorkflowState(getXincoWorkflowStatePK());
+                s = new XincoWorkflowStateJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoWorkflowState(getXincoWorkflowStatePK());
                 s.setName(getName());
                 s.setUserLinkList(getUserLinkList());
                 s.setSourceXincoStateTransitionsToXincoStateList(getSourceXincoStateTransitionsToXincoStateList());
@@ -49,7 +49,7 @@ public class XincoWorkflowStateServer extends XincoWorkflowState {
                 s.setXincoStateTypeId(getXincoStateTypeId());
                 s.setXincoWorkItemHasXincoStateList(getXincoWorkItemHasXincoStateList());
                 s.setXincoWorkflow(getXincoWorkflow());
-                new XincoWorkflowStateJpaController().edit(s);
+                new XincoWorkflowStateJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).edit(s);
             } else {
                 s = new XincoWorkflowState();
                 s.setName(getName());
@@ -60,7 +60,7 @@ public class XincoWorkflowStateServer extends XincoWorkflowState {
                 s.setXincoStateTypeId(getXincoStateTypeId());
                 s.setXincoWorkItemHasXincoStateList(getXincoWorkItemHasXincoStateList());
                 s.setXincoWorkflow(getXincoWorkflow());
-                new XincoWorkflowStateJpaController().create(s);
+                new XincoWorkflowStateJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).create(s);
             }
         } catch (IllegalOrphanException ex) {
             Logger.getLogger(XincoWorkflowStateServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -74,9 +74,9 @@ public class XincoWorkflowStateServer extends XincoWorkflowState {
 
     public static int removeFromDB(XincoWorkflowState s) throws XincoWorkflowException {
         //Check if action is being used somewhere else
-        s = new XincoWorkflowStateJpaController().findXincoWorkflowState(s.getXincoWorkflowStatePK());
+        s = new XincoWorkflowStateJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoWorkflowState(s.getXincoWorkflowStatePK());
         try {
-            new XincoWorkflowStateJpaController().destroy(s.getXincoWorkflowStatePK());
+            new XincoWorkflowStateJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).destroy(s.getXincoWorkflowStatePK());
             XincoWorkflowDBManager.deleteEntity(s);
         } catch (IllegalOrphanException ex) {
             Logger.getLogger(XincoActionServer.class.getName()).log(Level.SEVERE, null, ex);

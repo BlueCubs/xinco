@@ -9,10 +9,10 @@ import com.bluecubs.xinco.workflow.persistence.XincoParameter;
 import com.bluecubs.xinco.workflow.persistence.XincoParameterPK;
 import com.bluecubs.xinco.workflow.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.workflow.persistence.controller.exceptions.PreexistingEntityException;
+import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
@@ -21,12 +21,12 @@ import com.bluecubs.xinco.workflow.persistence.XincoAction;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public class XincoParameterJpaController {
+public class XincoParameterJpaController implements Serializable {
 
-    public XincoParameterJpaController() {
-        emf = Persistence.createEntityManagerFactory("XincoWorkflowPU");
+    public XincoParameterJpaController(EntityManagerFactory emf) {
+        this.emf = emf;
     }
     private EntityManagerFactory emf = null;
 

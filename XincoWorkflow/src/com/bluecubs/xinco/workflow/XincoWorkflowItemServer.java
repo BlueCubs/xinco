@@ -27,7 +27,7 @@ public class XincoWorkflowItemServer extends XincoWorkflowItem {
         super();
         if (id > 0) {
             //Read from database
-            XincoWorkflowItem xwi = new XincoWorkflowItemJpaController().findXincoWorkflowItem(getId());
+            XincoWorkflowItem xwi = new XincoWorkflowItemJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoWorkflowItem(getId());
             setId(xwi.getId());
             setCompletionDate(xwi.getCompletionDate());
             setCreationDate(xwi.getCreationDate());
@@ -46,18 +46,18 @@ public class XincoWorkflowItemServer extends XincoWorkflowItem {
         XincoWorkflowItem xwi = null;
         try {
             if (getId() != null) {
-                xwi = new XincoWorkflowItemJpaController().findXincoWorkflowItem(getId());
+                xwi = new XincoWorkflowItemJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoWorkflowItem(getId());
                 setId(xwi.getId());
                 xwi.setCompletionDate(getCompletionDate());
                 xwi.setCreationDate(getCreationDate());
                 xwi.setXincoWorkItemHasXincoStateList(getXincoWorkItemHasXincoStateList());
-                new XincoWorkflowItemJpaController().edit(xwi);
+                new XincoWorkflowItemJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).edit(xwi);
             } else {
                 xwi = new XincoWorkflowItem();
                 xwi.setCompletionDate(getCompletionDate());
                 xwi.setCreationDate(getCreationDate());
                 xwi.setXincoWorkItemHasXincoStateList(getXincoWorkItemHasXincoStateList());
-                new XincoWorkflowItemJpaController().create(xwi);
+                new XincoWorkflowItemJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).create(xwi);
             }
             return xwi.getId();
         } catch (IllegalOrphanException ex) {
@@ -74,11 +74,11 @@ public class XincoWorkflowItemServer extends XincoWorkflowItem {
 
     public static int removeFromDB(XincoWorkflowItem xwi) throws XincoWorkflowException {
         //Check if action is being used somewhere else
-        xwi = new XincoWorkflowItemJpaController().findXincoWorkflowItem(xwi.getId());
+        xwi = new XincoWorkflowItemJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoWorkflowItem(xwi.getId());
         if (xwi.getXincoWorkItemHasXincoStateList() == null
                 || xwi.getXincoWorkItemHasXincoStateList().isEmpty()) {
             try {
-                new XincoWorkflowItemJpaController().destroy(xwi.getId());
+                new XincoWorkflowItemJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).destroy(xwi.getId());
                 XincoWorkflowDBManager.deleteEntity(xwi);
             } catch (com.bluecubs.xinco.workflow.persistence.controller.exceptions.IllegalOrphanException ex) {
                 Logger.getLogger(XincoWorkflowItemServer.class.getName()).log(Level.SEVERE, null, ex);

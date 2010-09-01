@@ -21,6 +21,7 @@ import static org.junit.Assert.*;
 public class XincoTransitionServerTest {
 
     private XincoWorkflowStateServer xwss1, xwss2;
+    private XincoStateTypeServer xsts;
     private XincoUserLinkServer xuls;
     private XincoWorkflowServer xws;
 
@@ -54,10 +55,10 @@ public class XincoTransitionServerTest {
             createTestData();
             //Now finally to the test
             XincoTransitionServer instance = new XincoTransitionServer(xwss1, xwss2);
-            XincoStateTransitionsToXincoState transition = new XincoStateTransitionsToXincoStateJpaController().findXincoStateTransitionsToXincoState(instance.write2DB());
+            XincoStateTransitionsToXincoState transition = new XincoStateTransitionsToXincoStateJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoStateTransitionsToXincoState(instance.write2DB());
             assertTrue(transition != null);
             assertTrue(XincoTransitionServer.removeFromDB(transition) == 0);
-            assertTrue(new XincoStateTransitionsToXincoStateJpaController().findXincoStateTransitionsToXincoState(transition.getXincoStateTransitionsToXincoStatePK()) == null);
+            assertTrue(new XincoStateTransitionsToXincoStateJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoStateTransitionsToXincoState(transition.getXincoStateTransitionsToXincoStatePK()) == null);
             //Now delete everything we created
             destroyTestData();
         } catch (Error ex) {
@@ -74,12 +75,19 @@ public class XincoTransitionServerTest {
         //Need a workflow
         xws = new XincoWorkflowServer(0, 1, xuls.write2DB(), "Test");
         XincoWorkflowPK pk = xws.write2DB();
+        //Need state type
+        xsts= new XincoStateTypeServer();
+        xsts.setDescription("Test");
+        xsts.setName("Test");
+        xsts.write2DB();
         //Need 2 states for the transition
         xwss1 = new XincoWorkflowStateServer(pk.getId(), pk.getVersion(), "Step 1",
-                new XincoWorkflowJpaController().findXincoWorkflow(xws.getXincoWorkflowPK()));
+                new XincoWorkflowJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoWorkflow(xws.getXincoWorkflowPK()));
+        xwss1.setXincoStateTypeId(xsts);
         xwss1.write2DB();
         xwss2 = new XincoWorkflowStateServer(pk.getId(), pk.getVersion(), "Step 2",
-                new XincoWorkflowJpaController().findXincoWorkflow(xws.getXincoWorkflowPK()));
+                new XincoWorkflowJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoWorkflow(xws.getXincoWorkflowPK()));
+        xwss2.setXincoStateTypeId(xsts);
         xwss2.write2DB();
         System.out.println("Done!");
     }

@@ -51,13 +51,13 @@ public class XincoParameterServerTest {
             System.out.println("write2DB");
             //Create an actio for this test
             XincoActionServer xas = new XincoActionServer("Test");
-            XincoAction action = new XincoActionJpaController().findXincoAction(xas.write2DB());
+            XincoAction action = new XincoActionJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoAction(xas.write2DB());
             XincoParameterServer instance = new XincoParameterServer(
                     new XincoParameterPK(action.getId()), "Test", "test type", "test value");
-            XincoParameter xp = new XincoParameterJpaController().findXincoParameter(instance.write2DB());
+            XincoParameter xp = new XincoParameterJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoParameter(instance.write2DB());
             assertTrue(xp != null);
             assertTrue(XincoParameterServer.removeFromDB(xp) == 0);
-            assertTrue(new XincoParameterJpaController().findXincoParameter(xp.getXincoParameterPK()) == null);
+            assertTrue(new XincoParameterJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoParameter(xp.getXincoParameterPK()) == null);
             //Delete action
             XincoActionServer.removeFromDB(action);
         } catch (XincoWorkflowException ex) {

@@ -2,7 +2,7 @@
 <%@page pageEncoding="UTF-8"%>
 <%@page import="java.util.ResourceBundle"%>
 <%@page import="java.util.Locale"%>
-<%@page import="com.bluecubs.xinco.core.persistence.manager.XincoDBManager"%>
+<%@page import="com.bluecubs.xinco.core.server.XincoDBManager"%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
@@ -32,7 +32,7 @@ out.println("<link rel='stylesheet' href='xincostyle.css' type='text/css'/>");
 out.println("<link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>");
 out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'>");
 out.println("</head>");
-out.println("<body "+(!db.CONFIG.isAllowOutsideLinks()?"oncontextmenu='return false;' ":" ")+">");
+out.println("<body "+(!db.config.isAllowOutsideLinks()?"oncontextmenu='return false;' ":" ")+">");
 out.println("<center>");
 out.println("<span class='text'>");
 out.println("<br><img src='resources/images/blueCubs.gif' border='0'/>");
@@ -54,7 +54,7 @@ out.println("<td class='text'><a href='XincoPublisher?list="+request.getParamete
 out.println("<td class='text'>"+rb.getString("message.admin.main.publisherdesc")+"</td>");
 out.println("</tr>");
 out.println("<tr>");
-out.println("<td class='text'>"+(db.CONFIG.isAllowOutsideLinks()? "<a href='http://java.sun.com' class='link'>"+
+out.println("<td class='text'>"+(db.config.isAllowOutsideLinks()? "<a href='http://java.sun.com' class='link'>"+
         rb.getString("message.admin.main.java.label")+"</a>":"http://java.sun.com")+"</td>");
 out.println("<td class='text'>"+rb.getString("message.admin.main.javadesc")+"</td>");
 out.println("</tr>");
@@ -83,7 +83,7 @@ out.println("<td class='text'>&nbsp;</td>");
 out.println("<td class='text'>&copy; "+rb.getString("general.copyright.date")+", "+
                 //Avoid external links if general.setting.allowoutsidelinks is set to false
                 //Security bug
-                (db.CONFIG.isAllowOutsideLinks() ? rb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org")+"</a></td>");
+                (db.config.isAllowOutsideLinks() ? rb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org")+"</a></td>");
 out.println("</tr>");
 out.println("</table>");
 out.println("</span>");

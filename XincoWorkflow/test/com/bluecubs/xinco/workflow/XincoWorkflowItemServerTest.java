@@ -45,10 +45,10 @@ public class XincoWorkflowItemServerTest {
         try {
             System.out.println("write2DB");
             XincoWorkflowItemServer instance = new XincoWorkflowItemServer(new Date());
-            XincoWorkflowItem xwi = new XincoWorkflowItemJpaController().findXincoWorkflowItem(instance.write2DB());
+            XincoWorkflowItem xwi = new XincoWorkflowItemJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoWorkflowItem(instance.write2DB());
             assertTrue(xwi != null);
             assertTrue(XincoWorkflowItemServer.removeFromDB(xwi) == 0);
-            assertTrue(new XincoWorkflowItemJpaController().findXincoWorkflowItem(xwi.getId()) == null);
+            assertTrue(new XincoWorkflowItemJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoWorkflowItem(xwi.getId()) == null);
         } catch (XincoWorkflowException ex) {
             Logger.getLogger(XincoWorkflowItemServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();

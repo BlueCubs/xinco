@@ -44,10 +44,10 @@ public class XincoStateTypeServerTest {
         try {
             System.out.println("write2DB");
             XincoStateTypeServer instance = new XincoStateTypeServer("Test");
-            XincoStateType xst = new XincoStateTypeJpaController().findXincoStateType(instance.write2DB());
+            XincoStateType xst = new XincoStateTypeJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoStateType(instance.write2DB());
             assertTrue(xst != null);
             assertTrue(XincoStateTypeServer.removeFromDB(xst) == 0);
-            assertTrue(new XincoStateTypeJpaController().findXincoStateType(xst.getId()) == null);
+            assertTrue(new XincoStateTypeJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoStateType(xst.getId()) == null);
         } catch (XincoWorkflowException ex) {
             Logger.getLogger(XincoStateTypeServerTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();

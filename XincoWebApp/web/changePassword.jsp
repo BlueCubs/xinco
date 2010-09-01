@@ -1,7 +1,7 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 <%@page import="java.util.Locale"%>
-<%@page import="java.util.ResourceBundle,com.bluecubs.xinco.core.persistence.manager.XincoDBManager"%>
+<%@page import="java.util.ResourceBundle,com.bluecubs.xinco.core.server.XincoDBManager"%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
@@ -16,7 +16,7 @@
     </head>
     <%
             XincoDBManager DBM = new XincoDBManager();
-            out.println("<body " + (!DBM.CONFIG.isAllowOutsideLinks() ? "oncontextmenu='return false;' class='text'>" : "class='text'>"));
+            out.println("<body " + (!DBM.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' class='text'>" : "class='text'>"));
     %>
     <center>
         <br/><img src="resources/images/blueCubs.gif" width="356" height="400" alt="blueCubs"/><br/>

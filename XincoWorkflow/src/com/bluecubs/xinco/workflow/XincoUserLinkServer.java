@@ -20,7 +20,7 @@ public class XincoUserLinkServer extends UserLink {
         if (id > 0) {
             setId(id);
             //Read from database
-            UserLink user = new UserLinkJpaController().findUserLink(getId());
+            UserLink user = new UserLinkJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findUserLink(getId());
             setSystemId(user.getSystemId());
             setId(user.getId());
         }
@@ -35,14 +35,14 @@ public class XincoUserLinkServer extends UserLink {
         UserLink user = null;
         try {
             if (getId() != null) {
-                user = new UserLinkJpaController().findUserLink(getId());
+                user = new UserLinkJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findUserLink(getId());
                 user.setSystemId(getSystemId());
                 user.setId(getId());
-                new UserLinkJpaController().edit(user);
+                new UserLinkJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).edit(user);
             } else {
                 user = new UserLink();
                 user.setSystemId(getSystemId());
-                new UserLinkJpaController().create(user);
+                new UserLinkJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).create(user);
             }
             return user.getId();
         } catch (IllegalOrphanException ex) {
@@ -59,9 +59,9 @@ public class XincoUserLinkServer extends UserLink {
 
     public static int removeFromDB(UserLink user) throws XincoWorkflowException {
         //Check if action is being used somewhere else
-        user = new UserLinkJpaController().findUserLink(user.getId());
+        user = new UserLinkJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findUserLink(user.getId());
         try {
-            new UserLinkJpaController().destroy(user.getId());
+            new UserLinkJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).destroy(user.getId());
             XincoWorkflowDBManager.deleteEntity(user);
         } catch (IllegalOrphanException ex) {
             Logger.getLogger(XincoUserLinkServer.class.getName()).log(Level.SEVERE, null, ex);
