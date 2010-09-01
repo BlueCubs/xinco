@@ -52,10 +52,10 @@ public class XincoActionServerTest {
                 //Traces of test data found and removed.
             }
             XincoActionServer instance = new XincoActionServer("Test");
-            XincoAction action = new XincoActionJpaController().findXincoAction(instance.write2DB());
+            XincoAction action = new XincoActionJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoAction(instance.write2DB());
             assertTrue(action != null);
             assertTrue(XincoActionServer.removeFromDB(action) == 0);
-            assertTrue(new XincoActionJpaController().findXincoAction(action.getId()) == null);
+            assertTrue(new XincoActionJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoAction(action.getId()) == null);
         } catch (XincoWorkflowException ex) {
             try {
                 //Make sure the database is clear with any test data.

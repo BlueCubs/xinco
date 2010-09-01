@@ -26,7 +26,7 @@ public class XincoStateTypeServer extends XincoStateType {
         super();
         if (id > 0) {
             //Read from database
-            XincoStateType xst = new XincoStateTypeJpaController().findXincoStateType(getId());
+            XincoStateType xst = new XincoStateTypeJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoStateType(getId());
             setId(xst.getId());
             setDescription(xst.getDescription());
             setName(xst.getName());
@@ -45,18 +45,18 @@ public class XincoStateTypeServer extends XincoStateType {
         XincoStateType xst = null;
         try {
             if (getId() != null) {
-                xst = new XincoStateTypeJpaController().findXincoStateType(getId());
+                xst = new XincoStateTypeJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoStateType(getId());
                 setId(xst.getId());
                 xst.setDescription(getDescription());
                 xst.setName(getName());
                 xst.setXincoWorkflowStateList(getXincoWorkflowStateList());
-                new XincoStateTypeJpaController().edit(xst);
+                new XincoStateTypeJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).edit(xst);
             } else {
                 xst = new XincoStateType();
                 xst.setDescription(getDescription());
                 xst.setName(getName());
                 xst.setXincoWorkflowStateList(getXincoWorkflowStateList());
-                new XincoStateTypeJpaController().create(xst);
+                new XincoStateTypeJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).create(xst);
             }
             return xst.getId();
         } catch (IllegalOrphanException ex) {
@@ -73,11 +73,11 @@ public class XincoStateTypeServer extends XincoStateType {
 
     public static int removeFromDB(XincoStateType xst) throws XincoWorkflowException {
         //Check if action is being used somewhere else
-        xst = new XincoStateTypeJpaController().findXincoStateType(xst.getId());
+        xst = new XincoStateTypeJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoStateType(xst.getId());
         if (xst.getXincoWorkflowStateList() == null
                 || xst.getXincoWorkflowStateList().isEmpty()) {
             try {
-                new XincoStateTypeJpaController().destroy(xst.getId());
+                new XincoStateTypeJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).destroy(xst.getId());
                 XincoWorkflowDBManager.deleteEntity(xst);
             } catch (com.bluecubs.xinco.workflow.persistence.controller.exceptions.IllegalOrphanException ex) {
                 Logger.getLogger(XincoStateTypeServer.class.getName()).log(Level.SEVERE, null, ex);

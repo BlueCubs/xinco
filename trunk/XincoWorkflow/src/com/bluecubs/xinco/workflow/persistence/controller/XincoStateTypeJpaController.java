@@ -8,9 +8,9 @@ package com.bluecubs.xinco.workflow.persistence.controller;
 import com.bluecubs.xinco.workflow.persistence.XincoStateType;
 import com.bluecubs.xinco.workflow.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.workflow.persistence.controller.exceptions.NonexistentEntityException;
+import java.io.Serializable;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
@@ -21,12 +21,12 @@ import java.util.List;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public class XincoStateTypeJpaController {
+public class XincoStateTypeJpaController implements Serializable {
 
-    public XincoStateTypeJpaController() {
-        emf = Persistence.createEntityManagerFactory("XincoWorkflowPU");
+    public XincoStateTypeJpaController(EntityManagerFactory emf) {
+        this.emf = emf;
     }
     private EntityManagerFactory emf = null;
 

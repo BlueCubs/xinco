@@ -9,10 +9,10 @@ import com.bluecubs.xinco.workflow.persistence.XincoWorkItemParameter;
 import com.bluecubs.xinco.workflow.persistence.XincoWorkItemParameterPK;
 import com.bluecubs.xinco.workflow.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.workflow.persistence.controller.exceptions.PreexistingEntityException;
+import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
@@ -21,12 +21,12 @@ import com.bluecubs.xinco.workflow.persistence.XincoWorkItemHasXincoState;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public class XincoWorkItemParameterJpaController {
+public class XincoWorkItemParameterJpaController implements Serializable {
 
-    public XincoWorkItemParameterJpaController() {
-        emf = Persistence.createEntityManagerFactory("XincoWorkflowPU");
+    public XincoWorkItemParameterJpaController(EntityManagerFactory emf) {
+        this.emf = emf;
     }
     private EntityManagerFactory emf = null;
 
@@ -38,10 +38,10 @@ public class XincoWorkItemParameterJpaController {
         if (xincoWorkItemParameter.getXincoWorkItemParameterPK() == null) {
             xincoWorkItemParameter.setXincoWorkItemParameterPK(new XincoWorkItemParameterPK());
         }
-        xincoWorkItemParameter.getXincoWorkItemParameterPK().setXincoWorkItemId(xincoWorkItemParameter.getXincoWorkItemHasXincoState().getXincoWorkItemHasXincoStatePK().getXincoWorkItemId());
-        xincoWorkItemParameter.getXincoWorkItemParameterPK().setXincoWorkflowId(xincoWorkItemParameter.getXincoWorkItemHasXincoState().getXincoWorkItemHasXincoStatePK().getXincoStateXincoWorkflowId());
         xincoWorkItemParameter.getXincoWorkItemParameterPK().setXincoStateId(xincoWorkItemParameter.getXincoWorkItemHasXincoState().getXincoWorkItemHasXincoStatePK().getXincoStateId());
         xincoWorkItemParameter.getXincoWorkItemParameterPK().setXincoWorkflowVersion(xincoWorkItemParameter.getXincoWorkItemHasXincoState().getXincoWorkItemHasXincoStatePK().getXincoStateXincoWorkflowVersion());
+        xincoWorkItemParameter.getXincoWorkItemParameterPK().setXincoWorkItemId(xincoWorkItemParameter.getXincoWorkItemHasXincoState().getXincoWorkItemHasXincoStatePK().getXincoWorkItemId());
+        xincoWorkItemParameter.getXincoWorkItemParameterPK().setXincoWorkflowId(xincoWorkItemParameter.getXincoWorkItemHasXincoState().getXincoWorkItemHasXincoStatePK().getXincoStateXincoWorkflowId());
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -70,10 +70,10 @@ public class XincoWorkItemParameterJpaController {
     }
 
     public void edit(XincoWorkItemParameter xincoWorkItemParameter) throws NonexistentEntityException, Exception {
-        xincoWorkItemParameter.getXincoWorkItemParameterPK().setXincoWorkItemId(xincoWorkItemParameter.getXincoWorkItemHasXincoState().getXincoWorkItemHasXincoStatePK().getXincoWorkItemId());
-        xincoWorkItemParameter.getXincoWorkItemParameterPK().setXincoWorkflowId(xincoWorkItemParameter.getXincoWorkItemHasXincoState().getXincoWorkItemHasXincoStatePK().getXincoStateXincoWorkflowId());
         xincoWorkItemParameter.getXincoWorkItemParameterPK().setXincoStateId(xincoWorkItemParameter.getXincoWorkItemHasXincoState().getXincoWorkItemHasXincoStatePK().getXincoStateId());
         xincoWorkItemParameter.getXincoWorkItemParameterPK().setXincoWorkflowVersion(xincoWorkItemParameter.getXincoWorkItemHasXincoState().getXincoWorkItemHasXincoStatePK().getXincoStateXincoWorkflowVersion());
+        xincoWorkItemParameter.getXincoWorkItemParameterPK().setXincoWorkItemId(xincoWorkItemParameter.getXincoWorkItemHasXincoState().getXincoWorkItemHasXincoStatePK().getXincoWorkItemId());
+        xincoWorkItemParameter.getXincoWorkItemParameterPK().setXincoWorkflowId(xincoWorkItemParameter.getXincoWorkItemHasXincoState().getXincoWorkItemHasXincoStatePK().getXincoStateXincoWorkflowId());
         EntityManager em = null;
         try {
             em = getEntityManager();

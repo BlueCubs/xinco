@@ -29,11 +29,11 @@ public class XincoWorkflowServer extends XincoWorkflow {
         super();
         if (id > 0 && version > 0 && userLinkId > 0) {
             //Read from database
-            XincoWorkflow xw = new XincoWorkflowJpaController().findXincoWorkflow(new XincoWorkflowPK(version, userLinkId));
+            XincoWorkflow xw = new XincoWorkflowJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoWorkflow(new XincoWorkflowPK(version, userLinkId));
             setXincoWorkflowPK(xw.getXincoWorkflowPK());
             setName(xw.getName());
             setDescription(xw.getDescription());
-            setUserLink(new UserLinkJpaController().findUserLink(getXincoWorkflowPK().getUserLinkId()));
+            setUserLink(new UserLinkJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findUserLink(getXincoWorkflowPK().getUserLinkId()));
             setXincoWorkflowStateList(xw.getXincoWorkflowStateList());
         } else if (id == 0 && version > 0 && userLinkId > 0) {
             setXincoWorkflowPK(new XincoWorkflowPK(version, userLinkId));
@@ -45,7 +45,7 @@ public class XincoWorkflowServer extends XincoWorkflow {
         setXincoWorkflowPK(xw.getXincoWorkflowPK());
         setName(xw.getName());
         setDescription(xw.getDescription());
-        setUserLink(new UserLinkJpaController().findUserLink(getXincoWorkflowPK().getUserLinkId()));
+        setUserLink(new UserLinkJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findUserLink(getXincoWorkflowPK().getUserLinkId()));
         setXincoWorkflowStateList(xw.getXincoWorkflowStateList());
     }
 
@@ -54,21 +54,21 @@ public class XincoWorkflowServer extends XincoWorkflow {
         try {
             if (getXincoWorkflowPK() != null && getXincoWorkflowPK().getId() != 0
                     && getXincoWorkflowPK().getUserLinkId() != 0) {
-                xw = new XincoWorkflowJpaController().findXincoWorkflow(getXincoWorkflowPK());
+                xw = new XincoWorkflowJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoWorkflow(getXincoWorkflowPK());
                 xw.setXincoWorkflowPK(getXincoWorkflowPK());
                 xw.setName(getName());
                 xw.setDescription(getDescription());
-                xw.setUserLink(new UserLinkJpaController().findUserLink(getXincoWorkflowPK().getUserLinkId()));
+                xw.setUserLink(new UserLinkJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findUserLink(getXincoWorkflowPK().getUserLinkId()));
                 xw.setXincoWorkflowStateList(getXincoWorkflowStateList());
-                new XincoWorkflowJpaController().edit(xw);
+                new XincoWorkflowJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).edit(xw);
             } else {
                 xw = new XincoWorkflow();
                 xw.setXincoWorkflowPK(getXincoWorkflowPK());
                 xw.setName(getName());
                 xw.setDescription(getDescription());
-                xw.setUserLink(new UserLinkJpaController().findUserLink(getXincoWorkflowPK().getUserLinkId()));
+                xw.setUserLink(new UserLinkJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findUserLink(getXincoWorkflowPK().getUserLinkId()));
                 xw.setXincoWorkflowStateList(getXincoWorkflowStateList());
-                new XincoWorkflowJpaController().create(xw);
+                new XincoWorkflowJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).create(xw);
             }
             return xw.getXincoWorkflowPK();
         } catch (IllegalOrphanException ex) {
@@ -85,9 +85,9 @@ public class XincoWorkflowServer extends XincoWorkflow {
 
     public static int removeFromDB(XincoWorkflow xp) throws XincoWorkflowException {
         //Check if action is being used somewhere else
-        xp = new XincoWorkflowJpaController().findXincoWorkflow(xp.getXincoWorkflowPK());
+        xp = new XincoWorkflowJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoWorkflow(xp.getXincoWorkflowPK());
         try {
-            new XincoWorkflowJpaController().destroy(xp.getXincoWorkflowPK());
+            new XincoWorkflowJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).destroy(xp.getXincoWorkflowPK());
             XincoWorkflowDBManager.deleteEntity(xp);
         } catch (IllegalOrphanException ex) {
             Logger.getLogger(XincoWorkflowServer.class.getName()).log(Level.SEVERE, null, ex);

@@ -9,9 +9,9 @@ import com.bluecubs.xinco.workflow.persistence.XincoStateTransitionsToXincoState
 import com.bluecubs.xinco.workflow.persistence.XincoStateTransitionsToXincoStatePK;
 import com.bluecubs.xinco.workflow.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.workflow.persistence.controller.exceptions.PreexistingEntityException;
+import java.io.Serializable;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
@@ -24,12 +24,12 @@ import com.bluecubs.xinco.workflow.persistence.XincoAction;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public class XincoStateTransitionsToXincoStateJpaController {
+public class XincoStateTransitionsToXincoStateJpaController implements Serializable {
 
-    public XincoStateTransitionsToXincoStateJpaController() {
-        emf = Persistence.createEntityManagerFactory("XincoWorkflowPU");
+    public XincoStateTransitionsToXincoStateJpaController(EntityManagerFactory emf) {
+        this.emf = emf;
     }
     private EntityManagerFactory emf = null;
 
@@ -47,10 +47,10 @@ public class XincoStateTransitionsToXincoStateJpaController {
         if (xincoStateTransitionsToXincoState.getXincoActionList() == null) {
             xincoStateTransitionsToXincoState.setXincoActionList(new ArrayList<XincoAction>());
         }
-        xincoStateTransitionsToXincoState.getXincoStateTransitionsToXincoStatePK().setDestXincoStateXincoWorkflowId1(xincoStateTransitionsToXincoState.getDestXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowId());
+        xincoStateTransitionsToXincoState.getXincoStateTransitionsToXincoStatePK().setDestXincoStateXincoWorkflowVersion1(xincoStateTransitionsToXincoState.getDestXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowVersion());
         xincoStateTransitionsToXincoState.getXincoStateTransitionsToXincoStatePK().setSourceXincoStateXincoWorkflowVersion(xincoStateTransitionsToXincoState.getSourceXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowVersion());
         xincoStateTransitionsToXincoState.getXincoStateTransitionsToXincoStatePK().setSourceXincoStateXincoWorkflowId(xincoStateTransitionsToXincoState.getSourceXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowId());
-        xincoStateTransitionsToXincoState.getXincoStateTransitionsToXincoStatePK().setDestXincoStateXincoWorkflowVersion1(xincoStateTransitionsToXincoState.getDestXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowVersion());
+        xincoStateTransitionsToXincoState.getXincoStateTransitionsToXincoStatePK().setDestXincoStateXincoWorkflowId1(xincoStateTransitionsToXincoState.getDestXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowId());
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -108,10 +108,10 @@ public class XincoStateTransitionsToXincoStateJpaController {
     }
 
     public void edit(XincoStateTransitionsToXincoState xincoStateTransitionsToXincoState) throws NonexistentEntityException, Exception {
-        xincoStateTransitionsToXincoState.getXincoStateTransitionsToXincoStatePK().setDestXincoStateXincoWorkflowId1(xincoStateTransitionsToXincoState.getDestXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowId());
+        xincoStateTransitionsToXincoState.getXincoStateTransitionsToXincoStatePK().setDestXincoStateXincoWorkflowVersion1(xincoStateTransitionsToXincoState.getDestXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowVersion());
         xincoStateTransitionsToXincoState.getXincoStateTransitionsToXincoStatePK().setSourceXincoStateXincoWorkflowVersion(xincoStateTransitionsToXincoState.getSourceXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowVersion());
         xincoStateTransitionsToXincoState.getXincoStateTransitionsToXincoStatePK().setSourceXincoStateXincoWorkflowId(xincoStateTransitionsToXincoState.getSourceXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowId());
-        xincoStateTransitionsToXincoState.getXincoStateTransitionsToXincoStatePK().setDestXincoStateXincoWorkflowVersion1(xincoStateTransitionsToXincoState.getDestXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowVersion());
+        xincoStateTransitionsToXincoState.getXincoStateTransitionsToXincoStatePK().setDestXincoStateXincoWorkflowId1(xincoStateTransitionsToXincoState.getDestXincoWorkflowState().getXincoWorkflowStatePK().getXincoWorkflowId());
         EntityManager em = null;
         try {
             em = getEntityManager();

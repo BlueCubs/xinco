@@ -10179,7 +10179,7 @@
                                                     <OBJECT REFERENCE="org.netbeans.modules.dbschema.TableElement-293676680"/>
                                                   </declaringTable>
                                                   <impl>
-                                                    <OBJECT CLASS="com.sun.forte4j.modules.dbmodel.jdbcimpl.ColumnPairElementImpl" ID="org.netbeans.modules.dbschema.jdbcimpl.ColumnPairElementImpl24802009">
+                                                    <OBJECT CLASS="com.sun.forte4j.modules.dbmodel.jdbcimpl.ColumnPairElementImpl" ID="org.netbeans.modules.dbschema.jdbcimpl.ColumnPairElementImpl24802010">
                                                       <element>
                                                         <OBJECT REFERENCE="org.netbeans.modules.dbschema.ColumnPairElement1064913315"/>
                                                       </element>

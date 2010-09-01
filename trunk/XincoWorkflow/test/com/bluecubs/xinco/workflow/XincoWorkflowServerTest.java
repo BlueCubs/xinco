@@ -54,12 +54,12 @@ public class XincoWorkflowServerTest {
             System.out.println("write2DB");
             //Create an user for this test
             XincoUserLinkServer xas = new XincoUserLinkServer(0,"test");
-            UserLink user = new UserLinkJpaController().findUserLink(xas.write2DB());
+            UserLink user = new UserLinkJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findUserLink(xas.write2DB());
             XincoWorkflowServer instance = new XincoWorkflowServer(new XincoWorkflowPK(1, user.getId()), "Test");
-            XincoWorkflow xp = new XincoWorkflowJpaController().findXincoWorkflow(instance.write2DB());
+            XincoWorkflow xp = new XincoWorkflowJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoWorkflow(instance.write2DB());
             assertTrue(xp != null);
             assertTrue(XincoWorkflowServer.removeFromDB(xp) == 0);
-            assertTrue(new XincoWorkflowJpaController().findXincoWorkflow(xp.getXincoWorkflowPK()) == null);
+            assertTrue(new XincoWorkflowJpaController(XincoWorkflowDBManager.getEntityManagerFactory()).findXincoWorkflow(xp.getXincoWorkflowPK()) == null);
             //Delete user
             XincoUserLinkServer.removeFromDB(user);
         } catch (XincoWorkflowException ex) {
