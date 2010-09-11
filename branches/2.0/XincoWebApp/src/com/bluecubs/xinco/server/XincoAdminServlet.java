@@ -1156,8 +1156,12 @@ public class XincoAdminServlet extends HttpServlet {
                 for (i = 0; i < alldatatypes.size(); i++) {
                     out.println("<tr>");
                     out.println("<td class=\"text\">" + ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getId() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDesignation() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDescription() + "</td>");
+                    out.println("<td class=\"text\">" + (rb.containsKey(((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDesignation())?
+                        rb.getString(((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDesignation()):
+                        ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDesignation())+ "</td>");
+                    out.println("<td class=\"text\">" + (rb.containsKey(((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDescription())?
+                        rb.getString(((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDescription()):
+                        ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getDescription()) + "</td>");
                     out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminDataTypeSelect="
                             + ((XincoCoreDataTypeServer) alldatatypes.elementAt(i)).getId()
                             + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.edit") + "]</a></td>");
