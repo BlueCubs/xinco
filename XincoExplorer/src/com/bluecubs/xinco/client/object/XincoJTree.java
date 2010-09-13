@@ -387,7 +387,7 @@ public class XincoJTree extends JTree {
                         dtm.removeRow(0);
                     }
                     String[] rdata = {"", ""};
-
+                    if(getExplorer().getXdata()!=null){
                     rdata[0] = getExplorer().getResourceBundle().getString("general.id");
                     rdata[1] = "" + getExplorer().getXdata().getId();
                     dtm.addRow(rdata);
@@ -399,6 +399,7 @@ public class XincoJTree extends JTree {
                             " (" +
                             getExplorer().getXdata().getXinco_core_language().getSign() +
                             ")";
+                    }
                     dtm.addRow(rdata);
                     rdata[0] = getExplorer().getResourceBundle().getString("general.datatype");
                     rdata[1] = getExplorer().getResourceBundle().getString(getExplorer().getXdata().getXinco_core_data_type().getDesignation()) +
