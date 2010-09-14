@@ -83,11 +83,9 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -195,15 +193,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     private AbstractDialog AbstractDialogAddAttributesUniversal = null;
     private javax.swing.JMenu jMenuPreferences = null;
     private javax.swing.JMenuItem jMenuItemPreferencesEditUser = null;
-    private javax.swing.JPanel jContentPaneDialogUser = null;
     private AbstractDialog AbstractDialogAddAttributesText = null;
-    private javax.swing.JPanel jContentPaneDialogAddAttributesText = null;
-    private javax.swing.JTextArea jTextAreaDialogAddAttributesText = null;
-    private javax.swing.JButton jButtonDialogAddAttributesTextSave = null;
-    private javax.swing.JButton jButtonDialogAddAttributesTextCancel = null;
-    private javax.swing.JScrollPane jScrollPaneDialogAddAttributesText = null;
-    private javax.swing.JPanel jContentPaneDialogTransactionInfo = null;
-    private javax.swing.JLabel jLabelDialogTransactionInfoText = null;
     private javax.swing.JPanel jContentPaneInformation = null;
     public javax.swing.JTextArea jLabelInternalFrameInformationText = null;
     private XincoPopUpMenuRepository jPopupMenuRepository = null;
@@ -764,15 +754,6 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jTreeRepository.setSelectionModel(dtsm);
         }
         return jTreeRepository;
-    }
-
-    private void expandAllNodes() {
-        getJTreeRepository();
-        int row = 0;
-        while (row < jTreeRepository.getRowCount()) {
-            jTreeRepository.expandRow(row);
-            row++;
-        }
     }
 
     public void collapseAllNodes() {
@@ -2521,7 +2502,9 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             }
                             jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.updatesuccess.publisherinfo") + "\nhttp://[server_name]:[port]/xinco/XincoPublisher/" + xdata.getId() + "/" + temp_url);
                         }
-                        jTreeRepository.setSelectionPath(new TreePath(xincoClientSession.getCurrentTreeNodeSelection().getPath()));
+                        TreePath currentPath = new TreePath(xincoClientSession.getCurrentTreeNodeSelection().getPath());
+                        jTreeRepository.setSelectionPath(new TreePath(((XincoMutableTreeNode) xincoClientSession.getCurrentTreeNodeSelection().getParent()).getPath()));
+                        jTreeRepository.setSelectionPath(currentPath);
                     }
                 }
             } catch (Exception we) {
@@ -2683,105 +2666,6 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         //Issue #2972311
         AbstractDialogAddAttributesText.setVisible(true);
         return AbstractDialogAddAttributesText;
-    }
-
-    /**
-     * This method initializes jTextAreaDialogAddAttributesText
-     *
-     * @return javax.swing.JTextArea
-     */
-    private javax.swing.JTextArea getJTextAreaDialogAddAttributesText() {
-        if (jTextAreaDialogAddAttributesText == null) {
-            jTextAreaDialogAddAttributesText = new javax.swing.JTextArea();
-        }
-        return jTextAreaDialogAddAttributesText;
-    }
-
-    /**
-     * This method initializes jButtonDialogAddAttributesTextSave
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogAddAttributesTextSave() {
-        if (jButtonDialogAddAttributesTextSave == null) {
-            jButtonDialogAddAttributesTextSave = new javax.swing.JButton();
-            jButtonDialogAddAttributesTextSave.setBounds(350, 450, 100, 30);
-            jButtonDialogAddAttributesTextSave.setText(xerb.getString("general.save") + "!");
-            jButtonDialogAddAttributesTextSave.addActionListener(new java.awt.event.ActionListener() {
-
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    ((XincoAddAttribute) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().get(0)).setAttrib_text(jTextAreaDialogAddAttributesText.getText());
-                    setGlobal_dialog_return_value(1);
-                    AbstractDialogAddAttributesText.setVisible(false);
-                }
-            });
-        }
-        return jButtonDialogAddAttributesTextSave;
-    }
-
-    /**
-     * This method initializes jButtonDialogAddAttributesTextCancel
-     *
-     * @return javax.swing.JButton
-     */
-    private javax.swing.JButton getJButtonDialogAddAttributesTextCancel() {
-        if (jButtonDialogAddAttributesTextCancel == null) {
-            jButtonDialogAddAttributesTextCancel = new javax.swing.JButton();
-            jButtonDialogAddAttributesTextCancel.setBounds(470, 450, 100, 30);
-            jButtonDialogAddAttributesTextCancel.setText(xerb.getString("general.cancel"));
-            jButtonDialogAddAttributesTextCancel.addActionListener(new java.awt.event.ActionListener() {
-
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    AbstractDialogAddAttributesText.setVisible(false);
-                }
-            });
-        }
-        return jButtonDialogAddAttributesTextCancel;
-    }
-
-    /**
-     * This method initializes jScrollPaneDialogAddAttributesText
-     *
-     * @return javax.swing.JScrollPane
-     */
-    private javax.swing.JScrollPane getJScrollPaneDialogAddAttributesText() {
-        if (jScrollPaneDialogAddAttributesText == null) {
-            jScrollPaneDialogAddAttributesText = new javax.swing.JScrollPane();
-            jScrollPaneDialogAddAttributesText.setViewportView(getJTextAreaDialogAddAttributesText());
-            jScrollPaneDialogAddAttributesText.setBounds(10, 10, 560, 420);
-            jScrollPaneDialogAddAttributesText.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-            jScrollPaneDialogAddAttributesText.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        }
-        return jScrollPaneDialogAddAttributesText;
-    }
-
-    /**
-     * This method initializes jContentPaneDialogTransactionInfo
-     *
-     * @return javax.swing.JPanel
-     */
-    private javax.swing.JPanel getJContentPaneDialogTransactionInfo() {
-        if (jContentPaneDialogTransactionInfo == null) {
-            jContentPaneDialogTransactionInfo = new javax.swing.JPanel();
-            jContentPaneDialogTransactionInfo.setLayout(null);
-            jContentPaneDialogTransactionInfo.add(getJLabelDialogTransactionInfoText(), null);
-        }
-        return jContentPaneDialogTransactionInfo;
-    }
-
-    /**
-     * This method initializes jLabelDialogTransactionInfoText
-     *
-     * @return javax.swing.JLabel
-     */
-    private javax.swing.JLabel getJLabelDialogTransactionInfoText() {
-        if (jLabelDialogTransactionInfoText == null) {
-            jLabelDialogTransactionInfoText = new javax.swing.JLabel();
-            jLabelDialogTransactionInfoText.setBounds(10, 10, 370, 80);
-        }
-        //independent of creation
-        jLabelDialogTransactionInfoText.setText("");
-        return jLabelDialogTransactionInfoText;
     }
 
     /**
@@ -3082,6 +2966,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                 getProgressBar().hide();
                 getJTreeRepository().setEnabled(true);
             } catch (Exception rmie) {
+                Logger.getLogger(XincoExplorer.class.getSimpleName()).log(Level.SEVERE, null, rmie);
                 getProgressBar().hide();
                 getJTreeRepository().setEnabled(true);
             }

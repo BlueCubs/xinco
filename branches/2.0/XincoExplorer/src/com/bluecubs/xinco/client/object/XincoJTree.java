@@ -54,6 +54,8 @@ import java.awt.event.MouseEvent;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.event.MouseInputListener;
@@ -263,8 +265,8 @@ public class XincoJTree extends JTree {
                 // only nodes have children
                 if (node.getUserObject().getClass() == XincoCoreNode.class) {
                     // check for children only if none have been found yet
-                    if ((((XincoCoreNode) node.getUserObject()).getXinco_core_nodes().size() == 0) &&
-                            (((XincoCoreNode) node.getUserObject()).getXinco_core_data().size() == 0)) {
+                    if ((((XincoCoreNode) node.getUserObject()).getXinco_core_nodes().isEmpty()) &&
+                            (((XincoCoreNode) node.getUserObject()).getXinco_core_data().isEmpty())) {
                         try {
                             XincoCoreNode xnode = getExplorer().getSession().getXinco().getXincoCoreNode((XincoCoreNode) node.getUserObject(), getExplorer().getSession().getUser());
 
@@ -561,6 +563,8 @@ public class XincoJTree extends JTree {
                                     rdata[0] += cal.get(Calendar.SECOND);
                                 }
                             } catch (Exception ce) {
+                                Logger.getLogger(XincoJTree.class.getSimpleName()).log(
+                                        Level.SEVERE, null, ce);
                             }
                         } else {
                             rdata[0] = "???";
@@ -582,7 +586,8 @@ public class XincoJTree extends JTree {
                                     "" +
                                     ((XincoCoreLog) getExplorer().getXdata().getXinco_core_logs().elementAt(i)).getVersion().getVersion_postfix();
                         } catch (Exception ex) {
-                            ex.printStackTrace();
+                            Logger.getLogger(XincoJTree.class.getSimpleName()).log(
+                                        Level.SEVERE, null, ex);
                         }
                         dtm.addRow(rdata);
                     }
@@ -598,9 +603,6 @@ public class XincoJTree extends JTree {
                 getExplorer().resetTimer();
                 int selRow = getRowForLocation(e.getX(),
                         e.getY());
-                TreePath selPath = getPathForLocation(e.getX(),
-                        e.getY());
-
                 if (selRow != -1) {
                     if (e.getClickCount() == 1) {
                     } else if (e.getClickCount() == 2) {
