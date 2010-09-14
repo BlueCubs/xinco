@@ -94,12 +94,12 @@ public class XincoArchiver {
         (new File(ArchiveBaseDir + ArchiveFileDir)).mkdirs();
         //copy file + revisions
         //build file list
-        OrgFileNames.add(new String("" + xdata_temp.getId()));
+        OrgFileNames.add("" + xdata_temp.getId());
         OrgFileIDs.add(new Integer(xdata_temp.getId()));
         for (i = 0; i < xdata_temp.getXinco_core_logs().size(); i++) {
             xlog_temp = ((XincoCoreLogServer) xdata_temp.getXinco_core_logs().elementAt(i));
             if ((xlog_temp.getOp_code() == 1) || (xlog_temp.getOp_code() == 5)) {
-                OrgFileNames.add(new String("" + xdata_temp.getId() + "-" + xlog_temp.getId()));
+                OrgFileNames.add("" + xdata_temp.getId() + "-" + xlog_temp.getId());
                 OrgFileIDs.add(new Integer(xdata_temp.getId()));
             }
         }
@@ -129,7 +129,7 @@ public class XincoArchiver {
             if (xlog_temp != null) {
                 xlog_temp.setId(0);
                 xlog_temp.setOp_code(OPCode.ARCHIVED.ordinal() + 1);
-                xlog_temp.setOp_description(rb.getString(OPCode.getOPCode(xlog_temp.getOp_code()).getName() + "!"));
+                xlog_temp.setOp_description(rb.getString(OPCode.getOPCode(xlog_temp.getOp_code()).getName()));
                 xlog_temp.setXinco_core_user_id(1);
                 xlog_temp.write2DB(DBM);
             }
