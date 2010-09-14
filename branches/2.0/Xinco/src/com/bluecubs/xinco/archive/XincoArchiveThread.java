@@ -45,6 +45,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class runs document archiving in a separate thread
@@ -145,6 +147,8 @@ public class XincoArchiveThread extends Thread {
             }
             return true;
         } catch (Exception e) {
+            Logger.getLogger(XincoArchiveThread.class.getSimpleName()).log(
+                    Level.SEVERE, null, e);
             try {
                 if (fcis != null) {
                     fcis.close();
