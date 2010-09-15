@@ -36,15 +36,15 @@
 package com.bluecubs.xinco.client.object;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.client.service.Xinco;
-import com.bluecubs.xinco.client.service.XincoCoreNode;
-import com.bluecubs.xinco.client.service.XincoCoreUser;
-import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.*;
+
+import com.bluecubs.xinco.core.*;
+import com.bluecubs.xinco.service.*;
 
 /**
  * XincoClientRepository
  */
-public final class XincoClientRepository {
+public class XincoClientRepository {
 
     /**
      * DefaultTreeModel
@@ -58,8 +58,7 @@ public final class XincoClientRepository {
      */
     public XincoClientRepository(XincoExplorer e) {
         explorer = e;
-        treemodel = new DefaultTreeModel(new XincoMutableTreeNode("root",
-                getExplorer()));
+        treemodel = new DefaultTreeModel(new XincoMutableTreeNode("root", getExplorer()));
     }
 
     /**
@@ -70,23 +69,18 @@ public final class XincoClientRepository {
      * @param user User involved
      * @param depth Node depth.
      */
-    public void assignObject2TreeNode(XincoMutableTreeNode node,
-            XincoCoreNode object, Xinco service, XincoCoreUser user, int depth) {
+    public void assignObject2TreeNode(XincoMutableTreeNode node, XincoCoreNode object, Xinco service, XincoCoreUser user, int depth) {
         int i = 0;
         depth--;
         node.removeAllChildren();
         node.setUserObject(object);
-        int size = object.getXincoCoreNodes().size();
+        int size = object.getXinco_core_nodes().size();
         for (i = 0; i < size; i++) {
-            XincoMutableTreeNode temp_xmtn = 
-                    new XincoMutableTreeNode(object.getXincoCoreNodes().get(i),
-                    getExplorer());
+            XincoMutableTreeNode temp_xmtn = new XincoMutableTreeNode(object.getXinco_core_nodes().elementAt(i), getExplorer());
             treemodel.insertNodeInto(temp_xmtn, node, node.getChildCount());
         }
-        for (i = 0; i < object.getXincoCoreData().size(); i++) {
-            treemodel.insertNodeInto(new XincoMutableTreeNode(
-                    object.getXincoCoreData().get(i), getExplorer()),
-                    node, node.getChildCount());
+        for (i = 0; i < object.getXinco_core_data().size(); i++) {
+            treemodel.insertNodeInto(new XincoMutableTreeNode(object.getXinco_core_data().elementAt(i), getExplorer()), node, node.getChildCount());
         }
         treemodel.reload(node);
         treemodel.nodeChanged(node);

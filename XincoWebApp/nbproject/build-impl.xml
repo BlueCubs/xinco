@@ -18,7 +18,6 @@
 
         -->
 <project xmlns:webproject1="http://www.netbeans.org/ns/web-project/1" xmlns:webproject2="http://www.netbeans.org/ns/web-project/2" xmlns:webproject3="http://www.netbeans.org/ns/web-project/3" basedir=".." default="default" name="xinco-impl">
-    <import file="jaxws-build.xml"/>
     <import file="ant-deploy.xml"/>
     <fail message="Please build using Ant 1.7.1 or higher.">
         <condition>
@@ -57,7 +56,7 @@
         </condition>
         <condition property="have.sources">
             <or>
-                <available file="${src.dir}"/>
+                <available file="${src.src.dir}"/>
             </or>
         </condition>
         <condition property="netbeans.home+have.tests">
@@ -187,7 +186,7 @@
         <!-- You can override this target in the ../build.xml file. -->
     </target>
     <target depends="-pre-init,-init-private,-init-user,-init-project,-do-init" name="-init-check">
-        <fail unless="src.dir">Must set src.dir</fail>
+        <fail unless="src.src.dir">Must set src.src.dir</fail>
         <fail unless="test.src.dir">Must set test.src.dir</fail>
         <fail unless="build.dir">Must set build.dir</fail>
         <fail unless="build.web.dir">Must set build.web.dir</fail>
@@ -232,7 +231,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
     </target>
     <target depends="-init-ap-cmdline-properties" if="ap.supported.internal" name="-init-macrodef-javac-with-processors">
         <macrodef name="javac" uri="http://www.netbeans.org/ns/web-project/2">
-            <attribute default="${src.dir}" name="srcdir"/>
+            <attribute default="${src.src.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}:${j2ee.platform.classpath}" name="classpath"/>
             <attribute default="${javac.processorpath}" name="processorpath"/>
@@ -270,7 +269,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
     </target>
     <target depends="-init-ap-cmdline-properties" name="-init-macrodef-javac-without-processors" unless="ap.supported.internal">
         <macrodef name="javac" uri="http://www.netbeans.org/ns/web-project/2">
-            <attribute default="${src.dir}" name="srcdir"/>
+            <attribute default="${src.src.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}:${j2ee.platform.classpath}" name="classpath"/>
             <attribute default="${javac.processorpath}" name="processorpath"/>
@@ -301,7 +300,7 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
     </target>
     <target depends="-init-macrodef-javac-with-processors,-init-macrodef-javac-without-processors" name="-init-macrodef-javac">
         <macrodef name="depend" uri="http://www.netbeans.org/ns/web-project/2">
-            <attribute default="${src.dir}" name="srcdir"/>
+            <attribute default="${src.src.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}:${j2ee.platform.classpath}" name="classpath"/>
             <sequential>
@@ -493,19 +492,6 @@ exists or setup the property manually. For example like this:
     <target depends="-init-ap-cmdline-properties,-init-ap-cmdline-supported" name="-init-ap-cmdline">
         <property name="ap.cmd.line.internal" value=""/>
     </target>
-    <target depends="-profile-pre-init, init, -profile-post-init, -profile-init-check" name="profile-init"/>
-    <target name="-profile-pre-init">
-        <!-- Empty placeholder for easier customization. -->
-        <!-- You can override this target in the ../build.xml file. -->
-    </target>
-    <target name="-profile-post-init">
-        <!-- Empty placeholder for easier customization. -->
-        <!-- You can override this target in the ../build.xml file. -->
-    </target>
-    <target depends="-profile-pre-init, init, -profile-post-init" name="-profile-init-check">
-        <fail unless="profiler.info.jvm">Must set JVM to use for profiling in profiler.info.jvm</fail>
-        <fail unless="profiler.info.jvmargs.agent">Must set profiler agent JVM arguments in profiler.info.jvmargs.agent</fail>
-    </target>
     <target depends="-pre-init,-init-private,-init-user,-init-project,-do-init,-post-init,-init-check,-init-macrodef-property,-init-macrodef-javac,-init-macrodef-junit,-init-macrodef-java,-init-macrodef-nbjpda,-init-macrodef-nbjsdebug,-init-macrodef-debug,-init-taskdefs,-init-ap-cmdline" name="init"/>
     <!--
                 COMPILATION SECTION
@@ -514,14 +500,20 @@ exists or setup the property manually. For example like this:
         <ant antfile="${project.Xinco}/build.xml" inheritall="false" target="jar">
             <property name="deploy.on.save" value="false"/>
         </ant>
+        <ant antfile="${project.XincoExplorer}/build.xml" inheritall="false" target="jar">
+            <property name="deploy.on.save" value="false"/>
+        </ant>
     </target>
     <target depends="init" if="dist.ear.dir" name="deps-ear-jar" unless="no.deps">
         <ant antfile="${project.Xinco}/build.xml" inheritall="false" target="jar">
             <property name="deploy.on.save" value="false"/>
         </ant>
+        <ant antfile="${project.XincoExplorer}/build.xml" inheritall="false" target="jar">
+            <property name="deploy.on.save" value="false"/>
+        </ant>
     </target>
     <target depends="init, deps-module-jar, deps-ear-jar" name="deps-jar" unless="no.deps"/>
-    <target depends="init,deps-jar,wsimport-service-generate" name="-pre-pre-compile">
+    <target depends="init,deps-jar" name="-pre-pre-compile">
         <mkdir dir="${build.classes.dir}"/>
     </target>
     <target name="-pre-compile">
@@ -539,7 +531,7 @@ exists or setup the property manually. For example like this:
     <target depends="init, deps-jar, -pre-pre-compile, -pre-compile, -copy-manifest, -copy-persistence-xml, -copy-webdir, library-inclusion-in-archive,library-inclusion-in-manifest" if="have.sources" name="-do-compile">
         <webproject2:javac destdir="${build.classes.dir}" gensrcdir="${build.generated.sources.dir}"/>
         <copy todir="${build.classes.dir}">
-            <fileset dir="${src.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
+            <fileset dir="${src.src.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
         </copy>
     </target>
     <target if="has.custom.manifest" name="-copy-manifest">
@@ -567,7 +559,7 @@ exists or setup the property manually. For example like this:
         <fail unless="javac.includes">Must select some files in the IDE or set javac.includes</fail>
         <webproject2:javac excludes="" gensrcdir="${build.generated.sources.dir}" includes="${javac.includes}"/>
         <copy todir="${build.classes.dir}">
-            <fileset dir="${src.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
+            <fileset dir="${src.src.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
         </copy>
     </target>
     <target name="-post-compile-single">
@@ -655,108 +647,100 @@ exists or setup the property manually. For example like this:
     </target>
     <target depends="init,compile,compile-jsps,-pre-dist,-do-dist-with-manifest,-do-dist-without-manifest" name="do-dist"/>
     <target depends="init" if="dist.ear.dir" name="library-inclusion-in-manifest">
-        <copyfiles files="${libs.metro.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${libs.eclipselink.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.activation.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.Base64-0.91.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${reference.Xinco.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.activation.jar-1}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.axis-ant.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.axis.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.commons-collections-2.1.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.commons-dbcp-1.2.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.commons-discovery-0.2.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.commons-io-1.4.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.commons-logging-1.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.commons-logging-1.0.4.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.commons-pool-1.2.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.derby.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.derbyclient.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.jaxrpc.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.jodconverter-2.2.2.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.juh-3.0.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.jurt-3.0.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.Lius-1.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.log4j-1.2.15.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.mail.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.lucene-1.4-final.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.lucene-core-2.2.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.lucene-demos-1.4-final.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.lucene-demos-2.2.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.mail.jar-1}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.PDFBox-0.6.7a.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.ridl-3.0.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.poi-3.6-20091214.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.servlet-api-2.4.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.slf4j-api-1.5.6.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.slf4j-jdk14-1.5.6.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.poi-2.5.1-final-20040804.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.saaj.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.servlet-api.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.tm-extractors-0.4.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.unoil-3.0.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.xercesImpl.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.xmlParserAPIs.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.xstream-1.3.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${reference.Xinco.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.gsp.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.lucene-core-3.0.2.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.lucene-demos-3.0.2.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.activation.jar-1}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.commons-codec-1.4.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.wsdl4j-1.5.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.xercesImpl.jar-3}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.xmlParserAPIs.jar-1}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${reference.XincoExplorer.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${reference.Xinco.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.activation.jar-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.axis.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.commons-discovery-0.2.jar-1}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.commons-httpclient-3.1.jar}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.commons-logging-1.0.4.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.commons-logging-1.0.4.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.jaxrpc.jar-1}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.JTattoo.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.liquidlnf.jar}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.mail.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.mail.jar-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.saaj.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.napkinlaf-1.2.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.substance.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.swing-layout-1.0.3.jar}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.xercesImpl.jar-1}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.xmlParserAPIs.jar-1}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.XincoExplorer.jnlp}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.wsdl4j-1.5.1.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.xercesImpl.jar-4}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.xmlParserAPIs.jar-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.JTattoo.jar}" todir="${build.web.dir}/client"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
         <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
     <target depends="init" name="library-inclusion-in-archive" unless="dist.ear.dir">
-        <copyfiles files="${libs.metro.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${libs.eclipselink.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.activation.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.Base64-0.91.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${reference.Xinco.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.activation.jar-1}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.axis-ant.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.axis.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.commons-collections-2.1.1.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.commons-dbcp-1.2.1.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.commons-discovery-0.2.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.commons-io-1.4.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.commons-logging-1.1.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.commons-logging-1.0.4.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.commons-pool-1.2.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.derby.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.derbyclient.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.jaxrpc.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.jodconverter-2.2.2.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.juh-3.0.1.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.jurt-3.0.1.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.Lius-1.0.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.log4j-1.2.15.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.mail.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.lucene-1.4-final.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.lucene-core-2.2.0.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.lucene-demos-1.4-final.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.lucene-demos-2.2.0.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.mail.jar-1}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.PDFBox-0.6.7a.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.ridl-3.0.1.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.poi-3.6-20091214.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.servlet-api-2.4.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.slf4j-api-1.5.6.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.slf4j-jdk14-1.5.6.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.poi-2.5.1-final-20040804.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.saaj.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.servlet-api.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.tm-extractors-0.4.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.unoil-3.0.1.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.xercesImpl.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.xmlParserAPIs.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.xstream-1.3.1.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${reference.Xinco.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.gsp.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.lucene-core-3.0.2.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.lucene-demos-3.0.2.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.activation.jar-1}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.commons-codec-1.4.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.wsdl4j-1.5.1.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.xercesImpl.jar-3}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.xmlParserAPIs.jar-1}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${reference.XincoExplorer.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.XincoExplorer.jnlp-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.blueCubsIcon.gif-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${reference.Xinco.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.activation.jar-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.axis.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.commons-discovery-0.2.jar-1}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.commons-httpclient-3.1.jar}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.commons-logging-1.0.4.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.commons-logging-1.0.4.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.jaxrpc.jar-1}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.JTattoo.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.liquidlnf.jar}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.mail.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.mail.jar-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.saaj.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.napkinlaf-1.2.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.substance.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.swing-layout-1.0.3.jar}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.xercesImpl.jar-1}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.xmlParserAPIs.jar-1}" todir="${build.web.dir}/client"/>
-        <copyfiles files="${file.reference.XincoExplorer.jnlp}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.wsdl4j-1.5.1.jar-1}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.xercesImpl.jar-4}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.xmlParserAPIs.jar-2}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${reference.XincoExplorer.jar}" todir="${build.web.dir}/client"/>
+        <copyfiles files="${file.reference.JTattoo.jar}" todir="${build.web.dir}/client"/>
     </target>
     <target depends="init" if="dist.ear.dir" name="-clean-webinf-lib">
         <delete dir="${build.web.dir}/WEB-INF/lib"/>
@@ -937,35 +921,6 @@ exists or setup the property manually. For example like this:
     </target>
     <target depends="init,-pre-debug-fix,-do-debug-fix" if="netbeans.home" name="debug-fix"/>
     <!--
-            =================
-            PROFILING SECTION
-            =================
-            -->
-    <target description="Profile a J2EE project in the IDE." name="profile">
-        <condition else="start-profiled-server" property="profiler.startserver.target" value="start-profiled-server-extraargs">
-            <isset property="profiler.info.jvmargs.extra"/>
-        </condition>
-        <antcall target="${profiler.startserver.target}"/>
-        <antcall target="run"/>
-        <antcall target="start-loadgen"/>
-    </target>
-    <target name="start-profiled-server">
-        <nbstartprofiledserver forceRestart="${profiler.j2ee.serverForceRestart}" javaPlatform="${profiler.info.javaPlatform}" startupTimeout="${profiler.j2ee.serverStartupTimeout}">
-            <jvmarg value="${profiler.info.jvmargs.agent}"/>
-            <jvmarg value="${profiler.j2ee.agentID}"/>
-        </nbstartprofiledserver>
-    </target>
-    <target name="start-profiled-server-extraargs">
-        <nbstartprofiledserver forceRestart="${profiler.j2ee.serverForceRestart}" javaPlatform="${profiler.info.javaPlatform}" startupTimeout="${profiler.j2ee.serverStartupTimeout}">
-            <jvmarg value="${profiler.info.jvmargs.extra}"/>
-            <jvmarg value="${profiler.info.jvmargs.agent}"/>
-            <jvmarg value="${profiler.j2ee.agentID}"/>
-        </nbstartprofiledserver>
-    </target>
-    <target if="profiler.loadgen.path" name="start-loadgen">
-        <loadgenstart path="${profiler.loadgen.path}"/>
-    </target>
-    <!--
                 JAVADOC SECTION
             -->
     <target depends="init" if="have.sources" name="javadoc-build">
@@ -974,7 +929,7 @@ exists or setup the property manually. For example like this:
             <classpath>
                 <path path="${javac.classpath}:${j2ee.platform.classpath}"/>
             </classpath>
-            <fileset dir="${src.dir}" excludes="${excludes}" includes="${includes}">
+            <fileset dir="${src.src.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/*.java"/>
             </fileset>
             <fileset dir="${build.generated.sources.dir}" erroronmissingdir="false">
@@ -982,7 +937,7 @@ exists or setup the property manually. For example like this:
             </fileset>
         </javadoc>
         <copy todir="${dist.javadoc.dir}">
-            <fileset dir="${src.dir}" excludes="${excludes}" includes="${includes}">
+            <fileset dir="${src.src.dir}" excludes="${excludes}" includes="${includes}">
                 <filename name="**/doc-files/**"/>
             </fileset>
             <fileset dir="${build.generated.sources.dir}" erroronmissingdir="false">
@@ -1087,40 +1042,12 @@ exists or setup the property manually. For example like this:
     </target>
     <target depends="init,-pre-debug-fix,-do-debug-fix-test" if="netbeans.home" name="debug-fix-test"/>
     <!--
-        =========================
-        TESTS PROFILING  SECTION
-        =========================
-        -->
-    <target depends="profile-init,compile-test-single" if="netbeans.home" name="profile-test-single">
-        <nbprofiledirect>
-            <classpath>
-                <path path="${run.test.classpath}"/>
-                <path path="${j2ee.platform.classpath}"/>
-            </classpath>
-        </nbprofiledirect>
-        <junit dir="${profiler.info.dir}" errorproperty="tests.failed" failureproperty="tests.failed" fork="true" jvm="${profiler.info.jvm}" showoutput="true">
-            <env key="${profiler.info.pathvar}" path="${profiler.info.agentpath}:${profiler.current.path}"/>
-            <jvmarg value="${profiler.info.jvmargs.agent}"/>
-            <jvmarg line="${profiler.info.jvmargs}"/>
-            <test name="${profile.class}"/>
-            <classpath>
-                <path path="${run.test.classpath}"/>
-                <path path="${j2ee.platform.classpath}"/>
-            </classpath>
-            <syspropertyset>
-                <propertyref prefix="test-sys-prop."/>
-                <mapper from="test-sys-prop.*" to="*" type="glob"/>
-            </syspropertyset>
-            <formatter type="brief" usefile="false"/>
-            <formatter type="xml"/>
-        </junit>
-    </target>
-    <!--
                 
                 CLEANUP SECTION
             -->
     <target depends="init" if="no.dist.ear.dir" name="deps-clean" unless="no.deps">
         <ant antfile="${project.Xinco}/build.xml" inheritall="false" target="clean"/>
+        <ant antfile="${project.XincoExplorer}/build.xml" inheritall="false" target="clean"/>
     </target>
     <target depends="init" name="do-clean">
         <condition property="build.dir.to.clean" value="${build.web.dir}">
