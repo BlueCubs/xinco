@@ -281,6 +281,7 @@ public class XincoJTree extends JTree {
                                         getExplorer().getResourceBundle().getString("error.folder.sufficientrights"),
                                         getExplorer().getResourceBundle().getString("error.accessdenied"),
                                         JOptionPane.WARNING_MESSAGE);
+                                getExplorer().getProgressBar().hide();
                             }
                         } catch (Exception rmie) {
                             Logger.getLogger(XincoJTree.class.getSimpleName()).log(
@@ -300,6 +301,7 @@ public class XincoJTree extends JTree {
                                     getExplorer().getResourceBundle().getString("error.data.sufficientrights"),
                                     getExplorer().getResourceBundle().getString("error.accessdenied"),
                                     JOptionPane.WARNING_MESSAGE);
+                            getExplorer().getProgressBar().hide();
                         }
                     } catch (Exception rmie) {
                     }
@@ -592,6 +594,7 @@ public class XincoJTree extends JTree {
                         } catch (Exception ex) {
                             Logger.getLogger(XincoJTree.class.getSimpleName()).log(
                                     Level.SEVERE, null, ex);
+                            getExplorer().getProgressBar().hide();
                         }
                         dtm.addRow(rdata);
                     }

@@ -1342,7 +1342,7 @@ public class XincoAdminServlet extends HttpServlet {
                     rs = dbm.con.createStatement().executeQuery("select distinct " + column + " from " + request.getParameter("table") + "_t");
                     out.println("<form action='XincoAdmin?MenuAudit=AuditTable' method='POST'>");
                     rs = dbm.con.createStatement().executeQuery("select distinct " + column + " from "
-                            + request.getParameter("table") + "_t");
+                            + request.getParameter("table") + "_t order by "+column);
                     out.println("Select record id: ");
                     out.println("<select name='id'>");
                     while (rs.next()) {
