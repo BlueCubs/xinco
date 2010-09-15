@@ -138,7 +138,8 @@
         <!--Create keystore-->
         <genkey alias="${keystore.alias}" storepass="${keystore.password}"
         dname="${keystore.dname}"
-        keystore="${keystore.file}"/>
+        keystore="${keystore.file}"
+        validity="365"/>
         <!--Sign libraries-->
         <signjar alias="${keystore.alias}" keystore="${keystore.file}" storepass="${keystore.password}">
             <fileset dir="${build.dir}/web/client">

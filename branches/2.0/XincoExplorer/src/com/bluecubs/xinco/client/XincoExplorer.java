@@ -2075,7 +2075,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             newlog.setVersion(((XincoCoreLog) ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().get(((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().size() - 1)).getVersion());
                             ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().addElement(newlog);
                             //Nothing to do in log dialog for checkout...
-                            if (wizard_type != 4 && wizard_type != 5) {
+                            if (wizard_type != 4) {
                                 setGlobal_dialog_return_value(0);
                                 AbstractDialogLog = getAbstractDialogLog(wizard_type == 12);
                                 if (getGlobal_dialog_return_value() == 0) {
