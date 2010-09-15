@@ -2,7 +2,6 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
-DROP SCHEMA IF EXISTS `xinco` ;
 CREATE SCHEMA IF NOT EXISTS `xinco` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 USE `xinco` ;
 
@@ -145,7 +144,7 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user` (
   INDEX `xinco_core_user_index_username` (`username` ASC) ,
   INDEX `xinco_core_user_index_status` (`status_number` ASC) ,
   UNIQUE INDEX `unique id` (`username` ASC) )
-COMMENT = 'Status: \nopen = 1 \nlocked = 2 \n'
+COMMENT = '\n'
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
@@ -237,7 +236,7 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_node` (
     REFERENCES `xinco`.`xinco_core_language` (`id` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
-COMMENT = 'Status:\nopen = 1\nlocked = 2\narchived = 3\n'
+COMMENT = '\n'
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
@@ -306,7 +305,7 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user` (
   INDEX `xinco_core_user_index_username` (`username` ASC) ,
   INDEX `xinco_core_user_index_status` (`status_number` ASC) ,
   UNIQUE INDEX `unique id` (`username` ASC) )
-COMMENT = 'Status: \nopen = 1 \nlocked = 2 \n'
+COMMENT = '\n'
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
@@ -321,7 +320,7 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_group` (
   PRIMARY KEY (`id`) ,
   INDEX `xinco_core_group_index_status` (`status_number` ASC) ,
   UNIQUE INDEX `unique name` (`designation` ASC) )
-COMMENT = 'Status:  \nopen = 1  \nlocked = 2  \n'
+COMMENT = '\n'
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
@@ -389,7 +388,7 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_has_xinco_core_group` (
     REFERENCES `xinco`.`xinco_core_group` (`id` )
     ON DELETE CASCADE
     ON UPDATE CASCADE)
-COMMENT = 'Status:  \nopen = 1  \nlocked = 2  \n'
+COMMENT = '\n'
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
@@ -634,5 +633,23 @@ INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`,
 INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('2', '1', 'Text', 'text', '0');
 INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('3', '1', 'URL', 'varchar', '255');
 INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '1', 'Salutation', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '2', 'First_Name', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '3', 'Middle_Name', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '4', 'Last_Name', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '5', 'Name_Affix', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '6', 'Phone_business', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '7', 'Phone_private', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '8', 'Phone_mobile', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '9', 'Fax', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '10', 'Email', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '11', 'Website', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '12', 'Street_Address', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '13', 'Postal_Code', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '14', 'City', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '15', 'State_Province', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '16', 'Country', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '17', 'Company_Name', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '18', 'Position', 'varchar', '255');
+INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '19', 'Notes', 'text', '0');
 
 COMMIT;
