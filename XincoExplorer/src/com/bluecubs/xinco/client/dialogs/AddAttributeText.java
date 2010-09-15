@@ -40,6 +40,7 @@ import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreData;
+import com.bluecubs.xinco.core.XincoDataStatus;
 import java.util.Vector;
 
 /**
@@ -71,7 +72,7 @@ public class AddAttributeText extends AbstractDialog {
         setResizable(false);
         text.setEditable(!isViewOnly());
         //processing independent of creation
-        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 1) {
+        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == XincoDataStatus.OPEN.ordinal() + 1) {
             save.setEnabled(!isViewOnly());
         } else {
             save.setEnabled(false);
@@ -100,7 +101,7 @@ public class AddAttributeText extends AbstractDialog {
         super.setToDefaults();
         XincoMutableTreeNode node = explorer.getSession().getCurrentTreeNodeSelection();
         Vector attr = ((XincoCoreData) node.getUserObject()).getXinco_add_attributes();
-        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() != 2) {
+        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() != XincoDataStatus.LOCKED.ordinal() + 1) {
             save.setEnabled(!isViewOnly());
         } else {
             save.setEnabled(false);

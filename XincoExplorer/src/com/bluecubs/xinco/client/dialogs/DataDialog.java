@@ -42,6 +42,7 @@ import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreLanguage;
+import com.bluecubs.xinco.core.XincoDataStatus;
 import java.util.Locale;
 import javax.swing.DefaultListModel;
 
@@ -113,19 +114,19 @@ public class DataDialog extends AbstractDialog {
             }
             language.setSelectedIndex(selection);
             language.ensureIndexIsVisible(language.getSelectedIndex());
-            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 1) {
+            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == XincoDataStatus.OPEN.ordinal() + 1) {
                 text = explorer.getResourceBundle().getString("general.status.open") + "";
             }
-            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 2) {
+            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == XincoDataStatus.LOCKED.ordinal() + 1) {
                 text = explorer.getResourceBundle().getString("general.status.locked") + " (-)";
             }
-            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 3) {
+            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == XincoDataStatus.ARCHIVED.ordinal() + 1) {
                 text = explorer.getResourceBundle().getString("general.status.archived") + " (->)";
             }
-            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 4) {
+            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == XincoDataStatus.CHECKED_OUT.ordinal() + 1) {
                 text = explorer.getResourceBundle().getString("general.status.checkedout") + " (X)";
             }
-            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 5) {
+            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == XincoDataStatus.PUBLISHED.ordinal() + 1) {
                 text = explorer.getResourceBundle().getString("general.status.published") + " (WWW)";
             }
             status.setText(text);

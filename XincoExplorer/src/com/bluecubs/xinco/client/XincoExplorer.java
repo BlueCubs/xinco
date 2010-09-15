@@ -1893,7 +1893,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         = 14 = preview data
         = 15 = download file with predefined name
          */
-        int i = 0, j = 0;
+        int i = 0;
         newnode = new XincoMutableTreeNode(new XincoCoreData(), this);
         xdata = null;
         newlog = new XincoCoreLog();
@@ -2075,9 +2075,9 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             newlog.setVersion(((XincoCoreLog) ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().get(((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().size() - 1)).getVersion());
                             ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().addElement(newlog);
                             //Nothing to do in log dialog for checkout...
-                            if (wizard_type != 4) {
+                            if (wizard_type != 4 && wizard_type != 5) {
                                 setGlobal_dialog_return_value(0);
-                                AbstractDialogLog = getAbstractDialogLog(false);
+                                AbstractDialogLog = getAbstractDialogLog(wizard_type == 12);
                                 if (getGlobal_dialog_return_value() == 0) {
                                     progressBar.hide();
                                     throw new XincoException(xerb.getString("datawizard.updatecancel"));
@@ -2327,7 +2327,6 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                         ((XincoSoapBindingStub) xincoClientSession.getXinco()).clearAttachments();
                         //check correctness of data
                         if (wizard_type != 11) {
-                            //if ((((XincoAddAttribute)((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().get(1)).getAttrib_unsignedint() != total_len) || (((XincoAddAttribute)((XincoCoreData)newnode.getUserObject()).getXinco_add_attributes().get(2)).getAttrib_varchar().equals(new String("" + couts.getChecksum().getValue())))) {
                             if (((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXinco_add_attributes().get(1)).getAttrib_unsignedint() != total_len) {
                                 JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("datawizard.filedownloadcorrupted"), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
                             }
