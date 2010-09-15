@@ -1,0 +1,39 @@
+===================================
+=  How to run xinco over HTTPS    =
+===================================
+
+This product is distributed under the Apache License, Version 2.0.
+By installing and using the product, you agree to the terms of the license!
+
+This project supports the blueCubs vision of giving back
+to the community in exchange for free software!
+More information on: http://www.bluecubs.org
+
+===============================
+
+The following instructions show you how to set up Tomcat and your local Java Web Start environment to run xinco DMS over a secure connection:
+
+
+Note: Step 1) and 3) are only required when using self-signed certificates (= not provided by a commercial Certification Authority, CA)
+      When using a certificate from a CA, as recommended for production environments, you need to import the provided certificate
+      into your server's keystore (1). Java Web Start will then be able to check this certificate automatically, so 3) is not required.
+
+
+1) Generate keystores and certificates for your Tomcat server by running genkeys.bat
+
+2) Uncomment or add the following SSL connector information in [TOMCAT_HOME]/conf/server.xml
+
+    <!-- Define a SSL Coyote HTTP/1.1 Connector on port 8443 -->
+    <Connector port="8443"
+    		keystore="full/path/to/server.keystore" keystorePass="changeit"
+               maxThreads="150" minSpareThreads="25" maxSpareThreads="75"
+               enableLookups="false" disableUploadTimeout="true"
+               acceptCount="100" debug="0" scheme="https" secure="true"
+               clientAuth="false" sslProtocol="TLS" />
+
+3) Import the server's certificate (server.cer) into your Java Runtime Environment's (JRE) keystore by modifying
+   the JRE's full path in importkeys-for-JavaWebStart.bat and running the script.
+
+4) Start Tomcat,
+   load XincoExplorer from: https://localhost:8443/xinco/client/XincoExplorer.jnlp
+   and connect to your xinco repository's server endpoint at: https://localhost:8443/xinco/services/Xinco
