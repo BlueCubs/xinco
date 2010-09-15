@@ -24,7 +24,7 @@
  * Description:     Abstract class with common methods for Dialogs within Xinco Explorer.
  *
  * Original Author: Javier A. Ortiz
- * Date:            2008
+ * Date:            2010
  *
  * Modifications:
  *
@@ -48,6 +48,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public abstract class AbstractDialog extends javax.swing.JDialog {
 
+    //Field Type, Default value
     protected HashMap<JTextField, String> textFields = new HashMap<JTextField, String>();
     protected HashMap<JTextArea, String> textAreas = new HashMap<JTextArea, String>();
     protected HashMap<JTable, DefaultTableModel> tables = new HashMap<JTable, DefaultTableModel>();
@@ -74,7 +75,7 @@ public abstract class AbstractDialog extends javax.swing.JDialog {
 
     /**
      * Set text fields
-     * @param textFields
+     * @param textFields 
      */
     public void setTextFields(HashMap<JTextField, String> textFields) {
         this.textFields = textFields;
@@ -164,6 +165,9 @@ public abstract class AbstractDialog extends javax.swing.JDialog {
         }
     }
 
+    /**
+     * Set fields to their default values.
+     */
     public void setToDefaults() {
         for (Entry<JTextField, String> e : getTextFields().entrySet()) {
             e.getKey().setText(e.getValue());
@@ -176,12 +180,16 @@ public abstract class AbstractDialog extends javax.swing.JDialog {
         }
     }
 
+    /**
+     * Set the dialog visible.
+     * @param visible
+     */
     @Override
-    public void setVisible(boolean b) {
-        if (b) {
+    public void setVisible(boolean visible) {
+        if (visible) {
             clearDialog();
             setToDefaults();
         }
-        super.setVisible(b);
+        super.setVisible(visible);
     }
 }

@@ -24,28 +24,52 @@ UPDATE xinco_core_log SET id=id+1000 WHERE id>2;
 -- ...                                                   id=y?;
 -- ----------------------------------------------------------
 
-INSERT INTO xinco_core_node VALUES (4, 1, 1, 'News', 1); 
-INSERT INTO xinco_core_ace VALUES (16, 1, NULL, 4, NULL, 1, 1, 1, 1);          
-INSERT INTO xinco_core_ace VALUES (17, NULL, 1, 4, NULL, 1, 1, 1, 1);           
-INSERT INTO xinco_core_ace VALUES (18, NULL, 2, 4, NULL, 1, 0, 0, 0);           
+INSERT INTO xinco_core_node VALUES (4, 1, 1, 'News', 1); 
 
-INSERT INTO xinco_core_data_type VALUES (4, 'Contact', 'Personal and business contacts.');      
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 1, 'Salutation', 'varchar', 255);     
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 2, 'First Name', 'varchar', 255);     
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 3, 'Middle Name', 'varchar', 255);     
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 4, 'Last Name', 'varchar', 255);     
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 5, 'Name Affix', 'varchar', 255);     
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 6, 'Phone (business)', 'varchar', 255);      
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 7, 'Phone (private)', 'varchar', 255);      
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 8, 'Phone (mobile)', 'varchar', 255);      
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 9, 'Fax', 'varchar', 255);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 10, 'Email', 'varchar', 255);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 11, 'Website', 'varchar', 255);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 12, 'Street Address', 'text', 0);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 13, 'Postal Code', 'varchar', 255);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 14, 'City', 'varchar', 255);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 15, 'State / Province', 'varchar', 255);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 16, 'Country', 'varchar', 255);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 17, 'Company Name', 'varchar', 255);      
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 18, 'Position', 'varchar', 255);       
-INSERT INTO xinco_core_data_type_attribute VALUES (4, 19, 'Notes', 'text', 0);         
+INSERT INTO xinco_core_ace VALUES (16, 1, NULL, 4, NULL, 1, 1, 1, 1);          
+
+INSERT INTO xinco_core_ace VALUES (17, NULL, 1, 4, NULL, 1, 1, 1, 1);           
+
+INSERT INTO xinco_core_ace VALUES (18, NULL, 2, 4, NULL, 1, 0, 0, 0);           
+
+
+INSERT INTO xinco_core_data_type VALUES (4, 'Contact', 'Personal and business contacts.');      
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 1, 'Salutation', 'varchar', 255);     
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 2, 'First Name', 'varchar', 255);     
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 3, 'Middle Name', 'varchar', 255);     
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 4, 'Last Name', 'varchar', 255);     
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 5, 'Name Affix', 'varchar', 255);     
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 6, 'Phone (business)', 'varchar', 255);      
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 7, 'Phone (private)', 'varchar', 255);      
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 8, 'Phone (mobile)', 'varchar', 255);      
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 9, 'Fax', 'varchar', 255);       
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 10, 'Email', 'varchar', 255);       
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 11, 'Website', 'varchar', 255);       
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 12, 'Street Address', 'text', 0);       
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 13, 'Postal Code', 'varchar', 255);       
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 14, 'City', 'varchar', 255);       
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 15, 'State / Province', 'varchar', 255);       
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 16, 'Country', 'varchar', 255);       
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 17, 'Company Name', 'varchar', 255);      
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 18, 'Position', 'varchar', 255);       
+
+INSERT INTO xinco_core_data_type_attribute VALUES (4, 19, 'Notes', 'text', 0);         
+

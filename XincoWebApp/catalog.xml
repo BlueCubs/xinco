@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
-    <system systemId="http://localhost:8084/xinco/services/Xinco?wsdl" uri="src/conf/xml-resources/web-service-references/Xinco/wsdl/localhost_8084/xinco/services/Xinco.wsdl"/>
-    <system systemId="http://localhost:8084/xinco/services/Xinco?xsd=1" uri="src/conf/xml-resources/web-service-references/Xinco/wsdl/localhost_8084/xinco/services/Xinco.xsd_1.xsd"/>
-    <system systemId="file:/Z:/Netbeans/Xinco/Xinco.wsdl" uri="src/conf/xml-resources/web-services/Xinco/wsdl/Xinco.wsdl"/>
-    <system systemId="file:/Z:/Netbeans/Xinco/Xinco.xsd" uri="src/conf/xml-resources/web-services/Xinco/wsdl/Xinco.xsd"/>
+    <system systemId="file:/E:/Documents%20and%20Settings/javydreamercsw/My%20Documents/NetBeans%20Projects/Xinco/Xinco%202.0.3/Xinco/src/com/bluecubs/xinco/service/Xinco.wsdl" uri="src/conf/xml-resources/web-service-references/Xinco/wsdl/Xinco.wsdl"/>
 </catalog>
