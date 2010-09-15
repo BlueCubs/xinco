@@ -71,7 +71,7 @@ public class XincoDocument {
 		
 		//add content of file
 		if (index_content) {
-			if ((d.getXinco_core_data_type().getId() == 1) && (d.getStatus_number() != 3)) { //process non-archived file
+			if ((d.getXinco_core_data_type().getId() == 1) && (d.getStatus_number() != XincoDataStatus.ARCHIVED.ordinal() + 1)) { //process non-archived file
 				//extract file extension from file name
 				file_ext_index =((XincoAddAttribute)d.getXinco_add_attributes().elementAt(0)).getAttrib_varchar().lastIndexOf(".");
 				if (file_ext_index == -1) {

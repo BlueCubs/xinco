@@ -43,6 +43,7 @@ import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import com.bluecubs.xinco.core.XincoCoreData;
 import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.core.XincoDataStatus;
 import java.text.DateFormat;
 import java.util.Date;
 import javax.swing.table.DefaultTableModel;
@@ -80,7 +81,7 @@ public class AddAttributeUniversalDialog extends AbstractDialog {
         int i = 0, j = 0, start = 0;
         //reset selection
         table.editCellAt(-1, -1);
-        save.setEnabled(((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == 1);
+        save.setEnabled(((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == XincoDataStatus.OPEN.ordinal() + 1);
         DefaultTableModel dtm = new DefaultTableModel(cn, 0);
         j = dtm.getRowCount();
         for (i = 0; i < j; i++) {
