@@ -534,6 +534,17 @@ INSERT INTO `xinco`.`xinco_core_data` (`id`, `xinco_core_node_id`, `xinco_core_l
 COMMIT;
 
 -- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_core_user`
+-- -----------------------------------------------------
+SET AUTOCOMMIT=0;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('1', 'admin', 'MD5(\'admin\')', 'Administrator', 'Xinco', 'admin@xinco.org', '1', '0', 'now()');
+INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('2', 'user', 'MD5(\'user\')', 'User', 'Default', 'user@xinco.org', '1', '0', 'now()');
+INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('3', 'bluecubs', 'MD5(\'bluecubs\')', 'System', 'User', 'inf0@blueubs.com', '1', '0', 'now()');
+
+COMMIT;
+
+-- -----------------------------------------------------
 -- Data for table `xinco`.`xinco_core_group`
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
@@ -651,5 +662,15 @@ INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`,
 INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '17', 'Company_Name', 'varchar', '255');
 INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '18', 'Position', 'varchar', '255');
 INSERT INTO `xinco`.`xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '19', 'Notes', 'text', '0');
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_core_log`
+-- -----------------------------------------------------
+SET AUTOCOMMIT=0;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES ('1', '1', '1', '1', 'now()', 'Creation!', '1', '0', '0', '');
+INSERT INTO `xinco`.`xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES ('2', '2', '1', '1', 'now()', 'Creation!', '1', '0', '0', '');
 
 COMMIT;
