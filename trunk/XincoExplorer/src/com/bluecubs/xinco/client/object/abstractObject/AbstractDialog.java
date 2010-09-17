@@ -152,27 +152,39 @@ public abstract class AbstractDialog extends javax.swing.JDialog {
      * Clear contents of all fields and/or areas in the dialog
      */
     public void clearDialog() {
-        for (Entry<JTextField, String> e : getTextFields().entrySet()) {
-            e.getKey().setText("");
+        if (getTextFields() != null) {
+            for (Entry<JTextField, String> e : getTextFields().entrySet()) {
+                e.getKey().setText("");
+            }
         }
-        for (Entry<JTextArea, String> e : getTextAreas().entrySet()) {
-            e.getKey().setText("");
+        if (getTextAreas() != null) {
+            for (Entry<JTextArea, String> e : getTextAreas().entrySet()) {
+                e.getKey().setText("");
+            }
         }
-        for (Entry<JTable, DefaultTableModel> e : getTables().entrySet()) {
-            DefaultTableModel dm = (DefaultTableModel) e.getKey().getModel();
-            dm.getDataVector().removeAllElements();
+        if (getTables() != null) {
+            for (Entry<JTable, DefaultTableModel> e : getTables().entrySet()) {
+                DefaultTableModel dm = (DefaultTableModel) e.getKey().getModel();
+                dm.getDataVector().removeAllElements();
+            }
         }
     }
 
     public void setToDefaults() {
-        for (Entry<JTextField, String> e : getTextFields().entrySet()) {
-            e.getKey().setText(e.getValue());
+        if (getTextFields() != null) {
+            for (Entry<JTextField, String> e : getTextFields().entrySet()) {
+                e.getKey().setText(e.getValue());
+            }
         }
-        for (Entry<JTextArea, String> e : getTextAreas().entrySet()) {
-            e.getKey().setText(e.getValue());
+        if (getTextAreas() != null) {
+            for (Entry<JTextArea, String> e : getTextAreas().entrySet()) {
+                e.getKey().setText(e.getValue());
+            }
         }
-        for (Entry<JTable, DefaultTableModel> e : getTables().entrySet()) {
-            e.getKey().setModel(e.getValue());
+        if (getTables() != null) {
+            for (Entry<JTable, DefaultTableModel> e : getTables().entrySet()) {
+                e.getKey().setModel(e.getValue());
+            }
         }
     }
 
