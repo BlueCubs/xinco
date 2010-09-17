@@ -123,7 +123,8 @@ public class SearchDialog extends AbstractDialog {
         for (i = 0; i < explorer.getSession().getServerDatatypes().size(); i++) {
             xcdt = (XincoCoreDataType) explorer.getSession().getServerDatatypes().get(i);
             List<XincoCoreDataTypeAttribute> dataTypeAttributes=
-                    getXincoCoreDataTypeAttribute(xcdt,explorer.getSession().getUser());
+                    explorer.getSession().getXincoService().getXincoPort()
+                    .getXincoCoreDataTypeAttribute(xcdt,explorer.getSession().getUser());
             for (j = 0; j < dataTypeAttributes.size(); j++) {
                 text = ((XincoCoreDataTypeAttribute) dataTypeAttributes.get(j)).getDesignation();
                 this.optionsComboBox.addItem(text);
@@ -521,10 +522,4 @@ public class SearchDialog extends AbstractDialog {
     private javax.swing.JLabel systemOptionsValueLabel;
     private javax.swing.JTextField variableField;
     // End of variables declaration//GEN-END:variables
-
-    private static java.util.List<com.bluecubs.xinco.client.service.XincoCoreDataTypeAttribute> getXincoCoreDataTypeAttribute(com.bluecubs.xinco.client.service.XincoCoreDataType in0, com.bluecubs.xinco.client.service.XincoCoreUser in1) {
-        com.bluecubs.xinco.client.service.XincoService service = new com.bluecubs.xinco.client.service.XincoService();
-        com.bluecubs.xinco.client.service.Xinco port = service.getXincoPort();
-        return port.getXincoCoreDataTypeAttribute(in0, in1);
-    }
 }

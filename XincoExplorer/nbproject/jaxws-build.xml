@@ -20,7 +20,7 @@
     </target>
     <target name="wsimport-client-Xinco" depends="wsimport-init">
         <mkdir dir="${build.generated.dir}/jax-wsCache/Xinco"/>
-        <property name="wsdl-Xinco" location="xml-resources/web-service-references/Xinco/wsdl/localhost_8084/xinco/services/Xinco.wsdl"/>
+        <property name="wsdl-Xinco" location="xml-resources/web-service-references/Xinco/wsdl/localhost_8084/xinco/Xinco.wsdl"/>
         <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/Xinco" destdir="${build.generated.dir}/jax-wsCache/Xinco" wsdl="${wsdl-Xinco}" catalog="catalog.xml" extension="true" verbose="true" wsdlLocation="http://localhost:8084/xinco/Xinco?wsdl" xendorsed="true" package="com.bluecubs.xinco.client.service">
             <depends file="${wsdl-Xinco}"/>
             <produces dir="${build.generated.dir}/jax-wsCache/Xinco"/>

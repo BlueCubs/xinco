@@ -36,16 +36,15 @@
 package com.bluecubs.xinco.client.object;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.client.service.Xinco;
+import com.bluecubs.xinco.client.service.Xinco_Service;
 import com.bluecubs.xinco.client.service.XincoCoreDataType;
 import com.bluecubs.xinco.client.service.XincoCoreGroup;
 import com.bluecubs.xinco.client.service.XincoCoreLanguage;
 import com.bluecubs.xinco.client.service.XincoCoreUser;
-import com.bluecubs.xinco.client.service.XincoService;
+import com.bluecubs.xinco.client.service.Xinco;
 import com.bluecubs.xinco.client.service.XincoVersion;
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * XincoClientSession
@@ -57,11 +56,11 @@ public class XincoClientSession {
      */
     private String serviceEndpoint = "";
     private XincoCoreUser user = null;
-    private //web service
-            /**
-             * Xinco Service
-             */
-            XincoService xincoService = null;
+    //web service
+    /**
+     * Xinco Service
+     */
+    private Xinco_Service xincoService = null;
     private Xinco xinco = null;
     private XincoClientRepository xincoClientRepository = null;
     private /**
@@ -134,7 +133,7 @@ public class XincoClientSession {
     /**
      * @return the xinco_service
      */
-    public XincoService getXincoService() {
+    public Xinco_Service getXincoService() {
         return xincoService;
     }
 
@@ -208,7 +207,7 @@ public class XincoClientSession {
             /**
              * Xinco Service
              */
-            XincoService xinco_service) {
+            Xinco_Service xinco_service) {
         this.xincoService = xinco_service;
     }
 
@@ -230,7 +229,7 @@ public class XincoClientSession {
      * @param server_languages the server_languages to set
      */
     public void setServerLanguages(List<XincoCoreLanguage> server_languages) {
-        this.serverLanguages= new ArrayList<XincoCoreLanguage>();
+        this.serverLanguages = new ArrayList<XincoCoreLanguage>();
         this.serverLanguages.addAll(server_languages);
     }
 
@@ -245,7 +244,7 @@ public class XincoClientSession {
      * @param currentSearchResult the currentSearchResult to set
      */
     public void setCurrentSearchResult(List currentSearchResult) {
-        this.currentSearchResult= new ArrayList();
+        this.currentSearchResult = new ArrayList();
         this.currentSearchResult.addAll(currentSearchResult);
     }
 
@@ -267,7 +266,7 @@ public class XincoClientSession {
      * @param server_datatypes the server_datatypes to set
      */
     public void setServerDatatypes(List<XincoCoreDataType> server_datatypes) {
-        this.serverDatatypes= new ArrayList<XincoCoreDataType>();
+        this.serverDatatypes = new ArrayList<XincoCoreDataType>();
         this.serverDatatypes.addAll(server_datatypes);
     }
 

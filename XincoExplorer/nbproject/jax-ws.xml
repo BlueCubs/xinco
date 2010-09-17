@@ -3,8 +3,8 @@
   <services/>
   <clients>
     <client name="Xinco">
-      <wsdl-url>http://localhost:8084/xinco/services/Xinco?wsdl</wsdl-url>
-      <local-wsdl-file>localhost_8084/xinco/services/Xinco.wsdl</local-wsdl-file>
+      <wsdl-url>http://localhost:8084/xinco/Xinco?wsdl</wsdl-url>
+      <local-wsdl-file>localhost_8084/xinco/Xinco.wsdl</local-wsdl-file>
       <package-name forceReplace="true">com.bluecubs.xinco.client.service</package-name>
       <catalog-file>catalog.xml</catalog-file>
       <use-dispatch>true</use-dispatch>
