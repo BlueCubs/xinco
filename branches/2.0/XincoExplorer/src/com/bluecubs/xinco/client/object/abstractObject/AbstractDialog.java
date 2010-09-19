@@ -37,6 +37,7 @@ package com.bluecubs.xinco.client.object.abstractObject;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
+import javax.swing.JCheckBox;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -52,6 +53,7 @@ public abstract class AbstractDialog extends javax.swing.JDialog {
     protected HashMap<JTextField, String> textFields = new HashMap<JTextField, String>();
     protected HashMap<JTextArea, String> textAreas = new HashMap<JTextArea, String>();
     protected HashMap<JTable, DefaultTableModel> tables = new HashMap<JTable, DefaultTableModel>();
+    private HashMap<JCheckBox, Boolean> checkBoxes = new HashMap<JCheckBox, Boolean>();
 
     /**
      * Constructor
@@ -184,6 +186,11 @@ public abstract class AbstractDialog extends javax.swing.JDialog {
                 e.getKey().setModel(e.getValue());
             }
         }
+        if (getCheckBoxes() != null) {
+            for (Entry<JCheckBox, Boolean> e : getCheckBoxes().entrySet()) {
+                e.getKey().setSelected(e.getValue());
+            }
+        }
     }
 
     /**
@@ -197,5 +204,12 @@ public abstract class AbstractDialog extends javax.swing.JDialog {
             setToDefaults();
         }
         super.setVisible(visible);
+    }
+
+    /**
+     * @return the checkBoxes
+     */
+    public HashMap<JCheckBox, Boolean> getCheckBoxes() {
+        return checkBoxes;
     }
 }

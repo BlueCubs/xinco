@@ -1125,7 +1125,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             loginT = new loginThread();
                             loginT.start();
                         } catch (Exception cone) {
-                            Logger.getLogger(ConnectionDialog.class.getSimpleName()).log(Level.SEVERE, null, cone);
+                            Logger.getLogger(XincoExplorer.class.getSimpleName()).log(Level.SEVERE, null, cone);
                             xincoClientSession.setStatus(0);
                             markConnectionStatus();
                             JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("menu.connection.failed") + " " + xerb.getString("general.reason") + ": " + cone.toString(), xerb.getString("menu.connection.failed"), JOptionPane.WARNING_MESSAGE);
@@ -2183,7 +2183,8 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             if (!useSAAJ) {
                                 in.close();
                             }
-                        } catch (Exception fe) {
+                        } catch (Exception e) {
+                            Logger.getLogger(XincoExplorer.class.getSimpleName()).log(Level.SEVERE, null, e);
                             progressBar.hide();
                             throw new XincoException(xerb.getString("datawizard.unabletoloadfile"));
                         }
@@ -2213,8 +2214,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                         newlog.setXinco_core_data_id(((XincoCoreData) newnode.getUserObject()).getId());
                         //save log to server
                         newlog = xincoClientSession.getXinco().setXincoCoreLog(newlog, xincoClientSession.getUser());
-                        if (newlog == null) {
-                        } else {
+                        if (newlog != null) {
                             ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().addElement(newlog);
                         }
                     }
@@ -2299,14 +2299,16 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             } else {
                                 in = new ByteArrayInputStream(byte_array);
                             }
-                        } catch (Exception ce) {
+                        } catch (Exception e) {
                             //reassign log vector
                             if (wizard_type == 11) {
                                 ((XincoCoreData) newnode.getUserObject()).setXinco_core_logs(DataLogVector);
                             }
-                            JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("datawizard.filedownloadfailed"), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
+                            Logger.getLogger(XincoExplorer.class.getSimpleName()).log(Level.SEVERE, null, e);
+                            JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("datawizard.filedownloadfailed"),
+                                    xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
                             progressBar.hide();
-                            throw (ce);
+                            throw (e);
                         }
 
                         //reassign log vector
@@ -2506,7 +2508,8 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                         jTreeRepository.setSelectionPath(currentPath);
                     }
                 }
-            } catch (Exception we) {
+            } catch (Exception e) {
+                Logger.getLogger(XincoExplorer.class.getSimpleName()).log(Level.SEVERE, null, e);
                 //update transaction info
                 jLabelInternalFrameInformationText.setText("");
                 //remove new data cin case off error
@@ -2518,7 +2521,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                 if (wizard_type != 3 || getGlobal_dialog_return_value() != 0) {
                     JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("datawizard.updatefailed")
                             + " " + xerb.getString("general.reason") + ": "
-                            + we.toString(), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
+                            + e.toString(), xerb.getString("general.error"), JOptionPane.WARNING_MESSAGE);
                 }
                 progressBar.hide();
             }
