@@ -239,8 +239,9 @@ public class XincoPublisherServlet extends HttpServlet {
                         //Only display data with at least one major version
                         ResultSet rs = stmt.executeQuery("SELECT DISTINCT xcd.id, xcd.designation "
                                 + "FROM xinco_core_data xcd, xinco_core_ace xca, xinco_core_log xcl WHERE xcd.id=xca.xinco_core_data_id AND "
-                                + "xcd.id=xcl.xinco_core_data_id AND xcd.status_number <>"
-                                + (XincoDataStatus.ARCHIVED.ordinal() + 1) + " AND (xca.xinco_core_group_id=3 AND xca.read_permission=1) "
+                                + "xcd.id=xcl.xinco_core_data_id AND (xcd.status_number <>"
+                                + (XincoDataStatus.ARCHIVED.ordinal() + 1) + " AND (xca.xinco_core_group_id=3 AND xca.read_permission=1)"
+                                + "|| xcd.status_number = "+(XincoDataStatus.PUBLISHED.ordinal() + 1)+") "
                                 + " and xcl.version_mid='0' ORDER BY xcd.designation");
                         while (rs.next()) {
                             xdata_temp = new XincoCoreDataServer(rs.getInt("id"), DBM);
@@ -316,7 +317,8 @@ public class XincoPublisherServlet extends HttpServlet {
                                     isPublic = false;
                                     //check read permission for group "public"
                                     for (j = 0; j < xnode_temp2.getXinco_core_acl().size(); j++) {
-                                        if ((((XincoCoreACE) xnode_temp2.getXinco_core_acl().elementAt(j)).getXinco_core_group_id() == 3) && ((XincoCoreACE) xnode_temp2.getXinco_core_acl().elementAt(j)).isRead_permission()) {
+                                        if ((((XincoCoreACE) xnode_temp2.getXinco_core_acl().elementAt(j)).getXinco_core_group_id() == 3) 
+                                                && ((XincoCoreACE) xnode_temp2.getXinco_core_acl().elementAt(j)).isRead_permission()) {
                                             isPublic = true;
                                             break;
                                         }
@@ -387,6 +389,7 @@ public class XincoPublisherServlet extends HttpServlet {
                             }
                         }
                     } catch (Exception sqle) {
+                        sqle.printStackTrace();
                     }
                 } else {
                     if (config.isAllowPublisherList()) {
@@ -395,7 +398,7 @@ public class XincoPublisherServlet extends HttpServlet {
                         out.println("</tr>");
                     }
                     out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path=" + (Base64.encode((new String("xincoRoot")).getBytes())) + "&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.xincopublisher.browse") + "</td>");
+                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path=" + (Base64.encode(("xincoRoot").getBytes())) + "&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.xincopublisher.browse") + "</td>");
                     out.println("</tr>");
                 }
                 out.println("<tr>");
