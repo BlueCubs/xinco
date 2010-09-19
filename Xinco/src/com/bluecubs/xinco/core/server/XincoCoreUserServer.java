@@ -134,7 +134,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     long age = Long.parseLong(settings.getString("password.aging"));
                     if (diffDays >= age) {
                         status = 3;
-                    //System.out.println("Password must be changed!");
                     } else {
                         status = 1;
                     }

@@ -85,6 +85,10 @@ public final class ACLDialog extends AbstractDialog {
         loadACLGroupListACL();
         //fill ACL
         reloadACLListACL();
+        getCheckBoxes().put(Read, false);
+        getCheckBoxes().put(Admin, false);
+        getCheckBoxes().put(Execute, false);
+        getCheckBoxes().put(Write, false);
     }
 
     @Override
@@ -102,7 +106,7 @@ public final class ACLDialog extends AbstractDialog {
     protected void loadACLGroupListACL() {
         String[] list = new String[this.explorer.getSession().getServerGroups().size()];
         for (int i = 0; i < this.explorer.getSession().getServerGroups().size(); i++) {
-            list[i] = new String(((XincoCoreGroup) this.explorer.getSession().getServerGroups().elementAt(i)).getDesignation());
+            list[i] = ((XincoCoreGroup) this.explorer.getSession().getServerGroups().elementAt(i)).getDesignation();
             try {
                 list[i] = explorer.getResourceBundle().getString(list[i]);
             } catch (java.util.MissingResourceException e) {
@@ -175,7 +179,7 @@ public final class ACLDialog extends AbstractDialog {
                 temp_string = temp_string + "-";
             }
             temp_string = temp_string + "]";
-            list[i] = new String(temp_string);
+            list[i] = temp_string;
         }
         setACLListModel(list);
     }

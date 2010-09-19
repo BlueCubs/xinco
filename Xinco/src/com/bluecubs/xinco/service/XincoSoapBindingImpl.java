@@ -598,7 +598,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
             boolean insertnewdata = false;
             XincoDBManager dbm = new XincoDBManager();
             XincoCoreDataServer data;
-            XincoCoreNodeServer parent_node = new XincoCoreNodeServer(0, 0, 1, "", 1, dbm);;
+            XincoCoreNodeServer parent_node = new XincoCoreNodeServer(0, 0, 1, "", 1, dbm);
             XincoCoreACE ace;
             XincoCoreACE parent_ace = new XincoCoreACE();
             parent_ace.setWrite_permission(true);
@@ -634,7 +634,7 @@ public class XincoSoapBindingImpl implements com.bluecubs.xinco.service.Xinco{
                 
                 //index data (not on checkout, only when status = open = 1)
                 if (data.getStatus_number() == 1) {
-                    boolean index_success = XincoIndexer.indexXincoCoreData(data, false, dbm);
+                    XincoIndexer.indexXincoCoreData(data, false, dbm);
                 }
                 
                 //insert default ACL when inserting new node
