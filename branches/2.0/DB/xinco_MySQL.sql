@@ -287,27 +287,6 @@ ROW_FORMAT = DEFAULT;
 
 
 -- -----------------------------------------------------
--- Table `xinco`.`xinco_core_user`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user` (
-  `id` INT UNSIGNED NOT NULL ,
-  `username` VARCHAR(255) NOT NULL ,
-  `userpassword` VARCHAR(255) NOT NULL ,
-  `name` VARCHAR(255) NOT NULL ,
-  `firstname` VARCHAR(255) NOT NULL ,
-  `email` VARCHAR(255) NOT NULL ,
-  `status_number` INT UNSIGNED NOT NULL ,
-  `attempts` INT UNSIGNED NOT NULL DEFAULT 0 ,
-  `last_modified` DATE NOT NULL ,
-  PRIMARY KEY (`id`) ,
-  INDEX `xinco_core_user_index_username` (`username` ASC) ,
-  INDEX `xinco_core_user_index_status` (`status_number` ASC) ,
-  UNIQUE INDEX `unique id` (`username` ASC) )
-PACK_KEYS = 0
-ROW_FORMAT = DEFAULT;
-
-
--- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_group`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_group` (
@@ -359,6 +338,27 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_ace` (
     REFERENCES `xinco`.`xinco_core_data` (`id` )
     ON DELETE CASCADE
     ON UPDATE CASCADE)
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_user`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user` (
+  `id` INT UNSIGNED NOT NULL ,
+  `username` VARCHAR(255) NOT NULL ,
+  `userpassword` VARCHAR(255) NOT NULL ,
+  `name` VARCHAR(255) NOT NULL ,
+  `firstname` VARCHAR(255) NOT NULL ,
+  `email` VARCHAR(255) NOT NULL ,
+  `status_number` INT UNSIGNED NOT NULL ,
+  `attempts` INT UNSIGNED NOT NULL DEFAULT 0 ,
+  `last_modified` DATE NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `xinco_core_user_index_username` (`username` ASC) ,
+  INDEX `xinco_core_user_index_status` (`status_number` ASC) ,
+  UNIQUE INDEX `unique id` (`username` ASC) )
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
@@ -529,17 +529,6 @@ INSERT INTO `xinco`.`xinco_core_data` (`id`, `xinco_core_node_id`, `xinco_core_l
 COMMIT;
 
 -- -----------------------------------------------------
--- Data for table `xinco`.`xinco_core_user`
--- -----------------------------------------------------
-SET AUTOCOMMIT=0;
-USE `xinco`;
-INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('1', 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', '1', '0', now());
-INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('2', 'user', MD5('user'), 'User', 'Default', 'user@xinco.org', '1', '0', now());
-INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('3', 'bluecubs', MD5('bluecubs'), 'System', 'User', 'inf0@blueubs.com', '1', '0', now());
-
-COMMIT;
-
--- -----------------------------------------------------
 -- Data for table `xinco`.`xinco_core_group`
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
@@ -581,6 +570,17 @@ INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_gr
 COMMIT;
 
 -- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_core_user`
+-- -----------------------------------------------------
+SET AUTOCOMMIT=0;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('1', 'admin', ' \\func MD5(\'admin\')', 'Administrator', 'Xinco', 'admin@xinco.org', '1', '0', ' \\func now()');
+INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('2', 'user', ' \\func MD5(\'user\')', 'User', 'Default', 'user@xinco.org', '1', '0', ' \\func now()');
+INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('3', 'bluecubs', ' \\func MD5(\'bluecubs\')', 'System', 'User', 'inf0@blueubs.com', '1', '0', ' \\func now()');
+
+COMMIT;
+
+-- -----------------------------------------------------
 -- Data for table `xinco`.`xinco_core_user_has_xinco_core_group`
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
@@ -614,8 +614,8 @@ COMMIT;
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
 USE `xinco`;
-INSERT INTO `xinco`.`xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES ('2', '1', '0', '0', '0', 'http://www.xinco.org', '', now());
-INSERT INTO `xinco`.`xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES ('1', '1', '0', '0', '0', 'http://www.apache.org/licenses/LICENSE-2.0.html', '', w()n);
+INSERT INTO `xinco`.`xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES ('2', '1', '0', '0', '0', 'http://www.xinco.org', '', 'now()');
+INSERT INTO `xinco`.`xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES ('1', '1', '0', '0', '0', 'http://www.apache.org/licenses/LICENSE-2.0.html', '', 'now()');
 
 COMMIT;
 
@@ -665,7 +665,7 @@ COMMIT;
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
 USE `xinco`;
-INSERT INTO `xinco`.`xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES ('1', '1', '1', '1', now(), 'Creation!', '1', '0', '0', '');
-INSERT INTO `xinco`.`xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES ('2', '2', '1', '1', now(), 'Creation!', '1', '0', '0', '');
+INSERT INTO `xinco`.`xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES ('1', '1', '1', '1', ' \\func now()', 'Creation!', '1', '0', '0', '');
+INSERT INTO `xinco`.`xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES ('2', '2', '1', '1', ' \\func now()', 'Creation!', '1', '0', '0', '');
 
 COMMIT;
