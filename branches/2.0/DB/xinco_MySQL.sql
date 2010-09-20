@@ -384,7 +384,6 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_has_xinco_core_group` (
     REFERENCES `xinco`.`xinco_core_group` (`id` )
     ON DELETE CASCADE
     ON UPDATE CASCADE)
-COMMENT = '\n'
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
