@@ -43,14 +43,18 @@ import java.sql.*;
 
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.core.server.*;
+import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class XincoAddAttributeServer extends XincoAddAttribute {
     //create add attribute object for data structures
+
     public XincoAddAttributeServer(int attrID1, int attrID2, XincoDBManager DBM) throws XincoException {
         try {
             Statement stmt = DBM.con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_add_attribute " +
-                    "WHERE xinco_core_data_id=" + attrID1 + " AND attribute_id=" + attrID2);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM xinco_add_attribute "
+                    + "WHERE xinco_core_data_id=" + attrID1 + " AND attribute_id=" + attrID2);
             while (rs.next()) {
                 setXinco_core_data_id(rs.getInt("xinco_core_data_id"));
                 setAttribute_id(rs.getInt("attribute_id"));
@@ -104,23 +108,27 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
             if (getAttrib_datetime() != null) {
                 //convert clone from remote time to local time
                 Calendar cal = (Calendar) getAttrib_datetime().clone();
-                Calendar ngc = new GregorianCalendar();
-                cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - getAttrib_datetime().get(Calendar.ZONE_OFFSET)) - (ngc.get(Calendar.DST_OFFSET) + getAttrib_datetime().get(Calendar.DST_OFFSET)));
-                attrDT = "" + cal.get(Calendar.YEAR) + "-" + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DAY_OF_MONTH) + " " + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND);
+                Calendar ngc = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+                cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - cal.get(Calendar.ZONE_OFFSET)) 
+                        - (ngc.get(Calendar.DST_OFFSET) + cal.get(Calendar.DST_OFFSET)));
+                attrDT = "'" + cal.get(Calendar.YEAR) + "-" + (cal.get(Calendar.MONTH) + 1) + "-" 
+                        + cal.get(Calendar.DAY_OF_MONTH) + " " + cal.get(Calendar.HOUR_OF_DAY) + ":" 
+                        + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND)+"'";
             } else {
-                attrDT = "NULL";
+                attrDT = "0000-00-00 00:00:00";
             }
-
             stmt = DBM.con.createStatement();
-            stmt.executeUpdate("INSERT INTO xinco_add_attribute VALUES (" + getXinco_core_data_id() + ", " + getAttribute_id() + ", " + getAttrib_int() + ", " + getAttrib_unsignedint() + ", " + getAttrib_double() + ", '" + attrVC + "', '" + attrT + "', '" + attrDT + "')");
+            stmt.executeUpdate("INSERT INTO xinco_add_attribute VALUES (" + getXinco_core_data_id() + ", " + getAttribute_id() + ", " + getAttrib_int() + ", " + getAttrib_unsignedint() + ", " + getAttrib_double() + ", '" + attrVC + "', '" + attrT + "', " + attrDT + ")");
             stmt.close();
         } catch (Exception e) {
+            Logger.getLogger(XincoAddAttributeServer.class.getSimpleName()).log(Level.SEVERE, null, e);
             //no commit or rollback -> CoreData manages exceptions!
             throw new XincoException();
         }
         return 1;
     }
     //create complete list of add attributes
+
     public static Vector getXincoAddAttributes(int attrID, XincoDBManager DBM) {
         Vector addAttributes = new Vector();
         try {

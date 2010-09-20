@@ -46,7 +46,6 @@ import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.XincoCoreLog;
 import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoDataStatus;
-import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.client.XincoCoreACEClient;
 import java.awt.Insets;
 import java.awt.Point;
@@ -54,8 +53,10 @@ import java.awt.Rectangle;
 import java.awt.dnd.DnDConstants;
 import java.awt.event.MouseEvent;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -510,8 +511,12 @@ public class XincoJTree extends JTree {
                                             + ((XincoAddAttribute) getExplorer().getXdata().getXinco_add_attributes().elementAt(i)).getAttrib_text();
                                 }
                                 if (((XincoCoreDataTypeAttribute) getExplorer().getXdata().getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equalsIgnoreCase("datetime")) {
-                                    rdata[1] = ""
-                                            + ((XincoAddAttribute) getExplorer().getXdata().getXinco_add_attributes().elementAt(i)).getAttrib_datetime().getTime();
+                                    Date time = ((XincoAddAttribute) getExplorer().getXdata().getXinco_add_attributes().elementAt(i)).getAttrib_datetime().getTime();
+                                    Calendar cal = new GregorianCalendar();
+                                    cal.setTime(time);
+                                    rdata[1] = (cal.get(Calendar.MONTH) == 11
+                                            && cal.get(Calendar.YEAR) == 2
+                                            && cal.get(Calendar.DAY_OF_MONTH) == 31) ? "" : "" + time;
                                 }
                                 dtm.addRow(rdata);
                             }
