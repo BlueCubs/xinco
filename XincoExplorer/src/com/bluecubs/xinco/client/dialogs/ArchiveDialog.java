@@ -46,6 +46,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 
 /**
@@ -246,37 +248,39 @@ public class ArchiveDialog extends AbstractDialog {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         //update archiving options of selected data
-                if (revisionModelCheckbox.isSelected()) {
-                    ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(1);
-                } else {
-                    ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(0);
-                }
-                ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(4)).setAttrib_unsignedint(archiveModelDropDown.getSelectedIndex());
-                int temp_year_int = 0;
-                int temp_month_int = 0;
-                int temp_day_int = 0;
-                int temp_days_int = 0;
-                try {
-                    temp_year_int = Integer.parseInt(yearTextBox.getText());
-                    temp_month_int = Integer.parseInt(monthTextBox.getText());
-                    temp_day_int = Integer.parseInt(dayTextBox.getText());
-                    //set FIXED date: GMT, no DST
-                    Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-                    cal.set(Calendar.DST_OFFSET, 0);
-                    cal.set(Calendar.YEAR, temp_year_int);
-                    cal.set(Calendar.MONTH, (temp_month_int - 1));
-                    cal.set(Calendar.DAY_OF_MONTH, temp_day_int);
-                    cal.set(Calendar.HOUR_OF_DAY, 0);
-                    cal.set(Calendar.MINUTE, 0);
-                    cal.set(Calendar.SECOND, 0);
-                    ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(5)).setAttrib_datetime(cal);
-                    temp_days_int = Integer.parseInt(dayAmountTextBox.getText());
-                    ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(6)).setAttrib_unsignedint(temp_days_int);
-                    //close dialog
-                    explorer.set_global_dialog_return_value(1);
-                    setVisible(false);
-                } catch (Exception parseex) {
-                }
+        if (revisionModelCheckbox.isSelected()) {
+            ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(1);
+        } else {
+            ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(3)).setAttrib_unsignedint(0);
+        }
+        ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(4)).setAttrib_unsignedint(archiveModelDropDown.getSelectedIndex());
+        int temp_year_int = 0;
+        int temp_month_int = 0;
+        int temp_day_int = 0;
+        int temp_days_int = 0;
+        try {
+            temp_year_int = Integer.parseInt(yearTextBox.getText());
+            temp_month_int = Integer.parseInt(monthTextBox.getText());
+            temp_day_int = Integer.parseInt(dayTextBox.getText());
+            //set FIXED date: GMT, no DST
+            Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+            cal.set(Calendar.DST_OFFSET, 0);
+            cal.set(Calendar.ZONE_OFFSET, 0);
+            cal.set(Calendar.YEAR, archiveModelDropDown.getSelectedIndex() == 1 ? temp_year_int : 0);
+            cal.set(Calendar.MONTH, archiveModelDropDown.getSelectedIndex() == 1 ? (temp_month_int - 1) : 0);
+            cal.set(Calendar.DAY_OF_MONTH, archiveModelDropDown.getSelectedIndex() == 1 ? temp_day_int : 0);
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(5)).setAttrib_datetime(cal);
+            temp_days_int = Integer.parseInt(dayAmountTextBox.getText());
+            ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(6)).setAttrib_unsignedint(temp_days_int);
+            //close dialog
+            explorer.set_global_dialog_return_value(1);
+            setVisible(false);
+        } catch (Exception e) {
+            Logger.getLogger(ArchiveDialog.class.getSimpleName()).log(Level.SEVERE, null, e);
+        }
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -285,23 +289,22 @@ public class ArchiveDialog extends AbstractDialog {
 
     private void archiveModelDropDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archiveModelDropDownActionPerformed
         if (archiveModelDropDown.getSelectedIndex() == 1) {
-                    yearTextBox.setEnabled(true);
-                    monthTextBox.setEnabled(true);
-                    dayTextBox.setEnabled(true);
-                    dayAmountTextBox.setEnabled(false);
-                } else if (archiveModelDropDown.getSelectedIndex() == 2) {
-                    yearTextBox.setEnabled(false);
-                    monthTextBox.setEnabled(false);
-                    dayTextBox.setEnabled(false);
-                    dayAmountTextBox.setEnabled(true);
-                } else {
-                    yearTextBox.setEnabled(false);
-                    monthTextBox.setEnabled(false);
-                    dayTextBox.setEnabled(false);
-                    dayAmountTextBox.setEnabled(false);
-                }
+            yearTextBox.setEnabled(true);
+            monthTextBox.setEnabled(true);
+            dayTextBox.setEnabled(true);
+            dayAmountTextBox.setEnabled(false);
+        } else if (archiveModelDropDown.getSelectedIndex() == 2) {
+            yearTextBox.setEnabled(false);
+            monthTextBox.setEnabled(false);
+            dayTextBox.setEnabled(false);
+            dayAmountTextBox.setEnabled(true);
+        } else {
+            yearTextBox.setEnabled(false);
+            monthTextBox.setEnabled(false);
+            dayTextBox.setEnabled(false);
+            dayAmountTextBox.setEnabled(false);
+        }
     }//GEN-LAST:event_archiveModelDropDownActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox archiveModelDropDown;
     private javax.swing.JLabel archiveModelLabel;

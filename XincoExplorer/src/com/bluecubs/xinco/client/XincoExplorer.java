@@ -250,6 +250,8 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         try {
             switchPLAF((String) xincoClientConfig.get(ConfigElement.LAF.ordinal()));
         } catch (Throwable e) {
+            Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
+                                                Level.SEVERE, null, e);
             createDefaultConfiguration(true);
             switchPLAF((String) xincoClientConfig.get(ConfigElement.LAF.ordinal()));
         }
@@ -372,6 +374,8 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                 }
                 text = lrb.getString("Locale." + locales[i]) + text;
             } catch (Exception le) {
+                Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
+                                                Level.SEVERE, null, le);
             }
             dlm.addElement(text);
             if ((locales[i].compareTo(((Locale) xincoClientConfig.get(ConfigElement.LOCALE.ordinal())).toString()) == 0)
@@ -1202,6 +1206,8 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                 }
                 progressBar.hide();
             } catch (Exception cone) {
+                Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
+                                                Level.SEVERE, null, cone);
                 xincoClientSession.setStatus(0);
                 markConnectionStatus();
                 JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString("menu.connection.failed") + " " + xerb.getString("general.reason") + ": " + cone.toString(), xerb.getString("menu.connection.failed"), JOptionPane.WARNING_MESSAGE);
@@ -1718,6 +1724,9 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                         cin.close();
                     }
                 } catch (Exception fe) {
+                    Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
+                                                Level.SEVERE, null, fe);
+                    progressBar.hide();
                     throw new XincoException(xerb.getString("datawizard.unabletoloadfile"));
                 }
                 // save data to server
@@ -1827,6 +1836,8 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                                     2);
                         }
                     } catch (Exception rmie) {
+                        Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
+                                                Level.SEVERE, null, rmie);
                     }
                 }
             }
@@ -1847,6 +1858,8 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                                 doDataWizard(15);
                             }
                         } catch (Exception rmie) {
+                            Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
+                                                Level.SEVERE, null, rmie);
                         }
                     }
                 }
@@ -2568,16 +2581,11 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
      * @return void
      */
     private void setPreviousPathFilename(String s) {
-        int i = 0, j = 0;
+        int i = 0;
         if (s != null) {
             try {
                 previous_fullpath = s;
                 i = s.lastIndexOf(System.getProperty("file.separator"));
-                /*j = s.lastIndexOf("\\");
-                //select i as index wanted
-                if (j>i) {
-                i = j;
-                }*/
                 previous_filename = s.substring(i + 1);
                 if (i > 0) {
                     previous_path = s.substring(0, i + 1);
@@ -2602,7 +2610,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
      * @param s
      */
     public void setCurrentPathFilename(String s) {
-        int i = 0, j = 0;
+        int i = 0;
         if (s != null) {
             try {
                 setPreviousPathFilename(current_fullpath);
