@@ -40,16 +40,22 @@
  */
 package com.bluecubs.xinco.core.server;
 
-import java.sql.*;
 import java.util.Vector;
 
 import com.bluecubs.xinco.core.*;
+import com.bluecubs.xinco.tools.DateTool;
 import com.bluecubs.xinco.tools.MD5;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 
 //Status list (in DB)
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 //1 = unlocked
@@ -416,7 +422,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
     public boolean isPasswordUsable(String newPass) {
         ResultSet rs = null;
         sql = null;
-        int id = 0;
         boolean passwordIsUsable = false;
         try {
             XincoDBManager DBM = new XincoDBManager();
@@ -433,17 +438,21 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 return false;
             }
             //Here we'll catch if the password have been used in the unusable period
-            sql = "select id from xinco_core_user where username='" + getUsername() + "'";
-            rs = stmt.executeQuery(sql);
-            rs.next();
-            id = rs.getInt(1);
-            rs = stmt.executeQuery("select userpassword from xinco_core_user_t where id="
-                    + id + " and DATEDIFF(NOW(),last_modified) <= "
-                    + settings.getString("password.unusable_period") + " and userpassword = '"
+            rs = stmt.executeQuery("select userpassword, last_modified from xinco_core_user_t where id="
+                    + getId() + " and userpassword = '"
                     + MD5.encrypt(newPass) + "'");
-            if (!rs.next()) {
-                passwordIsUsable = true;
+            GregorianCalendar current = new GregorianCalendar(),
+                    last = new GregorianCalendar();
+            current.setTime(new Date());
+            int unusable_period=Integer.valueOf(settings.getString("password.unusable_period"));
+            while (rs.next()) {
+                last.setTime(rs.getDate("last_modified"));
+                if (DateTool.getDifference(current, last, TimeUnit.DAYS)
+                        <= unusable_period) {
+                    return false;
+                }
             }
+            passwordIsUsable = true;
             //---------------------------
         } catch (XincoException ex) {
             Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, ex);
