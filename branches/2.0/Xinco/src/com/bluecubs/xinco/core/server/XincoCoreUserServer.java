@@ -62,7 +62,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
     private String sql;
     private boolean hashPassword = true;
     private boolean increaseAttempts = false;
-    private ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages"),  settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
+    private ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages"), settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
     private java.sql.Timestamp lastModified;
     private int attempts;
 
@@ -92,9 +92,9 @@ public class XincoCoreUserServer extends XincoCoreUser {
             stmt.close();
             for (i = 0; i < getXinco_core_groups().size(); i++) {
                 stmt = DBM.con.createStatement();
-                sql = "INSERT INTO xinco_core_user_has_xinco_core_group VALUES (" + getId() +
-                        ", " + ((XincoCoreGroupServer) getXinco_core_groups().elementAt(i)).getId() +
-                        ", " + 1 + ")";
+                sql = "INSERT INTO xinco_core_user_has_xinco_core_group VALUES (" + getId()
+                        + ", " + ((XincoCoreGroupServer) getXinco_core_groups().elementAt(i)).getId()
+                        + ", " + 1 + ")";
                 stmt.executeUpdate(sql);
                 stmt.close();
             }
@@ -110,8 +110,8 @@ public class XincoCoreUserServer extends XincoCoreUser {
         GregorianCalendar cal = null;
         try {
             stmt = DBM.con.createStatement();
-            sql = "SELECT * FROM xinco_core_user WHERE username='" +
-                    attrUN + "' AND userpassword=MD5('" + attrUPW + "') AND status_number <> 2";
+            sql = "SELECT * FROM xinco_core_user WHERE username='"
+                    + attrUN + "' AND userpassword=MD5('" + attrUPW + "') AND status_number <> 2";
             rs = stmt.executeQuery(sql);
             //throw exception if no result found
             int RowCount = 0;
@@ -146,8 +146,8 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 write2DB(DBM);
             }
             if (RowCount < 1) {
-                sql = "SELECT * FROM xinco_core_user WHERE username='" +
-                        attrUN + "'";
+                sql = "SELECT * FROM xinco_core_user WHERE username='"
+                        + attrUN + "'";
                 rs = stmt.executeQuery(sql);
                 //The username is valid but wrong password. Increase the login attempts.
                 if (rs.next()) {
@@ -169,8 +169,8 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-                sql = "SELECT * FROM xinco_core_user WHERE username='" +
-                        attrUN + "' AND status_number <> 2";
+                sql = "SELECT * FROM xinco_core_user WHERE username='"
+                        + attrUN + "' AND status_number <> 2";
                 stmt = DBM.con.createStatement();
                 rs = stmt.executeQuery(sql);
                 //increase number of attempts
@@ -309,8 +309,8 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 increaseAttempts = false;
             }
             //Lock account if needed. Can't lock main admin.
-            if (getAttempts() > Integer.parseInt(settings.getString("password.attempts")) &&
-                    getId() > 1) {
+            if (getAttempts() > Integer.parseInt(settings.getString("password.attempts"))
+                    && getId() > 1) {
                 setStatus_number(2);
             }
             if (getId() > 0) {
@@ -329,32 +329,32 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 //Sometimes password got re-hashed
                 String password = "";
                 if (hashPassword) {
-                    password = "userpassword=MD5('" +
-                            getUserpassword().replaceAll("'", "\\\\'") + "')";
+                    password = "userpassword=MD5('"
+                            + getUserpassword().replaceAll("'", "\\\\'") + "')";
                 } else {
-                    password = "userpassword='" +
-                            getUserpassword().replaceAll("'", "\\\\'") + "'";
+                    password = "userpassword='"
+                            + getUserpassword().replaceAll("'", "\\\\'") + "'";
                 }
-                stmt.executeUpdate("UPDATE xinco_core_user SET username='" +
-                        getUsername().replaceAll("'", "\\\\'") + "', " + password + ", name='" +
-                        getName().replaceAll("'", "\\\\'") + "', firstname='" +
-                        getFirstname().replaceAll("'", "\\\\'") + "', email='" +
-                        getEmail().replaceAll("'", "\\\\'") + "', status_number=" +
-                        getStatus_number() + ", attempts=" + getAttempts() +
-                        ", last_modified='" + getLastModified() + "'" +
-                        " WHERE id=" + getId());
+                stmt.executeUpdate("UPDATE xinco_core_user SET username='"
+                        + getUsername().replaceAll("'", "\\\\'") + "', " + password + ", name='"
+                        + getName().replaceAll("'", "\\\\'") + "', firstname='"
+                        + getFirstname().replaceAll("'", "\\\\'") + "', email='"
+                        + getEmail().replaceAll("'", "\\\\'") + "', status_number="
+                        + getStatus_number() + ", attempts=" + getAttempts()
+                        + ", last_modified='" + getLastModified() + "'"
+                        + " WHERE id=" + getId());
                 stmt.close();
             } else {
                 setId(DBM.getNewID("xinco_core_user"));
                 ts = new Timestamp(System.currentTimeMillis());
                 stmt = DBM.con.createStatement();
-                sql = "INSERT INTO xinco_core_user VALUES (" + getId() +
-                        ", '" + getUsername().replaceAll("'", "\\\\'") +
-                        "', MD5('" + getUserpassword().replaceAll("'", "\\\\'") +
-                        "'), '" + getName().replaceAll("'", "\\\\'") + "', '" +
-                        getFirstname().replaceAll("'", "\\\\'") + "', '" +
-                        getEmail().replaceAll("'", "\\\\'") + "', " +
-                        getStatus_number() + ", " + getAttempts() + ", '" + ts.toString() + "')";
+                sql = "INSERT INTO xinco_core_user VALUES (" + getId()
+                        + ", '" + getUsername().replaceAll("'", "\\\\'")
+                        + "', MD5('" + getUserpassword().replaceAll("'", "\\\\'")
+                        + "'), '" + getName().replaceAll("'", "\\\\'") + "', '"
+                        + getFirstname().replaceAll("'", "\\\\'") + "', '"
+                        + getEmail().replaceAll("'", "\\\\'") + "', "
+                        + getStatus_number() + ", " + getAttempts() + ", '" + ts.toString() + "')";
                 stmt.executeUpdate(sql);
                 stmt.close();
             }
@@ -419,20 +419,15 @@ public class XincoCoreUserServer extends XincoCoreUser {
         int id = 0;
         boolean passwordIsUsable = false;
         try {
-            XincoDBManager DBM = null;
-            try {
-                DBM = new XincoDBManager();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            XincoDBManager DBM = new XincoDBManager();
             Statement stmt = DBM.con.createStatement();
             /*Bug fix: The password was only verified against past passwords not current password.
              *The current passwords is not usable after the first change when it was added to the
              *audit trail table.
              */
             //Now check if password is not the same as the current password
-            sql = "select p.id from Xinco_Core_User p where p.id=" +
-                    getId() + " and p.userpassword='" + MD5.encrypt(newPass) + "'";
+            sql = "select p.id from xinco_core_user p where p.id="
+                    + getId() + " and p.userpassword='" + MD5.encrypt(newPass) + "'";
             rs = stmt.executeQuery(sql);
             if (rs.next()) {
                 return false;
@@ -442,17 +437,19 @@ public class XincoCoreUserServer extends XincoCoreUser {
             rs = stmt.executeQuery(sql);
             rs.next();
             id = rs.getInt(1);
-            rs = stmt.executeQuery("select userpassword from xinco_core_user_t where id=" +
-                    id + " and DATEDIFF(NOW(),last_modified) <= " +
-                    settings.getString("password.unusable_period") + " and MD5('" +
-                    newPass + "') = userpassword");
+            rs = stmt.executeQuery("select userpassword from xinco_core_user_t where id="
+                    + id + " and DATEDIFF(NOW(),last_modified) <= "
+                    + settings.getString("password.unusable_period") + " and userpassword = '"
+                    + MD5.encrypt(newPass) + "'");
             rs.next();
             rs.getString(1);
-        //---------------------------
+            //---------------------------
         } catch (XincoException ex) {
             Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            passwordIsUsable = true;
+            Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return passwordIsUsable;
     }
