@@ -441,8 +441,9 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     + id + " and DATEDIFF(NOW(),last_modified) <= "
                     + settings.getString("password.unusable_period") + " and userpassword = '"
                     + MD5.encrypt(newPass) + "'");
-            rs.next();
-            rs.getString(1);
+            if (!rs.next()) {
+                passwordIsUsable = true;
+            }
             //---------------------------
         } catch (XincoException ex) {
             Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, ex);
