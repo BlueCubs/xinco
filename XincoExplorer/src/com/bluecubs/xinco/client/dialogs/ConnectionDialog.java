@@ -42,7 +42,7 @@ import com.bluecubs.xinco.client.ConfigElement;
 import com.bluecubs.xinco.client.object.XincoClientConnectionProfile;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
@@ -98,17 +98,17 @@ public final class ConnectionDialog extends AbstractDialog {
                 int sel;
                 sel = profileList.getSelectedIndex();
                 if (sel >= 0) {
-                    profileName.setText(((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(sel)).profile_name);
-                    endpoint.setText(((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(sel)).service_endpoint);
-                    username.setText(((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(sel)).username);
-                    password.setText(((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(sel)).password);
-                    savePW.setSelected(((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(sel)).save_password);
+                    profileName.setText(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(sel)).profile_name);
+                    endpoint.setText(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(sel)).service_endpoint);
+                    username.setText(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(sel)).username);
+                    password.setText(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(sel)).password);
+                    savePW.setSelected(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(sel)).save_password);
                 }
             }
         });
         dlm = (DefaultListModel) this.profileList.getModel();
-        for (int i = 0; i < ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).size(); i++) {
-            dlm.addElement(((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(i)).toString());
+        for (int i = 0; i < ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).size(); i++) {
+            dlm.addElement(((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(i)).toString());
         }
     }
 
@@ -286,17 +286,17 @@ public final class ConnectionDialog extends AbstractDialog {
         //update profile
         if (profileList.getSelectedIndex() >= 0) {
             Logger.getLogger(ConnectionDialog.class.getSimpleName()).log(Level.FINE, "Updating profile...");
-            ((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(profileList.getSelectedIndex())).profile_name = profileName.getText();
-            ((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(profileList.getSelectedIndex())).service_endpoint = endpoint.getText();
-            ((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(profileList.getSelectedIndex())).username = username.getText();
+            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(profileList.getSelectedIndex())).profile_name = profileName.getText();
+            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(profileList.getSelectedIndex())).service_endpoint = endpoint.getText();
+            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(profileList.getSelectedIndex())).username = username.getText();
             if (savePW.isSelected()) {
                 Logger.getLogger(ConnectionDialog.class.getSimpleName()).log(Level.FINE, "Saving password...");
-                ((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(profileList.getSelectedIndex())).password = new String(password.getPassword());
+                ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(profileList.getSelectedIndex())).password = new String(password.getPassword());
             } else {
                 Logger.getLogger(ConnectionDialog.class.getSimpleName()).log(Level.FINE, "Not saving password...");
-                ((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(profileList.getSelectedIndex())).password = "";
+                ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(profileList.getSelectedIndex())).password = "";
             }
-            ((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(profileList.getSelectedIndex())).save_password = savePW.isSelected();
+            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(profileList.getSelectedIndex())).save_password = savePW.isSelected();
         }
         //save profiles
         explorer.saveConfig();
@@ -309,7 +309,7 @@ public final class ConnectionDialog extends AbstractDialog {
         DefaultListModel dlm = (DefaultListModel) this.profileList.getModel();
         sel = this.profileList.getSelectedIndex();
         if (sel >= 0) {
-            ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).remove(sel);
+            ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).remove(sel);
             dlm.removeElementAt(sel);
         }
     }//GEN-LAST:event_deleteProfileActionPerformed
@@ -319,22 +319,22 @@ public final class ConnectionDialog extends AbstractDialog {
         DefaultListModel dlm = (DefaultListModel) this.profileList.getModel();
         //update profile
         if (this.profileList.getSelectedIndex() >= 0) {
-            ((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).profile_name = this.profileName.getText();
-            ((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).service_endpoint = this.endpoint.getText();
-            ((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).username = this.username.getText();
+            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).profile_name = this.profileName.getText();
+            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).service_endpoint = this.endpoint.getText();
+            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).username = this.username.getText();
             if (this.savePW.isSelected()) {
-                ((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).password = new String(this.password.getPassword());
+                ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).password = new String(this.password.getPassword());
             } else {
-                ((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).password = "";
+                ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).password = "";
             }
-            ((XincoClientConnectionProfile) ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).save_password = this.savePW.isSelected();
+            ((XincoClientConnectionProfile) ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(this.profileList.getSelectedIndex())).save_password = this.savePW.isSelected();
             dlm.setElementAt(this.profileName.getText(), this.profileList.getSelectedIndex());
         }
         XincoClientConnectionProfile ccp = new XincoClientConnectionProfile();
         ccp.profile_name = explorer.getResourceBundle().getString("window.connection.newprofile");
-        ((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).add(ccp);
+        ((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).add(ccp);
         dlm.addElement(ccp.toString());
-        this.profileList.setSelectedIndex(((ArrayList) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1);
+        this.profileList.setSelectedIndex(((Vector) explorer.getConfig().get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1);
     }//GEN-LAST:event_CreateActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Cancel;

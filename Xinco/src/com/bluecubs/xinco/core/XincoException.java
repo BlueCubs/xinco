@@ -33,33 +33,25 @@
  *
  *************************************************************
  */
+
 package com.bluecubs.xinco.core;
 
-import java.util.List;
+public class XincoException extends Exception {
 
-public class XincoException extends Error {
+	String xinco_message = "";
+	
+	public XincoException() {
+		super();
+		xinco_message = "";
+	}
 
-    private static final long serialVersionUID = 1L;
-    String xinco_message = "";
+	public XincoException(String s) {
+		super(s);
+		xinco_message = s;
+	}
+	
+	public String toString() {
+		return xinco_message;
+	}
 
-    public XincoException() {
-        super();
-        xinco_message = "";
-    }
-
-    public XincoException(String s) {
-        super(s);
-        xinco_message = s;
-    }
-
-    public XincoException(List<String> messages) {
-        for (String s : messages) {
-            xinco_message += s + "\n";
-        }
-    }
-
-    @Override
-    public String toString() {
-        return xinco_message;
-    }
 }

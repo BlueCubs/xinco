@@ -24,7 +24,7 @@
  * Description:     Add Attribute Text
  *
  * Original Author: Javier A. Ortiz
- * Date:            2007
+ * Date:            2010
  *
  * Modifications:
  *
@@ -35,18 +35,19 @@
  */
 package com.bluecubs.xinco.client.dialogs;
 
+import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.XincoMutableTreeNode;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
-import com.bluecubs.xinco.client.service.XincoAddAttribute;
-import com.bluecubs.xinco.client.service.XincoCoreData;
-import java.util.ArrayList;
+import com.bluecubs.xinco.core.XincoCoreData;
+import com.bluecubs.xinco.core.XincoDataStatus;
+import java.util.Vector;
 
 /**
  *
  * @author  Javier A. Ortiz
  */
-public final class AddAttributeText extends AbstractDialog {
+public class AddAttributeText extends AbstractDialog {
 
     private XincoExplorer explorer;
     private boolean viewOnly = false;
@@ -63,20 +64,20 @@ public final class AddAttributeText extends AbstractDialog {
         setViewOnly(viewOnly);
         this.explorer = explorer;
         initComponents();
-        setTitle(explorer.getResourceBundle().getString("window.addattributestext")
-                + ": " + this.explorer.getSelectedNodeDesignation());
+        setTitle(explorer.getResourceBundle().getString("window.addattributestext") +
+                ": " + this.explorer.getSelectedNodeDesignation());
         save.setText(explorer.getResourceBundle().getString("general.save") + "!");
         cancel.setText(explorer.getResourceBundle().getString("general.cancel"));
         setBounds(200, 200, 600, 540);
         setResizable(false);
         text.setEditable(!isViewOnly());
         //processing independent of creation
-        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatusNumber() == 1) {
+        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == XincoDataStatus.OPEN.ordinal() + 1) {
             save.setEnabled(!isViewOnly());
         } else {
             save.setEnabled(false);
         }
-        addTextArea(text, "");
+        addTextArea(text,"");
     }
 
     /**
@@ -99,9 +100,8 @@ public final class AddAttributeText extends AbstractDialog {
     public void setToDefaults() {
         super.setToDefaults();
         XincoMutableTreeNode node = explorer.getSession().getCurrentTreeNodeSelection();
-        ArrayList attr = new ArrayList();
-        attr.addAll(((XincoCoreData) node.getUserObject()).getXincoAddAttributes());
-        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatusNumber() != 2) {
+        Vector attr = ((XincoCoreData) node.getUserObject()).getXinco_add_attributes();
+        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() != XincoDataStatus.LOCKED.ordinal() + 1) {
             save.setEnabled(!isViewOnly());
         } else {
             save.setEnabled(false);
@@ -110,14 +110,14 @@ public final class AddAttributeText extends AbstractDialog {
         if (viewOnly) {
             String temp = "";
             for (int i = 0; i < attr.size(); i++) {
-                if (((XincoAddAttribute) attr.get(i)).getAttributeId() == 1) {
-                    temp += ((XincoAddAttribute) attr.get(i)).getAttribText();
+                if (((XincoAddAttribute) attr.get(i)).getAttribute_id() == 1) {
+                    temp += ((XincoAddAttribute) attr.get(i)).getAttrib_text();
                 }
                 text.setText(temp);
                 save.setEnabled(false);
             }
         } else {
-            text.setText(((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoAddAttributes().get(0)).getAttribText());
+            text.setText(((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(0)).getAttrib_text());
         }
         jScrollPane1.setLocation(0, 0);
     }
@@ -183,15 +183,15 @@ public final class AddAttributeText extends AbstractDialog {
     }// </editor-fold>//GEN-END:initComponents
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         setVisible(false);
-
+        
     }//GEN-LAST:event_cancelActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         save.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoAddAttributes().get(0)).setAttribText(text.getText());
-                explorer.setGlobalDialogReturnValue(1);
+                ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(0)).setAttrib_text(text.getText());
+                explorer.setGlobal_dialog_return_value(1);
                 setVisible(false);
             }
         });
