@@ -574,9 +574,9 @@ COMMIT;
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
 USE `xinco`;
-INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('1', 'admin', ' \\func MD5(\'admin\')', 'Administrator', 'Xinco', 'admin@xinco.org', '1', '0', ' \\func now()');
-INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('2', 'user', ' \\func MD5(\'user\')', 'User', 'Default', 'user@xinco.org', '1', '0', ' \\func now()');
-INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('3', 'bluecubs', ' \\func MD5(\'bluecubs\')', 'System', 'User', 'inf0@blueubs.com', '1', '0', ' \\func now()');
+INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('1', 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', '1', '0', now());
+INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('2', 'user', MD5('user'), 'User', 'Default', 'user@xinco.org', '1', '0', now());
+INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('3', 'bluecubs', MD5('bluecubs'), 'System', 'User', 'inf0@blueubs.com', '1', '0', now());
 
 COMMIT;
 
@@ -665,7 +665,7 @@ COMMIT;
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
 USE `xinco`;
-INSERT INTO `xinco`.`xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES ('1', '1', '1', '1', ' \\func now()', 'Creation!', '1', '0', '0', '');
-INSERT INTO `xinco`.`xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES ('2', '2', '1', '1', ' \\func now()', 'Creation!', '1', '0', '0', '');
+INSERT INTO `xinco`.`xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES ('1', '1', '1', '1', now(), 'Creation!', '1', '0', '0', '');
+INSERT INTO `xinco`.`xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES ('2', '2', '1', '1', now(), 'Creation!', '1', '0', '0', '');
 
 COMMIT;
