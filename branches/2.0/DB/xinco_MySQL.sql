@@ -301,48 +301,6 @@ ROW_FORMAT = DEFAULT;
 
 
 -- -----------------------------------------------------
--- Table `xinco`.`xinco_core_ace`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_ace` (
-  `id` INT UNSIGNED NOT NULL ,
-  `xinco_core_user_id` INT UNSIGNED NULL ,
-  `xinco_core_group_id` INT UNSIGNED NULL ,
-  `xinco_core_node_id` INT UNSIGNED NULL ,
-  `xinco_core_data_id` INT UNSIGNED NULL ,
-  `read_permission` TINYINT(1)  NOT NULL ,
-  `write_permission` TINYINT(1)  NOT NULL ,
-  `execute_permission` TINYINT(1)  NOT NULL ,
-  `admin_permission` TINYINT(1)  NOT NULL ,
-  PRIMARY KEY (`id`) ,
-  INDEX `xinco_core_ace_FKIndex1` (`xinco_core_user_id` ASC) ,
-  INDEX `xinco_core_ace_FKIndex2` (`xinco_core_group_id` ASC) ,
-  INDEX `xinco_core_ace_FKIndex3` (`xinco_core_node_id` ASC) ,
-  INDEX `xinco_core_ace_FKIndex4` (`xinco_core_data_id` ASC) ,
-  CONSTRAINT `fk_{A5B19221-5358-4C98-82CC-581CD695C068}`
-    FOREIGN KEY (`xinco_core_user_id` )
-    REFERENCES `xinco`.`xinco_core_user` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_{BE5919E0-4B49-4754-861D-E7834EB59238}`
-    FOREIGN KEY (`xinco_core_group_id` )
-    REFERENCES `xinco`.`xinco_core_group` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_{8CCF024C-2E44-468D-B847-EF00897639E3}`
-    FOREIGN KEY (`xinco_core_node_id` )
-    REFERENCES `xinco`.`xinco_core_node` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_{4F26567D-38D8-4210-86D6-524AE418D6EB}`
-    FOREIGN KEY (`xinco_core_data_id` )
-    REFERENCES `xinco`.`xinco_core_data` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-PACK_KEYS = 0
-ROW_FORMAT = DEFAULT;
-
-
--- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_user`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user` (
@@ -364,6 +322,48 @@ ROW_FORMAT = DEFAULT;
 
 
 -- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_ace`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_ace` (
+  `id` INT UNSIGNED NOT NULL ,
+  `xinco_core_group_id` INT UNSIGNED NULL ,
+  `xinco_core_user_id` INT UNSIGNED NULL ,
+  `xinco_core_node_id` INT UNSIGNED NULL ,
+  `xinco_core_data_id` INT UNSIGNED NULL ,
+  `read_permission` TINYINT(1)  NOT NULL ,
+  `write_permission` TINYINT(1)  NOT NULL ,
+  `execute_permission` TINYINT(1)  NOT NULL ,
+  `admin_permission` TINYINT(1)  NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `xinco_core_ace_FKIndex2` (`xinco_core_group_id` ASC) ,
+  INDEX `xinco_core_ace_FKIndex3` (`xinco_core_node_id` ASC) ,
+  INDEX `xinco_core_ace_FKIndex4` (`xinco_core_data_id` ASC) ,
+  INDEX `fk_xinco_core_ace_xinco_core_user1` (`xinco_core_user_id` ASC) ,
+  CONSTRAINT `fk_{BE5919E0-4B49-4754-861D-E7834EB59238}`
+    FOREIGN KEY (`xinco_core_group_id` )
+    REFERENCES `xinco`.`xinco_core_group` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_{8CCF024C-2E44-468D-B847-EF00897639E3}`
+    FOREIGN KEY (`xinco_core_node_id` )
+    REFERENCES `xinco`.`xinco_core_node` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_{4F26567D-38D8-4210-86D6-524AE418D6EB}`
+    FOREIGN KEY (`xinco_core_data_id` )
+    REFERENCES `xinco`.`xinco_core_data` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_xinco_core_ace_xinco_core_user1`
+    FOREIGN KEY (`xinco_core_user_id` )
+    REFERENCES `xinco`.`xinco_core_user` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_user_has_xinco_core_group`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_has_xinco_core_group` (
@@ -371,19 +371,19 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_has_xinco_core_group` (
   `xinco_core_group_id` INT UNSIGNED NOT NULL ,
   `status_number` INT UNSIGNED NOT NULL ,
   PRIMARY KEY (`xinco_core_user_id`, `xinco_core_group_id`) ,
-  INDEX `xinco_core_user_has_xinco_core_group_FKIndex1` (`xinco_core_user_id` ASC) ,
   INDEX `xinco_core_user_has_xinco_core_group_FKIndex2` (`xinco_core_group_id` ASC) ,
   INDEX `xinco_core_user_has_xinco_core_group_index_status` (`status_number` ASC) ,
-  CONSTRAINT `fk_{E9CE4AC9-ECE3-48EF-9C4A-081FB0A9FD96}`
-    FOREIGN KEY (`xinco_core_user_id` )
-    REFERENCES `xinco`.`xinco_core_user` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
+  INDEX `fk_xinco_core_user_has_xinco_core_group_xinco_core_user1` (`xinco_core_user_id` ASC) ,
   CONSTRAINT `fk_{BB4D6DB4-7E25-4F88-801D-A715A8A28E33}`
     FOREIGN KEY (`xinco_core_group_id` )
     REFERENCES `xinco`.`xinco_core_group` (`id` )
     ON DELETE CASCADE
-    ON UPDATE CASCADE)
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_xinco_core_user_has_xinco_core_group_xinco_core_user1`
+    FOREIGN KEY (`xinco_core_user_id` )
+    REFERENCES `xinco`.`xinco_core_user` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
@@ -459,17 +459,17 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_log` (
   `version_postfix` VARCHAR(255) NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `xinco_core_log_FKIndex1` (`xinco_core_data_id` ASC) ,
-  INDEX `xinco_core_log_FKIndex2` (`xinco_core_user_id` ASC) ,
+  INDEX `fk_xinco_core_log_xinco_core_user1` (`xinco_core_user_id` ASC) ,
   CONSTRAINT `fk_{E4C7D7F8-39B7-48D1-B9EE-BD9DE0D2CB4A}`
     FOREIGN KEY (`xinco_core_data_id` )
     REFERENCES `xinco`.`xinco_core_data` (`id` )
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `fk_{1B8A7333-846D-4DA1-A8B4-D730053B6871}`
+  CONSTRAINT `fk_xinco_core_log_xinco_core_user1`
     FOREIGN KEY (`xinco_core_user_id` )
     REFERENCES `xinco`.`xinco_core_user` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
@@ -540,36 +540,6 @@ INSERT INTO `xinco`.`xinco_core_group` (`id`, `designation`, `status_number`) VA
 COMMIT;
 
 -- -----------------------------------------------------
--- Data for table `xinco`.`xinco_core_ace`
--- -----------------------------------------------------
-SET AUTOCOMMIT=0;
-USE `xinco`;
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('1', '1', NULL, '1', NULL, 1, 1, 1, 1);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('2', '1', NULL, '2', NULL, 1, 1, 1, 1);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('3', '1', NULL, '3', NULL, 1, 1, 1, 1);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('4', NULL, '1', '1', NULL, 1, 1, 1, 1);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('5', NULL, '1', '2', NULL, 1, 1, 1, 1);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('6', NULL, '1', '3', NULL, 1, 1, 1, 1);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('7', NULL, '2', '1', NULL, 1, 1, 1, 0);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('8', NULL, '2', '2', NULL, 1, 1, 1, 0);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('9', NULL, '2', '3', NULL, 1, 1, 1, 0);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('10', '1', NULL, NULL, '1', 1, 1, 1, 1);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('11', '1', NULL, NULL, '2', 1, 1, 1, 1);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('12', NULL, '1', NULL, '1', 1, 1, 1, 1);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('13', NULL, '1', NULL, '2', 1, 1, 1, 1);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('14', NULL, '2', NULL, '1', 1, 0, 0, 0);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('15', NULL, '2', NULL, '2', 1, 0, 0, 0);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('16', '1', NULL, '4', NULL, 1, 1, 1, 1);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('17', NULL, '1', '4', NULL, 1, 1, 1, 1);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('18', NULL, '2', '4', NULL, 1, 0, 0, 0);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('19', NULL, '3', '1', NULL, 1, 0, 0, 0);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('20', NULL, '3', '4', NULL, 1, 0, 0, 0);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('21', NULL, '3', NULL, '1', 1, 0, 0, 0);
-INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('22', NULL, '3', NULL, '2', 1, 0, 0, 0);
-
-COMMIT;
-
--- -----------------------------------------------------
 -- Data for table `xinco`.`xinco_core_user`
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
@@ -577,6 +547,36 @@ USE `xinco`;
 INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('1', 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', '1', '0', now());
 INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('2', 'user', MD5('user'), 'User', 'Default', 'user@xinco.org', '1', '0', now());
 INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('3', 'bluecubs', MD5('bluecubs'), 'System', 'User', 'inf0@blueubs.com', '1', '0', now());
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_core_ace`
+-- -----------------------------------------------------
+SET AUTOCOMMIT=0;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('1', NULL, NULL, '1', NULL, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('2', NULL, NULL, '2', NULL, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('3', NULL, NULL, '3', NULL, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('4', '1', NULL, '1', NULL, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('5', '1', NULL, '2', NULL, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('6', '1', NULL, '3', NULL, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('7', '2', NULL, '1', NULL, 1, 1, 1, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('8', '2', NULL, '2', NULL, 1, 1, 1, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('9', '2', NULL, '3', NULL, 1, 1, 1, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('10', NULL, NULL, NULL, '1', 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('11', NULL, NULL, NULL, '2', 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('12', '1', NULL, NULL, '1', 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('13', '1', NULL, NULL, '2', 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('14', '2', NULL, NULL, '1', 1, 0, 0, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('15', '2', NULL, NULL, '2', 1, 0, 0, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('16', NULL, NULL, '4', NULL, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('17', '1', NULL, '4', NULL, 1, 1, 1, 1);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('18', '2', NULL, '4', NULL, 1, 0, 0, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('19', '3', NULL, '1', NULL, 1, 0, 0, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('20', '3', NULL, '4', NULL, 1, 0, 0, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('21', '3', NULL, NULL, '1', 1, 0, 0, 0);
+INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_group_id`, `xinco_core_user_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('22', '3', NULL, NULL, '2', 1, 0, 0, 0);
 
 COMMIT;
 
@@ -614,8 +614,8 @@ COMMIT;
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
 USE `xinco`;
-INSERT INTO `xinco`.`xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES ('2', '1', '0', '0', '0', 'http://www.xinco.org', '', 'now()');
-INSERT INTO `xinco`.`xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES ('1', '1', '0', '0', '0', 'http://www.apache.org/licenses/LICENSE-2.0.html', '', 'now()');
+INSERT INTO `xinco`.`xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES ('2', '1', '0', '0', '0', 'http://www.xinco.org', '', now());
+INSERT INTO `xinco`.`xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES ('1', '1', '0', '0', '0', 'http://www.apache.org/licenses/LICENSE-2.0.html', '', now());
 
 COMMIT;
 
