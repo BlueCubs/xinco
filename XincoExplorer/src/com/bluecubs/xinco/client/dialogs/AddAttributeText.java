@@ -84,7 +84,7 @@ public class AddAttributeText extends AbstractDialog {
      * 
      * @return boolean
      */
-    public boolean isViewOnly() {
+    private boolean isViewOnly() {
         return viewOnly;
     }
 
@@ -107,7 +107,7 @@ public class AddAttributeText extends AbstractDialog {
             save.setEnabled(false);
         }
         text.setEditable(!isViewOnly());
-        if (viewOnly) {
+        if (isViewOnly()) {
             String temp = "";
             for (int i = 0; i < attr.size(); i++) {
                 if (((XincoAddAttribute) attr.get(i)).getAttribute_id() == 1) {

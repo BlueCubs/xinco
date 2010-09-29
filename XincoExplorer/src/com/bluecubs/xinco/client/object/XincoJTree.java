@@ -56,7 +56,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
-import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -70,7 +69,7 @@ import javax.swing.tree.TreePath;
  *
  * @author Javier A. ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
-public class XincoJTree extends JTree {
+public final class XincoJTree extends JTree {
 
     private XincoExplorer explorer = null;
     private XincoMutableTreeNode previousTreeNodeSelection = null, targetTreeNode = null;
@@ -638,7 +637,7 @@ public class XincoJTree extends JTree {
                             }
                             // text = 2
                             if (((XincoCoreData) getExplorer().getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId() == 2) {
-                                ((AddAttributeText) getExplorer().getAbstractDialogAddAttributesText()).setViewOnly(true);
+                                getExplorer().getAbstractDialogAddAttributesText(true);
                             }
                         }
                     }
