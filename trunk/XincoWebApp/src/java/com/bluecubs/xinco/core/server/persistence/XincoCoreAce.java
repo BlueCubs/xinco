@@ -8,12 +8,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 
 /**
  *
@@ -40,6 +43,13 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreACEGen")
+    @TableGenerator(name = "XincoCoreACEGen", table = "xinco_id",
+    pkColumnName = "tablename",
+    valueColumnName = "last_id",
+    pkColumnValue = "id",
+    allocationSize = 1,
+    initialValue=1000)
     @Column(name = "id", nullable = false)
     private Integer id;
     @Basic(optional = false)
@@ -56,16 +66,16 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
     private boolean adminPermission;
     @JoinColumn(name = "xinco_core_data_id", referencedColumnName = "id", nullable = true)
     @ManyToOne(fetch = FetchType.LAZY)
-    private XincoCoreData xincoCoreDataId;
+    private XincoCoreData xincoCoreData;
     @JoinColumn(name = "xinco_core_group_id", referencedColumnName = "id", nullable = true)
     @ManyToOne(fetch = FetchType.LAZY)
-    private XincoCoreGroup xincoCoreGroupId;
+    private XincoCoreGroup xincoCoreGroup;
     @JoinColumn(name = "xinco_core_node_id", referencedColumnName = "id", nullable = true)
     @ManyToOne(fetch = FetchType.LAZY)
-    private XincoCoreNode xincoCoreNodeId;
+    private XincoCoreNode xincoCoreNode;
     @JoinColumn(name = "xinco_core_user_id", referencedColumnName = "id", nullable = true)
     @ManyToOne(fetch = FetchType.LAZY)
-    private XincoCoreUser xincoCoreUserId;
+    private XincoCoreUser xincoCoreUser;
 
     public XincoCoreAce() {
     }
@@ -122,36 +132,36 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
         this.adminPermission = adminPermission;
     }
 
-    public XincoCoreData getXincoCoreDataId() {
-        return xincoCoreDataId;
+    public XincoCoreData getXincoCoreData() {
+        return xincoCoreData;
     }
 
-    public void setXincoCoreDataId(XincoCoreData xincoCoreDataId) {
-        this.xincoCoreDataId = xincoCoreDataId;
+    public void setXincoCoreData(XincoCoreData xincoCoreDataId) {
+        this.xincoCoreData = xincoCoreDataId;
     }
 
-    public XincoCoreGroup getXincoCoreGroupId() {
-        return xincoCoreGroupId;
+    public XincoCoreGroup getXincoCoreGroup() {
+        return xincoCoreGroup;
     }
 
-    public void setXincoCoreGroupId(XincoCoreGroup xincoCoreGroupId) {
-        this.xincoCoreGroupId = xincoCoreGroupId;
+    public void setXincoCoreGroup(XincoCoreGroup xincoCoreGroupId) {
+        this.xincoCoreGroup = xincoCoreGroupId;
     }
 
-    public XincoCoreNode getXincoCoreNodeId() {
-        return xincoCoreNodeId;
+    public XincoCoreNode getXincoCoreNode() {
+        return xincoCoreNode;
     }
 
-    public void setXincoCoreNodeId(XincoCoreNode xincoCoreNodeId) {
-        this.xincoCoreNodeId = xincoCoreNodeId;
+    public void setXincoCoreNode(XincoCoreNode xincoCoreNodeId) {
+        this.xincoCoreNode = xincoCoreNodeId;
     }
 
-    public XincoCoreUser getXincoCoreUserId() {
-        return xincoCoreUserId;
+    public XincoCoreUser getXincoCoreUser() {
+        return xincoCoreUser;
     }
 
-    public void setXincoCoreUserId(XincoCoreUser xincoCoreUserId) {
-        this.xincoCoreUserId = xincoCoreUserId;
+    public void setXincoCoreUser(XincoCoreUser xincoCoreUserId) {
+        this.xincoCoreUser = xincoCoreUserId;
     }
 
     @Override
@@ -163,7 +173,7 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+
         if (!(object instanceof XincoCoreAce)) {
             return false;
         }

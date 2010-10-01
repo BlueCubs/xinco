@@ -11,11 +11,14 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -37,6 +40,13 @@ public class XincoDependencyBehavior implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoDependencyBehaviorGen")
+    @TableGenerator(name = "XincoDependencyBehaviorGen", table = "xinco_id",
+    pkColumnName = "tablename",
+    valueColumnName = "last_id",
+    pkColumnValue = "id",
+    allocationSize = 1,
+    initialValue=1000)
     @Column(name = "id", nullable = false)
     private Integer id;
     @Column(name = "description", length = 45)
@@ -44,7 +54,7 @@ public class XincoDependencyBehavior implements Serializable {
     @Basic(optional = false)
     @Column(name = "designation", nullable = false, length = 45)
     private String designation;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoDependencyBehaviorId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoDependencyBehavior")
     private Collection<XincoDependencyType> xincoDependencyTypeCollection;
 
     public XincoDependencyBehavior() {
@@ -101,7 +111,7 @@ public class XincoDependencyBehavior implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        
         if (!(object instanceof XincoDependencyBehavior)) {
             return false;
         }

@@ -41,10 +41,11 @@ import java.util.GregorianCalendar;
 
 import com.bluecubs.xinco.core.server.persistence.XincoAddAttributePK;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJpaController;
-import com.bluecubs.xinco.server.service.XincoAddAttribute;
+import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -130,11 +131,18 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
             if (getAttribDatetime() != null) {
                 //convert clone from remote time to local time
                 Calendar cal = (Calendar) getAttribDatetime().clone();
-                Calendar ngc = new GregorianCalendar();
-                cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - getAttribDatetime().toGregorianCalendar().get(Calendar.ZONE_OFFSET)) - (ngc.get(Calendar.DST_OFFSET) + getAttribDatetime().toGregorianCalendar().get(Calendar.DST_OFFSET)));
-                attrDT = "" + cal.get(Calendar.YEAR) + "-" + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DAY_OF_MONTH) + " " + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND);
+                Calendar ngc = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+                cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET)
+                        - cal.get(Calendar.ZONE_OFFSET)) - (ngc.get(Calendar.DST_OFFSET)
+                        + cal.get(Calendar.DST_OFFSET)));
+                attrDT = "" + cal.get(Calendar.YEAR) + "-"
+                        + (cal.get(Calendar.MONTH) + 1) + "-"
+                        + cal.get(Calendar.DAY_OF_MONTH) + " "
+                        + cal.get(Calendar.HOUR_OF_DAY) + ":"
+                        + cal.get(Calendar.MINUTE) + ":"
+                        + cal.get(Calendar.SECOND);
             } else {
-                attrDT = "NULL";
+                attrDT = "0000-00-00 00:00:00";
             }
             com.bluecubs.xinco.core.server.persistence.XincoAddAttribute xaa =
                     new com.bluecubs.xinco.core.server.persistence.XincoAddAttribute();

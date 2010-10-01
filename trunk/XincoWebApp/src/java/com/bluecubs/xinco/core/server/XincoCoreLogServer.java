@@ -38,9 +38,9 @@ package com.bluecubs.xinco.core.server;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLogJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
-import com.bluecubs.xinco.server.service.XincoCoreLog;
-import com.bluecubs.xinco.server.service.XincoCoreUser;
-import com.bluecubs.xinco.server.service.XincoVersion;
+import com.bluecubs.xinco.core.server.service.XincoCoreLog;
+import com.bluecubs.xinco.core.server.service.XincoCoreUser;
+import com.bluecubs.xinco.core.server.service.XincoVersion;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -70,8 +70,8 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl =
                         (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) result.get(0);
                 setId(xcl.getId());
-                setXincoCoreDataId(xcl.getXincoCoreDataId().getId());
-                setXincoCoreUserId(xcl.getXincoCoreUserId().getId());
+                setXincoCoreDataId(xcl.getXincoCoreData().getId());
+                setXincoCoreUserId(xcl.getXincoCoreUser().getId());
                 setOpCode(xcl.getOpCode());
                 DatatypeFactory factory = DatatypeFactory.newInstance();
                 GregorianCalendar cal = new GregorianCalendar();
@@ -95,8 +95,8 @@ public class XincoCoreLogServer extends XincoCoreLog {
     private XincoCoreLogServer(com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl) {
         try {
             setId(xcl.getId());
-            setXincoCoreDataId(xcl.getXincoCoreDataId().getId());
-            setXincoCoreUserId(xcl.getXincoCoreUserId().getId());
+            setXincoCoreDataId(xcl.getXincoCoreData().getId());
+            setXincoCoreUserId(xcl.getXincoCoreUser().getId());
             setOpCode(xcl.getOpCode());
             DatatypeFactory factory = DatatypeFactory.newInstance();
             GregorianCalendar cal = new GregorianCalendar();
@@ -144,12 +144,12 @@ public class XincoCoreLogServer extends XincoCoreLog {
     public int write2DB() throws XincoException {
         try {
             XincoCoreLogJpaController controller = new XincoCoreLogJpaController(XincoDBManager.getEntityManagerFactory());
-            com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl;
+            com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl=null;
             if (getId() > 0) {
                 ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 xcl = controller.findXincoCoreLog(getId());
-                xcl.setXincoCoreDataId(new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreData(getXincoCoreDataId()));
-                xcl.setXincoCoreUserId(new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(getXincoCoreUserId()));
+                xcl.setXincoCoreData(new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreData(getXincoCoreDataId()));
+                xcl.setXincoCoreUser(new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(getXincoCoreUserId()));
                 xcl.setOpCode(getOpCode());
                 xcl.setOpDatetime(new Date());
                 xcl.setOpDescription(getOpDescription().replaceAll("'", "\\\\'"));
@@ -159,10 +159,9 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 xcl.setVersionPostfix(getVersion().getVersionPostfix().replaceAll("'", "\\\\'"));
                 controller.edit(xcl);
             } else {
-                setId(XincoDBManager.getNewID("xincoCoreLog"));
                 xcl = new com.bluecubs.xinco.core.server.persistence.XincoCoreLog(getId());
-                xcl.setXincoCoreDataId(new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreData(getXincoCoreDataId()));
-                xcl.setXincoCoreUserId(new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(getXincoCoreUserId()));
+                xcl.setXincoCoreData(new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreData(getXincoCoreDataId()));
+                xcl.setXincoCoreUser(new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(getXincoCoreUserId()));
                 xcl.setOpCode(getOpCode());
                 xcl.setOpDatetime(new Date());
                 xcl.setOpDescription(getOpDescription().replaceAll("'", "\\\\'"));
@@ -172,6 +171,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 xcl.setVersionPostfix(getVersion().getVersionPostfix().replaceAll("'", "\\\\'"));
                 controller.create(xcl);
             }
+            setId(xcl.getId());
         } catch (Exception e) {
             throw new XincoException(e.getMessage());
         }

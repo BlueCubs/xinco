@@ -37,7 +37,7 @@ package com.bluecubs.xinco.index;
 
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
-import com.bluecubs.xinco.server.service.XincoCoreData;
+import com.bluecubs.xinco.core.server.service.XincoCoreData;
 import java.io.File;
 import java.util.ArrayList;
 import org.apache.lucene.analysis.Analyzer;

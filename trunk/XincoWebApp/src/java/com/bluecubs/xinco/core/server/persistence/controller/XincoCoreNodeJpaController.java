@@ -58,15 +58,15 @@ public class XincoCoreNodeJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            XincoCoreLanguage xincoCoreLanguageId = xincoCoreNode.getXincoCoreLanguageId();
+            XincoCoreLanguage xincoCoreLanguageId = xincoCoreNode.getXincoCoreLanguage();
             if (xincoCoreLanguageId != null) {
                 xincoCoreLanguageId = em.getReference(xincoCoreLanguageId.getClass(), xincoCoreLanguageId.getId());
-                xincoCoreNode.setXincoCoreLanguageId(xincoCoreLanguageId);
+                xincoCoreNode.setXincoCoreLanguage(xincoCoreLanguageId);
             }
-            XincoCoreNode xincoCoreNodeId = xincoCoreNode.getXincoCoreNodeId();
+            XincoCoreNode xincoCoreNodeId = xincoCoreNode.getXincoCoreNode();
             if (xincoCoreNodeId != null) {
                 xincoCoreNodeId = em.getReference(xincoCoreNodeId.getClass(), xincoCoreNodeId.getId());
-                xincoCoreNode.setXincoCoreNodeId(xincoCoreNodeId);
+                xincoCoreNode.setXincoCoreNode(xincoCoreNodeId);
             }
             List<XincoCoreNode> attachedXincoCoreNodeList = new ArrayList<XincoCoreNode>();
             for (XincoCoreNode xincoCoreNodeListXincoCoreNodeToAttach : xincoCoreNode.getXincoCoreNodeList()) {
@@ -108,8 +108,8 @@ public class XincoCoreNodeJpaController implements Serializable {
                 xincoCoreNodeId = em.merge(xincoCoreNodeId);
             }
             for (XincoCoreNode xincoCoreNodeListXincoCoreNode : xincoCoreNode.getXincoCoreNodeList()) {
-                XincoCoreNode oldXincoCoreNodeIdOfXincoCoreNodeListXincoCoreNode = xincoCoreNodeListXincoCoreNode.getXincoCoreNodeId();
-                xincoCoreNodeListXincoCoreNode.setXincoCoreNodeId(xincoCoreNode);
+                XincoCoreNode oldXincoCoreNodeIdOfXincoCoreNodeListXincoCoreNode = xincoCoreNodeListXincoCoreNode.getXincoCoreNode();
+                xincoCoreNodeListXincoCoreNode.setXincoCoreNode(xincoCoreNode);
                 xincoCoreNodeListXincoCoreNode = em.merge(xincoCoreNodeListXincoCoreNode);
                 if (oldXincoCoreNodeIdOfXincoCoreNodeListXincoCoreNode != null) {
                     oldXincoCoreNodeIdOfXincoCoreNodeListXincoCoreNode.getXincoCoreNodeList().remove(xincoCoreNodeListXincoCoreNode);
@@ -117,8 +117,8 @@ public class XincoCoreNodeJpaController implements Serializable {
                 }
             }
             for (XincoCoreAce xincoCoreAceListXincoCoreAce : xincoCoreNode.getXincoCoreAceList()) {
-                XincoCoreNode oldXincoCoreNodeIdOfXincoCoreAceListXincoCoreAce = xincoCoreAceListXincoCoreAce.getXincoCoreNodeId();
-                xincoCoreAceListXincoCoreAce.setXincoCoreNodeId(xincoCoreNode);
+                XincoCoreNode oldXincoCoreNodeIdOfXincoCoreAceListXincoCoreAce = xincoCoreAceListXincoCoreAce.getXincoCoreNode();
+                xincoCoreAceListXincoCoreAce.setXincoCoreNode(xincoCoreNode);
                 xincoCoreAceListXincoCoreAce = em.merge(xincoCoreAceListXincoCoreAce);
                 if (oldXincoCoreNodeIdOfXincoCoreAceListXincoCoreAce != null) {
                     oldXincoCoreNodeIdOfXincoCoreAceListXincoCoreAce.getXincoCoreAceList().remove(xincoCoreAceListXincoCoreAce);
@@ -126,8 +126,8 @@ public class XincoCoreNodeJpaController implements Serializable {
                 }
             }
             for (XincoCoreData xincoCoreDataListXincoCoreData : xincoCoreNode.getXincoCoreDataList()) {
-                XincoCoreNode oldXincoCoreNodeIdOfXincoCoreDataListXincoCoreData = xincoCoreDataListXincoCoreData.getXincoCoreNodeId();
-                xincoCoreDataListXincoCoreData.setXincoCoreNodeId(xincoCoreNode);
+                XincoCoreNode oldXincoCoreNodeIdOfXincoCoreDataListXincoCoreData = xincoCoreDataListXincoCoreData.getXincoCoreNode();
+                xincoCoreDataListXincoCoreData.setXincoCoreNode(xincoCoreNode);
                 xincoCoreDataListXincoCoreData = em.merge(xincoCoreDataListXincoCoreData);
                 if (oldXincoCoreNodeIdOfXincoCoreDataListXincoCoreData != null) {
                     oldXincoCoreNodeIdOfXincoCoreDataListXincoCoreData.getXincoCoreDataList().remove(xincoCoreDataListXincoCoreData);
@@ -135,8 +135,8 @@ public class XincoCoreNodeJpaController implements Serializable {
                 }
             }
             for (XincoCoreNode xincoCoreNodeCollectionXincoCoreNode : xincoCoreNode.getXincoCoreNodeCollection()) {
-                XincoCoreNode oldXincoCoreNodeIdOfXincoCoreNodeCollectionXincoCoreNode = xincoCoreNodeCollectionXincoCoreNode.getXincoCoreNodeId();
-                xincoCoreNodeCollectionXincoCoreNode.setXincoCoreNodeId(xincoCoreNode);
+                XincoCoreNode oldXincoCoreNodeIdOfXincoCoreNodeCollectionXincoCoreNode = xincoCoreNodeCollectionXincoCoreNode.getXincoCoreNode();
+                xincoCoreNodeCollectionXincoCoreNode.setXincoCoreNode(xincoCoreNode);
                 xincoCoreNodeCollectionXincoCoreNode = em.merge(xincoCoreNodeCollectionXincoCoreNode);
                 if (oldXincoCoreNodeIdOfXincoCoreNodeCollectionXincoCoreNode != null) {
                     oldXincoCoreNodeIdOfXincoCoreNodeCollectionXincoCoreNode.getXincoCoreNodeCollection().remove(xincoCoreNodeCollectionXincoCoreNode);
@@ -144,8 +144,8 @@ public class XincoCoreNodeJpaController implements Serializable {
                 }
             }
             for (XincoCoreData xincoCoreDataCollectionXincoCoreData : xincoCoreNode.getXincoCoreDataCollection()) {
-                XincoCoreNode oldXincoCoreNodeIdOfXincoCoreDataCollectionXincoCoreData = xincoCoreDataCollectionXincoCoreData.getXincoCoreNodeId();
-                xincoCoreDataCollectionXincoCoreData.setXincoCoreNodeId(xincoCoreNode);
+                XincoCoreNode oldXincoCoreNodeIdOfXincoCoreDataCollectionXincoCoreData = xincoCoreDataCollectionXincoCoreData.getXincoCoreNode();
+                xincoCoreDataCollectionXincoCoreData.setXincoCoreNode(xincoCoreNode);
                 xincoCoreDataCollectionXincoCoreData = em.merge(xincoCoreDataCollectionXincoCoreData);
                 if (oldXincoCoreNodeIdOfXincoCoreDataCollectionXincoCoreData != null) {
                     oldXincoCoreNodeIdOfXincoCoreDataCollectionXincoCoreData.getXincoCoreDataCollection().remove(xincoCoreDataCollectionXincoCoreData);
@@ -171,10 +171,10 @@ public class XincoCoreNodeJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             XincoCoreNode persistentXincoCoreNode = em.find(XincoCoreNode.class, xincoCoreNode.getId());
-            XincoCoreLanguage xincoCoreLanguageIdOld = persistentXincoCoreNode.getXincoCoreLanguageId();
-            XincoCoreLanguage xincoCoreLanguageIdNew = xincoCoreNode.getXincoCoreLanguageId();
-            XincoCoreNode xincoCoreNodeIdOld = persistentXincoCoreNode.getXincoCoreNodeId();
-            XincoCoreNode xincoCoreNodeIdNew = xincoCoreNode.getXincoCoreNodeId();
+            XincoCoreLanguage xincoCoreLanguageIdOld = persistentXincoCoreNode.getXincoCoreLanguage();
+            XincoCoreLanguage xincoCoreLanguageIdNew = xincoCoreNode.getXincoCoreLanguage();
+            XincoCoreNode xincoCoreNodeIdOld = persistentXincoCoreNode.getXincoCoreNode();
+            XincoCoreNode xincoCoreNodeIdNew = xincoCoreNode.getXincoCoreNode();
             List<XincoCoreNode> xincoCoreNodeListOld = persistentXincoCoreNode.getXincoCoreNodeList();
             List<XincoCoreNode> xincoCoreNodeListNew = xincoCoreNode.getXincoCoreNodeList();
             List<XincoCoreAce> xincoCoreAceListOld = persistentXincoCoreNode.getXincoCoreAceList();
@@ -207,11 +207,11 @@ public class XincoCoreNodeJpaController implements Serializable {
             }
             if (xincoCoreLanguageIdNew != null) {
                 xincoCoreLanguageIdNew = em.getReference(xincoCoreLanguageIdNew.getClass(), xincoCoreLanguageIdNew.getId());
-                xincoCoreNode.setXincoCoreLanguageId(xincoCoreLanguageIdNew);
+                xincoCoreNode.setXincoCoreLanguage(xincoCoreLanguageIdNew);
             }
             if (xincoCoreNodeIdNew != null) {
                 xincoCoreNodeIdNew = em.getReference(xincoCoreNodeIdNew.getClass(), xincoCoreNodeIdNew.getId());
-                xincoCoreNode.setXincoCoreNodeId(xincoCoreNodeIdNew);
+                xincoCoreNode.setXincoCoreNode(xincoCoreNodeIdNew);
             }
             List<XincoCoreNode> attachedXincoCoreNodeListNew = new ArrayList<XincoCoreNode>();
             for (XincoCoreNode xincoCoreNodeListNewXincoCoreNodeToAttach : xincoCoreNodeListNew) {
@@ -267,14 +267,14 @@ public class XincoCoreNodeJpaController implements Serializable {
             }
             for (XincoCoreNode xincoCoreNodeListOldXincoCoreNode : xincoCoreNodeListOld) {
                 if (!xincoCoreNodeListNew.contains(xincoCoreNodeListOldXincoCoreNode)) {
-                    xincoCoreNodeListOldXincoCoreNode.setXincoCoreNodeId(null);
+                    xincoCoreNodeListOldXincoCoreNode.setXincoCoreNode(null);
                     xincoCoreNodeListOldXincoCoreNode = em.merge(xincoCoreNodeListOldXincoCoreNode);
                 }
             }
             for (XincoCoreNode xincoCoreNodeListNewXincoCoreNode : xincoCoreNodeListNew) {
                 if (!xincoCoreNodeListOld.contains(xincoCoreNodeListNewXincoCoreNode)) {
-                    XincoCoreNode oldXincoCoreNodeIdOfXincoCoreNodeListNewXincoCoreNode = xincoCoreNodeListNewXincoCoreNode.getXincoCoreNodeId();
-                    xincoCoreNodeListNewXincoCoreNode.setXincoCoreNodeId(xincoCoreNode);
+                    XincoCoreNode oldXincoCoreNodeIdOfXincoCoreNodeListNewXincoCoreNode = xincoCoreNodeListNewXincoCoreNode.getXincoCoreNode();
+                    xincoCoreNodeListNewXincoCoreNode.setXincoCoreNode(xincoCoreNode);
                     xincoCoreNodeListNewXincoCoreNode = em.merge(xincoCoreNodeListNewXincoCoreNode);
                     if (oldXincoCoreNodeIdOfXincoCoreNodeListNewXincoCoreNode != null && !oldXincoCoreNodeIdOfXincoCoreNodeListNewXincoCoreNode.equals(xincoCoreNode)) {
                         oldXincoCoreNodeIdOfXincoCoreNodeListNewXincoCoreNode.getXincoCoreNodeList().remove(xincoCoreNodeListNewXincoCoreNode);
@@ -284,14 +284,14 @@ public class XincoCoreNodeJpaController implements Serializable {
             }
             for (XincoCoreAce xincoCoreAceListOldXincoCoreAce : xincoCoreAceListOld) {
                 if (!xincoCoreAceListNew.contains(xincoCoreAceListOldXincoCoreAce)) {
-                    xincoCoreAceListOldXincoCoreAce.setXincoCoreNodeId(null);
+                    xincoCoreAceListOldXincoCoreAce.setXincoCoreNode(null);
                     xincoCoreAceListOldXincoCoreAce = em.merge(xincoCoreAceListOldXincoCoreAce);
                 }
             }
             for (XincoCoreAce xincoCoreAceListNewXincoCoreAce : xincoCoreAceListNew) {
                 if (!xincoCoreAceListOld.contains(xincoCoreAceListNewXincoCoreAce)) {
-                    XincoCoreNode oldXincoCoreNodeIdOfXincoCoreAceListNewXincoCoreAce = xincoCoreAceListNewXincoCoreAce.getXincoCoreNodeId();
-                    xincoCoreAceListNewXincoCoreAce.setXincoCoreNodeId(xincoCoreNode);
+                    XincoCoreNode oldXincoCoreNodeIdOfXincoCoreAceListNewXincoCoreAce = xincoCoreAceListNewXincoCoreAce.getXincoCoreNode();
+                    xincoCoreAceListNewXincoCoreAce.setXincoCoreNode(xincoCoreNode);
                     xincoCoreAceListNewXincoCoreAce = em.merge(xincoCoreAceListNewXincoCoreAce);
                     if (oldXincoCoreNodeIdOfXincoCoreAceListNewXincoCoreAce != null && !oldXincoCoreNodeIdOfXincoCoreAceListNewXincoCoreAce.equals(xincoCoreNode)) {
                         oldXincoCoreNodeIdOfXincoCoreAceListNewXincoCoreAce.getXincoCoreAceList().remove(xincoCoreAceListNewXincoCoreAce);
@@ -301,8 +301,8 @@ public class XincoCoreNodeJpaController implements Serializable {
             }
             for (XincoCoreData xincoCoreDataListNewXincoCoreData : xincoCoreDataListNew) {
                 if (!xincoCoreDataListOld.contains(xincoCoreDataListNewXincoCoreData)) {
-                    XincoCoreNode oldXincoCoreNodeIdOfXincoCoreDataListNewXincoCoreData = xincoCoreDataListNewXincoCoreData.getXincoCoreNodeId();
-                    xincoCoreDataListNewXincoCoreData.setXincoCoreNodeId(xincoCoreNode);
+                    XincoCoreNode oldXincoCoreNodeIdOfXincoCoreDataListNewXincoCoreData = xincoCoreDataListNewXincoCoreData.getXincoCoreNode();
+                    xincoCoreDataListNewXincoCoreData.setXincoCoreNode(xincoCoreNode);
                     xincoCoreDataListNewXincoCoreData = em.merge(xincoCoreDataListNewXincoCoreData);
                     if (oldXincoCoreNodeIdOfXincoCoreDataListNewXincoCoreData != null && !oldXincoCoreNodeIdOfXincoCoreDataListNewXincoCoreData.equals(xincoCoreNode)) {
                         oldXincoCoreNodeIdOfXincoCoreDataListNewXincoCoreData.getXincoCoreDataList().remove(xincoCoreDataListNewXincoCoreData);
@@ -312,14 +312,14 @@ public class XincoCoreNodeJpaController implements Serializable {
             }
             for (XincoCoreNode xincoCoreNodeCollectionOldXincoCoreNode : xincoCoreNodeCollectionOld) {
                 if (!xincoCoreNodeCollectionNew.contains(xincoCoreNodeCollectionOldXincoCoreNode)) {
-                    xincoCoreNodeCollectionOldXincoCoreNode.setXincoCoreNodeId(null);
+                    xincoCoreNodeCollectionOldXincoCoreNode.setXincoCoreNode(null);
                     xincoCoreNodeCollectionOldXincoCoreNode = em.merge(xincoCoreNodeCollectionOldXincoCoreNode);
                 }
             }
             for (XincoCoreNode xincoCoreNodeCollectionNewXincoCoreNode : xincoCoreNodeCollectionNew) {
                 if (!xincoCoreNodeCollectionOld.contains(xincoCoreNodeCollectionNewXincoCoreNode)) {
-                    XincoCoreNode oldXincoCoreNodeIdOfXincoCoreNodeCollectionNewXincoCoreNode = xincoCoreNodeCollectionNewXincoCoreNode.getXincoCoreNodeId();
-                    xincoCoreNodeCollectionNewXincoCoreNode.setXincoCoreNodeId(xincoCoreNode);
+                    XincoCoreNode oldXincoCoreNodeIdOfXincoCoreNodeCollectionNewXincoCoreNode = xincoCoreNodeCollectionNewXincoCoreNode.getXincoCoreNode();
+                    xincoCoreNodeCollectionNewXincoCoreNode.setXincoCoreNode(xincoCoreNode);
                     xincoCoreNodeCollectionNewXincoCoreNode = em.merge(xincoCoreNodeCollectionNewXincoCoreNode);
                     if (oldXincoCoreNodeIdOfXincoCoreNodeCollectionNewXincoCoreNode != null && !oldXincoCoreNodeIdOfXincoCoreNodeCollectionNewXincoCoreNode.equals(xincoCoreNode)) {
                         oldXincoCoreNodeIdOfXincoCoreNodeCollectionNewXincoCoreNode.getXincoCoreNodeCollection().remove(xincoCoreNodeCollectionNewXincoCoreNode);
@@ -329,8 +329,8 @@ public class XincoCoreNodeJpaController implements Serializable {
             }
             for (XincoCoreData xincoCoreDataCollectionNewXincoCoreData : xincoCoreDataCollectionNew) {
                 if (!xincoCoreDataCollectionOld.contains(xincoCoreDataCollectionNewXincoCoreData)) {
-                    XincoCoreNode oldXincoCoreNodeIdOfXincoCoreDataCollectionNewXincoCoreData = xincoCoreDataCollectionNewXincoCoreData.getXincoCoreNodeId();
-                    xincoCoreDataCollectionNewXincoCoreData.setXincoCoreNodeId(xincoCoreNode);
+                    XincoCoreNode oldXincoCoreNodeIdOfXincoCoreDataCollectionNewXincoCoreData = xincoCoreDataCollectionNewXincoCoreData.getXincoCoreNode();
+                    xincoCoreDataCollectionNewXincoCoreData.setXincoCoreNode(xincoCoreNode);
                     xincoCoreDataCollectionNewXincoCoreData = em.merge(xincoCoreDataCollectionNewXincoCoreData);
                     if (oldXincoCoreNodeIdOfXincoCoreDataCollectionNewXincoCoreData != null && !oldXincoCoreNodeIdOfXincoCoreDataCollectionNewXincoCoreData.equals(xincoCoreNode)) {
                         oldXincoCoreNodeIdOfXincoCoreDataCollectionNewXincoCoreData.getXincoCoreDataCollection().remove(xincoCoreDataCollectionNewXincoCoreData);
@@ -385,29 +385,29 @@ public class XincoCoreNodeJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            XincoCoreLanguage xincoCoreLanguageId = xincoCoreNode.getXincoCoreLanguageId();
+            XincoCoreLanguage xincoCoreLanguageId = xincoCoreNode.getXincoCoreLanguage();
             if (xincoCoreLanguageId != null) {
                 xincoCoreLanguageId.getXincoCoreNodeList().remove(xincoCoreNode);
                 xincoCoreLanguageId = em.merge(xincoCoreLanguageId);
             }
-            XincoCoreNode xincoCoreNodeId = xincoCoreNode.getXincoCoreNodeId();
+            XincoCoreNode xincoCoreNodeId = xincoCoreNode.getXincoCoreNode();
             if (xincoCoreNodeId != null) {
                 xincoCoreNodeId.getXincoCoreNodeList().remove(xincoCoreNode);
                 xincoCoreNodeId = em.merge(xincoCoreNodeId);
             }
             List<XincoCoreNode> xincoCoreNodeList = xincoCoreNode.getXincoCoreNodeList();
             for (XincoCoreNode xincoCoreNodeListXincoCoreNode : xincoCoreNodeList) {
-                xincoCoreNodeListXincoCoreNode.setXincoCoreNodeId(null);
+                xincoCoreNodeListXincoCoreNode.setXincoCoreNode(null);
                 xincoCoreNodeListXincoCoreNode = em.merge(xincoCoreNodeListXincoCoreNode);
             }
             List<XincoCoreAce> xincoCoreAceList = xincoCoreNode.getXincoCoreAceList();
             for (XincoCoreAce xincoCoreAceListXincoCoreAce : xincoCoreAceList) {
-                xincoCoreAceListXincoCoreAce.setXincoCoreNodeId(null);
+                xincoCoreAceListXincoCoreAce.setXincoCoreNode(null);
                 xincoCoreAceListXincoCoreAce = em.merge(xincoCoreAceListXincoCoreAce);
             }
             Collection<XincoCoreNode> xincoCoreNodeCollection = xincoCoreNode.getXincoCoreNodeCollection();
             for (XincoCoreNode xincoCoreNodeCollectionXincoCoreNode : xincoCoreNodeCollection) {
-                xincoCoreNodeCollectionXincoCoreNode.setXincoCoreNodeId(null);
+                xincoCoreNodeCollectionXincoCoreNode.setXincoCoreNode(null);
                 xincoCoreNodeCollectionXincoCoreNode = em.merge(xincoCoreNodeCollectionXincoCoreNode);
             }
             em.remove(xincoCoreNode);

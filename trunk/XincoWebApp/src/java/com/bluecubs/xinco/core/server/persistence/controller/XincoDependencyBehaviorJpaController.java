@@ -52,8 +52,8 @@ public class XincoDependencyBehaviorJpaController implements Serializable {
             xincoDependencyBehavior.setXincoDependencyTypeCollection(attachedXincoDependencyTypeCollection);
             em.persist(xincoDependencyBehavior);
             for (XincoDependencyType xincoDependencyTypeCollectionXincoDependencyType : xincoDependencyBehavior.getXincoDependencyTypeCollection()) {
-                XincoDependencyBehavior oldXincoDependencyBehaviorIdOfXincoDependencyTypeCollectionXincoDependencyType = xincoDependencyTypeCollectionXincoDependencyType.getXincoDependencyBehaviorId();
-                xincoDependencyTypeCollectionXincoDependencyType.setXincoDependencyBehaviorId(xincoDependencyBehavior);
+                XincoDependencyBehavior oldXincoDependencyBehaviorIdOfXincoDependencyTypeCollectionXincoDependencyType = xincoDependencyTypeCollectionXincoDependencyType.getXincoDependencyBehavior();
+                xincoDependencyTypeCollectionXincoDependencyType.setXincoDependencyBehavior(xincoDependencyBehavior);
                 xincoDependencyTypeCollectionXincoDependencyType = em.merge(xincoDependencyTypeCollectionXincoDependencyType);
                 if (oldXincoDependencyBehaviorIdOfXincoDependencyTypeCollectionXincoDependencyType != null) {
                     oldXincoDependencyBehaviorIdOfXincoDependencyTypeCollectionXincoDependencyType.getXincoDependencyTypeCollection().remove(xincoDependencyTypeCollectionXincoDependencyType);
@@ -103,8 +103,8 @@ public class XincoDependencyBehaviorJpaController implements Serializable {
             xincoDependencyBehavior = em.merge(xincoDependencyBehavior);
             for (XincoDependencyType xincoDependencyTypeCollectionNewXincoDependencyType : xincoDependencyTypeCollectionNew) {
                 if (!xincoDependencyTypeCollectionOld.contains(xincoDependencyTypeCollectionNewXincoDependencyType)) {
-                    XincoDependencyBehavior oldXincoDependencyBehaviorIdOfXincoDependencyTypeCollectionNewXincoDependencyType = xincoDependencyTypeCollectionNewXincoDependencyType.getXincoDependencyBehaviorId();
-                    xincoDependencyTypeCollectionNewXincoDependencyType.setXincoDependencyBehaviorId(xincoDependencyBehavior);
+                    XincoDependencyBehavior oldXincoDependencyBehaviorIdOfXincoDependencyTypeCollectionNewXincoDependencyType = xincoDependencyTypeCollectionNewXincoDependencyType.getXincoDependencyBehavior();
+                    xincoDependencyTypeCollectionNewXincoDependencyType.setXincoDependencyBehavior(xincoDependencyBehavior);
                     xincoDependencyTypeCollectionNewXincoDependencyType = em.merge(xincoDependencyTypeCollectionNewXincoDependencyType);
                     if (oldXincoDependencyBehaviorIdOfXincoDependencyTypeCollectionNewXincoDependencyType != null && !oldXincoDependencyBehaviorIdOfXincoDependencyTypeCollectionNewXincoDependencyType.equals(xincoDependencyBehavior)) {
                         oldXincoDependencyBehaviorIdOfXincoDependencyTypeCollectionNewXincoDependencyType.getXincoDependencyTypeCollection().remove(xincoDependencyTypeCollectionNewXincoDependencyType);

@@ -41,25 +41,25 @@ public class XincoCoreAceJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            XincoCoreData xincoCoreDataId = xincoCoreAce.getXincoCoreDataId();
+            XincoCoreData xincoCoreDataId = xincoCoreAce.getXincoCoreData();
             if (xincoCoreDataId != null) {
                 xincoCoreDataId = em.getReference(xincoCoreDataId.getClass(), xincoCoreDataId.getId());
-                xincoCoreAce.setXincoCoreDataId(xincoCoreDataId);
+                xincoCoreAce.setXincoCoreData(xincoCoreDataId);
             }
-            XincoCoreGroup xincoCoreGroupId = xincoCoreAce.getXincoCoreGroupId();
+            XincoCoreGroup xincoCoreGroupId = xincoCoreAce.getXincoCoreGroup();
             if (xincoCoreGroupId != null) {
                 xincoCoreGroupId = em.getReference(xincoCoreGroupId.getClass(), xincoCoreGroupId.getId());
-                xincoCoreAce.setXincoCoreGroupId(xincoCoreGroupId);
+                xincoCoreAce.setXincoCoreGroup(xincoCoreGroupId);
             }
-            XincoCoreNode xincoCoreNodeId = xincoCoreAce.getXincoCoreNodeId();
+            XincoCoreNode xincoCoreNodeId = xincoCoreAce.getXincoCoreNode();
             if (xincoCoreNodeId != null) {
                 xincoCoreNodeId = em.getReference(xincoCoreNodeId.getClass(), xincoCoreNodeId.getId());
-                xincoCoreAce.setXincoCoreNodeId(xincoCoreNodeId);
+                xincoCoreAce.setXincoCoreNode(xincoCoreNodeId);
             }
-            XincoCoreUser xincoCoreUserId = xincoCoreAce.getXincoCoreUserId();
+            XincoCoreUser xincoCoreUserId = xincoCoreAce.getXincoCoreUser();
             if (xincoCoreUserId != null) {
                 xincoCoreUserId = em.getReference(xincoCoreUserId.getClass(), xincoCoreUserId.getId());
-                xincoCoreAce.setXincoCoreUserId(xincoCoreUserId);
+                xincoCoreAce.setXincoCoreUser(xincoCoreUserId);
             }
             em.persist(xincoCoreAce);
             if (xincoCoreDataId != null) {
@@ -97,29 +97,29 @@ public class XincoCoreAceJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             XincoCoreAce persistentXincoCoreAce = em.find(XincoCoreAce.class, xincoCoreAce.getId());
-            XincoCoreData xincoCoreDataIdOld = persistentXincoCoreAce.getXincoCoreDataId();
-            XincoCoreData xincoCoreDataIdNew = xincoCoreAce.getXincoCoreDataId();
-            XincoCoreGroup xincoCoreGroupIdOld = persistentXincoCoreAce.getXincoCoreGroupId();
-            XincoCoreGroup xincoCoreGroupIdNew = xincoCoreAce.getXincoCoreGroupId();
-            XincoCoreNode xincoCoreNodeIdOld = persistentXincoCoreAce.getXincoCoreNodeId();
-            XincoCoreNode xincoCoreNodeIdNew = xincoCoreAce.getXincoCoreNodeId();
-            XincoCoreUser xincoCoreUserIdOld = persistentXincoCoreAce.getXincoCoreUserId();
-            XincoCoreUser xincoCoreUserIdNew = xincoCoreAce.getXincoCoreUserId();
+            XincoCoreData xincoCoreDataIdOld = persistentXincoCoreAce.getXincoCoreData();
+            XincoCoreData xincoCoreDataIdNew = xincoCoreAce.getXincoCoreData();
+            XincoCoreGroup xincoCoreGroupIdOld = persistentXincoCoreAce.getXincoCoreGroup();
+            XincoCoreGroup xincoCoreGroupIdNew = xincoCoreAce.getXincoCoreGroup();
+            XincoCoreNode xincoCoreNodeIdOld = persistentXincoCoreAce.getXincoCoreNode();
+            XincoCoreNode xincoCoreNodeIdNew = xincoCoreAce.getXincoCoreNode();
+            XincoCoreUser xincoCoreUserIdOld = persistentXincoCoreAce.getXincoCoreUser();
+            XincoCoreUser xincoCoreUserIdNew = xincoCoreAce.getXincoCoreUser();
             if (xincoCoreDataIdNew != null) {
                 xincoCoreDataIdNew = em.getReference(xincoCoreDataIdNew.getClass(), xincoCoreDataIdNew.getId());
-                xincoCoreAce.setXincoCoreDataId(xincoCoreDataIdNew);
+                xincoCoreAce.setXincoCoreData(xincoCoreDataIdNew);
             }
             if (xincoCoreGroupIdNew != null) {
                 xincoCoreGroupIdNew = em.getReference(xincoCoreGroupIdNew.getClass(), xincoCoreGroupIdNew.getId());
-                xincoCoreAce.setXincoCoreGroupId(xincoCoreGroupIdNew);
+                xincoCoreAce.setXincoCoreGroup(xincoCoreGroupIdNew);
             }
             if (xincoCoreNodeIdNew != null) {
                 xincoCoreNodeIdNew = em.getReference(xincoCoreNodeIdNew.getClass(), xincoCoreNodeIdNew.getId());
-                xincoCoreAce.setXincoCoreNodeId(xincoCoreNodeIdNew);
+                xincoCoreAce.setXincoCoreNode(xincoCoreNodeIdNew);
             }
             if (xincoCoreUserIdNew != null) {
                 xincoCoreUserIdNew = em.getReference(xincoCoreUserIdNew.getClass(), xincoCoreUserIdNew.getId());
-                xincoCoreAce.setXincoCoreUserId(xincoCoreUserIdNew);
+                xincoCoreAce.setXincoCoreUser(xincoCoreUserIdNew);
             }
             xincoCoreAce = em.merge(xincoCoreAce);
             if (xincoCoreDataIdOld != null && !xincoCoreDataIdOld.equals(xincoCoreDataIdNew)) {
@@ -183,22 +183,22 @@ public class XincoCoreAceJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The xincoCoreAce with id " + id + " no longer exists.", enfe);
             }
-            XincoCoreData xincoCoreDataId = xincoCoreAce.getXincoCoreDataId();
+            XincoCoreData xincoCoreDataId = xincoCoreAce.getXincoCoreData();
             if (xincoCoreDataId != null) {
                 xincoCoreDataId.getXincoCoreAceList().remove(xincoCoreAce);
                 xincoCoreDataId = em.merge(xincoCoreDataId);
             }
-            XincoCoreGroup xincoCoreGroupId = xincoCoreAce.getXincoCoreGroupId();
+            XincoCoreGroup xincoCoreGroupId = xincoCoreAce.getXincoCoreGroup();
             if (xincoCoreGroupId != null) {
                 xincoCoreGroupId.getXincoCoreAceList().remove(xincoCoreAce);
                 xincoCoreGroupId = em.merge(xincoCoreGroupId);
             }
-            XincoCoreNode xincoCoreNodeId = xincoCoreAce.getXincoCoreNodeId();
+            XincoCoreNode xincoCoreNodeId = xincoCoreAce.getXincoCoreNode();
             if (xincoCoreNodeId != null) {
                 xincoCoreNodeId.getXincoCoreAceList().remove(xincoCoreAce);
                 xincoCoreNodeId = em.merge(xincoCoreNodeId);
             }
-            XincoCoreUser xincoCoreUserId = xincoCoreAce.getXincoCoreUserId();
+            XincoCoreUser xincoCoreUserId = xincoCoreAce.getXincoCoreUser();
             if (xincoCoreUserId != null) {
                 xincoCoreUserId.getXincoCoreAceList().remove(xincoCoreAce);
                 xincoCoreUserId = em.merge(xincoCoreUserId);

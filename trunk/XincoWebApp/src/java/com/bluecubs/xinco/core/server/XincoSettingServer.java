@@ -2,7 +2,9 @@ package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.server.persistence.controller.XincoSettingJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.server.service.XincoSetting;
+import com.bluecubs.xinco.core.server.service.XincoSetting;
+import com.bluecubs.xinco.core.server.service.XincoCoreUser;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -21,18 +23,33 @@ public class XincoSettingServer extends XincoSetting {
         com.bluecubs.xinco.core.server.persistence.XincoSetting setting =
                 controller.findXincoSetting(id);
         if (setting != null) {
-            setBoolValue(setting.getBoolValue());
+            if (setting.getBoolValue() != null) {
+                setBoolValue(setting.getBoolValue());
+            }
             setId(id);
-            setIntValue(setting.getIntValue());
+            if (setting.getIntValue() != null) {
+                setIntValue(setting.getIntValue());
+            }
             setLongValue(setting.getLongValue());
-            setStringValue(setting.getStringValue());
-            setDescription(setting.getDescription());
+            if (setting.getStringValue() != null) {
+                setStringValue(setting.getStringValue());
+            }
+            if (setting.getDescription() != null) {
+                setDescription(setting.getDescription());
+            }
         } else {
             throw new XincoException("Setting with id: " + id + " not found!");
         }
     }
 
-    public XincoSettingServer() {
+    public XincoSettingServer(int id, String description, int intVal,
+            String stringVal, boolean boolVal, long longVal) {
+        setBoolValue(boolVal);
+        setId(id);
+        setIntValue(intVal);
+        setLongValue(longVal);
+        setStringValue(stringVal);
+        setDescription(description);
     }
 
     //write to db
@@ -48,7 +65,7 @@ public class XincoSettingServer extends XincoSetting {
             setLongValue(setting.getLongValue());
             setStringValue(setting.getStringValue());
             setDescription(setting.getDescription());
-            XincoSettingJpaController controller = 
+            XincoSettingJpaController controller =
                     new XincoSettingJpaController(
                     XincoDBManager.getEntityManagerFactory());
             if (id == 0) {
@@ -63,30 +80,55 @@ public class XincoSettingServer extends XincoSetting {
         }
         return 1;
     }
-    
-    public int deleteFromDB() throws XincoException {
+
+    public static int deleteFromDB(XincoSetting setting) throws XincoException {
         XincoSettingJpaController controller = new XincoSettingJpaController(
                 XincoDBManager.getEntityManagerFactory());
-        com.bluecubs.xinco.core.server.persistence.XincoSetting setting =
-                controller.findXincoSetting(getId());
-        if(setting!=null){
+        if (setting != null) {
             try {
-                controller.destroy(getId());
+                controller.destroy(setting.getId());
             } catch (NonexistentEntityException ex) {
                 throw new XincoException();
             }
         }
         return 0;
     }
-    
-    public static XincoSettingServer getSetting(String desc) throws XincoException{
-        HashMap parameters = new HashMap();
-        parameters.put("description",desc);
-        List result = XincoDBManager.namedQuery("XincoSetting.findByDescription",parameters);
-        if(result.isEmpty()){
-            throw new XincoException();
-        }else{
-            return new XincoSettingServer(((XincoSetting)result.get(0)).getId());
+
+    public static XincoSettingServer getSetting(XincoCoreUser user, String desc) throws XincoException {
+        if (XincoCoreUserServer.validCredentials(user.getUsername(), user.getUserpassword())) {
+            return getSetting(desc);
+        } else {
+            return null;
         }
+    }
+
+    protected static XincoSettingServer getSetting(String desc) throws XincoException {
+        HashMap parameters = new HashMap();
+        parameters.put("description", desc);
+        List result = XincoDBManager.namedQuery("XincoSetting.findByDescription", parameters);
+        if (!result.isEmpty()) {
+            return new XincoSettingServer(((com.bluecubs.xinco.core.server.persistence.XincoSetting) result.get(0)).getId());
+        } else {
+            return null;
+        }
+    }
+
+    public static List<XincoSettingServer> getSettings(XincoCoreUser user) throws XincoException {
+        ArrayList<XincoSettingServer> settings = new ArrayList<XincoSettingServer>();
+        if (XincoCoreUserServer.validCredentials(user.getUsername(), user.getUserpassword())) {
+            settings.addAll(getSettings());
+        }
+        return settings;
+    }
+
+    protected static List<XincoSettingServer> getSettings() throws XincoException {
+        ArrayList<XincoSettingServer> settings = new ArrayList<XincoSettingServer>();
+        List result = XincoDBManager.namedQuery("XincoSetting.findAll", null);
+        if (!result.isEmpty()) {
+            for (Object o : result) {
+                settings.add(new XincoSettingServer(((com.bluecubs.xinco.core.server.persistence.XincoSetting) o).getId()));
+            }
+        }
+        return settings;
     }
 }

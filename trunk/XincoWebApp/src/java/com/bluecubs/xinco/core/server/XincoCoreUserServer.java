@@ -45,7 +45,7 @@ import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupPK;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserT;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
-import com.bluecubs.xinco.server.service.XincoCoreUser;
+import com.bluecubs.xinco.core.server.service.XincoCoreUser;
 import java.util.ArrayList;
 import com.bluecubs.xinco.tools.MD5;
 import java.sql.Timestamp;
@@ -67,7 +67,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
 
     private boolean hashPassword = true;
     private boolean increaseAttempts = false;
-    private ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages"), settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
+    private ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
     private java.sql.Timestamp lastModified;
     private int attempts;
     private static List result;
@@ -157,7 +157,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                     cal2.setTime(xcu.getLastModified());
                     long diffMillis = now.getTimeInMillis() - cal2.getTimeInMillis();
                     long diffDays = diffMillis / (24 * 60 * 60 * 1000);
-                    long age = Long.parseLong(settings.getString("password.aging"));
+                    long age = XincoSettingServer.getSetting("password.aging").getLongValue();
                     if (diffDays >= age) {
                         status = 3;
                     } else {
@@ -331,11 +331,12 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 increaseAttempts = false;
             }
             //Lock account if needed. Can't lock main admin.
-            if (getAttempts() > Integer.parseInt(settings.getString("password.attempts"))
+            if (getAttempts() > XincoSettingServer.getSetting("password.attempts").getIntValue()
                     && getId() > 1) {
                 setStatusNumber(2);
             }
             XincoCoreUserJpaController controller = new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory());
+            com.bluecubs.xinco.core.server.persistence.XincoCoreUser xcu=null;
             if (getId() > 0) {
                 if (isChange()) {
                     setChangerID(getId());
@@ -353,8 +354,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 } else {
                     password = getUserpassword().replaceAll("'", "\\\\'");
                 }
-                com.bluecubs.xinco.core.server.persistence.XincoCoreUser xcu =
-                        controller.findXincoCoreUser(getId());
+                xcu = controller.findXincoCoreUser(getId());
                 xcu.setAttempts(getAttempts());
                 xcu.setEmail(getEmail().replaceAll("'", "\\\\'"));
                 xcu.setFirstname(getFirstname().replaceAll("'", "\\\\'"));
@@ -368,10 +368,8 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 xcu.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.edit(xcu);
             } else {
-                setId(XincoDBManager.getNewID("xincoCore_user"));
                 ts = new Timestamp(System.currentTimeMillis());
-                com.bluecubs.xinco.core.server.persistence.XincoCoreUser xcu =
-                        new com.bluecubs.xinco.core.server.persistence.XincoCoreUser(getId(),
+                xcu = new com.bluecubs.xinco.core.server.persistence.XincoCoreUser(getId(),
                         getUsername().replaceAll("'", "\\\\'"), getUserpassword(), getName().replaceAll("'", "\\\\'"),
                         getFirstname().replaceAll("'", "\\\\'"), getEmail().replaceAll("'", "\\\\'"),
                         getStatusNumber(), getAttempts(), getLastModified());
@@ -383,6 +381,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
             if (isWriteGroups()) {
                 writeXincoCoreGroups();
             }
+            setId(xcu.getId());
         } catch (Exception e) {
             Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
             throw new XincoException();
@@ -446,7 +445,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 //Now check the aging
                 XincoCoreUserT user = (XincoCoreUserT) o;
                 long diff = System.currentTimeMillis() - user.getLastModified().getTime();
-                if (diff / (1000 * 60 * 60 * 24) > Integer.parseInt(settings.getString("password.unusable_period"))) {
+                if (diff / (1000 * 60 * 60 * 24) > XincoSettingServer.getSetting("password.unusable_period").getIntValue()) {
                     return false;
                 }
             }
@@ -464,8 +463,11 @@ public final class XincoCoreUserServer extends XincoCoreUser {
 
     public static boolean validCredentials(String username, String password) {
         try {
-            new XincoCoreUserServer(username, password);
-            return true;
+            parameters.clear();
+            parameters.put("username", username);
+            parameters.put("userpassword", password);
+            return !XincoDBManager.createdQuery("SELECT x FROM XincoCoreUser x "
+                    + "WHERE x.username = :username and x.userpassword = :userpassword",parameters).isEmpty();
         } catch (Exception e) {
             Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
             return false;

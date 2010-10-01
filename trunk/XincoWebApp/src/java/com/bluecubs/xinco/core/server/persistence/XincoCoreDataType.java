@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @EntityListeners(AuditedEntityListener.class)
 @NamedQueries({@NamedQuery(name = "XincoCoreDataType.findAll", query = "SELECT x FROM XincoCoreDataType x"), @NamedQuery(name = "XincoCoreDataType.findById", query = "SELECT x FROM XincoCoreDataType x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreDataType.findByDesignation", query = "SELECT x FROM XincoCoreDataType x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreDataType.findByDescription", query = "SELECT x FROM XincoCoreDataType x WHERE x.description = :description")})
 public class XincoCoreDataType extends XincoAuditedObject implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreDataTypeId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreDataType")
     private Collection<XincoCoreData> xincoCoreDataCollection;
     private static final long serialVersionUID = 1L;
     @Id
@@ -47,7 +47,7 @@ public class XincoCoreDataType extends XincoAuditedObject implements Serializabl
     private String description;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreDataType", fetch = FetchType.LAZY)
     private List<XincoCoreDataTypeAttribute> xincoCoreDataTypeAttributeList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreDataTypeId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreDataType", fetch = FetchType.LAZY)
     private List<XincoCoreData> xincoCoreDataList;
 
     public XincoCoreDataType() {
@@ -112,7 +112,7 @@ public class XincoCoreDataType extends XincoAuditedObject implements Serializabl
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        
         if (!(object instanceof XincoCoreDataType)) {
             return false;
         }

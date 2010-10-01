@@ -36,7 +36,7 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLanguageJpaController;
-import com.bluecubs.xinco.server.service.XincoCoreLanguage;
+import com.bluecubs.xinco.core.server.service.XincoCoreLanguage;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
@@ -88,8 +88,9 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     public int write2DB() throws XincoException {
         try {
             XincoCoreLanguageJpaController controller = new XincoCoreLanguageJpaController(XincoDBManager.getEntityManagerFactory());
+            com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage xcl=null;
             if (getId() > 0) {
-                com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage xcl = controller.findXincoCoreLanguage(getId());
+                xcl = controller.findXincoCoreLanguage(getId());
                 xcl.setSign(getSign().replaceAll("'", "\\\\'"));
                 xcl.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
                 xcl.setModificationReason("audit.language.change");
@@ -97,9 +98,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
                 xcl.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.edit(xcl);
             } else {
-                setId(XincoDBManager.getNewID("xinco_core_language"));
-                com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage xcl =
-                        new com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage(getId());
+                xcl = new com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage(getId());
                 xcl.setSign(getSign().replaceAll("'", "\\\\'"));
                 xcl.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
                 xcl.setModificationReason("audit.general.create");

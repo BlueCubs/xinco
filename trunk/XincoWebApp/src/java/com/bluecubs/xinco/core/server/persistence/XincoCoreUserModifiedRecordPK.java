@@ -9,6 +9,9 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.TableGenerator;
 
 /**
  *
@@ -21,13 +24,19 @@ public class XincoCoreUserModifiedRecordPK implements Serializable {
     private int id;
     @Basic(optional = false)
     @Column(name = "record_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoModRecordGen")
+    @TableGenerator(name = "XincoModRecordGen", table = "xinco_id",
+    pkColumnName = "tablename",
+    valueColumnName = "last_id",
+    pkColumnValue = "id",
+    allocationSize = 1,
+    initialValue=1000)
     private int recordId;
 
     public XincoCoreUserModifiedRecordPK() {
     }
 
-    public XincoCoreUserModifiedRecordPK(int id, int recordId) {
-        this.id = id;
+    public XincoCoreUserModifiedRecordPK(int recordId) {
         this.recordId = recordId;
     }
 
@@ -57,7 +66,7 @@ public class XincoCoreUserModifiedRecordPK implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        
         if (!(object instanceof XincoCoreUserModifiedRecordPK)) {
             return false;
         }

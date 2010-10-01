@@ -53,8 +53,8 @@ public class XincoCoreUserModifiedRecord implements Serializable {
         this.modTime = modTime;
     }
 
-    public XincoCoreUserModifiedRecord(int id, int recordId) {
-        this.xincoCoreUserModifiedRecordPK = new XincoCoreUserModifiedRecordPK(id, recordId);
+    public XincoCoreUserModifiedRecord(int id) {
+        this.xincoCoreUserModifiedRecordPK = new XincoCoreUserModifiedRecordPK(id);
     }
 
     public XincoCoreUserModifiedRecordPK getXincoCoreUserModifiedRecordPK() {
@@ -98,7 +98,7 @@ public class XincoCoreUserModifiedRecord implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        
         if (!(object instanceof XincoCoreUserModifiedRecord)) {
             return false;
         }
