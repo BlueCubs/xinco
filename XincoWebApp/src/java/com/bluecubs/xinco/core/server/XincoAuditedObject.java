@@ -8,6 +8,7 @@ import java.sql.Timestamp;
  */
 public class XincoAuditedObject implements AuditedObject {
 
+    private boolean auditable = true;
     private String reason;
     //Default to Admin
     private int modifierId=1;
@@ -35,5 +36,19 @@ public class XincoAuditedObject implements AuditedObject {
 
     public void setModificationTime(Timestamp d) {
         this.modDate=d;
+    }
+
+    /**
+     * @return the auditable
+     */
+    public boolean isAuditable() {
+        return auditable;
+    }
+
+    /**
+     * @param auditable the auditable to set
+     */
+    public void setAuditable(boolean auditable) {
+        this.auditable = auditable;
     }
 }

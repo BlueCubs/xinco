@@ -81,8 +81,8 @@ public class XincoCoreUserJpaController implements Serializable {
             xincoCoreUser.setXincoCoreUserModifiedRecordList(attachedXincoCoreUserModifiedRecordList);
             em.persist(xincoCoreUser);
             for (XincoCoreAce xincoCoreAceListXincoCoreAce : xincoCoreUser.getXincoCoreAceList()) {
-                XincoCoreUser oldXincoCoreUserIdOfXincoCoreAceListXincoCoreAce = xincoCoreAceListXincoCoreAce.getXincoCoreUserId();
-                xincoCoreAceListXincoCoreAce.setXincoCoreUserId(xincoCoreUser);
+                XincoCoreUser oldXincoCoreUserIdOfXincoCoreAceListXincoCoreAce = xincoCoreAceListXincoCoreAce.getXincoCoreUser();
+                xincoCoreAceListXincoCoreAce.setXincoCoreUser(xincoCoreUser);
                 xincoCoreAceListXincoCoreAce = em.merge(xincoCoreAceListXincoCoreAce);
                 if (oldXincoCoreUserIdOfXincoCoreAceListXincoCoreAce != null) {
                     oldXincoCoreUserIdOfXincoCoreAceListXincoCoreAce.getXincoCoreAceList().remove(xincoCoreAceListXincoCoreAce);
@@ -90,8 +90,8 @@ public class XincoCoreUserJpaController implements Serializable {
                 }
             }
             for (XincoCoreLog xincoCoreLogListXincoCoreLog : xincoCoreUser.getXincoCoreLogList()) {
-                XincoCoreUser oldXincoCoreUserIdOfXincoCoreLogListXincoCoreLog = xincoCoreLogListXincoCoreLog.getXincoCoreUserId();
-                xincoCoreLogListXincoCoreLog.setXincoCoreUserId(xincoCoreUser);
+                XincoCoreUser oldXincoCoreUserIdOfXincoCoreLogListXincoCoreLog = xincoCoreLogListXincoCoreLog.getXincoCoreUser();
+                xincoCoreLogListXincoCoreLog.setXincoCoreUser(xincoCoreUser);
                 xincoCoreLogListXincoCoreLog = em.merge(xincoCoreLogListXincoCoreLog);
                 if (oldXincoCoreUserIdOfXincoCoreLogListXincoCoreLog != null) {
                     oldXincoCoreUserIdOfXincoCoreLogListXincoCoreLog.getXincoCoreLogList().remove(xincoCoreLogListXincoCoreLog);
@@ -202,14 +202,14 @@ public class XincoCoreUserJpaController implements Serializable {
             xincoCoreUser = em.merge(xincoCoreUser);
             for (XincoCoreAce xincoCoreAceListOldXincoCoreAce : xincoCoreAceListOld) {
                 if (!xincoCoreAceListNew.contains(xincoCoreAceListOldXincoCoreAce)) {
-                    xincoCoreAceListOldXincoCoreAce.setXincoCoreUserId(null);
+                    xincoCoreAceListOldXincoCoreAce.setXincoCoreUser(null);
                     xincoCoreAceListOldXincoCoreAce = em.merge(xincoCoreAceListOldXincoCoreAce);
                 }
             }
             for (XincoCoreAce xincoCoreAceListNewXincoCoreAce : xincoCoreAceListNew) {
                 if (!xincoCoreAceListOld.contains(xincoCoreAceListNewXincoCoreAce)) {
-                    XincoCoreUser oldXincoCoreUserIdOfXincoCoreAceListNewXincoCoreAce = xincoCoreAceListNewXincoCoreAce.getXincoCoreUserId();
-                    xincoCoreAceListNewXincoCoreAce.setXincoCoreUserId(xincoCoreUser);
+                    XincoCoreUser oldXincoCoreUserIdOfXincoCoreAceListNewXincoCoreAce = xincoCoreAceListNewXincoCoreAce.getXincoCoreUser();
+                    xincoCoreAceListNewXincoCoreAce.setXincoCoreUser(xincoCoreUser);
                     xincoCoreAceListNewXincoCoreAce = em.merge(xincoCoreAceListNewXincoCoreAce);
                     if (oldXincoCoreUserIdOfXincoCoreAceListNewXincoCoreAce != null && !oldXincoCoreUserIdOfXincoCoreAceListNewXincoCoreAce.equals(xincoCoreUser)) {
                         oldXincoCoreUserIdOfXincoCoreAceListNewXincoCoreAce.getXincoCoreAceList().remove(xincoCoreAceListNewXincoCoreAce);
@@ -219,8 +219,8 @@ public class XincoCoreUserJpaController implements Serializable {
             }
             for (XincoCoreLog xincoCoreLogListNewXincoCoreLog : xincoCoreLogListNew) {
                 if (!xincoCoreLogListOld.contains(xincoCoreLogListNewXincoCoreLog)) {
-                    XincoCoreUser oldXincoCoreUserIdOfXincoCoreLogListNewXincoCoreLog = xincoCoreLogListNewXincoCoreLog.getXincoCoreUserId();
-                    xincoCoreLogListNewXincoCoreLog.setXincoCoreUserId(xincoCoreUser);
+                    XincoCoreUser oldXincoCoreUserIdOfXincoCoreLogListNewXincoCoreLog = xincoCoreLogListNewXincoCoreLog.getXincoCoreUser();
+                    xincoCoreLogListNewXincoCoreLog.setXincoCoreUser(xincoCoreUser);
                     xincoCoreLogListNewXincoCoreLog = em.merge(xincoCoreLogListNewXincoCoreLog);
                     if (oldXincoCoreUserIdOfXincoCoreLogListNewXincoCoreLog != null && !oldXincoCoreUserIdOfXincoCoreLogListNewXincoCoreLog.equals(xincoCoreUser)) {
                         oldXincoCoreUserIdOfXincoCoreLogListNewXincoCoreLog.getXincoCoreLogList().remove(xincoCoreLogListNewXincoCoreLog);
@@ -306,7 +306,7 @@ public class XincoCoreUserJpaController implements Serializable {
             }
             List<XincoCoreAce> xincoCoreAceList = xincoCoreUser.getXincoCoreAceList();
             for (XincoCoreAce xincoCoreAceListXincoCoreAce : xincoCoreAceList) {
-                xincoCoreAceListXincoCoreAce.setXincoCoreUserId(null);
+                xincoCoreAceListXincoCoreAce.setXincoCoreUser(null);
                 xincoCoreAceListXincoCoreAce = em.merge(xincoCoreAceListXincoCoreAce);
             }
             em.remove(xincoCoreUser);

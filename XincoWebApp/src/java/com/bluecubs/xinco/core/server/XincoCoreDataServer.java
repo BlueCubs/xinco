@@ -35,6 +35,7 @@
  */
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.OPCode;
 import java.util.ArrayList;
 import java.io.File;
 import com.bluecubs.xinco.core.server.persistence.XincoAddAttributePK;
@@ -42,14 +43,16 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJp
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreAceJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLogJpaController;
-import com.bluecubs.xinco.server.service.XincoAddAttribute;
-import com.bluecubs.xinco.server.service.XincoCoreData;
-import com.bluecubs.xinco.server.service.XincoCoreLog;
+import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
+import com.bluecubs.xinco.core.server.service.XincoCoreData;
+import com.bluecubs.xinco.core.server.service.XincoCoreLog;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class XincoCoreDataServer extends XincoCoreData {
 
@@ -65,9 +68,9 @@ public class XincoCoreDataServer extends XincoCoreData {
             //throw exception if no result found
             if (xcd != null) {
                 setId(xcd.getId());
-                setXincoCoreNodeId(xcd.getXincoCoreNodeId().getId());
-                setXincoCoreLanguage(new XincoCoreLanguageServer(xcd.getXincoCoreLanguageId().getId()));
-                setXincoCoreDataType(new XincoCoreDataTypeServer(xcd.getXincoCoreDataTypeId().getId()));
+                setXincoCoreNodeId(xcd.getXincoCoreNode().getId());
+                setXincoCoreLanguage(new XincoCoreLanguageServer(xcd.getXincoCoreLanguage().getId()));
+                setXincoCoreDataType(new XincoCoreDataTypeServer(xcd.getXincoCoreDataType().getId()));
                 //load logs
                 getXincoCoreLogs().clear();
                 getXincoCoreLogs().addAll(XincoCoreLogServer.getXincoCoreLogs(xcd.getId()));
@@ -109,9 +112,9 @@ public class XincoCoreDataServer extends XincoCoreData {
     public XincoCoreDataServer(com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd) throws XincoException {
         try {
             setId(xcd.getId());
-            setXincoCoreNodeId(xcd.getXincoCoreNodeId().getId());
-            setXincoCoreLanguage(new XincoCoreLanguageServer(xcd.getXincoCoreLanguageId().getId()));
-            setXincoCoreDataType(new XincoCoreDataTypeServer(xcd.getXincoCoreDataTypeId().getId()));
+            setXincoCoreNodeId(xcd.getXincoCoreNode().getId());
+            setXincoCoreLanguage(new XincoCoreLanguageServer(xcd.getXincoCoreLanguage().getId()));
+            setXincoCoreDataType(new XincoCoreDataTypeServer(xcd.getXincoCoreDataType().getId()));
             //load logs
             getXincoCoreLogs().clear();
             getXincoCoreLogs().addAll(XincoCoreLogServer.getXincoCoreLogs(xcd.getId()));
@@ -166,13 +169,13 @@ public class XincoCoreDataServer extends XincoCoreData {
                 com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd = controller.findXincoCoreData(getId());
                 parameters.clear();
                 parameters.put("id", getXincoCoreNodeId());
-                xcd.setXincoCoreNodeId((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) XincoDBManager.namedQuery("XincoCoreNode.findById", parameters).get(0));
+                xcd.setXincoCoreNode((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) XincoDBManager.namedQuery("XincoCoreNode.findById", parameters).get(0));
                 parameters.clear();
                 parameters.put("id", getXincoCoreDataType().getId());
-                xcd.setXincoCoreLanguageId((com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage) XincoDBManager.namedQuery("XincoCoreLanguage.findById", parameters).get(0));
+                xcd.setXincoCoreLanguage((com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage) XincoDBManager.namedQuery("XincoCoreLanguage.findById", parameters).get(0));
                 parameters.clear();
                 parameters.put("id", getXincoCoreLanguage().getId());
-                xcd.setXincoCoreDataTypeId((com.bluecubs.xinco.core.server.persistence.XincoCoreDataType) XincoDBManager.namedQuery("XincoCoreDataType.findById", parameters).get(0));
+                xcd.setXincoCoreDataType((com.bluecubs.xinco.core.server.persistence.XincoCoreDataType) XincoDBManager.namedQuery("XincoCoreDataType.findById", parameters).get(0));
                 xcd.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
                 xcd.setStatusNumber(getStatusNumber());
                 xcd.setModificationReason("audit.data.change");
@@ -180,24 +183,24 @@ public class XincoCoreDataServer extends XincoCoreData {
                 xcd.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.edit(xcd);
             } else {
-                setId(XincoDBManager.getNewID("xincoCoreData"));
                 com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd = new com.bluecubs.xinco.core.server.persistence.XincoCoreData();
                 xcd.setId(getId());
                 parameters.clear();
                 parameters.put("id", this.getXincoCoreNodeId());
-                xcd.setXincoCoreNodeId((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) XincoDBManager.namedQuery("XincoCoreNode.findById", parameters).get(0));
+                xcd.setXincoCoreNode((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) XincoDBManager.namedQuery("XincoCoreNode.findById", parameters).get(0));
                 parameters.clear();
                 parameters.put("id", getXincoCoreDataType().getId());
-                xcd.setXincoCoreLanguageId((com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage) XincoDBManager.namedQuery("XincoCoreLanguage.findById", parameters).get(0));
+                xcd.setXincoCoreLanguage((com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage) XincoDBManager.namedQuery("XincoCoreLanguage.findById", parameters).get(0));
                 parameters.clear();
                 parameters.put("id", getXincoCoreLanguage().getId());
-                xcd.setXincoCoreDataTypeId((com.bluecubs.xinco.core.server.persistence.XincoCoreDataType) XincoDBManager.namedQuery("XincoCoreDataType.findById", parameters).get(0));
+                xcd.setXincoCoreDataType((com.bluecubs.xinco.core.server.persistence.XincoCoreDataType) XincoDBManager.namedQuery("XincoCoreDataType.findById", parameters).get(0));
                 xcd.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
                 xcd.setStatusNumber(getStatusNumber());
                 xcd.setModificationReason("audit.general.create");
                 xcd.setModifierId(getChangerID());
                 xcd.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.create(xcd);
+                setId(xcd.getId());
             }
             //Update add attributes
             for (i = 0; i < getXincoAddAttributes().size(); i++) {
@@ -217,7 +220,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                 new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).edit(xaa);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, e);
             throw new XincoException(e.getMessage());
         }
         return getId();
@@ -309,7 +312,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, e);
             data.clear();
         }
         return data;

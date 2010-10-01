@@ -15,6 +15,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,6 +24,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -45,6 +48,13 @@ public class XincoCoreData extends XincoAuditedObject implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreDataGen")
+    @TableGenerator(name = "XincoCoreDataGen", table = "xinco_id",
+    pkColumnName = "tablename",
+    valueColumnName = "last_id",
+    pkColumnValue = "id",
+    allocationSize = 1,
+    initialValue=1000)
     @Column(name = "id", nullable = false)
     private Integer id;
     @Basic(optional = false)
@@ -53,19 +63,19 @@ public class XincoCoreData extends XincoAuditedObject implements Serializable {
     @Basic(optional = false)
     @Column(name = "status_number", nullable = false)
     private int statusNumber;
-    @OneToMany(mappedBy = "xincoCoreDataId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "xincoCoreData", fetch = FetchType.LAZY)
     private List<XincoCoreAce> xincoCoreAceList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreDataId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreData", fetch = FetchType.LAZY)
     private List<XincoCoreLog> xincoCoreLogList;
     @JoinColumn(name = "xinco_core_data_type_id", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private XincoCoreDataType xincoCoreDataTypeId;
+    private XincoCoreDataType xincoCoreDataType;
     @JoinColumn(name = "xinco_core_language_id", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private XincoCoreLanguage xincoCoreLanguageId;
+    private XincoCoreLanguage xincoCoreLanguage;
     @JoinColumn(name = "xinco_core_node_id", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private XincoCoreNode xincoCoreNodeId;
+    private XincoCoreNode xincoCoreNode;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreData", fetch = FetchType.LAZY)
     private List<XincoAddAttribute> xincoAddAttributeList;
 
@@ -122,28 +132,28 @@ public class XincoCoreData extends XincoAuditedObject implements Serializable {
         this.xincoCoreLogList = xincoCoreLogList;
     }
 
-    public XincoCoreDataType getXincoCoreDataTypeId() {
-        return xincoCoreDataTypeId;
+    public XincoCoreDataType getXincoCoreDataType() {
+        return xincoCoreDataType;
     }
 
-    public void setXincoCoreDataTypeId(XincoCoreDataType xincoCoreDataTypeId) {
-        this.xincoCoreDataTypeId = xincoCoreDataTypeId;
+    public void setXincoCoreDataType(XincoCoreDataType xincoCoreDataTypeId) {
+        this.xincoCoreDataType = xincoCoreDataTypeId;
     }
 
-    public XincoCoreLanguage getXincoCoreLanguageId() {
-        return xincoCoreLanguageId;
+    public XincoCoreLanguage getXincoCoreLanguage() {
+        return xincoCoreLanguage;
     }
 
-    public void setXincoCoreLanguageId(XincoCoreLanguage xincoCoreLanguageId) {
-        this.xincoCoreLanguageId = xincoCoreLanguageId;
+    public void setXincoCoreLanguage(XincoCoreLanguage xincoCoreLanguageId) {
+        this.xincoCoreLanguage = xincoCoreLanguageId;
     }
 
-    public XincoCoreNode getXincoCoreNodeId() {
-        return xincoCoreNodeId;
+    public XincoCoreNode getXincoCoreNode() {
+        return xincoCoreNode;
     }
 
-    public void setXincoCoreNodeId(XincoCoreNode xincoCoreNodeId) {
-        this.xincoCoreNodeId = xincoCoreNodeId;
+    public void setXincoCoreNode(XincoCoreNode xincoCoreNodeId) {
+        this.xincoCoreNode = xincoCoreNodeId;
     }
 
     public List<XincoAddAttribute> getXincoAddAttributeList() {
@@ -163,7 +173,7 @@ public class XincoCoreData extends XincoAuditedObject implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        
         if (!(object instanceof XincoCoreData)) {
             return false;
         }

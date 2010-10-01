@@ -15,11 +15,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 import javax.persistence.UniqueConstraint;
 
 /**
@@ -34,6 +37,13 @@ public class XincoCoreGroup extends XincoAuditedObject implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreGroupGen")
+    @TableGenerator(name = "XincoCoreGroupGen", table = "xinco_id",
+    pkColumnName = "tablename",
+    valueColumnName = "last_id",
+    pkColumnValue = "id",
+    allocationSize = 1,
+    initialValue=1000)
     @Column(name = "id", nullable = false)
     private Integer id;
     @Basic(optional = false)
@@ -42,7 +52,7 @@ public class XincoCoreGroup extends XincoAuditedObject implements Serializable {
     @Basic(optional = false)
     @Column(name = "status_number", nullable = false)
     private int statusNumber;
-    @OneToMany(mappedBy = "xincoCoreGroupId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "xincoCoreGroup", fetch = FetchType.LAZY)
     private List<XincoCoreAce> xincoCoreAceList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreGroup", fetch = FetchType.LAZY)
     private List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList;
@@ -109,7 +119,7 @@ public class XincoCoreGroup extends XincoAuditedObject implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        
         if (!(object instanceof XincoCoreGroup)) {
             return false;
         }

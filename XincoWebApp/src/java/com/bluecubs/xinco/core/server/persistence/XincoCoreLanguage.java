@@ -16,11 +16,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -32,13 +35,20 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "xinco_core_language")
 @NamedQueries({@NamedQuery(name = "XincoCoreLanguage.findAll", query = "SELECT x FROM XincoCoreLanguage x"), @NamedQuery(name = "XincoCoreLanguage.findById", query = "SELECT x FROM XincoCoreLanguage x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreLanguage.findBySign", query = "SELECT x FROM XincoCoreLanguage x WHERE x.sign = :sign"), @NamedQuery(name = "XincoCoreLanguage.findByDesignation", query = "SELECT x FROM XincoCoreLanguage x WHERE x.designation = :designation")})
 public class XincoCoreLanguage extends XincoAuditedObject implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguageId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguage")
     private Collection<XincoCoreNode> xincoCoreNodeCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguageId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguage")
     private Collection<XincoCoreData> xincoCoreDataCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreLanguageGen")
+    @TableGenerator(name = "XincoCoreLanguageGen", table = "xinco_id",
+    pkColumnName = "tablename",
+    valueColumnName = "last_id",
+    pkColumnValue = "id",
+    allocationSize = 1,
+    initialValue=1000)
     @Column(name = "id", nullable = false)
     private Integer id;
     @Basic(optional = false)
@@ -47,9 +57,9 @@ public class XincoCoreLanguage extends XincoAuditedObject implements Serializabl
     @Basic(optional = false)
     @Column(name = "designation", nullable = false, length = 255)
     private String designation;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguageId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguage", fetch = FetchType.LAZY)
     private List<XincoCoreNode> xincoCoreNodeList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguageId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguage", fetch = FetchType.LAZY)
     private List<XincoCoreData> xincoCoreDataList;
 
     public XincoCoreLanguage() {
@@ -114,7 +124,7 @@ public class XincoCoreLanguage extends XincoAuditedObject implements Serializabl
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        
         if (!(object instanceof XincoCoreLanguage)) {
             return false;
         }

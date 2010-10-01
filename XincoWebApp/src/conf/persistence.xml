@@ -125,9 +125,9 @@
     <properties>
       <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.DefaultSessionLog"/>
       <property name="eclipselink.logging.level" value="SEVERE"/>
-      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/xinco-test"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:h2:file:data/xinco-test;MODE=MySQL"/>
       <property name="javax.persistence.jdbc.password" value=""/>
-      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
       <property name="javax.persistence.jdbc.user" value="root"/>
       <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
     </properties>

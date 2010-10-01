@@ -15,11 +15,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
@@ -58,6 +61,13 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreUserGen")
+    @TableGenerator(name = "XincoCoreUserGen", table = "xinco_id",
+    pkColumnName = "tablename",
+    valueColumnName = "last_id",
+    pkColumnValue = "id",
+    allocationSize = 1,
+    initialValue=1000)
     @Column(name = "id", nullable = false)
     private Integer id;
     @Basic(optional = false)
@@ -85,9 +95,9 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
     @Column(name = "last_modified", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date lastModified;
-    @OneToMany(mappedBy = "xincoCoreUserId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "xincoCoreUser", fetch = FetchType.LAZY)
     private List<XincoCoreAce> xincoCoreAceList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreUserId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreUser", fetch = FetchType.LAZY)
     private List<XincoCoreLog> xincoCoreLogList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreUser", fetch = FetchType.LAZY)
     private List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList1;
@@ -226,7 +236,7 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        
         if (!(object instanceof XincoCoreUser)) {
             return false;
         }

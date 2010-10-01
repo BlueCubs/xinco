@@ -62,7 +62,7 @@ import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUser;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.index.XincoIndexer;
-import com.bluecubs.xinco.server.service.XincoCoreGroup;
+import com.bluecubs.xinco.core.server.service.XincoCoreGroup;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -1153,8 +1153,12 @@ public class XincoAdminServlet extends HttpServlet {
                 for (i = 0; i < alldatatypes.size(); i++) {
                     out.println("<tr>");
                     out.println("<td class=\"text\">" + ((XincoCoreDataTypeServer) alldatatypes.get(i)).getId() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreDataTypeServer) alldatatypes.get(i)).getDesignation() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreDataTypeServer) alldatatypes.get(i)).getDescription() + "</td>");
+                    out.println("<td class=\"text\">" + (rb.containsKey(((XincoCoreDataTypeServer) alldatatypes.get(i)).getDesignation())?
+                        rb.getString(((XincoCoreDataTypeServer) alldatatypes.get(i)).getDesignation()):
+                        ((XincoCoreDataTypeServer) alldatatypes.get(i)).getDesignation())+ "</td>");
+                    out.println("<td class=\"text\">" + (rb.containsKey(((XincoCoreDataTypeServer) alldatatypes.get(i)).getDescription())?
+                        rb.getString(((XincoCoreDataTypeServer) alldatatypes.get(i)).getDescription()):
+                        ((XincoCoreDataTypeServer) alldatatypes.get(i)).getDescription()) + "</td>");
                     out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminDataTypeSelect="
                             + ((XincoCoreDataTypeServer) alldatatypes.get(i)).getId()
                             + "&list=" + request.getParameter("list") + "\" class=\"link\">[" + rb.getString("general.edit") + "]</a></td>");

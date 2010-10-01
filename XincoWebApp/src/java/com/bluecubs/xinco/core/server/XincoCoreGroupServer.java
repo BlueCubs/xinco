@@ -38,7 +38,7 @@ package com.bluecubs.xinco.core.server;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreGroupJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.server.service.XincoCoreGroup;
+import com.bluecubs.xinco.core.server.service.XincoCoreGroup;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
@@ -90,9 +90,9 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
     public int write2DB() throws XincoException {
         try {
             XincoCoreGroupJpaController controller = new XincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory());
+            com.bluecubs.xinco.core.server.persistence.XincoCoreGroup xcg =null;
             if (getId() > 0) {
-                com.bluecubs.xinco.core.server.persistence.XincoCoreGroup xcg =
-                        controller.findXincoCoreGroup(getId());
+                xcg = controller.findXincoCoreGroup(getId());
                 xcg.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
                 xcg.setStatusNumber(getStatusNumber());
                 xcg.setModificationReason("audit.general.modified");
@@ -100,9 +100,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
                 xcg.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.edit(xcg);
             } else {
-                setId(XincoDBManager.getNewID("xinco_core_group"));
-                com.bluecubs.xinco.core.server.persistence.XincoCoreGroup xcg =
-                        new com.bluecubs.xinco.core.server.persistence.XincoCoreGroup(getId());
+                xcg = new com.bluecubs.xinco.core.server.persistence.XincoCoreGroup(getId());
                 xcg.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
                 xcg.setStatusNumber(getStatusNumber());
                 xcg.setModificationReason("audit.general.create");
@@ -110,6 +108,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
                 xcg.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.create(xcg);
             }
+            setId(xcg.getId());
         } catch (Exception e) {
             throw new XincoException(e.getMessage());
         }
@@ -120,13 +119,14 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
         try {
             new XincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).destroy(group.getId());
             return 0;
+        } catch (XincoException ex) {
+            Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalOrphanException ex) {
             Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.SEVERE, null, ex);
-            return -1;
         } catch (NonexistentEntityException ex) {
             Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.SEVERE, null, ex);
-            return -1;
         }
+        return -1;
     }
 
     //create complete list of groups

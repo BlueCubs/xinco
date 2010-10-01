@@ -35,13 +35,13 @@
  */
 package com.bluecubs.xinco.archive;
 
-import com.bluecubs.xinco.core.server.OPCode;
+import com.bluecubs.xinco.core.OPCode;
 import com.bluecubs.xinco.core.server.XincoException;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreLogServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
-import com.bluecubs.xinco.server.service.XincoAddAttribute;
+import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -94,12 +94,12 @@ public class XincoArchiver {
         (new File(ArchiveBaseDir + ArchiveFileDir)).mkdirs();
         //copy file + revisions
         //build file list
-        OrgFileNames.add(new String("" + xdataTemp.getId()));
+        OrgFileNames.add(("" + xdataTemp.getId()));
         OrgFileIDs.add(new Integer(xdataTemp.getId()));
         for (i = 0; i < ((ArrayList) xdataTemp.getXincoCoreLogs()).size(); i++) {
             xlogTemp = ((XincoCoreLogServer) ((ArrayList) xdataTemp.getXincoCoreLogs()).get(i));
             if ((xlogTemp.getOpCode() == 1) || (xlogTemp.getOpCode() == 5)) {
-                OrgFileNames.add(new String("" + xdataTemp.getId() + "-" + xlogTemp.getId()));
+                OrgFileNames.add(("" + xdataTemp.getId() + "-" + xlogTemp.getId()));
                 OrgFileIDs.add(new Integer(xdataTemp.getId()));
             }
         }

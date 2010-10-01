@@ -80,8 +80,8 @@ public class XincoCoreLanguageJpaController implements Serializable {
             xincoCoreLanguage.setXincoCoreDataCollection(attachedXincoCoreDataCollection);
             em.persist(xincoCoreLanguage);
             for (XincoCoreNode xincoCoreNodeListXincoCoreNode : xincoCoreLanguage.getXincoCoreNodeList()) {
-                XincoCoreLanguage oldXincoCoreLanguageIdOfXincoCoreNodeListXincoCoreNode = xincoCoreNodeListXincoCoreNode.getXincoCoreLanguageId();
-                xincoCoreNodeListXincoCoreNode.setXincoCoreLanguageId(xincoCoreLanguage);
+                XincoCoreLanguage oldXincoCoreLanguageIdOfXincoCoreNodeListXincoCoreNode = xincoCoreNodeListXincoCoreNode.getXincoCoreLanguage();
+                xincoCoreNodeListXincoCoreNode.setXincoCoreLanguage(xincoCoreLanguage);
                 xincoCoreNodeListXincoCoreNode = em.merge(xincoCoreNodeListXincoCoreNode);
                 if (oldXincoCoreLanguageIdOfXincoCoreNodeListXincoCoreNode != null) {
                     oldXincoCoreLanguageIdOfXincoCoreNodeListXincoCoreNode.getXincoCoreNodeList().remove(xincoCoreNodeListXincoCoreNode);
@@ -89,8 +89,8 @@ public class XincoCoreLanguageJpaController implements Serializable {
                 }
             }
             for (XincoCoreData xincoCoreDataListXincoCoreData : xincoCoreLanguage.getXincoCoreDataList()) {
-                XincoCoreLanguage oldXincoCoreLanguageIdOfXincoCoreDataListXincoCoreData = xincoCoreDataListXincoCoreData.getXincoCoreLanguageId();
-                xincoCoreDataListXincoCoreData.setXincoCoreLanguageId(xincoCoreLanguage);
+                XincoCoreLanguage oldXincoCoreLanguageIdOfXincoCoreDataListXincoCoreData = xincoCoreDataListXincoCoreData.getXincoCoreLanguage();
+                xincoCoreDataListXincoCoreData.setXincoCoreLanguage(xincoCoreLanguage);
                 xincoCoreDataListXincoCoreData = em.merge(xincoCoreDataListXincoCoreData);
                 if (oldXincoCoreLanguageIdOfXincoCoreDataListXincoCoreData != null) {
                     oldXincoCoreLanguageIdOfXincoCoreDataListXincoCoreData.getXincoCoreDataList().remove(xincoCoreDataListXincoCoreData);
@@ -98,8 +98,8 @@ public class XincoCoreLanguageJpaController implements Serializable {
                 }
             }
             for (XincoCoreNode xincoCoreNodeCollectionXincoCoreNode : xincoCoreLanguage.getXincoCoreNodeCollection()) {
-                XincoCoreLanguage oldXincoCoreLanguageIdOfXincoCoreNodeCollectionXincoCoreNode = xincoCoreNodeCollectionXincoCoreNode.getXincoCoreLanguageId();
-                xincoCoreNodeCollectionXincoCoreNode.setXincoCoreLanguageId(xincoCoreLanguage);
+                XincoCoreLanguage oldXincoCoreLanguageIdOfXincoCoreNodeCollectionXincoCoreNode = xincoCoreNodeCollectionXincoCoreNode.getXincoCoreLanguage();
+                xincoCoreNodeCollectionXincoCoreNode.setXincoCoreLanguage(xincoCoreLanguage);
                 xincoCoreNodeCollectionXincoCoreNode = em.merge(xincoCoreNodeCollectionXincoCoreNode);
                 if (oldXincoCoreLanguageIdOfXincoCoreNodeCollectionXincoCoreNode != null) {
                     oldXincoCoreLanguageIdOfXincoCoreNodeCollectionXincoCoreNode.getXincoCoreNodeCollection().remove(xincoCoreNodeCollectionXincoCoreNode);
@@ -107,8 +107,8 @@ public class XincoCoreLanguageJpaController implements Serializable {
                 }
             }
             for (XincoCoreData xincoCoreDataCollectionXincoCoreData : xincoCoreLanguage.getXincoCoreDataCollection()) {
-                XincoCoreLanguage oldXincoCoreLanguageIdOfXincoCoreDataCollectionXincoCoreData = xincoCoreDataCollectionXincoCoreData.getXincoCoreLanguageId();
-                xincoCoreDataCollectionXincoCoreData.setXincoCoreLanguageId(xincoCoreLanguage);
+                XincoCoreLanguage oldXincoCoreLanguageIdOfXincoCoreDataCollectionXincoCoreData = xincoCoreDataCollectionXincoCoreData.getXincoCoreLanguage();
+                xincoCoreDataCollectionXincoCoreData.setXincoCoreLanguage(xincoCoreLanguage);
                 xincoCoreDataCollectionXincoCoreData = em.merge(xincoCoreDataCollectionXincoCoreData);
                 if (oldXincoCoreLanguageIdOfXincoCoreDataCollectionXincoCoreData != null) {
                     oldXincoCoreLanguageIdOfXincoCoreDataCollectionXincoCoreData.getXincoCoreDataCollection().remove(xincoCoreDataCollectionXincoCoreData);
@@ -209,8 +209,8 @@ public class XincoCoreLanguageJpaController implements Serializable {
             xincoCoreLanguage = em.merge(xincoCoreLanguage);
             for (XincoCoreNode xincoCoreNodeListNewXincoCoreNode : xincoCoreNodeListNew) {
                 if (!xincoCoreNodeListOld.contains(xincoCoreNodeListNewXincoCoreNode)) {
-                    XincoCoreLanguage oldXincoCoreLanguageIdOfXincoCoreNodeListNewXincoCoreNode = xincoCoreNodeListNewXincoCoreNode.getXincoCoreLanguageId();
-                    xincoCoreNodeListNewXincoCoreNode.setXincoCoreLanguageId(xincoCoreLanguage);
+                    XincoCoreLanguage oldXincoCoreLanguageIdOfXincoCoreNodeListNewXincoCoreNode = xincoCoreNodeListNewXincoCoreNode.getXincoCoreLanguage();
+                    xincoCoreNodeListNewXincoCoreNode.setXincoCoreLanguage(xincoCoreLanguage);
                     xincoCoreNodeListNewXincoCoreNode = em.merge(xincoCoreNodeListNewXincoCoreNode);
                     if (oldXincoCoreLanguageIdOfXincoCoreNodeListNewXincoCoreNode != null && !oldXincoCoreLanguageIdOfXincoCoreNodeListNewXincoCoreNode.equals(xincoCoreLanguage)) {
                         oldXincoCoreLanguageIdOfXincoCoreNodeListNewXincoCoreNode.getXincoCoreNodeList().remove(xincoCoreNodeListNewXincoCoreNode);
@@ -220,8 +220,8 @@ public class XincoCoreLanguageJpaController implements Serializable {
             }
             for (XincoCoreData xincoCoreDataListNewXincoCoreData : xincoCoreDataListNew) {
                 if (!xincoCoreDataListOld.contains(xincoCoreDataListNewXincoCoreData)) {
-                    XincoCoreLanguage oldXincoCoreLanguageIdOfXincoCoreDataListNewXincoCoreData = xincoCoreDataListNewXincoCoreData.getXincoCoreLanguageId();
-                    xincoCoreDataListNewXincoCoreData.setXincoCoreLanguageId(xincoCoreLanguage);
+                    XincoCoreLanguage oldXincoCoreLanguageIdOfXincoCoreDataListNewXincoCoreData = xincoCoreDataListNewXincoCoreData.getXincoCoreLanguage();
+                    xincoCoreDataListNewXincoCoreData.setXincoCoreLanguage(xincoCoreLanguage);
                     xincoCoreDataListNewXincoCoreData = em.merge(xincoCoreDataListNewXincoCoreData);
                     if (oldXincoCoreLanguageIdOfXincoCoreDataListNewXincoCoreData != null && !oldXincoCoreLanguageIdOfXincoCoreDataListNewXincoCoreData.equals(xincoCoreLanguage)) {
                         oldXincoCoreLanguageIdOfXincoCoreDataListNewXincoCoreData.getXincoCoreDataList().remove(xincoCoreDataListNewXincoCoreData);
@@ -231,8 +231,8 @@ public class XincoCoreLanguageJpaController implements Serializable {
             }
             for (XincoCoreNode xincoCoreNodeCollectionNewXincoCoreNode : xincoCoreNodeCollectionNew) {
                 if (!xincoCoreNodeCollectionOld.contains(xincoCoreNodeCollectionNewXincoCoreNode)) {
-                    XincoCoreLanguage oldXincoCoreLanguageIdOfXincoCoreNodeCollectionNewXincoCoreNode = xincoCoreNodeCollectionNewXincoCoreNode.getXincoCoreLanguageId();
-                    xincoCoreNodeCollectionNewXincoCoreNode.setXincoCoreLanguageId(xincoCoreLanguage);
+                    XincoCoreLanguage oldXincoCoreLanguageIdOfXincoCoreNodeCollectionNewXincoCoreNode = xincoCoreNodeCollectionNewXincoCoreNode.getXincoCoreLanguage();
+                    xincoCoreNodeCollectionNewXincoCoreNode.setXincoCoreLanguage(xincoCoreLanguage);
                     xincoCoreNodeCollectionNewXincoCoreNode = em.merge(xincoCoreNodeCollectionNewXincoCoreNode);
                     if (oldXincoCoreLanguageIdOfXincoCoreNodeCollectionNewXincoCoreNode != null && !oldXincoCoreLanguageIdOfXincoCoreNodeCollectionNewXincoCoreNode.equals(xincoCoreLanguage)) {
                         oldXincoCoreLanguageIdOfXincoCoreNodeCollectionNewXincoCoreNode.getXincoCoreNodeCollection().remove(xincoCoreNodeCollectionNewXincoCoreNode);
@@ -242,8 +242,8 @@ public class XincoCoreLanguageJpaController implements Serializable {
             }
             for (XincoCoreData xincoCoreDataCollectionNewXincoCoreData : xincoCoreDataCollectionNew) {
                 if (!xincoCoreDataCollectionOld.contains(xincoCoreDataCollectionNewXincoCoreData)) {
-                    XincoCoreLanguage oldXincoCoreLanguageIdOfXincoCoreDataCollectionNewXincoCoreData = xincoCoreDataCollectionNewXincoCoreData.getXincoCoreLanguageId();
-                    xincoCoreDataCollectionNewXincoCoreData.setXincoCoreLanguageId(xincoCoreLanguage);
+                    XincoCoreLanguage oldXincoCoreLanguageIdOfXincoCoreDataCollectionNewXincoCoreData = xincoCoreDataCollectionNewXincoCoreData.getXincoCoreLanguage();
+                    xincoCoreDataCollectionNewXincoCoreData.setXincoCoreLanguage(xincoCoreLanguage);
                     xincoCoreDataCollectionNewXincoCoreData = em.merge(xincoCoreDataCollectionNewXincoCoreData);
                     if (oldXincoCoreLanguageIdOfXincoCoreDataCollectionNewXincoCoreData != null && !oldXincoCoreLanguageIdOfXincoCoreDataCollectionNewXincoCoreData.equals(xincoCoreLanguage)) {
                         oldXincoCoreLanguageIdOfXincoCoreDataCollectionNewXincoCoreData.getXincoCoreDataCollection().remove(xincoCoreDataCollectionNewXincoCoreData);
