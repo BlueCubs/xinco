@@ -39,6 +39,10 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
+        <servlet-name>Xinco</servlet-name>
+        <url-pattern>/Xinco</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>XincoAdminServlet</servlet-name>
         <url-pattern>/XincoAdmin</url-pattern>
     </servlet-mapping>
