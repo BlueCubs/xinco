@@ -1994,7 +1994,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                         //text = 2
                         if (((XincoCoreData) newnode.getUserObject()).getXincoCoreDataType().getId() == 2) {
                             setGlobalDialogReturnValue(0);
-                            AbstractDialogAddAttributesText = getAbstractDialogAddAttributesText();
+                            AbstractDialogAddAttributesText = getAbstractDialogAddAttributesText(false);
                             if (getGlobalDialog_returnValue() == 0) {
                                 progressBar.hide();
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
@@ -2480,9 +2480,9 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             }
                             jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.updatesuccess.publisherinfo") + "\nhttp://[serverName]:[port]/xinco/XincoPublisher/" + xdata.getId() + "/" + tempUrl);
                         }
-                        TreePath currentPath = new TreePath(xincoClientSession.getCurrentTreeNodeSelection().getPath());
+                        TreePath currentTreePath = new TreePath(xincoClientSession.getCurrentTreeNodeSelection().getPath());
                         jTreeRepository.setSelectionPath(new TreePath(((XincoMutableTreeNode) xincoClientSession.getCurrentTreeNodeSelection().getParent()).getPath()));
-                        jTreeRepository.setSelectionPath(currentPath);
+                        jTreeRepository.setSelectionPath(currentTreePath);
                     }
 
                 }
@@ -2638,13 +2638,14 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
      *
      * @return AbstractDialog
      */
-    public AbstractDialog getAbstractDialogAddAttributesText() {
+    public AbstractDialog getAbstractDialogAddAttributesText(boolean viewonly) {
         if (AbstractDialogAddAttributesText == null) {
-            AbstractDialogAddAttributesText = new AddAttributeText(null, true, false, this);
+            AbstractDialogAddAttributesText = new AddAttributeText(null, true, viewonly, this);
             addDialog(AbstractDialogAddAttributesText);
         }
         //Issue #2972311
         AbstractDialogAddAttributesText.setVisible(true);
+        ((AddAttributeText) AbstractDialogAddAttributesText).setViewOnly(viewonly);
         return AbstractDialogAddAttributesText;
     }
 

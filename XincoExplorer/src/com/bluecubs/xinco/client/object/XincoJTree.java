@@ -52,6 +52,7 @@ import java.awt.Rectangle;
 import java.awt.dnd.DnDConstants;
 import java.awt.event.MouseEvent;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -521,8 +522,12 @@ public final class XincoJTree extends JTree {
                                             + (attributes.get(i)).getAttribText();
                                 }
                                 if (dataTypeAttributes.get(i).getDataType().equalsIgnoreCase("datetime")) {
-                                    rdata[1] = ""
-                                            + ((XMLGregorianCalendar) (attributes.get(i)).getAttribDatetime()).toGregorianCalendar().getTime();
+                                    Date time = ((XincoAddAttribute) getExplorer().getXdata().getXincoAddAttributes().get(i)).getAttribDatetime().toGregorianCalendar().getTime();
+                                    Calendar cal = new GregorianCalendar();
+                                    cal.setTime(time);
+                                    rdata[1] = (cal.get(Calendar.MONTH) == 11
+                                            && cal.get(Calendar.YEAR) == 2
+                                            && cal.get(Calendar.DAY_OF_MONTH) == 31) ? "" : "" + time;
                                 }
                                 dtm.addRow(rdata);
                             }
@@ -636,7 +641,7 @@ public final class XincoJTree extends JTree {
                             }
                             // text = 2
                             if (((XincoCoreData) getExplorer().getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreDataType().getId() == 2) {
-                                ((AddAttributeText) getExplorer().getAbstractDialogAddAttributesText()).setViewOnly(true);
+                                getExplorer().getAbstractDialogAddAttributesText(true);
                             }
                         }
                     }
