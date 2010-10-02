@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- #################### xinco DMS Configuration for Tomcat >=5.5 #######-->
+<Context docBase="xinco" path="/xinco" reloadable="true">
+  <!-- #################### PLEASE CONFIGURE #############################-->
+  <!-- ### Params: username, password, url, driverClassName            ###-->
+  <!-- ###################################################################-->
+  <!-- ### MySQL:                                                      ###-->
+  <!-- ### url: jdbc:mysql://localhost:3306/xinco?autoReconnect=true   ###-->
+  <!-- ### driverClassName: com.mysql.jdbc.Driver                      ###-->
+  <!-- ###################################################################-->
+  <!-- ### PostgreSQL:                                                 ###-->
+  <!-- ### url: jdbc:postgresql://localhost:5432/xinco                 ###-->
+  <!-- ### driverClassName: org.postgresql.Driver                      ###-->
+  <!-- ###################################################################-->
+    <Resource auth="Container" driverClassName="org.h2.Driver"
+  factory="org.apache.commons.dbcp.BasicDataSourceFactory"
+  maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB"
+  password="" type="javax.sql.DataSource"
+  url="jdbc:h2:file:~/data/xinco;create=true;MODE=MySQL" username="root"/>
+  <!-- #################### ################ ####################-->
+    <!--Uncomment for non embedded use
+    <ResourceParams name="jdbc/XincoDB">
+        <parameter>
+            <name>factory</name>
+            <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
+        </parameter>
+    </ResourceParams>-->
+  <!-- ################# Optional Configuration #################-->
+  <!-- Database JNDI Name -->
+    <Environment name="xinco/JNDIDB" override="false" type="java.lang.String" value="XincoPUJNDI"/>
+  <!-- ################# ###################### #################-->
+</Context>
