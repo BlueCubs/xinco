@@ -2,7 +2,6 @@
 -- Data for table `xinco_core_language`
 -- -----------------------------------------------------
 
-
 INSERT INTO `xinco_core_language` (`id`, `sign`, `designation`) VALUES ('1', 'n/a', 'unknown');
 INSERT INTO `xinco_core_language` (`id`, `sign`, `designation`) VALUES ('2', 'en', 'English');
 INSERT INTO `xinco_core_language` (`id`, `sign`, `designation`) VALUES ('3', 'de', 'German');
@@ -12,11 +11,9 @@ INSERT INTO `xinco_core_language` (`id`, `sign`, `designation`) VALUES ('6', 'es
 INSERT INTO `xinco_core_language` (`id`, `sign`, `designation`) VALUES ('7', 'ru', 'Russian');
 
 
-
 -- -----------------------------------------------------
 -- Data for table `xinco_core_node`
 -- -----------------------------------------------------
-
 
 INSERT INTO `xinco_core_node` (`id`, `xinco_core_node_id`, `xinco_core_language_id`, `designation`, `status_number`) VALUES ('1', NULL, '1', 'xincoRoot', '1');
 INSERT INTO `xinco_core_node` (`id`, `xinco_core_node_id`, `xinco_core_language_id`, `designation`, `status_number`) VALUES ('2', '1', '1', 'Trash', '1');
@@ -28,7 +25,6 @@ INSERT INTO `xinco_core_node` (`id`, `xinco_core_node_id`, `xinco_core_language_
 -- -----------------------------------------------------
 -- Data for table `xinco_core_data_type`
 -- -----------------------------------------------------
-
 
 INSERT INTO `xinco_core_data_type` (`id`, `designation`, `description`) VALUES ('1', 'general.data.type.file', 'general.data.type.file.description');
 INSERT INTO `xinco_core_data_type` (`id`, `designation`, `description`) VALUES ('2', 'general.data.type.text', 'general.data.type.text.description');
@@ -42,7 +38,6 @@ INSERT INTO `xinco_core_data_type` (`id`, `designation`, `description`) VALUES (
 -- Data for table `xinco_core_data`
 -- -----------------------------------------------------
 
-
 INSERT INTO `xinco_core_data` (`id`, `xinco_core_node_id`, `xinco_core_language_id`, `xinco_core_data_type_id`, `designation`, `status_number`) VALUES ('1', '1', '2', '3', 'Apache License 2.0', '5');
 INSERT INTO `xinco_core_data` (`id`, `xinco_core_node_id`, `xinco_core_language_id`, `xinco_core_data_type_id`, `designation`, `status_number`) VALUES ('2', '1', '2', '3', 'xinco.org', '1');
 
@@ -52,7 +47,6 @@ INSERT INTO `xinco_core_data` (`id`, `xinco_core_node_id`, `xinco_core_language_
 -- Data for table `xinco_core_group`
 -- -----------------------------------------------------
 
-
 INSERT INTO `xinco_core_group` (`id`, `designation`, `status_number`) VALUES ('1', 'general.group.admin', '1');
 INSERT INTO `xinco_core_group` (`id`, `designation`, `status_number`) VALUES ('2', 'general.group.allusers', '1');
 INSERT INTO `xinco_core_group` (`id`, `designation`, `status_number`) VALUES ('3', 'general.group.public', '1');
@@ -60,9 +54,18 @@ INSERT INTO `xinco_core_group` (`id`, `designation`, `status_number`) VALUES ('3
 
 
 -- -----------------------------------------------------
--- Data for table `xinco_core_ace`
+-- Data for table `xinco_core_user`
 -- -----------------------------------------------------
 
+INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('1', 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', '1', '0', now());
+INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('2', 'user', MD5('user'), 'User', 'Default', 'user@xinco.org', '1', '0', now());
+INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('3', 'bluecubs', MD5('system'), 'System', 'User', 'info@bluecubs.com', '1', '0', now());
+
+
+
+-- -----------------------------------------------------
+-- Data for table `xinco_core_ace`
+-- -----------------------------------------------------
 
 INSERT INTO `xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('1', '1', NULL, '1', NULL, 1, 1, 1, 1);
 INSERT INTO `xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES ('2', '1', NULL, '2', NULL, 1, 1, 1, 1);
@@ -90,20 +93,8 @@ INSERT INTO `xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`,
 
 
 -- -----------------------------------------------------
--- Data for table `xinco_core_user`
--- -----------------------------------------------------
-
-
-INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Administrator', 'Xinco', 'admin@xinco.org', '1', '0', now());
-INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('2', 'user', 'ee11cbb19052e40b07aac0ca060c23ee', 'User', 'Default', 'user@xinco.org', '1', '0', now());
-INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES ('3', 'bluecubs', 'a1681d95b94018a6721432c774bcef13', 'System', 'User', 'info@bluecubs.com', '1', '0', now());
-
-
-
--- -----------------------------------------------------
 -- Data for table `xinco_core_user_has_xinco_core_group`
 -- -----------------------------------------------------
-
 
 INSERT INTO `xinco_core_user_has_xinco_core_group` (`xinco_core_user_id`, `xinco_core_group_id`, `status_number`) VALUES ('1', '1', '1');
 INSERT INTO `xinco_core_user_has_xinco_core_group` (`xinco_core_user_id`, `xinco_core_group_id`, `status_number`) VALUES ('1', '2', '1');
@@ -116,7 +107,6 @@ INSERT INTO `xinco_core_user_has_xinco_core_group` (`xinco_core_user_id`, `xinco
 -- Data for table `xinco_add_attribute`
 -- -----------------------------------------------------
 
-
 INSERT INTO `xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES ('2', '1', '0', '0', '0', 'http://www.xinco.org', '', now());
 INSERT INTO `xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib_int`, `attrib_unsignedint`, `attrib_double`, `attrib_varchar`, `attrib_text`, `attrib_datetime`) VALUES ('1', '1', '0', '0', '0', 'http://www.apache.org/licenses/LICENSE-2.0.html', '', now());
 
@@ -125,7 +115,6 @@ INSERT INTO `xinco_add_attribute` (`xinco_core_data_id`, `attribute_id`, `attrib
 -- -----------------------------------------------------
 -- Data for table `xinco_core_data_type_attribute`
 -- -----------------------------------------------------
-
 
 INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '1', 'general.filename', 'varchar', '255');
 INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('1', '2', 'general.size', 'unsignedint', '0');
@@ -143,13 +132,30 @@ INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attrib
 INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('3', '1', 'general.data.type.URL', 'varchar', '255');
 INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '1', 'general.salutation', 'varchar', '255');
 INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('5', '1', 'general.format', 'varchar', '45');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '2', 'general.name', 'varchar', '255');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '3', 'general.middle_name', 'varchar', '255');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '4', 'general.last_name', 'varchar', '255');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '5', 'general.name_affix', 'varchar', '255');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '6', 'general.phone_business', 'varchar', '255');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '7', 'general.phone_private', 'varchar', '255');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '8', 'general.phone_mobile', 'varchar', '255');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '9', 'general.fax', 'varchar', '255');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '10', 'general.email', 'varchar', '255');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '11', 'general.website', 'varchar', '255');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '12', 'general.steet_address', 'varchar', '255');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '13', 'general.postal_code', 'varchar', '255');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '14', 'general.city', 'varchar', '255');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '15', 'general.state_province', 'varchar', '255');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '16', 'general.country', 'varchar', '255');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '17', 'general.company_name', 'varchar', '255');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '18', 'general.position', 'varchar', '255');
+INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES ('4', '19', 'general.notes', 'text', '0');
 
 
 
 -- -----------------------------------------------------
 -- Data for table `xinco_core_log`
 -- -----------------------------------------------------
-
 
 INSERT INTO `xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES ('1', '1', '1', '1', now(), 'Creation!', '1', '0', '0', '');
 INSERT INTO `xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES ('2', '2', '1', '1', now(), 'Creation!', '1', '0', '0', '');
@@ -159,7 +165,6 @@ INSERT INTO `xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, 
 -- -----------------------------------------------------
 -- Data for table `xinco_setting`
 -- -----------------------------------------------------
-
 
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES ('1', 'password.aging', '120', NULL, 0, '0');
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES ('2', 'password.attempts', '3', NULL, 0, '0');
@@ -198,7 +203,6 @@ INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `
 -- Data for table `xinco_dependency_behavior`
 -- -----------------------------------------------------
 
-
 INSERT INTO `xinco_dependency_behavior` (`id`, `designation`, `description`) VALUES ('1', 'dependency.behavior.one-way', 'dependency.behavior.one-way.desc');
 INSERT INTO `xinco_dependency_behavior` (`id`, `designation`, `description`) VALUES ('2', 'dependency.behavior.two-way', 'dependency.behavior.two-way.desc');
 
@@ -208,12 +212,9 @@ INSERT INTO `xinco_dependency_behavior` (`id`, `designation`, `description`) VAL
 -- Data for table `xinco_dependency_type`
 -- -----------------------------------------------------
 
-
-INSERT INTO `xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('1', NULL, 'dependency.related', 'dependency.related.desc');
-INSERT INTO `xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('2', NULL, 'dependency.component', 'dependency.component.desc');
-INSERT INTO `xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('3', NULL, 'dependency.group', 'dependency.group.desc');
-INSERT INTO `xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('4', NULL, 'dependency.package', 'dependency.package.desc');
-INSERT INTO `xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('5', NULL, 'dependency.rendering', 'dependency.rendering.desc');
-INSERT INTO `xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('6', NULL, 'dependency.supporting', 'dependency.supporting.desc');
-
-
+INSERT INTO `xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('1', '2', 'dependency.related', 'dependency.related.desc');
+INSERT INTO `xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('2', '1', 'dependency.component', 'dependency.component.desc');
+INSERT INTO `xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('3', '2', 'dependency.group', 'dependency.group.desc');
+INSERT INTO `xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('4', '2', 'dependency.package', 'dependency.package.desc');
+INSERT INTO `xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('5', '1', 'dependency.rendering', 'dependency.rendering.desc');
+INSERT INTO `xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES ('6', '1', 'dependency.supporting', 'dependency.supporting.desc');
