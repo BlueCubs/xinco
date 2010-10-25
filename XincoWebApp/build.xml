@@ -128,7 +128,7 @@
         <unsignjar jar="${jar}"/>
     </target>
 
-    <target name="unsign_client_libraries">
+    <target name="unsign_client_libraries" depends="init">
         <foreach target="unsign" param ="jar" inheritall="true">
             <path>
                 <fileset dir="${build.dir}/web/client">
@@ -138,7 +138,7 @@
         </foreach>
     </target>
 
-    <target name="sign_client_libraries">
+    <target name="sign_client_libraries" depends="init">
         <delete file="${keystore.file}"/>
         <!--Create keystore-->
         <genkey alias="${keystore.alias}" storepass="${keystore.password}"
