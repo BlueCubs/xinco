@@ -123,7 +123,7 @@
         <unsignjar jar="${jar}"/>
     </target>
 
-    <target name="unsign_client_libraries" depends="init">
+    <target name="unsign_client_libraries">
         <foreach target="unsign" param ="jar" inheritall="true">
             <path>
                 <fileset dir="${build.dir}/web/client">
@@ -133,7 +133,7 @@
         </foreach>
     </target>
 
-    <target name="sign_client_libraries" depends="init">
+    <target name="sign_client_libraries">
         <delete file="${keystore.file}"/>
         <!--Create keystore-->
         <genkey alias="${keystore.alias}" storepass="${keystore.password}"
@@ -289,6 +289,8 @@
         </zip>
         <delete dir="${dist}/XincoExplorer Stand Alone Client"/>
     </target>
+    
+    <target name="-post-init" depends="unsign_client_libraries"/>
 
     <target name="-pre-init">
         <mkdir dir="${lib}"/>
