@@ -1,3 +1,5 @@
+<%@page import="com.bluecubs.xinco.server.ExtensionFilter"%>
+<%@page import="java.io.FilenameFilter"%>
 <%@page import="java.io.FileOutputStream"%>
 <%@page import="java.io.FileInputStream"%>
 <%@page import="java.nio.channels.FileChannel"%>
@@ -64,8 +66,16 @@
             String protocol = "http://";
             String url = request.getRequestURL().toString();
             url = url.substring(url.indexOf(protocol) + protocol.length(), url.indexOf("/xinco/menu.jsp"));
-            File last = new File(getServletContext().getRealPath("/client/" + url));
+            File last = new File(getServletContext().getRealPath("/client/" + url + ".xinco"));
             if (!last.exists()) {
+                File dir = new File(getServletContext().getRealPath("/client/"));
+                String[] list = dir.list(new ExtensionFilter(".xinco"));
+
+                if (list.length != 0) {
+                    for (int i = 0; i < list.length; i++) {
+                        new File(dir.getAbsolutePath(), list[i]).delete();
+                    }
+                }
                 try {
                     jnlp = new File(getServletContext().getRealPath("/client/XincoExplorer.jnlp"));
                     backup = new File(getServletContext().getRealPath("/client/XincoExplorer.jnlp.bak"));
