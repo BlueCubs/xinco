@@ -41,6 +41,8 @@
   <Environment name="setting.allowoutsidelinks" override="false" type="java.lang.String" value="True"/>
   <!-- Setting for content list in XincoPublisher (in order to force browsing): -->
   <Environment name="setting.allowpublisherlist" override="false" type="java.lang.String" value="True"/>
+  <!-- Setting for guessing language from browser: -->
+  <Environment name="setting.guesslanguage" override="false" type="java.lang.String" value="False"/>
   <!-- #################### ################ ####################-->
 
   <!-- ################# Optional Configuration #################-->
