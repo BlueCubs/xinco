@@ -55,7 +55,8 @@ public class XincoConfigSingletonServer {
     public String[] IndexNoIndex = null;
     public String JNDIDB = null;
     public int MaxSearchResult = 0;
-    private boolean allowOutsideLinks = true,  allowPublisherList = true;
+    private boolean allowOutsideLinks = true, allowPublisherList = true,
+            guessLanguage=false;
     private static XincoConfigSingletonServer instance = null;
 
     public static XincoConfigSingletonServer getInstance() {
@@ -100,6 +101,7 @@ public class XincoConfigSingletonServer {
             IndexNoIndex = ((String) (new InitialContext()).lookup("java:comp/env/xinco/IndexNoIndex")).split(";");
 
             allowOutsideLinks = ((String) (new InitialContext()).lookup("java:comp/env/setting.allowoutsidelinks")).equals("True");
+            guessLanguage = ((String) (new InitialContext()).lookup("java:comp/env/setting.guesslanguage")).equals("True");
             allowPublisherList = ((String) (new InitialContext()).lookup("java:comp/env/setting.allowpublisherlist")).equals("True");
             JNDIDB = (String) (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
             MaxSearchResult = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/MaxSearchResult")).intValue();
@@ -137,6 +139,7 @@ public class XincoConfigSingletonServer {
             IndexNoIndex[2] = "exe";
             allowOutsideLinks = true;
             allowPublisherList = true;
+            guessLanguage = false;
             JNDIDB = "java:comp/env/jdbc/XincoDB";
             MaxSearchResult = 30;
             FileIndexOptimizerPeriod = 14400000;
@@ -157,5 +160,12 @@ public class XincoConfigSingletonServer {
 
     public boolean isAllowPublisherList() {
         return allowPublisherList;
+    }
+
+    /**
+     * @return the guessLanguage
+     */
+    public boolean isGuessLanguage() {
+        return guessLanguage;
     }
 }

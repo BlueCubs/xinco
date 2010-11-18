@@ -289,8 +289,6 @@
         </zip>
         <delete dir="${dist}/XincoExplorer Stand Alone Client"/>
     </target>
-    
-    <target name="-post-init" depends="unsign_client_libraries"/>
 
     <target name="-pre-init">
         <mkdir dir="${lib}"/>
