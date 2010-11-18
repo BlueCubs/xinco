@@ -57,7 +57,8 @@ public class XincoConfigSingletonServer {
     public String[] IndexNoIndex = null;
     public String JNDIDB = null;
     public int MaxSearchResult = 0;
-    private boolean allowOutsideLinks = true,  allowPublisherList = true;
+    private boolean allowOutsideLinks = true, allowPublisherList = true,
+            guessLanguage=false;
     private static XincoConfigSingletonServer instance = null;
 
     public static XincoConfigSingletonServer getInstance() {
@@ -110,6 +111,7 @@ public class XincoConfigSingletonServer {
             IndexNoIndex = XincoSettingServer.getSetting("xinco/IndexNoIndex").getStringValue().split(";");
             allowOutsideLinks = XincoSettingServer.getSetting("setting.allowoutsidelinks").isBoolValue();
             allowPublisherList = XincoSettingServer.getSetting("setting.allowpublisherlist").isBoolValue();
+            guessLanguage = XincoSettingServer.getSetting("setting.guesslanguage").isBoolValue();
             MaxSearchResult = XincoSettingServer.getSetting("xinco/MaxSearchResult").getIntValue();
         } catch (Exception e) {
             Logger.getLogger(XincoConfigSingletonServer.class.getSimpleName()).log(Level.WARNING,
@@ -147,6 +149,7 @@ public class XincoConfigSingletonServer {
             IndexNoIndex[2] = "exe";
             allowOutsideLinks = true;
             allowPublisherList = true;
+            guessLanguage = false;
             MaxSearchResult = 30;
             FileIndexOptimizerPeriod = 14400000;
         }
@@ -166,5 +169,12 @@ public class XincoConfigSingletonServer {
 
     public boolean isAllowPublisherList() {
         return allowPublisherList;
+    }
+
+    /**
+     * @return the guessLanguage
+     */
+    public boolean isGuessLanguage() {
+        return guessLanguage;
     }
 }

@@ -1,8 +1,19 @@
+<%@page import="com.bluecubs.xinco.core.server.XincoDBManager"%>
+<%@page import="com.bluecubs.xinco.core.server.BrowserDataExtractor"%>
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 <%@page import="java.util.Locale"%>
 <%@page import="java.util.ResourceBundle"%>
 
+<%
+            BrowserDataExtractor extractor = new BrowserDataExtractor(request, session);
+            XincoDBManager db = new XincoDBManager();
+            if (db.config.isGuessLanguage()
+                    && !extractor.getLanguage().isEmpty()
+                    && extractor.isLanguageSupported(extractor.getLanguage())) {
+                pageContext.forward("menu.jsp?list="+ extractor.getLanguage());
+            }
+%>
 <html>
     <head>
         <title>xinco DMS - Open Source Document Management</title>
