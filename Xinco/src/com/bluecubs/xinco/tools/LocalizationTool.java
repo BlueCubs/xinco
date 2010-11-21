@@ -1,6 +1,5 @@
 package com.bluecubs.xinco.tools;
 
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -10,13 +9,11 @@ import java.util.ResourceBundle;
  */
 public class LocalizationTool {
 
-    static HashMap<String, String> localeFlagMap = new HashMap<String, String>();
+    //TODO: Manage changing locale from webpage
+    //static HashMap<String, String> localeFlagMap = new HashMap<String, String>();
     static ResourceBundle lrb = ResourceBundle.getBundle(
             "com.bluecubs.xinco.messages.XincoMessagesLocale",
             Locale.getDefault());
-    static{
-
-    }
 
     static public String[] getLocales() {
         return lrb.getString("AvailableLocales").split(",");
@@ -26,6 +23,7 @@ public class LocalizationTool {
         return lrb.getString("Locale." + loc);
     }
 
-    static public String getPathToFlag(String loc) {
-    }
+//    static public String getPathToFlag(String loc) {
+//
+//    }
 }
