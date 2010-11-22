@@ -1,3 +1,5 @@
+<%@page import="com.bluecubs.xinco.server.ExtensionFilter"%>
+<%@page import="java.io.FilenameFilter"%>
 <%@page import="java.io.FileOutputStream"%>
 <%@page import="java.io.FileInputStream"%>
 <%@page import="java.nio.channels.FileChannel"%>
@@ -61,85 +63,96 @@
             out.println("<tr>");
             File jnlp = null;
             File backup = null;
-            try {
-                jnlp = new File(getServletContext().getRealPath("/client/XincoExplorer.jnlp"));
-                backup = new File(getServletContext().getRealPath("/client/XincoExplorer.jnlp.bak"));
-                backup.createNewFile();
-                if (jnlp.exists()) {
-                    FileChannel source = null;
-                    FileChannel destination = null;
-                    try {
-                        source = new FileInputStream(jnlp).getChannel();
-                        destination = new FileOutputStream(backup).getChannel();
-                        destination.transferFrom(source, 0, source.size());
-                    } finally {
-                        if (source != null) {
-                            source.close();
-                        }
-                        if (destination != null) {
-                            destination.close();
-                        }
+            String protocol = "http://";
+            String url = request.getRequestURL().toString();
+            url = url.substring(url.indexOf(protocol) + protocol.length(), url.indexOf("/xinco/menu.jsp"));
+            File last = new File(getServletContext().getRealPath("/client/" + url + ".xinco"));
+            if (!last.exists()) {
+                File dir = new File(getServletContext().getRealPath("/client/"));
+                String[] list = dir.list(new ExtensionFilter(".xinco"));
+
+                if (list.length != 0) {
+                    for (int i = 0; i < list.length; i++) {
+                        new File(dir.getAbsolutePath(), list[i]).delete();
                     }
-                    try {
-                        StringBuilder contents = new StringBuilder();
-                        //use buffering, reading one line at a time
-                        //FileReader always assumes default encoding is OK!
-                        BufferedReader input = new BufferedReader(new FileReader(jnlp));
-                        try {
-                            String line = null; //not declared within while loop
-                            /*
-                             * readLine is a bit quirky :
-                             * it returns the content of a line MINUS the newline.
-                             * it returns null only for the END of the stream.
-                             * it returns an empty String if two newlines appear in a row.
-                             */
-                            while ((line = input.readLine()) != null) {
-                                if (line.contains("codebase") && !line.startsWith("<!")) {
-                                    String protocol = "http://";
-                                    String start = line.substring(0,
-                                            line.indexOf(protocol) + protocol.length());
-                                    String end = null;
-                                    end = line.substring(line.indexOf("/xinco"));
-                                    String url = request.getRequestURL().toString();
-                                    line = start + url.substring(
-                                            url.indexOf(protocol) + protocol.length(),
-                                            url.indexOf("/xinco/menu.jsp")) + end;
-                                }
-                                contents.append(line);
-                                contents.append(System.getProperty("line.separator"));
-                            }
-                            //use buffering to update jnlp
-                            Writer output = new BufferedWriter(new FileWriter(jnlp));
-                            try {
-                                //FileWriter always assumes default encoding is OK!
-                                output.write(contents.toString());
-                            } finally {
-                                output.close();
-                            }
-                        } finally {
-                            input.close();
-                            backup.delete();
-                        }
-                    } catch (IOException ex) {
-                    try {
-                        source = new FileInputStream(backup).getChannel();
-                        destination = new FileOutputStream(jnlp).getChannel();
-                        destination.transferFrom(source, 0, source.size());
-                        backup.delete();
-                    } finally {
-                        if (source != null) {
-                            source.close();
-                        }
-                        if (destination != null) {
-                            destination.close();
-                        }
-                    }
-                    }
-                } else {
-                    throw new XincoException("Missing XincoExplorer.jnlp!");
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+                try {
+                    jnlp = new File(getServletContext().getRealPath("/client/XincoExplorer.jnlp"));
+                    backup = new File(getServletContext().getRealPath("/client/XincoExplorer.jnlp.bak"));
+                    backup.createNewFile();
+                    if (jnlp.exists()) {
+                        FileChannel source = null;
+                        FileChannel destination = null;
+                        try {
+                            source = new FileInputStream(jnlp).getChannel();
+                            destination = new FileOutputStream(backup).getChannel();
+                            destination.transferFrom(source, 0, source.size());
+                        } finally {
+                            if (source != null) {
+                                source.close();
+                            }
+                            if (destination != null) {
+                                destination.close();
+                            }
+                        }
+                        try {
+                            StringBuilder contents = new StringBuilder();
+                            //use buffering, reading one line at a time
+                            //FileReader always assumes default encoding is OK!
+                            BufferedReader input = new BufferedReader(new FileReader(jnlp));
+                            try {
+                                String line = null; //not declared within while loop
+                            /*
+                                 * readLine is a bit quirky :
+                                 * it returns the content of a line MINUS the newline.
+                                 * it returns null only for the END of the stream.
+                                 * it returns an empty String if two newlines appear in a row.
+                                 */
+                                while ((line = input.readLine()) != null) {
+                                    if (line.contains("codebase") && !line.startsWith("<!")) {
+                                        String start = line.substring(0,
+                                                line.indexOf(protocol) + protocol.length());
+                                        String end = null;
+                                        end = line.substring(line.indexOf("/xinco"));
+                                        line = start + url + end;
+                                    }
+                                    contents.append(line);
+                                    contents.append(System.getProperty("line.separator"));
+                                }
+                                //use buffering to update jnlp
+                                Writer output = new BufferedWriter(new FileWriter(jnlp));
+                                try {
+                                    //FileWriter always assumes default encoding is OK!
+                                    output.write(contents.toString());
+                                } finally {
+                                    output.close();
+                                }
+                            } finally {
+                                input.close();
+                                backup.delete();
+                                last.createNewFile();
+                            }
+                        } catch (IOException ex) {
+                            try {
+                                source = new FileInputStream(backup).getChannel();
+                                destination = new FileOutputStream(jnlp).getChannel();
+                                destination.transferFrom(source, 0, source.size());
+                                backup.delete();
+                            } finally {
+                                if (source != null) {
+                                    source.close();
+                                }
+                                if (destination != null) {
+                                    destination.close();
+                                }
+                            }
+                        }
+                    } else {
+                        throw new XincoException("Missing XincoExplorer.jnlp!");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             out.println("<td class='text'><a href='client/XincoExplorer.jnlp' class='link'>" + rb.getString("message.admin.main.webstart.link") + "</a></td>");
             out.println("<td class='text'>" + rb.getString("message.admin.main.webstart") + "</td>");
