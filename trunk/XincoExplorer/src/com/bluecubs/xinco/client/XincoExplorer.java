@@ -189,15 +189,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     private AbstractDialog AbstractDialogAddAttributesUniversal = null;
     private javax.swing.JMenu jMenuPreferences = null;
     private javax.swing.JMenuItem jMenuItemPreferencesEditUser = null;
-    private javax.swing.JPanel jContentPaneDialogUser = null;
     private AbstractDialog AbstractDialogAddAttributesText = null;
-    private javax.swing.JPanel jContentPaneDialogAddAttributesText = null;
-    private javax.swing.JTextArea jTextAreaDialogAddAttributesText = null;
-    private javax.swing.JButton jButtonDialogAddAttributesTextSave = null;
-    private javax.swing.JButton jButtonDialogAddAttributesTextCancel = null;
-    private javax.swing.JScrollPane jScrollPaneDialogAddAttributesText = null;
-    private javax.swing.JPanel jContentPaneDialogTransactionInfo = null;
-    private javax.swing.JLabel jLabelDialogTransactionInfoText = null;
     private javax.swing.JPanel jContentPaneInformation = null;
     public javax.swing.JTextArea jLabelInternalFrameInformationText = null;
     private XincoPopUpMenuRepository jPopupMenuRepository = null;
@@ -2047,12 +2039,6 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                         newlog.getVersion().setVersionLow(0);
                         newlog.getVersion().setVersionPostfix("");
                         ((XincoCoreData) newnode.getUserObject()).getXincoCoreLogs().add(newlog);
-                        setGlobalDialogReturnValue(0);
-                        AbstractDialogLog = getAbstractDialogLog(true);
-                        if (getGlobalDialog_returnValue() == 0) {
-                            progressBar.hide();
-                            throw new XincoException(xerb.getString("datawizard.updatecancel"));
-                        }
                         newlog.setOpDescription(newlog.getOpDescription() + " (" + xerb.getString("general.user") + ": " + xincoClientSession.getUser().getUsername() + ")");
                     } else {
                         if ((wizardType != 7) && (wizardType != 8) && (wizardType != 9) && (wizardType != 11) && (wizardType != 14) && (wizardType != 15)) {
