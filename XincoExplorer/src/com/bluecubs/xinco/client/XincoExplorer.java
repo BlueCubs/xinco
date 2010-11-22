@@ -2056,12 +2056,6 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                         newlog.getVersion().setVersion_postfix("");
                         ((XincoCoreData) newnode.getUserObject()).setXinco_core_logs(new Vector());
                         ((XincoCoreData) newnode.getUserObject()).getXinco_core_logs().addElement(newlog);
-                        setGlobal_dialog_return_value(0);
-                        AbstractDialogLog = getAbstractDialogLog(true);
-                        if (getGlobal_dialog_return_value() == 0) {
-                            progressBar.hide();
-                            throw new XincoException(xerb.getString("datawizard.updatecancel"));
-                        }
                         newlog.setOp_description(newlog.getOp_description() + " (" + xerb.getString("general.user") + ": " + xincoClientSession.getUser().getUsername() + ")");
                     } else {
                         if ((wizard_type != 7) && (wizard_type != 8) && (wizard_type != 9) && (wizard_type != 11) && (wizard_type != 14) && (wizard_type != 15)) {
