@@ -57,6 +57,7 @@ public class XincoConfigSingletonServer {
     public String[] IndexNoIndex = null;
     public String JNDIDB = null;
     public int MaxSearchResult = 0;
+    private int OOPort = 0;
     private boolean allowOutsideLinks = true, allowPublisherList = true,
             guessLanguage=false;
     private static XincoConfigSingletonServer instance = null;
@@ -113,6 +114,7 @@ public class XincoConfigSingletonServer {
             allowPublisherList = XincoSettingServer.getSetting("setting.allowpublisherlist").isBoolValue();
             guessLanguage = XincoSettingServer.getSetting("setting.guesslanguage").isBoolValue();
             MaxSearchResult = XincoSettingServer.getSetting("xinco/MaxSearchResult").getIntValue();
+            OOPort = XincoSettingServer.getSetting("setting.OOPort").getIntValue();
         } catch (Exception e) {
             Logger.getLogger(XincoConfigSingletonServer.class.getSimpleName()).log(Level.WARNING,
                         "Error loading configuration! Using defaults...", e);
@@ -152,6 +154,7 @@ public class XincoConfigSingletonServer {
             guessLanguage = false;
             MaxSearchResult = 30;
             FileIndexOptimizerPeriod = 14400000;
+            OOPort= 8100;
         }
     }
 
@@ -176,5 +179,12 @@ public class XincoConfigSingletonServer {
      */
     public boolean isGuessLanguage() {
         return guessLanguage;
+    }
+
+    /**
+     * @return the OOPort
+     */
+    public int getOOPort() {
+        return OOPort;
     }
 }

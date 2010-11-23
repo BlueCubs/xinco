@@ -6,6 +6,7 @@ import com.artofsolving.jodconverter.DocumentFormat;
 import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
+import com.bluecubs.xinco.core.server.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
 import java.io.File;
@@ -34,12 +35,13 @@ import java.util.logging.Logger;
  */
 public class FileConverter {
 
-    public static void main(String[] a) {
+    public static void main(String[] args) {
         try {
             File inputFile = new File("C:\\document.doc");
             File outputFile = new File("C:\\document.pdf");
-            // connect to an OpenOffice.org instance running on port 8100
-            OpenOfficeConnection connection = new SocketOpenOfficeConnection(8100);
+            // connect to an OpenOffice.org instance
+            OpenOfficeConnection connection = new SocketOpenOfficeConnection(
+                    XincoConfigSingletonServer.getInstance().getOOPort());
             connection.connect();
             // convert
             DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
@@ -55,7 +57,8 @@ public class FileConverter {
         OpenOfficeConnection connection = null;
         try {
             // connect to an OpenOffice.org instance running on port 8100
-            connection = new SocketOpenOfficeConnection(8100);
+            connection = new SocketOpenOfficeConnection(
+                    XincoConfigSingletonServer.getInstance().getOOPort());
             connection.connect();
         } catch (ConnectException ex) {
             Logger.getLogger(FileConverter.class.getName()).log(Level.SEVERE, null, ex);

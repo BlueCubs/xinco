@@ -35,15 +35,20 @@
  */
 package com.bluecubs.xinco.core.server;
 
+import java.io.IOException;
 import java.util.Map;
 import com.bluecubs.xinco.tools.MD5;
 import gudusoft.gsqlparser.*;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -313,6 +318,9 @@ public class XincoDBManager {
         ignore.add(ESqlStatementType.sstinvalid.toString());
         ignore.add(ESqlStatementType.sstmysqluse.toString());
         ignore.add(ESqlStatementType.sstmysqldroptable.toString());
+        ignore.add(ESqlStatementType.sstcreatetable.toString());
+        ignore.add(ESqlStatementType.sstmysqlsetautocommit.toString());
+        ignore.add(ESqlStatementType.sstmysqlcommit.toString());
         //-------------------------------------
         if (!sql.toString().isEmpty()) {
             TGSqlParser sqlparser = new TGSqlParser(EDbVendor.dbvmysql);
@@ -322,7 +330,7 @@ public class XincoDBManager {
             //Everything fine, keep going
             for (int i = 0; i < sqlparser.sqlstatements.size(); i++) {
                 if (!ignore.contains(sqlparser.sqlstatements.get(i).sqlstatementtype.toString())) {
-                    statements.add(sqlparser.sqlstatements.get(i).toString());
+                    statements.add(sqlparser.sqlstatements.get(i).toString().replaceAll("`xinco`.", ""));
                 }
             }
         }
@@ -332,8 +340,8 @@ public class XincoDBManager {
     private static void setDBSystemDir() {
         // Decide on the db system directory: <userhome>/.addressbook/
         String userHomeDir = System.getProperty("user.home", ".");
-        String systemDir = userHomeDir + 
-                System.getProperty("file.separator","/") + ".xinco";
+        String systemDir = userHomeDir
+                + System.getProperty("file.separator", "/") + ".xinco";
 
         // Set the db system directory.
         System.setProperty("derby.system.home", systemDir);
@@ -504,5 +512,81 @@ public class XincoDBManager {
      */
     public String getPersistenceUnitName() {
         return puName;
+    }
+
+    public static void main(String[] args) {
+        //Used to update the init script
+        //Get the MySQL script file
+        File script = new File(new File(System.getProperty("user.dir")).getParent()
+                + System.getProperty("file.separator")
+                + "DB" + System.getProperty("file.separator")
+                + "xinco_MySQL.sql");
+        if (script.exists()) {
+            try {
+                ArrayList<String> contents = readFileAsString(script.getAbsolutePath(), null);
+                if (!contents.isEmpty()) {
+                    //Create the init.sql file src\java\com\bluecubs\xinco\core\server\db\script
+                    File initFile = new File(System.getProperty("user.dir")
+                            + System.getProperty("file.separator") + "src"
+                            + System.getProperty("file.separator") + "java"
+                            + System.getProperty("file.separator") + "com"
+                            + System.getProperty("file.separator") + "bluecubs"
+                            + System.getProperty("file.separator") + "xinco"
+                            + System.getProperty("file.separator") + "core"
+                            + System.getProperty("file.separator") + "server"
+                            + System.getProperty("file.separator") + "db"
+                            + System.getProperty("file.separator") + "script"
+                            + System.getProperty("file.separator") + "init.sql");
+                    if (initFile.exists()) {
+                        initFile.delete();
+                    }
+                    initFile.createNewFile();
+                    setContents(initFile, contents);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (XincoException ex) {
+                Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    /**
+     * Change the contents of text file in its entirety, overwriting any
+     * existing text.
+     *
+     * This style of implementation throws all exceptions to the caller.
+     *
+     * @param aFile is an existing file which can be written to.
+     * @throws IllegalArgumentException if param does not comply.
+     * @throws FileNotFoundException if the file does not exist.
+     * @throws IOException if problem encountered during write.
+     */
+    static public void setContents(File aFile, ArrayList<String> aContents)
+            throws FileNotFoundException, IOException {
+        if (aFile == null) {
+            throw new IllegalArgumentException("File should not be null.");
+        }
+        if (!aFile.exists()) {
+            throw new FileNotFoundException("File does not exist: " + aFile);
+        }
+        if (!aFile.isFile()) {
+            throw new IllegalArgumentException("Should not be a directory: " + aFile);
+        }
+        if (!aFile.canWrite()) {
+            throw new IllegalArgumentException("File cannot be written: " + aFile);
+        }
+
+        //use buffering
+        Writer output = new BufferedWriter(new FileWriter(aFile));
+        try {
+            //FileWriter always assumes default encoding is OK!
+            for (String line : aContents) {
+                output.write(line);
+                output.write("\n");
+            }
+        } finally {
+            output.close();
+        }
     }
 }
