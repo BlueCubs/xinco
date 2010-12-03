@@ -40,8 +40,9 @@ package com.bluecubs.xinco.client.dialogs;
 
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
-import com.bluecubs.xinco.client.service.XincoCoreData;
-import com.bluecubs.xinco.client.service.XincoCoreLanguage;
+import com.bluecubs.xinco.core.XincoCoreData;
+import com.bluecubs.xinco.core.XincoCoreLanguage;
+import com.bluecubs.xinco.core.XincoDataStatus;
 import java.util.Locale;
 import javax.swing.DefaultListModel;
 
@@ -91,16 +92,16 @@ public class DataDialog extends AbstractDialog {
             DefaultListModel dlm = new DefaultListModel();
             dlm.removeAllElements();
             for (i = 0; i < explorer.getSession().getServerLanguages().size(); i++) {
-                text = ((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getDesignation() + " (" + ((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getSign() + ")";
+                text = ((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getDesignation() + " (" + ((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getSign() + ")";
                 dlm.addElement(text);
-                if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getId() == ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLanguage().getId()) {
+                if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getId() == ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_language().getId()) {
                     selection = i;
                 }
                 if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId() == 0) {
-                    if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
+                    if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
                         selection = i;
                     }
-                    if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getId() == 1) {
+                    if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(i)).getId() == 1) {
                         alt_selection = i;
                     }
                 }
@@ -113,19 +114,19 @@ public class DataDialog extends AbstractDialog {
             }
             language.setSelectedIndex(selection);
             language.ensureIndexIsVisible(language.getSelectedIndex());
-            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatusNumber() == 1) {
+            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == XincoDataStatus.OPEN.ordinal() + 1) {
                 text = explorer.getResourceBundle().getString("general.status.open") + "";
             }
-            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatusNumber() == 2) {
+            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == XincoDataStatus.LOCKED.ordinal() + 1) {
                 text = explorer.getResourceBundle().getString("general.status.locked") + " (-)";
             }
-            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatusNumber() == 3) {
+            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == XincoDataStatus.ARCHIVED.ordinal() + 1) {
                 text = explorer.getResourceBundle().getString("general.status.archived") + " (->)";
             }
-            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatusNumber() == 4) {
+            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == XincoDataStatus.CHECKED_OUT.ordinal() + 1) {
                 text = explorer.getResourceBundle().getString("general.status.checkedout") + " (X)";
             }
-            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatusNumber() == 5) {
+            if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == XincoDataStatus.PUBLISHED.ordinal() + 1) {
                 text = explorer.getResourceBundle().getString("general.status.published") + " (WWW)";
             }
             status.setText(text);
@@ -225,15 +226,13 @@ public class DataDialog extends AbstractDialog {
                     .add(layout.createSequentialGroup()
                         .add(6, 6, 6)
                         .add(idLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(id)))
+                    .add(id))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
                         .add(6, 6, 6)
                         .add(designationLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(designation)))
+                    .add(designation))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
@@ -245,8 +244,7 @@ public class DataDialog extends AbstractDialog {
                     .add(layout.createSequentialGroup()
                         .add(6, 6, 6)
                         .add(statusLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(status)))
+                    .add(status))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(save, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -265,8 +263,8 @@ public class DataDialog extends AbstractDialog {
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
 //set altered values
         ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).setDesignation(this.designation.getText());
-        ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).setXincoCoreLanguage(((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(this.language.getSelectedIndex())));
-        explorer.setGlobalDialogReturnValue(1);
+        ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).setXinco_core_language(((XincoCoreLanguage) explorer.getSession().getServerLanguages().elementAt(this.language.getSelectedIndex())));
+        explorer.set_global_dialog_return_value(1);
         setVisible(false);
         designation.setText(explorer.getResourceBundle().getString("general.newdata"));
     }//GEN-LAST:event_saveActionPerformed

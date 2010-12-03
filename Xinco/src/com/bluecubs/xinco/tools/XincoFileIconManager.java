@@ -1,5 +1,5 @@
 /**
- *Copyright 2007 blueCubs.com
+ *Copyright 2010 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  * Description:     XincoFileIconManager
  *
  * Original Author: Javier A. Ortiz
- * Date:            February 16, 2007, 12:48 PM
+ * Date:            February 16, 2010, 12:48 PM
  *
  * Modifications:
  *

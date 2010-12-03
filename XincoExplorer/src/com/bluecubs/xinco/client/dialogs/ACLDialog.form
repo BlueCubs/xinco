@@ -29,7 +29,7 @@
                   </Group>
                   <Group type="102" alignment="1" attributes="1">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="admin" pref="355" max="32767" attributes="0"/>
+                      <Component id="Admin" pref="355" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="125" max="-2" attributes="0"/>
@@ -54,7 +54,7 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="write" pref="355" max="32767" attributes="0"/>
+                      <Component id="Write" pref="355" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -62,8 +62,8 @@
                           <Component id="jScrollPane1" alignment="0" pref="355" max="32767" attributes="2"/>
                           <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
                               <Component id="aclAddLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="read" alignment="0" max="32767" attributes="1"/>
-                              <Component id="execute" alignment="0" max="32767" attributes="1"/>
+                              <Component id="Read" alignment="0" max="32767" attributes="1"/>
+                              <Component id="Execute" alignment="0" max="32767" attributes="1"/>
                           </Group>
                       </Group>
                   </Group>
@@ -80,13 +80,13 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="100" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="read" min="-2" max="-2" attributes="0"/>
+              <Component id="Read" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="execute" min="-2" max="-2" attributes="0"/>
+              <Component id="Execute" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="write" min="-2" max="-2" attributes="0"/>
+              <Component id="Write" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="admin" min="-2" max="-2" attributes="0"/>
+              <Component id="Admin" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
@@ -129,7 +129,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JCheckBox" name="read">
+    <Component class="javax.swing.JCheckBox" name="Read">
       <Properties>
         <Property name="text" type="java.lang.String" value="jCheckBox1"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -142,7 +142,7 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JCheckBox" name="execute">
+    <Component class="javax.swing.JCheckBox" name="Execute">
       <Properties>
         <Property name="text" type="java.lang.String" value="jCheckBox1"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -155,7 +155,7 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JCheckBox" name="write">
+    <Component class="javax.swing.JCheckBox" name="Write">
       <Properties>
         <Property name="text" type="java.lang.String" value="jCheckBox1"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -168,7 +168,7 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JCheckBox" name="admin">
+    <Component class="javax.swing.JCheckBox" name="Admin">
       <Properties>
         <Property name="text" type="java.lang.String" value="jCheckBox1"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">

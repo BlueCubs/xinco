@@ -24,7 +24,7 @@
  * Description:     OPCode enumeration
  *
  * Original Author: Javier A. Ortiz
- * Date:            2009
+ * Date:            2010
  *
  * Modifications:
  *
