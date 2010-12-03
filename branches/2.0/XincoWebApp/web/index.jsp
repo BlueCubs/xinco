@@ -8,10 +8,10 @@
 <%
             BrowserDataExtractor extractor = new BrowserDataExtractor(request, session);
             XincoDBManager db = new XincoDBManager();
-            if (db.config.isGuessLanguage() 
+            if (db.config.isGuessLanguage()
                     && !extractor.getLanguage().isEmpty()
                     && extractor.isLanguageSupported(extractor.getLanguage())) {
-                pageContext.forward("menu.jsp?list="+ extractor.getLanguage());
+                pageContext.forward("menu.jsp?list=" + extractor.getLanguage());
             }
 %>
 
@@ -63,7 +63,7 @@
                     <%
                                 //load settings
                                 ResourceBundle settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
-                                out.println("[Version " + settings.getString("version.high") + "." + settings.getString("version.mid") + "." + settings.getString("version.low") + " " + settings.getString("version.postfix") + "]");
+                                out.println("[Version " + settings.getString("version.high") + "." + settings.getString("version.mid") + "." + settings.getString("version.low") + (settings.getString("version.postfix").isEmpty() ? "" : " " + settings.getString("version.postfix")) + "]");
                     %>
                 </span>
 

@@ -1,9 +1,8 @@
 package com.bluecubs.xinco.server;
 
 import com.bluecubs.xinco.tools.LocalizationTool;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,8 +25,7 @@ public final class BrowserDataExtractor extends HttpServlet {
     protected String os;
     protected String language = "en";
     protected Locale locale;
-    // Spracheinstellungen
-    private Hashtable supportedLanguages;
+    private HashMap supportedLanguages;
 
     public BrowserDataExtractor(HttpServletRequest request, HttpSession session) {
         initialize();
@@ -46,7 +44,7 @@ public final class BrowserDataExtractor extends HttpServlet {
     }
 
     public void initialize() {
-        supportedLanguages = new Hashtable(2);
+        supportedLanguages = new HashMap(2);
         String[] locales = LocalizationTool.getLocales();
         for (String loc : locales) {
             if (!loc.trim().isEmpty()) {
@@ -181,12 +179,12 @@ public final class BrowserDataExtractor extends HttpServlet {
         String prefLanguage = request.getHeader("Accept-Language");
 
         if (prefLanguage != null) {
-            String language = null;
+            String lang = null;
             StringTokenizer st = new StringTokenizer(prefLanguage, ",");
 
             while (st.hasMoreTokens()) {
-                if (supportedLanguages.containsKey((language = st.nextToken()))) {
-                    language = parseLocale(language);
+                if (supportedLanguages.containsKey((lang = st.nextToken()))) {
+                    lang = parseLocale(lang);
                 }
             }
         }
