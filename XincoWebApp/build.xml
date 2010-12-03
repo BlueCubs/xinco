@@ -292,7 +292,7 @@
 
     <target name="-pre-init">
         <mkdir dir="${lib}"/>
-        <echo>Updating version in Xinco/src/com/bluecubs/xinco/settings/settings.properties to: '${version_high}.${version_mid}.${version_low} ${version_postfix}'</echo>
+        <echo>Updating version in Xinco/src/com/bluecubs/xinco/settings/settings.properties to: ${version_high}.${version_mid}.${version_low} ${version_postfix}</echo>
         <echo>To change this, change file build.ant.properties in xinco/</echo>
         <!-- We update the version number (Xinco project)-->
         <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties" flags="s"
@@ -307,13 +307,16 @@
                        match="version.low?=?(.*)"
                        replace="version.low = ${version_low}"
                        byline="true"/>
-        <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
+        <if>
+            <not>
+                <equals arg1="${version_postfix}" arg2="" />
+            </not>
+            <then>
+                <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
                        match="version.postfix?=?(.*)"
                        replace="version.postfix = ${version_postfix}"
                        byline="true"/>
-        <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
-                       match="version.postfix?=?_"
-                       replace="version.postfix ="
-                       byline="true"/>
+            </then>
+        </if>
     </target>
 </project>
