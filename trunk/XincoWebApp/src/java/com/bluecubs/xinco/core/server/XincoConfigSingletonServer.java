@@ -112,7 +112,7 @@ public class XincoConfigSingletonServer {
             IndexNoIndex = XincoSettingServer.getSetting("xinco/IndexNoIndex").getStringValue().split(";");
             allowOutsideLinks = XincoSettingServer.getSetting("setting.allowoutsidelinks").isBoolValue();
             allowPublisherList = XincoSettingServer.getSetting("setting.allowpublisherlist").isBoolValue();
-            guessLanguage = XincoSettingServer.getSetting("setting.guesslanguage").isBoolValue();
+            guessLanguage = XincoSettingServer.getSetting("setting.guessLanguage").isBoolValue();
             MaxSearchResult = XincoSettingServer.getSetting("xinco/MaxSearchResult").getIntValue();
             OOPort = XincoSettingServer.getSetting("setting.OOPort").getIntValue();
         } catch (Exception e) {
