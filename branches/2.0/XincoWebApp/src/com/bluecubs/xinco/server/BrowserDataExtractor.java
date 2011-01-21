@@ -100,14 +100,20 @@ public final class BrowserDataExtractor extends HttpServlet {
     private void setVersion() {
         int tmpPos;
         String tmpString;
-
-        if (company.equals("Microsoft")) {
-            String str = userAgent.substring(userAgent.indexOf("msie") + 5);
-            version = str.substring(0, str.indexOf(";"));
-        } else {
-            tmpString = (userAgent.substring(tmpPos = (userAgent.indexOf("/")) + 1,
-                    tmpPos + userAgent.indexOf(" "))).trim();
-            version = tmpString.substring(0, tmpString.indexOf(" "));
+        try {
+            if (company.equals("Microsoft")) {
+                String str = userAgent.substring(userAgent.indexOf("msie") + 5);
+                version = str.substring(0, str.indexOf(";"));
+            } else {
+                tmpString = (userAgent.substring(tmpPos = (userAgent.indexOf("/")) + 1,
+                        tmpPos + userAgent.indexOf(" "))).trim();
+                version = tmpString.substring(0, tmpString.indexOf(" "));
+            }
+        } catch (Exception e) {
+            System.out.println("Error getting browser information:\n"
+                    + "Company: " + company + "\n"
+                    + "Name: " + name + "\n"
+                    + "User Agent: " + userAgent);
         }
     }
 

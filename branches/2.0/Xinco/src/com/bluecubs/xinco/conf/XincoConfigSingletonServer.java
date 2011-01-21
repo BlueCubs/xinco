@@ -35,8 +35,11 @@
  */
 package com.bluecubs.xinco.conf;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import java.util.Vector;
+import javax.naming.NamingException;
 
 /**
  * This class handles the server configuration of xinco.
@@ -56,7 +59,7 @@ public class XincoConfigSingletonServer {
     public String JNDIDB = null;
     public int MaxSearchResult = 0;
     private boolean allowOutsideLinks = true, allowPublisherList = true,
-            guessLanguage=false;
+            guessLanguage = false;
     private static XincoConfigSingletonServer instance = null;
 
     public static XincoConfigSingletonServer getInstance() {
@@ -71,78 +74,121 @@ public class XincoConfigSingletonServer {
     private XincoConfigSingletonServer() {
         try {
             FileRepositoryPath = (String) (new InitialContext()).lookup("java:comp/env/xinco/FileRepositoryPath");
-            if (!(FileRepositoryPath.substring(FileRepositoryPath.length() - 1).equals(System.getProperty("file.separator")))) {
-                FileRepositoryPath = FileRepositoryPath + System.getProperty("file.separator");
-            }
-            //optional: FileIndexPath
-            try {
-                FileIndexPath = (String) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexPath");
-            } catch (Exception ce) {
-                FileIndexPath = FileRepositoryPath + "index";
-            }
-            if (!(FileIndexPath.substring(FileIndexPath.length() - 1).equals(System.getProperty("file.separator")))) {
-                FileIndexPath = FileIndexPath + System.getProperty("file.separator");
-            }
-            FileArchivePath = (String) (new InitialContext()).lookup("java:comp/env/xinco/FileArchivePath");
-            if (!(FileArchivePath.substring(FileArchivePath.length() - 1).equals(System.getProperty("file.separator")))) {
-                FileArchivePath = FileArchivePath + System.getProperty("file.separator");
-            }
-            FileArchivePeriod = ((Long) (new InitialContext()).lookup("java:comp/env/xinco/FileArchivePeriod")).longValue();
-
-            FileIndexOptimizerPeriod = ((Long) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexOptimizerPeriod")).longValue();
-
-            FileIndexerCount = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexerCount")).intValue();
-            IndexFileTypesClass = new Vector();
-            IndexFileTypesExt = new Vector();
-            for (int i = 0; i < FileIndexerCount; i++) {
-                IndexFileTypesClass.add((String) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexer_" + (i + 1) + "_Class"));
-                IndexFileTypesExt.add(((String) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexer_" + (i + 1) + "_Ext")).split(";"));
-            }
-            IndexNoIndex = ((String) (new InitialContext()).lookup("java:comp/env/xinco/IndexNoIndex")).split(";");
-
-            allowOutsideLinks = ((String) (new InitialContext()).lookup("java:comp/env/setting.allowoutsidelinks")).equals("True");
-            guessLanguage = ((String) (new InitialContext()).lookup("java:comp/env/setting.guesslanguage")).equals("True");
-            allowPublisherList = ((String) (new InitialContext()).lookup("java:comp/env/setting.allowpublisherlist")).equals("True");
-            JNDIDB = (String) (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
-            MaxSearchResult = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/MaxSearchResult")).intValue();
-        } catch (Exception e) {
+        } catch (NamingException ex) {
             FileRepositoryPath = "";
-            FileIndexPath = "";
+            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (!(FileRepositoryPath.substring(FileRepositoryPath.length() - 1).equals(System.getProperty("file.separator")))) {
+            FileRepositoryPath = FileRepositoryPath + System.getProperty("file.separator");
+        }
+        //optional: FileIndexPath
+        try {
+            FileIndexPath = (String) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexPath");
+        } catch (Exception ce) {
+            FileIndexPath = FileRepositoryPath + "index";
+        }
+        if (!(FileIndexPath.substring(FileIndexPath.length() - 1).equals(System.getProperty("file.separator")))) {
+            FileIndexPath = FileIndexPath + System.getProperty("file.separator");
+        }
+        try {
+            FileArchivePath = (String) (new InitialContext()).lookup("java:comp/env/xinco/FileArchivePath");
+        } catch (NamingException ex) {
             FileArchivePath = "";
+            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (!(FileArchivePath.substring(FileArchivePath.length() - 1).equals(System.getProperty("file.separator")))) {
+            FileArchivePath = FileArchivePath + System.getProperty("file.separator");
+        }
+        try {
+            FileArchivePeriod = ((Long) (new InitialContext()).lookup("java:comp/env/xinco/FileArchivePeriod")).longValue();
+        } catch (NamingException ex) {
             FileArchivePeriod = 14400000;
-            FileIndexerCount = 4;
-            IndexFileTypesClass = new Vector();
-            IndexFileTypesExt = new Vector();
-            String[] tsa = null;
-            IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF");
-            tsa = new String[1];
-            tsa[0] = "pdf";
-            IndexFileTypesExt.add(tsa);
-            IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexMSWord");
-            tsa = new String[1];
-            tsa[0] = "doc";
-            IndexFileTypesExt.add(tsa);
-            IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexMSExcel");
-            tsa = new String[1];
-            tsa[0] = "xls";
-            IndexFileTypesExt.add(tsa);
-            IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexHTML");
-            tsa = new String[4];
-            tsa[0] = "htm";
-            tsa[1] = "html";
-            tsa[2] = "php";
-            tsa[3] = "jsp";
-            IndexFileTypesExt.add(tsa);
-            IndexNoIndex = new String[3];
-            IndexNoIndex[0] = "";
-            IndexNoIndex[1] = "com";
-            IndexNoIndex[2] = "exe";
-            allowOutsideLinks = true;
-            allowPublisherList = true;
-            guessLanguage = false;
-            JNDIDB = "java:comp/env/jdbc/XincoDB";
-            MaxSearchResult = 30;
+            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            FileIndexOptimizerPeriod = ((Long) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexOptimizerPeriod")).longValue();
+        } catch (NamingException ex) {
             FileIndexOptimizerPeriod = 14400000;
+            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            FileIndexerCount = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexerCount")).intValue();
+        } catch (NamingException ex) {
+            FileIndexerCount = 4;
+            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        IndexFileTypesClass = new Vector();
+        IndexFileTypesExt = new Vector();
+        for (int i = 0; i < FileIndexerCount; i++) {
+            try {
+                IndexFileTypesClass.add((String) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexer_" + (i + 1) + "_Class"));
+            } catch (NamingException ex) {
+                IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF");
+                IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexMSWord");
+                IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexMSExcel");
+                IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexHTML");
+                Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                IndexFileTypesExt.add(((String) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexer_" + (i + 1) + "_Ext")).split(";"));
+            } catch (NamingException ex) {
+                String[] tsa = null;
+                tsa = new String[1];
+                tsa[0] = "pdf";
+                IndexFileTypesExt.add(tsa); 
+                tsa = new String[1];
+                tsa[0] = "doc";
+                IndexFileTypesExt.add(tsa);
+                tsa = new String[1];
+                tsa[0] = "xls";
+                IndexFileTypesExt.add(tsa);
+                tsa = new String[4];
+                tsa[0] = "htm";
+                tsa[1] = "html";
+                tsa[2] = "php";
+                tsa[3] = "jsp";
+                IndexFileTypesExt.add(tsa);
+                Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        try {
+            IndexNoIndex = ((String) (new InitialContext()).lookup("java:comp/env/xinco/IndexNoIndex")).split(";");
+        } catch (NamingException ex) {
+            IndexNoIndex = new String[3];
+        IndexNoIndex[0] = "";
+        IndexNoIndex[1] = "com";
+        IndexNoIndex[2] = "exe";
+            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            allowOutsideLinks = ((String) (new InitialContext()).lookup("java:comp/env/setting.allowoutsidelinks")).equals("True");
+        } catch (NamingException ex) {
+            allowOutsideLinks = true;
+            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            guessLanguage = ((String) (new InitialContext()).lookup("java:comp/env/setting.guessLanguage")).equals("True");
+        } catch (NamingException ex) {
+            guessLanguage = false;
+            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            allowPublisherList = ((String) (new InitialContext()).lookup("java:comp/env/setting.allowpublisherlist")).equals("True");
+        } catch (NamingException ex) {
+            allowPublisherList = true;
+            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            JNDIDB = (String) (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
+        } catch (NamingException ex) {
+            JNDIDB = "java:comp/env/jdbc/XincoDB";
+            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            MaxSearchResult = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/MaxSearchResult")).intValue();
+        } catch (NamingException ex) {
+            MaxSearchResult = 30;
+            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
