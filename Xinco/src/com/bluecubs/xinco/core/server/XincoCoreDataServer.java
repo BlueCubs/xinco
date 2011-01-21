@@ -37,10 +37,15 @@ package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.add.server.XincoAddAttributeServer;
 import com.bluecubs.xinco.add.XincoAddAttribute;
-import java.sql.*;
+import com.bluecubs.xinco.core.OPCode;
+import com.bluecubs.xinco.core.XincoCoreData;
+import com.bluecubs.xinco.core.XincoCoreLog;
+import com.bluecubs.xinco.core.XincoException;
 import java.util.Vector;
 import java.io.File;
-import com.bluecubs.xinco.core.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class XincoCoreDataServer extends XincoCoreData {
 
@@ -127,7 +132,7 @@ public class XincoCoreDataServer extends XincoCoreData {
             System.out.println("Getting path: " + XincoCoreDataServer.getXincoCoreDataPath(DBM.config.FileRepositoryPath, xinco_core_data_id, xinco_core_data_id + "-" + log.getId()));
             return XincoCoreDataServer.getXincoCoreDataPath(DBM.config.FileRepositoryPath, xinco_core_data_id, xinco_core_data_id + "-" + log.getId());
         } else {
-            throw new XincoException("No major log history for XincoCoreData with id: " + xinco_core_data_id);
+            throw new XincoException("No mayor log history for XincoCoreData with id: " + xinco_core_data_id);
         }
     }
 
