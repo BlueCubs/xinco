@@ -193,6 +193,10 @@
                 </library>
             </web-module-additional-libraries>
             <source-roots>
+                <root id="src.DB.dir"/>
+                <root id="src.Docs.dir"/>
+                <root id="src.Tools.dir"/>
+                <root id="src.XincoLibs.dir"/>
                 <root id="src.src.dir" name="Source Packages"/>
             </source-roots>
             <test-roots>
