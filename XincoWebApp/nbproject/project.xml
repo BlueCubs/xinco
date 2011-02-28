@@ -211,6 +211,9 @@
                 </library>
             </web-module-additional-libraries>
             <source-roots>
+                <root id="src.DB.dir"/>
+                <root id="src.Docs.dir"/>
+                <root id="src.Tools.dir"/>
                 <root id="src.dir"/>
             </source-roots>
             <test-roots>
