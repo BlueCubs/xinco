@@ -1,9 +1,9 @@
 <%@page import="com.bluecubs.xinco.core.server.XincoDBManager"%>
-<%@page import="com.bluecubs.xinco.core.server.BrowserDataExtractor"%>
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 <%@page import="java.util.Locale"%>
 <%@page import="java.util.ResourceBundle"%>
+<%@page import="com.bluecubs.xinco.server.*"%>
 
 <%
             BrowserDataExtractor extractor = new BrowserDataExtractor(request, session);
@@ -14,6 +14,7 @@
                 pageContext.forward("menu.jsp?list=" + extractor.getLanguage());
             }
 %>
+
 <html>
     <head>
         <title>xinco DMS - Open Source Document Management</title>
@@ -42,9 +43,6 @@
                                                 //load locales
                                                 lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
                                                 locales = lrb.getString("AvailableLocales").split(",");
-                                                out.println(""
-                                                        + ""
-                                                        + "");
                                                 out.println("<select name='list'>");
                                                 for (i = 0; i < locales.length; i++) {
                                                     out.println("<option value='" + locales[i] + "'>" + lrb.getString("Locale." + locales[i]) + "</option>");

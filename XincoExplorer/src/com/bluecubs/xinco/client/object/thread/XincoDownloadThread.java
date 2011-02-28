@@ -24,7 +24,7 @@
  * Description:     importThread
  *
  * Original Author: Javier A. Ortiz
- * Date:            2007
+ * Date:            2010
  *
  * Modifications:
  *
@@ -34,12 +34,13 @@
  *************************************************************
  * importThread.java
  *
- * Created on January 9, 2007, 3:52 PM
+ * Created on January 9, 2010, 3:52 PM
  */
+
 package com.bluecubs.xinco.client.object.thread;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.client.service.XincoCoreNode;
+import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoException;
 import java.io.File;
 import java.util.ResourceBundle;
@@ -52,12 +53,10 @@ import javax.swing.tree.TreePath;
  * @author Alexander Manes
  */
 public class XincoDownloadThread extends Thread {
-
     private XincoExplorer explorer;
-
     @Override
     public void run() {
-        if (this.explorer != null) {
+        if(this.explorer!=null){
             ResourceBundle xerb = this.explorer.getResourceBundle();
             //download data structure
             if (explorer.getSession().getCurrentTreeNodeSelection() != null) {
@@ -65,7 +64,7 @@ public class XincoDownloadThread extends Thread {
                     try {
                         JFileChooser fc = new JFileChooser();
 
-                        fc.setCurrentDirectory(new File(explorer.currentPath));
+                        fc.setCurrentDirectory(new File(explorer.current_path));
                         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                         // show dialog
                         int result = fc.showOpenDialog(explorer);
@@ -78,14 +77,14 @@ public class XincoDownloadThread extends Thread {
                         explorer.progressBar.show();
                         explorer.jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.filedownloadinfo"));
                         explorer.downloadContentOfNode((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject(),
-                                new File(explorer.currentPath));
+                                                       new File(explorer.current_path));
                         // select current path
                         explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
                         // update transaction info
                         explorer.jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.filedownloadsuccess"));
                     } catch (Exception ie) {
-                        JOptionPane.showMessageDialog(explorer, xerb.getString("datawizard.filedownloadfailed")
-                                + " " + xerb.getString("general.reason") + ": " + ie.toString(), xerb.getString("general.error"),
+                        JOptionPane.showMessageDialog(explorer, xerb.getString("datawizard.filedownloadfailed") +
+                                " " + xerb.getString("general.reason") + ": " + ie.toString(), xerb.getString("general.error"),
                                 JOptionPane.WARNING_MESSAGE);
                         explorer.jLabelInternalFrameInformationText.setText("");
                         explorer.progressBar.hide();
@@ -95,8 +94,8 @@ public class XincoDownloadThread extends Thread {
             explorer.progressBar.hide();
         }
     }
-
-    public void setXincoExplorer(XincoExplorer e) {
-        this.explorer = e;
+    
+    public void setXincoExplorer(XincoExplorer e){
+        this.explorer=e;
     }
 }

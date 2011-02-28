@@ -38,16 +38,15 @@
  */
 package com.bluecubs.xinco.client.dialogs;
 
+import com.bluecubs.xinco.add.XincoAddAttribute;
 import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
-import com.bluecubs.xinco.client.service.XincoAddAttribute;
-import com.bluecubs.xinco.client.service.XincoCoreData;
-import com.bluecubs.xinco.client.service.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.core.XincoCoreData;
+import com.bluecubs.xinco.core.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.core.XincoDataStatus;
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.List;
 import javax.swing.table.DefaultTableModel;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  * Add Attribute Universal Dialog
@@ -77,13 +76,12 @@ public class AddAttributeUniversalDialog extends AbstractDialog {
     @Override
     public void setToDefaults() {
         super.setToDefaults();
-        XincoCoreData data = ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject());
         //processing independent of creation
         String[] cn = {explorer.getResourceBundle().getString("general.attribute"), explorer.getResourceBundle().getString("general.details")};
         int i = 0, j = 0, start = 0;
         //reset selection
         table.editCellAt(-1, -1);
-        save.setEnabled(data.getStatusNumber() == 1);
+        save.setEnabled(((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getStatus_number() == XincoDataStatus.OPEN.ordinal() + 1);
         DefaultTableModel dtm = new DefaultTableModel(cn, 0);
         j = dtm.getRowCount();
         for (i = 0; i < j; i++) {
@@ -93,44 +91,33 @@ public class AddAttributeUniversalDialog extends AbstractDialog {
         //prevent editing of fixed attributes for certain data types
         start = 0;
         //file = 1
-        if (data.getXincoCoreDataType().getId() == 1) {
+        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId() == 1) {
             start = 8;
         }
         //text = 2
-        if (data.getXincoCoreDataType().getId() == 2) {
+        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId() == 2) {
             start = 1;
         }
-        List<XincoAddAttribute> attributes;
-        if (data.getId() == 0) {
-            // Is a new data, there's nothing yet in the database.
-            // Load local values.
-            attributes = data.getXincoAddAttributes();
-        } else {
-            attributes = explorer.getSession().getXinco().getXincoAddAttributes(data,
-                    explorer.getSession().getUser());
-        }
-        List<XincoCoreDataTypeAttribute> dataTypeAttributes = explorer.getSession().getXinco().getXincoCoreDataTypeAttribute(data.getXincoCoreDataType(),
-                explorer.getSession().getUser());
-        for (i = start; i < attributes.size(); i++) {
-            rdata[0] = dataTypeAttributes.get(i).getDesignation();
+        for (i = start; i < ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().size(); i++) {
+            rdata[0] = ((XincoCoreDataTypeAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getDesignation();
             rdata[1] = "";
-            if (dataTypeAttributes.get(i).getDataType().equals("datetime")) {
-                rdata[1] = "" + ((XMLGregorianCalendar) (attributes.get(i)).getAttribDatetime()).toGregorianCalendar().getTime().toString();
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("datetime"))) {
+                rdata[1] = "" + ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_datetime().getTime().toString();
             }
-            if (dataTypeAttributes.get(i).getDataType().equals("double")) {
-                rdata[1] = "" + (attributes.get(i)).getAttribDouble();
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("double"))) {
+                rdata[1] = "" + ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_double();
             }
-            if (dataTypeAttributes.get(i).getDataType().equals("int")) {
-                rdata[1] = "" + (attributes.get(i)).getAttribInt();
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("int"))) {
+                rdata[1] = "" + ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_int();
             }
-            if (dataTypeAttributes.get(i).getDataType().equals("text")) {
-                rdata[1] = "" + (attributes.get(i)).getAttribText();
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("text"))) {
+                rdata[1] = "" + ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_text();
             }
-            if (dataTypeAttributes.get(i).getDataType().equals("unsignedint")) {
-                rdata[1] = "" + (attributes.get(i)).getAttribUnsignedint();
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("unsignedint"))) {
+                rdata[1] = "" + ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_unsignedint();
             }
-            if (dataTypeAttributes.get(i).getDataType().equals("varchar")) {
-                rdata[1] = "" + (attributes.get(i)).getAttribVarchar();
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i)).getData_type().equals(new String("varchar"))) {
+                rdata[1] = "" + ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i)).getAttrib_varchar();
             }
             dtm.addRow(rdata);
         }
@@ -213,87 +200,74 @@ public class AddAttributeUniversalDialog extends AbstractDialog {
     }//GEN-LAST:event_cancelActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
-        XincoCoreData data = ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject());
         int i = 0, start = 0;
         String text = "";
         DefaultTableModel dtm;
-        Date attrDt = new Date(0);
-        int attrI = 0;
+        Date attr_dt = new Date(0);
+        int attr_i = 0;
         long attr_l = 0;
-        double attrD = 0;
+        double attr_d = 0;
 
         //make sure changes are committed
         table.editCellAt(-1, -1);
         //prevent editing of fixed attributes for certain data types
         start = 0;
         //file = 1
-        if (data.getXincoCoreDataType().getId() == 1) {
+        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId() == 1) {
             start = 8;
         }
-        if (data.getXincoCoreDataType().getId() == 2) {
+        if (((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getId() == 2) {
             start = 1;
         }
         //update add attributes
-        List<XincoAddAttribute> attributes;
-        if (data.getId() == 0) {
-            // Is a new data, there's nothing yet in the database.
-            // Load local values.
-            attributes = data.getXincoAddAttributes();
-        } else {
-            attributes = explorer.getSession().getXinco().getXincoAddAttributes(data,
-                    explorer.getSession().getUser());
-        }
-        List<XincoCoreDataTypeAttribute> dataTypeAttributes =
-                explorer.getSession().getXinco().getXincoCoreDataTypeAttribute(
-                data.getXincoCoreDataType(), explorer.getSession().getUser());
-        for (i = 0; i < attributes.size() - start; i++) {
+        for (i = 0; i < ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().size() - start; i++) {
             dtm = (DefaultTableModel) table.getModel();
             try {
                 text = (String) dtm.getValueAt(i, 1);
             } catch (Exception dtme) {
                 text = "";
             }
-            if ((dataTypeAttributes.get(i + start)).getDataType().equals("datetime")) {
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i + start)).getData_type().equals(new String("datetime"))) {
                 try {
                     DateFormat df = DateFormat.getInstance();
-                    attrDt = df.parse(text);
+                    attr_dt = df.parse(text);
                 } catch (Exception pe) {
-                    attrDt = new Date(0);
+                    attr_dt = new Date(0);
                 }
-                ((XMLGregorianCalendar) (attributes.get(i + start)).getAttribDatetime()).toGregorianCalendar().setTime(attrDt);
+                ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i + start)).getAttrib_datetime().setTime(attr_dt);
             }
-            if ((dataTypeAttributes.get(i + start)).getDataType().equals("double")) {
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i + start)).getData_type().equals(new String("double"))) {
                 try {
-                    attrD = Double.parseDouble(text);
+                    attr_d = Double.parseDouble(text);
                 } catch (Exception pe) {
-                    attrD = 0.0;
+                    attr_d = 0.0;
                 }
-                (attributes.get(i + start)).setAttribDouble(attrD);
+                ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i + start)).setAttrib_double(attr_d);
             }
-            if ((dataTypeAttributes.get(i + start)).getDataType().equals("int")) {
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i + start)).getData_type().equals(new String("int"))) {
                 try {
-                    attrI = Integer.parseInt(text);
+                    attr_i = Integer.parseInt(text);
                 } catch (Exception pe) {
-                    attrI = 0;
+                    attr_i = 0;
                 }
-                (attributes.get(i + start)).setAttribInt(attrI);
+                ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i + start)).setAttrib_int(attr_i);
             }
-            if ((dataTypeAttributes.get(i + start)).getDataType().equals("text")) {
-                (attributes.get(i + start)).setAttribText(text);
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i + start)).getData_type().equals(new String("text"))) {
+                ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i + start)).setAttrib_text(text);
             }
-            if ((dataTypeAttributes.get(i + start)).getDataType().equals("unsignedint")) {
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i + start)).getData_type().equals(new String("unsignedint"))) {
                 try {
                     attr_l = Long.parseLong(text);
                 } catch (Exception pe) {
                     attr_l = 0;
                 }
-                (attributes.get(i + start)).setAttribUnsignedint(attr_l);
+                ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i + start)).setAttrib_unsignedint(attr_l);
             }
-            if ((dataTypeAttributes.get(i + start)).getDataType().equals("varchar")) {
-                (attributes.get(i + start)).setAttribVarchar(text);
+            if (((XincoCoreDataTypeAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_core_data_type().getXinco_core_data_type_attributes().elementAt(i + start)).getData_type().equals(new String("varchar"))) {
+                ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXinco_add_attributes().elementAt(i + start)).setAttrib_varchar(text);
             }
         }
-        explorer.setGlobalDialogReturnValue(1);
+        explorer.set_global_dialog_return_value(1);
         setVisible(false);
     }//GEN-LAST:event_saveActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables

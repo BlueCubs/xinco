@@ -24,7 +24,7 @@
  * Description:     XincoImportThread
  *
  * Original Author: Javier A. Ortiz
- * Date:            2007
+ * Date:            2010
  *
  * Modifications:
  *
@@ -34,13 +34,13 @@
  *************************************************************
  * XincoImportThread.java
  *
- * Created on January 9, 2007, 3:52 PM
+ * Created on January 9, 2010, 3:52 PM
  */
 
 package com.bluecubs.xinco.client.object.thread;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.client.service.XincoCoreNode;
+import com.bluecubs.xinco.core.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoException;
 import java.io.File;
 import java.util.ResourceBundle;
@@ -65,7 +65,7 @@ public class XincoImportThread extends Thread {
                     try {
                         JFileChooser fc = new JFileChooser();
 
-                        fc.setCurrentDirectory(new File(explorer.currentPath));
+                        fc.setCurrentDirectory(new File(explorer.current_path));
                         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                         // show dialog
                         int result = fc.showOpenDialog(explorer);
@@ -83,7 +83,7 @@ public class XincoImportThread extends Thread {
                                                       JOptionPane.INFORMATION_MESSAGE);
                         explorer.jLabelInternalFrameInformationText.setText(xerb.getString("window.massiveimport.progress"));
                         explorer.importContentOfFolder((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject(),
-                                                       new File(explorer.currentPath));
+                                                       new File(explorer.current_path));
                         // select current path
                         explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
                         // update transaction info
