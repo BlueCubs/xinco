@@ -101,7 +101,7 @@ public class XincoClientSession {
         currentSearchResult = new ArrayList();
         status = 0;
     }
-
+    
     /**
      * Constructor
      */

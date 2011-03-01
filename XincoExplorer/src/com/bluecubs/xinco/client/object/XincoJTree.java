@@ -38,7 +38,6 @@ import com.bluecubs.xinco.client.XincoExplorer;
 import com.bluecubs.xinco.client.object.dragNdrop.XincoDefaultTreeTransferHandler;
 import com.bluecubs.xinco.client.object.menu.XincoMenuRepository;
 import com.bluecubs.xinco.client.object.menu.XincoPopUpMenuRepository;
-import com.bluecubs.xinco.client.dialogs.AddAttributeText;
 import com.bluecubs.xinco.client.service.XincoAddAttribute;
 import com.bluecubs.xinco.client.service.XincoCoreACE;
 import com.bluecubs.xinco.client.service.XincoCoreData;
