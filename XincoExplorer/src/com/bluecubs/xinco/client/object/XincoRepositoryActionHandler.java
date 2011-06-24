@@ -322,7 +322,7 @@ public class XincoRepositoryActionHandler {
                 //open ACL dialog
                 AbstractDialog AbstractDialogACL = explorer.getAbstractDialogACL();
                 //fill ACL
-                ((ACLDialog) AbstractDialogACL).reloadACLListACL();
+                ((ACLDialog) AbstractDialogACL).loadACLListACL();
             }
         }
     }
