@@ -87,7 +87,7 @@ public class ACLDialog extends AbstractDialog {
         //fill group list
         loadACLGroupListACL();
         //fill ACL
-        reloadACLListACL();
+        loadACLListACL();
     }
 
     @Override
@@ -101,17 +101,15 @@ public class ACLDialog extends AbstractDialog {
         //fill group list
         loadACLGroupListACL();
         //fill ACL
-        reloadACLListACL();
+        loadACLListACL();
     }
 
     /**
      * Loads the ACL group list
      */
     protected final void loadACLGroupListACL() {
-        String[] list =
-                new String[explorer.getSession().getServerGroups().size()];
-        for (int i = 0; i
-                < explorer.getSession().getServerGroups().size(); i++) {
+        String[] list = new String[explorer.getSession().getServerGroups().size()];
+        for (int i = 0; i < explorer.getSession().getServerGroups().size(); i++) {
             list[i] = ((XincoCoreGroup) explorer.getSession().getServerGroups().get(i)).getDesignation();
             try {
                 list[i] = explorer.getResourceBundle().getString(list[i]);
@@ -125,9 +123,9 @@ public class ACLDialog extends AbstractDialog {
     /**
      * Reloads ACL list
      */
-    public final void reloadACLListACL() {
+    public final void loadACLListACL() {
         int i = 0, j = 0;
-        StringBuffer temp_string = new StringBuffer();
+        StringBuilder temp_string = new StringBuilder();
         ArrayList temp_ArrayList = new ArrayList();
 
         if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
@@ -136,7 +134,7 @@ public class ACLDialog extends AbstractDialog {
         if (this.explorer.getSession().getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreData.class) {
             temp_ArrayList.addAll(((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreAcl());
         }
-        if (tempAcl != null) {
+        if (temp_ArrayList.isEmpty() && tempAcl != null) {
             temp_ArrayList = tempAcl;
         }
         String[] list = new String[temp_ArrayList.size()];
@@ -411,7 +409,7 @@ public class ACLDialog extends AbstractDialog {
                 }
                 //remove ACE from ACL and reload
                 tempAcl.get(currentACLList.getSelectedIndex());
-                reloadACLListACL();
+                loadACLListACL();
             } catch (Exception xe) {
                 JOptionPane.showMessageDialog(this, this.explorer.getResourceBundle().getString("window.acl.removefailed")
                         + " " + this.explorer.getResourceBundle().getString("general.reason")
@@ -457,7 +455,7 @@ public class ACLDialog extends AbstractDialog {
                 }
                 //add ACE to ACL and reload
                 tempAcl.add(newace);
-                reloadACLListACL();
+                loadACLListACL();
             } catch (Exception xe) {
                 JOptionPane.showMessageDialog(this, this.explorer.getResourceBundle().getString("window.acl.addacefailed")
                         + " " + this.explorer.getResourceBundle().getString("general.reason")
