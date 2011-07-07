@@ -19,15 +19,15 @@
  * More information on: http://www.bluecubs.org
  *************************************************************
  *
- * Name:            XincoIndexOptimizeThread
+ * Name:            XincoIndexOptimizeTimerTask
  *
- * Description:     handle optimizing in thread 
+ * Description:     handle optimizing in thread
  *
  * Original Author: Alexander Manes
  * Date:            2005/01/19
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
@@ -39,14 +39,17 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class runs index optimizing in a separate thread
  * (only one thread is allowed)
  */
-public class XincoIndexOptimizeThread extends Thread {
+public class XincoIndexOptimizeTimerTask extends TimerTask {
 
-    public static XincoIndexOptimizeThread instance = null;
+    public static XincoIndexOptimizeTimerTask instance = null;
     public Calendar firstRun = null;
     public Calendar lastRun = null;
     public long index_period = 604800000; //Weekly
@@ -54,37 +57,24 @@ public class XincoIndexOptimizeThread extends Thread {
     @Override
     public void run() {
         firstRun = new GregorianCalendar();
-        while (true) {
-            try {
-                XincoDBManager DBM = null;
-                DBM = new XincoDBManager();
-                index_period = DBM.config.getFileIndexOptimizerPeriod();
-                //exit indexer if period = 0
-                if (index_period == 0) {
-                    break;
-                }
-                XincoIndexer.optimizeIndex(DBM);
-                lastRun = new GregorianCalendar();
-                DBM.con.close();
-                DBM = null;
-            } catch (Exception e) {
-            //continue, wait and try again...
+        try {
+            XincoDBManager DBM = null;
+            DBM = new XincoDBManager();
+            index_period = DBM.config.getFileIndexOptimizerPeriod();
+            //exit indexer if period = 0
+            if (index_period == 0) {
+                return;
             }
-            try {
-                Thread.sleep(index_period);
-            } catch (Exception se) {
-                break;
-            }
+            boolean isIndexOptimized = XincoIndexer.optimizeIndex(DBM);
+            /*Logger.getLogger(XincoIndexOptimizeTimerTask.class.getSimpleName()).log(
+                    Level.INFO, "isIndexOptimized = " + isIndexOptimized);*/
+            lastRun = new GregorianCalendar();
+            DBM.con.close();
+            DBM = null;
+            cancel();
+        } catch (Exception e) {
+            cancel();
         }
-    }
-
-    public static XincoIndexOptimizeThread getInstance() {
-        if (instance == null) {
-            instance = new XincoIndexOptimizeThread();
-        }
-        return instance;
-    }
-
-    private XincoIndexOptimizeThread() {
+        return;
     }
 }

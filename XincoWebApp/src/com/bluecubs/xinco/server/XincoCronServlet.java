@@ -35,13 +35,17 @@
  */
 package com.bluecubs.xinco.server;
 
-import com.bluecubs.xinco.archive.XincoArchiveThread;
+import com.bluecubs.xinco.archive.XincoArchiveTimerTask;
 import com.bluecubs.xinco.core.server.XincoDBManager;
-import com.bluecubs.xinco.index.XincoIndexOptimizeThread;
+import com.bluecubs.xinco.index.XincoIndexOptimizeTimerTask;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import javax.management.timer.TimerMBean;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -52,10 +56,11 @@ public class XincoCronServlet extends HttpServlet {
 
     ResourceBundle lrb;
     //single instance of archiving thread
-    XincoArchiveThread xat = null;
+    XincoArchiveTimerTask xatt = null;
     //single instance of index optimizing thread
-    XincoIndexOptimizeThread xiot = null;
+    XincoIndexOptimizeTimerTask xiott = null;
     private XincoDBManager db = null;
+    private static Timer timer = null;
 
     /** Initializes the servlet.
      * @param config
@@ -64,19 +69,24 @@ public class XincoCronServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+
+        timer = new Timer("xincoTimer");
+
         //init archiving thread
-        xat = XincoArchiveThread.getInstance();
-        xat.start();
+        xatt = new XincoArchiveTimerTask();
+        timer.schedule(xatt, Calendar.getInstance().getTime(), 14400000); // Every 4 hours
 
         //init index optimizing thread
-        xiot = XincoIndexOptimizeThread.getInstance();
-        xiot.start();
+        xiott = new XincoIndexOptimizeTimerTask();
+        timer.schedule(xiott, Calendar.getInstance().getTime(), 604800000); //Weekly
     }
 
     /** Destroys the servlet.
      */
     @Override
     public void destroy() {
+        timer.cancel();
+        timer = null;
     }
 
     /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -169,12 +179,12 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<td class=\"text\">" + lrb.getString("message.xincocron.service.archiver") + "</td>");
         String xat_first_run = "";
         String xat_last_run = "";
-        if (xat != null) {
-            if (xat.firstRun != null) {
-                xat_first_run = xat.firstRun.getTime().toString();
+        if (xatt != null) {
+            if (xatt.firstRun != null) {
+                xat_first_run = xatt.firstRun.getTime().toString();
             }
-            if (xat.lastRun != null) {
-                xat_last_run = xat.lastRun.getTime().toString();
+            if (xatt.lastRun != null) {
+                xat_last_run = xatt.lastRun.getTime().toString();
             }
         }
         out.println("<td class=\"text\">" + xat_first_run + "</td>");
@@ -185,12 +195,12 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<td class=\"text\">" + lrb.getString("message.xincocron.service.indexOptimizer") + "</td>");
         String xiot_first_run = "";
         String xiot_last_run = "";
-        if (xat != null) {
-            if (xiot.firstRun != null) {
-                xiot_first_run = xiot.firstRun.getTime().toString();
+        if (xatt != null) {
+            if (xiott.firstRun != null) {
+                xiot_first_run = xiott.firstRun.getTime().toString();
             }
-            if (xiot.lastRun != null) {
-                xiot_last_run = xiot.lastRun.getTime().toString();
+            if (xiott.lastRun != null) {
+                xiot_last_run = xiott.lastRun.getTime().toString();
             }
         }
         out.println("<td class=\"text\">" + xiot_first_run + "</td>");
@@ -204,17 +214,17 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; " + lrb.getString("general.copyright.date") + ", " +
-                //Avoid external links if general.setting.allowoutsidelinks is set to false
+        out.println("<td class=\"text\">&copy; " + lrb.getString("general.copyright.date") + ", "
+                + //Avoid external links if general.setting.allowoutsidelinks is set to false
                 //Security bug
                 (db.config.isAllowOutsideLinks() ? lrb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
         out.println("</tr>");
-        out.println("</table><tr><form action='menu.jsp'><input type='submit' value='" +
-                lrb.getString("message.admin.main.backtomain") + "' />" +
-                "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></form></tr>" +
-                "<tr><FORM><INPUT TYPE='button' VALUE='" + lrb.getString("message.admin.main.back") +
-                "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value='" +
-                request.getParameter("list") + "'/></FORM></tr>");
+        out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"
+                + lrb.getString("message.admin.main.backtomain") + "' />"
+                + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></form></tr>"
+                + "<tr><FORM><INPUT TYPE='button' VALUE='" + lrb.getString("message.admin.main.back")
+                + "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value='"
+                + request.getParameter("list") + "'/></FORM></tr>");
 
         out.println("</span>");
         out.println("</center>");
