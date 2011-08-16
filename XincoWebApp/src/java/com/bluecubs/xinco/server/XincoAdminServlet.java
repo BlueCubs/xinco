@@ -157,7 +157,7 @@ public class XincoAdminServlet extends HttpServlet {
 
         //connect to db
         try {
-            dbm = new XincoDBManager();
+            dbm = XincoDBManager.get();
             dbm.setLoc(loc);
         } catch (Exception e) {
             global_error_message = "" + e.toString() + rb.getString("error.configurationfile.incorrect.deployment");

@@ -58,7 +58,7 @@ public class XincoIndexOptimizeThread extends Thread {
         while (true) {
             try {
                 XincoDBManager DBM = null;
-                DBM = new XincoDBManager();
+                DBM = XincoDBManager.get();
                 index_period = DBM.config.getFileIndexOptimizerPeriod();
                 //exit indexer if period = 0
                 if (index_period == 0) {

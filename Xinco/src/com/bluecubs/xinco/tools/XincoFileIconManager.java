@@ -33,7 +33,6 @@
  *
  *************************************************************
  */
-
 package com.bluecubs.xinco.tools;
 
 import java.io.File;
@@ -46,28 +45,34 @@ import javax.swing.filechooser.FileSystemView;
  * @author Javier A. Ortiz
  */
 public class XincoFileIconManager {
+
     private File file = null;
+
     /** Creates a new instance of XincoFileIconManager */
     public XincoFileIconManager() {
     }
-    
-    public Icon getIcon(String extension){
-        if(extension == null)
+
+    public Icon getIcon(String extension) {
+        if (extension == null) {
             return null;
-        if(extension.indexOf('.')>-1)
-            extension=extension.substring(extension.lastIndexOf('.')+1,extension.length());
-        if(extension.length()<3)
+        }
+        if (extension.indexOf('.') > -1) {
+            extension = extension.substring(extension.lastIndexOf('.') + 1, extension.length());
+        }
+        if (extension.length() < 3) {
             return null;
-        Icon icon=null;
+        }
+        Icon icon = null;
         try {
-            if(extension.length()<3)
+            if (extension.length() < 3) {
                 return null;
+            }
             //Create a temporary file with the specified extension
             file = File.createTempFile("icon", "." + extension);
-            
+
             FileSystemView view = FileSystemView.getFileSystemView();
             icon = view.getSystemIcon(file);
-            
+
             //Delete the temporary file
             file.delete();
         } catch (IOException ioe) {
