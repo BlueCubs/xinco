@@ -113,7 +113,7 @@ public class XincoDBManager {
     }
 
     /**
-     * @param aLocked the locked to set
+     * @param aLocked the lock to set
      */
     public static void setLocked(boolean aLocked) {
         locked = aLocked;
@@ -290,7 +290,8 @@ public class XincoDBManager {
                 //Needs to be updated
                 updateDatabase(version, getVersion());
                 state = DBState.NEED_UPDATE;
-                logger.warning(state.getMessage());
+                logger.log(Level.WARNING, "{0}({1} vs. {2})", 
+                        new Object[]{state.getMessage(), version, getVersion()});
                 return;
             } else {
                 //Nothing to do
@@ -313,7 +314,6 @@ public class XincoDBManager {
         version.append(settings.getString("version.mid"));
         version.append(".");
         version.append(settings.getString("version.low"));
-        version.append(".");
         version.append((settings.getString("version.postfix").isEmpty()
                 ? "" : " " + settings.getString("version.postfix")));
         return version.toString();
@@ -327,8 +327,8 @@ public class XincoDBManager {
             version.append(XincoSettingServer.getSetting("version.mid").getStringValue());
             version.append(".");
             version.append(XincoSettingServer.getSetting("version.low").getStringValue());
-            version.append(".");
-            version.append(XincoSettingServer.getSetting("version.postfix").getStringValue());
+            version.append(XincoSettingServer.getSetting("version.postfix").getStringValue().isEmpty()
+                     ? "" : " " + XincoSettingServer.getSetting("version.postfix").getStringValue());
             return version.toString();
         } catch (XincoException ex) {
             logger.log(Level.SEVERE, null, ex);
