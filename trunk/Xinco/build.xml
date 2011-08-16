@@ -94,4 +94,13 @@
             </manifest>
         </copylibs>
     </target>
+    
+    <target name="-pre-init">
+        <native2ascii src="src/com/bluecubs/xinco/messages" dest="src/com/bluecubs/xinco/messages/test" 
+        includes="**/_*.properties"/>
+        <copy todir="src/com/bluecubs/xinco/messages">
+            <fileset dir="src/com/bluecubs/xinco/messages/test"/>
+        </copy>
+        <delete dir="src/com/bluecubs/xinco/messages/test" />
+    </target>
 </project>
