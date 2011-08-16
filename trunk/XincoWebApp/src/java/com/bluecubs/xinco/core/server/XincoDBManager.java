@@ -35,6 +35,7 @@
  */
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.server.db.DBState;
 import java.io.IOException;
 import java.util.Map;
 import com.bluecubs.xinco.tools.MD5;
@@ -84,6 +85,12 @@ public class XincoDBManager {
     private static boolean usingContext = false;
     private static boolean initDone = false;
     private static XincoDBManager instance;
+    private static DBState state;
+    private static final Logger logger = Logger.getLogger(XincoDBManager.class.getName());
+
+    static {
+        updateDBState();
+    }
 
     private XincoDBManager() throws Exception {
         config.loadSettings();
@@ -246,7 +253,7 @@ public class XincoDBManager {
     }
 
     /**
-     * @param aPU the PU to set
+     * @param aPU the Persistence Unit to set
      */
     public static void setPU(String aPU) throws XincoException {
         puName = aPU;
@@ -258,6 +265,79 @@ public class XincoDBManager {
         getEntityManagerFactory();
     }
 
+    public static String displayDBStatus() {
+        return state.getMessage();
+    }
+
+    public static void updateDBState() {
+        try {
+            String version = getDBVersion();
+            if (namedQuery("XincoCoreNode.findAll").isEmpty()) {
+                //Database empty
+                state = DBState.NEED_INIT;
+                logger.warning(state.getMessage());
+                //Initialize database
+                runInitSQL();
+                return;
+            } 
+            //There's something in the database, let's check the version
+            else if (version == null) {
+                //Doesn't exist. Need to do manual update. Can't do anything else.
+                state = DBState.NEED_MANUAL_UPDATE;
+                logger.warning(state.getMessage());
+                return;
+            } else if (!version.equals(getVersion())) {
+                //Needs to be updated
+                updateDatabase(version, getVersion());
+                state = DBState.NEED_UPDATE;
+                logger.warning(state.getMessage());
+                return;
+            } else {
+                //Nothing to do
+                state = DBState.VALID;
+                logger.log(Level.INFO, "{0}: {1}",
+                        new Object[]{state.getMessage(), getVersion()});
+                return;
+            }
+        } catch (XincoException ex) {
+            logger.log(Level.SEVERE, null, ex);
+            state = DBState.ERROR;
+        }
+    }
+
+    public static String getVersion() {
+        ResourceBundle settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
+        StringBuilder version = new StringBuilder();
+        version.append(settings.getString("version.high"));
+        version.append(".");
+        version.append(settings.getString("version.mid"));
+        version.append(".");
+        version.append(settings.getString("version.low"));
+        version.append(".");
+        version.append((settings.getString("version.postfix").isEmpty()
+                ? "" : " " + settings.getString("version.postfix")));
+        return version.toString();
+    }
+
+    private static String getDBVersion() {
+        try {
+            StringBuilder version = new StringBuilder();
+            version.append(XincoSettingServer.getSetting("version.high").getStringValue());
+            version.append(".");
+            version.append(XincoSettingServer.getSetting("version.mid").getStringValue());
+            version.append(".");
+            version.append(XincoSettingServer.getSetting("version.low").getStringValue());
+            version.append(".");
+            version.append(XincoSettingServer.getSetting("version.postfix").getStringValue());
+            return version.toString();
+        } catch (XincoException ex) {
+            logger.log(Level.SEVERE, null, ex);
+            return null;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
     private static void runInitSQL() throws XincoException {
         if (!initDone) {
             try {
@@ -267,10 +347,13 @@ public class XincoDBManager {
                     executeSQL("db/script/init.sql", null);
                     Logger.getLogger(XincoDBManager.class.getSimpleName()).log(Level.INFO,
                             "Done!");
-                    initDone = true;
                 }
+                initDone = true;
+                state = DBState.UPDATED;
+                logger.info(state.getMessage().replaceAll("%v", getVersion()));
             } catch (Exception e) {
-                Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, e);
+                logger.log(Level.SEVERE, null, e);
+                state = DBState.ERROR;
             }
         }
     }
@@ -288,7 +371,7 @@ public class XincoDBManager {
         if (!statements.isEmpty()) {
             for (String statement : statements) {
                 Logger.getLogger(XincoDBManager.class.getSimpleName()).log(
-                        Level.INFO, "Executing statement: {0}", statement);
+                        Level.CONFIG, "Executing statement: {0}", statement);
                 XincoDBManager.nativeQuery(statement);
             }
         }
@@ -360,14 +443,12 @@ public class XincoDBManager {
                         log(Level.INFO, "Using context defined database connection: {0}",
                         config.JNDIDB);
                 usingContext = true;
-                runInitSQL();
             } catch (Exception e) {
                 if (!usingContext) {
                     Logger.getLogger(XincoDBManager.class.getSimpleName()).log(Level.WARNING,
                             "Manually specified connection parameters. "
                             + "Using pre-defined persistence unit: {0}", puName);
                     emf = Persistence.createEntityManagerFactory(puName);
-                    runInitSQL();
                 } else {
                     Logger.getLogger(XincoDBManager.class.getSimpleName()).log(Level.SEVERE,
                             "Context doesn't exist. Check your configuration.", e);
@@ -391,7 +472,7 @@ public class XincoDBManager {
             em = getEntityManagerFactory().createEntityManager();
             properties = em.getProperties();
         } catch (XincoException ex) {
-            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         }
         return em;
     }
@@ -542,9 +623,9 @@ public class XincoDBManager {
                     setContents(initFile, contents);
                 }
             } catch (IOException ex) {
-                Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+                logger.log(Level.SEVERE, null, ex);
             } catch (XincoException ex) {
-                Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+                logger.log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -586,5 +667,23 @@ public class XincoDBManager {
         } finally {
             output.close();
         }
+    }
+
+    /**
+     * @return the state
+     */
+    public static DBState getState() {
+        return state;
+    }
+
+    //TODO: Update system. Won't be really needed until next DB change after 2.1.0
+    /**
+     * Update database to current version
+     * @param dbVersion Current DB version
+     * @param configVersion Latest version
+     */
+    private static void updateDatabase(String dbVersion, String configVersion) {
+//        state = DBState.UPDATED;
+//        logger.info(state.getMessage().replaceAll("%v", dbVersion));
     }
 }
