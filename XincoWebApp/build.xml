@@ -137,6 +137,14 @@
             </path>
         </foreach>
     </target>
+    
+    <!--Unsign/sign client libraries as part of normal build process (i.e. deployment)
+    It takes longer but the jnlp portion of the client will work from NetBeans deployed application.
+    This is done with the release target so released software doesn't have this issue.
+    
+    Is a lot faster just to run XincoExplorer from within the IDE anyway.
+    <target name="-pre-dist" depends="unsign_client_libraries, sign_client_libraries"/>
+    -->
 
     <target name="sign_client_libraries" depends="init">
         <delete file="${keystore.file}"/>
@@ -342,6 +350,23 @@
         <replaceregexp file="../XincoExplorer/nbproject/project.properties" flags="s"
                        match="mf.version.spec?=?(.*)"
                        replace="mf.version.spec = ${version_high}.${version_mid}.${version_low} ${version_postfix}"
+                       byline="true"/>
+                                              <!--Update the create database script version-->
+        <replaceregexp file="src/java/com/bluecubs/xinco/core/server/db/script/init.sql"
+                       match="version.high', '(.*)'"
+                       replace="version.high','${version_high}', NULL, '0', '0');"
+                       byline="true"/>
+        <replaceregexp file="src/java/com/bluecubs/xinco/core/server/db/script/init.sql"
+                       match="version.mid', '(.*)'"
+                       replace="version.mid','${version_mid}', NULL, '0', '0');"
+                       byline="true"/>
+        <replaceregexp file="src/java/com/bluecubs/xinco/core/server/db/script/init.sql"
+                       match="version.low', '(.*)'"
+                       replace="version.low','${version_low}', NULL, '0', '0');"
+                       byline="true"/>
+        <replaceregexp file="src/java/com/bluecubs/xinco/core/server/db/script/init.sql"
+                       match="version.postfix', '(.*)'"
+                       replace="version.postfix', '0', '${version_postfix}', '0', '0');"
                        byline="true"/>
     </target>
 </project>
