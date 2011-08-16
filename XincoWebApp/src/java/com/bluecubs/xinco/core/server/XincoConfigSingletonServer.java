@@ -59,8 +59,9 @@ public class XincoConfigSingletonServer {
     public int MaxSearchResult = 0;
     private int OOPort = 0;
     private boolean allowOutsideLinks = true, allowPublisherList = true,
-            guessLanguage=false;
+            guessLanguage = false;
     private static XincoConfigSingletonServer instance = null;
+    private boolean loadDefault;
 
     public static XincoConfigSingletonServer getInstance() {
         if (instance == null) {
@@ -80,51 +81,67 @@ public class XincoConfigSingletonServer {
     }
 
     public void loadSettings() {
+        Exception ex=null;
         try {
             FileRepositoryPath = XincoSettingServer.getSetting("xinco/FileRepositoryPath").getStringValue();
-            if (!(FileRepositoryPath.substring(FileRepositoryPath.length() - 1).equals(System.getProperty("file.separator")))) {
-                FileRepositoryPath = FileRepositoryPath + System.getProperty("file.separator");
-            }
-            //optional: FileIndexPath
-            try {
-                FileIndexPath = XincoSettingServer.getSetting("xinco/FileIndexPath").getStringValue();
-            } catch (Exception ce) {
-                FileIndexPath = FileRepositoryPath + "index";
-            }
-            if (!(FileIndexPath.substring(FileIndexPath.length() - 1).equals(System.getProperty("file.separator")))) {
-                FileIndexPath = FileIndexPath + System.getProperty("file.separator");
-            }
+        } catch (Exception ce) {
+            FileRepositoryPath = "";
+            ex = ce;
+            loadDefault = true;
+        }
+        if (!(FileRepositoryPath.substring(FileRepositoryPath.length() - 1).equals(System.getProperty("file.separator")))) {
+            FileRepositoryPath = FileRepositoryPath + System.getProperty("file.separator");
+        }
+        //optional: FileIndexPath
+        try {
+            FileIndexPath = XincoSettingServer.getSetting("xinco/FileIndexPath").getStringValue();
+        } catch (Exception ce) {
+            FileIndexPath = FileRepositoryPath + "index";
+        }
+        if (!(FileIndexPath.substring(FileIndexPath.length() - 1).equals(System.getProperty("file.separator")))) {
+            FileIndexPath = FileIndexPath + System.getProperty("file.separator");
+        }
+        try {
             FileArchivePath = XincoSettingServer.getSetting("xinco/FileArchivePath").getStringValue();
-            if (!(FileArchivePath.substring(FileArchivePath.length() - 1).equals(System.getProperty("file.separator")))) {
-                FileArchivePath = FileArchivePath + System.getProperty("file.separator");
-            }
+        } catch (Exception e) {
+            FileIndexPath = "";
+            ex = e;
+            loadDefault = true;
+        }
+        if (!(FileArchivePath.substring(FileArchivePath.length() - 1).equals(System.getProperty("file.separator")))) {
+            FileArchivePath = FileArchivePath + System.getProperty("file.separator");
+        }
+        try {
             FileArchivePeriod = XincoSettingServer.getSetting("xinco/FileArchivePeriod").getLongValue();
+        } catch (Exception e) {
+            FileArchivePeriod = 14400000;
+            ex = e;
+            loadDefault = true;
+        }
 
+        try {
             FileIndexOptimizerPeriod = XincoSettingServer.getSetting("xinco/FileIndexOptimizerPeriod").getLongValue();
+        } catch (Exception e) {
+            FileIndexOptimizerPeriod = 14400000;
+            ex = e;
+            loadDefault = true;
+        }
 
+        try {
             FileIndexerCount = ((Long) XincoDBManager.createdQuery("select count(s) from XincoSetting s where s.description like 'xinco/FileIndexer_'").get(0));
-            IndexFileTypesClass = new ArrayList();
-            IndexFileTypesExt = new ArrayList();
+        } catch (Exception e) {
+            FileIndexerCount = 4;
+            ex = e;
+            loadDefault = true;
+        }
+        IndexFileTypesClass = new ArrayList();
+        IndexFileTypesExt = new ArrayList();
+        try {
             for (int i = 0; i < FileIndexerCount; i++) {
                 IndexFileTypesClass.add(XincoSettingServer.getSetting("xinco/FileIndexer_" + (i + 1) + "_Class").getStringValue());
                 IndexFileTypesExt.add(XincoSettingServer.getSetting("env/xinco/FileIndexer_" + (i + 1) + "_Ext").getStringValue().split(";"));
             }
-            IndexNoIndex = XincoSettingServer.getSetting("xinco/IndexNoIndex").getStringValue().split(";");
-            allowOutsideLinks = XincoSettingServer.getSetting("setting.allowoutsidelinks").isBoolValue();
-            allowPublisherList = XincoSettingServer.getSetting("setting.allowpublisherlist").isBoolValue();
-            guessLanguage = XincoSettingServer.getSetting("setting.guessLanguage").isBoolValue();
-            MaxSearchResult = XincoSettingServer.getSetting("xinco/MaxSearchResult").getIntValue();
-            OOPort = XincoSettingServer.getSetting("setting.OOPort").getIntValue();
         } catch (Exception e) {
-            Logger.getLogger(XincoConfigSingletonServer.class.getSimpleName()).log(Level.WARNING,
-                        "Error loading configuration! Using defaults...", e);
-            FileRepositoryPath = "";
-            FileIndexPath = "";
-            FileArchivePath = "";
-            FileArchivePeriod = 14400000;
-            FileIndexerCount = 4;
-            IndexFileTypesClass = new ArrayList();
-            IndexFileTypesExt = new ArrayList();
             String[] tsa = null;
             IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF");
             tsa = new String[1];
@@ -145,16 +162,58 @@ public class XincoConfigSingletonServer {
             tsa[2] = "php";
             tsa[3] = "jsp";
             IndexFileTypesExt.add(tsa);
+            ex = e;
+            loadDefault = true;
+        }
+        try {
+            IndexNoIndex = XincoSettingServer.getSetting("xinco/IndexNoIndex").getStringValue().split(";");
+        } catch (Exception e) {
             IndexNoIndex = new String[3];
             IndexNoIndex[0] = "";
             IndexNoIndex[1] = "com";
             IndexNoIndex[2] = "exe";
+            ex = e;
+            loadDefault = true;
+        }
+        try {
+            allowOutsideLinks = XincoSettingServer.getSetting("setting.allowoutsidelinks").isBoolValue();
+        } catch (Exception e) {
             allowOutsideLinks = true;
+            ex = e;
+            loadDefault = true;
+        }
+        try {
+            allowPublisherList = XincoSettingServer.getSetting("setting.allowpublisherlist").isBoolValue();
+        } catch (Exception e) {
             allowPublisherList = true;
+            ex = e;
+            loadDefault = true;
+        }
+        try {
+            guessLanguage = XincoSettingServer.getSetting("setting.guessLanguage").isBoolValue();
+        } catch (Exception e) {
             guessLanguage = false;
+            ex = e;
+            loadDefault = true;
+        }
+        try {
+            MaxSearchResult = XincoSettingServer.getSetting("xinco/MaxSearchResult").getIntValue();
+        } catch (Exception e) {
             MaxSearchResult = 30;
-            FileIndexOptimizerPeriod = 14400000;
-            OOPort= 8100;
+            ex = e;
+            loadDefault = true;
+        }
+        try {
+            OOPort = XincoSettingServer.getSetting("setting.OOPort").getIntValue();
+        } catch (Exception e) {
+            OOPort = 8100;
+            ex = e;
+            loadDefault = true;
+        }
+
+        if (loadDefault) {
+            Logger.getLogger(XincoConfigSingletonServer.class.getSimpleName()).log(Level.WARNING,
+                    "Error loading configuration! Using default value for the ones not found.", ex);
         }
     }
 
