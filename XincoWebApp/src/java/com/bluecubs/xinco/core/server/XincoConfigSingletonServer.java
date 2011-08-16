@@ -81,16 +81,17 @@ public class XincoConfigSingletonServer {
     }
 
     public void loadSettings() {
-        Exception ex=null;
+        Exception ex = null;
         try {
             FileRepositoryPath = XincoSettingServer.getSetting("xinco/FileRepositoryPath").getStringValue();
+            if (!FileRepositoryPath.isEmpty()
+                    && !(FileRepositoryPath.substring(FileRepositoryPath.length() - 1).equals(System.getProperty("file.separator")))) {
+                FileRepositoryPath = FileRepositoryPath + System.getProperty("file.separator");
+            }
         } catch (Exception ce) {
             FileRepositoryPath = "";
             ex = ce;
             loadDefault = true;
-        }
-        if (!(FileRepositoryPath.substring(FileRepositoryPath.length() - 1).equals(System.getProperty("file.separator")))) {
-            FileRepositoryPath = FileRepositoryPath + System.getProperty("file.separator");
         }
         //optional: FileIndexPath
         try {
@@ -103,13 +104,14 @@ public class XincoConfigSingletonServer {
         }
         try {
             FileArchivePath = XincoSettingServer.getSetting("xinco/FileArchivePath").getStringValue();
+            if (!FileArchivePath.isEmpty()
+                    && !(FileArchivePath.substring(FileArchivePath.length() - 1).equals(System.getProperty("file.separator")))) {
+                FileArchivePath = FileArchivePath + System.getProperty("file.separator");
+            }
         } catch (Exception e) {
-            FileIndexPath = "";
+            FileArchivePath = "";
             ex = e;
             loadDefault = true;
-        }
-        if (!(FileArchivePath.substring(FileArchivePath.length() - 1).equals(System.getProperty("file.separator")))) {
-            FileArchivePath = FileArchivePath + System.getProperty("file.separator");
         }
         try {
             FileArchivePeriod = XincoSettingServer.getSetting("xinco/FileArchivePeriod").getLongValue();

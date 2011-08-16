@@ -89,7 +89,7 @@ INSERT INTO `xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, 
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES ('1', 'version.high', '2', '2', '0', '0');
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES ('2', 'version.mid', '01', '01', '0', '0');
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES ('3', 'version.low', '00', '00', '0', '0');
-INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES ('4', version.postfix', '0', 'M3', '0', '0'
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES ('4', 'version.postfix', '0', 'M3', '0', '0');
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES ('5', 'password.aging', '120', NULL, '0', '0');
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES ('6', 'password.attempts', '3', NULL, '0', '0');
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES ('7', 'password.unusable_period', '365', NULL, '0', '0');
