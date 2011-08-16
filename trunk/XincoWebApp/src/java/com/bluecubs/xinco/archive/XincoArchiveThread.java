@@ -78,7 +78,7 @@ public class XincoArchiveThread extends Thread {
                 archive_period = 14400000;
             }
             try {
-                Thread.sleep(archive_period);
+                sleep(archive_period);
             } catch (Exception se) {
                 break;
             }
