@@ -354,18 +354,18 @@
                                               <!--Update the create database script version-->
         <replaceregexp file="src/java/com/bluecubs/xinco/core/server/db/script/init.sql"
                        match="version.high'?,?'(.*)'"
-                       replace="version.high', '${version_high}', NULL, '0', '0'"
+                       replace="version.high', '${version_high}', '${version_high}', '0', '0'"
                        byline="true"/>
         <replaceregexp file="src/java/com/bluecubs/xinco/core/server/db/script/init.sql"
                        match="version.mid'?,?'(.*)'"
-                       replace="version.mid', '${version_mid}', NULL, '0', '0'"
+                       replace="version.mid', '${version_mid}', '${version_mid}', '0', '0'"
                        byline="true"/>
         <replaceregexp file="src/java/com/bluecubs/xinco/core/server/db/script/init.sql"
                        match="version.low'?,?'(.*)'"
-                       replace="version.low', '${version_low}', NULL, '0', '0'"
+                       replace="version.low', '${version_low}', '${version_low}', '0', '0'"
                        byline="true"/>
         <replaceregexp file="src/java/com/bluecubs/xinco/core/server/db/script/init.sql"
-                       match="version.postfix'?,?'0', '(.*)'"
+                       match="'version.postfix'.*"
                        replace="version.postfix', '0', '${version_postfix}', '0', '0'"
                        byline="true"/>
     </target>
