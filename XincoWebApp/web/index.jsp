@@ -7,7 +7,7 @@
 
 <%
             BrowserDataExtractor extractor = new BrowserDataExtractor(request, session);
-            XincoDBManager db = new XincoDBManager();
+            XincoDBManager db = XincoDBManager.get();
             if (db.config.isGuessLanguage()
                     && !extractor.getLanguage().isEmpty()
                     && extractor.isLanguageSupported(extractor.getLanguage())) {
@@ -38,7 +38,6 @@
                                                 int i = 0;
                                                 ResourceBundle lrb = null;
                                                 String[] locales;
-                                                String text = "";
                                                 //load locales
                                                 lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
                                                 locales = lrb.getString("AvailableLocales").split(",");

@@ -15,7 +15,7 @@
         <link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'>
     </head>
     <%
-            XincoDBManager DBM = new XincoDBManager();
+            XincoDBManager DBM = XincoDBManager.get();
             out.println("<body " + (!DBM.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' class='text'>" : "class='text'>"));
     %>
     <center>
