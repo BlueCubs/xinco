@@ -2,8 +2,8 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
-CREATE SCHEMA IF NOT EXISTS `xinco` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 CREATE SCHEMA IF NOT EXISTS `xinco_workflow` DEFAULT CHARACTER SET utf8 ;
+USE `xinco_workflow` ;
 
 -- -----------------------------------------------------
 -- Table `xinco_workflow`.`user_link`
@@ -93,21 +93,21 @@ DROP TABLE IF EXISTS `xinco_workflow`.`xinco_state_transitions_to_xinco_state` ;
 
 CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`xinco_state_transitions_to_xinco_state` (
   `source_state_id` INT(11) NOT NULL ,
-  `xinco_state_xinco_workflow_id` INT(11) NOT NULL ,
-  `xinco_state_xinco_workflow_version` INT(11) NOT NULL ,
+  `source_xinco_state_xinco_workflow_id` INT(11) NOT NULL ,
+  `source_xinco_state_xinco_workflow_version` INT(11) NOT NULL ,
   `destination_state_id` INT(11) NOT NULL ,
-  `xinco_state_xinco_workflow_id1` INT(11) NOT NULL ,
-  `xinco_state_xinco_workflow_version1` INT(11) NOT NULL ,
-  PRIMARY KEY (`source_state_id`, `xinco_state_xinco_workflow_id`, `xinco_state_xinco_workflow_version`, `destination_state_id`, `xinco_state_xinco_workflow_id1`, `xinco_state_xinco_workflow_version1`) ,
-  INDEX `fk_xinco_state_has_xinco_state_xinco_state1` (`source_state_id` ASC, `xinco_state_xinco_workflow_id` ASC, `xinco_state_xinco_workflow_version` ASC) ,
-  INDEX `fk_xinco_state_has_xinco_state_xinco_state2` (`destination_state_id` ASC, `xinco_state_xinco_workflow_id1` ASC, `xinco_state_xinco_workflow_version1` ASC) ,
+  `dest_xinco_state_xinco_workflow_id1` INT(11) NOT NULL ,
+  `dest_xinco_state_xinco_workflow_version1` INT(11) NOT NULL ,
+  PRIMARY KEY (`source_state_id`, `source_xinco_state_xinco_workflow_id`, `source_xinco_state_xinco_workflow_version`, `destination_state_id`, `dest_xinco_state_xinco_workflow_id1`, `dest_xinco_state_xinco_workflow_version1`) ,
+  INDEX `fk_xinco_state_has_xinco_state_xinco_state1` (`source_state_id` ASC, `source_xinco_state_xinco_workflow_id` ASC, `source_xinco_state_xinco_workflow_version` ASC) ,
+  INDEX `fk_xinco_state_has_xinco_state_xinco_state2` (`destination_state_id` ASC, `dest_xinco_state_xinco_workflow_id1` ASC, `dest_xinco_state_xinco_workflow_version1` ASC) ,
   CONSTRAINT `fk_xinco_state_has_xinco_state_xinco_state1`
-    FOREIGN KEY (`source_state_id` , `xinco_state_xinco_workflow_id` , `xinco_state_xinco_workflow_version` )
+    FOREIGN KEY (`source_state_id` , `source_xinco_state_xinco_workflow_id` , `source_xinco_state_xinco_workflow_version` )
     REFERENCES `xinco_workflow`.`xinco_workflow_state` (`id` , `xinco_workflow_id` , `xinco_workflow_version` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_xinco_state_has_xinco_state_xinco_state2`
-    FOREIGN KEY (`destination_state_id` , `xinco_state_xinco_workflow_id1` , `xinco_state_xinco_workflow_version1` )
+    FOREIGN KEY (`destination_state_id` , `dest_xinco_state_xinco_workflow_id1` , `dest_xinco_state_xinco_workflow_version1` )
     REFERENCES `xinco_workflow`.`xinco_workflow_state` (`id` , `xinco_workflow_id` , `xinco_workflow_version` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -128,7 +128,7 @@ CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`xinco_action` (
   UNIQUE INDEX `unique name` (`name` ASC) )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
-COMMENT = 'Configuration of actions to be performed.';
+COMMENT = 'Configuration of actions to be performed.' ;
 
 
 -- -----------------------------------------------------
@@ -149,7 +149,7 @@ CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`transition_has_xinco_action` (
   INDEX `fk_xinco_state_transitions_to_xinco_state_has_xinco_action_xi2` (`xinco_action_id` ASC) ,
   CONSTRAINT `fk_xinco_state_transitions_to_xinco_state_has_xinco_action_xi1`
     FOREIGN KEY (`source_state_id` , `source_xinco_workflow_id` , `source_xinco_workflow_version` , `destination_state_id` , `dest_xinco_workflow_id` , `dest_workflow_version` )
-    REFERENCES `xinco_workflow`.`xinco_state_transitions_to_xinco_state` (`source_state_id` , `xinco_state_xinco_workflow_id` , `xinco_state_xinco_workflow_version` , `destination_state_id` , `xinco_state_xinco_workflow_id1` , `xinco_state_xinco_workflow_version1` )
+    REFERENCES `xinco_workflow`.`xinco_state_transitions_to_xinco_state` (`source_state_id` , `source_xinco_state_xinco_workflow_id` , `source_xinco_state_xinco_workflow_version` , `destination_state_id` , `dest_xinco_state_xinco_workflow_id1` , `dest_xinco_state_xinco_workflow_version1` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_xinco_state_transitions_to_xinco_state_has_xinco_action_xi2`
@@ -179,7 +179,7 @@ CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`transition_has_xinco_core_user_res
   INDEX `fk_transition_has_xinco_core_user_restriction_user_link1` (`user_link_id` ASC) ,
   CONSTRAINT `fk_xinco_state_transitions_to_xinco_state_has_xinco_core_user1`
     FOREIGN KEY (`source_state_id` , `source_xinco_workflow_id` , `source_xinco_workflow_version` , `destination_state_id` , `dest_xinco_workflow_id` , `dest_xinco_workflow_version` )
-    REFERENCES `xinco_workflow`.`xinco_state_transitions_to_xinco_state` (`source_state_id` , `xinco_state_xinco_workflow_id` , `xinco_state_xinco_workflow_version` , `destination_state_id` , `xinco_state_xinco_workflow_id1` , `xinco_state_xinco_workflow_version1` )
+    REFERENCES `xinco_workflow`.`xinco_state_transitions_to_xinco_state` (`source_state_id` , `source_xinco_state_xinco_workflow_id` , `source_xinco_state_xinco_workflow_version` , `destination_state_id` , `dest_xinco_state_xinco_workflow_id1` , `dest_xinco_state_xinco_workflow_version1` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_transition_has_xinco_core_user_restriction_user_link1`
@@ -201,7 +201,7 @@ CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`xinco_parameter` (
   `xinco_action_id` INT(11) NOT NULL ,
   `name` VARCHAR(45) NOT NULL ,
   `value_type` VARCHAR(45) NOT NULL ,
-  `value` BLOB NOT NULL ,
+  `value` VARCHAR(255) NOT NULL ,
   PRIMARY KEY (`id`, `xinco_action_id`) ,
   INDEX `fk_xinco_parameter_xinco_action1` (`xinco_action_id` ASC) ,
   CONSTRAINT `fk_xinco_parameter_xinco_action1`
@@ -307,8 +307,8 @@ CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`xinco_work_item_has_xinco_state` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COMMENT = 'This will hold the history od this work item in the workflow';
+DEFAULT CHARACTER SET = utf8, 
+COMMENT = 'This will hold the history od this work item in the workflow' ;
 
 
 -- -----------------------------------------------------
@@ -333,8 +333,8 @@ CREATE  TABLE IF NOT EXISTS `xinco_workflow`.`xinco_work_item_parameter` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COMMENT = 'This will hold the item\'s parameters in this state.';
+DEFAULT CHARACTER SET = utf8, 
+COMMENT = 'This will hold the item\'s parameters in this state.' ;
 
 
 -- -----------------------------------------------------
@@ -361,8 +361,8 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- -----------------------------------------------------
 -- Data for table `xinco_workflow`.`xinco_workflow_id`
 -- -----------------------------------------------------
-SET AUTOCOMMIT=0;
+START TRANSACTION;
 USE `xinco_workflow`;
-insert into `xinco_workflow`.`xinco_workflow_id` (`id`, `tablename`, `last_id`) values (1, 'xinco_action', 1000);
+INSERT INTO `xinco_workflow`.`xinco_workflow_id` (`id`, `tablename`, `last_id`) VALUES (1, 'xinco_action', 1000);
 
 COMMIT;

@@ -15,8 +15,10 @@
     <Resource auth="Container" driverClassName="org.h2.Driver"
   factory="org.apache.commons.dbcp.BasicDataSourceFactory"
   maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB"
-  password="" type="javax.sql.DataSource"
-  url="jdbc:h2:file:~/data/xinco;create=true;MODE=MySQL" username="root"/>
+  password="arthrocare" type="javax.sql.DataSource"
+  url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true"
+  username="root"/>
+  <!--url="jdbc:h2:file:~/data/xinco;CREATE=TRUE;AUTO_SERVER=TRUE;LOCK_TIMEOUT=10000"-->
   <!-- #################### ################ ####################-->
     <!--Uncomment for non embedded use
     <ResourceParams name="jdbc/XincoDB">

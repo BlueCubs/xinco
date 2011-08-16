@@ -76,7 +76,6 @@ public class XincoDBManager {
     private static Map<String, Object> properties;
     //load compiled configuartion
     public final static XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
-    public static int count = 0;
     private int EmailLink = 1, DataLink = 2;
     private static ResourceBundle lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
     private Locale loc = null;
@@ -84,12 +83,19 @@ public class XincoDBManager {
     private static boolean locked = false;
     private static boolean usingContext = false;
     private static boolean initDone = false;
+    private static XincoDBManager instance;
 
-    public XincoDBManager() throws Exception {
-        count++;
+    private XincoDBManager() throws Exception {
         config.loadSettings();
         //Test: create pdf rendering
 //        FileConverter.createPDFRendering(1);
+    }
+
+    public static XincoDBManager get() throws Exception {
+        if (instance == null) {
+            instance = new XincoDBManager();
+        }
+        return instance;
     }
 
     /**
@@ -106,16 +112,7 @@ public class XincoDBManager {
         locked = aLocked;
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            count--;
-        } finally {
-            super.finalize();
-        }
-    }
 //TODO: Replace with a report
-
     /**
      * Draws a table with results of the query stored in the ResultSet rs in the PrintWriter out
      * @param rs
@@ -321,6 +318,7 @@ public class XincoDBManager {
         ignore.add(ESqlStatementType.sstcreatetable.toString());
         ignore.add(ESqlStatementType.sstmysqlsetautocommit.toString());
         ignore.add(ESqlStatementType.sstmysqlcommit.toString());
+        ignore.add(ESqlStatementType.sstmysqlstarttransaction.toString());
         //-------------------------------------
         if (!sql.toString().isEmpty()) {
             TGSqlParser sqlparser = new TGSqlParser(EDbVendor.dbvmysql);

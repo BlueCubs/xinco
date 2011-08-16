@@ -140,7 +140,7 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.h2-1.2.136.jar-1}</file>
+                    <file>${file.reference.h2.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
@@ -207,6 +207,10 @@
                 </library>
                 <library dirs="200">
                     <file>${reference.XincoExplorer.jar}</file>
+                    <path-in-war>client</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${reference.Xinco.jar}</file>
                     <path-in-war>client</path-in-war>
                 </library>
             </web-module-additional-libraries>
