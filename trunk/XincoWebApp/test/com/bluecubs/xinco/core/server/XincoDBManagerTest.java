@@ -35,7 +35,7 @@ public class XincoDBManagerTest extends XincoTestCase {
     public void testReadFileAsString(){
         try {
             ArrayList<String> statements=
-                    XincoDBManager.readFileAsString("Z:\\Netbeans\\Xinco\\2.01.00\\DB\\xinco_MySQL.sql",null);
+                    XincoDBManager.readFileAsString("xinco_MySQL.sql",getClass());
             assertTrue(!statements.isEmpty());
         } catch (IOException ex) {
             Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);

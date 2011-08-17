@@ -3,11 +3,9 @@ package com.bluecubs.xinco.core.server;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
@@ -26,7 +24,7 @@ public class XincoCoreUserServerTest extends XincoTestCase {
         TestSuite suite = new TestSuite(XincoCoreUserServerTest.class);
         return suite;
     }
-    
+
     /**
      * Test of getAttempts method, of class XincoCoreUserServer.
      */
@@ -89,7 +87,7 @@ public class XincoCoreUserServerTest extends XincoTestCase {
             assertFalse(instance.isPasswordUsable(newPass));
             //Change last modified out of invalid range
             GregorianCalendar cal = new GregorianCalendar();
-            int val = Integer.valueOf(ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings").getString("password.aging")) + 1;
+            int val = XincoSettingServer.getSetting("password.aging").getIntValue() + 1;
             cal.add(GregorianCalendar.DATE, -val);
             instance.setLastModified(new Timestamp(cal.getTimeInMillis()));
             instance.setUserpassword(newPass + "*");

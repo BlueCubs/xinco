@@ -101,7 +101,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             getXincoCoreData().clear();
             //load acl for this object
             getXincoCoreAcl().clear();
-            getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreNodeId.id"));
+            getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreNode.id"));
         } catch (Exception e) {
             setXincoCoreLanguage(null);
             ((ArrayList) getXincoCoreAcl()).clear();
@@ -121,7 +121,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
         getXincoCoreData().clear();
         //load acl for this object
         getXincoCoreAcl().clear();
-        getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(xcn.getId(), "xincoCoreNodeId.id"));
+        getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(xcn.getId(), "xincoCoreNode.id"));
         fillXincoCoreData();
         fillXincoCoreNodes();
     }
@@ -168,7 +168,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
         int i = 0;
         try {
             if (delete_this) {
-                result = XincoDBManager.createdQuery("Select xca from XincoCoreAce xca where xca.xincoCoreNodeId.id=" + getId());
+                result = XincoDBManager.createdQuery("Select xca from XincoCoreAce xca where xca.xincoCoreNode.id=" + getId());
                 for (Object o : result) {
                     com.bluecubs.xinco.core.server.persistence.XincoCoreAce xca =
                             (com.bluecubs.xinco.core.server.persistence.XincoCoreAce) o;
@@ -198,10 +198,10 @@ public class XincoCoreNodeServer extends XincoCoreNode {
         }
     }
 
-    public void fillXincoCoreNodes() {
+    public final void fillXincoCoreNodes() {
         try {
             result = XincoDBManager.createdQuery("SELECT xcn FROM XincoCoreNode xcn "
-                    + "WHERE xcn.xincoCoreNodeId.id = " + getId() + " ORDER BY xcn.designation");
+                    + "WHERE xcn.xincoCoreNode.id = " + getId() + " ORDER BY xcn.designation");
             for (Object o : result) {
                 ((ArrayList) getXincoCoreNodes()).add(new XincoCoreNodeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o));
             }
@@ -211,9 +211,9 @@ public class XincoCoreNodeServer extends XincoCoreNode {
 
     }
 
-    public void fillXincoCoreData() {
+    public final void fillXincoCoreData() {
         try {
-            result = XincoDBManager.createdQuery("SELECT xcd FROM XincoCoreData xcd WHERE xcd.xincoCoreNodeId.id = " + getId() + " ORDER BY xcd.designation");
+            result = XincoDBManager.createdQuery("SELECT xcd FROM XincoCoreData xcd WHERE xcd.xincoCoreNode.id = " + getId() + " ORDER BY xcd.designation");
             for (Object o : result) {
                 ((ArrayList) getXincoCoreData()).add(new XincoCoreDataServer((com.bluecubs.xinco.core.server.persistence.XincoCoreData) o));
             }
@@ -226,8 +226,8 @@ public class XincoCoreNodeServer extends XincoCoreNode {
         ArrayList nodes = new ArrayList();
         try {
             result = XincoDBManager.createdQuery("SELECT xcn FROM XincoCoreNode xcn "
-                    + "WHERE xcn.xincoCoreLanguageId.id = " + attrLID + " AND "
-                    + "xcn.designation LIKE '" + attrS + "%' ORDER BY xcn.designation, xcn.xincoCoreLanguageId.id");
+                    + "WHERE xcn.xincoCoreLanguage.id = " + attrLID + " AND "
+                    + "xcn.designation LIKE '" + attrS + "%' ORDER BY xcn.designation, xcn.xincoCoreLanguage.id");
             int i = 0;
             for (Object o : result) {
                 nodes.add(new XincoCoreNodeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o));

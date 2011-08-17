@@ -103,8 +103,9 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
             setAttribDouble(xaa.getAttribDouble());
             setAttribVarchar(xaa.getAttribVarchar());
             setAttribText(xaa.getAttribText());
-            DatatypeFactory factory = DatatypeFactory.newInstance();
-            setAttribDatetime(factory.newXMLGregorianCalendar(xaa.getAttribDatetime().toString()));
+            GregorianCalendar c = new GregorianCalendar();
+            c.setTime(xaa.getAttribDatetime());
+            setAttribDatetime(DatatypeFactory.newInstance().newXMLGregorianCalendar(c));
         } catch (DatatypeConfigurationException ex) {
             Logger.getLogger(XincoAddAttributeServer.class.getSimpleName()).log(Level.SEVERE, null, ex);
         }

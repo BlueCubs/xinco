@@ -13,7 +13,13 @@ public class XincoTestCase extends TestCase {
     }
 
     @Override
+    protected void tearDown() throws Exception {
+        AuditedEntityListener.setEnabled(true);
+    }  
+
+    @Override
     protected void setUp() throws Exception {
+        AuditedEntityListener.setEnabled(false);
         XincoDBManager.setPU("XincoTest");
     }
 }

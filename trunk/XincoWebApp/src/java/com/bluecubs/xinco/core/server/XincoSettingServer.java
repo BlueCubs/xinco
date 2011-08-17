@@ -55,24 +55,26 @@ public class XincoSettingServer extends XincoSetting {
     //write to db
     public int write2DB() throws XincoException {
         try {
-            com.bluecubs.xinco.core.server.persistence.XincoSetting setting =
-                    new com.bluecubs.xinco.core.server.persistence.XincoSetting();
-            setBoolValue(setting.getBoolValue());
-            if (id > 0) {
-                setId(id);
-            }
-            setIntValue(setting.getIntValue());
-            setLongValue(setting.getLongValue());
-            setStringValue(setting.getStringValue());
-            setDescription(setting.getDescription());
-            XincoSettingJpaController controller =
-                    new XincoSettingJpaController(
-                    XincoDBManager.getEntityManagerFactory());
-            if (id == 0) {
-                controller.create(setting);
-            } else {
+            XincoSettingJpaController controller = new XincoSettingJpaController(XincoDBManager.getEntityManagerFactory());
+            com.bluecubs.xinco.core.server.persistence.XincoSetting setting = null;
+            if (getId() > 0) {
+                setting = controller.findXincoSetting(getId());
+                setting.setBoolValue(isBoolValue());
+                setting.setIntValue(getIntValue());
+                setting.setLongValue(getLongValue());
+                setting.setStringValue(getStringValue());
+                setting.setDescription(getDescription());
                 controller.edit(setting);
+            } else {
+                setting = new com.bluecubs.xinco.core.server.persistence.XincoSetting();
+                setting.setBoolValue(isBoolValue());
+                setting.setIntValue(getIntValue());
+                setting.setLongValue(getLongValue());
+                setting.setStringValue(getStringValue());
+                setting.setDescription(getDescription());
+                controller.create(setting);
             }
+            setId(setting.getId());
         } catch (Exception ex) {
             //no commit or rollback -> CoreData manages exceptions!
             Logger.getLogger(XincoAddAttributeServer.class.getSimpleName()).log(Level.SEVERE, null, ex);
