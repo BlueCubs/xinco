@@ -1,9 +1,10 @@
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
@@ -20,13 +21,14 @@ public class XincoCoreDataTypeServerTest extends XincoTestCase {
         TestSuite suite = new TestSuite(XincoCoreDataTypeServerTest.class);
         return suite;
     }
+
     /**
      * Test of getXincoCoreDataTypes method, of class XincoCoreDataTypeServer.
      */
     public void testWrite2DB() {
         try {
             System.out.println("write2DB");
-            XincoCoreDataTypeServer instance = new XincoCoreDataTypeServer(0, "Test", "Test desc", null);
+            XincoCoreDataTypeServer instance = new XincoCoreDataTypeServer(0, "Test", "Test desc", new ArrayList<XincoCoreDataTypeAttribute>());
             assertTrue(instance.write2DB() > 0);
             XincoCoreDataTypeServer.deleteFromDB(instance);
         } catch (XincoException ex) {

@@ -81,7 +81,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                 setStatusNumber(xcd.getStatusNumber());
                 //load acl for this object
                 getXincoCoreAcl().clear();
-                getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(xcd.getId(), "xincoCoreDataId.id"));
+                getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(xcd.getId(), "xincoCoreData.id"));
             } else {
                 throw new XincoException();
             }
@@ -106,7 +106,7 @@ public class XincoCoreDataServer extends XincoCoreData {
         setStatusNumber(attrSN);
         //load acl for this object
         getXincoCoreAcl().clear();
-        getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreDataId.id"));
+        getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreData.id"));
     }
 
     public XincoCoreDataServer(com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd) throws XincoException {
@@ -125,7 +125,7 @@ public class XincoCoreDataServer extends XincoCoreData {
             setStatusNumber(xcd.getStatusNumber());
             //load acl for this object
             getXincoCoreAcl().clear();
-            getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(xcd.getId(), "xincoCoreDataId.id"));
+            getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(xcd.getId(), "xincoCoreData.id"));
         } catch (XincoException ex) {
             getXincoCoreAcl().clear();
             throw new XincoException();
@@ -293,15 +293,15 @@ public class XincoCoreDataServer extends XincoCoreData {
         try {
             String lang = "";
             if (attrLID != 0) {
-                lang = "AND (x.xincoCoreData.xincoCoreLanguageId.id = " + attrLID + ")";
+                lang = "AND (x.xincoCoreData.xincoCoreLanguage.id = " + attrLID + ")";
             }
             if (attrSA) {
                 result = XincoDBManager.createdQuery("SELECT x FROM XincoAddAttribute x WHERE (x.xincoCoreData.designation LIKE '"
                         + attrS + "%' or " + "x.attribVarchar  LIKE '" + attrS + "%' or x.attribText LIKE '" + attrS + "') "
-                        + lang + "order by x.xincoCoreData.designation, x.xincoCoreData.xincoCoreLanguageId.id");
+                        + lang + "order by x.xincoCoreData.designation, x.xincoCoreData.xincoCoreLanguage.id");
             } else {
                 result = XincoDBManager.createdQuery("SELECT x FROM XincoAddAttribute x WHERE x.xincoCoreData.designation LIKE '"
-                        + attrS + "%' " + lang + "order by x.xincoCoreData.designation, x.xincoCoreData.xincoCoreLanguageId.id");
+                        + attrS + "%' " + lang + "order by x.xincoCoreData.designation, x.xincoCoreData.xincoCoreLanguage.id");
             }
             int i = 0;
             for (Object o : result) {

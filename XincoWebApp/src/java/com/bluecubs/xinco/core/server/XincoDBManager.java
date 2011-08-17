@@ -88,11 +88,8 @@ public class XincoDBManager {
     private static DBState state;
     private static final Logger logger = Logger.getLogger(XincoDBManager.class.getName());
 
-    static {
-        updateDBState();
-    }
-
     private XincoDBManager() throws Exception {
+        updateDBState();
         config.loadSettings();
         //Test: create pdf rendering
 //        FileConverter.createPDFRendering(1);
@@ -262,6 +259,7 @@ public class XincoDBManager {
         //Set it to null so it's recreated with new Persistence Unit next time is requested.
         emf = null;
         initDone = false;
+        updateDBState();
         getEntityManagerFactory();
     }
 

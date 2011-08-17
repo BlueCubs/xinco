@@ -110,9 +110,9 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
     public int write2DB() throws XincoException {
         try {
             XincoCoreDataTypeJpaController controller = new XincoCoreDataTypeJpaController(XincoDBManager.getEntityManagerFactory());
-            com.bluecubs.xinco.core.server.persistence.XincoCoreDataType xcdt=null;
+            com.bluecubs.xinco.core.server.persistence.XincoCoreDataType xcdt = null;
             if (getId() > 0) {
-                 xcdt=controller.findXincoCoreDataType(getId());
+                xcdt = controller.findXincoCoreDataType(getId());
                 xcdt.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
                 xcdt.setDescription(getDescription().replaceAll("'", "\\\\'"));
                 xcdt.setId(getId());
@@ -124,7 +124,6 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
                 xcdt = new com.bluecubs.xinco.core.server.persistence.XincoCoreDataType(getId());
                 xcdt.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
                 xcdt.setDescription(getDescription().replaceAll("'", "\\\\'"));
-                xcdt.setId(getId());
                 xcdt.setModificationReason("audit.general.created");
                 xcdt.setModifierId(getChangerID());
                 xcdt.setModificationTime(new Timestamp(new Date().getTime()));
@@ -138,10 +137,10 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
     }
 
     public static int deleteFromDB(XincoCoreDataType xcdt) {
-        try{
+        try {
             new XincoCoreDataTypeJpaController(XincoDBManager.getEntityManagerFactory()).destroy(xcdt.getId());
             return 0;
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getSimpleName()).log(Level.SEVERE, null, ex);
             return -1;
         }

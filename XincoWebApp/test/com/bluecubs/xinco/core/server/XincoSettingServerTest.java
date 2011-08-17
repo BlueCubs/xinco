@@ -1,6 +1,5 @@
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.core.server.service.XincoCoreUser;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

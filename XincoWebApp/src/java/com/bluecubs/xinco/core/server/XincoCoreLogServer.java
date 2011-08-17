@@ -47,7 +47,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -146,7 +145,6 @@ public class XincoCoreLogServer extends XincoCoreLog {
             XincoCoreLogJpaController controller = new XincoCoreLogJpaController(XincoDBManager.getEntityManagerFactory());
             com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl=null;
             if (getId() > 0) {
-                ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
                 xcl = controller.findXincoCoreLog(getId());
                 xcl.setXincoCoreData(new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreData(getXincoCoreDataId()));
                 xcl.setXincoCoreUser(new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(getXincoCoreUserId()));
@@ -185,7 +183,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
         GregorianCalendar cal = new GregorianCalendar();
 
         try {
-            result = XincoDBManager.createdQuery("SELECT xcl FROM XincoCoreLog xcl WHERE xcl.xincoCoreDataId.id=" + attrID);
+            result = XincoDBManager.createdQuery("SELECT xcl FROM XincoCoreLog xcl WHERE xcl.xincoCoreData.id=" + attrID);
 
             while (result.size() > 0) {
                 com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl =

@@ -98,13 +98,14 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
                 xcl.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.edit(xcl);
             } else {
-                xcl = new com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage(getId());
+                xcl = new com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage();
                 xcl.setSign(getSign().replaceAll("'", "\\\\'"));
                 xcl.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
                 xcl.setModificationReason("audit.general.create");
                 xcl.setModifierId(getChangerID());
                 xcl.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.create(xcl);
+                setId(xcl.getId());
             }
         } catch (Exception e) {
             throw new XincoException(e.getMessage());
@@ -141,9 +142,9 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     public static boolean isLanguageUsed(XincoCoreLanguage xcl) {
         boolean is_used = false;
         try {
-            is_used = ((Long)XincoDBManager.createdQuery("select count(xcn) from XincoCoreNode xcn where xcn.xincoCoreLanguageId.id = " + xcl.getId()).get(0)) > 0;
+            is_used = ((Long)XincoDBManager.createdQuery("select count(xcn) from XincoCoreNode xcn where xcn.xincoCoreLanguage.id = " + xcl.getId()).get(0)) > 0;
             if (!is_used) {
-                is_used = ((Long)XincoDBManager.createdQuery("select count(xcd) from XincoCoreData xcd where xcd.xincoCoreLanguageId.id = " + xcl.getId()).get(0)) > 0;
+                is_used = ((Long)XincoDBManager.createdQuery("select count(xcd) from XincoCoreData xcd where xcd.xincoCoreLanguage.id = " + xcl.getId()).get(0)) > 0;
             }
         } catch (Exception ex) {
             Logger.getLogger(XincoCoreLanguageServer.class.getSimpleName()).log(Level.SEVERE, null, ex);
