@@ -34,6 +34,8 @@
  */
 package com.bluecubs.xinco.tools;
 
+import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
 import java.io.UnsupportedEncodingException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
@@ -45,7 +47,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
-import org.eclipse.persistence.internal.oxm.conversion.Base64;
 
 /**
  *
@@ -131,7 +132,7 @@ public class XincoCrypter {
             final byte[] enc = ecipher.doFinal(utf8);
 
             // Encode bytes to base64 to get a string
-            result = Base64.base64Encode(enc).toString();
+            result = Base64.encode(enc).toString();
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(XincoCrypter.class.getSimpleName()).log(
                     Level.SEVERE, null, ex);
@@ -154,12 +155,14 @@ public class XincoCrypter {
         String result = null;
         try {
             // Decode base64 to get bytes
-            final byte[] dec = Base64.base64Decode(str.getBytes());
+            final byte[] dec = Base64.decode(str.getBytes());
 
             // Decrypt
             final byte[] utf8 = dcipher.doFinal(dec);
             // Decode using utf-8
             result = new String(utf8, "UTF8");
+        } catch (Base64DecodingException ex) {
+            Logger.getLogger(XincoCrypter.class.getName()).log(Level.SEVERE, null, ex);
         } catch (javax.crypto.BadPaddingException e) {
             Logger.getLogger(XincoCrypter.class.getName()).log(
                     Level.SEVERE, null, e);
