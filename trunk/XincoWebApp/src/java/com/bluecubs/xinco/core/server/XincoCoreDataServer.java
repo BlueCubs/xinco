@@ -71,16 +71,13 @@ public class XincoCoreDataServer extends XincoCoreData {
                 setXincoCoreLanguage(new XincoCoreLanguageServer(xcd.getXincoCoreLanguage().getId()));
                 setXincoCoreDataType(new XincoCoreDataTypeServer(xcd.getXincoCoreDataType().getId()));
                 //load logs
-                getXincoCoreLogs().clear();
-                getXincoCoreLogs().addAll(XincoCoreLogServer.getXincoCoreLogs(xcd.getId()));
+                loadLogs();
                 //load add attributes
-                getXincoAddAttributes().clear();
-                getXincoAddAttributes().addAll(XincoAddAttributeServer.getXincoAddAttributes(xcd.getId()));
+                loadAddAttributes();
                 setDesignation(xcd.getDesignation());
                 setStatusNumber(xcd.getStatusNumber());
                 //load acl for this object
-                getXincoCoreAcl().clear();
-                getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(xcd.getId(), "xincoCoreData.id"));
+                loadACL();
             } else {
                 throw new XincoException();
             }
@@ -88,6 +85,21 @@ public class XincoCoreDataServer extends XincoCoreData {
             getXincoCoreAcl().clear();
             throw new XincoException();
         }
+    }
+
+    public final void loadAddAttributes() {
+        getXincoAddAttributes().clear();
+        getXincoAddAttributes().addAll(XincoAddAttributeServer.getXincoAddAttributes(getId()));
+    }
+
+    public final void loadLogs() {
+        getXincoCoreLogs().clear();
+        getXincoCoreLogs().addAll(XincoCoreLogServer.getXincoCoreLogs(getId()));
+    }
+
+    public final void loadACL() {
+        getXincoCoreAcl().clear();
+        getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreData.id"));
     }
 
     //create data object for data structures
