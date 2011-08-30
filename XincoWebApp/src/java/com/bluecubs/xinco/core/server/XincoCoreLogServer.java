@@ -115,9 +115,10 @@ public class XincoCoreLogServer extends XincoCoreLog {
     }
 
     //create single log object for data structures
-    public XincoCoreLogServer(int attrID, int attrCDID, int attrUID, int attrOC, Calendar attrODT, String attrOD, int attrVH, int attrVM, int attrVL, String attrVP) throws XincoException {
+    public XincoCoreLogServer(int attrCDID, int attrUID, int attrOC, 
+            Calendar attrODT, String attrOD, int attrVH, int attrVM, 
+            int attrVL, String attrVP) throws XincoException {
         try {
-            setId(attrID);
             setXincoCoreDataId(attrCDID);
             setXincoCoreUserId(attrUID);
             setOpCode(attrOC);
@@ -154,7 +155,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 xcl.setVersionPostfix(getVersion().getVersionPostfix().replaceAll("'", "\\\\'"));
                 controller.edit(xcl);
             } else {
-                xcl = new com.bluecubs.xinco.core.server.persistence.XincoCoreLog(getId());
+                xcl = new com.bluecubs.xinco.core.server.persistence.XincoCoreLog();
                 xcl.setXincoCoreData(new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreData(getXincoCoreDataId()));
                 xcl.setXincoCoreUser(new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(getXincoCoreUserId()));
                 xcl.setOpCode(getOpCode());
