@@ -41,9 +41,13 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.persistence.XincoAddAttribute;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreLog;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,7 +61,6 @@ public class XincoArchiveThread extends Thread {
     public static XincoArchiveThread instance = null;
     public Calendar firstRun = null;
     public Calendar lastRun = null;
-    static XincoCoreDataServer xdata_temp = null;
     static FileInputStream fcis = null;
     static FileOutputStream fcos = null;
     private static List result;
@@ -106,43 +109,62 @@ public class XincoArchiveThread extends Thread {
         try {
             int querycount = 0;
             String[] query = new String[2];
-            query[querycount] = "SELECT DISTINCT xcd.id FROM XincoCoreData xcd, XincoAddAttribute xaa1, XincoAddAttribute xaa2 "
+            query[querycount] = "SELECT DISTINCT xcd FROM XincoCoreData xcd "
                     + "WHERE xcd.xincoCoreDataType.id = 1 "
                     + "AND xcd.statusNumber <> 3 "
-                    + "AND xcd.id = xaa1.xincoCoreData.id "
-                    + "AND xcd.id = xaa2.xincoCoreData.id "
-                    + "AND xaa1.xincoAddAttributePK.attributeId = 5 "
-                    + "AND xaa1.attribUnsignedint = 1 "
-                    + "AND xaa2.xincoAddAttributePK.attributeId = 6 "
-                    + "AND xaa2.attribDatetime < CURRENT_DATE "
                     + "ORDER BY xcd.id";
             querycount++;
 
-//            query[querycount] = "SELECT DISTINCT xcd FROM XincoCoreData xcd, XincoAddAttribute xaa1, XincoAddAttribute xaa2, XincoCoreLog xcl "
-//                    + "WHERE xcd.xincoCoreDataType.id = 1 "
-//                    + "AND xcd.statusNumber <> 3 "
-//                    + "AND xcd.id = xaa1.xincoCoreData.id "
-//                    + "AND xcd.id = xaa2.xincoCoreData.id "
-//                    + "AND xcd.id = xcl.xincoCoreData.id "
-//                    + "AND xaa1.xincoAddAttributePK.attributeId = 5 "
-//                    + "AND xaa1.attribUnsignedint = 2 "
-//                    + "AND xaa2.attribute = 7 "
-//                    + "AND ADDDATE(DATE(xcl.opDatetime), xaa2.attribUnsignedint) < CURRENT_DATE "
-//                    + "ORDER BY xcd.id";
-//            querycount++;
+            query[querycount] = "SELECT DISTINCT xcd FROM XincoCoreData xcd, XincoAddAttribute xaa1, XincoCoreLog xcl "
+                    + "WHERE xcd.xincoCoreDataType.id = 1 "
+                    + "AND xcd.statusNumber <> 3 "
+                    + "AND xcd.id = xaa1.xincoCoreData.id "
+                    + "AND xcd.id = xcl.xincoCoreData.id "
+                    + "AND xaa1.xincoAddAttributePK.attributeId = 5 "
+                    + "AND xaa1.attribUnsignedint = 2 "
+                    + "ORDER BY xcd.id";
+            querycount++;
 
             for (j = 0; j < querycount; j++) {
                 //select data with expired archiving date
                 if (j == 1) {
-                    
+                    result = XincoDBManager.createdQuery(query[j]);
+                    //Now process the date part of the query in plain JAVA
+                    int delay =0;
+                    for (Object o : result) {
+                        XincoCoreData data = (XincoCoreData) o;
+                        //Get the amount of days for archival
+                        for(XincoAddAttribute attr:data.getXincoAddAttributeList()){
+                            if(attr.getXincoAddAttributePK().getAttributeId() == 7){
+                                delay = (int) attr.getAttribUnsignedint();
+                                break;
+                            }
+                        }
+                        for (XincoCoreLog log : data.getXincoCoreLogList()) {
+                            GregorianCalendar c = new GregorianCalendar();
+                            c.setTime(log.getOpDatetime());
+                            c.add(Calendar.DAY_OF_YEAR, delay);
+                            if(c.getTime().before(new Date(System.currentTimeMillis()))){
+                                XincoArchiver.archiveData(new XincoCoreDataServer(data.getId()),
+                                        XincoCoreNodeServer.getXincoCoreNodeParents(data.getXincoCoreNode().getId()));
+                                break;
+                            }
+                        }
+                    }
                 } else {
                     result = XincoDBManager.createdQuery(query[j]);
-                }
-                for (Object o : result) {
-                    int id = (Integer) o;
-                    XincoArchiver.archiveData(new XincoCoreDataServer(id),
-                            XincoCoreNodeServer.getXincoCoreNodeParents(xdata_temp.getXincoCoreNodeId()));
-                    sleep(10000);
+                    for (Object o : result) {
+                        XincoCoreData data = (XincoCoreData) o;
+                        for (XincoAddAttribute attr : data.getXincoAddAttributeList()) {
+                            if (attr.getXincoAddAttributePK().getAttributeId() == 6
+                                    && attr.getAttribDatetime().before(new Date(System.currentTimeMillis()))) {
+                                XincoArchiver.archiveData(new XincoCoreDataServer(data.getId()),
+                                        XincoCoreNodeServer.getXincoCoreNodeParents(data.getXincoCoreNode().getId()));
+                                break;
+                            }
+                        }
+                        sleep(10000);
+                    }
                 }
             }
             return true;
@@ -156,7 +178,7 @@ public class XincoArchiveThread extends Thread {
                     fcos.close();
                 }
             } catch (IOException fe) {
-                logger.log(Level.SEVERE, null, e);
+                logger.log(Level.SEVERE, null, fe);
             }
             return false;
         }

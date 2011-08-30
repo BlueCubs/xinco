@@ -35,22 +35,22 @@ import javax.jws.WebService;
 @WebService(serviceName = "Xinco", portName = "XincoPort", endpointInterface = "com.bluecubs.xinco.core.server.service.Xinco", targetNamespace = "http://service.server.core.xinco.bluecubs.com/", wsdlLocation = "WEB-INF/wsdl/XincoWebService/Xinco.wsdl")
 public class XincoWebService {
 
-    public com.bluecubs.xinco.core.server.service.XincoCoreDataType getXincoCoreDataType(com.bluecubs.xinco.core.server.service.XincoCoreDataType in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public XincoCoreDataType getXincoCoreDataType(XincoCoreDataType in0, XincoCoreUser in1) {
         //dummy: not to be implemented!
         return null;
     }
 
-    public java.util.List<com.bluecubs.xinco.core.server.service.XincoAddAttribute> getXincoAddAttributes(com.bluecubs.xinco.core.server.service.XincoCoreData in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public java.util.List<XincoAddAttribute> getXincoAddAttributes(XincoCoreData in0, XincoCoreUser in1) {
         //dummy: not to be implemented!
         return null;
     }
 
-    public java.util.List<com.bluecubs.xinco.core.server.service.XincoCoreNode> getXincoCoreNodes(com.bluecubs.xinco.core.server.service.XincoCoreNode in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public java.util.List<XincoCoreNode> getXincoCoreNodes(XincoCoreNode in0, XincoCoreUser in1) {
         //dummy: not to be implemented!
         return null;
     }
 
-    public com.bluecubs.xinco.core.server.service.XincoCoreData getXincoCoreData(com.bluecubs.xinco.core.server.service.XincoCoreData in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public XincoCoreData getXincoCoreData(XincoCoreData in0, XincoCoreUser in1) {
         try {
             XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
             XincoCoreDataServer data = new XincoCoreDataServer(in0.getId());
@@ -66,7 +66,7 @@ public class XincoWebService {
         }
     }
 
-    public com.bluecubs.xinco.core.server.service.XincoVersion getXincoServerVersion() throws XincoException {
+    public XincoVersion getXincoServerVersion() throws XincoException {
         //return current version of server
         XincoVersion version = new XincoVersion();
         version.setVersionHigh(XincoSettingServer.getSetting(new XincoCoreUserServer(1),"version.high").getIntValue());
@@ -76,7 +76,7 @@ public class XincoWebService {
         return version;
     }
 
-    public com.bluecubs.xinco.core.server.service.XincoCoreUser getCurrentXincoCoreUser(java.lang.String in0, java.lang.String in1) {
+    public XincoCoreUser getCurrentXincoCoreUser(java.lang.String in0, java.lang.String in1) {
         //login
         try {
             XincoCoreUserServer user = new XincoCoreUserServer(in0, in1);
@@ -87,8 +87,8 @@ public class XincoWebService {
         }
     }
 
-    public java.util.List<com.bluecubs.xinco.core.server.service.XincoCoreGroup> getAllXincoCoreGroups(com.bluecubs.xinco.core.server.service.XincoCoreUser in0) {
-        ArrayList<com.bluecubs.xinco.core.server.service.XincoCoreGroup> list = null;
+    public java.util.List<XincoCoreGroup> getAllXincoCoreGroups(XincoCoreUser in0) {
+        ArrayList<XincoCoreGroup> list = null;
         try {
             //check if user exists
             if (XincoCoreUserServer.validCredentials(in0.getUsername(), in0.getUserpassword())) {
@@ -100,8 +100,8 @@ public class XincoWebService {
         return list;
     }
 
-    public java.util.List<com.bluecubs.xinco.core.server.service.XincoCoreLanguage> getAllXincoCoreLanguages(com.bluecubs.xinco.core.server.service.XincoCoreUser in0) {
-        ArrayList<com.bluecubs.xinco.core.server.service.XincoCoreLanguage> list = null;
+    public java.util.List<XincoCoreLanguage> getAllXincoCoreLanguages(XincoCoreUser in0) {
+        ArrayList<XincoCoreLanguage> list = null;
         try {
             //check if user exists
             if (XincoCoreUserServer.validCredentials(in0.getUsername(), in0.getUserpassword())) {
@@ -113,8 +113,8 @@ public class XincoWebService {
         return list;
     }
 
-    public java.util.List<com.bluecubs.xinco.core.server.service.XincoCoreDataType> getAllXincoCoreDataTypes(com.bluecubs.xinco.core.server.service.XincoCoreUser in0) {
-        ArrayList<com.bluecubs.xinco.core.server.service.XincoCoreDataType> list = null;
+    public java.util.List<XincoCoreDataType> getAllXincoCoreDataTypes(XincoCoreUser in0) {
+        ArrayList<XincoCoreDataType> list = null;
         try {
             //check if user exists
             if (XincoCoreUserServer.validCredentials(in0.getUsername(), in0.getUserpassword())) {
@@ -126,7 +126,7 @@ public class XincoWebService {
         return list;
     }
 
-    public com.bluecubs.xinco.core.server.service.XincoCoreNode getXincoCoreNode(com.bluecubs.xinco.core.server.service.XincoCoreNode in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public XincoCoreNode getXincoCoreNode(XincoCoreNode in0, XincoCoreUser in1) {
         try {
             int i = 0;
             XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
@@ -159,22 +159,22 @@ public class XincoWebService {
         }
     }
 
-    public com.bluecubs.xinco.core.server.service.XincoCoreData doXincoCoreDataCheckout(com.bluecubs.xinco.core.server.service.XincoCoreData in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public XincoCoreData doXincoCoreDataCheckout(XincoCoreData in0, XincoCoreUser in1) {
         in0.setStatusNumber(4);
         return setXincoCoreData(in0, in1);
     }
 
-    public com.bluecubs.xinco.core.server.service.XincoCoreData doXincoCoreDataCheckin(com.bluecubs.xinco.core.server.service.XincoCoreData in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public XincoCoreData doXincoCoreDataCheckin(XincoCoreData in0, XincoCoreUser in1) {
         in0.setStatusNumber(1);
         return setXincoCoreData(in0, in1);
     }
 
-    public com.bluecubs.xinco.core.server.service.XincoCoreData undoXincoCoreDataCheckout(com.bluecubs.xinco.core.server.service.XincoCoreData in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public XincoCoreData undoXincoCoreDataCheckout(XincoCoreData in0, XincoCoreUser in1) {
         in0.setStatusNumber(1);
         return setXincoCoreData(in0, in1);
     }
 
-    public byte[] downloadXincoCoreData(com.bluecubs.xinco.core.server.service.XincoCoreData in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public byte[] downloadXincoCoreData(XincoCoreData in0, XincoCoreUser in1) {
         try {
             XincoCoreDataServer data;
             XincoCoreACE ace;
@@ -222,7 +222,7 @@ public class XincoWebService {
         }
     }
 
-    public int uploadXincoCoreData(com.bluecubs.xinco.core.server.service.XincoCoreData in0, byte[] in1, com.bluecubs.xinco.core.server.service.XincoCoreUser in2) {
+    public int uploadXincoCoreData(XincoCoreData in0, byte[] in1, XincoCoreUser in2) {
         try {
             XincoCoreDataServer data;
             XincoCoreACE ace;
@@ -286,7 +286,7 @@ public class XincoWebService {
         }
     }
 
-    public java.util.List<java.lang.Object> findXincoCoreData(java.lang.String in0, com.bluecubs.xinco.core.server.service.XincoCoreLanguage in1, com.bluecubs.xinco.core.server.service.XincoCoreUser in2) {
+    public java.util.List<java.lang.Object> findXincoCoreData(java.lang.String in0, XincoCoreLanguage in1, XincoCoreUser in2) {
         boolean rp = false;
         ArrayList v = new ArrayList();
         ArrayList v2 = new ArrayList();
@@ -342,7 +342,7 @@ public class XincoWebService {
         return v;
     }
 
-    public com.bluecubs.xinco.core.server.service.XincoCoreNode setXincoCoreNode(com.bluecubs.xinco.core.server.service.XincoCoreNode in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public XincoCoreNode setXincoCoreNode(XincoCoreNode in0, XincoCoreUser in1) {
         try {
             int i = 0;
             boolean insertnewnode = false;
@@ -406,7 +406,7 @@ public class XincoWebService {
         }
     }
 
-    public com.bluecubs.xinco.core.server.service.XincoCoreData setXincoCoreData(com.bluecubs.xinco.core.server.service.XincoCoreData in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public XincoCoreData setXincoCoreData(XincoCoreData in0, XincoCoreUser in1) {
         try {
             int i = 0;
             boolean insertnewdata = false;
@@ -480,7 +480,7 @@ public class XincoWebService {
         }
     }
 
-    public com.bluecubs.xinco.core.server.service.XincoCoreACE setXincoCoreACE(com.bluecubs.xinco.core.server.service.XincoCoreACE in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public XincoCoreACE setXincoCoreACE(XincoCoreACE in0, XincoCoreUser in1) {
         try {
             XincoCoreNodeServer node;
             XincoCoreDataServer data;
@@ -525,7 +525,7 @@ public class XincoWebService {
         }
     }
 
-    public boolean removeXincoCoreACE(com.bluecubs.xinco.core.server.service.XincoCoreACE in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public boolean removeXincoCoreACE(XincoCoreACE in0, XincoCoreUser in1) {
         try {
             XincoCoreNodeServer node;
             XincoCoreDataServer data;
@@ -553,7 +553,7 @@ public class XincoWebService {
         }
     }
 
-    public com.bluecubs.xinco.core.server.service.XincoCoreLog setXincoCoreLog(com.bluecubs.xinco.core.server.service.XincoCoreLog in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public XincoCoreLog setXincoCoreLog(XincoCoreLog in0, XincoCoreUser in1) {
         try {
             XincoCoreLogServer log;
             XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
@@ -561,7 +561,7 @@ public class XincoWebService {
             if (in0.getId() > 0) {
                 log = new XincoCoreLogServer(in0.getId());
             } else {
-                log = new XincoCoreLogServer(0, 0, 0, 0, null, "", 0, 0, 0, "");
+                log = new XincoCoreLogServer(0, 0, 0, null, "", 0, 0, 0, "");
             }
             //update log
             log.setXincoCoreDataId(in0.getXincoCoreDataId());
@@ -580,7 +580,7 @@ public class XincoWebService {
         }
     }
 
-    public com.bluecubs.xinco.core.server.service.XincoCoreUser setXincoCoreUser(com.bluecubs.xinco.core.server.service.XincoCoreUser in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public XincoCoreUser setXincoCoreUser(XincoCoreUser in0, XincoCoreUser in1) {
         try {
             XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
             //Update audit trail
@@ -604,17 +604,17 @@ public class XincoWebService {
         }
     }
 
-    public com.bluecubs.xinco.core.server.service.XincoCoreGroup setXincoCoreGroup(com.bluecubs.xinco.core.server.service.XincoCoreGroup in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public XincoCoreGroup setXincoCoreGroup(XincoCoreGroup in0, XincoCoreUser in1) {
         //not to be implemented yet: advanced administration feature!
         return null;
     }
 
-    public com.bluecubs.xinco.core.server.service.XincoCoreLanguage setXincoCoreLanguage(com.bluecubs.xinco.core.server.service.XincoCoreLanguage in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public XincoCoreLanguage setXincoCoreLanguage(XincoCoreLanguage in0, XincoCoreUser in1) {
         //not to be implemented yet: advanced administration feature!
         return null;
     }
 
-    public boolean checkXincoCoreUserNewPassword(java.lang.String in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1, com.bluecubs.xinco.core.server.service.XincoCoreUser in2) {
+    public boolean checkXincoCoreUserNewPassword(java.lang.String in0, XincoCoreUser in1, XincoCoreUser in2) {
         try {
             return XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword())?new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword()).isPasswordUsable(in0):false;
         } catch (XincoException ex) {
@@ -623,8 +623,8 @@ public class XincoWebService {
         }
     }
 
-    public com.bluecubs.xinco.core.server.service.XincoSetting getXincoSetting(java.lang.String in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
-        com.bluecubs.xinco.core.server.service.XincoSetting setting=null;
+    public XincoSetting getXincoSetting(java.lang.String in0, XincoCoreUser in1) {
+        XincoSetting setting=null;
         if(XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword())){
             try {
                 setting = XincoSettingServer.getSetting(
@@ -638,7 +638,7 @@ public class XincoWebService {
     
     //TODO: Add a set setting method
 
-    public java.util.List<com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute> getXincoCoreDataTypeAttribute(com.bluecubs.xinco.core.server.service.XincoCoreDataType in0, com.bluecubs.xinco.core.server.service.XincoCoreUser in1) {
+    public java.util.List<XincoCoreDataTypeAttribute> getXincoCoreDataTypeAttribute(XincoCoreDataType in0, XincoCoreUser in1) {
         //dummy: not to be implemented!
         return null;
     }
