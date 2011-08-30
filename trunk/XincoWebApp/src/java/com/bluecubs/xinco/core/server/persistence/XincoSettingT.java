@@ -6,7 +6,6 @@
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;

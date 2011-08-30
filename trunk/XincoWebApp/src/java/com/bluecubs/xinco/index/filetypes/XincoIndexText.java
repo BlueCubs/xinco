@@ -40,8 +40,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class XincoIndexText implements XincoIndexFileType {
+
+    private static final Logger logger =
+            Logger.getLogger(XincoIndexText.class.getSimpleName());
 
     public XincoIndexText() {
         super();
@@ -55,16 +60,19 @@ public class XincoIndexText implements XincoIndexFileType {
             is = new FileInputStream(f);
             reader = new BufferedReader(new InputStreamReader(is));
         } catch (Exception fe) {
+            logger.log(Level.SEVERE, null, fe);
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (Exception re) {
+                    logger.log(Level.SEVERE, null, re);
                 }
             }
             if (is != null) {
                 try {
                     is.close();
                 } catch (Exception ise) {
+                    logger.log(Level.SEVERE, null, ise);
                 }
             }
             reader = null;

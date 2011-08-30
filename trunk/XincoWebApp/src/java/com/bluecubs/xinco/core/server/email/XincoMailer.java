@@ -19,6 +19,7 @@ import javax.mail.internet.*;
 import java.util.*;
 
 public class XincoMailer {
+    //TODO: use database configuration
     private XincoDBManager DBM;
     private String SMTP_HOST_NAME = "smtp.bluecubs.com";
     private String SMTP_AUTH_USER = "myuser@bluecubs.com";

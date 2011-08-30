@@ -38,9 +38,14 @@ package com.bluecubs.xinco.index.filetypes;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.Reader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.textmining.text.extraction.WordExtractor;
 
 public class XincoIndexMicrosoftWord implements XincoIndexFileType {
+
+    private static final Logger logger =
+            Logger.getLogger(XincoIndexMicrosoftWord.class.getSimpleName());
 
     public XincoIndexMicrosoftWord() {
         super();
@@ -61,11 +66,13 @@ public class XincoIndexMicrosoftWord implements XincoIndexFileType {
             word_string = extractor.extractText(is);
             is.close();
         } catch (Exception fe) {
+            logger.log(Level.SEVERE, null, fe);
             word_string = null;
             if (is != null) {
                 try {
                     is.close();
                 } catch (Exception ise) {
+                    logger.log(Level.SEVERE, null, ise);
                 }
             }
         }

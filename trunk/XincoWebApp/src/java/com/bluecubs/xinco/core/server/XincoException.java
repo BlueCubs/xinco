@@ -1,5 +1,5 @@
 /**
- *Copyright 2010 blueCubs.com
+ *Copyright 2011 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -47,6 +47,11 @@ public class XincoException extends Exception {
     public XincoException(String s) {
         super(s);
         xinco_message = s;
+    }
+
+    public XincoException(Throwable cause) {
+        super(cause);
+        xinco_message = cause.getLocalizedMessage();
     }
 
     @Override

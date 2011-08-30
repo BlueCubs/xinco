@@ -1,5 +1,5 @@
 /**
- *Copyright 2010 blueCubs.com
+ *Copyright 2011 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -52,6 +52,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
 
     private static List result;
     private static HashMap parameters = new HashMap();
+    private static final Logger logger = Logger.getLogger(XincoCoreNodeServer.class.getSimpleName());
     //create node object for data structures
 
     public XincoCoreNodeServer(int attrID) throws XincoException {
@@ -158,6 +159,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             }
             setId(xcn.getId());
         } catch (Exception e) {
+            logger.log(Level.SEVERE,null, e);
             throw new XincoException(e.getMessage());
         }
         return getId();
@@ -194,31 +196,36 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 }
             }
         } catch (Exception e) {
+            logger.log(Level.SEVERE,null, e);
             throw new XincoException(e.getMessage());
         }
     }
 
     public final void fillXincoCoreNodes() {
         try {
+            getXincoCoreNodes().clear();
             result = XincoDBManager.createdQuery("SELECT xcn FROM XincoCoreNode xcn "
                     + "WHERE xcn.xincoCoreNode.id = " + getId() + " ORDER BY xcn.designation");
             for (Object o : result) {
                 ((ArrayList) getXincoCoreNodes()).add(new XincoCoreNodeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o));
             }
         } catch (Exception e) {
-            ((ArrayList) getXincoCoreNodes()).clear();
+            logger.log(Level.SEVERE,null, e);
+            getXincoCoreNodes().clear();
         }
 
     }
 
     public final void fillXincoCoreData() {
         try {
+            getXincoCoreData().clear();
             result = XincoDBManager.createdQuery("SELECT xcd FROM XincoCoreData xcd WHERE xcd.xincoCoreNode.id = " + getId() + " ORDER BY xcd.designation");
             for (Object o : result) {
                 ((ArrayList) getXincoCoreData()).add(new XincoCoreDataServer((com.bluecubs.xinco.core.server.persistence.XincoCoreData) o));
             }
         } catch (Exception e) {
-            ((ArrayList) getXincoCoreData()).clear();
+            logger.log(Level.SEVERE,null, e);
+            getXincoCoreData().clear();
         }
     }
 
@@ -237,7 +244,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 }
             }
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreNodeServer.class.getSimpleName()).log(Level.SEVERE,null, e);
+            logger.log(Level.SEVERE,null, e);
             nodes.clear();
         }
         return nodes;
@@ -266,6 +273,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 }
             }
         } catch (Exception e) {
+            logger.log(Level.SEVERE,null, e);
             nodes.clear();
         }
         return nodes;

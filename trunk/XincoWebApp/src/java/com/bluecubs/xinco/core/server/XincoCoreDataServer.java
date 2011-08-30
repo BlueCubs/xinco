@@ -1,5 +1,5 @@
 /**
- *Copyright 2010 blueCubs.com
+ *Copyright 2011 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -56,7 +56,6 @@ import java.util.logging.Logger;
 
 public class XincoCoreDataServer extends XincoCoreData {
 
-    private XincoCoreUserServer user;
     private static HashMap parameters = new HashMap();
     private static List result;
     //create data object for data structures
@@ -130,10 +129,6 @@ public class XincoCoreDataServer extends XincoCoreData {
             getXincoCoreAcl().clear();
             throw new XincoException();
         }
-    }
-
-    public void setUser(XincoCoreUserServer user) {
-        this.user = user;
     }
 
     /**

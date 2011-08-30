@@ -1,5 +1,5 @@
 /**
- *Copyright 2010 blueCubs.com
+ *Copyright 2011 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -45,6 +45,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class runs document archiving in a separate thread
@@ -59,6 +61,7 @@ public class XincoArchiveThread extends Thread {
     static FileInputStream fcis = null;
     static FileOutputStream fcos = null;
     private static List result;
+    private static final Logger logger = Logger.getLogger(XincoArchiveThread.class.getSimpleName());
 
     @Override
     public void run() {
@@ -74,12 +77,14 @@ public class XincoArchiveThread extends Thread {
                 archiveData();
                 lastRun = new GregorianCalendar();
             } catch (Exception e) {
+                logger.log(Level.SEVERE, null, e);
                 //continue, wait and try again...
                 archive_period = 14400000;
             }
             try {
                 sleep(archive_period);
             } catch (Exception se) {
+                logger.log(Level.SEVERE, null, se);
                 break;
             }
         }
@@ -102,33 +107,37 @@ public class XincoArchiveThread extends Thread {
             int querycount = 0;
             String[] query = new String[2];
             query[querycount] = "SELECT DISTINCT xcd.id FROM XincoCoreData xcd, XincoAddAttribute xaa1, XincoAddAttribute xaa2 "
-                    + "WHERE xcd.xincoCoreDataTypeId = 1 "
+                    + "WHERE xcd.xincoCoreDataType.id = 1 "
                     + "AND xcd.statusNumber <> 3 "
-                    + "AND xcd.id = xaa1.xincoCoreDataId "
-                    + "AND xcd.id = xaa2.xincoCoreDataId "
-                    + "AND xaa1.attributeId = 5 "
+                    + "AND xcd.id = xaa1.xincoCoreData.id "
+                    + "AND xcd.id = xaa2.xincoCoreData.id "
+                    + "AND xaa1.xincoAddAttributePK.attributeId = 5 "
                     + "AND xaa1.attribUnsignedint = 1 "
-                    + "AND xaa2.attributeId = 6 "
-                    + "AND xaa2.attribDatetime < now() "
+                    + "AND xaa2.xincoAddAttributePK.attributeId = 6 "
+                    + "AND xaa2.attribDatetime < CURRENT_DATE "
                     + "ORDER BY xcd.id";
             querycount++;
 
-            query[querycount] = "SELECT DISTINCT xcd.id FROM XincoCoreData xcd, XincoAddAttribute xaa1, XincoAddAttribute xaa2, XincoCoreLog xcl "
-                    + "WHERE xcd.xinco_core_data_type_id = 1 "
-                    + "AND xcd.status_number <> 3 "
-                    + "AND xcd.id = xaa1.xincoCoreDataId "
-                    + "AND xcd.id = xaa2.xincoCoreDataId "
-                    + "AND xcd.id = xcl.xincoCoreDataId "
-                    + "AND xaa1.attributeId = 5 "
-                    + "AND xaa1.attribUnsignedint = 2 "
-                    + "AND xaa2.attributeId = 7 "
-                    + "AND ADDDATE(DATE(xcl.opDatetime), xaa2.attribUnsignedint) < now() "
-                    + "ORDER BY xcd.id";
-            querycount++;
+//            query[querycount] = "SELECT DISTINCT xcd FROM XincoCoreData xcd, XincoAddAttribute xaa1, XincoAddAttribute xaa2, XincoCoreLog xcl "
+//                    + "WHERE xcd.xincoCoreDataType.id = 1 "
+//                    + "AND xcd.statusNumber <> 3 "
+//                    + "AND xcd.id = xaa1.xincoCoreData.id "
+//                    + "AND xcd.id = xaa2.xincoCoreData.id "
+//                    + "AND xcd.id = xcl.xincoCoreData.id "
+//                    + "AND xaa1.xincoAddAttributePK.attributeId = 5 "
+//                    + "AND xaa1.attribUnsignedint = 2 "
+//                    + "AND xaa2.attribute = 7 "
+//                    + "AND ADDDATE(DATE(xcl.opDatetime), xaa2.attribUnsignedint) < CURRENT_DATE "
+//                    + "ORDER BY xcd.id";
+//            querycount++;
 
             for (j = 0; j < querycount; j++) {
                 //select data with expired archiving date
-                result = XincoDBManager.createdQuery(query[j]);
+                if (j == 1) {
+                    
+                } else {
+                    result = XincoDBManager.createdQuery(query[j]);
+                }
                 for (Object o : result) {
                     int id = (Integer) o;
                     XincoArchiver.archiveData(new XincoCoreDataServer(id),
@@ -138,6 +147,7 @@ public class XincoArchiveThread extends Thread {
             }
             return true;
         } catch (Exception e) {
+            logger.log(Level.SEVERE, null, e);
             try {
                 if (fcis != null) {
                     fcis.close();
@@ -146,6 +156,7 @@ public class XincoArchiveThread extends Thread {
                     fcos.close();
                 }
             } catch (IOException fe) {
+                logger.log(Level.SEVERE, null, e);
             }
             return false;
         }

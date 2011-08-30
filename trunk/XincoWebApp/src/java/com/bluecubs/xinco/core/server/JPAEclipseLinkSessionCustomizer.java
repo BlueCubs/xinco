@@ -1,5 +1,5 @@
 /**
- *Copyright 2010 blueCubs.com
+ *Copyright 2011 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@
  */
 package com.bluecubs.xinco.core.server;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -39,6 +41,8 @@ import org.eclipse.persistence.sessions.Session;
 public class JPAEclipseLinkSessionCustomizer implements SessionCustomizer {
 
     public static final String JNDI_DATASOURCE_NAME = "java:comp/env/jdbc/XincoDB";
+    private static final Logger logger = 
+            Logger.getLogger(JPAEclipseLinkSessionCustomizer.class.getSimpleName());
 
     /**
      * Get a dataSource connection and set it on the session with lookupType=STRING_LOOKUP
@@ -57,6 +61,7 @@ public class JPAEclipseLinkSessionCustomizer implements SessionCustomizer {
             // Lookup this new dataSource
             dataSource = (DataSource) context.lookup(JNDI_DATASOURCE_NAME);
         } catch (Exception e) {
+            logger.log(Level.SEVERE, JNDI_DATASOURCE_NAME, e);
         }
         connector.setDataSource(dataSource);
         // Change from COMPOSITE_NAME_LOOKUP to STRING_LOOKUP
