@@ -1,14 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bluecubs.xinco.core.server;
 
-import java.util.ArrayList;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import javax.xml.datatype.DatatypeFactory;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -16,25 +10,25 @@ import static org.junit.Assert.*;
  *
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
-public class XincoAddAttributeServerTest {
-    
-    public XincoAddAttributeServerTest() {
+public class XincoAddAttributeServerTest extends XincoTestCase {
+
+    private static XincoCoreDataServer xcds;
+
+    public XincoAddAttributeServerTest(String testName) {
+        super(testName);
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        xcds = new XincoCoreDataServer(0, 1, 1, 1, "Test Data", 1);
+        assertTrue(xcds.write2DB() > 0);
     }
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
+    @Override
+    protected void tearDown() throws Exception {
+        xcds.deleteFromDB();
+        super.tearDown();
     }
 
     /**
@@ -43,25 +37,17 @@ public class XincoAddAttributeServerTest {
     @Test
     public void testWrite2DB() throws Exception {
         System.out.println("write2DB");
-        XincoAddAttributeServer instance = null;
-        int expResult = 0;
-        int result = instance.write2DB();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getXincoAddAttributes method, of class XincoAddAttributeServer.
-     */
-    @Test
-    public void testGetXincoAddAttributes() {
-        System.out.println("getXincoAddAttributes");
-        int attrID = 0;
-        ArrayList expResult = null;
-        ArrayList result = XincoAddAttributeServer.getXincoAddAttributes(attrID);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        XincoAddAttributeServer xaa;
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(new Date());
+        DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
+        xaa = new XincoAddAttributeServer(xcds.getId(),
+                (xcds.getXincoCoreDataType().getXincoCoreDataTypeAttributes().get(0)).getAttributeId(),
+                0, 0, 0, "", "",
+                DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
+        xaa.write2DB();
+        assertTrue(new XincoAddAttributeServer(xcds.getId(),
+                (xcds.getXincoCoreDataType().getXincoCoreDataTypeAttributes().get(0)).getAttributeId()) != null);
+        assertTrue(XincoAddAttributeServer.getXincoAddAttributes(xaa.getAttributeId())!=null);
     }
 }
