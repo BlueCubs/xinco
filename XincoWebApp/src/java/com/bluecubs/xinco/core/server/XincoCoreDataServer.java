@@ -357,4 +357,37 @@ public class XincoCoreDataServer extends XincoCoreData {
         }
         return path;
     }
+
+    public XincoAddAttributeServer getAttribute(int id) {
+        for (XincoAddAttribute attr : getXincoAddAttributes()) {
+            if (attr.getAttributeId() == id) {
+                try {
+                    return new XincoAddAttributeServer(attr.getXincoCoreDataId(), attr.getAttributeId());
+                } catch (XincoException ex) {
+                    Logger.getLogger(XincoAddAttributeServer.class.getName()).log(Level.SEVERE, null, ex);
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static boolean isArchived(int id) {
+        try {
+            return isArchived(new XincoCoreDataServer(id));
+        } catch (XincoException ex) {
+            Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+
+    public static boolean isArchived(XincoCoreDataServer xcds) {
+        //Make sure the logs are filled
+        for (XincoCoreLog log : xcds.getXincoCoreLogs()) {
+            if (log.getOpCode() == OPCode.ARCHIVED.ordinal() + 1) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
