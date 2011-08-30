@@ -1,5 +1,5 @@
 /**
- *Copyright 2010 blueCubs.com
+ *Copyright 2011 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ import com.bluecubs.xinco.core.XincoDataStatus;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreLog;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.service.XincoCoreACE;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
@@ -54,7 +54,6 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -65,15 +64,6 @@ public class XincoPublisherServlet extends HttpServlet {
     private ResourceBundle rb;
     private XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
     private List result;
-
-    /** Initializes the servlet.
-     * @param config
-     * @throws javax.servlet.ServletException
-     */
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-    }
 
     /** Destroys the servlet.
      */
@@ -238,13 +228,13 @@ public class XincoPublisherServlet extends HttpServlet {
                     try {
                         XincoCoreDataServer xdataTemp = null;
                         //Only display data with at least one major version
-                        result = XincoDBManager.createdQuery("Select x.xincoCoreDataId from XincoCoreLog x, "
-                                + "XincoCoreAce xca where x.xincoCoreDataId.id = xca.xincoCoreDataId.id and "
-                                + "(x.xincoCoreDataId.statusNumber="+(XincoDataStatus.PUBLISHED.ordinal() + 1)
-                                +" or (xca.xincoCoreGroupId.id=3 and xca.readPermission=1)"
-                                + " and x.versionMid='0' order by x.xincoCoreDataId.designation");
+                        result = XincoDBManager.createdQuery("Select distinct x.xincoCoreData from XincoCoreLog x, "
+                                + "XincoCoreAce xca where x.xincoCoreData.id = xca.xincoCoreData.id and "
+                                + "(x.xincoCoreData.statusNumber=" + (XincoDataStatus.PUBLISHED.ordinal() + 1) + ")"
+                                + " or (xca.xincoCoreGroup.id=3 and xca.readPermission=1)"
+                                + " and x.versionMid='0' order by x.xincoCoreData.designation");
                         for (Object o : result) {
-                            xdataTemp = new XincoCoreDataServer(((XincoCoreLog) o).getXincoCoreData());
+                            xdataTemp = new XincoCoreDataServer((XincoCoreData) o);
                             temp_server_url = request.getRequestURL().toString();
                             temp_url = "";
                             //file = 1
@@ -383,7 +373,7 @@ public class XincoPublisherServlet extends HttpServlet {
                             }
                         }
                     } catch (Exception sqle) {
-                        Logger.getLogger(XincoPublisherServlet.class.getSimpleName()).log(Level.SEVERE,null, sqle);
+                        Logger.getLogger(XincoPublisherServlet.class.getSimpleName()).log(Level.SEVERE, null, sqle);
                     }
                 } else {
                     if (config.isAllowPublisherList()) {
@@ -408,7 +398,8 @@ public class XincoPublisherServlet extends HttpServlet {
                 out.println("<br>");
                 out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
                 out.println("<tr>");
-                out.println("<td class=\"bigtext\" colspan=\"2\">" + xcd.getDesignation() + "</td>");
+                out.println("<td class=\"bigtext\" colspan=\"2\">"
+                        + (rb.containsKey(xcd.getDesignation()) ? rb.getString(xcd.getDesignation()) : xcd.getDesignation()) + "</td>");
                 out.println("</tr>");
                 out.println("<tr>");
                 out.println("<td class=\"text\" colspan=\"2\">&nbsp;</td>");

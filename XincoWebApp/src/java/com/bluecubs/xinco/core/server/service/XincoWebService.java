@@ -443,7 +443,6 @@ public class XincoWebService {
                 data.getXincoAddAttributes().clear();
                 data.getXincoAddAttributes().addAll(in0.getXincoAddAttributes());
                 data.setStatusNumber(in0.getStatusNumber());
-                data.setUser(user);
                 data.write2DB();
 
                 //index data (not on checkout, only when status = open = 1)

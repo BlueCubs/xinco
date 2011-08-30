@@ -39,6 +39,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -46,6 +48,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 public class XincoIndexMicrosoftExcel implements XincoIndexFileType {
+
+    private static final Logger logger = Logger.getLogger(XincoIndexMicrosoftExcel.class.getSimpleName());
 
     public XincoIndexMicrosoftExcel() {
         super();
@@ -58,7 +62,7 @@ public class XincoIndexMicrosoftExcel implements XincoIndexFileType {
 
     @Override
     public String getFileContentString(File f) {
-        int i, j, j2, k,k2;
+        int i, j, j2, k, k2;
         HSSFWorkbook wb = null;
         HSSFSheet sheet = null;
         HSSFRow row = null;
@@ -102,11 +106,13 @@ public class XincoIndexMicrosoftExcel implements XincoIndexFileType {
             }
             is.close();
         } catch (Exception fe) {
+            logger.log(Level.SEVERE, null, fe);
             cell_string = null;
             if (is != null) {
                 try {
                     is.close();
                 } catch (Exception ise) {
+                    logger.log(Level.SEVERE, null, ise);
                 }
             }
         }

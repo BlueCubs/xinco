@@ -1,5 +1,5 @@
 /**
- *Copyright 2010 blueCubs.com
+ *Copyright 2011 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -54,7 +54,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 //Status list (in DB)
@@ -67,7 +66,6 @@ public final class XincoCoreUserServer extends XincoCoreUser {
 
     private boolean hashPassword = true;
     private boolean increaseAttempts = false;
-    private ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
     private java.sql.Timestamp lastModified;
     private int attempts;
     private static List result;
@@ -135,7 +133,6 @@ public final class XincoCoreUserServer extends XincoCoreUser {
 
     //create user object and login
     public XincoCoreUserServer(String attrUN, String attrUPW) throws XincoException {
-        GregorianCalendar cal = null;
         try {
             result = XincoDBManager.createdQuery("SELECT xcu FROM XincoCoreUser xcu WHERE xcu.username='"
                     + attrUN + "' AND xcu.userpassword='" + MD5.encrypt(attrUPW) + "' AND xcu.statusNumber <> 2");
@@ -314,7 +311,6 @@ public final class XincoCoreUserServer extends XincoCoreUser {
 
     //write to db
     public int write2DB() throws XincoException {
-        xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
         Timestamp ts = null;
         try {
             if (getStatusNumber() == 4) {

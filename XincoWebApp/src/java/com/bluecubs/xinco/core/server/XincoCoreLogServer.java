@@ -1,5 +1,5 @@
 /**
- *Copyright 2010 blueCubs.com
+ *Copyright 2011 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -39,7 +39,6 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaCon
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLogJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
 import com.bluecubs.xinco.core.server.service.XincoCoreLog;
-import com.bluecubs.xinco.core.server.service.XincoCoreUser;
 import com.bluecubs.xinco.core.server.service.XincoVersion;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,7 +55,6 @@ public class XincoCoreLogServer extends XincoCoreLog {
 
     private static List result;
     private static HashMap parameters = new HashMap();
-    private XincoCoreUser user;
     //create single log object for data structures
 
     public XincoCoreLogServer(int attrID) throws XincoException {
@@ -113,7 +111,6 @@ public class XincoCoreLogServer extends XincoCoreLog {
     }
 
     public void setUser(XincoCoreUserServer user) {
-        this.user = user;
         setXincoCoreUserId(user.getId());
     }
 

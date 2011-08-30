@@ -1,5 +1,5 @@
 /**
- *Copyright 2010 blueCubs.com
+ *Copyright 2011 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -44,22 +44,22 @@ import com.bluecubs.xinco.core.server.service.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
 import java.io.File;
 import java.io.Reader;
-import java.io.FileInputStream;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /** A utility for making Lucene Documents from a File. */
 public class XincoDocument {
 
-    public static Document getXincoDocument(XincoCoreData d, boolean indexContent) throws java.io.FileNotFoundException {
+    private static final Logger logger = 
+            Logger.getLogger(XincoDocument.class.getSimpleName());
 
-        int i, j, l;
-        int i2, j2;
-        short k, k2;
-        FileInputStream is = null;
+    public static Document getXincoDocument(XincoCoreData d, boolean indexContent)
+            throws java.io.FileNotFoundException {
+        int i, l;
         Document doc = null;
-        Document tempDoc = null;
         int fileType = 0;
         int file_extIndex = 0;
         String file_ext = "";
@@ -72,63 +72,62 @@ public class XincoDocument {
         doc.add(new Field("language", (new Integer(d.getXincoCoreLanguage().getId())).toString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
         //add content of file
-        if (indexContent) {
-            if ((d.getXincoCoreDataType().getId() == 1) && (d.getStatusNumber() != 3)) { //process non-archived file
-                //extract file extension from file name
-                file_extIndex = ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(0)).getAttribVarchar().lastIndexOf(".");
-                if (file_extIndex == -1) {
+        if (indexContent && (d.getXincoCoreDataType().getId() == 1) && (d.getStatusNumber() != 3)) { //process non-archived file
+            //extract file extension from file name
+            file_extIndex = ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(0)).getAttribVarchar().lastIndexOf(".");
+            if (file_extIndex == -1) {
+                file_ext = "";
+            } else {
+                if (file_extIndex >= ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(0)).getAttribVarchar().length() - 1) {
                     file_ext = "";
                 } else {
-                    if (file_extIndex >= ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(0)).getAttribVarchar().length() - 1) {
-                        file_ext = "";
-                    } else {
-                        file_ext = ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(0)).getAttribVarchar().substring(file_extIndex + 1);
-                    }
+                    file_ext = ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(0)).getAttribVarchar().substring(file_extIndex + 1);
                 }
-                //check which indexer to use for file extension
-                fileType = 0; // default: index as TEXT
-                for (l = 0; l < XincoDBManager.config.FileIndexerCount; l++) {
-                    for (i = 0; i < ((String[]) XincoDBManager.config.IndexFileTypesExt.get(l)).length; i++) {
-                        if (((String[]) XincoDBManager.config.IndexFileTypesExt.get(l))[i].compareTo(file_ext) == 0) {
-                            fileType = l + 1; // file-type specific indexing
-                            break;
-                        }
-                    }
-                    if (fileType > 0) {
+            }
+            //check which indexer to use for file extension
+            fileType = 0; // default: index as TEXT
+            for (l = 0; l < XincoDBManager.config.FileIndexerCount; l++) {
+                for (i = 0; i < ((String[]) XincoDBManager.config.IndexFileTypesExt.get(l)).length; i++) {
+                    if (((String[]) XincoDBManager.config.IndexFileTypesExt.get(l))[i].compareTo(file_ext) == 0) {
+                        fileType = l + 1; // file-type specific indexing
                         break;
                     }
                 }
-                if (fileType == 0) {
-                    for (i = 0; i < XincoDBManager.config.IndexNoIndex.length; i++) {
-                        if (XincoDBManager.config.IndexNoIndex[i].compareTo(file_ext) == 0) {
-                            fileType = -1; // NO indexing
-                            break;
-                        }
+                if (fileType > 0) {
+                    break;
+                }
+            }
+            if (fileType == 0) {
+                for (i = 0; i < XincoDBManager.config.IndexNoIndex.length; i++) {
+                    if (XincoDBManager.config.IndexNoIndex[i].compareTo(file_ext) == 0) {
+                        fileType = -1; // NO indexing
+                        break;
                     }
                 }
-                // call actual indexing classes
-                XincoIndexFileType xift = null;
-                Reader ContentReader = null;
-                String ContentString = null;
-                if (fileType == 0) {
-                    // index as TEXT
-                    xift = new XincoIndexText();
-                    doc.add(new Field("file", xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, d.getId(), "" + d.getId())))));
-                } else if (fileType > 0) {
-                    // file-type specific indexing
-                    try {
-                        xift = (XincoIndexFileType) Class.forName((String) XincoDBManager.config.IndexFileTypesClass.get(fileType - 1)).newInstance();
-                        ContentReader = xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, d.getId(), "" + d.getId())));
-                        if (ContentReader != null) {
-                            doc.add(new Field("file", ContentReader));
-                        } else {
-                            ContentString = xift.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, d.getId(), "" + d.getId())));
-                            if (ContentString != null) {
-                                doc.add(new Field("file", ContentString, Field.Store.YES, Field.Index.ANALYZED));
-                            }
+            }
+            // call actual indexing classes
+            XincoIndexFileType xift = null;
+            Reader ContentReader = null;
+            String ContentString = null;
+            if (fileType == 0) {
+                // index as TEXT
+                xift = new XincoIndexText();
+                doc.add(new Field("file", xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, d.getId(), "" + d.getId())))));
+            } else if (fileType > 0) {
+                // file-type specific indexing
+                try {
+                    xift = (XincoIndexFileType) Class.forName((String) XincoDBManager.config.IndexFileTypesClass.get(fileType - 1)).newInstance();
+                    ContentReader = xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, d.getId(), "" + d.getId())));
+                    if (ContentReader != null) {
+                        doc.add(new Field("file", ContentReader));
+                    } else {
+                        ContentString = xift.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, d.getId(), "" + d.getId())));
+                        if (ContentString != null) {
+                            doc.add(new Field("file", ContentString, Field.Store.YES, Field.Index.ANALYZED));
                         }
-                    } catch (Exception ie) {
                     }
+                } catch (Exception ie) {
+                    logger.log(Level.SEVERE, d.toString(), ie);
                 }
             }
         }

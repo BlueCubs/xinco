@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import com.bluecubs.xinco.core.server.AuditedEntityListener;
@@ -151,5 +150,4 @@ public class XincoAddAttribute extends XincoAuditedObject implements Serializabl
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoAddAttribute[xincoAddAttributePK=" + xincoAddAttributePK + "]";
     }
-
 }

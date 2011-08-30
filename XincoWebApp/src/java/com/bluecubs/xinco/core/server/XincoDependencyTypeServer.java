@@ -34,7 +34,7 @@ public class XincoDependencyTypeServer extends XincoDependencyType {
         }
     }
 
-    public XincoDependencyTypeServer(int id, int behaviorId) throws XincoException {
+    public XincoDependencyTypeServer(int behaviorId) throws XincoException {
         XincoDependencyType dependency = new XincoDependencyTypeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoDependencyType(behaviorId);
         if (dependency != null) {
             setDescription(dependency.getDescription());

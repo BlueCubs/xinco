@@ -1,5 +1,5 @@
 /**
- *Copyright 2010 blueCubs.com
+ *Copyright 2011 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -57,11 +57,11 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
     private static List result;
     //create add attribute object for data structures
 
-    public XincoAddAttributeServer(int attrID1, int attrID2) throws XincoException {
+    public XincoAddAttributeServer(int xincoCoreDataId, int attributeId) throws XincoException {
         try {
             result = XincoDBManager.createdQuery("SELECT xaa FROM XincoAddAttribute xaa"
-                    + "WHERE xaa.xincoAddAttributePK.xincoCoreDataId=" + attrID1
-                    + " AND xaa.xincoAddAttributePK.attributeId=" + attrID2);
+                    + " WHERE xaa.xincoAddAttributePK.xincoCoreDataId=" + xincoCoreDataId
+                    + " AND xaa.xincoAddAttributePK.attributeId=" + attributeId);
             if (result.size() > 0) {
                 com.bluecubs.xinco.core.server.persistence.XincoAddAttribute xaa =
                         (com.bluecubs.xinco.core.server.persistence.XincoAddAttribute) result.get(0);
@@ -78,7 +78,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                 setAttribDatetime(factory.newXMLGregorianCalendar(cal));
             }
         } catch (Exception e) {
-            throw new XincoException();
+            throw new XincoException(e.fillInStackTrace());
         }
     }
 
@@ -113,6 +113,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
 
     //write to db
     public int write2DB() throws XincoException {
+        boolean create = false;
         try {
             String attrT = "";
             String attrVC = "";
@@ -131,7 +132,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
             }
             if (getAttribDatetime() != null) {
                 //convert clone from remote time to local time
-                Calendar cal = (Calendar) getAttribDatetime().clone();
+                Calendar cal = getAttribDatetime().toGregorianCalendar();
                 Calendar ngc = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
                 cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET)
                         - cal.get(Calendar.ZONE_OFFSET)) - (ngc.get(Calendar.DST_OFFSET)
@@ -146,11 +147,15 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                 attrDT = "0000-00-00 00:00:00";
             }
             com.bluecubs.xinco.core.server.persistence.XincoAddAttribute xaa =
-                    new com.bluecubs.xinco.core.server.persistence.XincoAddAttribute();
-            xaa.setXincoCoreData(new com.bluecubs.xinco.core.server.persistence.XincoCoreData(getXincoCoreDataId()));
-            xaa.setXincoAddAttributePK(new XincoAddAttributePK());
-            xaa.getXincoAddAttributePK().setXincoCoreDataId(xaa.getXincoCoreData().getId());
-            xaa.getXincoAddAttributePK().setAttributeId(getAttributeId());
+                    new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoAddAttribute(new XincoAddAttributePK(getXincoCoreDataId(), getAttributeId()));
+            if (xaa == null) {
+                create = true;
+                xaa = new com.bluecubs.xinco.core.server.persistence.XincoAddAttribute();
+                xaa.setXincoCoreData(new com.bluecubs.xinco.core.server.persistence.XincoCoreData(getXincoCoreDataId()));
+                xaa.setXincoAddAttributePK(new XincoAddAttributePK());
+                xaa.getXincoAddAttributePK().setXincoCoreDataId(xaa.getXincoCoreData().getId());
+                xaa.getXincoAddAttributePK().setAttributeId(getAttributeId());
+            }
             xaa.setAttribInt(getAttribInt());
             xaa.setAttribUnsignedint(getAttribUnsignedint());
             xaa.setAttribDouble(getAttribDouble());
@@ -161,7 +166,11 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                 xaa.setAttribDatetime(df.parse(attrDT));
             }
             XincoAddAttributeJpaController controller = new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory());
-            controller.create(xaa);
+            if (create) {
+                controller.create(xaa);
+            } else {
+                controller.edit(xaa);
+            }
         } catch (Exception ex) {
             //no commit or rollback -> CoreData manages exceptions!
             Logger.getLogger(XincoAddAttributeServer.class.getSimpleName()).log(Level.SEVERE, null, ex);

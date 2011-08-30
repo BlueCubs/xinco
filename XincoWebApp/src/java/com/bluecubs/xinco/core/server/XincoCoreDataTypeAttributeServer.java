@@ -1,5 +1,5 @@
 /**
- *Copyright 2010 blueCubs.com
+ *Copyright 2011 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except in compliance with the License.
@@ -51,7 +51,6 @@ import javax.xml.datatype.DatatypeFactory;
 
 public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute {
 
-    private static int changer = 0;
     private static List result;
     //create data type attribute object for data structures
 
