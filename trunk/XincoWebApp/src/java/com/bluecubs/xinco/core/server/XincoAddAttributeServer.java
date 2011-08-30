@@ -65,7 +65,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
             if (result.size() > 0) {
                 com.bluecubs.xinco.core.server.persistence.XincoAddAttribute xaa =
                         (com.bluecubs.xinco.core.server.persistence.XincoAddAttribute) result.get(0);
-                setXincoCoreDataId(xaa.getXincoAddAttributePK().getAttributeId());
+                setXincoCoreDataId(xaa.getXincoAddAttributePK().getXincoCoreDataId());
                 setAttributeId(xaa.getXincoAddAttributePK().getAttributeId());
                 setAttribInt(xaa.getAttribInt());
                 setAttribUnsignedint(xaa.getAttribUnsignedint());
@@ -96,7 +96,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
 
     public XincoAddAttributeServer(com.bluecubs.xinco.core.server.persistence.XincoAddAttribute xaa) {
         try {
-            setXincoCoreDataId(xaa.getXincoAddAttributePK().getAttributeId());
+            setXincoCoreDataId(xaa.getXincoAddAttributePK().getXincoCoreDataId());
             setAttributeId(xaa.getXincoAddAttributePK().getAttributeId());
             setAttribInt(xaa.getAttribInt());
             setAttribUnsignedint(xaa.getAttribUnsignedint());
