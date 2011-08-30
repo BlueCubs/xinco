@@ -71,12 +71,7 @@ public class XincoCoreLog implements Serializable {
     public XincoCoreLog() {
     }
 
-    public XincoCoreLog(Integer id) {
-        this.id = id;
-    }
-
-    public XincoCoreLog(Integer id, int opCode, Date opDatetime, String opDescription) {
-        this.id = id;
+    public XincoCoreLog(int opCode, Date opDatetime, String opDescription) {
         this.opCode = opCode;
         this.opDatetime = opDatetime;
         this.opDescription = opDescription;
