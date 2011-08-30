@@ -58,6 +58,7 @@ public class XincoCoreDataServer extends XincoCoreData {
 
     private static HashMap parameters = new HashMap();
     private static List result;
+    private static final Logger logger = Logger.getLogger(XincoCoreDataServer.class.getName());
     //create data object for data structures
 
     public XincoCoreDataServer(int attrID) throws XincoException {
@@ -227,7 +228,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                 new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).edit(xaa);
             }
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, e);
+            logger.log(Level.SEVERE, null, e);
             throw new XincoException(e.getMessage());
         }
         return getId();
@@ -274,9 +275,20 @@ public class XincoCoreDataServer extends XincoCoreData {
                     }
                 }
             }
+            //Delete related attributes
+            loadAddAttributes();
+            for(XincoAddAttribute attr: getXincoAddAttributes()){
+                new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).destroy(new XincoAddAttributePK(attr.getXincoCoreDataId(), attr.getAttributeId()));
+            }
+            //Delete related logs
+            loadLogs();
+            for(XincoCoreLog log: getXincoCoreLogs()){
+                new XincoCoreLogJpaController(XincoDBManager.getEntityManagerFactory()).destroy(log.getId());
+            }
             new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).destroy(getId());
         } catch (Exception e) {
-            throw new XincoException();
+            logger.log(Level.SEVERE, null, e);
+            throw new XincoException(e.getLocalizedMessage());
         }
         return 0;
     }
@@ -319,7 +331,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                 }
             }
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, e);
+            logger.log(Level.SEVERE, null, e);
             data.clear();
         }
         return data;
@@ -376,7 +388,7 @@ public class XincoCoreDataServer extends XincoCoreData {
         try {
             return isArchived(new XincoCoreDataServer(id));
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreDataServer.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
             return false;
         }
     }
