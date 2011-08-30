@@ -1,5 +1,5 @@
 /**
- *Copyright 2010 blueCubs.com
+ *Copyright 2011 blueCubs.com
  *
  *Licensed under the Apache License, Version 2.0 (the "License");
  *you may not use this file except cin compliance with the License.
@@ -24,7 +24,7 @@
  * Description:     client of the xinco DMS
  *
  * Original Author: Javier Ortiz
- * Date:            04/2010
+ * Date:            04/2011
  *************************************************************
  */
 package com.bluecubs.xinco.client;
