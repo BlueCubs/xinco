@@ -1884,7 +1884,8 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     public void doDataWizard(final int w_type) {
         this.wizardType = w_type;
         /*
-        wizard type	= 1  = add new data
+        wizard type	
+        = 1  = add new data
         = 2  = edit data object
         = 3  = edit add attributes
         = 4  = checkout data
