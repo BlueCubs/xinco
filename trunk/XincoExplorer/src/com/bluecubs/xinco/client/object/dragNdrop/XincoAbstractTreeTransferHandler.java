@@ -107,7 +107,7 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
                 getTree().expandPath(new TreePath(draggedNodeParent.getPath()));
                 getTree().expandPath(new TreePath(draggedNode.getPath()));
                 getTree().getExplorer().getActionHandler().insertNode(true);
-                getTree().getExplorer().jLabelInternalFrameInformationText.setText(getTree().getExplorer().getResourceBundle().getString("menu.edit.movefoldersuccess"));
+                getTree().getExplorer().getjInternalFrameInformationText().setText(getTree().getExplorer().getResourceBundle().getString("menu.edit.movefoldersuccess"));
             }
         }
     }
@@ -171,7 +171,7 @@ public abstract class XincoAbstractTreeTransferHandler implements DragGestureLis
                 lbl.setOpaque(false);
                 lbl.paint(graphics); //painting the graphics to label
                 graphics.dispose();
-                getTree().getExplorer().jLabelInternalFrameInformationText.setText(getTree().getExplorer().getResourceBundle().getString("menu.edit.movemessage"));
+                getTree().getExplorer().getjInternalFrameInformationText().setText(getTree().getExplorer().getResourceBundle().getString("menu.edit.movemessage"));
                 getTree().getExplorer().getActionHandler().moveToClipboard();
             }
             dragSource.startDrag(dge, DragSource.DefaultMoveNoDrop, image, new Point(0, 0), new XincoTransferableNode(draggedNode), this);

@@ -65,7 +65,7 @@ public class XincoDownloadThread extends Thread {
                     try {
                         JFileChooser fc = new JFileChooser();
 
-                        fc.setCurrentDirectory(new File(explorer.currentPath));
+                        fc.setCurrentDirectory(new File(explorer.getCurrentPath()));
                         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                         // show dialog
                         int result = fc.showOpenDialog(explorer);
@@ -74,25 +74,25 @@ public class XincoDownloadThread extends Thread {
                             throw new XincoException(xerb.getString("datawizard.updatecancel"));
                         }
                         explorer.setCurrentPath(fc.getSelectedFile().toString());
-                        explorer.progressBar.setTitle(xerb.getString("datawizard.filedownloadinfo"));
-                        explorer.progressBar.show();
-                        explorer.jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.filedownloadinfo"));
+                        explorer.getProgressBar().setTitle(xerb.getString("datawizard.filedownloadinfo"));
+                        explorer.getProgressBar().show();
+                        explorer.getjInternalFrameInformationText().setText(xerb.getString("datawizard.filedownloadinfo"));
                         explorer.downloadContentOfNode((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject(),
-                                new File(explorer.currentPath));
+                                new File(explorer.getCurrentPath()));
                         // select current path
-                        explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
+                        explorer.getjTreeRepository().setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
                         // update transaction info
-                        explorer.jLabelInternalFrameInformationText.setText(xerb.getString("datawizard.filedownloadsuccess"));
+                        explorer.getjInternalFrameInformationText().setText(xerb.getString("datawizard.filedownloadsuccess"));
                     } catch (Exception ie) {
                         JOptionPane.showMessageDialog(explorer, xerb.getString("datawizard.filedownloadfailed")
                                 + " " + xerb.getString("general.reason") + ": " + ie.toString(), xerb.getString("general.error"),
                                 JOptionPane.WARNING_MESSAGE);
-                        explorer.jLabelInternalFrameInformationText.setText("");
-                        explorer.progressBar.hide();
+                        explorer.getjInternalFrameInformationText().setText("");
+                        explorer.getProgressBar().hide();
                     }
                 }
             }
-            explorer.progressBar.hide();
+            explorer.getProgressBar().hide();
         }
     }
 

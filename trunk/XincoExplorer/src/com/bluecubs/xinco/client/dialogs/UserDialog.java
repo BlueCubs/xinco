@@ -344,7 +344,7 @@ public class UserDialog extends AbstractDialog {
                 // set plain-text password
                 explorer.getSession().getUser().setUserpassword(explorer.getUser().getUserpassword());
                 // update transaction info
-                explorer.jLabelInternalFrameInformationText.setText(explorer.getResourceBundle().getString("window.userinfo.updatesuccess"));
+                explorer.getjInternalFrameInformationText().setText(explorer.getResourceBundle().getString("window.userinfo.updatesuccess"));
                 setVisible(false);
             } catch (Exception ue) {
                 JOptionPane.showMessageDialog(this, explorer.getResourceBundle().getString("window.userinfo.updatefailed") + " " + explorer.getResourceBundle().getString("general.reason") + ": " + ue.toString(), explorer.getResourceBundle().getString("general.error"), JOptionPane.WARNING_MESSAGE);

@@ -341,7 +341,7 @@ public class XincoRepositoryActionHandler {
         public void actionPerformed(ActionEvent e) {
             moveToClipboard();
             //update transaction info
-            explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movemessage"));
+            explorer.getjInternalFrameInformationText().setText(xerb.getString("menu.edit.movemessage"));
         }
     }
 
@@ -581,7 +581,7 @@ public class XincoRepositoryActionHandler {
                                 throw new XincoException(xerb.getString("error.nowritepermission"));
                             }
                             // update transaction info
-                            explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movefoldersuccess"));
+                            explorer.getjInternalFrameInformationText().setText(xerb.getString("menu.edit.movefoldersuccess"));
                         } catch (Exception rmie) {
                             // undo modification
                             ((XincoCoreNode) tempNode.getUserObject()).setXincoCoreNodeId(old_parentNodeId);
@@ -661,7 +661,7 @@ public class XincoRepositoryActionHandler {
                             } catch (Exception loge) {
                             }
                             // update transaction info
-                            explorer.jLabelInternalFrameInformationText.setText(xerb.getString("menu.edit.movedatasuccess"));
+                            explorer.getjInternalFrameInformationText().setText(xerb.getString("menu.edit.movedatasuccess"));
                         } catch (Exception rmie) {
 
                             // undo modification
