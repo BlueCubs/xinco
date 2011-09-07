@@ -242,7 +242,7 @@ public class DataFolderDialog extends AbstractDialog {
         if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId() == 0) {
             tempNode = explorer.getSession().getCurrentTreeNodeSelection();
             explorer.getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode) explorer.getSession().getCurrentTreeNodeSelection().getParent());
-            explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
+            explorer.getjTreeRepository().setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
             explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(tempNode);
         }
         setVisible(false);
@@ -278,14 +278,14 @@ public class DataFolderDialog extends AbstractDialog {
             if (insertnewnode) {
                 explorer.getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode) explorer.getSession().getCurrentTreeNodeSelection().getParent());
             }
-            explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
-            explorer.jLabelInternalFrameInformationText.setText(explorer.getResourceBundle().getString("window.folder.updatesuccess"));
+            explorer.getjTreeRepository().setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
+            explorer.getjInternalFrameInformationText().setText(explorer.getResourceBundle().getString("window.folder.updatesuccess"));
         } catch (Exception rmie) {
             //remove new node in case off error
             if (insertnewnode) {
                 tempNode = explorer.getSession().getCurrentTreeNodeSelection();
                 explorer.getSession().setCurrentTreeNodeSelection((XincoMutableTreeNode) explorer.getSession().getCurrentTreeNodeSelection().getParent());
-                explorer.jTreeRepository.setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
+                explorer.getjTreeRepository().setSelectionPath(new TreePath(explorer.getSession().getCurrentTreeNodeSelection().getPath()));
                 explorer.getSession().getXincoClientRepository().treemodel.removeNodeFromParent(tempNode);
             }
             JOptionPane.showMessageDialog(explorer,

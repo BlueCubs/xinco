@@ -371,8 +371,8 @@ public class SearchDialog extends AbstractDialog {
             if (xmtn.getUserObject().getClass() == XincoCoreNode.class) {
                 if (((XincoCoreNode) xmtn.getUserObject()).getId() == ((XincoCoreNode) v.get(1)).getId()) {
                     tp = new TreePath(xmtn.getPath());
-                    explorer.jTreeRepository.setSelectionPath(tp);
-                    explorer.jTreeRepository.expandPath(tp);
+                    explorer.getjTreeRepository().setSelectionPath(tp);
+                    explorer.getjTreeRepository().expandPath(tp);
                     j = -1;
                     //select data
                     if (1 == (v.size() - 1)) {
@@ -380,7 +380,7 @@ public class SearchDialog extends AbstractDialog {
                             if (((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject().getClass() == XincoCoreData.class) {
                                 if (((XincoCoreData) ((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject()).getId() == ((XincoCoreData) v.get(0)).getId()) {
                                     tp = new TreePath(((XincoMutableTreeNode) xmtn.getChildAt(k)).getPath());
-                                    explorer.jTreeRepository.setSelectionPath(tp);
+                                    explorer.getjTreeRepository().setSelectionPath(tp);
                                 }
                             }
                         }
@@ -392,8 +392,8 @@ public class SearchDialog extends AbstractDialog {
                     if (((XincoMutableTreeNode) xmtn.getChildAt(j)).getUserObject().getClass() == XincoCoreNode.class) {
                         if (((XincoCoreNode) ((XincoMutableTreeNode) xmtn.getChildAt(j)).getUserObject()).getId() == ((XincoCoreNode) v.get(i)).getId()) {
                             tp = new TreePath(((XincoMutableTreeNode) xmtn.getChildAt(j)).getPath());
-                            this.explorer.jTreeRepository.setSelectionPath(tp);
-                            this.explorer.jTreeRepository.expandPath(tp);
+                            this.explorer.getjTreeRepository().setSelectionPath(tp);
+                            this.explorer.getjTreeRepository().expandPath(tp);
                             xmtn = (XincoMutableTreeNode) xmtn.getChildAt(j);
                             j = -1;
                             //select data
@@ -402,7 +402,7 @@ public class SearchDialog extends AbstractDialog {
                                     if (((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject().getClass() == XincoCoreData.class) {
                                         if (((XincoCoreData) ((XincoMutableTreeNode) xmtn.getChildAt(k)).getUserObject()).getId() == ((XincoCoreData) v.get(0)).getId()) {
                                             tp = new TreePath(((XincoMutableTreeNode) xmtn.getChildAt(k)).getPath());
-                                            explorer.jTreeRepository.setSelectionPath(tp);
+                                            explorer.getjTreeRepository().setSelectionPath(tp);
                                         }
                                     }
                                 }
