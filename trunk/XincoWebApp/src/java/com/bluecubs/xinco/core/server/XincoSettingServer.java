@@ -2,8 +2,8 @@ package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.server.persistence.controller.XincoSettingJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.service.XincoSetting;
 import com.bluecubs.xinco.core.server.service.XincoCoreUser;
+import com.bluecubs.xinco.core.server.service.XincoSetting;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 /**
  * Handles the XincoSetting CRUD operations.
- * 
+ *
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public class XincoSettingServer extends XincoSetting {
@@ -111,7 +111,7 @@ public class XincoSettingServer extends XincoSetting {
         if (!result.isEmpty()) {
             return new XincoSettingServer(((com.bluecubs.xinco.core.server.persistence.XincoSetting) result.get(0)).getId());
         } else {
-            return null;
+            throw new XincoException("Unable to find setting: " + desc);
         }
     }
 

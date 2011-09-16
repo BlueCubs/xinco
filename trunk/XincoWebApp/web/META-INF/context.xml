@@ -18,14 +18,6 @@
   password="" type="javax.sql.DataSource"
   url="jdbc:h2:file:~/data/xinco;CREATE=TRUE;AUTO_SERVER=TRUE;LOCK_TIMEOUT=10000"
   username="root"/>
-  <!-- #################### ################ ####################-->
-    <!--Uncomment for non embedded use
-    <ResourceParams name="jdbc/XincoDB">
-        <parameter>
-            <name>factory</name>
-            <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
-        </parameter>
-    </ResourceParams>-->
   <!-- ################# Optional Configuration #################-->
   <!-- Database JNDI Name -->
     <Environment name="xinco/JNDIDB" override="false" type="java.lang.String" value="XincoPUJNDI"/>

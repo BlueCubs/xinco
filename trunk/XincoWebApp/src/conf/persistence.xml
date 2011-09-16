@@ -132,7 +132,7 @@
       <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
     </properties>
   </persistence-unit>
-  <persistence-unit name="XincoPUJNDI">
+  <persistence-unit name="XincoPUJNDI" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <non-jta-data-source>java:comp/env/jdbc/XincoDB</non-jta-data-source>
     <class>com.bluecubs.xinco.core.server.persistence.XincoId</class>

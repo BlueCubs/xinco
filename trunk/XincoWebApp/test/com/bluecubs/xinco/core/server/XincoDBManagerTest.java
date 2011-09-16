@@ -1,5 +1,6 @@
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.server.db.DBState;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -21,11 +22,11 @@ public class XincoDBManagerTest extends XincoTestCase {
         TestSuite suite = new TestSuite(XincoDBManagerTest.class);
         return suite;
     }
-    
-    public void testReadFileAsString(){
+
+    public void testReadFileAsString() {
         try {
-            ArrayList<String> statements=
-                    XincoDBManager.readFileAsString("xinco_MySQL.sql",getClass());
+            ArrayList<String> statements =
+                    XincoDBManager.readFileAsString("script/init.sql", DBState.class);
             assertTrue(!statements.isEmpty());
         } catch (IOException ex) {
             Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
