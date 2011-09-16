@@ -1,75 +1,54 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community
+ * in exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoDBManager
+ * Name: XincoDBManager
  *
- * Description:     server-side database manager
+ * Description: server-side database manager
  *
- * Original Author: Alexander Manes
- * Date:            2004
+ * Original Author: Alexander Manes Date: 2004
  *
  * Modifications:
  *
- * Who?             When?             What?
- * Javier A. Ortiz  01/04/2007        Added methods for result set manipulation and formating
+ * Who? When? What? Javier A. Ortiz 01/04/2007 Added methods for result set
+ * manipulation and formating
  *
  *************************************************************
  */
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.server.db.DBState;
-import java.io.IOException;
-import java.util.Map;
 import com.bluecubs.xinco.tools.MD5;
-import gudusoft.gsqlparser.*;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.Writer;
+import com.bluecubs.xinco.tools.Tool;
+import gudusoft.gsqlparser.EDbVendor;
+import gudusoft.gsqlparser.ESqlStatementType;
+import gudusoft.gsqlparser.TGSqlParser;
+import java.io.*;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map.Entry;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
+import javax.persistence.*;
 
 public class XincoDBManager {
 
@@ -77,7 +56,8 @@ public class XincoDBManager {
     //load compiled configuartion
     public final static XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
     private int EmailLink = 1, DataLink = 2;
-    private static ResourceBundle lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+    private static ResourceBundle lrb =
+            ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
     protected static String puName = "XincoPU";
     private static boolean locked = false;
     private static boolean usingContext = false;
@@ -87,6 +67,7 @@ public class XincoDBManager {
     private static final Logger logger = Logger.getLogger(XincoDBManager.class.getName());
 
     private XincoDBManager() throws Exception {
+        getEntityManagerFactory();
         updateDBState();
         config.loadSettings();
         //Test: create pdf rendering
@@ -255,8 +236,9 @@ public class XincoDBManager {
         //Set it to null so it's recreated with new Persistence Unit next time is requested.
         emf = null;
         initDone = false;
-        updateDBState();
         getEntityManagerFactory();
+        updateDBState();
+        config.loadSettings();
     }
 
     public static String displayDBStatus() {
@@ -265,33 +247,31 @@ public class XincoDBManager {
 
     public static void updateDBState() {
         try {
-            String version = getDBVersion();
+            String version = getDBVersionNumber();
             if (namedQuery("XincoCoreNode.findAll").isEmpty()) {
                 //Database empty
                 state = DBState.NEED_INIT;
                 logger.warning(state.getMessage());
                 //Initialize database
                 runInitSQL();
-                return;
             } //There's something in the database, let's check the version
             else if (version == null) {
                 //Doesn't exist. Need to do manual update. Can't do anything else.
                 state = DBState.NEED_MANUAL_UPDATE;
                 logger.warning(state.getMessage());
-                return;
-            } else if (!version.equals(getVersion())) {
+            } else if (!version.equals(getVersionNumber())
+                    //Try again it might be a string difference but still the same number
+                    && !Tool.compareNumberStrings(version, version)) {
                 //Needs to be updated
                 updateDatabase(version, getVersion());
                 state = DBState.NEED_UPDATE;
                 logger.log(Level.WARNING, "{0}({1} vs. {2})",
                         new Object[]{state.getMessage(), version, getVersion()});
-                return;
             } else {
                 //Nothing to do
                 state = DBState.VALID;
                 logger.log(Level.INFO, "{0}: {1}",
                         new Object[]{state.getMessage(), getVersion()});
-                return;
             }
         } catch (XincoException ex) {
             logger.log(Level.SEVERE, null, ex);
@@ -299,34 +279,53 @@ public class XincoDBManager {
         }
     }
 
-    public static String getVersion() {
-        ResourceBundle settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
+    public static String getVersionNumber() {
+        ResourceBundle settings =
+                ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
         StringBuilder version = new StringBuilder();
         version.append(settings.getString("version.high"));
         version.append(".");
         version.append(settings.getString("version.mid"));
         version.append(".");
         version.append(settings.getString("version.low"));
-        version.append((settings.getString("version.postfix").isEmpty()
-                ? "" : " " + settings.getString("version.postfix")));
         return version.toString();
     }
 
-    private static String getDBVersion() {
+    public static String getVersion() {
+        ResourceBundle settings =
+                ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
+        return getVersionNumber() + ((settings.getString("version.postfix").isEmpty()
+                ? "" : " " + settings.getString("version.postfix")));
+
+    }
+
+    private static String getDBVersionNumber() {
         try {
             StringBuilder version = new StringBuilder();
-            version.append(XincoSettingServer.getSetting("version.high").getStringValue());
+            version.append(XincoSettingServer.getSetting("version.high").getIntValue());
             version.append(".");
-            version.append(XincoSettingServer.getSetting("version.mid").getStringValue());
+            version.append(XincoSettingServer.getSetting("version.mid").getIntValue());
             version.append(".");
-            version.append(XincoSettingServer.getSetting("version.low").getStringValue());
-            version.append(XincoSettingServer.getSetting("version.postfix").getStringValue().isEmpty()
-                    ? "" : " " + XincoSettingServer.getSetting("version.postfix").getStringValue());
+            version.append(XincoSettingServer.getSetting("version.low").getIntValue());
             return version.toString();
         } catch (XincoException ex) {
             logger.log(Level.SEVERE, null, ex);
             return null;
         } catch (Exception ex) {
+            logger.log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    private static String getDBVersion() {
+        try {
+            return getDBVersionNumber() + (XincoSettingServer.getSetting("version.postfix").getStringValue().isEmpty()
+                    ? "" : " " + XincoSettingServer.getSetting("version.postfix").getStringValue());
+        } catch (XincoException ex) {
+            logger.log(Level.SEVERE, null, ex);
+            return null;
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, null, ex);
             return null;
         }
     }

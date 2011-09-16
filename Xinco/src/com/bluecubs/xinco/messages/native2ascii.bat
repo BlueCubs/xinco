@@ -1,7 +1,7 @@
 native2ascii.exe _XincoMessages.properties XincoMessages.properties
 native2ascii.exe _XincoMessages_cz.properties XincoMessages_cz.properties
 native2ascii.exe _XincoMessages_de.properties XincoMessages_de.properties
-native2ascii.exe _XincoMessages_es.properties XincoMessages_es.properties
+native2ascii.exe -encoding utf8 _XincoMessages_es.properties XincoMessages_es.properties
 native2ascii.exe _XincoMessages_fr.properties XincoMessages_fr.properties
 native2ascii.exe _XincoMessages_it.properties XincoMessages_it.properties
 native2ascii.exe _XincoMessages_nl.properties XincoMessages_nl.properties

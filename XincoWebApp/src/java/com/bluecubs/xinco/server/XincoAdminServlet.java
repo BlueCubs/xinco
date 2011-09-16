@@ -48,30 +48,18 @@
  */
 package com.bluecubs.xinco.server;
 
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserHasXincoCoreGroupJpaController;
-import com.bluecubs.xinco.core.server.XincoException;
-import com.bluecubs.xinco.core.server.XincoCoreDataServer;
-import com.bluecubs.xinco.core.server.XincoCoreDataTypeAttributeServer;
-import com.bluecubs.xinco.core.server.XincoCoreDataTypeServer;
-import com.bluecubs.xinco.core.server.XincoCoreGroupServer;
-import com.bluecubs.xinco.core.server.XincoCoreLanguageServer;
-import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
-import com.bluecubs.xinco.core.server.XincoCoreUserServer;
-import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.*;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUser;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
-import com.bluecubs.xinco.index.XincoIndexer;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserHasXincoCoreGroupJpaController;
 import com.bluecubs.xinco.core.server.service.XincoCoreGroup;
+import com.bluecubs.xinco.index.XincoIndexer;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -1114,17 +1102,17 @@ public class XincoAdminServlet extends HttpServlet {
                 out.println("<td class=\"bigtext\">&nbsp;</td>");
                 out.println("</tr>");
 
-                ArrayList alllanguages = XincoCoreLanguageServer.getXincoCoreLanguages();
+                ArrayList allLanguages = XincoCoreLanguageServer.getXincoCoreLanguages();
                 boolean is_used = true;
-                for (i = 0; i < alllanguages.size(); i++) {
+                for (i = 0; i < allLanguages.size(); i++) {
                     out.println("<tr>");
-                    out.println("<td class=\"text\">" + ((XincoCoreLanguageServer) alllanguages.get(i)).getId() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreLanguageServer) alllanguages.get(i)).getSign() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreLanguageServer) alllanguages.get(i)).getDesignation() + "</td>");
-                    is_used = XincoCoreLanguageServer.isLanguageUsed((XincoCoreLanguageServer) alllanguages.get(i));
+                    out.println("<td class=\"text\">" + ((XincoCoreLanguageServer) allLanguages.get(i)).getId() + "</td>");
+                    out.println("<td class=\"text\">" + ((XincoCoreLanguageServer) allLanguages.get(i)).getSign() + "</td>");
+                    out.println("<td class=\"text\">" + rb.getString(((XincoCoreLanguageServer) allLanguages.get(i)).getDesignation()) + "</td>");
+                    is_used = XincoCoreLanguageServer.isLanguageUsed((XincoCoreLanguageServer) allLanguages.get(i));
                     if (!is_used) {
                         out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminLanguagesDelete="
-                                + ((XincoCoreLanguageServer) alllanguages.get(i)).getId()
+                                + ((XincoCoreLanguageServer) allLanguages.get(i)).getId()
                                 + "&list=" + request.getParameter("list")
                                 + "\" class=\"link\">[" + rb.getString("general.delete") + "]</a></td>");
                     } else {

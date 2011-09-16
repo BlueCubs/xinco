@@ -1,6 +1,6 @@
 package com.bluecubs.xinco.core.server;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Extracts information from browser
+ *
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public final class BrowserDataExtractor extends HttpServlet {
@@ -26,7 +27,7 @@ public final class BrowserDataExtractor extends HttpServlet {
     protected String language = "en";
     protected Locale locale;
     // Spracheinstellungen
-    private Hashtable supportedLanguages;
+    private HashMap<String, String> supportedLanguages;
 
     public BrowserDataExtractor(HttpServletRequest request, HttpSession session) {
         initialize();
@@ -45,7 +46,7 @@ public final class BrowserDataExtractor extends HttpServlet {
     }
 
     public void initialize() {
-        supportedLanguages = new Hashtable(2);
+        supportedLanguages = new HashMap<String, String>();
         ResourceBundle lrb = ResourceBundle.getBundle(
                 "com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
         String[] locales = lrb.getString("AvailableLocales").split(",");
@@ -182,7 +183,7 @@ public final class BrowserDataExtractor extends HttpServlet {
         String prefLanguage = request.getHeader("Accept-Language");
 
         if (prefLanguage != null) {
-            String language = null;
+            language = null;
             StringTokenizer st = new StringTokenizer(prefLanguage, ",");
 
             while (st.hasMoreTokens()) {

@@ -161,7 +161,8 @@
         </signjar>
     </target>
 
-    <target name="release" description="Create the release packages of Xinco" depends="dist, unsign_client_libraries, sign_client_libraries">
+    <target name="release" description="Create the release packages of Xinco" 
+    depends="dist, unsign_client_libraries, sign_client_libraries, build-language-master-pack">
         <trim input="xinco-DMS-${version_high}.${version_mid}.${version_low} ${version_postfix}" property="dist.name" />
         <delete dir="${dist}/${dist.name}"/>
         <delete>
@@ -368,5 +369,28 @@
                        match="'version.postfix'.*"
                        replace="'version.postfix', '0', '${version_postfix}', '0', '0');"
                        byline="true"/>
+    </target>
+    
+    <target name="build-language-master-pack">
+        <property name="language-pack-name" 
+        value="XincoLanguageMasterPack-${version_high}.${version_mid}.${version_low} ${version_postfix}" />
+        <delete includeemptydirs="true">
+            <fileset dir="${dist}" includes="XincoLanguageMasterPack-*/**"/>
+        </delete>
+        <mkdir dir="${dist}/${language-pack-name}"/>
+        <!--Add sample translation files-->
+        <copy todir="${dist}/${language-pack-name}">
+            <fileset dir="../Xinco/src/com/bluecubs/xinco/messages">
+                <include name="_*.properties"/>
+            </fileset>
+        </copy>
+        <!--Now zip it-->
+        <zip destfile="${dist}/${language-pack-name}.zip">
+            <zipfileset dir="${dist}/${language-pack-name}" prefix="${language-pack-name}"/>
+        </zip>
+        <!--Clean after yourself-->
+        <delete includeemptydirs="true">
+            <fileset dir="${dist}" includes="XincoLanguageMasterPack-*/**" excludes="*.zip"/>
+        </delete>
     </target>
 </project>

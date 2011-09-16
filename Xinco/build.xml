@@ -77,10 +77,12 @@
     -->
     <target name="-post-jar">
         <basename file="${basedir}" property="project.dir.name"/>
-        <property name="dist.versionized.jar" value="${dist.dir}/${project.dir.name}-${mf.version.spec}.jar" />
+        <property name="dist.versionized.jar" 
+        value="${dist.dir}/${project.dir.name}-${mf.version.spec}.jar" />
         <echo>*** post-jar: Building ${dist.versionized.jar} with Package Version Information ***</echo>
         
-        <copylibs compress="${jar.compress}" jarfile="${dist.versionized.jar}" runtimeclasspath="${run.classpath.without.build.classes.dir}">
+        <copylibs compress="${jar.compress}" jarfile="${dist.versionized.jar}" 
+        runtimeclasspath="${run.classpath.without.build.classes.dir}">
             <fileset dir="${build.classes.dir}"/>
             <manifest>
                 <attribute name="Bundle-Version" value="${mf.version.spec}"/>
@@ -96,11 +98,13 @@
     </target>
     
     <target name="-pre-init">
-        <native2ascii src="src/com/bluecubs/xinco/messages" dest="src/com/bluecubs/xinco/messages/test" 
+        <native2ascii src="src/com/bluecubs/xinco/messages" 
+        dest="src/com/bluecubs/xinco/messages/test"
         includes="**/_*.properties"/>
-        <copy todir="src/com/bluecubs/xinco/messages">
+        <move todir="src/com/bluecubs/xinco/messages" includeemptydirs="false">
             <fileset dir="src/com/bluecubs/xinco/messages/test"/>
-        </copy>
+            <mapper type="regexp" from="^_(.*)\.properties$$" to="\1.properties"/>
+        </move>
         <delete dir="src/com/bluecubs/xinco/messages/test" />
     </target>
 </project>
