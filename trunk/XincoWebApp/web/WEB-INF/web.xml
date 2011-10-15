@@ -2,8 +2,8 @@
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <display-name>xinco</display-name>
     <filter>
-        <filter-name>SetCharacterEncodingFilter</filter-name>
         <description>Make GB2312\GBK or others to UTF-8 for chineese character support</description>
+        <filter-name>SetCharacterEncodingFilter</filter-name>
         <filter-class>com.bluecubs.xinco.core.server.filter.SetCharacterEncodingFilter</filter-class>
         <init-param>
             <param-name>encoding</param-name>
@@ -18,18 +18,18 @@
         <listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
     </listener>
     <servlet>
-        <servlet-name>XincoAdminServlet</servlet-name>
         <display-name>XincoAdminServlet</display-name>
+        <servlet-name>XincoAdminServlet</servlet-name>
         <servlet-class>com.bluecubs.xinco.server.XincoAdminServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>XincoPublisherServlet</servlet-name>
         <display-name>XincoPublisherServlet</display-name>
+        <servlet-name>XincoPublisherServlet</servlet-name>
         <servlet-class>com.bluecubs.xinco.server.XincoPublisherServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>XincoCronServlet</servlet-name>
         <display-name>XincoCronServlet</display-name>
+        <servlet-name>XincoCronServlet</servlet-name>
         <servlet-class>com.bluecubs.xinco.server.XincoCronServlet</servlet-class>
         <load-on-startup>10</load-on-startup>
     </servlet>
@@ -37,6 +37,14 @@
         <servlet-name>Xinco</servlet-name>
         <servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>VaadinApplication</servlet-name>
+        <servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
+        <init-param>
+            <param-name>application</param-name>
+            <param-value>com.bluecubs.xinco.core.server.vaadin.XincoExplorer</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>Xinco</servlet-name>
@@ -57,6 +65,14 @@
     <servlet-mapping>
         <servlet-name>Xinco</servlet-name>
         <url-pattern>/services/Xinco</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VaadinApplication</servlet-name>
+        <url-pattern>/vaadin/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VaadinApplication</servlet-name>
+        <url-pattern>/VAADIN/*</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

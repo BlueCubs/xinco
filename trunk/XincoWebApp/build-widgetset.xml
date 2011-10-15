@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Compile Vaadin Widgetset" default="compile-widgetset" basedir=".">
+    <description>Compiles a combined widgetset of all Vaadin widgetsets found on the classpath.</description>
+
+    <!--
+        Important notice!!
+        This Ant script depends on the NetBeans project specific build-impl.xml
+        file. If you want to use this script in some other environment, you need
+        to manually create init and compile targets and define required properties.
+
+        See also http://demo.vaadin.com/docs/example-source/build-widgetset.xml
+        for another example script.
+    -->
+    <import file="nbproject/build-impl.xml"/>
+
+    <target name="widgetset-init">
+        <!-- Name of the widget set -->
+        <property name="widgetset" value="com.example.myapp.widgetset.MyAppWidgetSet"/>
+
+        <!-- Path to the widgetset directory. Required only for -->
+    	<!-- generated widget sets. Must be relative to         -->
+    	<!-- $src.dir, that is, under the first entry in        -->
+    	<!-- classpath.                                         -->
+        <property name="widgetset-path" value="com/example/myapp/widgetset"/>
+
+        <!-- Target where to compile the widget set -->
+        <property name="client-side-destination" value="web/VAADIN/widgetsets" />
+
+        <!-- Define if the widget set be generated automatically -->
+        <!-- from all widget sets included in the class path.    -->
+        <property name="generate.widgetset" value="1"/>
+    </target>
+
+
+    <!-- Generates a combined widget set from all widget    -->
+    <!-- sets in the class path, including project sources. -->
+    <!-- Updates the configuration if it already exists.    -->
+    <target name="generate-widgetset" depends="widgetset-init, compile" if="generate.widgetset">
+        <echo>Updating ${widgetset}...</echo>
+        <echo>Remember to define the widgetset in web.xml as follows.</echo>
+        <echo>
+            &lt;init-param&gt;
+                &lt;param-name&gt;widgetset&lt;/param-name&gt;
+                &lt;param-value&gt;${widgetset}&lt;/param-value&gt;
+            &lt;/init-param&gt;
+        </echo>
+
+        <!-- Create the directory if it does not already exist. -->
+        <mkdir dir="${src.dir}/${widgetset-path}"/>
+
+        <java classname="com.vaadin.terminal.gwt.widgetsetutils.WidgetSetBuilder" failonerror="yes" fork="yes" maxmemory="256m">
+            <arg value="${widgetset}"/>
+            <jvmarg value="-Xss1024k"/>
+            <jvmarg value="-Djava.awt.headless=true"/>
+            <classpath>
+                <pathelement path="${src.dir}" />
+                <pathelement path="${javac.classpath}" />
+                <pathelement path="${build.web.dir}/WEB-INF/classes" />
+            </classpath>
+        </java>
+    </target>
+
+    <!-- Compiles the widget set using the GWT compiler. -->
+    <target name="compile-widgetset" depends="init, widgetset-init, generate-widgetset">
+        <echo>Compiling ${widgetset} into ${client-side-destination} directory...</echo>
+        
+        <java classname="com.google.gwt.dev.Compiler" failonerror="yes" fork="yes" maxmemory="256m">
+            <arg value="-war" />
+            <arg value="${client-side-destination}" />
+            <arg value="${widgetset}" />
+            <jvmarg value="-Xss1024k"/>
+            <jvmarg value="-Djava.awt.headless=true"/>
+            <classpath>
+                <pathelement path="${src.dir}" />
+                <pathelement path="${javac.classpath}" />
+                <pathelement path="${build.web.dir}/WEB-INF/classes" />
+            </classpath>
+        </java>
+    </target>
+
+</project>
