@@ -734,7 +734,8 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.h2.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.MySQLDriver.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.eclipselink.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${libs.Vaadin.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.ContextMenu3.1.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.vaadin-6.7.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.activation.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.commons-codec-1.4.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.commons-discovery-0.2.jar-1}" todir="${build.web.dir}/client"/>
@@ -790,7 +791,8 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.h2.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${libs.MySQLDriver.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${libs.eclipselink.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${libs.Vaadin.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.ContextMenu3.1.0.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${file.reference.vaadin-6.7.1.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.activation.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.commons-codec-1.4.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.commons-discovery-0.2.jar-1}" todir="${build.web.dir}/client"/>

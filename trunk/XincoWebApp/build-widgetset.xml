@@ -15,13 +15,13 @@
 
     <target name="widgetset-init">
         <!-- Name of the widget set -->
-        <property name="widgetset" value="com.example.myapp.widgetset.MyAppWidgetSet"/>
+        <property name="widgetset" value="org.vaadin.peter.contextmenu.ContextmenuWidgetset"/>
 
         <!-- Path to the widgetset directory. Required only for -->
     	<!-- generated widget sets. Must be relative to         -->
     	<!-- $src.dir, that is, under the first entry in        -->
     	<!-- classpath.                                         -->
-        <property name="widgetset-path" value="com/example/myapp/widgetset"/>
+        <property name="widgetset-path" value="com/bluecubs/xinco/core/server/vaadin/widgetset"/>
 
         <!-- Target where to compile the widget set -->
         <property name="client-side-destination" value="web/VAADIN/widgetsets" />

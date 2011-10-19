@@ -17,10 +17,10 @@ import javax.jws.WebService;
  *
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-@WebService(serviceName = "Xinco", portName = "XincoPort", 
-        endpointInterface = "com.bluecubs.xinco.core.server.service.Xinco", 
-        targetNamespace = "http://service.server.core.xinco.bluecubs.com/", 
-        wsdlLocation = "WEB-INF/wsdl/XincoWebService/Xinco.wsdl")
+@WebService(serviceName = "Xinco", portName = "XincoPort",
+endpointInterface = "com.bluecubs.xinco.core.server.service.Xinco",
+targetNamespace = "http://service.server.core.xinco.bluecubs.com/",
+wsdlLocation = "WEB-INF/wsdl/XincoWebService/Xinco.wsdl")
 public class XincoWebService {
 
     public XincoCoreDataType getXincoCoreDataType(XincoCoreDataType in0, XincoCoreUser in1) {
@@ -116,7 +116,6 @@ public class XincoWebService {
 
     public XincoCoreNode getXincoCoreNode(XincoCoreNode in0, XincoCoreUser in1) {
         try {
-            int i = 0;
             XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
             XincoCoreNodeServer node = new XincoCoreNodeServer(in0.getId());
             XincoCoreACE ace = XincoCoreACEServer.checkAccess(user, (ArrayList) node.getXincoCoreAcl());
@@ -124,7 +123,7 @@ public class XincoWebService {
                 boolean showChildren = false;
                 // show content of TRASH to admins ONLY!
                 if (node.getId() == 2) {
-                    for (i = 0; i < user.getXincoCoreGroups().size(); i++) {
+                    for (int i = 0; i < user.getXincoCoreGroups().size(); i++) {
                         if (((XincoCoreGroup) user.getXincoCoreGroups().get(i)).getId() == 1) {
                             showChildren = true;
                             break;
