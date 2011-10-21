@@ -1,83 +1,53 @@
 package com.bluecubs.xinco.core.server.vaadin;
 
-//import com.bluecubs.xinco.tools.XincoFileIconManager;
 import com.bluecubs.xinco.core.server.XincoCoreACEServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.core.server.XincoException;
 import com.bluecubs.xinco.core.server.service.*;
-import com.vaadin.Application;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.Sizeable;
+import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Tree;
-import com.vaadin.ui.Tree.ExpandEvent;
-import com.vaadin.ui.Tree.ExpandListener;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.datatype.XMLGregorianCalendar;
-//import javax.swing.Icon;
-//import javax.swing.tree.DefaultTreeCellRenderer;
 
 /**
  *
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
-public class XincoExplorer extends Application implements ValueChangeListener {
+public class XincoExplorer extends CustomComponent implements ValueChangeListener {
 
-    private ResourceBundle xerb, settings;
-    //client version
-    private XincoVersion xincoClientVersion = null;
     //Table linking displayed item with it's id
     private Tree xincoTree = null;
     private Table xincoTable = null;
-    private Window mainWindow = null;
+    private final Xinco xinco;
 
-    @Override
-    public void init() {
-        xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", Locale.getDefault());//TODO: use selected language
-        settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
-        xincoClientVersion = new XincoVersion();
-        xincoClientVersion.setVersionHigh(Integer.parseInt(settings.getString("version.high")));
-        xincoClientVersion.setVersionMid(Integer.parseInt(settings.getString("version.mid")));
-        xincoClientVersion.setVersionLow(Integer.parseInt(settings.getString("version.low")));
-        xincoClientVersion.setVersionPostfix(settings.getString("version.postfix"));
-        mainWindow = new Window(xerb.getString("general.clienttitle") + " - "
-                + xerb.getString("general.version") + " "
-                + xincoClientVersion.getVersionHigh() + "."
-                + xincoClientVersion.getVersionMid() + "."
-                + xincoClientVersion.getVersionLow() + " "
-                + xincoClientVersion.getVersionPostfix());
+    public XincoExplorer(Xinco xinco) {
+        this.xinco = xinco;
+        //TODO: use selected language
         HorizontalSplitPanel splitpanel = new HorizontalSplitPanel();
         // Put two components in the container.
         splitpanel.setFirstComponent(getXincoTree());
         splitpanel.setSecondComponent(getDetailTable());
         splitpanel.setHeight(500, Sizeable.UNITS_PIXELS);
         splitpanel.setSplitPosition(25, Sizeable.UNITS_PERCENTAGE);
-        mainWindow.addComponent(splitpanel);
-        setMainWindow(mainWindow);
+        // The composition root MUST be set
+        setCompositionRoot(splitpanel);
     }
 
     private Tree getXincoTree() {
         if (xincoTree == null) {
             try {
-                //            XincoFileIconManager xfm = new XincoFileIconManager();
-                xincoTree = new Tree(xerb.getString("menu.repository"));
-                //            xincoTree.addContainerProperty("icon", Icon.class, null);
-                //            xincoTree.setItemIconPropertyId("icon");
-                xincoTree.addListener(new ExpandListener() {
-
-                    @Override
-                    public void nodeExpand(ExpandEvent event) {
-                        mainWindow.requestRepaintAll();
-                    }
-                });
+                xincoTree = new Tree(xinco.getResource().getString("menu.repository"));
                 XincoCoreNodeServer xcns = null;
                 try {
                     xcns = new XincoCoreNodeServer(1);
@@ -91,6 +61,9 @@ public class XincoExplorer extends Application implements ValueChangeListener {
                 xincoTree.expandItem(root);
                 xincoTree.addListener(XincoExplorer.this);
                 xincoTree.setImmediate(true);
+                //Add icon support
+                xincoTree.addContainerProperty("icon", Resource.class, null);
+                xincoTree.setItemIconPropertyId("icon");
             } catch (XincoException ex) {
                 Logger.getLogger(XincoExplorer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -108,9 +81,9 @@ public class XincoExplorer extends Application implements ValueChangeListener {
              * Define the names and data types of columns. The "default value"
              * parameter is meaningless here.
              */
-            xincoTable.addContainerProperty(xerb.getString("window.repository.table.attribute"),
+            xincoTable.addContainerProperty(xinco.getResource().getString("window.repository.table.attribute"),
                     String.class, null);
-            xincoTable.addContainerProperty(xerb.getString("window.repository.table.details"),
+            xincoTable.addContainerProperty(xinco.getResource().getString("window.repository.table.details"),
                     String.class, null);
             // Send changes in selection immediately to server.
             xincoTable.setImmediate(true);
@@ -147,7 +120,7 @@ public class XincoExplorer extends Application implements ValueChangeListener {
             } catch (XincoException ex) {
                 Logger.getLogger(XincoExplorer.class.getName()).log(Level.SEVERE, null, ex);
             }
-            List<XincoCoreNode> xincoCoreNodes = xcns.getXincoCoreNodes();
+            java.util.List<XincoCoreNode> xincoCoreNodes = xcns.getXincoCoreNodes();
             if (xincoCoreNodes.isEmpty() && node.getXincoCoreData().isEmpty() && tempAce.isReadPermission()) {
                 try {
                     //Add the children nodes and data
@@ -165,18 +138,18 @@ public class XincoExplorer extends Application implements ValueChangeListener {
                     Logger.getLogger(XincoExplorer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
-                mainWindow.showNotification(xerb.getString("error.accessdenied"), 
-                        xerb.getString("error.folder.sufficientrights"),
+                xinco.getMainWindow().showNotification(xinco.getResource().getString("error.accessdenied"),
+                        xinco.getResource().getString("error.folder.sufficientrights"),
                         Notification.TYPE_WARNING_MESSAGE);
             }
             // update details table
             xincoTable.addItem(new Object[]{"", ""}, i++);
-            xincoTable.addItem(new Object[]{xerb.getString("general.id"),
+            xincoTable.addItem(new Object[]{xinco.getResource().getString("general.id"),
                         node.getId()}, i++);
-            xincoTable.addItem(new Object[]{xerb.getString("general.designation"),
+            xincoTable.addItem(new Object[]{xinco.getResource().getString("general.designation"),
                         node.getDesignation()}, i++);
-            xincoTable.addItem(new Object[]{xerb.getString("general.language"),
-                        xerb.getString(node.getXincoCoreLanguage().getDesignation()) + " ("
+            xincoTable.addItem(new Object[]{xinco.getResource().getString("general.language"),
+                        xinco.getResource().getString(node.getXincoCoreLanguage().getDesignation()) + " ("
                         + node.getXincoCoreLanguage().getSign()
                         + ")"}, i++);
             xincoTable.addItem(new Object[]{"", ""}, i++);
@@ -202,19 +175,19 @@ public class XincoExplorer extends Application implements ValueChangeListener {
                 value += "-";
             }
             value = value + "]";
-            xincoTable.addItem(new Object[]{xerb.getString("general.accessrights"), value}, i++);
+            xincoTable.addItem(new Object[]{xinco.getResource().getString("general.accessrights"), value}, i++);
             xincoTable.addItem(new Object[]{"", ""}, i++);
             value = "";
             if (node.getStatusNumber() == 1) {
-                value = xerb.getString("general.status.open") + "";
+                value = xinco.getResource().getString("general.status.open") + "";
             }
             if (node.getStatusNumber() == 2) {
-                value = xerb.getString("general.status.locked") + " (-)";
+                value = xinco.getResource().getString("general.status.locked") + " (-)";
             }
             if (node.getStatusNumber() == 3) {
-                value = xerb.getString("general.status.archived") + " (->)";
+                value = xinco.getResource().getString("general.status.archived") + " (->)";
             }
-            xincoTable.addItem(new Object[]{xerb.getString("general.status"), value}, i++);
+            xincoTable.addItem(new Object[]{xinco.getResource().getString("general.status"), value}, i++);
         } else if (xincoTree.getValue() instanceof XincoCoreDataProperty) {
             // get ace
             XincoCoreData data = ((XincoCoreData) ((XincoCoreDataProperty) xincoTree.getValue()).getValue());
@@ -225,18 +198,18 @@ public class XincoExplorer extends Application implements ValueChangeListener {
                 Logger.getLogger(XincoExplorer.class.getName()).log(Level.SEVERE, null, ex);
             }
             xincoTable.addItem(new Object[]{
-                        xerb.getString("general.id"), data.getId()}, i++);
+                        xinco.getResource().getString("general.id"), data.getId()}, i++);
             xincoTable.addItem(new Object[]{
-                        xerb.getString("general.designation"), data.getDesignation()}, i++);
+                        xinco.getResource().getString("general.designation"), data.getDesignation()}, i++);
             xincoTable.addItem(new Object[]{
-                        xerb.getString("general.language"), data.getXincoCoreLanguage().getDesignation()
+                        xinco.getResource().getString("general.language"), data.getXincoCoreLanguage().getDesignation()
                         + " ("
                         + data.getXincoCoreLanguage().getSign()
                         + ")"}, i++);
             xincoTable.addItem(new Object[]{
-                        xerb.getString("general.datatype"), xerb.getString(data.getXincoCoreDataType().getDesignation())
+                        xinco.getResource().getString("general.datatype"), xinco.getResource().getString(data.getXincoCoreDataType().getDesignation())
                         + " ("
-                        + xerb.getString(data.getXincoCoreDataType().getDescription())
+                        + xinco.getResource().getString(data.getXincoCoreDataType().getDescription())
                         + ")"}, i++);
             xincoTable.addItem(new Object[]{"", ""}, i++);
             xincoTable.addItem(new Object[]{"", ""}, i++);
@@ -261,40 +234,40 @@ public class XincoExplorer extends Application implements ValueChangeListener {
                 value += "-";
             }
             xincoTable.addItem(new Object[]{
-                        xerb.getString("general.accessrights"),
+                        xinco.getResource().getString("general.accessrights"),
                         "[" + value + "]"}, i++);
             xincoTable.addItem(new Object[]{"", ""}, i++);
             xincoTable.addItem(new Object[]{"", ""}, i++);
             switch (data.getStatusNumber()) {
                 case 1:
-                    value = xerb.getString("general.status.open");
+                    value = xinco.getResource().getString("general.status.open");
                     break;
                 case 2:
-                    value = xerb.getString("general.status.locked");
+                    value = xinco.getResource().getString("general.status.locked");
                     break;
                 case 3:
-                    value = xerb.getString("general.status.archived");
+                    value = xinco.getResource().getString("general.status.archived");
                     break;
                 case 4:
-                    value = xerb.getString("general.status.checkedout");
+                    value = xinco.getResource().getString("general.status.checkedout");
                     break;
                 case 5:
-                    value = xerb.getString("general.status.published");
+                    value = xinco.getResource().getString("general.status.published");
                     break;
             }
             xincoTable.addItem(new Object[]{
-                        xerb.getString("general.status"), value}, i++);
+                        xinco.getResource().getString("general.status"), value}, i++);
             xincoTable.addItem(new Object[]{"", ""}, i++);
             xincoTable.addItem(new Object[]{
-                        xerb.getString("general.typespecificattributes"), ""}, i++);
+                        xinco.getResource().getString("general.typespecificattributes"), ""}, i++);
             // get add attributes of Core Data, if access granted
-            List<XincoAddAttribute> attributes =
+            java.util.List<XincoAddAttribute> attributes =
                     data.getXincoAddAttributes();
-            List<XincoCoreDataTypeAttribute> dataTypeAttributes =
+            java.util.List<XincoCoreDataTypeAttribute> dataTypeAttributes =
                     data.getXincoCoreDataType().getXincoCoreDataTypeAttributes();
             if (!attributes.isEmpty()) {
                 for (int j = 0; j < attributes.size(); j++) {
-                    header = xerb.getString(dataTypeAttributes.get(j).getDesignation());
+                    header = xinco.getResource().getString(dataTypeAttributes.get(j).getDesignation());
                     if (dataTypeAttributes.get(j).getDataType().equalsIgnoreCase("int")) {
                         value = ""
                                 + attributes.get(j).getAttribInt();
@@ -326,13 +299,13 @@ public class XincoExplorer extends Application implements ValueChangeListener {
                     xincoTable.addItem(new Object[]{header, value}, i++);
                 }
             } else {
-                header = xerb.getString("error.accessdenied");
-                value = xerb.getString("error.content.sufficientrights");
+                header = xinco.getResource().getString("error.accessdenied");
+                value = xinco.getResource().getString("error.content.sufficientrights");
                 xincoTable.addItem(new Object[]{header, value}, i++);
             }
             xincoTable.addItem(new Object[]{"", ""}, i++);
             xincoTable.addItem(new Object[]{"", ""}, i++);
-            header = xerb.getString("general.logslastfirst");
+            header = xinco.getResource().getString("general.logslastfirst");
             value = "";
             xincoTable.addItem(new Object[]{header, value}, i++);
             Calendar cal;
@@ -385,7 +358,7 @@ public class XincoExplorer extends Application implements ValueChangeListener {
                 xincoTable.addItem(new Object[]{header, value}, i++);
                 header = "";
                 try {
-                    value = xerb.getString("general.version")
+                    value = xinco.getResource().getString("general.version")
                             + " "
                             + ((XincoCoreLog) data.getXincoCoreLogs().get(j)).getVersion().getVersionHigh()
                             + "."
@@ -400,7 +373,7 @@ public class XincoExplorer extends Application implements ValueChangeListener {
                 xincoTable.addItem(new Object[]{header, value}, i++);
             }
         }
-        xincoTable.setPageLength(i-1);
+        xincoTable.setPageLength(i - 1);
         xincoTable.requestRepaintAll();
     }
 
@@ -441,14 +414,10 @@ public class XincoExplorer extends Application implements ValueChangeListener {
         for (Iterator<XincoCoreNode> it = xcns.getXincoCoreNodes().iterator(); it.hasNext();) {
             XincoCoreNode subnode = it.next();
             XincoCoreNodeProperty childProperty = new XincoCoreNodeProperty(subnode);
-//                Item item =
             xincoTree.addItem(childProperty);
             // Set it to be a child.
             xincoTree.setParent(childProperty, parent);
             xincoTree.setChildrenAllowed(childProperty, true);
-            //Set Icon
-//                DefaultTreeCellRenderer temp = new DefaultTreeCellRenderer();
-//                item.getItemProperty("icon").setValue(temp.getDefaultClosedIcon());
         }
     }
 
@@ -458,23 +427,26 @@ public class XincoExplorer extends Application implements ValueChangeListener {
             XincoCoreData data = it.next();
             XincoCoreDataProperty dataProperty = new XincoCoreDataProperty(data);
             //Add childen data
-            //                Item item =
+//            Item item = 
             xincoTree.addItem(dataProperty);
             // Set it to be a child.
             xincoTree.setParent(dataProperty, parent);
             // Set as leaves
             xincoTree.setChildrenAllowed(dataProperty, false);
-            //Set Icon
-            //                if (data.getDesignation().contains(".")
-            //                        && data.getDesignation().substring(data.getDesignation().lastIndexOf(".") + 1,
-            //                        data.getDesignation().length()).length() == 3) {
-            //                    item.getItemProperty("icon").setValue(xfm.getIcon(
-            //                            data.getDesignation().substring(data.getDesignation().lastIndexOf(".") + 1,
-            //                            data.getDesignation().length())));
-            //                } else {
-            //                    DefaultTreeCellRenderer temp = new DefaultTreeCellRenderer();
-            //                    item.getItemProperty("icon").setValue(temp.getDefaultLeafIcon());
-            //                }
+//            try {
+//                if (data.getDesignation().contains(".")
+//                        && data.getDesignation().substring(data.getDesignation().lastIndexOf(".") + 1,
+//                        data.getDesignation().length()).length() == 3 
+//                        //                        && data.getXincoCoreDataType().getDesignation().equals("general.data.type.file")
+//                        ) {
+//                    //Set Icon
+//                    item.getItemProperty("icon").setValue(
+//                            xinco.getIcon(data.getDesignation().substring(data.getDesignation().lastIndexOf(".") + 1,
+//                            data.getDesignation().length())));
+//                }
+//            } catch (IOException ex) {
+//                Logger.getLogger(XincoExplorer.class.getName()).log(Level.SEVERE, null, ex);
+//            }
         }
     }
 
