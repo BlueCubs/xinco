@@ -87,22 +87,27 @@ public final class XincoJTree extends JTree {
                 DnDConstants.ACTION_COPY_OR_MOVE);
         this.addMouseListener(new MouseInputListener() {
 
+            @Override
             public void mouseMoved(MouseEvent event) {
                 getExplorer().resetTimer();
             }
 
+            @Override
             public void mouseDragged(MouseEvent event) {
                 getExplorer().resetTimer();
             }
 
+            @Override
             public void mouseEntered(MouseEvent event) {
                 getExplorer().resetTimer();
             }
 
+            @Override
             public void mouseExited(MouseEvent event) {
                 getExplorer().resetTimer();
             }
 
+            @Override
             public void mousePressed(MouseEvent event) {
                 getExplorer().resetTimer();
                 //Change selection even with right click
@@ -115,10 +120,12 @@ public final class XincoJTree extends JTree {
                 }
             }
 
+            @Override
             public void mouseClicked(MouseEvent event) {
                 getExplorer().resetTimer();
             }
 
+            @Override
             public void mouseReleased(MouseEvent event) {
                 getExplorer().resetTimer();
                 if (event.isPopupTrigger()) {
@@ -128,14 +135,17 @@ public final class XincoJTree extends JTree {
         });
         addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
 
+            @Override
             public void treeExpanded(javax.swing.event.TreeExpansionEvent e) {
             }
 
+            @Override
             public void treeCollapsed(javax.swing.event.TreeExpansionEvent e) {
             }
         });
         addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
 
+            @Override
             public void valueChanged(javax.swing.event.TreeSelectionEvent e) {
                 getExplorer().getProgressBar().setTitle(getExplorer().getResourceBundle().getString("message.explorer.verifyingcredentials"));
                 getExplorer().getProgressBar().show();

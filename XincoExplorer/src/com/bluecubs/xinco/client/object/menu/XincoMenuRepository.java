@@ -48,7 +48,6 @@ import javax.swing.JMenuItem;
  * @author Javier A. Ortiz
  */
 public class XincoMenuRepository extends JMenu{
-    private JMenuItem tmi = null;
     private XincoExplorer explorer;
     public JMenuItem AddData=null,AddDataStructure=null,
             ViewURL=null,EmailContact=null,

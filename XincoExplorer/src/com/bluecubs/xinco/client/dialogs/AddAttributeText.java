@@ -189,6 +189,7 @@ public final class AddAttributeText extends AbstractDialog {
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         save.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 ((XincoAddAttribute) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoAddAttributes().get(0)).setAttribText(text.getText());
                 explorer.setGlobalDialogReturnValue(1);

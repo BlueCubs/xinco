@@ -55,6 +55,7 @@ public class XincoTransferableNode implements Transferable {
 		node = nd;
 	}  
  
+    @Override
 	public synchronized Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
 		if (flavor == NODE_FLAVOR) {
 			return node;
@@ -64,10 +65,12 @@ public class XincoTransferableNode implements Transferable {
 		}			
 	}
  
+    @Override
 	public DataFlavor[] getTransferDataFlavors() {
 		return flavors;
 	}
  
+    @Override
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
 		return Arrays.asList(flavors).contains(flavor);
 	}

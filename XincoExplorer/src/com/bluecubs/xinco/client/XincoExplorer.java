@@ -375,6 +375,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jButtonDialogLocaleOk.addActionListener(new java.awt.event.ActionListener() {
 
                 @SuppressWarnings("unchecked")
+                @Override
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     //get locale
                     if (jListDialogLocale.getSelectedIndex() >= 0) {
@@ -479,6 +480,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jMenuItemConnectionExit.setEnabled(true);
             jMenuItemConnectionExit.addActionListener(new java.awt.event.ActionListener() {
 
+                @Override
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     xincoClientSession.setStatus(0);
                     markConnectionStatus();
@@ -533,6 +535,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jMenuItemConnectionDisconnect.setEnabled(false);
             jMenuItemConnectionDisconnect.addActionListener(new java.awt.event.ActionListener() {
 
+                @Override
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     xincoClientSession.setStatus(0);
                     markConnectionStatus();
@@ -557,6 +560,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jMenuItemAboutAboutXinco.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
             jMenuItemAboutAboutXinco.addActionListener(new java.awt.event.ActionListener() {
 
+                @Override
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     String message_string = "";
                     message_string = message_string + xerb.getString("window.aboutxinco.clienttitle") + "\n";
@@ -782,6 +786,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jMenuItemSearchRepository.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.KeyEvent.CTRL_MASK));
             jMenuItemSearchRepository.addActionListener(new java.awt.event.ActionListener() {
 
+                @Override
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     if (search == null) {
                         search = new SearchDialog(null, true, explorer);
@@ -838,6 +843,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jRadioButtonMenuItemViewStyleWindows.addItemListener(new java.awt.event.ItemListener() {
 
                 @SuppressWarnings("unchecked")
+                @Override
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     switchPLAF("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
                     xincoClientConfig.add(ConfigElement.LAF.ordinal(), "com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
@@ -865,6 +871,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jRadioButtonMenuItemViewStyleNapkin.addItemListener(new java.awt.event.ItemListener() {
 
                 @SuppressWarnings("unchecked")
+                @Override
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     switchPLAF("net.sourceforge.napkinlaf.NapkinLookAndFeel");
                     xincoClientConfig.add(ConfigElement.LAF.ordinal(), "net.sourceforge.napkinlaf.NapkinLookAndFeel");
@@ -892,6 +899,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jRadioButtonMenuItemViewStyleLiquid.addItemListener(new java.awt.event.ItemListener() {
 
                 @SuppressWarnings("unchecked")
+                @Override
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     switchPLAF("com.birosoft.liquid.LiquidLookAndFeel");
                     xincoClientConfig.add(ConfigElement.LAF.ordinal(), "com.birosoft.liquid.LiquidLookAndFeel");
@@ -919,6 +927,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jRadioButtonMenuItemViewStyleJTatoo.addItemListener(new java.awt.event.ItemListener() {
 
                 @SuppressWarnings("unchecked")
+                @Override
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     switchPLAF("com.jtattoo.plaf.smart.SmartLookAndFeel");
                     xincoClientConfig.add(ConfigElement.LAF.ordinal(), "com.jtattoo.plaf.smart.SmartLookAndFeel");
@@ -946,6 +955,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jRadioButtonMenuItemViewStyleSubstance.addItemListener(new java.awt.event.ItemListener() {
 
                 @SuppressWarnings("unchecked")
+                @Override
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     switchPLAF("org.jvnet.substance.SubstanceLookAndFeel");
                     xincoClientConfig.add(ConfigElement.LAF.ordinal(), "org.jvnet.substance.SubstanceLookAndFeel");
@@ -973,6 +983,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jRadioButtonMenuItemViewStyleJava.addItemListener(new java.awt.event.ItemListener() {
 
                 @SuppressWarnings("unchecked")
+                @Override
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     switchPLAF("javax.swing.plaf.metal.MetalLookAndFeel");
                     xincoClientConfig.add(ConfigElement.LAF.ordinal(), "javax.swing.plaf.metal.MetalLookAndFeel");
@@ -1000,6 +1011,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jRadioButtonMenuItemViewStyleMotif.addItemListener(new java.awt.event.ItemListener() {
 
                 @SuppressWarnings("unchecked")
+                @Override
                 public void itemStateChanged(java.awt.event.ItemEvent e) {
                     switchPLAF("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
                     xincoClientConfig.add(ConfigElement.LAF.ordinal(), "com.sun.java.swing.plaf.motif.MotifLookAndFeel");
@@ -1102,6 +1114,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jMenuItemConnectionConnect.setText(xerb.getString("menu.connection.connect"));
             jMenuItemConnectionConnect.addActionListener(new java.awt.event.ActionListener() {
 
+                @Override
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     showConnectionDialog();
                 }
@@ -1523,6 +1536,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jButtonDialogRevisionContinue.setText(xerb.getString("general.continue"));
             jButtonDialogRevisionContinue.addActionListener(new java.awt.event.ActionListener() {
 
+                @Override
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     int i = 0;
                     int RealLogIndex = -1;
@@ -1556,6 +1570,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jButtonDialogRevisionCancel.setText(xerb.getString("general.cancel"));
             jButtonDialogRevisionCancel.addActionListener(new java.awt.event.ActionListener() {
 
+                @Override
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     jDialogRevision.setVisible(false);
                 }
@@ -2501,6 +2516,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jMenuItemPreferencesEditUser.setText(xerb.getString("menu.preferences.edituserinfo"));
             jMenuItemPreferencesEditUser.addActionListener(new java.awt.event.ActionListener() {
 
+                @Override
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     getAbstractDialogUser(false);
                 }
@@ -2964,26 +2980,32 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         return xat;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         resetTimer();
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
         resetTimer();
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
         resetTimer();
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
         resetTimer();
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
         resetTimer();
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
         resetTimer();
     }
