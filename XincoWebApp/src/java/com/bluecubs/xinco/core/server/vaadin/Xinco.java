@@ -1,7 +1,9 @@
 package com.bluecubs.xinco.core.server.vaadin;
 
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
+import com.bluecubs.xinco.core.server.XincoException;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
+import com.bluecubs.xinco.core.server.service.XincoCoreUser;
 import com.bluecubs.xinco.core.server.service.XincoVersion;
 import com.bluecubs.xinco.tools.XincoFileIconManager;
 import com.vaadin.Application;
@@ -30,12 +32,18 @@ public class Xinco extends Application {
     private XincoVersion xincoClientVersion = null;
     //TODO: use selected language
     private ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", Locale.getDefault());
-    ;
+    private XincoCoreUser loggedUser;
     private XincoExplorer explorer = null;
     private XincoFileIconManager xfm = new XincoFileIconManager();
 
     @Override
     public void init() {
+        //Default user (System)
+        try {
+            loggedUser=new XincoCoreUserServer(1);
+        } catch (XincoException ex) {
+            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+        }
         xincoClientVersion = new XincoVersion();
         try {
             xincoClientVersion.setVersionHigh(XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.high").getIntValue());
@@ -53,8 +61,16 @@ public class Xinco extends Application {
                 + xincoClientVersion.getVersionMid() + "."
                 + xincoClientVersion.getVersionLow() + " "
                 + xincoClientVersion.getVersionPostfix());
-        mainWindow.addComponent(explorer);
         setMainWindow(mainWindow);
+        setComponent(explorer);
+    }
+    
+    private void setComponent(XincoComponent comp){
+        mainWindow.removeAllComponents();
+        if(comp.getMenuBar()!=null && !comp.getMenuBar().getItems().isEmpty()){
+            mainWindow.addComponent(comp.getMenuBar());
+        }
+        mainWindow.addComponent(comp);
     }
 
     protected ThemeResource getIcon(String extension) throws IOException {
@@ -105,5 +121,12 @@ public class Xinco extends Application {
      */
     public ResourceBundle getResource() {
         return xerb;
+    }
+
+    /**
+     * @return the loggedUser
+     */
+    public XincoCoreUser getLoggedUser() {
+        return loggedUser;
     }
 }

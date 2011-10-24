@@ -10,8 +10,9 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.Sizeable;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Window.Notification;
@@ -24,15 +25,18 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
-public class XincoExplorer extends CustomComponent implements ValueChangeListener {
+public class XincoExplorer extends XincoComponent implements ValueChangeListener {
 
     //Table linking displayed item with it's id
     private Tree xincoTree = null;
     private Table xincoTable = null;
     private final Xinco xinco;
+    private com.bluecubs.xinco.core.server.service.client.Xinco_Service service = new com.bluecubs.xinco.core.server.service.client.Xinco_Service();
+    private com.bluecubs.xinco.core.server.service.client.Xinco port = service.getXincoPort();
 
     public XincoExplorer(Xinco xinco) {
         this.xinco = xinco;
+        menubar = new MenuBar();
         //TODO: use selected language
         HorizontalSplitPanel splitpanel = new HorizontalSplitPanel();
         // Put two components in the container.
@@ -97,6 +101,7 @@ public class XincoExplorer extends CustomComponent implements ValueChangeListene
 
     @Override
     public void valueChange(ValueChangeEvent event) {
+        buildMenu();
         XincoCoreACE tempAce = new XincoCoreACE();
         //Clear table
         xincoTable.removeAllItems();
@@ -107,7 +112,7 @@ public class XincoExplorer extends CustomComponent implements ValueChangeListene
             // get ace
             XincoCoreNode node = ((XincoCoreNode) (xincoCoreNodeProperty).getValue());
             try {
-                tempAce = XincoCoreACEServer.checkAccess(new XincoCoreUserServer(1),
+                tempAce = XincoCoreACEServer.checkAccess(new XincoCoreUserServer(xinco.getLoggedUser().getId()),
                         (ArrayList) (node).getXincoCoreAcl());
             } catch (XincoException ex) {
                 Logger.getLogger(XincoExplorer.class.getName()).log(Level.SEVERE, null, ex);
@@ -453,5 +458,29 @@ public class XincoExplorer extends CustomComponent implements ValueChangeListene
     private void addChildren(XincoCoreNodeProperty parent) throws XincoException {
         addChildrenNodes(parent);
         addChildrenData(parent);
+    }
+
+    private void buildMenu() {
+        //Build Menu
+        menubar.removeItems();
+        if (xincoTree.getValue() instanceof XincoCoreNodeProperty) {
+            MenuItem repo = menubar.addItem(xinco.getResource().getString("menu.repository"), null);
+            repo.addItem(xinco.getResource().getString("menu.repository.addfolder"),
+                    null,//Icon 
+                    new MenuBar.Command() {
+
+                @Override
+                public void menuSelected(MenuItem selectedItem) {
+                    com.bluecubs.xinco.core.server.service.client.XincoCoreNode node =
+                            new com.bluecubs.xinco.core.server.service.client.XincoCoreNode();
+                    com.bluecubs.xinco.core.server.service.client.XincoCoreUser user =
+                            new com.bluecubs.xinco.core.server.service.client.XincoCoreUser();
+                    port.setXincoCoreNode(node, user);
+                }
+            });
+        }
+        if (xincoTree.getValue() instanceof XincoCoreDataProperty) {
+            xinco.getMainWindow().showNotification("Data- no menus");
+        }
     }
 }
