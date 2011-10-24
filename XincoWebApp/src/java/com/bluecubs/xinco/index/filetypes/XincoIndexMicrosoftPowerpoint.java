@@ -56,11 +56,13 @@ public class XincoIndexMicrosoftPowerpoint implements XincoIndexFileType {
         super();
     }
 
+    @Override
     public Reader getFileContentReader(File f) {
         Reader reader = null;
         return reader;
     }
 
+    @Override
     public String getFileContentString(File f) {
         String text = null;
         try {
@@ -83,6 +85,7 @@ public class XincoIndexMicrosoftPowerpoint implements XincoIndexFileType {
             return EventText;
         }
 
+        @Override
         public void processPOIFSReaderEvent(POIFSReaderEvent event) {
             try {
                 DocumentInputStream dis = null;

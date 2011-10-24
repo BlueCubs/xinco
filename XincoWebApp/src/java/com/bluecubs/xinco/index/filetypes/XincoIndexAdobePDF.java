@@ -47,6 +47,7 @@ public class XincoIndexAdobePDF implements XincoIndexFileType {
 		super();
 	}
 
+    @Override
 	public Reader getFileContentReader(File f) {
 		Reader reader = null;
 		Document temp_doc = null;
@@ -59,6 +60,7 @@ public class XincoIndexAdobePDF implements XincoIndexFileType {
 		return reader;
 	}
 
+    @Override
 	public String getFileContentString(File f) {
 		return null;
 	}
