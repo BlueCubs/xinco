@@ -31,8 +31,8 @@ public class XincoExplorer extends XincoComponent implements ValueChangeListener
     private Tree xincoTree = null;
     private Table xincoTable = null;
     private final Xinco xinco;
-    private com.bluecubs.xinco.core.server.service.client.Xinco_Service service = new com.bluecubs.xinco.core.server.service.client.Xinco_Service();
-    private com.bluecubs.xinco.core.server.service.client.Xinco port = service.getXincoPort();
+    private com.bluecubs.xinco.client.service.Xinco_Service service = new com.bluecubs.xinco.client.service.Xinco_Service();
+    private com.bluecubs.xinco.client.service.Xinco port = service.getXincoPort();
 
     public XincoExplorer(Xinco xinco) {
         this.xinco = xinco;
@@ -471,10 +471,10 @@ public class XincoExplorer extends XincoComponent implements ValueChangeListener
 
                 @Override
                 public void menuSelected(MenuItem selectedItem) {
-                    com.bluecubs.xinco.core.server.service.client.XincoCoreNode node =
-                            new com.bluecubs.xinco.core.server.service.client.XincoCoreNode();
-                    com.bluecubs.xinco.core.server.service.client.XincoCoreUser user =
-                            new com.bluecubs.xinco.core.server.service.client.XincoCoreUser();
+                    com.bluecubs.xinco.client.service.XincoCoreNode node =
+                            new com.bluecubs.xinco.client.service.XincoCoreNode();
+                    com.bluecubs.xinco.client.service.XincoCoreUser user =
+                            new com.bluecubs.xinco.client.service.XincoCoreUser();
                     port.setXincoCoreNode(node, user);
                 }
             });
