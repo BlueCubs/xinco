@@ -38,18 +38,43 @@
     <target depends="-pre-init" name="-init-private">
         <property file="nbproject/private/private.properties"/>
     </target>
-    <target depends="-pre-init,-init-private" name="-init-user">
+    <target name="-pre-init-libraries">
+        <property location="../XincoLibs\nblibraries.properties" name="libraries.path"/>
+        <dirname file="${libraries.path}" property="libraries.dir.nativedirsep"/>
+        <pathconvert dirsep="/" property="libraries.dir">
+            <path path="${libraries.dir.nativedirsep}"/>
+        </pathconvert>
+        <basename file="${libraries.path}" property="libraries.basename" suffix=".properties"/>
+        <available file="${libraries.dir}/${libraries.basename}-private.properties" property="private.properties.available"/>
+    </target>
+    <target depends="-pre-init-libraries" if="private.properties.available" name="-init-private-libraries">
+        <loadproperties encoding="ISO-8859-1" srcfile="${libraries.dir}/${libraries.basename}-private.properties">
+            <filterchain>
+                <replacestring from="$${base}" to="${libraries.dir}"/>
+                <escapeunicode/>
+            </filterchain>
+        </loadproperties>
+    </target>
+    <target depends="-pre-init,-init-private,-init-private-libraries" name="-init-libraries">
+        <loadproperties encoding="ISO-8859-1" srcfile="${libraries.path}">
+            <filterchain>
+                <replacestring from="$${base}" to="${libraries.dir}"/>
+                <escapeunicode/>
+            </filterchain>
+        </loadproperties>
+    </target>
+    <target depends="-pre-init,-init-private,-init-libraries" name="-init-user">
         <property file="${user.properties.file}"/>
         <!-- The two properties below are usually overridden -->
         <!-- by the active platform. Just a fallback. -->
         <property name="default.javac.source" value="1.4"/>
         <property name="default.javac.target" value="1.4"/>
     </target>
-    <target depends="-pre-init,-init-private,-init-user" name="-init-project">
+    <target depends="-pre-init,-init-private,-init-libraries,-init-user" name="-init-project">
         <property file="nbproject/project.properties"/>
     </target>
     <target depends="-pre-init,-init-private,-init-user,-init-project,-init-macrodef-property" if="dist.ear.dir" name="-do-ear-init"/>
-    <target depends="-pre-init,-init-private,-init-user,-init-project,-init-macrodef-property" name="-do-init">
+    <target depends="-pre-init,-init-private,-init-libraries,-init-user,-init-project,-init-macrodef-property" name="-do-init">
         <condition property="have.tests">
             <or>
                 <available file="${test.src.dir}"/>
@@ -204,7 +229,7 @@
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
     </target>
-    <target depends="-pre-init,-init-private,-init-user,-init-project,-do-init" name="-init-check">
+    <target depends="-pre-init,-init-private,-init-libraries,-init-user,-init-project,-do-init" name="-init-check">
         <fail unless="src.DB.dir">Must set src.DB.dir</fail>
         <fail unless="src.Docs.dir">Must set src.Docs.dir</fail>
         <fail unless="src.Tools.dir">Must set src.Tools.dir</fail>
@@ -531,7 +556,7 @@ exists or setup the property manually. For example like this:
         <fail unless="profiler.info.jvm">Must set JVM to use for profiling in profiler.info.jvm</fail>
         <fail unless="profiler.info.jvmargs.agent">Must set profiler agent JVM arguments in profiler.info.jvmargs.agent</fail>
     </target>
-    <target depends="-pre-init,-init-private,-init-user,-init-project,-do-init,-post-init,-init-check,-init-macrodef-property,-init-macrodef-javac,-init-macrodef-junit,-init-macrodef-java,-init-macrodef-nbjpda,-init-macrodef-nbjsdebug,-init-macrodef-debug,-init-taskdefs,-init-ap-cmdline" name="init"/>
+    <target depends="-pre-init,-init-private,-init-libraries,-init-user,-init-project,-do-init,-post-init,-init-check,-init-macrodef-property,-init-macrodef-javac,-init-macrodef-junit,-init-macrodef-java,-init-macrodef-nbjpda,-init-macrodef-nbjsdebug,-init-macrodef-debug,-init-taskdefs,-init-ap-cmdline" name="init"/>
     <!--
                 COMPILATION SECTION
             -->
@@ -734,8 +759,8 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.h2.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.MySQLDriver.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.eclipselink.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
-        <copyfiles files="${file.reference.ContextMenu3.1.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.vaadin-6.7.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${reference.XincoExplorer.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.activation.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.commons-codec-1.4.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.commons-discovery-0.2.jar-1}" todir="${build.web.dir}/client"/>
@@ -791,8 +816,8 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.h2.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${libs.MySQLDriver.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${libs.eclipselink.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.ContextMenu3.1.0.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.vaadin-6.7.1.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${reference.XincoExplorer.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.activation.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.commons-codec-1.4.jar}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.commons-discovery-0.2.jar-1}" todir="${build.web.dir}/client"/>
