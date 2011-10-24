@@ -198,10 +198,12 @@ public class ACLDialog extends AbstractDialog {
 
             String[] strings = list;
 
+            @Override
             public int getSize() {
                 return strings.length;
             }
 
+            @Override
             public Object getElementAt(int i) {
                 return strings[i];
             }
@@ -217,10 +219,12 @@ public class ACLDialog extends AbstractDialog {
 
             String[] strings = list;
 
+            @Override
             public int getSize() {
                 return strings.length;
             }
 
+            @Override
             public Object getElementAt(int i) {
                 return strings[i];
             }

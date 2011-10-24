@@ -52,6 +52,7 @@ public class XincoDefaultTreeTransferHandler extends XincoAbstractTreeTransferHa
         super(tree, action, true);
     }
 
+    @Override
     public boolean canPerformAction(XincoJTree target, DefaultMutableTreeNode draggedNode, int action, Point location) {
         TreePath pathTarget = target.getPathForLocation(location.x, location.y);
         if (pathTarget == null) {
@@ -75,6 +76,7 @@ public class XincoDefaultTreeTransferHandler extends XincoAbstractTreeTransferHa
         }
     }
 
+    @Override
     public boolean executeDrop(XincoJTree target, DefaultMutableTreeNode draggedNode, DefaultMutableTreeNode newParentNode, int action) {
         if (action == DnDConstants.ACTION_COPY) {
             DefaultMutableTreeNode newNode = XincoJTree.makeDeepCopy(draggedNode);
