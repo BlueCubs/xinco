@@ -14,6 +14,9 @@
             </test-roots>
         </data>
         <data xmlns="http://www.netbeans.org/ns/jmx/1" version="0.4"/>
+        <libraries xmlns="http://www.netbeans.org/ns/ant-project-libraries/1">
+            <definitions>../XincoLibs\nblibraries.properties</definitions>
+        </libraries>
         <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
             <word>Xinco</word>
         </spellchecker-wordlist>
