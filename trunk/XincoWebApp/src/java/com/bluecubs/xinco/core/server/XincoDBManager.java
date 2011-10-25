@@ -58,6 +58,8 @@ public class XincoDBManager {
     private int EmailLink = 1, DataLink = 2;
     private static ResourceBundle lrb =
             ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+    private static ResourceBundle settings =
+                ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
     protected static String puName = "XincoPU";
     private static boolean locked = false;
     private static boolean usingContext = false;
@@ -280,8 +282,6 @@ public class XincoDBManager {
     }
 
     public static String getVersionNumber() {
-        ResourceBundle settings =
-                ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
         StringBuilder version = new StringBuilder();
         version.append(settings.getString("version.high"));
         version.append(".");
@@ -292,8 +292,6 @@ public class XincoDBManager {
     }
 
     public static String getVersion() {
-        ResourceBundle settings =
-                ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
         return getVersionNumber() + ((settings.getString("version.postfix").isEmpty()
                 ? "" : " " + settings.getString("version.postfix")));
 
@@ -673,7 +671,27 @@ public class XincoDBManager {
      * @param configVersion Latest version
      */
     private static void updateDatabase(String dbVersion, String configVersion) {
-//        state = DBState.UPDATED;
-//        logger.info(state.getMessage().replaceAll("%v", dbVersion));
+        //TODO: Look for the proper update script(s) and run them
+        try {
+            XincoSettingServer setting = XincoSettingServer.getSetting("version.high");
+            setting.setIntValue(Integer.valueOf(settings.getString("version.high")));
+            setting.write2DB();
+            setting = XincoSettingServer.getSetting("version.mid");
+            setting.setIntValue(Integer.valueOf(settings.getString("version.mid")));
+            setting.write2DB();
+            setting = XincoSettingServer.getSetting("version.low");
+            setting.setIntValue(Integer.valueOf(settings.getString("version.low")));
+            setting.write2DB();
+            setting = XincoSettingServer.getSetting("version.mid");
+            setting.setIntValue(Integer.valueOf(settings.getString("version.mid")));
+            setting.write2DB();
+            setting = XincoSettingServer.getSetting("version.postfix");
+            setting.setStringValue(settings.getString("version.postfix"));
+            setting.write2DB();
+            state = DBState.UPDATED;
+            logger.info(state.getMessage().replaceAll("%v", configVersion));
+        } catch (XincoException ex) {
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
