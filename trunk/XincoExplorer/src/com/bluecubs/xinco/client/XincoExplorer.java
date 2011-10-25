@@ -2809,7 +2809,6 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         xincoClientConfig.add(new ArrayList());
         if (modifyProfiles) {
             //insert default connection profiles
-            //TODO: For now the service is at /xinco instead of /xinco/services
             ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).add(new XincoClientConnectionProfile());
             ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).profile_name = "xinco Demo User";
             ((XincoClientConnectionProfile) ((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).get(((ArrayList) xincoClientConfig.get(ConfigElement.CONNECTION_PROFILE.ordinal())).size() - 1)).service_endpoint = "http://xinco.org:8080/xincoDemo/Xinco";
