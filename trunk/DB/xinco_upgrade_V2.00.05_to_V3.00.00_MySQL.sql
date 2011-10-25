@@ -2,14 +2,22 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
+ALTER TABLE `xinco`.`xinco_core_user` CHANGE COLUMN `attempts` `attempts` INT(10) UNSIGNED NOT NULL  
+, DROP INDEX `unique id` ;
+
 ALTER TABLE `xinco`.`xinco_core_user_modified_record` CHANGE COLUMN `mod_Reason` `mod_Reason` VARCHAR(255) NOT NULL  
 , DROP PRIMARY KEY 
 , ADD PRIMARY KEY (`record_id`, `id`) ;
 
-ALTER TABLE `xinco`.`xinco_core_node` 
-COMMENT = '\n' ;
+ALTER TABLE `xinco`.`xinco_core_node` COMMENT = '\n' ;
 
 ALTER TABLE `xinco`.`xinco_core_ace` CHANGE COLUMN `xinco_core_user_id` `xinco_core_user_id` INT(10) UNSIGNED NULL DEFAULT NULL  AFTER `id` ;
+
+ALTER TABLE `xinco`.`xinco_core_group` 
+DROP INDEX `xinco_core_group_index_status` 
+, ADD INDEX `xinco_core_group_index_status` (`status_number` ASC) , COMMENT = 'Status:  \nopen = 1  \nlocked = 2  \n' ;
+
+ALTER TABLE `xinco`.`xinco_core_user_has_xinco_core_group` COMMENT = '\n' ;
 
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_setting` (
   `id` INT(11) NOT NULL AUTO_INCREMENT ,
@@ -33,33 +41,6 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_setting_t` (
   `bool_value` TINYINT(1) NULL DEFAULT NULL ,
   `long_value` BIGINT(20) NULL DEFAULT NULL ,
   PRIMARY KEY (`record_id`) )
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1
-COLLATE = latin1_swedish_ci;
-
-CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_dependency_behavior` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT ,
-  `designation` VARCHAR(45) NOT NULL ,
-  `description` VARCHAR(45) NULL DEFAULT NULL ,
-  PRIMARY KEY (`id`) ,
-  UNIQUE INDEX `Unique` (`designation` ASC) )
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1
-COLLATE = latin1_swedish_ci;
-
-CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_dependency_type` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT ,
-  `xinco_dependency_behavior_id` INT(11) NOT NULL ,
-  `designation` VARCHAR(45) NOT NULL ,
-  `description` VARCHAR(255) NULL DEFAULT NULL ,
-  PRIMARY KEY (`id`) ,
-  UNIQUE INDEX `designation_UNIQUE` (`designation` ASC) ,
-  INDEX `fk_xinco_dependency_type_xinco_dependency_behavior1` (`xinco_dependency_behavior_id` ASC) ,
-  CONSTRAINT `fk_xinco_dependency_type_xinco_dependency_behavior1`
-    FOREIGN KEY (`xinco_dependency_behavior_id` )
-    REFERENCES `xinco`.`xinco_dependency_behavior` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_swedish_ci;
@@ -91,6 +72,23 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_swedish_ci;
 
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_dependency_type` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `xinco_dependency_behavior_id` INT(11) NOT NULL ,
+  `designation` VARCHAR(45) NOT NULL ,
+  `description` VARCHAR(255) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `designation_UNIQUE` (`designation` ASC) ,
+  INDEX `fk_xinco_dependency_type_xinco_dependency_behavior1` (`xinco_dependency_behavior_id` ASC) ,
+  CONSTRAINT `fk_xinco_dependency_type_xinco_dependency_behavior1`
+    FOREIGN KEY (`xinco_dependency_behavior_id` )
+    REFERENCES `xinco`.`xinco_dependency_behavior` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_swedish_ci;
+
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_dependency_type_t` (
   `record_id` INT(10) NOT NULL ,
   `id` INT(11) NOT NULL ,
@@ -112,6 +110,16 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_swedish_ci;
 
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_dependency_behavior` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `designation` VARCHAR(45) NOT NULL ,
+  `description` VARCHAR(45) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `Unique` (`designation` ASC) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_swedish_ci;
+
 CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_dependency_behavior_t` (
   `record_id` INT(10) NOT NULL ,
   `id` INT(11) NOT NULL ,
@@ -121,8 +129,6 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_dependency_behavior_t` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_swedish_ci;
-
-DROP TABLE IF EXISTS `xinco`.`xinco_core_user_has_xinco_core_group` ;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

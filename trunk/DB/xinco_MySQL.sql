@@ -693,7 +693,7 @@ INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (
 INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (10, 'pl', 'language.pl');
 INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (11, 'pt', 'language.pt');
 INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (12, 'pt_BR', 'language.pt.BR');
-INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (13, 'zn_CN', 'language.zn.CN');
+INSERT INTO `xinco`.`xinco_core_language` (`id`, `sign`, `designation`) VALUES (13, 'zh_CN', 'language.zh.CN');
 
 COMMIT;
 
@@ -895,8 +895,8 @@ INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_v
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (34, 'setting.allowpublisherlist', NULL, NULL, 1, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (35, 'setting.guessLanguage', NULL, NULL, 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (36, 'setting.OOPort', 8100, NULL, 0, 0);
-INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (1, 'version.high', 3, NULL, 0, 0);
-INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (2, 'version.mid', 0, NULL, 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (1, 'version.high', 2, NULL, 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (2, 'version.mid', 1, NULL, 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (3, 'version.low', 0, NULL, 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (4, 'version.postfix', 0, 'M3', 0, 0);
 
