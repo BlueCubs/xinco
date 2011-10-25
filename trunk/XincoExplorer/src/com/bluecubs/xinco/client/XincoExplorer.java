@@ -1,36 +1,33 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoExplorer
+ * Name: XincoExplorer
  *
- * Description:     client of the xinco DMS
+ * Description: client of the xinco DMS
  *
- * Original Author: Alexander Manes
- * Date:            2004
+ * Original Author: Alexander Manes Date: 2004
  *
  * Modifications:
  *
- * Who?             When?             What?
- * Javier Ortiz     Aug-Dec 2006      1. Remove dialogs and windows from main code
- *                                    2. Incorporate 21 CFR regulatory features
+ * Who? When? What? Javier Ortiz Aug-Dec 2006 1. Remove dialogs and windows from
+ * main code 2. Incorporate 21 CFR regulatory features
  *
  *************************************************************
  */
@@ -194,7 +191,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         }
         //choose language
         getJDialogLocale().setVisible(true);
-        Locale loc = null;
+        Locale loc;
         try {
             String list = ((Locale) xincoClientConfig.get(ConfigElement.LOCALE.ordinal())).toString();
             String[] locales;
@@ -289,12 +286,12 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             JDialogLocale.getRootPane().setDefaultButton(getJButtonDialogLocaleOk());
         }
         //processing independent of creation
-        int i = 0;
-        ResourceBundle lrb = null;
+        int i;
+        ResourceBundle lrb;
         String[] locales;
         String text = "";
-        int selection = -1;
-        int alt_selection = 0;
+        int selection;
+        int alt_selection;
         DefaultListModel dlm;
         //load locales
         dlm = (DefaultListModel) jListDialogLocale.getModel();
@@ -379,7 +376,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     //get locale
                     if (jListDialogLocale.getSelectedIndex() >= 0) {
-                        ResourceBundle lrb = null;
+                        ResourceBundle lrb;
                         String[] locales;
                         lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
                         locales = lrb.getString("AvailableLocales").split(",");
@@ -1023,7 +1020,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     }
 
     private void showConnectionDialog() {
-        int i = 0;
+        int i;
         //init session
         xincoClientSession = new XincoClientSession(XincoExplorer.this);
         getJTreeRepository().setModel(xincoClientSession.getXincoClientRepository().treemodel);
@@ -1163,7 +1160,8 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     }
 
     /**
-     * @param jLabelInternalFrameInformationText the jLabelInternalFrameInformationText to set
+     * @param jLabelInternalFrameInformationText the
+     * jLabelInternalFrameInformationText to set
      */
     public void setInternalFrameInformationText(javax.swing.JTextArea jLabelInternalFrameInformationText) {
         this.jLabelInternalFrameInformationText = jLabelInternalFrameInformationText;
@@ -1262,7 +1260,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
      *
      */
     public void markConnectionStatus() {
-        int i = 0, j = 0;
+        int i, j;
         if (xincoClientSession != null) {
             //do general processing
             DefaultTableModel dtm;
@@ -1448,13 +1446,13 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             jDialogRevision.getRootPane().setDefaultButton(getJButtonDialogRevisionContinue());
         }
         //processing independent of creation
-        int i = 0;
-        String text = "";
+        int i;
+        String text;
         if (xincoClientSession.getCurrentTreeNodeSelection().getUserObject() != null) {
             DefaultListModel dlm = (DefaultListModel) jListDialogRevision.getModel();
             dlm.removeAllElements();
-            Calendar cal = null;
-            XMLGregorianCalendar realcal = null;
+            Calendar cal;
+            XMLGregorianCalendar realcal;
             Calendar ngc = new GregorianCalendar();
             for (i = 0; i < ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().size(); i++) {
                 if ((((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(i)).getOpCode() == 1)
@@ -1538,7 +1536,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
 
                 @Override
                 public void actionPerformed(java.awt.event.ActionEvent e) {
-                    int i = 0;
+                    int i;
                     int RealLogIndex = -1;
                     if (jListDialogRevision.getSelectedIndex() >= 0) {
                         for (i = 0; i < ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().size(); i++) {
@@ -1612,13 +1610,13 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
      *
      * @param node XincoCoreNode
      * @param folder File
-     * @throws java.lang.Exception 
+     * @throws java.lang.Exception
      */
     @SuppressWarnings("unchecked")
     public void importContentOfFolder(XincoCoreNode node, File folder) throws Exception {
-        int i = 0;
-        int j = 0;
-        File[] folderList = null;
+        int i;
+        int j;
+        File[] folderList;
         folderList = folder.listFiles();
         newnode = new XincoMutableTreeNode(new XincoCoreData(), this);
         XincoCoreNode xnode;
@@ -1632,7 +1630,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             }
         }
         //find default language
-        XincoCoreLanguage xcl1 = null;
+        XincoCoreLanguage xcl1;
         int selection = -1;
         int alt_selection = 0;
         for (j = 0; j < xincoClientSession.getServerLanguages().size(); j++) {
@@ -1696,7 +1694,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                 // load file
                 long totalLen = 0;
                 CheckedInputStream cin = null;
-                ByteArrayOutputStream out = null;
+                ByteArrayOutputStream out;
 
                 byteArray = null;
                 try {
@@ -1704,7 +1702,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             new CRC32());
                     out = new ByteArrayOutputStream();
                     byte[] buf = new byte[4096];
-                    int len = 0;
+                    int len;
 
                     totalLen = 0;
                     while ((len = cin.read(buf)) > 0) {
@@ -1796,12 +1794,12 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
      *
      * @param node XincoCoreNode
      * @param folder File
-     * @throws java.lang.Exception 
+     * @throws java.lang.Exception
      */
     @SuppressWarnings("unchecked")
     public void downloadContentOfNode(XincoCoreNode node, File folder) throws Exception {
-        int i = 0;
-        XincoMutableTreeNode currentNode = null;
+        int i;
+        XincoMutableTreeNode currentNode;
 
         if (xincoClientSession.getCurrentTreeNodeSelection().getUserObject().getClass() == XincoCoreNode.class) {
             currentNode = xincoClientSession.getCurrentTreeNodeSelection();
@@ -1848,7 +1846,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             // process subnodes
             for (i = 0; i < currentNode.getChildCount(); i++) {
                 if (((XincoMutableTreeNode) currentNode.getChildAt(i)).getUserObject().getClass() == XincoCoreNode.class) {
-                    File newfolder = null;
+                    File newfolder;
                     newfolder = new File(folder.getAbsolutePath() + System.getProperty("file.separator") + ((XincoCoreNode) ((XincoMutableTreeNode) currentNode.getChildAt(i)).getUserObject()).getDesignation());
                     if (newfolder.mkdirs() || newfolder.isDirectory()) {
                         xincoClientSession.setCurrentTreeNodeSelection((XincoMutableTreeNode) currentNode.getChildAt(i));
@@ -1870,24 +1868,14 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     public void doDataWizard(final int w_type) {
         this.wizardType = w_type;
         /*
-        wizard type	
-        = 1  = add new data
-        = 2  = edit data object
-        = 3  = edit add attributes
-        = 4  = checkout data
-        = 5  = undo checkout
-        = 6  = checkin data
-        = 7  = download data
-        = 8  = open URL cin browser
-        = 9  = open email client with contact information
-        = 10 = publish data
-        = 11 = download previous revision
-        = 12 = lock data
-        = 13 = comment data
-        = 14 = preview data
-        = 15 = download file with predefined name
+         * wizard type = 1 = add new data = 2 = edit data object = 3 = edit add
+         * attributes = 4 = checkout data = 5 = undo checkout = 6 = checkin data
+         * = 7 = download data = 8 = open URL cin browser = 9 = open email
+         * client with contact information = 10 = publish data = 11 = download
+         * previous revision = 12 = lock data = 13 = comment data = 14 = preview
+         * data = 15 = download file with predefined name
          */
-        int i = 0;
+        int i;
         newnode = new XincoMutableTreeNode(new XincoCoreData(), this);
         xdata = null;
         newlog = new XincoCoreLog();
@@ -2135,7 +2123,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                     //invoke web service (update data / (upload file) / add log)
                     //load file (new / checkin)
                     long totalLen = 0;
-                    ByteArrayOutputStream out = null;
+                    ByteArrayOutputStream out;
                     //file = 1
                     if (((wizardType == 1) || (wizardType == 6)) && (((XincoCoreData) newnode.getUserObject()).getXincoCoreDataType().getId() == 1)) {
                         try {
@@ -2146,7 +2134,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             in = new CheckedInputStream(new FileInputStream(current_fullpath), new CRC32());
                             out = new ByteArrayOutputStream();
                             byte[] buf = new byte[4096];
-                            int len = 0;
+                            int len;
                             totalLen = 0;
                             while ((len = in.read(buf)) > 0) {
                                 out.write(buf, 0, len);
@@ -2270,7 +2258,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                         //ByteArrayInputStream cin = new ByteArrayInputStream(byteArray);
                         CheckedOutputStream couts = new CheckedOutputStream(new FileOutputStream(current_fullpath), new CRC32());
                         byte[] buf = new byte[4096];
-                        int len = 0;
+                        int len;
                         totalLen = 0;
                         while ((len = in.read(buf)) > 0) {
                             couts.write(buf, 0, len);
@@ -2371,7 +2359,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                     //URL = 3
                     if ((wizardType == 8) && (((XincoCoreData) newnode.getUserObject()).getXincoCoreDataType().getId() == 3)) {
                         //open URL cin default browser
-                        Desktop desktop = null;
+                        Desktop desktop;
                         // Before more Desktop API is used, first check
                         // whether the API is supported by this particular
                         // virtual machine (VM) on this particular host.
@@ -2410,7 +2398,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                     //contact = 4
                     if ((wizardType == 9) && (((XincoCoreData) newnode.getUserObject()).getXincoCoreDataType().getId() == 4)) {
                         //open URL cin default browser
-                        Desktop desktop = null;
+                        Desktop desktop;
                         // Before more Desktop API is used, first check
                         // whether the API is supported by this particular
                         // virtual machine (VM) on this particular host.
@@ -2418,7 +2406,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             System.out.println("Supported");
                             desktop = Desktop.getDesktop();
                             String temp_email = ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXincoAddAttributes().get(9)).getAttribVarchar();
-                            URI uriMailTo = null;
+                            URI uriMailTo;
                             uriMailTo = new URI("mailto", temp_email, null);
                             desktop.mail(uriMailTo);
                         } else {
@@ -2455,7 +2443,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                         xincoClientSession.getXincoClientRepository().treemodel.nodeChanged(newnode);
                         getjInternalFrameInformationText().setText(xerb.getString("datawizard.updatesuccess"));
                         if (wizardType == 10) {
-                            String tempUrl = "";
+                            String tempUrl;
                             //file = 1
                             if (xdata.getXincoCoreDataType().getId() == 1) {
                                 tempUrl = ((XincoAddAttribute) xdata.getXincoAddAttributes().get(0)).getAttribVarchar();
@@ -2531,16 +2519,16 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
      * @return void
      */
     private void setPreviousPathFilename(String s) {
-        int i = 0, j = 0;
+        int i;
         if (s != null) {
             try {
                 setPreviousFullpath(s);
                 i = s.lastIndexOf(System.getProperty("file.separator"));
-                /*j = s.lastIndexOf("\\");
-                //select i as index wanted
-                if (j>i) {
-                i = j;
-                }*/
+                /*
+                 * j = s.lastIndexOf("\\"); //select i as index wanted if (j>i)
+                 * { i = j;
+                }
+                 */
                 previous_filename = s.substring(i + 1);
                 if (i > 0) {
                     previousPath = s.substring(0, i + 1);
@@ -2565,7 +2553,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
      * @param s
      */
     public void setCurrentPathFilename(String s) {
-        int i = 0, j = 0;
+        int i;
         if (s != null) {
             try {
                 setPreviousPathFilename(current_fullpath);
@@ -2621,7 +2609,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     /**
      * This method initializes AbstractDialogAddAttributesText
      *
-     * @param viewonly 
+     * @param viewonly
      * @return AbstractDialog
      */
     public AbstractDialog getAbstractDialogAddAttributesText(boolean viewonly) {
@@ -2946,6 +2934,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
 
     /**
      * Convenience method
+     *
      * @return ArrayList containing XincoExplorer's dialogs
      */
     public ArrayList getDialogs() {
