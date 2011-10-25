@@ -36,13 +36,7 @@
 package com.bluecubs.xinco.client.object;
 
 import com.bluecubs.xinco.client.XincoExplorer;
-import com.bluecubs.xinco.client.service.Xinco_Service;
-import com.bluecubs.xinco.client.service.XincoCoreDataType;
-import com.bluecubs.xinco.client.service.XincoCoreGroup;
-import com.bluecubs.xinco.client.service.XincoCoreLanguage;
-import com.bluecubs.xinco.client.service.XincoCoreUser;
-import com.bluecubs.xinco.client.service.Xinco;
-import com.bluecubs.xinco.client.service.XincoVersion;
+import com.bluecubs.xinco.client.service.*;
 import java.util.ArrayList;
 import java.util.List;
 
