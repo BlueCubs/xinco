@@ -1,35 +1,33 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            DataFolderDialog
+ * Name: DataFolderDialog
  *
- * Description:     Data Folder Dialog
+ * Description: Data Folder Dialog
  *
- * Original Author: Javier A. Ortiz
- * Date:            2006
+ * Original Author: Javier A. Ortiz Date: 2006
  *
  * Modifications:
  *
- * Who?             When?             What?
- * 
+ * Who? When? What?
+ *
  *
  *************************************************************
  * DataFolderDialog.java
@@ -45,13 +43,16 @@ import com.bluecubs.xinco.client.service.XincoCoreLanguage;
 import com.bluecubs.xinco.client.service.XincoCoreNode;
 import com.bluecubs.xinco.core.XincoException;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
 
 /**
- * 
+ *
  * Data folder Dialog
+ *
  * @author Javier A. Ortiz
  */
 public class DataFolderDialog extends AbstractDialog {
@@ -60,6 +61,7 @@ public class DataFolderDialog extends AbstractDialog {
 
     /**
      * Creates new form DataFolderDialog
+     *
      * @param parent Dialog's parent
      * @param modal Is modal?
      * @param explorer Related XincoExplorer.
@@ -82,8 +84,7 @@ public class DataFolderDialog extends AbstractDialog {
     public void setToDefaults() {
         super.setToDefaults();
         //processing independent of creation
-        int i = 0;
-        String text = "";
+        String text;
         int selection = -1;
         int alt_selection = 0;
         if (explorer.getSession().getCurrentTreeNodeSelection().getUserObject() != null) {
@@ -94,9 +95,15 @@ public class DataFolderDialog extends AbstractDialog {
             designation.selectAll();
             DefaultListModel dlm = new DefaultListModel();
             dlm.removeAllElements();
-            for (i = 0; i < explorer.getSession().getServerLanguages().size(); i++) {
-                text = ((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getDesignation() + " (" + ((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getSign() + ")";
-                dlm.addElement(text);
+            for (int i = 0; i < explorer.getSession().getServerLanguages().size(); i++) {
+                String designationVal = ((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getDesignation();
+                if (explorer.getResourceBundle().containsKey(designationVal)) {
+                    dlm.addElement(explorer.getResourceBundle().getString(designationVal));
+                } else {
+                    Logger.getLogger(DataFolderDialog.class.getSimpleName()).log(Level.WARNING,
+                            "Language with sign {0} not enabled in "
+                            + "com.bluecubs.xinco.messages.XincoMessagesLocale!", designationVal);
+                }
                 if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getId() == ((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLanguage().getId()) {
                     selection = i;
                 }
@@ -130,10 +137,10 @@ public class DataFolderDialog extends AbstractDialog {
         }
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -237,7 +244,7 @@ public class DataFolderDialog extends AbstractDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
-        XincoMutableTreeNode tempNode = null;
+        XincoMutableTreeNode tempNode;
         //delete new folder from treemodel if not saved to server yet
         if (((XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getId() == 0) {
             tempNode = explorer.getSession().getCurrentTreeNodeSelection();
@@ -251,7 +258,7 @@ public class DataFolderDialog extends AbstractDialog {
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         boolean insertnewnode = false;
-        XincoMutableTreeNode tempNode = null;
+        XincoMutableTreeNode tempNode;
         XincoCoreNode newnode = (XincoCoreNode) explorer.getSession().getCurrentTreeNodeSelection().getUserObject();
         //check if inserting new node
         if (newnode.getId() <= 0) {
