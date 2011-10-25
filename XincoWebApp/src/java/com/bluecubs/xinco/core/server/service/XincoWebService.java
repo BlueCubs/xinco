@@ -79,7 +79,7 @@ public class XincoWebService {
         ArrayList<XincoCoreGroup> list = null;
         try {
             //check if user exists
-            if (XincoCoreUserServer.validCredentials(in0.getUsername(), in0.getUserpassword())) {
+            if (XincoCoreUserServer.validCredentials(in0.getUsername(), in0.getUserpassword(), true)) {
                 list = XincoCoreGroupServer.getXincoCoreGroups();
             }
         } catch (Exception e) {
@@ -92,8 +92,15 @@ public class XincoWebService {
         ArrayList<XincoCoreLanguage> list = null;
         try {
             //check if user exists
-            if (XincoCoreUserServer.validCredentials(in0.getUsername(), in0.getUserpassword())) {
+            if (XincoCoreUserServer.validCredentials(in0.getUsername(), in0.getUserpassword(), true)) {
                 list = XincoCoreLanguageServer.getXincoCoreLanguages();
+            } else {
+                Logger.getLogger(XincoWebService.class.getName()).log(Level.WARNING,
+                        "User {0} doesn't exist or provided wrong credentials.",
+                        in0.getUsername());
+                Logger.getLogger(XincoWebService.class.getName()).log(Level.WARNING,
+                        "password {0}",
+                        in0.getUserpassword());
             }
         } catch (Exception e) {
             Logger.getLogger(XincoWebService.class.getName()).log(Level.SEVERE, null, e);
@@ -105,7 +112,7 @@ public class XincoWebService {
         ArrayList<XincoCoreDataType> list = null;
         try {
             //check if user exists
-            if (XincoCoreUserServer.validCredentials(in0.getUsername(), in0.getUserpassword())) {
+            if (XincoCoreUserServer.validCredentials(in0.getUsername(), in0.getUserpassword(), true)) {
                 list = XincoCoreDataTypeServer.getXincoCoreDataTypes();
             }
         } catch (Exception e) {
@@ -167,9 +174,9 @@ public class XincoWebService {
             XincoCoreACE ace;
             byte[] byteArray = null;
             String revision = "";
-            long totalLen = 0;
-            InputStream in = null;
-            ByteArrayOutputStream out = null;
+            long totalLen;
+            InputStream in;
+            ByteArrayOutputStream out;
             XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
             //load data
             data = new XincoCoreDataServer(in0.getId());
@@ -192,7 +199,7 @@ public class XincoWebService {
                         data.getId(), data.getId() + revision)), new CRC32());
                 out = new ByteArrayOutputStream();
                 byte[] buf = new byte[4096];
-                int len = 0;
+                int len;
                 totalLen = 0;
                 while ((len = in.read(buf)) > 0) {
                     out.write(buf, 0, len);
@@ -213,10 +220,10 @@ public class XincoWebService {
         try {
             XincoCoreDataServer data;
             XincoCoreACE ace;
-            int i = 0;
-            int len = 0;
-            long totalLen = 0;
-            InputStream in = null;
+            int i;
+            int len;
+            long totalLen;
+            InputStream in;
             XincoCoreUserServer user = new XincoCoreUserServer(in2.getUsername(), in2.getUserpassword());
             //load data
             data = new XincoCoreDataServer(in0.getId());
@@ -225,7 +232,6 @@ public class XincoWebService {
                 in = new ByteArrayInputStream(in1);
                 CheckedOutputStream out = new CheckedOutputStream(new FileOutputStream(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, data.getId(), "" + data.getId())), new CRC32());
                 byte[] buf = new byte[4096];
-                len = 0;
                 totalLen = 0;
                 while ((len = in.read(buf)) > 0) {
                     out.write(buf, 0, len);
@@ -249,7 +255,6 @@ public class XincoWebService {
                         FileInputStream fcis = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, data.getId(), "" + data.getId())));
                         FileOutputStream fcos = new FileOutputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, data.getId(), data.getId() + "-" + MaxLogId)));
                         byte[] fcbuf = new byte[4096];
-                        len = 0;
                         while ((len = fcis.read(fcbuf)) != -1) {
                             fcos.write(fcbuf, 0, len);
                         }
@@ -274,9 +279,9 @@ public class XincoWebService {
     }
 
     public java.util.List<java.lang.Object> findXincoCoreData(java.lang.String in0, XincoCoreLanguage in1, XincoCoreUser in2) {
-        boolean rp = false;
+        boolean rp;
         ArrayList v = new ArrayList();
-        ArrayList v2 = new ArrayList();
+        ArrayList v2;
 
         //check size of keyword string
         if (in0.length() < 1) {
@@ -331,7 +336,6 @@ public class XincoWebService {
 
     public XincoCoreNode setXincoCoreNode(XincoCoreNode in0, XincoCoreUser in1) {
         try {
-            int i = 0;
             boolean insertnewnode = false;
             XincoCoreNodeServer node;
             XincoCoreNodeServer parentNode = new XincoCoreNodeServer(0, 0, 1, "", 1);
@@ -371,7 +375,7 @@ public class XincoWebService {
                     newace = new XincoCoreACEServer(0, user.getId(), 0, node.getId(), 0, true, true, true, true);
                     newace.write2DB();
                     //inherit all group ACEs
-                    for (i = 0; i < parentNode.getXincoCoreAcl().size(); i++) {
+                    for (int i = 0; i < parentNode.getXincoCoreAcl().size(); i++) {
                         newace = (XincoCoreACEServer) parentNode.getXincoCoreAcl().get(i);
                         if (newace.getXincoCoreGroupId() > 0) {
                             newace.setId(0);
@@ -395,7 +399,6 @@ public class XincoWebService {
 
     public XincoCoreData setXincoCoreData(XincoCoreData in0, XincoCoreUser in1) {
         try {
-            int i = 0;
             boolean insertnewdata = false;
             XincoCoreDataServer data;
             XincoCoreNodeServer parentNode = new XincoCoreNodeServer(0, 0, 1, "", 1);
@@ -444,7 +447,7 @@ public class XincoWebService {
                     newace = new XincoCoreACEServer(0, user.getId(), 0, 0, data.getId(), true, true, true, true);
                     newace.write2DB();
                     //inherit all group ACEs
-                    for (i = 0; i < parentNode.getXincoCoreAcl().size(); i++) {
+                    for (int i = 0; i < parentNode.getXincoCoreAcl().size(); i++) {
                         newace = (XincoCoreACEServer) parentNode.getXincoCoreAcl().get(i);
                         if (newace.getXincoCoreGroupId() > 0) {
                             newace.setId(0);
@@ -603,7 +606,8 @@ public class XincoWebService {
 
     public boolean checkXincoCoreUserNewPassword(java.lang.String in0, XincoCoreUser in1, XincoCoreUser in2) {
         try {
-            return XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword()) ? new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword()).isPasswordUsable(in0) : false;
+            return XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword(), true) ? 
+                    new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword()).isPasswordUsable(in0) : false;
         } catch (XincoException ex) {
             Logger.getLogger(XincoWebService.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -612,7 +616,7 @@ public class XincoWebService {
 
     public XincoSetting getXincoSetting(java.lang.String in0, XincoCoreUser in1) {
         XincoSetting setting = null;
-        if (XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword())) {
+        if (XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword(), true)) {
             try {
                 setting = XincoSettingServer.getSetting(
                         new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword()), in0);
