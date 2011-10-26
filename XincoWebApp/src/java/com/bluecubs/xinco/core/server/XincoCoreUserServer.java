@@ -1,59 +1,52 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoCoreUserServer
+ * Name: XincoCoreUserServer
  *
- * Description:     user
+ * Description: user
  *
- * Original Author: Alexander Manes
- * Date:            2004
+ * Original Author: Alexander Manes Date: 2004
  *
  * Modifications:
  *
- * Who?             When?             What?
- * Javier A. Ortiz 09/20/2006         Related changes made to XincoCoreUser (new fields) in the following methods:
- *                                    write2DB, XincoCoreUserServer, XincoCoreUserServer (x 2), getXincoCoreUsers
- * Javier A. Ortiz 11/06/2006         Moved the logic of locking an account due to login attempts from the XincoAdminServlet
- * Alexander Manes 11/12/2006         Moved the new user features to core class
- * Javier A. Ortiz 11/20/2006         Undo previous changes and corrected a bug that increased twice 
- *                                    the attempts in the DB when wrong password was used
- * Javier A. Ortiz 01/08/2007         
- *************************************************************
+ * Who? When? What? Javier A. Ortiz 09/20/2006 Related changes made to
+ * XincoCoreUser (new fields) in the following methods: write2DB,
+ * XincoCoreUserServer, XincoCoreUserServer (x 2), getXincoCoreUsers Javier A.
+ * Ortiz 11/06/2006 Moved the logic of locking an account due to login attempts
+ * from the XincoAdminServlet Alexander Manes 11/12/2006 Moved the new user
+ * features to core class Javier A. Ortiz 11/20/2006 Undo previous changes and
+ * corrected a bug that increased twice the attempts in the DB when wrong
+ * password was used Javier A. Ortiz 01/08/2007
+ * ************************************************************
  */
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserHasXincoCoreGroupJpaController;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupPK;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserT;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserHasXincoCoreGroupJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
 import com.bluecubs.xinco.core.server.service.XincoCoreUser;
-import java.util.ArrayList;
 import com.bluecubs.xinco.tools.MD5;
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 //Status list (in DB)
@@ -107,7 +100,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
     }
 
     private void writeXincoCoreGroups() throws XincoException {
-        int i = -1;
+        int i;
         try {
             parameters.clear();
             parameters.put("xincoCoreUserId", getId());
@@ -311,7 +304,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
 
     //write to db
     public int write2DB() throws XincoException {
-        Timestamp ts = null;
+        Timestamp ts;
         try {
             if (getStatusNumber() == 4) {
                 //Changed from aged out to password changed. Clear status
@@ -319,7 +312,6 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 setAttempts(0);
                 setChange(true);
                 setReason("audit.user.account.aged");
-                ts = new Timestamp(System.currentTimeMillis());
             }
             //Increase login attempts
             if (increaseAttempts) {
@@ -332,7 +324,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 setStatusNumber(2);
             }
             XincoCoreUserJpaController controller = new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory());
-            com.bluecubs.xinco.core.server.persistence.XincoCoreUser xcu=null;
+            com.bluecubs.xinco.core.server.persistence.XincoCoreUser xcu;
             if (getId() > 0) {
                 if (isChange()) {
                     setChangerID(getId());
@@ -344,7 +336,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 }
                 setLastModified(ts);
                 //Sometimes password got re-hashed
-                String password = "";
+                String password;
                 if (hashPassword) {
                     password = MD5.encrypt(getUserpassword().replaceAll("'", "\\\\'"));
                 } else {
@@ -364,7 +356,6 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 xcu.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.edit(xcu);
             } else {
-                ts = new Timestamp(System.currentTimeMillis());
                 xcu = new com.bluecubs.xinco.core.server.persistence.XincoCoreUser(getId(),
                         getUsername().replaceAll("'", "\\\\'"), getUserpassword(), getName().replaceAll("'", "\\\\'"),
                         getFirstname().replaceAll("'", "\\\\'"), getEmail().replaceAll("'", "\\\\'"),
@@ -419,12 +410,13 @@ public final class XincoCoreUserServer extends XincoCoreUser {
     }
 
     public boolean isPasswordUsable(String newPass, boolean hash) {
-        int tempId = 0;
+        int tempId;
         boolean passwordIsUsable = true;
         try {
-            /*Bug fix: The password was only verified against past passwords not current password.
-             *The current passwords is not usable after the first change when it was added to the
-             *audit trail table.
+            /*
+             * Bug fix: The password was only verified against past passwords
+             * not current password. The current passwords is not usable after
+             * the first change when it was added to the audit trail table.
              */
             //Now check if password is not the same as the current password
             result = XincoDBManager.createdQuery("Select x from XincoCoreUser x where x.id=" + getId()
@@ -457,13 +449,34 @@ public final class XincoCoreUserServer extends XincoCoreUser {
         return isPasswordUsable(newPass, true);
     }
 
+    /**
+     * Check user credentials.
+     * 
+     * the password is already encrypted. Usually queries from within the server itself
+     * @param username User name
+     * @param password Password
+     * @return true if valid
+     */
     public static boolean validCredentials(String username, String password) {
+        return validCredentials(username, password, false);
+    }
+
+     /**
+     * Check user credentials.
+     * 
+     * the password is already encrypted. Usually queries from within the server itself
+     * @param username User name
+     * @param password Password
+     * @param encrypt Password needs encrypting?
+     * @return true if valid
+     */
+    public static boolean validCredentials(String username, String password, boolean encrypt) {
         try {
             parameters.clear();
             parameters.put("username", username);
-            parameters.put("userpassword", password);
+            parameters.put("userpassword", encrypt ? MD5.encrypt(password.replaceAll("'", "\\\\'")) : password);
             return !XincoDBManager.createdQuery("SELECT x FROM XincoCoreUser x "
-                    + "WHERE x.username = :username and x.userpassword = :userpassword",parameters).isEmpty();
+                    + "WHERE x.username = :username and x.userpassword = :userpassword", parameters).isEmpty();
         } catch (Exception e) {
             Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
             return false;

@@ -38,7 +38,7 @@ public class XincoCoreLog implements Serializable {
     @TableGenerator(name = "XincoCoreLogGen", table = "xinco_id",
     pkColumnName = "tablename",
     valueColumnName = "last_id",
-    pkColumnValue = "id",
+    pkColumnValue = "xinco_core_log",
     allocationSize = 1,
     initialValue=1000)
     @Column(name = "id", nullable = false)

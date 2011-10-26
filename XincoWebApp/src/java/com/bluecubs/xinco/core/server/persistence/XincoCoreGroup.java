@@ -41,7 +41,7 @@ public class XincoCoreGroup extends XincoAuditedObject implements Serializable {
     @TableGenerator(name = "XincoCoreGroupGen", table = "xinco_id",
     pkColumnName = "tablename",
     valueColumnName = "last_id",
-    pkColumnValue = "id",
+    pkColumnValue = "xinco_core_group",
     allocationSize = 1,
     initialValue=1000)
     @Column(name = "id", nullable = false)

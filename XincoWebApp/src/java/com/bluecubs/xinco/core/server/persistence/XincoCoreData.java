@@ -40,10 +40,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "XincoCoreData.findByDesignation", query = "SELECT x FROM XincoCoreData x WHERE x.designation = :designation"),
     @NamedQuery(name = "XincoCoreData.findByStatusNumber", query = "SELECT x FROM XincoCoreData x WHERE x.statusNumber = :statusNumber")})
 public class XincoCoreData extends XincoAuditedObject implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreData")
-    private Collection<XincoCoreDataHasDependency> xincoCoreDataHasDependencyCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreData1")
-    private Collection<XincoCoreDataHasDependency> xincoCoreDataHasDependencyCollection1;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -52,9 +48,9 @@ public class XincoCoreData extends XincoAuditedObject implements Serializable {
     @TableGenerator(name = "XincoCoreDataGen", table = "xinco_id",
     pkColumnName = "tablename",
     valueColumnName = "last_id",
-    pkColumnValue = "id",
+    pkColumnValue = "xinco_core_data",
     allocationSize = 1,
-    initialValue=1000)
+    initialValue = 1000)
     @Column(name = "id", nullable = false)
     private Integer id;
     @Basic(optional = false)
@@ -78,6 +74,10 @@ public class XincoCoreData extends XincoAuditedObject implements Serializable {
     private XincoCoreNode xincoCoreNode;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreData", fetch = FetchType.LAZY)
     private List<XincoAddAttribute> xincoAddAttributeList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreData")
+    private Collection<XincoCoreDataHasDependency> xincoCoreDataHasDependencyCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreData1")
+    private Collection<XincoCoreDataHasDependency> xincoCoreDataHasDependencyCollection1;
 
     public XincoCoreData() {
     }
@@ -173,7 +173,7 @@ public class XincoCoreData extends XincoAuditedObject implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        
+
         if (!(object instanceof XincoCoreData)) {
             return false;
         }

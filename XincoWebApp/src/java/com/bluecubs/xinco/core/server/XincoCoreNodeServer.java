@@ -91,7 +91,8 @@ public class XincoCoreNodeServer extends XincoCoreNode {
     }
 
     //create node object for data structures
-    public XincoCoreNodeServer(int attrID, int attrCNID, int attrLID, String attrD, int attrSN) throws XincoException {
+    public XincoCoreNodeServer(int attrID, int attrCNID, int attrLID, 
+            String attrD, int attrSN) throws XincoException {
         try {
             setId(attrID);
             setXincoCoreNodeId(attrCNID);
@@ -167,7 +168,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
 
     //delete from db
     public void deleteFromDB(boolean delete_this, int userID) throws XincoException {
-        int i = 0;
+        int i;
         try {
             if (delete_this) {
                 result = XincoDBManager.createdQuery("Select xca from XincoCoreAce xca where xca.xincoCoreNode.id=" + getId());

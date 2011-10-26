@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

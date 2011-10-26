@@ -1,35 +1,32 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoCoreLanguageServer
+ * Name: XincoCoreLanguageServer
  *
- * Description:     language
+ * Description: language
  *
- * Original Author: Alexander Manes
- * Date:            2004
+ * Original Author: Alexander Manes Date: 2004
  *
  * Modifications:
  *
- * Who?             When?             What?
- * -                -                 -
+ * Who? When? What? - - -
  *
  *************************************************************
  */
@@ -64,10 +61,11 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
                 setSign(xcl.getSign());
                 setDesignation(xcl.getDesignation());
             } else {
-                throw new XincoException();
+                throw new XincoException("XincoCoreLanguage with id: " + attrID + " doesn't exist!");
             }
-        } catch (Exception e) {
-            throw new XincoException();
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.SEVERE, null, ex);
+            throw new XincoException(ex.getLocalizedMessage());
         }
     }
 
@@ -88,7 +86,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     public int write2DB() throws XincoException {
         try {
             XincoCoreLanguageJpaController controller = new XincoCoreLanguageJpaController(XincoDBManager.getEntityManagerFactory());
-            com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage xcl=null;
+            com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage xcl;
             if (getId() > 0) {
                 xcl = controller.findXincoCoreLanguage(getId());
                 xcl.setSign(getSign().replaceAll("'", "\\\\'"));
@@ -117,7 +115,8 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     public static int deleteFromDB(XincoCoreLanguage attrCL, int userID) throws XincoException {
         try {
             new XincoCoreLanguageJpaController(XincoDBManager.getEntityManagerFactory()).destroy(attrCL.getId());
-        } catch (Exception e) {
+        } catch (Exception ex) {
+            Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.SEVERE, null, ex);
             throw new XincoException();
         }
         return 0;
@@ -128,11 +127,11 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
         ArrayList coreLanguages = new ArrayList();
         try {
             result = XincoDBManager.createdQuery("SELECT xcl FROM XincoCoreLanguage xcl ORDER BY xcl.designation");
-            while (result.size() > 0) {
-                coreLanguages.add(new XincoCoreLanguageServer((com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage) result.get(0)));
-                result.remove(0);
+            for (Object lang : result) {
+                coreLanguages.add(new XincoCoreLanguageServer((com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage) lang));
             }
-        } catch (Exception e) {
+        } catch (XincoException ex) {
+            Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.SEVERE, null, ex);
             coreLanguages.clear();
         }
         return coreLanguages;
@@ -140,11 +139,11 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
 
     //check if language is in use by other objects
     public static boolean isLanguageUsed(XincoCoreLanguage xcl) {
-        boolean is_used = false;
+        boolean is_used;
         try {
-            is_used = ((Long)XincoDBManager.createdQuery("select count(xcn) from XincoCoreNode xcn where xcn.xincoCoreLanguage.id = " + xcl.getId()).get(0)) > 0;
+            is_used = ((Long) XincoDBManager.createdQuery("select count(xcn) from XincoCoreNode xcn where xcn.xincoCoreLanguage.id = " + xcl.getId()).get(0)) > 0;
             if (!is_used) {
-                is_used = ((Long)XincoDBManager.createdQuery("select count(xcd) from XincoCoreData xcd where xcd.xincoCoreLanguage.id = " + xcl.getId()).get(0)) > 0;
+                is_used = ((Long) XincoDBManager.createdQuery("select count(xcd) from XincoCoreData xcd where xcd.xincoCoreLanguage.id = " + xcl.getId()).get(0)) > 0;
             }
         } catch (Exception ex) {
             Logger.getLogger(XincoCoreLanguageServer.class.getSimpleName()).log(Level.SEVERE, null, ex);

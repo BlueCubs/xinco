@@ -2,19 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  *
@@ -22,13 +13,24 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "xinco_id")
-@NamedQueries({@NamedQuery(name = "XincoId.findAll", query = "SELECT x FROM XincoId x"), @NamedQuery(name = "XincoId.findById", query = "SELECT x FROM XincoId x WHERE x.id = :id"), @NamedQuery(name = "XincoId.findByTablename", query = "SELECT x FROM XincoId x WHERE x.tablename = :tablename"), @NamedQuery(name = "XincoId.findByLastId", query = "SELECT x FROM XincoId x WHERE x.lastId = :lastId")})
+@NamedQueries({
+    @NamedQuery(name = "XincoId.findAll",
+    query = "SELECT x FROM XincoId x"),
+    @NamedQuery(name = "XincoId.findById",
+    query = "SELECT x FROM XincoId x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoId.findByTablename",
+    query = "SELECT x FROM XincoId x WHERE x.tablename = :tablename"),
+    @NamedQuery(name = "XincoId.findByLastId",
+    query = "SELECT x FROM XincoId x WHERE x.lastId = :lastId")})
 public class XincoId implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "XincoIdGen")
+    @SequenceGenerator(name = "XincoIdGen", sequenceName = "XINCO_ID_SEQ", 
+            allocationSize = 1)
     private Integer id;
     @Basic(optional = false)
     @Column(name = "tablename", nullable = false, length = 255)
@@ -40,12 +42,7 @@ public class XincoId implements Serializable {
     public XincoId() {
     }
 
-    public XincoId(Integer id) {
-        this.id = id;
-    }
-
-    public XincoId(Integer id, String tablename, int lastId) {
-        this.id = id;
+    public XincoId(String tablename, int lastId) {
         this.tablename = tablename;
         this.lastId = lastId;
     }
@@ -83,7 +80,7 @@ public class XincoId implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        
+
         if (!(object instanceof XincoId)) {
             return false;
         }
@@ -98,5 +95,4 @@ public class XincoId implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoId[id=" + id + "]";
     }
-
 }

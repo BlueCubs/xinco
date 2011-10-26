@@ -56,7 +56,7 @@ public class XincoSettingServer extends XincoSetting {
     public int write2DB() throws XincoException {
         try {
             XincoSettingJpaController controller = new XincoSettingJpaController(XincoDBManager.getEntityManagerFactory());
-            com.bluecubs.xinco.core.server.persistence.XincoSetting setting = null;
+            com.bluecubs.xinco.core.server.persistence.XincoSetting setting;
             if (getId() > 0) {
                 setting = controller.findXincoSetting(getId());
                 setting.setBoolValue(isBoolValue());
