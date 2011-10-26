@@ -16,7 +16,7 @@
   factory="org.apache.commons.dbcp.BasicDataSourceFactory"
   maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB"
   password="" type="javax.sql.DataSource"
-  url="jdbc:h2:file:~/data/xinco;CREATE=TRUE;AUTO_SERVER=TRUE;LOCK_TIMEOUT=10000"
+  url="jdbc:h2:file:~/Xinco/data/xinco;CREATE=TRUE;AUTO_SERVER=TRUE;LOCK_TIMEOUT=10000"
   username="root"/>
   <!-- ################# Optional Configuration #################-->
   <!-- Database JNDI Name -->
