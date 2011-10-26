@@ -2,30 +2,28 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bluecubs.xinco.core.server.persistence.controller;
-
+import com.bluecubs.xinco.core.server.persistence.XincoCoreAce;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreLog;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUser;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecord;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
 import java.io.Serializable;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreAce;
 import java.util.ArrayList;
 import java.util.List;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreLog;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecord;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
  */
 public class XincoCoreUserJpaController implements Serializable {
 
@@ -38,7 +36,7 @@ public class XincoCoreUserJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(XincoCoreUser xincoCoreUser) throws PreexistingEntityException, Exception {
+    public void create(XincoCoreUser xincoCoreUser) {
         if (xincoCoreUser.getXincoCoreAceList() == null) {
             xincoCoreUser.setXincoCoreAceList(new ArrayList<XincoCoreAce>());
         }
@@ -81,21 +79,21 @@ public class XincoCoreUserJpaController implements Serializable {
             xincoCoreUser.setXincoCoreUserModifiedRecordList(attachedXincoCoreUserModifiedRecordList);
             em.persist(xincoCoreUser);
             for (XincoCoreAce xincoCoreAceListXincoCoreAce : xincoCoreUser.getXincoCoreAceList()) {
-                XincoCoreUser oldXincoCoreUserIdOfXincoCoreAceListXincoCoreAce = xincoCoreAceListXincoCoreAce.getXincoCoreUser();
+                XincoCoreUser oldXincoCoreUserOfXincoCoreAceListXincoCoreAce = xincoCoreAceListXincoCoreAce.getXincoCoreUser();
                 xincoCoreAceListXincoCoreAce.setXincoCoreUser(xincoCoreUser);
                 xincoCoreAceListXincoCoreAce = em.merge(xincoCoreAceListXincoCoreAce);
-                if (oldXincoCoreUserIdOfXincoCoreAceListXincoCoreAce != null) {
-                    oldXincoCoreUserIdOfXincoCoreAceListXincoCoreAce.getXincoCoreAceList().remove(xincoCoreAceListXincoCoreAce);
-                    oldXincoCoreUserIdOfXincoCoreAceListXincoCoreAce = em.merge(oldXincoCoreUserIdOfXincoCoreAceListXincoCoreAce);
+                if (oldXincoCoreUserOfXincoCoreAceListXincoCoreAce != null) {
+                    oldXincoCoreUserOfXincoCoreAceListXincoCoreAce.getXincoCoreAceList().remove(xincoCoreAceListXincoCoreAce);
+                    oldXincoCoreUserOfXincoCoreAceListXincoCoreAce = em.merge(oldXincoCoreUserOfXincoCoreAceListXincoCoreAce);
                 }
             }
             for (XincoCoreLog xincoCoreLogListXincoCoreLog : xincoCoreUser.getXincoCoreLogList()) {
-                XincoCoreUser oldXincoCoreUserIdOfXincoCoreLogListXincoCoreLog = xincoCoreLogListXincoCoreLog.getXincoCoreUser();
+                XincoCoreUser oldXincoCoreUserOfXincoCoreLogListXincoCoreLog = xincoCoreLogListXincoCoreLog.getXincoCoreUser();
                 xincoCoreLogListXincoCoreLog.setXincoCoreUser(xincoCoreUser);
                 xincoCoreLogListXincoCoreLog = em.merge(xincoCoreLogListXincoCoreLog);
-                if (oldXincoCoreUserIdOfXincoCoreLogListXincoCoreLog != null) {
-                    oldXincoCoreUserIdOfXincoCoreLogListXincoCoreLog.getXincoCoreLogList().remove(xincoCoreLogListXincoCoreLog);
-                    oldXincoCoreUserIdOfXincoCoreLogListXincoCoreLog = em.merge(oldXincoCoreUserIdOfXincoCoreLogListXincoCoreLog);
+                if (oldXincoCoreUserOfXincoCoreLogListXincoCoreLog != null) {
+                    oldXincoCoreUserOfXincoCoreLogListXincoCoreLog.getXincoCoreLogList().remove(xincoCoreLogListXincoCoreLog);
+                    oldXincoCoreUserOfXincoCoreLogListXincoCoreLog = em.merge(oldXincoCoreUserOfXincoCoreLogListXincoCoreLog);
                 }
             }
             for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupList1XincoCoreUserHasXincoCoreGroup : xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList1()) {
@@ -117,11 +115,6 @@ public class XincoCoreUserJpaController implements Serializable {
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findXincoCoreUser(xincoCoreUser.getId()) != null) {
-                throw new PreexistingEntityException("XincoCoreUser " + xincoCoreUser + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -149,7 +142,7 @@ public class XincoCoreUserJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain XincoCoreLog " + xincoCoreLogListOldXincoCoreLog + " since its xincoCoreUserId field is not nullable.");
+                    illegalOrphanMessages.add("You must retain XincoCoreLog " + xincoCoreLogListOldXincoCoreLog + " since its xincoCoreUser field is not nullable.");
                 }
             }
             for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupList1OldXincoCoreUserHasXincoCoreGroup : xincoCoreUserHasXincoCoreGroupList1Old) {
@@ -208,23 +201,23 @@ public class XincoCoreUserJpaController implements Serializable {
             }
             for (XincoCoreAce xincoCoreAceListNewXincoCoreAce : xincoCoreAceListNew) {
                 if (!xincoCoreAceListOld.contains(xincoCoreAceListNewXincoCoreAce)) {
-                    XincoCoreUser oldXincoCoreUserIdOfXincoCoreAceListNewXincoCoreAce = xincoCoreAceListNewXincoCoreAce.getXincoCoreUser();
+                    XincoCoreUser oldXincoCoreUserOfXincoCoreAceListNewXincoCoreAce = xincoCoreAceListNewXincoCoreAce.getXincoCoreUser();
                     xincoCoreAceListNewXincoCoreAce.setXincoCoreUser(xincoCoreUser);
                     xincoCoreAceListNewXincoCoreAce = em.merge(xincoCoreAceListNewXincoCoreAce);
-                    if (oldXincoCoreUserIdOfXincoCoreAceListNewXincoCoreAce != null && !oldXincoCoreUserIdOfXincoCoreAceListNewXincoCoreAce.equals(xincoCoreUser)) {
-                        oldXincoCoreUserIdOfXincoCoreAceListNewXincoCoreAce.getXincoCoreAceList().remove(xincoCoreAceListNewXincoCoreAce);
-                        oldXincoCoreUserIdOfXincoCoreAceListNewXincoCoreAce = em.merge(oldXincoCoreUserIdOfXincoCoreAceListNewXincoCoreAce);
+                    if (oldXincoCoreUserOfXincoCoreAceListNewXincoCoreAce != null && !oldXincoCoreUserOfXincoCoreAceListNewXincoCoreAce.equals(xincoCoreUser)) {
+                        oldXincoCoreUserOfXincoCoreAceListNewXincoCoreAce.getXincoCoreAceList().remove(xincoCoreAceListNewXincoCoreAce);
+                        oldXincoCoreUserOfXincoCoreAceListNewXincoCoreAce = em.merge(oldXincoCoreUserOfXincoCoreAceListNewXincoCoreAce);
                     }
                 }
             }
             for (XincoCoreLog xincoCoreLogListNewXincoCoreLog : xincoCoreLogListNew) {
                 if (!xincoCoreLogListOld.contains(xincoCoreLogListNewXincoCoreLog)) {
-                    XincoCoreUser oldXincoCoreUserIdOfXincoCoreLogListNewXincoCoreLog = xincoCoreLogListNewXincoCoreLog.getXincoCoreUser();
+                    XincoCoreUser oldXincoCoreUserOfXincoCoreLogListNewXincoCoreLog = xincoCoreLogListNewXincoCoreLog.getXincoCoreUser();
                     xincoCoreLogListNewXincoCoreLog.setXincoCoreUser(xincoCoreUser);
                     xincoCoreLogListNewXincoCoreLog = em.merge(xincoCoreLogListNewXincoCoreLog);
-                    if (oldXincoCoreUserIdOfXincoCoreLogListNewXincoCoreLog != null && !oldXincoCoreUserIdOfXincoCoreLogListNewXincoCoreLog.equals(xincoCoreUser)) {
-                        oldXincoCoreUserIdOfXincoCoreLogListNewXincoCoreLog.getXincoCoreLogList().remove(xincoCoreLogListNewXincoCoreLog);
-                        oldXincoCoreUserIdOfXincoCoreLogListNewXincoCoreLog = em.merge(oldXincoCoreUserIdOfXincoCoreLogListNewXincoCoreLog);
+                    if (oldXincoCoreUserOfXincoCoreLogListNewXincoCoreLog != null && !oldXincoCoreUserOfXincoCoreLogListNewXincoCoreLog.equals(xincoCoreUser)) {
+                        oldXincoCoreUserOfXincoCoreLogListNewXincoCoreLog.getXincoCoreLogList().remove(xincoCoreLogListNewXincoCoreLog);
+                        oldXincoCoreUserOfXincoCoreLogListNewXincoCoreLog = em.merge(oldXincoCoreUserOfXincoCoreLogListNewXincoCoreLog);
                     }
                 }
             }
@@ -285,7 +278,7 @@ public class XincoCoreUserJpaController implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This XincoCoreUser (" + xincoCoreUser + ") cannot be destroyed since the XincoCoreLog " + xincoCoreLogListOrphanCheckXincoCoreLog + " in its xincoCoreLogList field has a non-nullable xincoCoreUserId field.");
+                illegalOrphanMessages.add("This XincoCoreUser (" + xincoCoreUser + ") cannot be destroyed since the XincoCoreLog " + xincoCoreLogListOrphanCheckXincoCoreLog + " in its xincoCoreLogList field has a non-nullable xincoCoreUser field.");
             }
             List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList1OrphanCheck = xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList1();
             for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupList1OrphanCheckXincoCoreUserHasXincoCoreGroup : xincoCoreUserHasXincoCoreGroupList1OrphanCheck) {
@@ -363,5 +356,5 @@ public class XincoCoreUserJpaController implements Serializable {
             em.close();
         }
     }
-
+    
 }

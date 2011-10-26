@@ -2,29 +2,27 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bluecubs.xinco.core.server.persistence.controller;
-
+import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataType;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
 import java.io.Serializable;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute;
 import java.util.ArrayList;
 import java.util.List;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import java.util.Collection;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
  */
 public class XincoCoreDataTypeJpaController implements Serializable {
 
@@ -37,7 +35,7 @@ public class XincoCoreDataTypeJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(XincoCoreDataType xincoCoreDataType) throws PreexistingEntityException, Exception {
+    public void create(XincoCoreDataType xincoCoreDataType) {
         if (xincoCoreDataType.getXincoCoreDataTypeAttributeList() == null) {
             xincoCoreDataType.setXincoCoreDataTypeAttributeList(new ArrayList<XincoCoreDataTypeAttribute>());
         }
@@ -80,29 +78,24 @@ public class XincoCoreDataTypeJpaController implements Serializable {
                 }
             }
             for (XincoCoreData xincoCoreDataListXincoCoreData : xincoCoreDataType.getXincoCoreDataList()) {
-                XincoCoreDataType oldXincoCoreDataTypeIdOfXincoCoreDataListXincoCoreData = xincoCoreDataListXincoCoreData.getXincoCoreDataType();
+                XincoCoreDataType oldXincoCoreDataTypeOfXincoCoreDataListXincoCoreData = xincoCoreDataListXincoCoreData.getXincoCoreDataType();
                 xincoCoreDataListXincoCoreData.setXincoCoreDataType(xincoCoreDataType);
                 xincoCoreDataListXincoCoreData = em.merge(xincoCoreDataListXincoCoreData);
-                if (oldXincoCoreDataTypeIdOfXincoCoreDataListXincoCoreData != null) {
-                    oldXincoCoreDataTypeIdOfXincoCoreDataListXincoCoreData.getXincoCoreDataList().remove(xincoCoreDataListXincoCoreData);
-                    oldXincoCoreDataTypeIdOfXincoCoreDataListXincoCoreData = em.merge(oldXincoCoreDataTypeIdOfXincoCoreDataListXincoCoreData);
+                if (oldXincoCoreDataTypeOfXincoCoreDataListXincoCoreData != null) {
+                    oldXincoCoreDataTypeOfXincoCoreDataListXincoCoreData.getXincoCoreDataList().remove(xincoCoreDataListXincoCoreData);
+                    oldXincoCoreDataTypeOfXincoCoreDataListXincoCoreData = em.merge(oldXincoCoreDataTypeOfXincoCoreDataListXincoCoreData);
                 }
             }
             for (XincoCoreData xincoCoreDataCollectionXincoCoreData : xincoCoreDataType.getXincoCoreDataCollection()) {
-                XincoCoreDataType oldXincoCoreDataTypeIdOfXincoCoreDataCollectionXincoCoreData = xincoCoreDataCollectionXincoCoreData.getXincoCoreDataType();
+                XincoCoreDataType oldXincoCoreDataTypeOfXincoCoreDataCollectionXincoCoreData = xincoCoreDataCollectionXincoCoreData.getXincoCoreDataType();
                 xincoCoreDataCollectionXincoCoreData.setXincoCoreDataType(xincoCoreDataType);
                 xincoCoreDataCollectionXincoCoreData = em.merge(xincoCoreDataCollectionXincoCoreData);
-                if (oldXincoCoreDataTypeIdOfXincoCoreDataCollectionXincoCoreData != null) {
-                    oldXincoCoreDataTypeIdOfXincoCoreDataCollectionXincoCoreData.getXincoCoreDataCollection().remove(xincoCoreDataCollectionXincoCoreData);
-                    oldXincoCoreDataTypeIdOfXincoCoreDataCollectionXincoCoreData = em.merge(oldXincoCoreDataTypeIdOfXincoCoreDataCollectionXincoCoreData);
+                if (oldXincoCoreDataTypeOfXincoCoreDataCollectionXincoCoreData != null) {
+                    oldXincoCoreDataTypeOfXincoCoreDataCollectionXincoCoreData.getXincoCoreDataCollection().remove(xincoCoreDataCollectionXincoCoreData);
+                    oldXincoCoreDataTypeOfXincoCoreDataCollectionXincoCoreData = em.merge(oldXincoCoreDataTypeOfXincoCoreDataCollectionXincoCoreData);
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findXincoCoreDataType(xincoCoreDataType.getId()) != null) {
-                throw new PreexistingEntityException("XincoCoreDataType " + xincoCoreDataType + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -136,7 +129,7 @@ public class XincoCoreDataTypeJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain XincoCoreData " + xincoCoreDataListOldXincoCoreData + " since its xincoCoreDataTypeId field is not nullable.");
+                    illegalOrphanMessages.add("You must retain XincoCoreData " + xincoCoreDataListOldXincoCoreData + " since its xincoCoreDataType field is not nullable.");
                 }
             }
             for (XincoCoreData xincoCoreDataCollectionOldXincoCoreData : xincoCoreDataCollectionOld) {
@@ -144,7 +137,7 @@ public class XincoCoreDataTypeJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain XincoCoreData " + xincoCoreDataCollectionOldXincoCoreData + " since its xincoCoreDataTypeId field is not nullable.");
+                    illegalOrphanMessages.add("You must retain XincoCoreData " + xincoCoreDataCollectionOldXincoCoreData + " since its xincoCoreDataType field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -185,23 +178,23 @@ public class XincoCoreDataTypeJpaController implements Serializable {
             }
             for (XincoCoreData xincoCoreDataListNewXincoCoreData : xincoCoreDataListNew) {
                 if (!xincoCoreDataListOld.contains(xincoCoreDataListNewXincoCoreData)) {
-                    XincoCoreDataType oldXincoCoreDataTypeIdOfXincoCoreDataListNewXincoCoreData = xincoCoreDataListNewXincoCoreData.getXincoCoreDataType();
+                    XincoCoreDataType oldXincoCoreDataTypeOfXincoCoreDataListNewXincoCoreData = xincoCoreDataListNewXincoCoreData.getXincoCoreDataType();
                     xincoCoreDataListNewXincoCoreData.setXincoCoreDataType(xincoCoreDataType);
                     xincoCoreDataListNewXincoCoreData = em.merge(xincoCoreDataListNewXincoCoreData);
-                    if (oldXincoCoreDataTypeIdOfXincoCoreDataListNewXincoCoreData != null && !oldXincoCoreDataTypeIdOfXincoCoreDataListNewXincoCoreData.equals(xincoCoreDataType)) {
-                        oldXincoCoreDataTypeIdOfXincoCoreDataListNewXincoCoreData.getXincoCoreDataList().remove(xincoCoreDataListNewXincoCoreData);
-                        oldXincoCoreDataTypeIdOfXincoCoreDataListNewXincoCoreData = em.merge(oldXincoCoreDataTypeIdOfXincoCoreDataListNewXincoCoreData);
+                    if (oldXincoCoreDataTypeOfXincoCoreDataListNewXincoCoreData != null && !oldXincoCoreDataTypeOfXincoCoreDataListNewXincoCoreData.equals(xincoCoreDataType)) {
+                        oldXincoCoreDataTypeOfXincoCoreDataListNewXincoCoreData.getXincoCoreDataList().remove(xincoCoreDataListNewXincoCoreData);
+                        oldXincoCoreDataTypeOfXincoCoreDataListNewXincoCoreData = em.merge(oldXincoCoreDataTypeOfXincoCoreDataListNewXincoCoreData);
                     }
                 }
             }
             for (XincoCoreData xincoCoreDataCollectionNewXincoCoreData : xincoCoreDataCollectionNew) {
                 if (!xincoCoreDataCollectionOld.contains(xincoCoreDataCollectionNewXincoCoreData)) {
-                    XincoCoreDataType oldXincoCoreDataTypeIdOfXincoCoreDataCollectionNewXincoCoreData = xincoCoreDataCollectionNewXincoCoreData.getXincoCoreDataType();
+                    XincoCoreDataType oldXincoCoreDataTypeOfXincoCoreDataCollectionNewXincoCoreData = xincoCoreDataCollectionNewXincoCoreData.getXincoCoreDataType();
                     xincoCoreDataCollectionNewXincoCoreData.setXincoCoreDataType(xincoCoreDataType);
                     xincoCoreDataCollectionNewXincoCoreData = em.merge(xincoCoreDataCollectionNewXincoCoreData);
-                    if (oldXincoCoreDataTypeIdOfXincoCoreDataCollectionNewXincoCoreData != null && !oldXincoCoreDataTypeIdOfXincoCoreDataCollectionNewXincoCoreData.equals(xincoCoreDataType)) {
-                        oldXincoCoreDataTypeIdOfXincoCoreDataCollectionNewXincoCoreData.getXincoCoreDataCollection().remove(xincoCoreDataCollectionNewXincoCoreData);
-                        oldXincoCoreDataTypeIdOfXincoCoreDataCollectionNewXincoCoreData = em.merge(oldXincoCoreDataTypeIdOfXincoCoreDataCollectionNewXincoCoreData);
+                    if (oldXincoCoreDataTypeOfXincoCoreDataCollectionNewXincoCoreData != null && !oldXincoCoreDataTypeOfXincoCoreDataCollectionNewXincoCoreData.equals(xincoCoreDataType)) {
+                        oldXincoCoreDataTypeOfXincoCoreDataCollectionNewXincoCoreData.getXincoCoreDataCollection().remove(xincoCoreDataCollectionNewXincoCoreData);
+                        oldXincoCoreDataTypeOfXincoCoreDataCollectionNewXincoCoreData = em.merge(oldXincoCoreDataTypeOfXincoCoreDataCollectionNewXincoCoreData);
                     }
                 }
             }
@@ -247,14 +240,14 @@ public class XincoCoreDataTypeJpaController implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This XincoCoreDataType (" + xincoCoreDataType + ") cannot be destroyed since the XincoCoreData " + xincoCoreDataListOrphanCheckXincoCoreData + " in its xincoCoreDataList field has a non-nullable xincoCoreDataTypeId field.");
+                illegalOrphanMessages.add("This XincoCoreDataType (" + xincoCoreDataType + ") cannot be destroyed since the XincoCoreData " + xincoCoreDataListOrphanCheckXincoCoreData + " in its xincoCoreDataList field has a non-nullable xincoCoreDataType field.");
             }
             Collection<XincoCoreData> xincoCoreDataCollectionOrphanCheck = xincoCoreDataType.getXincoCoreDataCollection();
             for (XincoCoreData xincoCoreDataCollectionOrphanCheckXincoCoreData : xincoCoreDataCollectionOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This XincoCoreDataType (" + xincoCoreDataType + ") cannot be destroyed since the XincoCoreData " + xincoCoreDataCollectionOrphanCheckXincoCoreData + " in its xincoCoreDataCollection field has a non-nullable xincoCoreDataTypeId field.");
+                illegalOrphanMessages.add("This XincoCoreDataType (" + xincoCoreDataType + ") cannot be destroyed since the XincoCoreData " + xincoCoreDataCollectionOrphanCheckXincoCoreData + " in its xincoCoreDataCollection field has a non-nullable xincoCoreDataType field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
@@ -313,5 +306,5 @@ public class XincoCoreDataTypeJpaController implements Serializable {
             em.close();
         }
     }
-
+    
 }

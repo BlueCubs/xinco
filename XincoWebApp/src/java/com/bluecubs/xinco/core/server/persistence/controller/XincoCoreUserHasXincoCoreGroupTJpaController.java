@@ -2,9 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bluecubs.xinco.core.server.persistence.controller;
-
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupT;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
@@ -17,9 +15,10 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
  */
 public class XincoCoreUserHasXincoCoreGroupTJpaController implements Serializable {
 
@@ -140,5 +139,5 @@ public class XincoCoreUserHasXincoCoreGroupTJpaController implements Serializabl
             em.close();
         }
     }
-
+    
 }
