@@ -1,12 +1,7 @@
 package com.bluecubs.xinco.archive;
 
 import com.bluecubs.xinco.core.OPCode;
-import com.bluecubs.xinco.core.server.XincoAddAttributeServer;
-import com.bluecubs.xinco.core.server.XincoCoreDataServer;
-import com.bluecubs.xinco.core.server.XincoCoreLogServer;
-import com.bluecubs.xinco.core.server.XincoDBManager;
-import com.bluecubs.xinco.core.server.XincoException;
-import com.bluecubs.xinco.core.server.XincoTestCase;
+import com.bluecubs.xinco.core.server.*;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLanguageJpaController;
@@ -70,7 +65,7 @@ public class XincoArchiveThreadTest extends XincoTestCase {
             assertFalse(XincoCoreDataServer.isArchived(xcds));
             //Make data old enough to archive
             System.out.println("Datetime check");
-            XincoAddAttributeServer attr = null;
+            XincoAddAttributeServer attr;
             GregorianCalendar c = new GregorianCalendar();
             DatatypeFactory factory = DatatypeFactory.newInstance();
             System.out.println("Creating attributes for the test...");
@@ -145,7 +140,7 @@ public class XincoArchiveThreadTest extends XincoTestCase {
             assertFalse(XincoCoreDataServer.isArchived(xcds));
             //Make data old enough to archive
             System.out.println("Datetime check");
-            XincoAddAttributeServer attr = null;
+            XincoAddAttributeServer attr;
             GregorianCalendar c = new GregorianCalendar();
             DatatypeFactory factory = DatatypeFactory.newInstance();
             System.out.println("Creating attributes for the test...");

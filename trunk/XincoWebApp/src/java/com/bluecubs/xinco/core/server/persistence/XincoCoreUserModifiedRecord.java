@@ -2,31 +2,25 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bluecubs.xinco.core.server.persistence;
-
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
+
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
  */
-@Entity
-@Table(name = "xinco_core_user_modified_record")
-@NamedQueries({@NamedQuery(name = "XincoCoreUserModifiedRecord.findAll", query = "SELECT x FROM XincoCoreUserModifiedRecord x"), @NamedQuery(name = "XincoCoreUserModifiedRecord.findById", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.xincoCoreUserModifiedRecordPK.id = :id"), @NamedQuery(name = "XincoCoreUserModifiedRecord.findByRecordId", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.xincoCoreUserModifiedRecordPK.recordId = :recordId"), @NamedQuery(name = "XincoCoreUserModifiedRecord.findByModTime", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.modTime = :modTime"), @NamedQuery(name = "XincoCoreUserModifiedRecord.findByModReason", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.modReason = :modReason")})
+@Entity@Table(name = "xinco_core_user_modified_record")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "XincoCoreUserModifiedRecord.findAll", query = "SELECT x FROM XincoCoreUserModifiedRecord x"),
+    @NamedQuery(name = "XincoCoreUserModifiedRecord.findById", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.xincoCoreUserModifiedRecordPK.id = :id"),
+    @NamedQuery(name = "XincoCoreUserModifiedRecord.findByRecordId", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.xincoCoreUserModifiedRecordPK.recordId = :recordId"),
+    @NamedQuery(name = "XincoCoreUserModifiedRecord.findByModTime", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.modTime = :modTime"),
+    @NamedQuery(name = "XincoCoreUserModifiedRecord.findByModReason", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.modReason = :modReason")})
 public class XincoCoreUserModifiedRecord implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -35,7 +29,8 @@ public class XincoCoreUserModifiedRecord implements Serializable {
     @Column(name = "mod_Time", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date modTime;
-    @Column(name = "mod_Reason", length = 255)
+    @Basic(optional = false)
+    @Column(name = "mod_Reason", nullable = false, length = 255)
     private String modReason;
     @JoinColumn(name = "id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -53,8 +48,8 @@ public class XincoCoreUserModifiedRecord implements Serializable {
         this.modTime = modTime;
     }
 
-    public XincoCoreUserModifiedRecord(int id) {
-        this.xincoCoreUserModifiedRecordPK = new XincoCoreUserModifiedRecordPK(id);
+    public XincoCoreUserModifiedRecord(int id, int record_id) {
+        this.xincoCoreUserModifiedRecordPK = new XincoCoreUserModifiedRecordPK(id, record_id);
     }
 
     public XincoCoreUserModifiedRecordPK getXincoCoreUserModifiedRecordPK() {
@@ -98,7 +93,7 @@ public class XincoCoreUserModifiedRecord implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoCoreUserModifiedRecord)) {
             return false;
         }
@@ -111,7 +106,8 @@ public class XincoCoreUserModifiedRecord implements Serializable {
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecord[xincoCoreUserModifiedRecordPK=" + xincoCoreUserModifiedRecordPK + "]";
+        return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecord[ xincoCoreUserModifiedRecordPK=" + xincoCoreUserModifiedRecordPK + " ]";
     }
 
+    
 }

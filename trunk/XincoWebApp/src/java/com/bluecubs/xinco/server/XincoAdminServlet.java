@@ -1,50 +1,50 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoAdminServlet
+ * Name: XincoAdminServlet
  *
- * Description:     administration servlet
+ * Description: administration servlet
  *
- * Original Author: Alexander Manes
- * Date:            2004
+ * Original Author: Alexander Manes Date: 2004
  *
  * Modifications:
  *
- * Who?             When?             What?
+ * Who? When? What?
  *
- * Alexander Manes  11/01/2006        Bugfix: Remove user from selected group (not from all groups!)
+ * Alexander Manes 11/01/2006 Bugfix: Remove user from selected group (not from
+ * all groups!)
  *
- * Javier A. Ortiz  09/20/2006        Modified processRequest in order to reflect
- *                                    changes to XincoCoreUser and XincoCoreUserServer
- *                                    for FDA 21 CFR regulation compliance.
+ * Javier A. Ortiz 09/20/2006 Modified processRequest in order to reflect
+ * changes to XincoCoreUser and XincoCoreUserServer for FDA 21 CFR regulation
+ * compliance.
  *
- * Javier A. Ortiz  09/22/2006        Changed the text saved into the audit trail to the actual
- *                                    key entry name in the XincoExplorer.properties file so the
- *                                    reason can be displayed in the selected language!
+ * Javier A. Ortiz 09/22/2006 Changed the text saved into the audit trail to the
+ * actual key entry name in the XincoExplorer.properties file so the reason can
+ * be displayed in the selected language!
  *
- * Javier A. Ortiz  11/06/2006        Bugfix: java.lang.NumberFormatException: null when account is locked,
- *                                    requesting a null parameter.
+ * Javier A. Ortiz 11/06/2006 Bugfix: java.lang.NumberFormatException: null when
+ * account is locked, requesting a null parameter.
  *
- * Javier A. Ortiz  01/08/2007        Bugfix: java.lang.NullPointerException: null when changing password
- *************************************************************
+ * Javier A. Ortiz 01/08/2007 Bugfix: java.lang.NullPointerException: null when
+ * changing password
+ * ************************************************************
  */
 package com.bluecubs.xinco.server;
 
@@ -78,13 +78,18 @@ public class XincoAdminServlet extends HttpServlet {
     private static final Logger logger =
             Logger.getLogger(XincoAdminServlet.class.getSimpleName());
 
-    /** Destroys the servlet.
+    /**
+     * Destroys the servlet.
      */
     @Override
     public void destroy() {
     }
 
-    /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+    /**
+     * Processes requests for both HTTP
+     * <code>GET</code> and
+     * <code>POST</code> methods.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws javax.servlet.ServletException
@@ -93,7 +98,7 @@ public class XincoAdminServlet extends HttpServlet {
     @SuppressWarnings("unchecked")
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Locale loc = null;
+        Locale loc;
         try {
             String list = request.getParameter("list");
             String[] locales;
@@ -118,17 +123,17 @@ public class XincoAdminServlet extends HttpServlet {
         settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings", loc);
         XincoDBManager dbm;
         String global_error_message = "";
-        int i = 0, j = 0;
+        int i, j;
         XincoCoreUserServer temp_user = null;
         XincoCoreGroupServer tempGroup;
         XincoCoreLanguageServer temp_language;
         XincoCoreDataTypeAttributeServer tempAttribute;
-        String current_location = "";
-        String current_locationDesc = "";
-        int current_userSelection = 0;
-        int currentGroupSelection = 0;
-        int currentDatatypeSelection = 0;
-        int status = 0;
+        String current_location;
+        String current_locationDesc;
+        int current_userSelection;
+        int currentGroupSelection;
+        int currentDatatypeSelection;
+        int status;
         String error_message = "";
         HttpSession session = request.getSession(true);
         //start output
@@ -943,7 +948,7 @@ public class XincoAdminServlet extends HttpServlet {
 
                 //show user list
                 ArrayList allusers = XincoCoreUserServer.getXincoCoreUsers();
-                boolean member_ofGroup = false;
+                boolean member_ofGroup;
 
                 out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
 
@@ -1103,7 +1108,7 @@ public class XincoAdminServlet extends HttpServlet {
                 out.println("</tr>");
 
                 ArrayList allLanguages = XincoCoreLanguageServer.getXincoCoreLanguages();
-                boolean is_used = true;
+                boolean is_used;
                 for (i = 0; i < allLanguages.size(); i++) {
                     out.println("<tr>");
                     out.println("<td class=\"text\">" + ((XincoCoreLanguageServer) allLanguages.get(i)).getId() + "</td>");
@@ -1404,7 +1409,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("    </body>\n");
                     out.write("</html>\n");
                 } catch (Exception e) {
-                    global_error_message = global_error_message + e.toString();
+                    global_error_message += e.toString();
                     logger.log(Level.SEVERE, null, e);
                 }
             }
@@ -1423,10 +1428,10 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("</tr>");
 
                     //delete existing index
-                    File indexDirectory = null;
-                    File indexDirectoryFile = null;
-                    String[] indexDirectoryFileList = null;
-                    boolean indexDirectoryDeleted = false;
+                    File indexDirectory;
+                    File indexDirectoryFile;
+                    String[] indexDirectoryFileList;
+                    boolean indexDirectoryDeleted;
                     indexDirectory = new File(XincoDBManager.config.FileIndexPath);
                     if (indexDirectory.exists()) {
                         indexDirectoryFileList = indexDirectory.list();
@@ -1456,8 +1461,8 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<td class=\"text\"><b>"
                             + rb.getString("message.indexing.status") + "</b></td>");
                     out.println("</tr>");
-                    XincoCoreDataServer xdataTemp = null;
-                    boolean index_result = false;
+                    XincoCoreDataServer xdataTemp;
+                    boolean index_result;
                     result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreData x ORDER BY x.designation");
                     for (Object o : result) {
                         xdataTemp = new XincoCoreDataServer((XincoCoreData) o);
@@ -1516,7 +1521,10 @@ public class XincoAdminServlet extends HttpServlet {
         out.close();
     }
 
-    /** Handles the HTTP <code>GET</code> method.
+    /**
+     * Handles the HTTP
+     * <code>GET</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws javax.servlet.ServletException
@@ -1528,7 +1536,10 @@ public class XincoAdminServlet extends HttpServlet {
         processRequest(request, response);
     }
 
-    /** Handles the HTTP <code>POST</code> method.
+    /**
+     * Handles the HTTP
+     * <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws javax.servlet.ServletException
@@ -1540,7 +1551,9 @@ public class XincoAdminServlet extends HttpServlet {
         processRequest(request, response);
     }
 
-    /** Returns a short description of the servlet.
+    /**
+     * Returns a short description of the servlet.
+     *
      * @return
      */
     @Override

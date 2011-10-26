@@ -14,8 +14,8 @@
  * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back to the community
- * in exchange for free software! More information on: http://www.bluecubs.org
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
  * ************************************************************
  *
  * Name: XincoDBManager
@@ -59,7 +59,7 @@ public class XincoDBManager {
     private static ResourceBundle lrb =
             ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
     private static ResourceBundle settings =
-                ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
+            ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
     protected static String puName = "XincoPU";
     private static boolean locked = false;
     private static boolean usingContext = false;
@@ -69,11 +69,15 @@ public class XincoDBManager {
     private static final Logger logger = Logger.getLogger(XincoDBManager.class.getName());
 
     private XincoDBManager() throws Exception {
+        reload();
+        //Test: create pdf rendering
+//        FileConverter.createPDFRendering(1);
+    }
+
+    private static void reload() throws XincoException {
         getEntityManagerFactory();
         updateDBState();
         config.loadSettings();
-        //Test: create pdf rendering
-//        FileConverter.createPDFRendering(1);
     }
 
     public static XincoDBManager get() throws Exception {
@@ -99,7 +103,9 @@ public class XincoDBManager {
 
 //TODO: Replace with a report
     /**
-     * Draws a table with results of the query stored in the ResultSet rs in the PrintWriter out
+     * Draws a table with results of the query stored in the ResultSet rs in the
+     * PrintWriter out
+     *
      * @param rs
      * @param out
      * @param header
@@ -154,8 +160,10 @@ public class XincoDBManager {
         }
     }
 
-    /** Returns the column names of the query in an HTML table format for use
-     * as header for a table produced by the drawTable method.
+    /**
+     * Returns the column names of the query in an HTML table format for use as
+     * header for a table produced by the drawTable method.
+     *
      * @param rs
      * @return
      */
@@ -178,8 +186,9 @@ public class XincoDBManager {
     }
 
     /**
-     * Returns the column names of the query in an HTML table format for use
-     * as header for a table produced by the drawTable method.
+     * Returns the column names of the query in an HTML table format for use as
+     * header for a table produced by the drawTable method.
+     *
      * @param rs
      * @return
      */
@@ -201,8 +210,8 @@ public class XincoDBManager {
     }
 
     /*
-     * Replace a string with contents of resource bundle if applicable
-     * Used to transform db contents to human readable form.
+     * Replace a string with contents of resource bundle if applicable Used to
+     * transform db contents to human readable form.
      */
     private String canReplace(String s) {
         if (s == null) {
@@ -219,12 +228,11 @@ public class XincoDBManager {
     public void setLoc(Locale loc) {
         if (loc == null) {
             loc = Locale.getDefault();
-        } else {
-            try {
-                lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, e.getLocalizedMessage());
-            }
+        }
+        try {
+            lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, e.getLocalizedMessage());
         }
     }
 
@@ -238,9 +246,7 @@ public class XincoDBManager {
         //Set it to null so it's recreated with new Persistence Unit next time is requested.
         emf = null;
         initDone = false;
-        getEntityManagerFactory();
-        updateDBState();
-        config.loadSettings();
+        reload();
     }
 
     public static String displayDBStatus() {
@@ -307,10 +313,8 @@ public class XincoDBManager {
             version.append(XincoSettingServer.getSetting("version.low").getIntValue());
             return version.toString();
         } catch (XincoException ex) {
-            logger.log(Level.SEVERE, null, ex);
             return null;
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, null, ex);
             return null;
         }
     }
@@ -350,7 +354,7 @@ public class XincoDBManager {
 
     protected static void executeSQL(String filePath, Class relativeTo) throws XincoException, java.io.IOException {
         //Get the statements to run
-        ArrayList<String> statements = new ArrayList<String>();
+        ArrayList<String> statements;
         if (relativeTo == null) {
             //This assumes that the path is relative to XincoDBManager class
             statements = readFileAsString(filePath);
@@ -475,7 +479,7 @@ public class XincoDBManager {
     }
 
     public static List<Object> protectedCreatedQuery(String query, HashMap<String, Object> parameters, boolean locked) throws XincoException {
-        Query q = null;
+        Query q;
         getTransaction().begin();
         if (isLocked() && locked) {
             q = getProtectedEntityManager().createQuery(query);
@@ -506,7 +510,7 @@ public class XincoDBManager {
 
     @SuppressWarnings("unchecked")
     protected static List<Object> protectedNamedQuery(String query, HashMap<String, Object> parameters, boolean locked) throws XincoException {
-        Query q = null;
+        Query q;
         getTransaction().begin();
         if (isLocked() && locked) {
             q = getProtectedEntityManager().createNamedQuery(query);
@@ -528,7 +532,7 @@ public class XincoDBManager {
     }
 
     private static void nativeQuery(String query) throws XincoException {
-        EntityManager em = null;
+        EntityManager em;
         if (isLocked() && locked) {
             em = getProtectedEntityManager();
         } else {
@@ -565,7 +569,7 @@ public class XincoDBManager {
     }
 
     public static EntityTransaction getTransaction() throws XincoException {
-        EntityTransaction trans = null;
+        EntityTransaction trans;
         if (isLocked() && locked) {
             trans = getProtectedEntityManager().getTransaction();
         } else {
@@ -667,6 +671,7 @@ public class XincoDBManager {
     //TODO: Update system. Won't be really needed until next DB change after 2.1.0
     /**
      * Update database to current version
+     *
      * @param dbVersion Current DB version
      * @param configVersion Latest version
      */

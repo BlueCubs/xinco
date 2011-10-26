@@ -132,40 +132,40 @@
       <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
     </properties>
   </persistence-unit>
-  <persistence-unit name="XincoPUJNDI" transaction-type="RESOURCE_LOCAL">
+  <persistence-unit name="XincoPUJNDI" transaction-type="JTA">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <non-jta-data-source>java:comp/env/jdbc/XincoDB</non-jta-data-source>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoId</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreGroupT</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoSetting</class>
+    <jta-data-source>java:comp/env/jdbc/XincoDB</jta-data-source>
     <class>com.bluecubs.xinco.core.server.persistence.XincoAddAttribute</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreNode</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoDependencyTypeT</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecord</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreAce</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreData</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreAceT</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreUserT</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependency</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreLanguageT</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupT</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeT</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoSettingT</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreDataType</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreNodeT</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependencyT</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreGroup</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoDependencyBehaviorT</class>
     <class>com.bluecubs.xinco.core.server.persistence.XincoAddAttributeT</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoDependencyType</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoDependencyBehavior</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributeT</class>
-    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreLog</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreAce</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreAceT</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreData</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependency</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependencyT</class>
     <class>com.bluecubs.xinco.core.server.persistence.XincoCoreDataT</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreDataType</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributeT</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeT</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreGroup</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreGroupT</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreLanguageT</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreLog</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreNode</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreNodeT</class>
     <class>com.bluecubs.xinco.core.server.persistence.XincoCoreUser</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupT</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecord</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoCoreUserT</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoDependencyBehavior</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoDependencyBehaviorT</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoDependencyType</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoDependencyTypeT</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoId</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoSetting</class>
+    <class>com.bluecubs.xinco.core.server.persistence.XincoSettingT</class>
     <shared-cache-mode>ALL</shared-cache-mode>
     <properties>
       <property name="eclipselink.ddl-generation" value="create-tables"/>

@@ -41,7 +41,7 @@ public class XincoSetting implements Serializable {
     @TableGenerator(name = "XincoSettingGen", table = "xinco_id",
     pkColumnName = "tablename",
     valueColumnName = "last_id",
-    pkColumnValue = "id",
+    pkColumnValue = "xinco_setting",
     allocationSize = 1,
     initialValue=1000)
     @Column(name = "id", nullable = false)

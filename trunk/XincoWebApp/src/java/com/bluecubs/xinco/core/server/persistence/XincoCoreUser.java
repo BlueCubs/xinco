@@ -57,6 +57,10 @@ import javax.persistence.UniqueConstraint;
     @NamedQuery(name = "XincoCoreUser.findByLastModified",
     query = "SELECT x FROM XincoCoreUser x WHERE x.lastModified = :lastModified")})
 public class XincoCoreUser extends XincoAuditedObject implements Serializable {
+    @Basic(optional = false)
+    @Column(name = "last_modified", nullable = false)
+    @Temporal(TemporalType.DATE)
+    private Date lastModified;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -65,7 +69,7 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
     @TableGenerator(name = "XincoCoreUserGen", table = "xinco_id",
     pkColumnName = "tablename",
     valueColumnName = "last_id",
-    pkColumnValue = "id",
+    pkColumnValue = "xinco_core_user",
     allocationSize = 1,
     initialValue=1000)
     @Column(name = "id", nullable = false)
@@ -91,10 +95,6 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
     @Basic(optional = false)
     @Column(name = "attempts", nullable = false)
     private int attempts;
-    @Basic(optional = false)
-    @Column(name = "last_modified", nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date lastModified;
     @OneToMany(mappedBy = "xincoCoreUser", fetch = FetchType.LAZY)
     private List<XincoCoreAce> xincoCoreAceList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreUser", fetch = FetchType.LAZY)

@@ -1,43 +1,38 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoCoreDataServer
+ * Name: XincoCoreDataServer
  *
- * Description:     data object
+ * Description: data object
  *
- * Original Author: Alexander Manes
- * Date:            2004
+ * Original Author: Alexander Manes Date: 2004
  *
  * Modifications:
  *
- * Who?             When?             What?
- * -                -                 -
+ * Who? When? What? - - -
  *
  *************************************************************
  */
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.OPCode;
-import java.util.ArrayList;
-import java.io.File;
 import com.bluecubs.xinco.core.server.persistence.XincoAddAttributePK;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreAceJpaController;
@@ -46,11 +41,10 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLogJpaCont
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.service.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoCoreLog;
+import java.io.File;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -145,8 +139,9 @@ public class XincoCoreDataServer extends XincoCoreData {
     }
 
     /**
-     * This will get the latest major revision. Basically the last version
-     * with a '0' as a mid version
+     * This will get the latest major revision. Basically the last version with
+     * a '0' as a mid version
+     *
      * @param xincoCoreDataId
      * @return Path to last major version
      * @throws SQLException
@@ -170,7 +165,6 @@ public class XincoCoreDataServer extends XincoCoreData {
 
     //write to db
     public int write2DB() throws XincoException {
-        int i = 0;
         XincoCoreDataJpaController controller = new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory());
         try {
             if (getId() > 0) {
@@ -192,7 +186,6 @@ public class XincoCoreDataServer extends XincoCoreData {
                 controller.edit(xcd);
             } else {
                 com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd = new com.bluecubs.xinco.core.server.persistence.XincoCoreData();
-                xcd.setId(getId());
                 parameters.clear();
                 parameters.put("id", this.getXincoCoreNodeId());
                 xcd.setXincoCoreNode((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) XincoDBManager.namedQuery("XincoCoreNode.findById", parameters).get(0));
@@ -211,10 +204,11 @@ public class XincoCoreDataServer extends XincoCoreData {
                 setId(xcd.getId());
             }
             //Update add attributes
-            for (i = 0; i < getXincoAddAttributes().size(); i++) {
+            for (int i = 0; i < getXincoAddAttributes().size(); i++) {
                 /**
-                 * Copy fields from XincoAddAttribute to XincoAddAttribute (Persistence)
-                 * The delete and create approach doesn't go well with persistence.
+                 * Copy fields from XincoAddAttribute to XincoAddAttribute
+                 * (Persistence) The delete and create approach doesn't go well
+                 * with persistence.
                  */
                 com.bluecubs.xinco.core.server.persistence.XincoAddAttribute xaa =
                         new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoAddAttribute(new XincoAddAttributePK(getId(),
@@ -228,7 +222,12 @@ public class XincoCoreDataServer extends XincoCoreData {
                 new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).edit(xaa);
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, null, e);
+//            logger.log(Level.SEVERE, null, e);
+            System.out.println("Defined ids:");
+            for (Iterator<XincoIdServer> it = XincoIdServer.getIds().iterator(); it.hasNext();) {
+                XincoIdServer next = it.next();
+                System.out.println(next.getId() + ", " + next.getTablename() + ", " + next.getLastId());
+            }
             throw new XincoException(e.getMessage());
         }
         return getId();
@@ -255,7 +254,6 @@ public class XincoCoreDataServer extends XincoCoreData {
 
     //delete from db
     public int deleteFromDB() throws XincoException {
-        int i = 0;
         try {
             //delete file / file = 1
             if (getXincoCoreDataType().getId() == 1) {
@@ -265,7 +263,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                     // continue, file might not exist
                 }
                 // delete revisions created upon creation or checkin
-                for (i = 0; i < getXincoCoreLogs().size(); i++) {
+                for (int i = 0; i < getXincoCoreLogs().size(); i++) {
                     if ((((XincoCoreLog) getXincoCoreLogs().get(i)).getOpCode() == 1) || (((XincoCoreLog) getXincoCoreLogs().get(i)).getOpCode() == 5)) {
                         try {
                             (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, getId(), getId() + "-" + ((XincoCoreLog) getXincoCoreLogs().get(i)).getId()))).delete();
@@ -277,12 +275,12 @@ public class XincoCoreDataServer extends XincoCoreData {
             }
             //Delete related attributes
             loadAddAttributes();
-            for(XincoAddAttribute attr: getXincoAddAttributes()){
+            for (XincoAddAttribute attr : getXincoAddAttributes()) {
                 new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).destroy(new XincoAddAttributePK(attr.getXincoCoreDataId(), attr.getAttributeId()));
             }
             //Delete related logs
             loadLogs();
-            for(XincoCoreLog log: getXincoCoreLogs()){
+            for (XincoCoreLog log : getXincoCoreLogs()) {
                 new XincoCoreLogJpaController(XincoDBManager.getEntityManagerFactory()).destroy(log.getId());
             }
             new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).destroy(getId());
@@ -338,7 +336,7 @@ public class XincoCoreDataServer extends XincoCoreData {
     }
 
     public static String getXincoCoreDataPath(String attrRP, int attrID, String attrFN) {
-        String path = null;
+        String path;
         // convert ID to String
         String path4Id = "" + attrID;
         // fill ID String with zeros

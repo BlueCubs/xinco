@@ -48,7 +48,7 @@ public class XincoCoreNode extends XincoAuditedObject implements Serializable {
     @TableGenerator(name = "XincoCoreNodeGen", table = "xinco_id",
     pkColumnName = "tablename",
     valueColumnName = "last_id",
-    pkColumnValue = "id",
+    pkColumnValue = "xinco_core_node",
     allocationSize = 1,
     initialValue=1000)
     @Column(name = "id", nullable = false)

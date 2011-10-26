@@ -1,43 +1,30 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.TableGenerator;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
  */
 @Embeddable
 public class XincoCoreUserModifiedRecordPK implements Serializable {
+
     @Basic(optional = false)
     @Column(name = "id", nullable = false)
     private int id;
     @Basic(optional = false)
     @Column(name = "record_id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoModRecordGen")
-    @TableGenerator(name = "XincoModRecordGen", table = "xinco_id",
-    pkColumnName = "tablename",
-    valueColumnName = "last_id",
-    pkColumnValue = "id",
-    allocationSize = 1,
-    initialValue=1000)
     private int recordId;
 
     public XincoCoreUserModifiedRecordPK() {
     }
 
-    public XincoCoreUserModifiedRecordPK(int recordId) {
+    public XincoCoreUserModifiedRecordPK(int id, int recordId) {
         this.recordId = recordId;
+        this.id = id;
     }
 
     public int getId() {
@@ -66,12 +53,12 @@ public class XincoCoreUserModifiedRecordPK implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoCoreUserModifiedRecordPK)) {
             return false;
         }
         XincoCoreUserModifiedRecordPK other = (XincoCoreUserModifiedRecordPK) object;
-        if (this.id != other.id) {
+        if (this.getId() != other.getId()) {
             return false;
         }
         if (this.recordId != other.recordId) {
@@ -82,7 +69,6 @@ public class XincoCoreUserModifiedRecordPK implements Serializable {
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecordPK[id=" + id + ", recordId=" + recordId + "]";
+        return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecordPK[ id=" + getId() + ", recordId=" + recordId + " ]";
     }
-
 }
