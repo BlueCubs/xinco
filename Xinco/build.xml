@@ -75,28 +75,6 @@
     nbproject/build-impl.xml file.
 
     -->
-    <target name="-post-jar">
-        <basename file="${basedir}" property="project.dir.name"/>
-        <property name="dist.versionized.jar" 
-        value="${dist.dir}/${project.dir.name}-${mf.version.spec}.jar" />
-        <echo>*** post-jar: Building ${dist.versionized.jar} with Package Version Information ***</echo>
-        
-        <taskdef classname="org.netbeans.modules.java.j2seproject.copylibstask.CopyLibs" classpath="${libs.CopyLibs.classpath}" name="copylibs"/>
-        <copylibs compress="${jar.compress}" jarfile="${dist.versionized.jar}" 
-        runtimeclasspath="${run.classpath.without.build.classes.dir}">
-            <fileset dir="${build.classes.dir}"/>
-            <manifest>
-                <attribute name="Bundle-Version" value="${mf.version.spec}"/>
-                <attribute name="Bundle-Name" value="${application.title}"/>
-                <attribute name="Specification-Title" value="${application.title}"/>
-                <attribute name="Specification-Vendor" value="${application.vendor}"/>
-                <attribute name="Specification-Version" value="${mf.version.spec}"/>
-                <attribute name="Implementation-Title" value="${project.dir.name}"/>
-                <attribute name="Implementation-Vendor" value="${application.vendor}"/>
-                <attribute name="Implementation-Version" value="${mf.version.impl}"/>
-            </manifest>
-        </copylibs>
-    </target>
     
     <target name="-pre-init">
         <native2ascii src="src/com/bluecubs/xinco/messages" 
