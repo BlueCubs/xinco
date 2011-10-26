@@ -2,11 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bluecubs.xinco.core.server.persistence.controller;
-
+import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependency;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependencyPK;
+import com.bluecubs.xinco.core.server.persistence.XincoDependencyType;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
 import java.io.Serializable;
@@ -17,12 +17,11 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import com.bluecubs.xinco.core.server.persistence.XincoDependencyType;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
+
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
  */
 public class XincoCoreDataHasDependencyJpaController implements Serializable {
 
@@ -40,8 +39,8 @@ public class XincoCoreDataHasDependencyJpaController implements Serializable {
             xincoCoreDataHasDependency.setXincoCoreDataHasDependencyPK(new XincoCoreDataHasDependencyPK());
         }
         xincoCoreDataHasDependency.getXincoCoreDataHasDependencyPK().setDependencyTypeId(xincoCoreDataHasDependency.getXincoDependencyType().getId());
-        xincoCoreDataHasDependency.getXincoCoreDataHasDependencyPK().setXincoCoreDataParentId(xincoCoreDataHasDependency.getXincoCoreData().getId());
         xincoCoreDataHasDependency.getXincoCoreDataHasDependencyPK().setXincoCoreDataChildrenId(xincoCoreDataHasDependency.getXincoCoreData1().getId());
+        xincoCoreDataHasDependency.getXincoCoreDataHasDependencyPK().setXincoCoreDataParentId(xincoCoreDataHasDependency.getXincoCoreData().getId());
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -89,8 +88,8 @@ public class XincoCoreDataHasDependencyJpaController implements Serializable {
 
     public void edit(XincoCoreDataHasDependency xincoCoreDataHasDependency) throws NonexistentEntityException, Exception {
         xincoCoreDataHasDependency.getXincoCoreDataHasDependencyPK().setDependencyTypeId(xincoCoreDataHasDependency.getXincoDependencyType().getId());
-        xincoCoreDataHasDependency.getXincoCoreDataHasDependencyPK().setXincoCoreDataParentId(xincoCoreDataHasDependency.getXincoCoreData().getId());
         xincoCoreDataHasDependency.getXincoCoreDataHasDependencyPK().setXincoCoreDataChildrenId(xincoCoreDataHasDependency.getXincoCoreData1().getId());
+        xincoCoreDataHasDependency.getXincoCoreDataHasDependencyPK().setXincoCoreDataParentId(xincoCoreDataHasDependency.getXincoCoreData().getId());
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -237,5 +236,5 @@ public class XincoCoreDataHasDependencyJpaController implements Serializable {
             em.close();
         }
     }
-
+    
 }
