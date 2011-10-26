@@ -10,7 +10,7 @@ INSERT INTO `xinco_core_language` (`id`, `sign`, `designation`) VALUES (9, 'nl',
 INSERT INTO `xinco_core_language` (`id`, `sign`, `designation`) VALUES (10, 'pl', 'language.pl');
 INSERT INTO `xinco_core_language` (`id`, `sign`, `designation`) VALUES (11, 'pt', 'language.pt');
 INSERT INTO `xinco_core_language` (`id`, `sign`, `designation`) VALUES (12, 'pt_BR', 'language.pt.BR');
-INSERT INTO `xinco_core_language` (`id`, `sign`, `designation`) VALUES (13, 'zn_CN', 'language.zn.CN');
+INSERT INTO `xinco_core_language` (`id`, `sign`, `designation`) VALUES (13, 'zh_CN', 'language.zh.CN');
 INSERT INTO `xinco_core_node` (`id`, `xinco_core_node_id`, `xinco_core_language_id`, `designation`, `status_number`) VALUES (1, NULL, 1, 'xincoRoot', 1);
 INSERT INTO `xinco_core_node` (`id`, `xinco_core_node_id`, `xinco_core_language_id`, `designation`, `status_number`) VALUES (2, 1, 1, 'Trash', 1);
 INSERT INTO `xinco_core_node` (`id`, `xinco_core_node_id`, `xinco_core_language_id`, `designation`, `status_number`) VALUES (3, 1, 1, 'Temp', 1);
