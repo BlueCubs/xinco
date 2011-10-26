@@ -11,9 +11,7 @@ import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Tree;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Window;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -31,17 +29,19 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
  */
 public class Xinco extends Application implements Property.ValueChangeListener {
-    
+
     //client version
     private XincoVersion xincoClientVersion = null;
     //TODO: use selected language
-    private ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", Locale.getDefault());
+    private ResourceBundle xerb =
+            ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", Locale.getDefault());
     private XincoCoreUser loggedUser;
     private XincoFileIconManager xfm = new XincoFileIconManager();
     //Table linking displayed item with it's id
     private Tree xincoTree = null;
     private Table xincoTable = null;
     private com.vaadin.ui.MenuBar menuBar = new com.vaadin.ui.MenuBar();
+    private Item root;
 
     @Override
     public void init() {
@@ -122,6 +122,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
     }
 
     private void showXincoExplorer() {
+        getMainWindow().removeAllComponents();
         try {
             getMainWindow().setCaption(getResource().getString("general.clienttitle") + " - "
                     + getResource().getString("general.version") + " "
@@ -129,7 +130,6 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                     + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.mid").getIntValue() + "."
                     + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.low").getIntValue() + " "
                     + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.postfix").getStringValue());
-            //TODO: use selected language
             HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
             // Put two components in the container.
             splitPanel.setFirstComponent(getXincoTree());
@@ -149,17 +149,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
         if (xincoTree == null) {
             try {
                 xincoTree = new Tree(getResource().getString("menu.repository"));
-                XincoCoreNodeServer xcns = null;
-                try {
-                    xcns = new XincoCoreNodeServer(1);
-                } catch (XincoException ex) {
-                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                XincoCoreNodeProperty rootProperty = new XincoCoreNodeProperty(xcns);
-                Item root = xincoTree.addItem(rootProperty);
-                xincoTree.select(rootProperty);
-                addChildren(rootProperty);
-                xincoTree.expandItem(root);
+                refresh();
                 xincoTree.addListener(this);
                 xincoTree.setImmediate(true);
                 //Add icon support
@@ -199,6 +189,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
     private void addChildren(XincoCoreNodeProperty parent) throws XincoException {
         addChildrenNodes(parent);
         addChildrenData(parent);
+        xincoTree.expandItem(root);
     }
 
     private void addChildrenNodes(XincoCoreNodeProperty parent) throws XincoException {
@@ -209,6 +200,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
             xincoTree.addItem(childProperty);
             // Set it to be a child.
             xincoTree.setParent(childProperty, parent);
+            //Allow to have children
             xincoTree.setChildrenAllowed(childProperty, true);
         }
     }
@@ -253,17 +245,13 @@ public class Xinco extends Application implements Property.ValueChangeListener {
 
                 @Override
                 public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                    //Show the DataDialog window
-                    DataDialog dataDialog =
-                            new DataDialog(
-                            getResource().getString("window.datadetails"),
-                            Xinco.this);
+                    //Show the form.getLayout() window
+                    showDataFolderDialog(true);
 //                    com.bluecubs.xinco.client.service.XincoCoreNode node =
 //                            new com.bluecubs.xinco.client.service.XincoCoreNode();
 //                    com.bluecubs.xinco.client.service.XincoCoreUser user =
 //                            new com.bluecubs.xinco.client.service.XincoCoreUser();
 //                    port.setXincoCoreNode(node, user);
-                    getMainWindow().addWindow(dataDialog);
                 }
             });
         }
@@ -271,6 +259,129 @@ public class Xinco extends Application implements Property.ValueChangeListener {
         }
         //Hide it if empty
         menuBar.setVisible(!menuBar.getItems().isEmpty());
+    }
+
+    private void showDataFolderDialog(final boolean newFolder) {
+        XincoCoreNodeProperty nodeProp = (XincoCoreNodeProperty) xincoTree.getValue();
+        final XincoCoreNode node = ((XincoCoreNode) (nodeProp).getValue());
+        final Window dataFolderDialog = new Window();
+        final Form form = new Form();
+        form.setCaption(getResource().getString("window.datadetails"));
+        //ID
+        com.vaadin.ui.TextField idField = new com.vaadin.ui.TextField(getResource().getString("general.id") + ":");
+        form.addField("id", idField);
+        if (newFolder) {
+            idField.setValue("0");
+        } else {
+            idField.setValue(node.getId());
+        }
+        //Not editable
+        idField.setEnabled(false);
+        //Designation
+        com.vaadin.ui.TextField designationField = new com.vaadin.ui.TextField(getResource().getString("general.designation") + ":");
+        form.addField("designation", designationField);
+        form.getField("designation").setRequired(true);
+        form.getField("designation").setRequiredError(getResource().getString("message.missing.designation"));
+        if (!newFolder) {
+            idField.setValue(node.getDesignation());
+        }
+        //Language selection
+        final Select languages = new Select(getResource().getString("general.language") + ":");
+        int i = 0;
+        for (Object language : XincoCoreLanguageServer.getXincoCoreLanguages()) {
+            String designation = ((XincoCoreLanguageServer) language).getDesignation();
+            if (getResource().containsKey(designation)) {
+                String value = getResource().getString(designation);
+                languages.addItem(i);
+                languages.setItemCaption(i, value);
+                if (newFolder && ((XincoCoreLanguageServer) language).getSign().equals("en")) //Select by default
+                {
+                    languages.setValue(i);
+                }
+                i++;
+            } else {
+                Logger.getLogger(Xinco.class.getName()).log(Level.WARNING,
+                        "{0} not defined in com.bluecubs.xinco.messages.XincoMessagesLocale",
+                        "Locale." + designation);
+            }
+            if (node.getXincoCoreLanguage().getSign().equals(designation)) {
+                languages.setValue("Locale." + designation);
+            }
+        }
+        form.addField("lang", languages);
+        form.getField("lang").setRequired(true);
+        form.getField("lang").setRequiredError(getResource().getString("message.missing.language"));
+        //Status
+        com.vaadin.ui.TextField statusField = new com.vaadin.ui.TextField(getResource().getString("general.status") + ":");
+        //Not editable
+        statusField.setEnabled(false);
+        String text = "";
+        int status = 1;
+        if (newFolder || node.getStatusNumber() == 1) {
+            text = getResource().getString("general.status.open");
+        }
+        if (node.getStatusNumber() == 2) {
+            text = getResource().getString("general.status.locked") + " (-)";
+            status = node.getStatusNumber();
+        }
+        if (node.getStatusNumber() == 3) {
+            text = getResource().getString("general.status.archived") + " (->)";
+            status = node.getStatusNumber();
+        }
+        statusField.setValue(text);
+        form.addField("status", statusField);
+        form.setFooter(new HorizontalLayout());
+        //Used for validation purposes
+        com.vaadin.ui.Button commit = new com.vaadin.ui.Button(getResource().getString("general.save"), form, "commit");
+        final int finalStatus = status;
+        commit.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+            @Override
+            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                try {
+                    //Process the data
+                    XincoCoreNodeServer newNode = new XincoCoreNodeServer(
+                            Integer.valueOf(form.getField("id").getValue().toString()),
+                            (newFolder ? node.getXincoCoreNodeId() : null),
+                            ((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(Integer.valueOf(languages.getValue().toString()))).getId(),
+                            form.getField("designation").getValue().toString(),
+                            finalStatus);
+                    newNode.setChangerID(getLoggedUser().getId());
+                    newNode.write2DB();
+                    getMainWindow().removeWindow(dataFolderDialog);
+                    refresh();
+                } catch (XincoException ex) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        form.getFooter().addComponent(commit);
+        form.getFooter().addComponent(new com.vaadin.ui.Button(
+                getResource().getString("general.cancel"),
+                new com.vaadin.ui.Button.ClickListener() {
+
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        getMainWindow().removeWindow(dataFolderDialog);
+                    }
+                }));
+        dataFolderDialog.addComponent(form);
+        dataFolderDialog.setModal(true);
+        dataFolderDialog.center();
+        dataFolderDialog.setWidth(25, Sizeable.UNITS_PERCENTAGE);
+        getMainWindow().addWindow(dataFolderDialog);
+    }
+
+    private void refresh() throws XincoException {
+        XincoCoreNodeServer xcns = null;
+        try {
+            xcns = new XincoCoreNodeServer(1);
+        } catch (XincoException ex) {
+            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        XincoCoreNodeProperty rootProperty = new XincoCoreNodeProperty(xcns);
+        root = xincoTree.addItem(rootProperty);
+        addChildren(rootProperty);
     }
 
     @Override
@@ -546,10 +657,10 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                             + ((XincoCoreLog) data.getXincoCoreLogs().get(j)).getVersion().getVersionLow()
                             + ""
                             + ((XincoCoreLog) data.getXincoCoreLogs().get(j)).getVersion().getVersionPostfix();
+                    xincoTable.addItem(new Object[]{header, value}, i++);
                 } catch (Exception ex) {
                     Logger.getLogger(Xinco.class.getSimpleName()).log(Level.SEVERE, null, ex);
                 }
-                xincoTable.addItem(new Object[]{header, value}, i++);
             }
         }
         xincoTable.setPageLength(i - 1);

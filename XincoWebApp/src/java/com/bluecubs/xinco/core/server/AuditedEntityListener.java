@@ -83,15 +83,15 @@ public class AuditedEntityListener {
                             modifier = new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(1);
                         }
                         //Get an id from database
-                        //TODO: find a way to do this via JPA
+                        //TODO: find a way to do this via JPA @GenerateValue
                         try {
-                            XincoIdServer.getXincoId("xinco_core_user_modified_record");
+                            record_ID = XincoIdServer.getNextId("xinco_core_user_modified_record");
                         } catch (XincoException ex) {
                             //It doesn't exist, create one
                             XincoIdServer id = new XincoIdServer("xinco_core_user_modified_record", 0);
                             id.write2DB();
+                            record_ID = XincoIdServer.getNextId("xinco_core_user_modified_record");
                         }
-                        record_ID = XincoIdServer.getNextId("xinco_core_user_modified_record");
                         XincoCoreUserModifiedRecord mod = new XincoCoreUserModifiedRecord(new XincoCoreUserModifiedRecordPK(
                                 modifier.getId(), record_ID));
                         mod.setModReason(auditedObject.getModificationReason());
