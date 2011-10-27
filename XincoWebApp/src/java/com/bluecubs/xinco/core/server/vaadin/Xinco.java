@@ -17,12 +17,14 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
 
 /**
  *
@@ -42,6 +44,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
     private Table xincoTable = null;
     private com.vaadin.ui.MenuBar menuBar = new com.vaadin.ui.MenuBar();
     private Item root;
+    private Xinco_Service service;
 
     @Override
     public void init() {
@@ -140,6 +143,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
             //hide it since is empty at start
             menuBar.setVisible(false);
             getMainWindow().addComponent(splitPanel);
+            updateMenu();
         } catch (XincoException ex) {
             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -237,21 +241,31 @@ public class Xinco extends Application implements Property.ValueChangeListener {
     protected void updateMenu() {
         //Build Menu
         menuBar.removeItems();
+        com.vaadin.ui.MenuBar.MenuItem repo = menuBar.addItem(getResource().getString("menu.repository"), null);
+        //Refresh Menu is always on
+        repo.addItem(getResource().getString("menu.repository.refresh"),
+                null,//Icon 
+                new com.vaadin.ui.MenuBar.Command() {
+
+            @Override
+            public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                try {
+                    refresh();
+                } catch (XincoException ex) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
         if (xincoTree.getValue() instanceof XincoCoreNodeProperty) {
-            com.vaadin.ui.MenuBar.MenuItem repo = menuBar.addItem(getResource().getString("menu.repository"), null);
+
             repo.addItem(getResource().getString("menu.repository.addfolder"),
                     null,//Icon 
                     new com.vaadin.ui.MenuBar.Command() {
 
                 @Override
                 public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                    //Show the form.getLayout() window
+                    //Show the Data Folder Dialog window
                     showDataFolderDialog(true);
-//                    com.bluecubs.xinco.client.service.XincoCoreNode node =
-//                            new com.bluecubs.xinco.client.service.XincoCoreNode();
-//                    com.bluecubs.xinco.client.service.XincoCoreUser user =
-//                            new com.bluecubs.xinco.client.service.XincoCoreUser();
-//                    port.setXincoCoreNode(node, user);
                 }
             });
         }
@@ -339,15 +353,23 @@ public class Xinco extends Application implements Property.ValueChangeListener {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 try {
+                    //Disable data fields, make sure nothing gets modified after clicking save
+                    form.getField("lang").setEnabled(false);
+                    form.getField("designation").setEnabled(false);
                     //Process the data
                     XincoCoreNodeServer newNode = new XincoCoreNodeServer(
                             Integer.valueOf(form.getField("id").getValue().toString()),
-                            (newFolder ? node.getXincoCoreNodeId() : null),
+                            (newFolder ? node.getId() : null),
                             ((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(Integer.valueOf(languages.getValue().toString()))).getId(),
                             form.getField("designation").getValue().toString(),
                             finalStatus);
                     newNode.setChangerID(getLoggedUser().getId());
-                    newNode.write2DB();
+                    try {
+                        //Call the web service
+                        getService().getXincoPort().setXincoCoreNode(newNode, loggedUser);
+                    } catch (MalformedURLException ex) {
+                        throw new XincoException(ex);
+                    }
                     getMainWindow().removeWindow(dataFolderDialog);
                     refresh();
                 } catch (XincoException ex) {
@@ -355,6 +377,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                 }
             }
         });
+        form.getFooter().setSizeFull();
         form.getFooter().addComponent(commit);
         form.getFooter().addComponent(new com.vaadin.ui.Button(
                 getResource().getString("general.cancel"),
@@ -380,8 +403,12 @@ public class Xinco extends Application implements Property.ValueChangeListener {
             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
         }
         XincoCoreNodeProperty rootProperty = new XincoCoreNodeProperty(xcns);
+        //Clear tree and start over
+        xincoTree.removeAllItems();
         root = xincoTree.addItem(rootProperty);
         addChildren(rootProperty);
+        //Expand root
+        xincoTree.expandItem(root);
     }
 
     @Override
@@ -665,5 +692,20 @@ public class Xinco extends Application implements Property.ValueChangeListener {
         }
         xincoTable.setPageLength(i - 1);
         xincoTable.requestRepaintAll();
+    }
+
+    private String getEndpoint() {
+        String fullURL = getMainWindow().getURL().toString();
+        String key = "xinco";
+        String endpoint = fullURL.substring(0, fullURL.indexOf(key) + key.length()) + "/Xinco";
+        return endpoint;
+    }
+
+    private Xinco_Service getService() throws MalformedURLException {
+        if (service == null) {
+            service = new Xinco_Service(new java.net.URL(getEndpoint()),
+                    new QName("http://service.server.core.xinco.bluecubs.com/", "Xinco"));
+        }
+        return service;
     }
 }

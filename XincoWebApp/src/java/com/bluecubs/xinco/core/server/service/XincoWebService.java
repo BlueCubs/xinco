@@ -385,7 +385,7 @@ public class XincoWebService {
                     }
                     //load new ACL
                     node.getXincoCoreAcl().clear();
-                    node.getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(node.getId(), "xincoCoreNodeId"));
+                    node.getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(node.getId(), "xincoCoreNode.id"));
                 }
                 return (XincoCoreNode) node;
             } else {
@@ -458,7 +458,7 @@ public class XincoWebService {
                     }
                     //load new ACL
                     data.getXincoCoreAcl().clear();
-                    data.getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(data.getId(), "xincoCoreDataId"));
+                    data.getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(data.getId(), "xincoCoreData.id"));
                 }
                 return (XincoCoreData) data;
             } else {

@@ -135,7 +135,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             com.bluecubs.xinco.core.server.persistence.XincoCoreNode xcn;
             if (getId() > 0) {
                 xcn = controller.findXincoCoreNode(getId());
-                if (getXincoCoreNodeId() == 0) {
+                if (getXincoCoreNodeId() != 0) {
                     xcn.setXincoCoreNode(controller.findXincoCoreNode(getXincoCoreNodeId()));
                 }
                 xcn.setXincoCoreLanguage(new XincoCoreLanguageJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreLanguage(getXincoCoreLanguage().getId()));
@@ -147,7 +147,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 controller.edit(xcn);
             } else {
                 xcn = new com.bluecubs.xinco.core.server.persistence.XincoCoreNode(getId());
-                if (getXincoCoreNodeId() == 0) {
+                if (getXincoCoreNodeId() != 0) {
                     xcn.setXincoCoreNode(controller.findXincoCoreNode(getXincoCoreNodeId()));
                 }
                 xcn.setXincoCoreLanguage(new XincoCoreLanguageJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreLanguage(getXincoCoreLanguage().getId()));
