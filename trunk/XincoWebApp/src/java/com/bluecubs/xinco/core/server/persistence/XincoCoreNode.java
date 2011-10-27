@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import com.bluecubs.xinco.core.server.AuditedEntityListener;
@@ -35,8 +34,17 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "xinco_core_node")
 @EntityListeners(AuditedEntityListener.class)
-@NamedQueries({@NamedQuery(name = "XincoCoreNode.findAll", query = "SELECT x FROM XincoCoreNode x"), @NamedQuery(name = "XincoCoreNode.findById", query = "SELECT x FROM XincoCoreNode x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreNode.findByDesignation", query = "SELECT x FROM XincoCoreNode x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreNode.findByStatusNumber", query = "SELECT x FROM XincoCoreNode x WHERE x.statusNumber = :statusNumber")})
+@NamedQueries({
+    @NamedQuery(name = "XincoCoreNode.findAll",
+    query = "SELECT x FROM XincoCoreNode x"),
+    @NamedQuery(name = "XincoCoreNode.findById",
+    query = "SELECT x FROM XincoCoreNode x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreNode.findByDesignation",
+    query = "SELECT x FROM XincoCoreNode x WHERE x.designation = :designation"),
+    @NamedQuery(name = "XincoCoreNode.findByStatusNumber",
+    query = "SELECT x FROM XincoCoreNode x WHERE x.statusNumber = :statusNumber")})
 public class XincoCoreNode extends XincoAuditedObject implements Serializable {
+
     @OneToMany(mappedBy = "xincoCoreNode")
     private Collection<XincoCoreNode> xincoCoreNodeCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreNode")
@@ -50,7 +58,7 @@ public class XincoCoreNode extends XincoAuditedObject implements Serializable {
     valueColumnName = "last_id",
     pkColumnValue = "xinco_core_node",
     allocationSize = 1,
-    initialValue=1000)
+    initialValue = 1000)
     @Column(name = "id", nullable = false)
     private Integer id;
     @Basic(optional = false)
@@ -158,7 +166,7 @@ public class XincoCoreNode extends XincoAuditedObject implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        
+
         if (!(object instanceof XincoCoreNode)) {
             return false;
         }
@@ -191,5 +199,4 @@ public class XincoCoreNode extends XincoAuditedObject implements Serializable {
     public void setXincoCoreDataCollection(Collection<XincoCoreData> xincoCoreDataCollection) {
         this.xincoCoreDataCollection = xincoCoreDataCollection;
     }
-
 }

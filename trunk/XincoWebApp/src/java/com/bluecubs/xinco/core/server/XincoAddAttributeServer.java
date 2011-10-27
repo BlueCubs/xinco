@@ -44,8 +44,7 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJp
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -188,15 +187,14 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
                     + " ORDER BY xaa.xincoAddAttributePK.attributeId");
 
             GregorianCalendar cal;
-            while (result.size() > 0) {
+            for (Iterator it = result.iterator(); it.hasNext();) {
                 cal = new GregorianCalendar();
                 com.bluecubs.xinco.core.server.persistence.XincoAddAttribute xaa =
-                        (com.bluecubs.xinco.core.server.persistence.XincoAddAttribute) result.get(0);
+                        (com.bluecubs.xinco.core.server.persistence.XincoAddAttribute) it.next();
                 if (xaa.getAttribDatetime() != null) {
                     cal.setTime(xaa.getAttribDatetime());
                 }
                 addAttributes.add(new XincoAddAttributeServer(xaa));
-                result.remove(0);
             }
         } catch (Exception e) {
             Logger.getLogger(

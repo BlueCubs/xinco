@@ -130,6 +130,11 @@ public final class XincoCoreUserServer extends XincoCoreUser {
             result = XincoDBManager.createdQuery("SELECT xcu FROM XincoCoreUser xcu WHERE xcu.username='"
                     + attrUN + "' AND xcu.userpassword='" + MD5.encrypt(attrUPW) + "' AND xcu.statusNumber <> 2");
             //throw exception if no result found
+            if (result.isEmpty()) {
+                //Try again, check if password is encrypted already
+                result = XincoDBManager.createdQuery("SELECT xcu FROM XincoCoreUser xcu WHERE xcu.username='"
+                    + attrUN + "' AND xcu.userpassword='" + attrUPW + "' AND xcu.statusNumber <> 2");
+            }
             if (result.size() > 0) {
                 com.bluecubs.xinco.core.server.persistence.XincoCoreUser xcu =
                         (com.bluecubs.xinco.core.server.persistence.XincoCoreUser) result.get(0);
