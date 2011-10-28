@@ -11,6 +11,15 @@
     <description>Builds, tests, and runs the project Xinco.</description>
     <import file="nbproject/build-impl.xml"/>
     <property file="build.ant.properties"/>
+        <property environment="env"/>
+    <property name="cobertura.dir" value="../XincoLibs/cobertura" />
+
+    <path id="cobertura.classpath">
+        <fileset dir="${cobertura.dir}">
+            <include name="cobertura.jar" />
+            <include name="lib/**/*.jar" />
+        </fileset>
+    </path>
     <!--
     Used in axis2 tasks
     <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
@@ -78,12 +87,33 @@
     
     <target name="-pre-init">
         <native2ascii src="src/com/bluecubs/xinco/messages" 
-        dest="src/com/bluecubs/xinco/messages/test"
-        includes="**/_*.properties"/>
+                      dest="src/com/bluecubs/xinco/messages/test"
+                      includes="**/_*.properties"/>
         <move todir="src/com/bluecubs/xinco/messages" includeemptydirs="false">
             <fileset dir="src/com/bluecubs/xinco/messages/test"/>
             <mapper type="regexp" from="^_(.*)\.properties$$" to="\1.properties"/>
         </move>
         <delete dir="src/com/bluecubs/xinco/messages/test" />
+    </target>
+
+    <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+    <target name="-pre-compile-test">
+        <delete dir="${build.instrumented.dir}" />
+        <delete dir="${build.report.cobertura.dir}" />
+        <mkdir dir="${build.instrumented.dir}" />
+        <mkdir dir="${build.report.cobertura.dir}" />
+        <cobertura-instrument todir="${build.instrumented.dir}">
+            <fileset dir="${build.classes.dir}">
+                <include name="**/*.class"/>
+            </fileset>
+        </cobertura-instrument>
+    </target>
+    
+    <target name="-post-test-run">
+      <!-- You can disable the html portion if you are using the hudson plugin and rely on the xml -->
+        <cobertura-report format="html" srcdir="${src.dir}" destdir="${build.report.cobertura.dir}"/>
+      <!-- Used by the hudson plug-in -->
+        <cobertura-report format="xml" srcdir="${src.dir}" destdir="${build.report.cobertura.dir}"/>
+        <delete file="cobertura.ser" />
     </target>
 </project>

@@ -43,5 +43,14 @@ public class XincoFileIconManagerTest {
         XincoFileIconManager instance = new XincoFileIconManager();
         Icon result = instance.getIcon(extension);
         assertTrue(result != null);
+        extension = null;
+        result = instance.getIcon(extension);
+        assertTrue(result == null);
+        extension = "txt";
+        result = instance.getIcon(extension);
+        assertTrue(result != null);
+        extension = "tx";
+        result = instance.getIcon(extension);
+        assertTrue(result == null);
     }
 }
