@@ -2,6 +2,9 @@ package com.bluecubs.xinco.core.server.vaadin;
 
 import com.bluecubs.xinco.core.server.*;
 import com.bluecubs.xinco.core.server.service.*;
+import com.bluecubs.xinco.core.server.vaadin.wizard.Wizard;
+import com.bluecubs.xinco.core.server.vaadin.wizard.WizardStep;
+import com.bluecubs.xinco.core.server.vaadin.wizard.event.*;
 import com.bluecubs.xinco.tools.XincoFileIconManager;
 import com.vaadin.Application;
 import com.vaadin.data.Item;
@@ -13,6 +16,7 @@ import com.vaadin.terminal.ThemeResource;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -45,9 +49,14 @@ public class Xinco extends Application implements Property.ValueChangeListener {
     private com.vaadin.ui.MenuBar menuBar = new com.vaadin.ui.MenuBar();
     private Item root;
     private Xinco_Service service;
+    private Window wizardWindow = new Window();
+    private DataDialog dataDialog;
+    private DataTypeDialog dataTypeDialog;
 
     @Override
     public void init() {
+        //Switch to Xinco theme
+        setTheme("xinco");
         //Default user (System)
         try {
             loggedUser = new XincoCoreUserServer(1);
@@ -242,7 +251,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
         //Build Menu
         menuBar.removeItems();
         com.vaadin.ui.MenuBar.MenuItem repo = menuBar.addItem(getResource().getString("menu.repository"), null);
-        //Refresh Menu is always on
+        //Menus always enabled
         repo.addItem(getResource().getString("menu.repository.refresh"),
                 null,//Icon 
                 new com.vaadin.ui.MenuBar.Command() {
@@ -256,6 +265,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                 }
             }
         });
+        //Exclusive menus for Nodes
         if (xincoTree.getValue() instanceof XincoCoreNodeProperty) {
 
             repo.addItem(getResource().getString("menu.repository.addfolder"),
@@ -268,11 +278,309 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                     showDataFolderDialog(true);
                 }
             });
+
+            repo.addItem(getResource().getString("menu.repository.adddata"),
+                    null,//Icon 
+                    new com.vaadin.ui.MenuBar.Command() {
+
+                @Override
+                public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                    //Show the Data Folder Dialog window
+                    showDataDialog(true);
+                }
+            });
         }
+        //Exclusive menus for Data
         if (xincoTree.getValue() instanceof XincoCoreDataProperty) {
         }
         //Hide it if empty
         menuBar.setVisible(!menuBar.getItems().isEmpty());
+    }
+
+    private class DataTypeDialog extends CustomComponent {
+
+        private final Select types = new Select(getResource().getString("window.datatype.datatype") + ":");
+
+        public DataTypeDialog() {
+            com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(getResource().getString("window.datatype"));
+            panel.setContent(new VerticalLayout());
+            //Data Type selection
+            int i = 0;
+            for (Object type : XincoCoreDataTypeServer.getXincoCoreDataTypes()) {
+                String designation = ((XincoCoreDataTypeServer) type).getDesignation();
+                if (getResource().containsKey(designation)) {
+                    String value = getResource().getString(designation);
+                    types.addItem(i);
+                    types.setItemCaption(i, value);
+                    i++;
+                }
+            }
+            panel.addComponent(types);
+            // Set the size as undefined at all levels
+            panel.getContent().setSizeUndefined();
+            panel.setSizeUndefined();
+            setSizeUndefined();
+
+            // The composition root MUST be set
+            setCompositionRoot(panel);
+        }
+
+        /**
+         * @return the types
+         */
+        public Select getTypes() {
+            return types;
+        }
+    }
+
+    private class DataDialog extends CustomComponent {
+
+        private com.vaadin.ui.TextField idField;
+        private com.vaadin.ui.TextField designationField;
+        private com.vaadin.ui.TextField statusField;
+        private final Select languages = new Select(getResource().getString("general.language") + ":");
+
+        public DataDialog(boolean newData) {
+            XincoCoreDataProperty dataProp = null;
+            com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(getResource().getString("window.datadetails"));
+            panel.setContent(new VerticalLayout());
+            if (xincoTree.getValue() instanceof XincoCoreDataProperty) {
+                dataProp = (XincoCoreDataProperty) xincoTree.getValue();
+            }
+            final XincoCoreData data = dataProp == null ? null : ((XincoCoreData) (dataProp).getValue());
+            //ID
+            idField = new com.vaadin.ui.TextField(getResource().getString("general.id") + ":");
+            panel.addComponent(idField);
+            if (newData) {
+                idField.setValue("0");
+            } else {
+                idField.setValue(data.getId());
+            }
+            //Not editable
+            idField.setEnabled(false);
+            //Designation
+            designationField = new com.vaadin.ui.TextField(getResource().getString("general.designation") + ":");
+            panel.addComponent(designationField);
+            if (!newData) {
+                idField.setValue(data.getDesignation());
+            }
+            //Language selection
+            int i = 0;
+            for (Object language : XincoCoreLanguageServer.getXincoCoreLanguages()) {
+                String designation = ((XincoCoreLanguageServer) language).getDesignation();
+                if (getResource().containsKey(designation)) {
+                    String value = getResource().getString(designation);
+                    languages.addItem(i);
+                    languages.setItemCaption(i, value);
+                    if (newData && ((XincoCoreLanguageServer) language).getSign().equals("en")) //Select by default
+                    {
+                        languages.setValue(i);
+                    }
+                    i++;
+                } else {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.WARNING,
+                            "{0} not defined in com.bluecubs.xinco.messages.XincoMessagesLocale",
+                            "Locale." + designation);
+                }
+                if (data != null && data.getXincoCoreLanguage().getSign().equals(designation)) {
+                    languages.setValue("Locale." + designation);
+                }
+            }
+            panel.addComponent(languages);
+            //Status
+            statusField = new com.vaadin.ui.TextField(getResource().getString("general.status") + ":");
+            //Not editable
+            statusField.setEnabled(false);
+            String text = "";
+            if (newData || data.getStatusNumber() == 1) {
+                text = getResource().getString("general.status.open");
+            }
+            if (data != null && data.getStatusNumber() == 2) {
+                text = getResource().getString("general.status.locked") + " (-)";
+            }
+            if (data != null && data.getStatusNumber() == 3) {
+                text = getResource().getString("general.status.archived") + " (->)";
+            }
+            if (data != null && data.getStatusNumber() == 4) {
+                text = getResource().getString("general.status.checkedout") + " (X)";
+            }
+            if (data != null && data.getStatusNumber() == 5) {
+                text = getResource().getString("general.status.published") + " (WWW)";
+            }
+            statusField.setValue(text);
+            panel.addComponent(statusField);
+            // Set the size as undefined at all levels
+            panel.getContent().setSizeUndefined();
+            panel.setSizeUndefined();
+            setSizeUndefined();
+
+            // The composition root MUST be set
+            setCompositionRoot(panel);
+        }
+
+        /**
+         * @return the idField
+         */
+        public com.vaadin.ui.TextField getIdField() {
+            return idField;
+        }
+
+        /**
+         * @return the designationField
+         */
+        public com.vaadin.ui.TextField getDesignationField() {
+            return designationField;
+        }
+
+        /**
+         * @return the statusField
+         */
+        public com.vaadin.ui.TextField getStatusField() {
+            return statusField;
+        }
+
+        /**
+         * @return the languages
+         */
+        public Select getLanguages() {
+            return languages;
+        }
+    }
+
+    private void showDataDialog(final boolean newData) {
+        final Wizard wizard = new Wizard();
+        // add some steps that implement the WizardStep interface
+        wizard.addStep(new WizardStep() {
+
+            @Override
+            public String getCaption() {
+                return getResource().getString("window.datadetails");
+            }
+
+            @Override
+            public com.vaadin.ui.Component getContent() {
+                if (dataDialog == null) {
+                    dataDialog = new DataDialog(newData);
+                    dataDialog.setSizeFull();
+                }
+                return dataDialog;
+            }
+
+            @Override
+            public boolean onAdvance() {
+                boolean value = true;
+                if (dataDialog.getDesignationField().getValue().toString().isEmpty()) {
+                    getMainWindow().showNotification(
+                            getResource().getString("message.missing.designation"),
+                            Notification.TYPE_ERROR_MESSAGE);
+                    value = false;
+                }
+                if (dataDialog.getLanguages().getValue() == null) {
+                    getMainWindow().showNotification(
+                            getResource().getString("message.missing.language"),
+                            Notification.TYPE_ERROR_MESSAGE);
+                    value = false;
+                }
+                return value;
+            }
+
+            @Override
+            public boolean onBack() {
+                return false;
+            }
+        });
+        wizard.addStep(new WizardStep() {
+
+            @Override
+            public String getCaption() {
+                return getResource().getString("window.datatype");
+            }
+
+            @Override
+            public com.vaadin.ui.Component getContent() {
+                if (dataTypeDialog == null) {
+                    dataTypeDialog = new DataTypeDialog();
+                    dataTypeDialog.setSizeFull();
+                }
+                return dataTypeDialog;
+            }
+
+            @Override
+            public boolean onAdvance() {
+                boolean value = true;
+                if (dataTypeDialog.getTypes().getValue() == null) {
+                    getMainWindow().showNotification(
+                            getResource().getString("message.missing.datatype"),
+                            Notification.TYPE_ERROR_MESSAGE);
+                    value = false;
+                }
+                return value;
+            }
+
+            @Override
+            public boolean onBack() {
+                return true;
+            }
+        });
+        wizardWindow.removeAllComponents();
+        wizardWindow.addComponent(wizard);
+        wizard.setSizeFull();
+        wizard.addListener(new DataDialogManager());
+        wizardWindow.setModal(true);
+        wizardWindow.setWidth(40, Sizeable.UNITS_PERCENTAGE);
+        // add the wizard to a layout
+        getMainWindow().addWindow(wizardWindow);
+    }
+
+    private class DataDialogManager implements WizardProgressListener {
+
+        @Override
+        public void activeStepChanged(WizardStepActivationEvent event) {
+            // display the step caption as the window title
+            getMainWindow().setCaption(event.getActivatedStep().getCaption());
+        }
+
+        @Override
+        public void stepSetChanged(WizardStepSetChangedEvent event) {
+            //Nothing to do
+        }
+
+        @Override
+        public void wizardCompleted(WizardCompletedEvent event) {
+            finishWizard();
+        }
+
+        @Override
+        public void wizardCancelled(WizardCancelledEvent event) {
+            closeWizard();
+        }
+
+        private void finishWizard() {
+            //TODO: Process Data
+
+            discard();
+        }
+        
+        private void discard(){
+            //Clear wizard
+            dataDialog = null;
+            dataTypeDialog = null;
+        }
+
+        private void closeWizard() {
+            try {
+                getMainWindow().removeWindow(wizardWindow);
+                getMainWindow().setCaption(getResource().getString("general.clienttitle") + " - "
+                        + getResource().getString("general.version") + " "
+                        + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.high").getIntValue() + "."
+                        + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.mid").getIntValue() + "."
+                        + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.low").getIntValue() + " "
+                        + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.postfix").getStringValue());
+                discard();
+            } catch (XincoException ex) {
+                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     private void showDataFolderDialog(final boolean newFolder) {
@@ -346,7 +654,16 @@ public class Xinco extends Application implements Property.ValueChangeListener {
         form.addField("status", statusField);
         form.setFooter(new HorizontalLayout());
         //Used for validation purposes
-        com.vaadin.ui.Button commit = new com.vaadin.ui.Button(getResource().getString("general.save"), form, "commit");
+        final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(getResource().getString("general.save"), form, "commit");
+        final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
+                getResource().getString("general.cancel"),
+                new com.vaadin.ui.Button.ClickListener() {
+
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        getMainWindow().removeWindow(dataFolderDialog);
+                    }
+                });
         final int finalStatus = status;
         commit.addListener(new com.vaadin.ui.Button.ClickListener() {
 
@@ -356,6 +673,8 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                     //Disable data fields, make sure nothing gets modified after clicking save
                     form.getField("lang").setEnabled(false);
                     form.getField("designation").setEnabled(false);
+                    commit.setEnabled(false);
+                    cancel.setEnabled(false);
                     //Process the data
                     XincoCoreNodeServer newNode = new XincoCoreNodeServer(
                             Integer.valueOf(form.getField("id").getValue().toString()),
@@ -379,15 +698,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
         });
         form.getFooter().setSizeFull();
         form.getFooter().addComponent(commit);
-        form.getFooter().addComponent(new com.vaadin.ui.Button(
-                getResource().getString("general.cancel"),
-                new com.vaadin.ui.Button.ClickListener() {
-
-                    @Override
-                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                        getMainWindow().removeWindow(dataFolderDialog);
-                    }
-                }));
+        form.getFooter().addComponent(cancel);
         dataFolderDialog.addComponent(form);
         dataFolderDialog.setModal(true);
         dataFolderDialog.center();

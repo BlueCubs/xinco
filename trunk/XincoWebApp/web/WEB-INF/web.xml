@@ -48,7 +48,7 @@
         <!--
         <init-param>
             <param-name>widgetset</param-name>
-            <param-value>org.vaadin.peter.contextmenu.ContextmenuWidgetset</param-value>
+            <param-value>org.vaadin.teemu.wizards.WizardsforvaadinWidgetset</param-value>
         </init-param>
         -->
     </servlet>
