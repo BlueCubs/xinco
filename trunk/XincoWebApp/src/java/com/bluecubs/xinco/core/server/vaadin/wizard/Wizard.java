@@ -215,6 +215,44 @@ public class Wizard extends CustomComponent {
         return header;
     }
 
+    /**
+     * Method for adding steps not at the end of the wizard steps. If you are 
+     * trying to add one at the end use use addStep(WizardStep step) instead.
+     * 
+     * @param step Step to add
+     * @param pos Position to add the step
+     */
+    public void addStep(WizardStep step, int pos) {
+        synchronized (steps) {
+            if (pos < 0 ) {
+                throw new RuntimeException("Invalid position: " + pos);
+            }
+            if(pos >= steps.size()){
+                //Add normally at the end instead
+                addStep(step);
+                return;
+            }
+            //Recreate list and id map
+            idMap.clear();
+            List<WizardStep> newSteps = new ArrayList<WizardStep>();
+            for (WizardStep ws : steps) {
+                if (newSteps.size() == pos) {
+                    //Insert new step
+                    newSteps.add(step);
+                    idMap.put("wizard-step-" + (newSteps.size()), step);
+                }
+                newSteps.add(ws);
+                idMap.put("wizard-step-" + (newSteps.size()), ws);
+            }
+            steps.clear();
+            steps.addAll(newSteps);
+            updateButtons();
+
+            // notify listeners
+            fireEvent(new WizardStepSetChangedEvent(this));
+        }
+    }
+
     public void addStep(WizardStep step) {
         addStep(step, "wizard-step-" + (steps.size() + 1));
     }
@@ -249,6 +287,16 @@ public class Wizard extends CustomComponent {
 
     public List<WizardStep> getSteps() {
         return Collections.unmodifiableList(steps);
+    }
+
+    public boolean removeStep(WizardStep step) {
+        boolean remove = steps.remove(step);
+        if (remove) {
+            updateButtons();
+            // notify listeners
+            fireEvent(new WizardStepSetChangedEvent(this));
+        }
+        return remove;
     }
 
     public boolean isCompleted(WizardStep step) {
@@ -344,22 +392,22 @@ public class Wizard extends CustomComponent {
     @Override
     protected void fireEvent(Event event) {
         for (WizardProgressListener listener : listeners) {
-            if(event instanceof WizardCancelledEvent){
+            if (event instanceof WizardCancelledEvent) {
                 listener.wizardCancelled((WizardCancelledEvent) event);
             }
-            if(event instanceof WizardCompletedEvent){
+            if (event instanceof WizardCompletedEvent) {
                 listener.wizardCompleted((WizardCompletedEvent) event);
             }
-            if(event instanceof WizardStepActivationEvent){
+            if (event instanceof WizardStepActivationEvent) {
                 listener.activeStepChanged((WizardStepActivationEvent) event);
             }
-            if(event instanceof WizardStepSetChangedEvent){
+            if (event instanceof WizardStepSetChangedEvent) {
                 listener.stepSetChanged((WizardStepSetChangedEvent) event);
             }
         }
     }
 
-    private void activateStep(String id) {
+    public void activateStep(String id) {
         WizardStep step = idMap.get(id);
         if (step != null) {
             // check that we don't go past the lastCompletedStep by using the id

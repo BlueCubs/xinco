@@ -10,17 +10,22 @@ import com.vaadin.Application;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
+import com.vaadin.ui.Upload.FailedEvent;
+import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.*;
 import java.util.logging.Level;
@@ -162,6 +167,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
         if (xincoTree == null) {
             try {
                 xincoTree = new Tree(getResource().getString("menu.repository"));
+                xincoTree.setDebugId("xinco_tree");
                 refresh();
                 xincoTree.addListener(this);
                 xincoTree.setImmediate(true);
@@ -230,6 +236,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
             xincoTree.setParent(dataProperty, parent);
             // Set as leaves
             xincoTree.setChildrenAllowed(dataProperty, false);
+            //TODO: Add icons to files, not a critical feature
 //            try {
 //                if (data.getDesignation().contains(".")
 //                        && data.getDesignation().substring(data.getDesignation().lastIndexOf(".") + 1,
@@ -330,6 +337,74 @@ public class Xinco extends Application implements Property.ValueChangeListener {
          */
         public Select getTypes() {
             return types;
+        }
+    }
+
+    private class AddAttributeDialog extends CustomComponent {
+
+        public AddAttributeDialog(XincoCoreData data) {
+            com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(getResource().getString("window.addattributesuniversal"));
+            panel.setContent(new VerticalLayout());
+            Table attrTable = new Table("attributes");
+            /*
+             * Define the names and data types of columns. The "default value"
+             * parameter is meaningless here.
+             */
+            attrTable.addContainerProperty(getResource().getString("general.attribute"),
+                    String.class, null);
+            attrTable.addContainerProperty(getResource().getString("general.details"),
+                    String.class, null);
+            //prevent editing of fixed attributes for certain data types
+            int start = 0;
+            //file = 1
+            if (data.getXincoCoreDataType().getId() == 1) {
+                start = 8;
+            }
+            //text = 2
+            if (data.getXincoCoreDataType().getId() == 2) {
+                start = 1;
+            }
+            java.util.List<com.bluecubs.xinco.core.server.service.XincoAddAttribute> attributes;
+            if (data.getId() == 0) {
+                // Is a new data, there's nothing yet in the database.
+                // Load local values.
+                attributes = data.getXincoAddAttributes();
+            } else {
+                attributes = XincoAddAttributeServer.getXincoAddAttributes(data.getId());
+            }
+            java.util.List<XincoCoreDataTypeAttribute> dataTypeAttributes = data.getXincoCoreDataType().getXincoCoreDataTypeAttributes();
+            for (int i = start; i < attributes.size(); i++) {
+                String value = "";
+                if (dataTypeAttributes.get(i).getDataType().equals("datetime")) {
+                    value = "" + ((XMLGregorianCalendar) (attributes.get(i)).getAttribDatetime()).toGregorianCalendar().getTime().toString();
+                }
+                if (dataTypeAttributes.get(i).getDataType().equals("double")) {
+                    value = "" + (attributes.get(i)).getAttribDouble();
+                }
+                if (dataTypeAttributes.get(i).getDataType().equals("int")) {
+                    value = "" + (attributes.get(i)).getAttribInt();
+                }
+                if (dataTypeAttributes.get(i).getDataType().equals("text")) {
+                    value = "" + (attributes.get(i)).getAttribText();
+                }
+                if (dataTypeAttributes.get(i).getDataType().equals("unsignedint")) {
+                    value = "" + (attributes.get(i)).getAttribUnsignedint();
+                }
+                if (dataTypeAttributes.get(i).getDataType().equals("varchar")) {
+                    value = "" + (attributes.get(i)).getAttribVarchar();
+                }
+                attrTable.addItem(new Object[]{
+                            dataTypeAttributes.get(i).getDesignation(), value}, i++);
+            }
+            attrTable.setEditable(true);
+            panel.addComponent(attrTable);
+            // Set the size as undefined at all levels
+            panel.getContent().setSizeUndefined();
+            panel.setSizeUndefined();
+            setSizeUndefined();
+
+            // The composition root MUST be set
+            setCompositionRoot(panel);
         }
     }
 
@@ -449,6 +524,59 @@ public class Xinco extends Application implements Property.ValueChangeListener {
 
     private void showDataDialog(final boolean newData) {
         final Wizard wizard = new Wizard();
+        final XincoCoreData data = new XincoCoreData();
+        final UploadManager um = new UploadManager();
+        final WizardStep fileStep = new WizardStep() {
+
+            @Override
+            public String getCaption() {
+                return getResource().getString("general.file.select");
+            }
+
+            @Override
+            public com.vaadin.ui.Component getContent() {
+                return new Upload(getResource().getString("general.file.select"), um);
+            }
+
+            @Override
+            public boolean onAdvance() {
+                boolean value = true;
+                if (um.getFile() == null) {
+                    value = false;
+                    getMainWindow().showNotification(
+                            getResource().getString("message.missing.file"),
+                            Notification.TYPE_ERROR_MESSAGE);
+                }
+                return value;
+            }
+
+            @Override
+            public boolean onBack() {
+                return true;
+            }
+        };
+        final WizardStep attrStep = new WizardStep() {
+
+            @Override
+            public String getCaption() {
+                return getResource().getString("window.addattributesuniversal");
+            }
+
+            @Override
+            public com.vaadin.ui.Component getContent() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public boolean onAdvance() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public boolean onBack() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
         // add some steps that implement the WizardStep interface
         wizard.addStep(new WizardStep() {
 
@@ -480,6 +608,10 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                             getResource().getString("message.missing.language"),
                             Notification.TYPE_ERROR_MESSAGE);
                     value = false;
+                } else {
+                    //Process data
+                    data.setDesignation(dataDialog.getDesignationField().getValue().toString());
+                    data.setXincoCoreLanguage((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(Integer.valueOf(dataDialog.getLanguages().getValue().toString())));
                 }
                 return value;
             }
@@ -501,6 +633,22 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                 if (dataTypeDialog == null) {
                     dataTypeDialog = new DataTypeDialog();
                     dataTypeDialog.setSizeFull();
+                    dataTypeDialog.getTypes().addListener(new ValueChangeListener() {
+
+                        @Override
+                        public void valueChange(ValueChangeEvent event) {
+                            if (Integer.valueOf(event.getProperty().toString()) == 2) {
+                                if (!wizard.getSteps().contains(fileStep)) {
+                                    //wizard.getLastCompleted() is the previous step, 
+                                    //the current is wizard.getLastCompleted() + 1, 
+                                    //the next step wizard.getLastCompleted() + 2
+                                    wizard.addStep(fileStep, wizard.getLastCompleted() + 2);
+                                }
+                            } else {
+                                wizard.removeStep(fileStep);
+                            }
+                        }
+                    });
                 }
                 return dataTypeDialog;
             }
@@ -513,6 +661,15 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                             getResource().getString("message.missing.datatype"),
                             Notification.TYPE_ERROR_MESSAGE);
                     value = false;
+                } else {
+                    //Process data
+                    data.setXincoCoreDataType((XincoCoreDataType) XincoCoreDataTypeServer.getXincoCoreDataTypes().get(Integer.valueOf(dataTypeDialog.getTypes().getValue().toString())));
+                    if ((data.getXincoCoreDataType().getId() != 1
+                            || data.getXincoAddAttributes().size() > 8)
+                            && (data.getXincoCoreDataType().getId() != 2
+                            || data.getXincoAddAttributes().size() > 1)) {
+                        wizard.addStep(attrStep, wizard.getLastCompleted() + 2);
+                    }
                 }
                 return value;
             }
@@ -530,6 +687,73 @@ public class Xinco extends Application implements Property.ValueChangeListener {
         wizardWindow.setWidth(40, Sizeable.UNITS_PERCENTAGE);
         // add the wizard to a layout
         getMainWindow().addWindow(wizardWindow);
+    }
+
+    private class UploadManager extends CustomComponent
+            implements Upload.SucceededListener,
+            Upload.FailedListener,
+            Upload.Receiver {
+
+        private File file;                          // File to write to.
+        private String fileName;                    // Original file name
+
+        // Callback method to begin receiving the upload.
+        @Override
+        public OutputStream receiveUpload(String filename,
+                String MIMEType) {
+            FileOutputStream fos; // Output stream to write to
+            fileName = filename;
+            try {
+                //Create upload folder if needed
+                File uploads = new File(XincoConfigSingletonServer.getInstance().FileRepositoryPath
+                        + System.getProperty("file.separator") + "uploads"
+                        + System.getProperty("file.separator"));
+                uploads.mkdirs();
+                uploads.deleteOnExit();
+                file = File.createTempFile("xinco", ".xtf", uploads);
+            } catch (IOException ex) {
+                return null;
+            }
+            getFile().deleteOnExit();
+            try {
+                // Open the file for writing.
+                fos = new FileOutputStream(getFile());
+            } catch (final java.io.FileNotFoundException e) {
+                return null;
+            }
+            return fos; // Return the output stream to write to
+        }
+
+        @Override
+        public void uploadSucceeded(SucceededEvent event) {
+            //TODO: continue
+            getMainWindow().showNotification(
+                    file.getAbsolutePath(),
+                    Notification.TYPE_TRAY_NOTIFICATION);
+        }
+
+        @Override
+        public void uploadFailed(FailedEvent event) {
+            getMainWindow().showNotification(
+                    getResource().getString("datawizard.unabletoloadfile"),
+                    Notification.TYPE_ERROR_MESSAGE);
+            file = null;
+            fileName = null;
+        }
+
+        /**
+         * @return the file
+         */
+        public File getFile() {
+            return file;
+        }
+
+        /**
+         * @return the fileName
+         */
+        public String getFileName() {
+            return fileName;
+        }
     }
 
     private class DataDialogManager implements WizardProgressListener {
@@ -557,11 +781,10 @@ public class Xinco extends Application implements Property.ValueChangeListener {
 
         private void finishWizard() {
             //TODO: Process Data
-
             discard();
         }
-        
-        private void discard(){
+
+        private void discard() {
             //Clear wizard
             dataDialog = null;
             dataTypeDialog = null;
