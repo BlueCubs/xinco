@@ -15,7 +15,7 @@
 
     <target name="widgetset-init">
         <!-- Name of the widget set -->
-        <property name="widgetset" value="org.vaadin.teemu.wizards.WizardsforvaadinWidgetset"/>
+        <property name="widgetset" value="org.vaadin.peter.contextmenu.ContextmenuWidgetset"/>
 
         <!-- Path to the widgetset directory. Required only for -->
     	<!-- generated widget sets. Must be relative to         -->

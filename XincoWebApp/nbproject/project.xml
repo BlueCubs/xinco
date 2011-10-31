@@ -154,6 +154,24 @@
                 <library dirs="200">
                     <file>${libs.MySQLDriver.classpath}</file>
                 </library>
+                <library dirs="200">
+                    <file>${file.reference.gwt-dev.jar}</file>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.gwt-user.jar}</file>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.ContextMenu3.1.0.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.easyuploads-0.4.9.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.wizards-for-vaadin-0.4.0.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
             </web-module-libraries>
             <web-module-additional-libraries>
                 <library dirs="200">
