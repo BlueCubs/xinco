@@ -24,13 +24,19 @@ wsdlLocation = "WEB-INF/wsdl/XincoWebService/Xinco.wsdl")
 public class XincoWebService {
 
     public XincoCoreDataType getXincoCoreDataType(XincoCoreDataType in0, XincoCoreUser in1) {
-        //dummy: not to be implemented!
-        return null;
+        if (XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword(), true)) {
+            return XincoCoreDataTypeServer.getXincoCoreDataType(in0.getId());
+        } else {
+            return null;
+        }
     }
 
     public java.util.List<XincoAddAttribute> getXincoAddAttributes(XincoCoreData in0, XincoCoreUser in1) {
-        //dummy: not to be implemented!
-        return null;
+        if (XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword(), true)) {
+            return XincoAddAttributeServer.getXincoAddAttributes(in0.getId());
+        } else {
+            return null;
+        }
     }
 
     public java.util.List<XincoCoreNode> getXincoCoreNodes(XincoCoreNode in0, XincoCoreUser in1) {
@@ -606,8 +612,8 @@ public class XincoWebService {
 
     public boolean checkXincoCoreUserNewPassword(java.lang.String in0, XincoCoreUser in1, XincoCoreUser in2) {
         try {
-            return XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword(), true) ? 
-                    new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword()).isPasswordUsable(in0) : false;
+            return XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword(), true)
+                    ? new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword()).isPasswordUsable(in0) : false;
         } catch (XincoException ex) {
             Logger.getLogger(XincoWebService.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -627,9 +633,12 @@ public class XincoWebService {
         return setting;
     }
 
-    //TODO: Add a set setting method
     public java.util.List<XincoCoreDataTypeAttribute> getXincoCoreDataTypeAttribute(XincoCoreDataType in0, XincoCoreUser in1) {
-        //dummy: not to be implemented!
-        return null;
+        if (XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword(), true)) {
+            return XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(in0.getId());
+        } else {
+            return null;
+        }
     }
+    //TODO: Add a set setting method
 }
