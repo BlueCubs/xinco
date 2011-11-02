@@ -1,35 +1,32 @@
 /**
- *Copyright 2007 blueCubs.com
+ * Copyright 2007 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoIndexVcard
+ * Name: XincoIndexVcard
  *
- * Description:     convert XincoCoreData to Lucene Documents
+ * Description: convert XincoCoreData to Lucene Documents
  *
- * Original Author: Alexander Manes
- * Date:            2004/10/31
+ * Original Author: Alexander Manes Date: 2004/10/31
  *
  * Modifications:
  *
- * Who?             When?             What?
- * -                -                 -
+ * Who? When? What? - - -
  *
  *************************************************************
  */
@@ -41,11 +38,11 @@ import lius.index.application.VCardIndexer;
 
 /**
  * Class: VCardIndexer <br>
- * 
+ *
  * This Indexer reads .vcf and .vcard files as exported by various email and PIM
  * applications (e.g. Mozilla Mail, Evolution, KMail). Fields which can be
  * indexed are:
- * 
+ *
  * <ul>
  * <li><code>name</code>: The contact's full name</li>
  * <li><code>title</code>: Title (e.g. 'Dr.')</li>
@@ -65,16 +62,16 @@ import lius.index.application.VCardIndexer;
  * <li><code>organization</code>: the organization</li>
  * </ul>
  * <br/>
- * 
+ *
  * Changelog:
  * <ul>
  * <li>02.06.2005: Initial implementation (jf)</li>
  * </ul>
- * 
+ *
  * @author <a href="mailto:jf@teamskill.de">Jens Fendler </a>
  */
 /**
- *Adapted by Javier Ortiz
+ * Adapted by Javier Ortiz
  */
 public class XincoIndexVcard extends VCardIndexer implements XincoIndexFileType {
 

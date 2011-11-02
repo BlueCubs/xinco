@@ -1,46 +1,38 @@
 /**
- *Copyright 2005 blueCubs.com
+ * Copyright 2005 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoIndexMicrosoftPowerpoint
+ * Name: XincoIndexMicrosoftPowerpoint
  *
- * Description:     indexing Microsoft Powerpoint files 
+ * Description: indexing Microsoft Powerpoint files
  *
- * Original Author: Alexander Manes
- * Date:            2005/02/06
+ * Original Author: Alexander Manes Date: 2005/02/06
  *
  * Modifications:
- * 
- * Who?             When?             What?
- * -                -                 -
+ *
+ * Who? When? What? - - -
  *
  *************************************************************
  */
 package com.bluecubs.xinco.index.filetypes;
 
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.File;
-import java.io.BufferedReader;
-
+import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
@@ -64,7 +56,7 @@ public class XincoIndexMicrosoftPowerpoint implements XincoIndexFileType {
 
     @Override
     public String getFileContentString(File f) {
-        String text = null;
+        String text;
         try {
             POIFSReader r = new POIFSReader();
             XincoIndexMicrosoftPowerpointPOIFSReaderListener ximpprl = new XincoIndexMicrosoftPowerpointPOIFSReaderListener();
@@ -88,10 +80,10 @@ public class XincoIndexMicrosoftPowerpoint implements XincoIndexFileType {
         @Override
         public void processPOIFSReaderEvent(POIFSReaderEvent event) {
             try {
-                DocumentInputStream dis = null;
+                DocumentInputStream dis;
                 dis = event.getStream();
                 Reader EventReader = new BufferedReader(new InputStreamReader(dis));
-                int l = 0;
+                int l;
                 char ca[] = new char[1024];
                 while (true) {
                     l = EventReader.read(ca, 0, 1024);

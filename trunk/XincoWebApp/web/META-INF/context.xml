@@ -12,11 +12,15 @@
   <!-- ### url: jdbc:postgresql://localhost:5432/xinco                 ###-->
   <!-- ### driverClassName: org.postgresql.Driver                      ###-->
   <!-- ###################################################################-->
-    <Resource auth="Container" driverClassName="org.h2.Driver"
+  <!-- ### Oracle:                                                     ###-->
+  <!-- ### url: jdbc:oracle:thin:@//server.local:1521/<service name>   ###-->
+  <!-- ### driverClassName: oracle.jdbc.driver.OracleDriver            ###-->
+  <!-- ###################################################################-->
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver"
   factory="org.apache.commons.dbcp.BasicDataSourceFactory"
   maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB"
-  password="" type="javax.sql.DataSource"
-  url="jdbc:h2:file:~/Xinco/data/xinco;CREATE=TRUE;AUTO_SERVER=TRUE;LOCK_TIMEOUT=10000"
+  password="arthrocare" type="javax.sql.DataSource"
+  url="jdbc:mysql://localhost:3306/xinco-test?autoReconnect=true"
   username="root"/>
   <!-- ################# Optional Configuration #################-->
   <!-- Database JNDI Name -->
