@@ -36,10 +36,7 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeJp
 import com.bluecubs.xinco.core.server.service.XincoCoreDataType;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -93,10 +90,11 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
         ArrayList<XincoCoreDataTypeServer> coreDataTypes =
                 new ArrayList<XincoCoreDataTypeServer>();
         try {
-            result = XincoDBManager.createdQuery("SELECT xcdt FROM XincoCoreDataType xcdt ORDER BY xcdt.designation");
-            while (result.size() > 0) {
-                coreDataTypes.add(new XincoCoreDataTypeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreDataType) result.get(0)));
-                result.remove(0);
+            result = XincoDBManager.createdQuery("SELECT xcdt FROM XincoCoreDataType xcdt ORDER BY xcdt.id");
+            for (Iterator it = result.iterator(); it.hasNext();) {
+                com.bluecubs.xinco.core.server.persistence.XincoCoreDataType xcdt = 
+                        (com.bluecubs.xinco.core.server.persistence.XincoCoreDataType) it.next();
+                coreDataTypes.add(new XincoCoreDataTypeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreDataType) xcdt));
             }
         } catch (Exception e) {
             Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getSimpleName()).log(Level.SEVERE, null, e);

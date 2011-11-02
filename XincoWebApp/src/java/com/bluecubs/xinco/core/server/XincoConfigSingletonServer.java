@@ -1,35 +1,32 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoConfigSingletonServer
+ * Name: XincoConfigSingletonServer
  *
- * Description:     configuration class on server side 
+ * Description: configuration class on server side
  *
- * Original Author: Alexander Manes
- * Date:            2004
+ * Original Author: Alexander Manes Date: 2004
  *
  * Modifications:
- * 
- * Who?             When?             What?
- * -                -                 -
+ *
+ * Who? When? What? - - -
  *
  *************************************************************
  */
@@ -41,8 +38,8 @@ import java.util.logging.Logger;
 import javax.naming.InitialContext;
 
 /**
- * This class handles the server configuration of xinco.
- * Edit values in context.xml
+ * This class handles the server configuration of xinco. Edit values in
+ * context.xml
  */
 public class XincoConfigSingletonServer {
 
@@ -81,7 +78,7 @@ public class XincoConfigSingletonServer {
     }
 
     public void loadSettings() {
-        Exception ex = null;
+        ArrayList<Exception> exceptions = new ArrayList<Exception>();
         try {
             FileRepositoryPath = XincoSettingServer.getSetting("xinco/FileRepositoryPath").getStringValue();
             if (!FileRepositoryPath.isEmpty()
@@ -90,7 +87,7 @@ public class XincoConfigSingletonServer {
             }
         } catch (Exception ce) {
             FileRepositoryPath = "";
-            ex = ce;
+            exceptions.add(ce);
             loadDefault = true;
         }
         //optional: FileIndexPath
@@ -110,14 +107,14 @@ public class XincoConfigSingletonServer {
             }
         } catch (Exception e) {
             FileArchivePath = "";
-            ex = e;
+            exceptions.add(e);
             loadDefault = true;
         }
         try {
             FileArchivePeriod = XincoSettingServer.getSetting("xinco/FileArchivePeriod").getLongValue();
         } catch (Exception e) {
             FileArchivePeriod = 14400000;
-            ex = e;
+            exceptions.add(e);
             loadDefault = true;
         }
 
@@ -125,7 +122,7 @@ public class XincoConfigSingletonServer {
             FileIndexOptimizerPeriod = XincoSettingServer.getSetting("xinco/FileIndexOptimizerPeriod").getLongValue();
         } catch (Exception e) {
             FileIndexOptimizerPeriod = 14400000;
-            ex = e;
+            exceptions.add(e);
             loadDefault = true;
         }
 
@@ -133,7 +130,7 @@ public class XincoConfigSingletonServer {
             FileIndexerCount = ((Long) XincoDBManager.createdQuery("select count(s) from XincoSetting s where s.description like 'xinco/FileIndexer_'").get(0));
         } catch (Exception e) {
             FileIndexerCount = 4;
-            ex = e;
+            exceptions.add(e);
             loadDefault = true;
         }
         IndexFileTypesClass = new ArrayList();
@@ -144,7 +141,7 @@ public class XincoConfigSingletonServer {
                 IndexFileTypesExt.add(XincoSettingServer.getSetting("env/xinco/FileIndexer_" + (i + 1) + "_Ext").getStringValue().split(";"));
             }
         } catch (Exception e) {
-            String[] tsa = null;
+            String[] tsa;
             IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF");
             tsa = new String[1];
             tsa[0] = "pdf";
@@ -164,7 +161,7 @@ public class XincoConfigSingletonServer {
             tsa[2] = "php";
             tsa[3] = "jsp";
             IndexFileTypesExt.add(tsa);
-            ex = e;
+            exceptions.add(e);
             loadDefault = true;
         }
         try {
@@ -174,48 +171,51 @@ public class XincoConfigSingletonServer {
             IndexNoIndex[0] = "";
             IndexNoIndex[1] = "com";
             IndexNoIndex[2] = "exe";
-            ex = e;
+            exceptions.add(e);
             loadDefault = true;
         }
         try {
             allowOutsideLinks = XincoSettingServer.getSetting("setting.allowoutsidelinks").isBoolValue();
         } catch (Exception e) {
             allowOutsideLinks = true;
-            ex = e;
+            exceptions.add(e);
             loadDefault = true;
         }
         try {
             allowPublisherList = XincoSettingServer.getSetting("setting.allowpublisherlist").isBoolValue();
         } catch (Exception e) {
             allowPublisherList = true;
-            ex = e;
+            exceptions.add(e);
             loadDefault = true;
         }
         try {
             guessLanguage = XincoSettingServer.getSetting("setting.guessLanguage").isBoolValue();
         } catch (Exception e) {
             guessLanguage = false;
-            ex = e;
+            exceptions.add(e);
             loadDefault = true;
         }
         try {
             MaxSearchResult = XincoSettingServer.getSetting("xinco/MaxSearchResult").getIntValue();
         } catch (Exception e) {
             MaxSearchResult = 30;
-            ex = e;
+            exceptions.add(e);
             loadDefault = true;
         }
         try {
             OOPort = XincoSettingServer.getSetting("setting.OOPort").getIntValue();
         } catch (Exception e) {
             OOPort = 8100;
-            ex = e;
+            exceptions.add(e);
             loadDefault = true;
         }
 
         if (loadDefault) {
-            Logger.getLogger(XincoConfigSingletonServer.class.getSimpleName()).log(Level.WARNING,
-                    "Error loading configuration! Using default value for the ones not found.", ex);
+            StringBuilder sb = new StringBuilder("Error loading configuration! Using default value for the ones not found.");
+            for(Exception ex: exceptions){
+                sb.append("\n").append(ex.getLocalizedMessage());
+            }
+            Logger.getLogger(XincoConfigSingletonServer.class.getSimpleName()).log(Level.WARNING, sb.toString());
         }
     }
 
