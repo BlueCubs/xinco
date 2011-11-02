@@ -333,7 +333,7 @@ public class XincoDBManager {
     }
 
     private static void runInitSQL() throws XincoException {
-        if (!initDone) {
+        if (!isInitDone()) {
             try {
                 if (XincoSettingServer.getSettings().isEmpty()) {
                     logger.log(Level.INFO,
@@ -367,7 +367,11 @@ public class XincoDBManager {
                 logger.log(
                         Level.CONFIG, "Executing statement: {0}", statement);
                 XincoDBManager.nativeQuery(statement);
+                logger.log(
+                        Level.CONFIG, "Done!", statement);
             }
+        }else{
+            throw new XincoException("Nothing to execute!");
         }
     }
 
@@ -698,5 +702,13 @@ public class XincoDBManager {
         } catch (XincoException ex) {
             Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    
+    /**
+     * @return the initDone
+     */
+    public static boolean isInitDone() {
+        return initDone;
     }
 }

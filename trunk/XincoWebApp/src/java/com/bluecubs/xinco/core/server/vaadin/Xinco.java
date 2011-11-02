@@ -32,6 +32,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
@@ -57,6 +59,10 @@ public class Xinco extends Application implements Property.ValueChangeListener {
     private Window wizardWindow = new Window();
     private DataDialog dataDialog;
     private DataTypeDialog dataTypeDialog;
+    private AddAttributeDialog attrDialog;
+    private DataDialogManager ddManager;
+    private ArchiveDialog archDialog;
+    private XincoCoreData data = new XincoCoreData();
 
     @Override
     public void init() {
@@ -79,6 +85,52 @@ public class Xinco extends Application implements Property.ValueChangeListener {
         }
         setMainWindow(new Window("Xinco"));
         showXincoExplorer();
+        try {
+            XincoIdServer.getIds();
+        } catch (XincoException ex) {
+            try {
+                Logger.getLogger(Xinco.class.getName()).log(Level.WARNING, null, ex);
+                Logger.getLogger(Xinco.class.getName()).log(Level.INFO, "Creating ids to work around H2 issue...");
+                XincoIdServer temp = new XincoIdServer("xinco_dependency_behavior", 999);
+                temp.write2DB();
+                temp = new XincoIdServer("xinco_dependency_behavior", 999);
+                temp.write2DB();
+                temp = new XincoIdServer("xinco_core_group", 999);
+                temp.write2DB();
+                temp = new XincoIdServer("xinco_core_data_type", 999);
+                temp.write2DB();
+                temp = new XincoIdServer("xinco_core_ace", 999);
+                temp.write2DB();
+                temp = new XincoIdServer("xinco_core_log", 999);
+                temp.write2DB();
+                temp = new XincoIdServer("xinco_dependency_type", 999);
+                temp.write2DB();
+                temp = new XincoIdServer("xinco_core_language", 999);
+                temp.write2DB();
+                temp = new XincoIdServer("xinco_setting", 999);
+                temp.write2DB();
+                temp = new XincoIdServer("xinco_core_user", 999);
+                temp.write2DB();
+                temp = new XincoIdServer("xinco_core_node", 999);
+                temp.write2DB();
+                temp = new XincoIdServer("xinco_core_data", 999);
+                temp.write2DB();
+                Logger.getLogger(Xinco.class.getName()).log(Level.INFO, "Done!");
+            } catch (XincoException ex1) {
+                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex1);
+            } finally {
+                try {
+                    for (Iterator<XincoIdServer> it = XincoIdServer.getIds().iterator(); it.hasNext();) {
+                        XincoIdServer next = it.next();
+                        Logger.getLogger(Xinco.class.getName()).log(Level.CONFIG,
+                                "{0}, {1}, {2}", new Object[]{next.getId(),
+                                    next.getTablename(), next.getLastId()});
+                    }
+                } catch (XincoException ex1) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex1);
+                }
+            }
+        }
     }
 
     protected ThemeResource getIcon(String extension) throws IOException {
@@ -227,8 +279,8 @@ public class Xinco extends Application implements Property.ValueChangeListener {
     private void addChildrenData(XincoCoreNodeProperty parent) throws XincoException {
         XincoCoreNodeServer xcns = new XincoCoreNodeServer(((XincoCoreNode) parent.getValue()).getId());
         for (Iterator<XincoCoreData> it = xcns.getXincoCoreData().iterator(); it.hasNext();) {
-            XincoCoreData data = it.next();
-            XincoCoreDataProperty dataProperty = new XincoCoreDataProperty(data);
+            XincoCoreData temp = it.next();
+            XincoCoreDataProperty dataProperty = new XincoCoreDataProperty(temp);
             //Add childen data
 //            Item item = 
             xincoTree.addItem(dataProperty);
@@ -304,6 +356,101 @@ public class Xinco extends Application implements Property.ValueChangeListener {
         menuBar.setVisible(!menuBar.getItems().isEmpty());
     }
 
+    private class ArchiveDialog extends CustomComponent {
+
+        private final Select archiveModel = new Select(
+                getResource().getString("window.archive.archivingmodel") + ":");
+
+        public ArchiveDialog() {
+            com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(
+                    getResource().getString("window.datatype"));
+            panel.setContent(new VerticalLayout());
+            CheckBox revisionModelCheckbox =
+                    new CheckBox(
+                    getResource().getString("window.archive.revisionmodel"));
+            panel.addComponent(revisionModelCheckbox);
+            java.util.List<XincoAddAttribute> attributes;
+            if (data.getId() == 0) {
+                // Is a new data, there's nothing yet in the database.
+                // Load local values.
+                attributes = data.getXincoAddAttributes();
+            } else {
+                attributes = XincoAddAttributeServer.getXincoAddAttributes(data.getId());
+            }
+            int i = 0;
+            archiveModel.addItem(i);
+            archiveModel.setItemCaption(i, getResource().getString("window.archive.archivingmodel.none"));
+            //Set as default
+            archiveModel.setValue(i);
+            i++;
+            archiveModel.addItem(i);
+            archiveModel.setItemCaption(i, getResource().getString("window.archive.archivingmodel.archivedate"));
+            i++;
+            archiveModel.addItem(i);
+            archiveModel.setItemCaption(i, getResource().getString("window.archive.archivingmodel.archivedays"));
+            i++;
+            panel.addComponent(archiveModel);
+            //processing independent of creation
+            revisionModelCheckbox.setValue(attributes.get(3).getAttribUnsignedint() == 0);
+            final DateField date = new DateField();
+            // Set the date and time to present
+            date.setValue(new Date());
+            date.setDateFormat("dd-MM-yyyy");
+            date.setCaption(getResource().getString("window.archive.archivedate") + ":");
+            panel.addComponent(date);
+            //Disabled by default
+            date.setEnabled(false);
+            //set date / days
+            //convert clone from remote time to local time
+            Calendar cal = (Calendar) ((XMLGregorianCalendar) (attributes.get(5)).getAttribDatetime()).toGregorianCalendar().clone();
+            Calendar realcal = ((XMLGregorianCalendar) (attributes.get(5)).getAttribDatetime()).toGregorianCalendar();
+            Calendar ngc = new GregorianCalendar();
+            cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - realcal.get(Calendar.ZONE_OFFSET)) - (ngc.get(Calendar.DST_OFFSET) + realcal.get(Calendar.DST_OFFSET)));
+            date.setValue(cal.getTime());
+            final com.vaadin.ui.TextField days = new com.vaadin.ui.TextField(
+                    getResource().getString("window.archive.archivedays") + ":");
+            panel.addComponent(days);
+            //Disabled by default
+            days.setEnabled(false);
+            archiveModel.addListener(new ValueChangeListener() {
+
+                @Override
+                public void valueChange(ValueChangeEvent event) {
+                    switch (Integer.valueOf(event.getProperty().toString())) {
+                        case 1:
+                            //Enable date
+                            date.setEnabled(true);
+                            days.setEnabled(false);
+                            break;
+                        case 2:
+                            //Enable days
+                            days.setEnabled(true);
+                            date.setEnabled(false);
+                            break;
+                        default:
+                            //Disable both
+                            date.setEnabled(false);
+                            days.setEnabled(false);
+                            break;
+                    }
+                }
+            });
+            // Set the size as undefined at all levels
+            panel.getContent().setSizeUndefined();
+            panel.setSizeUndefined();
+            setSizeUndefined();
+            // The composition root MUST be set
+            setCompositionRoot(panel);
+        }
+
+        /**
+         * @return the archiveModel
+         */
+        public Select getArchiveModel() {
+            return archiveModel;
+        }
+    }
+
     private class DataTypeDialog extends CustomComponent {
 
         private final Select types = new Select(getResource().getString("window.datatype.datatype") + ":");
@@ -312,8 +459,9 @@ public class Xinco extends Application implements Property.ValueChangeListener {
             com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(getResource().getString("window.datatype"));
             panel.setContent(new VerticalLayout());
             //Data Type selection
-            int i = 0;
-            for (Object type : XincoCoreDataTypeServer.getXincoCoreDataTypes()) {
+            int i = 1;
+            for (Iterator it = XincoCoreDataTypeServer.getXincoCoreDataTypes().iterator(); it.hasNext();) {
+                Object type = it.next();
                 String designation = ((XincoCoreDataTypeServer) type).getDesignation();
                 if (getResource().containsKey(designation)) {
                     String value = getResource().getString(designation);
@@ -373,6 +521,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                 attributes = XincoAddAttributeServer.getXincoAddAttributes(data.getId());
             }
             java.util.List<XincoCoreDataTypeAttribute> dataTypeAttributes = data.getXincoCoreDataType().getXincoCoreDataTypeAttributes();
+            int count = 0;
             for (int i = start; i < attributes.size(); i++) {
                 String value = "";
                 if (dataTypeAttributes.get(i).getDataType().equals("datetime")) {
@@ -394,7 +543,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                     value = "" + (attributes.get(i)).getAttribVarchar();
                 }
                 attrTable.addItem(new Object[]{
-                            dataTypeAttributes.get(i).getDesignation(), value}, i++);
+                            dataTypeAttributes.get(i).getDesignation(), value}, count++);
             }
             attrTable.setEditable(true);
             panel.addComponent(attrTable);
@@ -524,7 +673,6 @@ public class Xinco extends Application implements Property.ValueChangeListener {
 
     private void showDataDialog(final boolean newData) {
         final Wizard wizard = new Wizard();
-        final XincoCoreData data = new XincoCoreData();
         final UploadManager um = new UploadManager();
         final WizardStep fileStep = new WizardStep() {
 
@@ -535,19 +683,20 @@ public class Xinco extends Application implements Property.ValueChangeListener {
 
             @Override
             public com.vaadin.ui.Component getContent() {
-                return new Upload(getResource().getString("general.file.select"), um);
+                Upload upload = new Upload(getResource().getString("general.file.select"), um);
+                upload.addListener((Upload.SucceededListener) um);
+                upload.addListener((Upload.FailedListener) um);
+                return upload;
             }
 
             @Override
             public boolean onAdvance() {
-                boolean value = true;
-                if (um.getFile() == null) {
-                    value = false;
+                if (!um.isSuccess()) {
                     getMainWindow().showNotification(
                             getResource().getString("message.missing.file"),
                             Notification.TYPE_ERROR_MESSAGE);
                 }
-                return value;
+                return um.isSuccess();
             }
 
             @Override
@@ -564,17 +713,22 @@ public class Xinco extends Application implements Property.ValueChangeListener {
 
             @Override
             public com.vaadin.ui.Component getContent() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                if (attrDialog == null) {
+                    attrDialog = new AddAttributeDialog(data);
+                    attrDialog.setSizeFull();
+                }
+                return attrDialog;
             }
 
             @Override
             public boolean onAdvance() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                //True if there are more steps after this one
+                return wizard.getSteps().size() > wizard.getLastCompleted() + 1;
             }
 
             @Override
             public boolean onBack() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                return true;
             }
         };
         // add some steps that implement the WizardStep interface
@@ -637,7 +791,8 @@ public class Xinco extends Application implements Property.ValueChangeListener {
 
                         @Override
                         public void valueChange(ValueChangeEvent event) {
-                            if (Integer.valueOf(event.getProperty().toString()) == 2) {
+                            //File = 1
+                            if (Integer.valueOf(event.getProperty().toString()) == 1) {
                                 if (!wizard.getSteps().contains(fileStep)) {
                                     //wizard.getLastCompleted() is the previous step, 
                                     //the current is wizard.getLastCompleted() + 1, 
@@ -664,11 +819,65 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                 } else {
                     //Process data
                     data.setXincoCoreDataType((XincoCoreDataType) XincoCoreDataTypeServer.getXincoCoreDataTypes().get(Integer.valueOf(dataTypeDialog.getTypes().getValue().toString())));
+                    //Set the parent id to the current selected node
+                    data.setXincoCoreNodeId(((XincoCoreNode) ((XincoCoreNodeProperty) xincoTree.getValue()).getValue()).getId());
+                    //add specific attributes
+                    data.getXincoAddAttributes().clear();
+                    XincoAddAttribute xaa;
+                    for (int i = 0; i < data.getXincoCoreDataType().getXincoCoreDataTypeAttributes().size(); i++) {
+                        try {
+                            xaa = new XincoAddAttribute();
+                            xaa.setAttributeId(((XincoCoreDataTypeAttribute) data.getXincoCoreDataType().getXincoCoreDataTypeAttributes().get(i)).getAttributeId());
+                            xaa.setAttribVarchar("");
+                            xaa.setAttribText("");
+                            GregorianCalendar calendar = new GregorianCalendar();
+                            calendar.setTime(new Date());
+                            DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
+                            xaa.setAttribDatetime(DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
+                            data.getXincoAddAttributes().add(xaa);
+                        } catch (DatatypeConfigurationException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
                     if ((data.getXincoCoreDataType().getId() != 1
                             || data.getXincoAddAttributes().size() > 8)
                             && (data.getXincoCoreDataType().getId() != 2
                             || data.getXincoAddAttributes().size() > 1)) {
                         wizard.addStep(attrStep, wizard.getLastCompleted() + 2);
+                    }
+                    if (data.getXincoCoreDataType().getId() == 1) {
+                        //Is a file, show archiving dialog
+                        wizard.addStep(new WizardStep() {
+
+                            @Override
+                            public String getCaption() {
+                                return getResource().getString("window.archive");
+                            }
+
+                            @Override
+                            public com.vaadin.ui.Component getContent() {
+                                if (archDialog == null) {
+                                    archDialog = new ArchiveDialog();
+                                    archDialog.setSizeFull();
+                                }
+                                return archDialog;
+                            }
+
+                            @Override
+                            public boolean onAdvance() {
+                                //True if there are more steps after this one
+                                return wizard.getSteps().size() > wizard.getLastCompleted() + 1;
+                            }
+
+                            @Override
+                            public boolean onBack() {
+                                return true;
+                            }
+                        });
+                    }
+                    if (data.getXincoCoreDataType().getId() == 2) {
+                        //Text data
+                        //TODO: Prompt user to enter text
                     }
                 }
                 return value;
@@ -681,8 +890,9 @@ public class Xinco extends Application implements Property.ValueChangeListener {
         });
         wizardWindow.removeAllComponents();
         wizardWindow.addComponent(wizard);
+        ddManager = new DataDialogManager();
         wizard.setSizeFull();
-        wizard.addListener(new DataDialogManager());
+        wizard.addListener(ddManager);
         wizardWindow.setModal(true);
         wizardWindow.setWidth(40, Sizeable.UNITS_PERCENTAGE);
         // add the wizard to a layout
@@ -696,6 +906,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
 
         private File file;                          // File to write to.
         private String fileName;                    // Original file name
+        private boolean success = false;
 
         // Callback method to begin receiving the upload.
         @Override
@@ -726,10 +937,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
 
         @Override
         public void uploadSucceeded(SucceededEvent event) {
-            //TODO: continue
-            getMainWindow().showNotification(
-                    file.getAbsolutePath(),
-                    Notification.TYPE_TRAY_NOTIFICATION);
+            success = true;
         }
 
         @Override
@@ -739,6 +947,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                     Notification.TYPE_ERROR_MESSAGE);
             file = null;
             fileName = null;
+            success = false;
         }
 
         /**
@@ -753,6 +962,13 @@ public class Xinco extends Application implements Property.ValueChangeListener {
          */
         public String getFileName() {
             return fileName;
+        }
+
+        /**
+         * @return the success
+         */
+        public boolean isSuccess() {
+            return success;
         }
     }
 
@@ -780,14 +996,24 @@ public class Xinco extends Application implements Property.ValueChangeListener {
         }
 
         private void finishWizard() {
-            //TODO: Process Data
-            discard();
+            try {
+                //Here we have the XincoCoreData object in the data variable 
+                //and the file loaded in the server. Time to get it into the system!
+                getService().getXincoPort().setXincoCoreData(data, loggedUser);
+                discard();
+                getMainWindow().removeWindow(wizardWindow);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         private void discard() {
-            //Clear wizard
+            //Clear wizard related stuff
             dataDialog = null;
             dataTypeDialog = null;
+            attrDialog = null;
+            ddManager = null;
+            data = null;
         }
 
         private void closeWizard() {
@@ -919,7 +1145,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                 }
             }
         });
-        form.getFooter().setSizeFull();
+        form.getFooter().setSizeUndefined();
         form.getFooter().addComponent(commit);
         form.getFooter().addComponent(cancel);
         dataFolderDialog.addComponent(form);
@@ -1041,26 +1267,27 @@ public class Xinco extends Application implements Property.ValueChangeListener {
             xincoTable.addItem(new Object[]{getResource().getString("general.status"), value}, i++);
         } else if (xincoTree.getValue() instanceof XincoCoreDataProperty) {
             // get ace
-            XincoCoreData data = ((XincoCoreData) ((XincoCoreDataProperty) xincoTree.getValue()).getValue());
+            XincoCoreData temp = ((XincoCoreData) ((XincoCoreDataProperty) xincoTree.getValue()).getValue());
             try {
                 tempAce = XincoCoreACEServer.checkAccess(new XincoCoreUserServer(1),
-                        (ArrayList) (data).getXincoCoreAcl());
+                        (ArrayList) (temp).getXincoCoreAcl());
             } catch (XincoException ex) {
                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             }
             xincoTable.addItem(new Object[]{
-                        getResource().getString("general.id"), data.getId()}, i++);
+                        getResource().getString("general.id"), temp.getId()}, i++);
             xincoTable.addItem(new Object[]{
-                        getResource().getString("general.designation"), data.getDesignation()}, i++);
+                        getResource().getString("general.designation"), temp.getDesignation()}, i++);
             xincoTable.addItem(new Object[]{
-                        getResource().getString("general.language"), data.getXincoCoreLanguage().getDesignation()
+                        getResource().getString("general.language"),
+                        getResource().getString(temp.getXincoCoreLanguage().getDesignation())
                         + " ("
-                        + data.getXincoCoreLanguage().getSign()
+                        + temp.getXincoCoreLanguage().getSign()
                         + ")"}, i++);
             xincoTable.addItem(new Object[]{
-                        getResource().getString("general.datatype"), getResource().getString(data.getXincoCoreDataType().getDesignation())
+                        getResource().getString("general.datatype"), getResource().getString(temp.getXincoCoreDataType().getDesignation())
                         + " ("
-                        + getResource().getString(data.getXincoCoreDataType().getDescription())
+                        + getResource().getString(temp.getXincoCoreDataType().getDescription())
                         + ")"}, i++);
             xincoTable.addItem(new Object[]{"", ""}, i++);
             xincoTable.addItem(new Object[]{"", ""}, i++);
@@ -1089,7 +1316,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                         "[" + value + "]"}, i++);
             xincoTable.addItem(new Object[]{"", ""}, i++);
             xincoTable.addItem(new Object[]{"", ""}, i++);
-            switch (data.getStatusNumber()) {
+            switch (temp.getStatusNumber()) {
                 case 1:
                     value = getResource().getString("general.status.open");
                     break;
@@ -1140,7 +1367,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                                 + (attributes.get(j)).getAttribText();
                     }
                     if (dataTypeAttributes.get(j).getDataType().equalsIgnoreCase("datetime")) {
-                        Date time = ((XincoAddAttribute) data.getXincoAddAttributes().get(j)).getAttribDatetime().toGregorianCalendar().getTime();
+                        Date time = ((XincoAddAttribute) temp.getXincoAddAttributes().get(j)).getAttribDatetime().toGregorianCalendar().getTime();
                         Calendar cal = new GregorianCalendar();
                         cal.setTime(time);
                         value = (cal.get(Calendar.MONTH) == 11
@@ -1162,14 +1389,14 @@ public class Xinco extends Application implements Property.ValueChangeListener {
             Calendar cal;
             XMLGregorianCalendar realcal;
             Calendar ngc = new GregorianCalendar();
-            for (int j = data.getXincoCoreLogs().size() - 1; j >= 0; j--) {
-                if (((XincoCoreLog) data.getXincoCoreLogs().get(j)).getOpDatetime() == null) {
+            for (int j = temp.getXincoCoreLogs().size() - 1; j >= 0; j--) {
+                if (((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getOpDatetime() == null) {
                     header = "???";
                 } else {
                     try {
                         // convert clone from remote time to local time
-                        cal = ((XMLGregorianCalendar) ((XincoCoreLog) data.getXincoCoreLogs().get(j)).getOpDatetime().clone()).toGregorianCalendar();
-                        realcal = (((XincoCoreLog) data.getXincoCoreLogs().get(j)).getOpDatetime());
+                        cal = ((XMLGregorianCalendar) ((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getOpDatetime().clone()).toGregorianCalendar();
+                        realcal = (((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getOpDatetime());
                         cal.add(Calendar.MILLISECOND,
                                 (ngc.get(Calendar.ZONE_OFFSET)
                                 - realcal.toGregorianCalendar().get(Calendar.ZONE_OFFSET))
@@ -1203,21 +1430,21 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                     }
                 }
                 value = "("
-                        + ((XincoCoreLog) data.getXincoCoreLogs().get(j)).getOpCode()
+                        + ((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getOpCode()
                         + ") "
-                        + ((XincoCoreLog) data.getXincoCoreLogs().get(j)).getOpDescription();
+                        + ((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getOpDescription();
                 xincoTable.addItem(new Object[]{header, value}, i++);
                 header = "";
                 try {
                     value = getResource().getString("general.version")
                             + " "
-                            + ((XincoCoreLog) data.getXincoCoreLogs().get(j)).getVersion().getVersionHigh()
+                            + ((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getVersion().getVersionHigh()
                             + "."
-                            + ((XincoCoreLog) data.getXincoCoreLogs().get(j)).getVersion().getVersionMid()
+                            + ((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getVersion().getVersionMid()
                             + "."
-                            + ((XincoCoreLog) data.getXincoCoreLogs().get(j)).getVersion().getVersionLow()
+                            + ((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getVersion().getVersionLow()
                             + ""
-                            + ((XincoCoreLog) data.getXincoCoreLogs().get(j)).getVersion().getVersionPostfix();
+                            + ((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getVersion().getVersionPostfix();
                     xincoTable.addItem(new Object[]{header, value}, i++);
                 } catch (Exception ex) {
                     Logger.getLogger(Xinco.class.getSimpleName()).log(Level.SEVERE, null, ex);
