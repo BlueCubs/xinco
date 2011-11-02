@@ -80,11 +80,14 @@ public class DataTypeDialog extends AbstractDialog {
             for (i = 0; i < explorer.getSession().getServerDatatypes().size(); i++) {
                 String desc = ((XincoCoreDataType) explorer.getSession().getServerDatatypes().get(i)).getDescription();
                 String designation = ((XincoCoreDataType) explorer.getSession().getServerDatatypes().get(i)).getDesignation();
-                text = (explorer.getResourceBundle().getString(designation) == null ? designation : explorer.getResourceBundle().getString(designation))
-                        + " (" + (explorer.getResourceBundle().getString(desc) == null ? desc : explorer.getResourceBundle().getString(desc)) + ")";
-                dlm.addElement(text);
-                if (((XincoCoreDataType) explorer.getSession().getServerDatatypes().get(i)).getId() == ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreDataType().getId()) {
-                    this.dataType.setSelectedIndex(i);
+                //TODO: Handle renderings
+                if (!designation.equals("general.data.type.rendering")) {
+                    text = (explorer.getResourceBundle().getString(designation) == null ? designation : explorer.getResourceBundle().getString(designation))
+                            + " (" + (explorer.getResourceBundle().getString(desc) == null ? desc : explorer.getResourceBundle().getString(desc)) + ")";
+                    dlm.addElement(text);
+                    if (((XincoCoreDataType) explorer.getSession().getServerDatatypes().get(i)).getId() == ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreDataType().getId()) {
+                        this.dataType.setSelectedIndex(i);
+                    }
                 }
             }
             dataType.setModel(dlm);
