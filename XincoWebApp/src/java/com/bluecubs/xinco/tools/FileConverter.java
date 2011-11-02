@@ -54,7 +54,7 @@ public class FileConverter {
     }
 
     private static OpenOfficeConnection connectToOpenOffice() {
-        OpenOfficeConnection connection = null;
+        OpenOfficeConnection connection;
         try {
             // connect to an OpenOffice.org instance running on port 8100
             connection = new SocketOpenOfficeConnection(
@@ -81,7 +81,7 @@ public class FileConverter {
         converter.convert(
                 new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, id, "" + id)),
                 new File(XincoDBManager.config.FileRepositoryPath + id + "-pdf"), customPdfFormat);
-        Logger.getLogger(FileConverter.class.getName()).log(Level.INFO, "Rendering saved at: {0}{1}-pdf", 
+        Logger.getLogger(FileConverter.class.getName()).log(Level.INFO, "Rendering saved at: {0}{1}-pdf",
                 new Object[]{XincoDBManager.config.FileRepositoryPath, id});
         // close the connection
         connection.disconnect();

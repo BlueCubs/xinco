@@ -1,35 +1,32 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoCoreDataTypeServer
+ * Name: XincoCoreDataTypeServer
  *
- * Description:     data type 
+ * Description: data type
  *
- * Original Author: Alexander Manes
- * Date:            2004
+ * Original Author: Alexander Manes Date: 2004
  *
  * Modifications:
- * 
- * Who?             When?             What?
- * -                -                 -
+ *
+ * Who? When? What? - - -
  *
  *************************************************************
  */
@@ -39,10 +36,10 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeJp
 import com.bluecubs.xinco.core.server.service.XincoCoreDataType;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -93,7 +90,8 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
 
     //create complete list of data types
     public static ArrayList getXincoCoreDataTypes() {
-        ArrayList coreDataTypes = new ArrayList();
+        ArrayList<XincoCoreDataTypeServer> coreDataTypes =
+                new ArrayList<XincoCoreDataTypeServer>();
         try {
             result = XincoDBManager.createdQuery("SELECT xcdt FROM XincoCoreDataType xcdt ORDER BY xcdt.designation");
             while (result.size() > 0) {
@@ -101,16 +99,31 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
                 result.remove(0);
             }
         } catch (Exception e) {
+            Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getSimpleName()).log(Level.SEVERE, null, e);
             coreDataTypes.clear();
         }
         return coreDataTypes;
+    }
+
+    public static XincoCoreDataTypeServer getXincoCoreDataType(int id) {
+        try {
+            parameters.clear();
+            parameters.put("id", id);
+            result = XincoDBManager.namedQuery("XincoCoreDataType.findById", parameters);
+            if (!result.isEmpty()) {
+                return new XincoCoreDataTypeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreDataType) result.get(0));
+            }
+        } catch (Exception e) {
+            Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getSimpleName()).log(Level.SEVERE, null, e);
+        }
+        return null;
     }
 
     //write to db
     public int write2DB() throws XincoException {
         try {
             XincoCoreDataTypeJpaController controller = new XincoCoreDataTypeJpaController(XincoDBManager.getEntityManagerFactory());
-            com.bluecubs.xinco.core.server.persistence.XincoCoreDataType xcdt = null;
+            com.bluecubs.xinco.core.server.persistence.XincoCoreDataType xcdt;
             if (getId() > 0) {
                 xcdt = controller.findXincoCoreDataType(getId());
                 xcdt.setDesignation(getDesignation().replaceAll("'", "\\\\'"));

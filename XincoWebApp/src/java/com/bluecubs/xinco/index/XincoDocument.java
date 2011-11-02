@@ -1,35 +1,32 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoDocument
+ * Name: XincoDocument
  *
- * Description:     convert XincoCoreData to Lucene Documents 
+ * Description: convert XincoCoreData to Lucene Documents
  *
- * Original Author: Alexander Manes
- * Date:            2004/10/31
+ * Original Author: Alexander Manes Date: 2004/10/31
  *
  * Modifications:
- * 
- * Who?             When?             What?
- * -                -                 -
+ *
+ * Who? When? What? - - -
  *
  *************************************************************
  */
@@ -37,32 +34,34 @@ package com.bluecubs.xinco.index;
 
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
-import com.bluecubs.xinco.index.filetypes.XincoIndexFileType;
-import com.bluecubs.xinco.index.filetypes.XincoIndexText;
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.service.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.index.filetypes.XincoIndexFileType;
+import com.bluecubs.xinco.index.filetypes.XincoIndexText;
 import java.io.File;
 import java.io.Reader;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 
-/** A utility for making Lucene Documents from a File. */
+/**
+ * A utility for making Lucene Documents from a File.
+ */
 public class XincoDocument {
 
-    private static final Logger logger = 
+    private static final Logger logger =
             Logger.getLogger(XincoDocument.class.getSimpleName());
 
     public static Document getXincoDocument(XincoCoreData d, boolean indexContent)
             throws java.io.FileNotFoundException {
         int i, l;
-        Document doc = null;
-        int fileType = 0;
-        int file_extIndex = 0;
-        String file_ext = "";
+        Document doc;
+        int fileType;
+        int file_extIndex;
+        String file_ext;
 
         doc = new Document();
 
@@ -106,9 +105,9 @@ public class XincoDocument {
                 }
             }
             // call actual indexing classes
-            XincoIndexFileType xift = null;
-            Reader ContentReader = null;
-            String ContentString = null;
+            XincoIndexFileType xift;
+            Reader ContentReader;
+            String ContentString;
             if (fileType == 0) {
                 // index as TEXT
                 xift = new XincoIndexText();

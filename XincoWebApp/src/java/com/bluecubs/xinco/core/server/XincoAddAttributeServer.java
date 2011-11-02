@@ -1,43 +1,36 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoAddAttributeServer
+ * Name: XincoAddAttributeServer
  *
- * Description:     additional attributes of a data object 
+ * Description: additional attributes of a data object
  *
- * Original Author: Alexander Manes
- * Date:            2004
+ * Original Author: Alexander Manes Date: 2004
  *
  * Modifications:
- * 
- * Who?             When?             What?
- * -                -                 -
+ *
+ * Who? When? What? - - -
  *
  *************************************************************
  */
 package com.bluecubs.xinco.core.server;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import com.bluecubs.xinco.core.server.persistence.XincoAddAttributePK;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJpaController;
@@ -114,9 +107,9 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
     public int write2DB() throws XincoException {
         boolean create = false;
         try {
-            String attrT = "";
-            String attrVC = "";
-            String attrDT = "";
+            String attrT;
+            String attrVC;
+            String attrDT;
             if (getAttribText() != null) {
                 attrT = getAttribText();
                 attrT = attrT.replaceAll("'", "\\\\'");
@@ -180,7 +173,8 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
     //create complete list of add attributes
 
     public static ArrayList getXincoAddAttributes(int attrID) {
-        ArrayList addAttributes = new ArrayList();
+        ArrayList<XincoAddAttribute> addAttributes =
+                new ArrayList<XincoAddAttribute>();
         try {
             result = XincoDBManager.createdQuery("SELECT xaa FROM XincoAddAttribute xaa "
                     + "WHERE xaa.xincoAddAttributePK.xincoCoreDataId=" + attrID

@@ -91,7 +91,7 @@ public class DataDialog extends AbstractDialog {
             DefaultListModel dlm = new DefaultListModel();
             dlm.removeAllElements();
             for (i = 0; i < explorer.getSession().getServerLanguages().size(); i++) {
-                text = ((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getDesignation() + " (" + ((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getSign() + ")";
+                text = explorer.getResourceBundle().getString(((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getDesignation()) + " (" + ((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getSign() + ")";
                 dlm.addElement(text);
                 if (((XincoCoreLanguage) explorer.getSession().getServerLanguages().get(i)).getId() == ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLanguage().getId()) {
                     selection = i;

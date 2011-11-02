@@ -1174,6 +1174,34 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         return jTreeRepository;
     }
 
+    /**
+     * @return the current_filename
+     */
+    public String getCurrentFileName() {
+        return current_filename;
+    }
+
+    /**
+     * @param current_filename the current_filename to set
+     */
+    private void setCurrentFilename(String current_filename) {
+        this.current_filename = current_filename;
+    }
+
+    /**
+     * @return the current_fullpath
+     */
+    public String getCurrentFullPath() {
+        return current_fullpath;
+    }
+
+    /**
+     * @param current_fullpath the current_fullpath to set
+     */
+    public void setCurrentFullPath(String current_fullpath) {
+        this.current_fullpath = current_fullpath;
+    }
+
     private class loginThread extends Thread {
 
         @Override
@@ -1868,12 +1896,23 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     public void doDataWizard(final int w_type) {
         this.wizardType = w_type;
         /*
-         * wizard type = 1 = add new data = 2 = edit data object = 3 = edit add
-         * attributes = 4 = checkout data = 5 = undo checkout = 6 = checkin data
-         * = 7 = download data = 8 = open URL cin browser = 9 = open email
-         * client with contact information = 10 = publish data = 11 = download
-         * previous revision = 12 = lock data = 13 = comment data = 14 = preview
-         * data = 15 = download file with predefined name
+         * wizard type 
+         * = 1 = add new data 
+         * = 2 = edit data object 
+         * = 3 = edit add
+         * attributes 
+         * = 4 = checkout data 
+         * = 5 = undo checkout 
+         * = 6 = checkin data
+         * = 7 = download data 
+         * = 8 = open URL cin browser 
+         * = 9 = open email client with contact information 
+         * = 10 = publish data 
+         * = 11 = download previous revision 
+         * = 12 = lock data 
+         * = 13 = comment data 
+         * = 14 = preview data 
+         * = 15 = download file with predefined name
          */
         int i;
         newnode = new XincoMutableTreeNode(new XincoCoreData(), this);
@@ -1966,8 +2005,9 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                                 throw new XincoException(xerb.getString("datawizard.updatecancel"));
                             }
                             setCurrentPathFilename(fc.getSelectedFile().getPath());
-                            ((XincoCoreData) newnode.getUserObject()).setDesignation(current_filename);
+                            ((XincoCoreData) newnode.getUserObject()).setDesignation(getCurrentFileName());
                         }
+                        
                         //for text -> show text editing dialog
                         //text = 2
                         if (((XincoCoreData) newnode.getUserObject()).getXincoCoreDataType().getId() == 2) {
@@ -2131,7 +2171,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             getProgressBar().setTitle(xerb.getString("datawizard.fileuploadinfo"));
                             getProgressBar().show();
                             getjInternalFrameInformationText().setText(xerb.getString("datawizard.fileuploadinfo"));
-                            in = new CheckedInputStream(new FileInputStream(current_fullpath), new CRC32());
+                            in = new CheckedInputStream(new FileInputStream(getCurrentFullPath()), new CRC32());
                             out = new ByteArrayOutputStream();
                             byte[] buf = new byte[4096];
                             int len;
@@ -2143,12 +2183,13 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             byteArray = out.toByteArray();
                             out.close();
                             //update attributes
-                            ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXincoAddAttributes().get(0)).setAttribVarchar(current_filename);
+                            ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXincoAddAttributes().get(0)).setAttribVarchar(getCurrentFileName());
                             ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXincoAddAttributes().get(1)).setAttribUnsignedint(totalLen);
                             ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXincoAddAttributes().get(2)).setAttribVarchar("" + ((CheckedInputStream) in).getChecksum().getValue());
                         } catch (Exception fe) {
+                            Logger.getLogger(XincoExplorer.class.getSimpleName()).log(Level.SEVERE, null, fe);
                             getProgressBar().hide();
-                            throw new XincoException(xerb.getString("datawizard.unabletoloadfile"));
+                            throw new XincoException(xerb.getString("datawizard.unabletoloadfile") + "\n" + fe.getLocalizedMessage());
                         }
                     }
                     //save data to server
@@ -2256,7 +2297,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                         }
 
                         //ByteArrayInputStream cin = new ByteArrayInputStream(byteArray);
-                        CheckedOutputStream couts = new CheckedOutputStream(new FileOutputStream(current_fullpath), new CRC32());
+                        CheckedOutputStream couts = new CheckedOutputStream(new FileOutputStream(getCurrentFullPath()), new CRC32());
                         byte[] buf = new byte[4096];
                         int len;
                         totalLen = 0;
@@ -2277,7 +2318,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                         couts.close();
                         //make sure temp. file is deleted on exit
                         if (wizardType == 14) {
-                            (new File(current_fullpath)).deleteOnExit();
+                            (new File(getCurrentFullPath())).deleteOnExit();
                         }
                         //update transaction info
                         getjInternalFrameInformationText().setText(xerb.getString("datawizard.filedownloadsuccess"));
@@ -2299,7 +2340,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                                 }
                                 if (open_file) {
                                     try {
-                                        String[] cmd = {"open", current_fullpath};
+                                        String[] cmd = {"open", getCurrentFullPath()};
                                         process = Runtime.getRuntime().exec(cmd);
                                     } catch (Throwable t) {
                                         Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
@@ -2320,7 +2361,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                                 }
                                 if (open_file) {
                                     try {
-                                        String cmd = "rundll32 url.dll,FileProtocolHandler" + " \"" + current_fullpath + "\"";
+                                        String cmd = "rundll32 url.dll,FileProtocolHandler" + " \"" + getCurrentFullPath() + "\"";
                                         process = Runtime.getRuntime().exec(cmd);
                                     } catch (Throwable t) {
                                         Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
@@ -2337,7 +2378,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                                 }
                                 if (open_file) {
                                     try {
-                                        String[] cmd = {"xdg-open", current_fullpath};
+                                        String[] cmd = {"xdg-open", getCurrentFullPath()};
                                         process = Runtime.getRuntime().exec(cmd);
                                     } catch (Throwable t) {
                                         Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
@@ -2526,8 +2567,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                 i = s.lastIndexOf(System.getProperty("file.separator"));
                 /*
                  * j = s.lastIndexOf("\\"); //select i as index wanted if (j>i)
-                 * { i = j;
-                }
+                 * { i = j; }
                  */
                 previous_filename = s.substring(i + 1);
                 if (i > 0) {
@@ -2556,24 +2596,24 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         int i;
         if (s != null) {
             try {
-                setPreviousPathFilename(current_fullpath);
-                current_fullpath = s;
+                setPreviousPathFilename(getCurrentFullPath());
+                setCurrentFullPath(s);
                 i = s.lastIndexOf(System.getProperty("file.separator"));
-                current_filename = s.substring(i + 1);
+                setCurrentFilename(s.substring(i + 1));
                 if (i > 0) {
                     setCurrentPath(s.substring(0, i + 1));
                 } else {
                     setCurrentPath("");
                 }
             } catch (Exception e) {
-                current_filename = "";
+                setCurrentFilename("");
                 setCurrentPath("");
-                current_fullpath = "";
+                setCurrentFullPath("");
             }
         } else {
-            current_filename = "";
+            setCurrentFilename("");
             setCurrentPath("");
-            current_fullpath = "";
+            setCurrentFullPath("");
         }
     }
 
@@ -2586,9 +2626,8 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         if (!(path.substring(path.length() - 1).equals(System.getProperty("file.separator")))) {
             path += System.getProperty("file.separator");
         }
-        current_filename = "";
+        setCurrentFilename("");
         currentPath = path;
-        current_fullpath = path;
     }
 
     /**

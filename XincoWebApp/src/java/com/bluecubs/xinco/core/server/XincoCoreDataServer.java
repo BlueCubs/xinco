@@ -169,10 +169,11 @@ public class XincoCoreDataServer extends XincoCoreData {
     //write to db
     public int write2DB() throws XincoException {
         boolean created = false;
+        com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd;
         XincoCoreDataJpaController controller = new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory());
         try {
             if (getId() > 0) {
-                com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd = controller.findXincoCoreData(getId());
+                xcd = controller.findXincoCoreData(getId());
                 parameters.clear();
                 parameters.put("id", getXincoCoreNodeId());
                 xcd.setXincoCoreNode((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) XincoDBManager.namedQuery("XincoCoreNode.findById", parameters).get(0));
@@ -189,7 +190,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                 xcd.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.edit(xcd);
             } else {
-                com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd = new com.bluecubs.xinco.core.server.persistence.XincoCoreData();
+                xcd = new com.bluecubs.xinco.core.server.persistence.XincoCoreData();
                 parameters.clear();
                 parameters.put("id", this.getXincoCoreNodeId());
                 xcd.setXincoCoreNode((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) XincoDBManager.namedQuery("XincoCoreNode.findById", parameters).get(0));
@@ -219,6 +220,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                 com.bluecubs.xinco.core.server.persistence.XincoAddAttribute xaa;
                 if (created) {
                     xaa = new com.bluecubs.xinco.core.server.persistence.XincoAddAttribute();
+                    xaa.setXincoAddAttributePK(new XincoAddAttributePK(xcd.getId(), temp.getAttributeId()));
                 } else {
                     xaa = new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoAddAttribute(new XincoAddAttributePK(getId(),
                             temp.getAttributeId()));
@@ -229,7 +231,12 @@ public class XincoCoreDataServer extends XincoCoreData {
                 xaa.setAttribVarchar(temp.getAttribVarchar());
                 xaa.setAttribText(temp.getAttribText());
                 xaa.setAttribDatetime(temp.getAttribDatetime().toGregorianCalendar().getTime());
-                new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).edit(xaa);
+                xaa.setXincoCoreData(xcd);
+                if (created) {
+                    new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).create(xaa);
+                } else {
+                    new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).edit(xaa);
+                }
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);

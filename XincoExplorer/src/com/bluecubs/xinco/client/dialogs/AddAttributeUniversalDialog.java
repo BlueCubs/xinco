@@ -102,7 +102,7 @@ public class AddAttributeUniversalDialog extends AbstractDialog {
         }
         List<XincoAddAttribute> attributes;
         if (data.getId() == 0) {
-            // Is a new data, there's nothing yet in the database.
+            // Is new data, there's nothing yet in the database.
             // Load local values.
             attributes = data.getXincoAddAttributes();
         } else {

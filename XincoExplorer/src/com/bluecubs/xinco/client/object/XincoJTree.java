@@ -1,30 +1,28 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoJTree
+ * Name: XincoJTree
  *
- * Description:     Xinco JTree
+ * Description: Xinco JTree
  *
- * Original Author: Javier A. Ortiz
- * Date:            May 18, 2007, 9:34 AM
+ * Original Author: Javier A. Ortiz Date: May 18, 2007, 9:34 AM
  *
  * Modifications:
  *
@@ -68,8 +66,10 @@ public final class XincoJTree extends JTree {
     private Insets autoscrollInsets = new Insets(20, 20, 20, 20); // insets
     private XincoDefaultTreeTransferHandler xincoDefaultTreeTransferHandler;
 
-    /** Creates a new instance of XincoJTree
-     * @param explorer 
+    /**
+     * Creates a new instance of XincoJTree
+     *
+     * @param explorer
      */
     public XincoJTree(XincoExplorer explorer) {
         setExplorer(explorer);
@@ -141,8 +141,8 @@ public final class XincoJTree extends JTree {
                 getExplorer().getProgressBar().setTitle(getExplorer().getResourceBundle().getString("message.explorer.verifyingcredentials"));
                 getExplorer().getProgressBar().show();
                 getExplorer().resetTimer();
-                int i = 0;
-                int j = 0;
+                int i;
+                int j;
                 XincoCoreACE tempAce = new XincoCoreACE();
                 TreePath tp = e.getPath();
                 // get node selected
@@ -411,7 +411,7 @@ public final class XincoJTree extends JTree {
                         rdata[1] = getExplorer().getXdata().getDesignation();
                         dtm.addRow(rdata);
                         rdata[0] = getExplorer().getResourceBundle().getString("general.language");
-                        rdata[1] = getExplorer().getXdata().getXincoCoreLanguage().getDesignation()
+                        rdata[1] = getExplorer().getResourceBundle().getString(getExplorer().getXdata().getXincoCoreLanguage().getDesignation())
                                 + " ("
                                 + getExplorer().getXdata().getXincoCoreLanguage().getSign()
                                 + ")";
@@ -547,7 +547,7 @@ public final class XincoJTree extends JTree {
                     rdata[1] = "";
                     dtm.addRow(rdata);
                     Calendar cal;
-                    XMLGregorianCalendar realcal = null;
+                    XMLGregorianCalendar realcal;
                     Calendar ngc = new GregorianCalendar();
                     for (i = getExplorer().getXdata().getXincoCoreLogs().size() - 1; i >= 0; i--) {
                         if (((XincoCoreLog) getExplorer().getXdata().getXincoCoreLogs().get(i)).getOpDatetime()

@@ -62,7 +62,7 @@ public class XincoIdServer extends XincoId {
             throw new XincoException(ex);
         }
     }
-    
+
     public static int deleteFromDB(XincoId id) throws XincoException {
         XincoIdJpaController controller = new XincoIdJpaController(
                 XincoDBManager.getEntityManagerFactory());
@@ -75,8 +75,8 @@ public class XincoIdServer extends XincoId {
         }
         return 0;
     }
-    
-    public static XincoIdServer getXincoId(String table) throws XincoException{
+
+    public static XincoIdServer getXincoId(String table) throws XincoException {
         HashMap parameters = new HashMap();
         parameters.put("tablename", table);
         List result = XincoDBManager.namedQuery("XincoId.findByTablename", parameters);
@@ -86,20 +86,20 @@ public class XincoIdServer extends XincoId {
             throw new XincoException("Unable to find xinco id for: " + table);
         }
     }
-    
-    public static int getNextId(String table) throws XincoException{
+
+    public static int getNextId(String table) throws XincoException {
         XincoIdServer xincoId = getXincoId(table);
-        xincoId.setLastId(xincoId.getLastId()+1);
+        xincoId.setLastId(xincoId.getLastId() + 1);
         xincoId.write2DB();
         return xincoId.getLastId();
     }
-    
-    public static List<XincoIdServer> getIds() throws XincoException{
+
+    public static List<XincoIdServer> getIds() throws XincoException {
         ArrayList<XincoIdServer> ids = new ArrayList<XincoIdServer>();
         List result = XincoDBManager.namedQuery("XincoId.findAll");
         if (!result.isEmpty()) {
-            for(Object o:result){
-                ids.add(new XincoIdServer(((XincoId)o).getId()));
+            for (Object o : result) {
+                ids.add(new XincoIdServer(((XincoId) o).getId()));
             }
         } else {
             throw new XincoException("No ids found!");

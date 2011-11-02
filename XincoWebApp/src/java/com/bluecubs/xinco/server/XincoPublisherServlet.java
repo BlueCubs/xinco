@@ -1,42 +1,39 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoPublisherServlet
+ * Name: XincoPublisherServlet
  *
- * Description:     publisher servlet
+ * Description: publisher servlet
  *
- * Original Author: Alexander Manes
- * Date:            2004
+ * Original Author: Alexander Manes Date: 2004
  *
  * Modifications:
  *
- * Who?             When?             What?
- * -                -                 -
+ * Who? When? What? - - -
  *
  *************************************************************
  */
 package com.bluecubs.xinco.server;
 
-import com.bluecubs.xinco.core.server.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.XincoDataStatus;
+import com.bluecubs.xinco.core.server.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
@@ -44,7 +41,6 @@ import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.service.XincoCoreACE;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
-import com.twiek.Utils.Base64;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -58,6 +54,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.codec.binary.Base64;
 
 public class XincoPublisherServlet extends HttpServlet {
 
@@ -65,13 +62,18 @@ public class XincoPublisherServlet extends HttpServlet {
     private XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
     private List result;
 
-    /** Destroys the servlet.
+    /**
+     * Destroys the servlet.
      */
     @Override
     public void destroy() {
     }
 
-    /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+    /**
+     * Processes requests for both HTTP
+     * <code>GET</code> and
+     * <code>POST</code> methods.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws javax.servlet.ServletException
@@ -79,7 +81,7 @@ public class XincoPublisherServlet extends HttpServlet {
      */
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Locale loc = null;
+        Locale loc;
         try {
             String list = request.getParameter("list");
             String[] locales;
@@ -101,20 +103,20 @@ public class XincoPublisherServlet extends HttpServlet {
             loc = Locale.getDefault();
         }
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
-        int i = 0;
-        int j = 0;
+        int i;
+        int j;
         String requestPath;
         String requestPathArray[];
         boolean fileDownload = false;
-        int coreDataId = 0;
+        int coreDataId;
         XincoCoreDataServer xcd = null;
-        XincoCoreDataTypeAttribute xcdta = null;
-        XincoAddAttribute xaa = null;
+        XincoCoreDataTypeAttribute xcdta;
+        XincoAddAttribute xaa;
         boolean printList = false;
         boolean browseFolder = false;
-        String temp_url = "";
-        String temp_server_url = "";
-        boolean isPublic = false;
+        String temp_url;
+        String temp_server_url;
+        boolean isPublic;
 
         //get requested data
         if (request.getParameter("MainMenu") == null) {
@@ -226,7 +228,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
                 if (printList) {
                     try {
-                        XincoCoreDataServer xdataTemp = null;
+                        XincoCoreDataServer xdataTemp;
                         //Only display data with at least one major version
                         result = XincoDBManager.createdQuery("Select distinct x.xincoCoreData from XincoCoreLog x, "
                                 + "XincoCoreAce xca where x.xincoCoreData.id = xca.xincoCoreData.id and "
@@ -236,7 +238,6 @@ public class XincoPublisherServlet extends HttpServlet {
                         for (Object o : result) {
                             xdataTemp = new XincoCoreDataServer((XincoCoreData) o);
                             temp_server_url = request.getRequestURL().toString();
-                            temp_url = "";
                             //file = 1
                             if (xdataTemp.getXincoCoreDataType().getId() == 1) {
                                 temp_url = ((XincoAddAttribute) xdataTemp.getXincoAddAttributes().get(0)).getAttribVarchar();
@@ -260,12 +261,12 @@ public class XincoPublisherServlet extends HttpServlet {
                     }
                 } else if (browseFolder) {
                     try {
-                        XincoCoreNodeServer xnodeTemp = null;
-                        XincoCoreNodeServer xnodeTemp2 = null;
-                        XincoCoreDataServer xdataTemp = null;
-                        String tempPath = null;
-                        String tempPath2 = null;
-                        int temp_xcnId = 0;
+                        XincoCoreNodeServer xnodeTemp;
+                        XincoCoreNodeServer xnodeTemp2;
+                        XincoCoreDataServer xdataTemp;
+                        byte[] tempPath;
+                        byte[] tempPath2;
+                        int temp_xcnId;
 
                         if (!(request.getParameter("FolderId") == null)) {
                             temp_xcnId = Integer.parseInt(request.getParameter("FolderId"));
@@ -284,8 +285,7 @@ public class XincoPublisherServlet extends HttpServlet {
                                 xnodeTemp.fillXincoCoreData();
                                 // print current path
                                 if (!(request.getParameter("Path") == null)) {
-                                    tempPath = request.getParameter("Path");
-                                    tempPath = Base64.decode(tempPath);
+                                    tempPath = Base64.decodeBase64(request.getParameter("Path").getBytes());
                                     out.println("<tr>");
                                     out.println("<td colspan=\"2\" class=\"text\"><b>" + rb.getString("general.path") + "</b> " + tempPath + "</td>");
                                     out.println("</tr>");
@@ -312,17 +312,18 @@ public class XincoPublisherServlet extends HttpServlet {
                                         }
                                     }
                                     if (isPublic) {
+                                        String temp;
                                         if (tempPath != null) {
-                                            tempPath2 = tempPath + " / " + xnodeTemp2.getDesignation() + " (" + xnodeTemp2.getXincoCoreLanguage().getSign() + ")";
-                                            tempPath2 = Base64.encode(tempPath2);
-                                            tempPath2 = "&Path=" + tempPath2;
+                                            temp = tempPath + " / " + xnodeTemp2.getDesignation() + " (" + xnodeTemp2.getXincoCoreLanguage().getSign() + ")";
+                                            tempPath2 = Base64.encodeBase64(temp.getBytes());
+                                            temp = "&Path=" + tempPath2;
                                         } else {
-                                            tempPath2 = "";
+                                            temp = "";
                                         }
                                         out.println("<tr>");
                                         out.println("<td class=\"text\">&nbsp;</td>");
                                         out.println("<td class=\"text\"><a href=\"" + "XincoPublisher?MainMenu=browse&FolderId="
-                                                + xnodeTemp2.getId() + tempPath2 + "&list=" + request.getParameter("list") + "\">["
+                                                + xnodeTemp2.getId() + temp + "&list=" + request.getParameter("list") + "\">["
                                                 + xnodeTemp2.getDesignation() + " (" + xnodeTemp2.getXincoCoreLanguage().getSign() + ")"
                                                 + "]</a></td>");
                                         out.println("</tr>");
@@ -356,7 +357,6 @@ public class XincoPublisherServlet extends HttpServlet {
                                     }
                                     if (isPublic) {
                                         temp_server_url = request.getRequestURL().toString();
-                                        temp_url = "";
                                         //file = 1
                                         if (xdataTemp.getXincoCoreDataType().getId() == 1) {
                                             temp_url = ((XincoAddAttribute) xdataTemp.getXincoAddAttributes().get(0)).getAttribVarchar();
@@ -382,7 +382,7 @@ public class XincoPublisherServlet extends HttpServlet {
                         out.println("</tr>");
                     }
                     out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path=" + (Base64.encode("xincoRoot")) + "&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.xincopublisher.browse") + "</td>");
+                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path=" + (Base64.encodeBase64("xincoRoot".getBytes())) + "&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.xincopublisher.browse") + "</td>");
                     out.println("</tr>");
                 }
                 out.println("<tr>");
@@ -465,7 +465,10 @@ public class XincoPublisherServlet extends HttpServlet {
         } //end HTML output
     }
 
-    /** Handles the HTTP <code>GET</code> method.
+    /**
+     * Handles the HTTP
+     * <code>GET</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws javax.servlet.ServletException
@@ -477,7 +480,10 @@ public class XincoPublisherServlet extends HttpServlet {
         processRequest(request, response);
     }
 
-    /** Handles the HTTP <code>POST</code> method.
+    /**
+     * Handles the HTTP
+     * <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws javax.servlet.ServletException
@@ -489,7 +495,9 @@ public class XincoPublisherServlet extends HttpServlet {
         processRequest(request, response);
     }
 
-    /** Returns a short description of the servlet.
+    /**
+     * Returns a short description of the servlet.
+     *
      * @return
      */
     @Override
