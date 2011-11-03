@@ -306,7 +306,7 @@
     </target>
     
     <target name="-pre-dist">
-        <available file="web/widgetsets" property="widgetset.present" type="dir"/>
+        <available file="web/VAADIN/widgetsets" property="widgetset.present" type="dir"/>
         <antcall target="do-compile-widgetset-if-needed"/>
     </target>
     
