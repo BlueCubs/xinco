@@ -45,10 +45,10 @@
             <param-name>application</param-name>
             <param-value>com.bluecubs.xinco.core.server.vaadin.Xinco</param-value>
         </init-param>
-        <!--<init-param>
+        <init-param>
             <param-name>widgetset</param-name>
-            <param-value>org.vaadin.peter.contextmenu.ContextmenuWidgetset</param-value>
-        </init-param>-->
+            <param-value>Xinco</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>Xinco</servlet-name>
