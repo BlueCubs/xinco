@@ -443,7 +443,7 @@ public class XincoWebService {
 
                 //index data (not on checkout, only when status = open = 1)
                 if (data.getStatusNumber() == 1) {
-                    XincoIndexer.indexXincoCoreData(data, false);
+                    XincoIndexer.indexXincoCoreData(data, true);
                 }
 
                 //insert default ACL when inserting new node

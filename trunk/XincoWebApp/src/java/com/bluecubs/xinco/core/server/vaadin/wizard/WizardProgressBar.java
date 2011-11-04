@@ -11,9 +11,9 @@ import com.vaadin.ui.ProgressIndicator;
 public class WizardProgressBar extends ProgressIndicator implements
         WizardProgressListener {
 
-    private final Wizard wizard;
+    private final XincoWizard wizard;
 
-    public WizardProgressBar(Wizard wizard) {
+    public WizardProgressBar(XincoWizard wizard) {
         super(new Float(0.0));
         setIndeterminate(false);
         setPollingInterval(500);

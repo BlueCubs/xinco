@@ -1,30 +1,28 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoCoreDataTypeAttributeServer
+ * Name: XincoCoreDataTypeAttributeServer
  *
- * Description:     data type attribute
+ * Description: data type attribute
  *
- * Original Author: Alexander Manes
- * Date:            2004
+ * Original Author: Alexander Manes Date: 2004
  *
  * Modifications:
  *
@@ -35,15 +33,15 @@
  */
 package com.bluecubs.xinco.core.server;
 
-import java.util.ArrayList;
-
 import com.bluecubs.xinco.core.server.persistence.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributePK;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeAttributeJpaController;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -154,9 +152,10 @@ public class XincoCoreDataTypeAttributeServer extends XincoCoreDataTypeAttribute
             result = XincoDBManager.createdQuery("SELECT xcdta FROM XincoCoreDataTypeAttribute xcdta "
                     + "WHERE xcdta.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId =" + attrID
                     + " ORDER BY xcdta.xincoCoreDataTypeAttributePK.attributeId");
-            while (result.size() > 0) {
-                coreDataTypeAttributes.add(new XincoCoreDataTypeAttributeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute) result.get(0)));
-                result.remove(0);
+            for (Iterator it = result.iterator(); it.hasNext();) {
+                com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute attr =
+                        (com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute) it.next();
+                coreDataTypeAttributes.add(new XincoCoreDataTypeAttributeServer(attr));
             }
         } catch (Exception ex) {
             Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getSimpleName()).log(Level.SEVERE, null, ex);
