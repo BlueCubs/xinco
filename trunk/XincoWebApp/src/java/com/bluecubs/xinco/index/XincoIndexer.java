@@ -92,7 +92,7 @@ public class XincoIndexer {
         IndexReader reader = null;
         //check if document exists in index and delete
         try {
-            reader = IndexReader.open(FSDirectory.open(new File(XincoDBManager.config.FileIndexPath)));
+            reader = IndexReader.open(FSDirectory.open(new File(XincoDBManager.config.FileIndexPath)), false);
             reader.deleteDocuments(new Term("id", "" + d.getId()));
             reader.close();
         } catch (Exception re) {
