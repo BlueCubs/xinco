@@ -196,10 +196,10 @@ public class XincoCoreDataServer extends XincoCoreData {
                 xcd.setXincoCoreNode((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) XincoDBManager.namedQuery("XincoCoreNode.findById", parameters).get(0));
                 parameters.clear();
                 parameters.put("id", getXincoCoreDataType().getId());
-                xcd.setXincoCoreLanguage((com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage) XincoDBManager.namedQuery("XincoCoreLanguage.findById", parameters).get(0));
+                xcd.setXincoCoreDataType((com.bluecubs.xinco.core.server.persistence.XincoCoreDataType) XincoDBManager.namedQuery("XincoCoreDataType.findById", parameters).get(0));
                 parameters.clear();
                 parameters.put("id", getXincoCoreLanguage().getId());
-                xcd.setXincoCoreDataType((com.bluecubs.xinco.core.server.persistence.XincoCoreDataType) XincoDBManager.namedQuery("XincoCoreDataType.findById", parameters).get(0));
+                xcd.setXincoCoreLanguage((com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage) XincoDBManager.namedQuery("XincoCoreLanguage.findById", parameters).get(0));
                 xcd.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
                 xcd.setStatusNumber(getStatusNumber());
                 xcd.setModificationReason("audit.general.create");
