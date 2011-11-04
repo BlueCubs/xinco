@@ -161,7 +161,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     private XincoExplorer.refreshThread rThread;
     private ArrayList<AbstractDialog> dialogs = null;
     private LockDialog lockDialog = null;
-    //Status of the explorer: lock = true - idle time limit exceeded, user must log cin again to continue use
+    //Status of the explorer: lock = true - idle time limit exceeded, user must log in again to continue use
     //lock = false - work normally
     private boolean lock = false;
     private XincoActivityTimer xat = null;
