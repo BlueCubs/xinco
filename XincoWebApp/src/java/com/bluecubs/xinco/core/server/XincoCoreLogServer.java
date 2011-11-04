@@ -1,30 +1,28 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoCoreLogServer
+ * Name: XincoCoreLogServer
  *
- * Description:     log
+ * Description: log
  *
- * Original Author: Alexander Manes
- * Date:            2004
+ * Original Author: Alexander Manes Date: 2004
  *
  * Modifications:
  *
@@ -40,12 +38,7 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLogJpaCont
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
 import com.bluecubs.xinco.core.server.service.XincoCoreLog;
 import com.bluecubs.xinco.core.server.service.XincoVersion;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -115,8 +108,8 @@ public class XincoCoreLogServer extends XincoCoreLog {
     }
 
     //create single log object for data structures
-    public XincoCoreLogServer(int attrCDID, int attrUID, int attrOC, 
-            Calendar attrODT, String attrOD, int attrVH, int attrVM, 
+    public XincoCoreLogServer(int attrCDID, int attrUID, int attrOC,
+            Calendar attrODT, String attrOD, int attrVH, int attrVM,
             int attrVL, String attrVP) throws XincoException {
         try {
             setXincoCoreDataId(attrCDID);
@@ -124,7 +117,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
             setOpCode(attrOC);
             DatatypeFactory factory = DatatypeFactory.newInstance();
             GregorianCalendar cal = new GregorianCalendar();
-            cal.setTime(attrODT.getTime());
+            cal.setTime(attrODT == null ? new Date() : attrODT.getTime());
             setOpDatetime(factory.newXMLGregorianCalendar(cal));
             setOpDescription(attrOD);
             setVersion(new XincoVersion());
@@ -141,7 +134,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
     public int write2DB() throws XincoException {
         try {
             XincoCoreLogJpaController controller = new XincoCoreLogJpaController(XincoDBManager.getEntityManagerFactory());
-            com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl=null;
+            com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl;
             if (getId() > 0) {
                 xcl = controller.findXincoCoreLog(getId());
                 xcl.setXincoCoreData(new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreData(getXincoCoreDataId()));
@@ -178,7 +171,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
     public static ArrayList getXincoCoreLogs(int attrID) {
 
         ArrayList coreLog = new ArrayList();
-        GregorianCalendar cal = new GregorianCalendar();
+        GregorianCalendar cal;
 
         try {
             result = XincoDBManager.createdQuery("SELECT xcl FROM XincoCoreLog xcl WHERE xcl.xincoCoreData.id=" + attrID);

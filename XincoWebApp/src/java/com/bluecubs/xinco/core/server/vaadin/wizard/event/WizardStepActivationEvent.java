@@ -1,6 +1,6 @@
 package com.bluecubs.xinco.core.server.vaadin.wizard.event;
 
-import com.bluecubs.xinco.core.server.vaadin.wizard.Wizard;
+import com.bluecubs.xinco.core.server.vaadin.wizard.XincoWizard;
 import com.bluecubs.xinco.core.server.vaadin.wizard.WizardStep;
 
 @SuppressWarnings("serial")
@@ -8,7 +8,7 @@ public class WizardStepActivationEvent extends AbstractWizardEvent {
 
     private final WizardStep activatedStep;
 
-    public WizardStepActivationEvent(Wizard source, WizardStep activatedStep) {
+    public WizardStepActivationEvent(XincoWizard source, WizardStep activatedStep) {
         super(source);
         this.activatedStep = activatedStep;
     }

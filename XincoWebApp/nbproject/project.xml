@@ -48,7 +48,6 @@
                 </library>
                 <library dirs="200">
                     <file>${file.reference.easyuploads-0.4.9.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
                     <file>${file.reference.vaadin-6.7.2.nightly-20111103-c21864.jar}</file>
@@ -58,14 +57,14 @@
                     <file>${file.reference.gwt-dev.jar}</file>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.gwt-user.jar}</file>
-                </library>
-                <library dirs="200">
                     <file>${file.reference.validation-api-1.0.0.GA.jar}</file>
                 </library>
                 <library dirs="200">
                     <file>${file.reference.lucene-demos-3.0.3.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.gwt-user.jar}</file>
                 </library>
                 <library dirs="200">
                     <file>${file.reference.pdfbox-app-1.6.0.jar}</file>
@@ -112,7 +111,6 @@
                 </library>
                 <library dirs="200">
                     <file>${file.reference.ContextMenu3.1.0.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
             <web-module-additional-libraries>

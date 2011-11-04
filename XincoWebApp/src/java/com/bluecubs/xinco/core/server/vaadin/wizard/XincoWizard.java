@@ -24,7 +24,7 @@ import java.util.*;
  * override these with your own identifiers, you can add the steps using the
  * overloaded {@link #addStep(WizardStep, String)} method. </p>
  *
- * <p> To react on the progress, cancellation or completion of this {@code Wizard}
+ * <p> To react on the progress, cancellation or completion of this {@code XincoWizard}
  * you should add one or more listeners that implement the
  * {@link WizardProgressListener} interface. These listeners are added using the
  * {@link #addListener(WizardProgressListener)} method and removed with the
@@ -34,7 +34,7 @@ import java.util.*;
  *
  * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
  */
-public class Wizard extends CustomComponent {
+public class XincoWizard extends CustomComponent {
 
     private final List<WizardStep> steps = new ArrayList<WizardStep>();
     private final List<WizardProgressListener> listeners =
@@ -52,7 +52,7 @@ public class Wizard extends CustomComponent {
     private Component header;
     private int lastCompleted, progress;
 
-    public Wizard() {
+    public XincoWizard() {
         init();
     }
 
@@ -123,7 +123,7 @@ public class Wizard extends CustomComponent {
     }
 
     /**
-     * Cancels this Wizard triggering a {@link WizardCancelledEvent}. This
+     * Cancels this XincoWizard triggering a {@link WizardCancelledEvent}. This
      * method is called when user clicks the cancel button.
      */
     public void cancel() {
@@ -205,7 +205,7 @@ public class Wizard extends CustomComponent {
      * content or {@code null} if no header is specified.
      *
      * <p> By default the header is a {@link WizardProgressBar} component that
-     * is also registered as a {@link WizardProgressListener} to this Wizard.
+     * is also registered as a {@link WizardProgressListener} to this XincoWizard.
      * </p>
      *
      * @return {@link Component} that is displayed on top of the actual content
