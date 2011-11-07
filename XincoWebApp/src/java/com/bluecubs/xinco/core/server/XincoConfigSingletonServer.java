@@ -127,6 +127,7 @@ public class XincoConfigSingletonServer {
         }
 
         try {
+            //TODO: Being read as zero?
             FileIndexerCount = ((Long) XincoDBManager.createdQuery("select count(s) from XincoSetting s where s.description like 'xinco/FileIndexer_'").get(0));
         } catch (Exception e) {
             FileIndexerCount = 4;

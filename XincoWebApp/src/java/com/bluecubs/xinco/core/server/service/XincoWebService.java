@@ -192,8 +192,8 @@ public class XincoWebService {
                 if ((data.getXincoCoreLogs().size() > 1) && (in0.getXincoCoreLogs().size() == 1)) {
                     //find id of log
                     int LogId = 0;
-                    if ((((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CREATION.ordinal())
-                            || (((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CHECKIN.ordinal())) {
+                    if ((((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CREATION.ordinal() + 1)
+                            || (((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CHECKIN.ordinal() + 1)) {
                         LogId = ((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getId();
                     }
                     if (LogId > 0) {
@@ -251,8 +251,8 @@ public class XincoWebService {
                     //find id of latest log
                     int MaxLogId = 0;
                     for (i = 0; i < data.getXincoCoreLogs().size(); i++) {
-                        if ((((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CREATION.ordinal())
-                                || (((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CHECKIN.ordinal())) {
+                        if ((((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CREATION.ordinal() + 1)
+                                || (((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CHECKIN.ordinal() + 1)) {
                             MaxLogId = ((XincoCoreLog) data.getXincoCoreLogs().get(i)).getId();
                         }
                     }
@@ -266,6 +266,9 @@ public class XincoWebService {
                         }
                         fcis.close();
                         fcos.close();
+                    }else{
+                        Logger.getLogger(XincoWebService.class.getName()).log(Level.WARNING, 
+                                "Didn''t find default version log. Not creating copy of: {0}", in0);
                     }
                 }
                 try {
@@ -442,9 +445,10 @@ public class XincoWebService {
                 data.write2DB();
 
                 //index data (not on checkout, only when status = open = 1)
-                if (data.getStatusNumber() == 1) {
-                    XincoIndexer.indexXincoCoreData(data, true);
-                }
+                //TODO: Why this here? We are already indexing when we actually get the file.
+//                if (data.getStatusNumber() == 1) {
+//                    XincoIndexer.indexXincoCoreData(data, true);
+//                }
 
                 //insert default ACL when inserting new node
                 if (insertnewdata) {
