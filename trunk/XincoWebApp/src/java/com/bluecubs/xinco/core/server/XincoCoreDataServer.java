@@ -151,19 +151,14 @@ public class XincoCoreDataServer extends XincoCoreData {
      * @throws XincoException
      */
     public static String getLastMajorVersionDataPath(int xincoCoreDataId) throws SQLException, XincoException {
-        parameters.clear();
-        parameters.put("xcdi", xincoCoreDataId);
-        parameters.put("opcode", OPCode.CHECKIN.ordinal() + 1);
-        result = XincoDBManager.createdQuery("select xcl from XincoCoreLog xcl"
-                + "where xcl.xincoCoreDataId.id =:xcdi and xcl.versionMid='0' "
-                + "and xcl.opCode=:opcode order by xcl.id desc");
-        if (result.size() > 0) {
-            com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd = (com.bluecubs.xinco.core.server.persistence.XincoCoreData) result.get(0);
-            XincoCoreLogServer log = new XincoCoreLogServer(xcd.getId());
-            return XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, xincoCoreDataId, xincoCoreDataId + "-" + log.getId());
-        } else {
-            throw new XincoException("No major log history for XincoCoreData with id: " + xincoCoreDataId);
+        XincoCoreDataServer temp = new XincoCoreDataServer(xincoCoreDataId);
+        temp.loadLogs();
+        for (XincoCoreLog log : temp.getXincoCoreLogs()) {
+            if (log.getVersion().getVersionMid() == 0) {
+                return XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, xincoCoreDataId, xincoCoreDataId + "-" + log.getId());
+            }
         }
+        throw new XincoException("No major log history for XincoCoreData with id: " + xincoCoreDataId);
     }
 
     //write to db
