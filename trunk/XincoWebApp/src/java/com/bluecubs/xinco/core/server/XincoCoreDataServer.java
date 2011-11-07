@@ -44,10 +44,7 @@ import com.bluecubs.xinco.core.server.service.XincoCoreLog;
 import java.io.File;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -241,21 +238,35 @@ public class XincoCoreDataServer extends XincoCoreData {
     }
 
     public static void removeFromDB(int userID, int id) throws XincoException {
-        try {
-            result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreLog x WHERE x.xincoCoreDataId=" + id);
-            while (!result.isEmpty()) {
-                new XincoCoreLogJpaController(XincoDBManager.getEntityManagerFactory()).destroy(((com.bluecubs.xinco.core.server.persistence.XincoCoreLog) result.get(0)).getId());
+        if (!XincoDBManager.createdQuery("SELECT x FROM XincoCoreData x WHERE x.id = " + id).isEmpty()) {
+            try {
+                //Related logs
+                result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreLog x WHERE x.xincoCoreData.id=" + id);
+                for (Iterator it = result.iterator(); it.hasNext();) {
+                    com.bluecubs.xinco.core.server.persistence.XincoCoreLog log =
+                            (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) it.next();
+                    new XincoCoreLogJpaController(XincoDBManager.getEntityManagerFactory()).destroy(log.getId());
+                }
+                //Related ACEs
+                result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreAce x WHERE x.xincoCoreData.id=" + id);
+                for (Iterator it = result.iterator(); it.hasNext();) {
+                    com.bluecubs.xinco.core.server.persistence.XincoCoreAce ace =
+                            (com.bluecubs.xinco.core.server.persistence.XincoCoreAce) it.next();
+                    new XincoCoreAceJpaController(XincoDBManager.getEntityManagerFactory()).destroy(ace.getId());
+                }
+                //Related attributes
+                result = XincoDBManager.createdQuery("SELECT x FROM XincoAddAttribute x WHERE x.xincoCoreData.id=" + id);
+                for (Iterator it = result.iterator(); it.hasNext();) {
+                    com.bluecubs.xinco.core.server.persistence.XincoAddAttribute attr =
+                            (com.bluecubs.xinco.core.server.persistence.XincoAddAttribute) it.next();
+                    new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).destroy(attr.getXincoAddAttributePK());
+                }
+                //Data itself
+                new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).destroy(id);
+            } catch (Exception e) {
+                Logger.getLogger(XincoCoreDataServer.class.getSimpleName()).log(Level.SEVERE, null, e);
+                throw new XincoException(e.getLocalizedMessage());
             }
-            result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreAce x WHERE x.xincoCoreDataId=" + id);
-            while (!result.isEmpty()) {
-                new XincoCoreAceJpaController(XincoDBManager.getEntityManagerFactory()).destroy(((com.bluecubs.xinco.core.server.persistence.XincoCoreAce) result.get(0)).getId());
-            }
-            result = XincoDBManager.createdQuery("SELECT x FROM XincoAddAttribute x WHERE x.xincoCoreData.id=" + id);
-            while (!result.isEmpty()) {
-                new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).destroy(((com.bluecubs.xinco.core.server.persistence.XincoAddAttribute) result.get(0)).getXincoAddAttributePK());
-            }
-        } catch (Exception e) {
-            throw new XincoException();
         }
     }
 
