@@ -41,9 +41,9 @@ import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.service.XincoCoreACE;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
+import com.twiek.Utils.Base64;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Locale;
@@ -54,7 +54,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.codec.binary.Base64;
 
 public class XincoPublisherServlet extends HttpServlet {
 
@@ -82,6 +81,8 @@ public class XincoPublisherServlet extends HttpServlet {
     protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Locale loc;
+        //Make sure it is called once
+        PrintWriter out = response.getWriter();
         try {
             String list = request.getParameter("list");
             String[] locales;
@@ -100,6 +101,7 @@ public class XincoPublisherServlet extends HttpServlet {
                     loc = Locale.getDefault();
             }
         } catch (Exception e) {
+            Logger.getLogger(XincoPublisherServlet.class.getSimpleName()).log(Level.SEVERE, null, e);
             loc = Locale.getDefault();
         }
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
@@ -147,6 +149,7 @@ public class XincoPublisherServlet extends HttpServlet {
                             coreDataId = -1;
                         }
                     } catch (Exception e) {
+                        Logger.getLogger(XincoPublisherServlet.class.getSimpleName()).log(Level.SEVERE, null, e);
                         coreDataId = -1;
                     }
                 }
@@ -174,27 +177,23 @@ public class XincoPublisherServlet extends HttpServlet {
         if (fileDownload) { // begin FILE output
             try {
                 response.setContentType("unknown/unknown");
-                OutputStream out = response.getOutputStream();
                 FileInputStream in = new FileInputStream(XincoCoreDataServer.getLastMajorVersionDataPath(coreDataId));
                 byte[] buf = new byte[4096];
                 int len;
                 while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
+                    out.write(buf.toString(), 0, len);
                 }
                 in.close();
             } catch (Exception e) {
-                PrintWriter out = response.getWriter();
+                Logger.getLogger(XincoPublisherServlet.class.getSimpleName()).log(Level.SEVERE, null, e);
                 out.println(e);
             }
             //end FILE output
 
         } else {
             // begin HTML output
-
             //start output
             response.setContentType("text/html");
-            PrintWriter out = response.getWriter();
-
             //show header
             out.println("<html>");
             out.println("<head>");
@@ -264,8 +263,8 @@ public class XincoPublisherServlet extends HttpServlet {
                         XincoCoreNodeServer xnodeTemp;
                         XincoCoreNodeServer xnodeTemp2;
                         XincoCoreDataServer xdataTemp;
-                        byte[] tempPath;
-                        byte[] tempPath2;
+                        String tempPath;
+                        String tempPath2;
                         int temp_xcnId;
 
                         if (!(request.getParameter("FolderId") == null)) {
@@ -285,7 +284,7 @@ public class XincoPublisherServlet extends HttpServlet {
                                 xnodeTemp.fillXincoCoreData();
                                 // print current path
                                 if (!(request.getParameter("Path") == null)) {
-                                    tempPath = Base64.decodeBase64(request.getParameter("Path").getBytes());
+                                    tempPath = Base64.decode(request.getParameter("Path"));
                                     out.println("<tr>");
                                     out.println("<td colspan=\"2\" class=\"text\"><b>" + rb.getString("general.path") + "</b> " + tempPath + "</td>");
                                     out.println("</tr>");
@@ -315,7 +314,7 @@ public class XincoPublisherServlet extends HttpServlet {
                                         String temp;
                                         if (tempPath != null) {
                                             temp = tempPath + " / " + xnodeTemp2.getDesignation() + " (" + xnodeTemp2.getXincoCoreLanguage().getSign() + ")";
-                                            tempPath2 = Base64.encodeBase64(temp.getBytes());
+                                            tempPath2 = Base64.encode(temp);
                                             temp = "&Path=" + tempPath2;
                                         } else {
                                             temp = "";
@@ -382,7 +381,7 @@ public class XincoPublisherServlet extends HttpServlet {
                         out.println("</tr>");
                     }
                     out.println("<tr>");
-                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path=" + (Base64.encodeBase64("xincoRoot".getBytes())) + "&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.xincopublisher.browse") + "</td>");
+                    out.println("<td class=\"text\" colspan=\"2\"><a href=\"XincoPublisher?MainMenu=browse&FolderId=1&Path=" + (Base64.encode("xincoRoot")) + "&list=" + request.getParameter("list") + "\" class=\"link\">" + rb.getString("message.xincopublisher.browse") + "</td>");
                     out.println("</tr>");
                 }
                 out.println("<tr>");
