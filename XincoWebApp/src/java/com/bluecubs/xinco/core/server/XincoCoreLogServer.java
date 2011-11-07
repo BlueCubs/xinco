@@ -174,15 +174,14 @@ public class XincoCoreLogServer extends XincoCoreLog {
         GregorianCalendar cal;
 
         try {
-            result = XincoDBManager.createdQuery("SELECT xcl FROM XincoCoreLog xcl WHERE xcl.xincoCoreData.id=" + attrID);
-
-            while (result.size() > 0) {
-                com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl =
-                        (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) result.get(0);
+            result = XincoDBManager.createdQuery(
+                    "SELECT xcl FROM XincoCoreLog xcl WHERE "
+                    + "xcl.xincoCoreData.id=" + attrID + " order by xcl.id desc");
+            for (Iterator it = result.iterator(); it.hasNext();) {
+                com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl = (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) it.next();
                 cal = new GregorianCalendar();
                 cal.setTime(xcl.getOpDatetime());
                 coreLog.add(new XincoCoreLogServer(xcl));
-                result.remove(0);
             }
         } catch (Exception e) {
             Logger.getLogger(XincoCoreLogServer.class.getSimpleName());
