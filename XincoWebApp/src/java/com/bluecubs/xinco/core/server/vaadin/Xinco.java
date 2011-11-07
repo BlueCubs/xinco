@@ -23,6 +23,7 @@ import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
+import com.vaadin.ui.Window.ResizeEvent;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -44,7 +45,7 @@ import org.vaadin.easyuploads.MultiFileUpload;
  *
  * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
  */
-public class Xinco extends Application implements Property.ValueChangeListener {
+public class Xinco extends Application implements Property.ValueChangeListener, Window.ResizeListener {
 
     //client version
     private XincoVersion xincoClientVersion = null;
@@ -374,6 +375,8 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                     null,//Icon 
                     new com.vaadin.ui.MenuBar.Command() {
 
+                StringBuilder sb = new StringBuilder();
+
                 @Override
                 public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
                     //Show the Data Structure Dialog window
@@ -383,12 +386,31 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                         @Override
                         protected void handleFile(File file, String fileName,
                                 String mimeType, long length) {
-                            getMainWindow().showNotification(
-                                    getResource().getString("window.massiveimport.progress"),
-                                    Notification.TYPE_WARNING_MESSAGE);
-                            fileToLoad = file;
-                            getMainWindow().removeWindow(w);
+                            if (length == 0) {
+                                //Empty file or folder
+                                if (sb.toString().isEmpty()) {
+                                    sb.append(getResource().getString("window.massiveimport.notsupported"));
+                                }
+                                sb.append("\n").append(fileName);
+                                getMainWindow().showNotification(
+                                        sb.toString(),
+                                        Notification.TYPE_TRAY_NOTIFICATION);
+                            } else {
+                                getMainWindow().showNotification(
+                                        getResource().getString("window.massiveimport.progress"),
+                                        Notification.TYPE_TRAY_NOTIFICATION);
+                                try {
+                                    loadFile(file, fileName);
+                                } catch (XincoException ex) {
+                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (MalformedURLException ex) {
+                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (IOException ex) {
+                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
                         }
+                        //TODO: Notify the user about any issues
                     };
                     fileUpload.setWidth("600px");
                     w.addComponent(fileUpload);
@@ -554,6 +576,14 @@ public class Xinco extends Application implements Property.ValueChangeListener {
             //TODO: Prompt for login
         } else if (xat != null) {
             xat.getActivityTimer().restart();
+        }
+    }
+
+    @Override
+    public void windowResized(ResizeEvent e) {
+        for(Window w:getMainWindow().getChildWindows()){
+            //Center sub window in new screen size
+            w.center();
         }
     }
 
