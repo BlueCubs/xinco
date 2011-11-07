@@ -67,6 +67,8 @@ public class Xinco extends Application implements Property.ValueChangeListener {
     private ArchiveDialog archDialog;
     private XincoCoreData data = new XincoCoreData();
     private XincoActivityTimer xat = null;
+    private File fileToLoad;
+    private String fileName;                    // Original file name
 
     @Override
     public void init() {
@@ -381,19 +383,11 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                         @Override
                         protected void handleFile(File file, String fileName,
                                 String mimeType, long length) {
-                            try {
-                                getMainWindow().showNotification(
-                                        getResource().getString("window.massiveimport.progress"),
-                                        Notification.TYPE_WARNING_MESSAGE);
-                                loadFile(file);
-                                getMainWindow().removeWindow(w);
-                            } catch (MalformedURLException ex) {
-                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (IOException ex) {
-                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (XincoException xe) {
-                                //TODO: Display error
-                            }
+                            getMainWindow().showNotification(
+                                    getResource().getString("window.massiveimport.progress"),
+                                    Notification.TYPE_WARNING_MESSAGE);
+                            fileToLoad = file;
+                            getMainWindow().removeWindow(w);
                         }
                     };
                     fileUpload.setWidth("600px");
@@ -780,13 +774,8 @@ public class Xinco extends Application implements Property.ValueChangeListener {
         private final Select languages = new Select(getResource().getString("general.language") + ":");
 
         public DataDialog(boolean newData) {
-            XincoCoreDataProperty dataProp = null;
             com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(getResource().getString("window.datadetails"));
             panel.setContent(new VerticalLayout());
-            if (xincoTree.getValue() instanceof XincoCoreDataProperty) {
-                dataProp = (XincoCoreDataProperty) xincoTree.getValue();
-            }
-            final XincoCoreData data = dataProp == null ? null : ((XincoCoreData) (dataProp).getValue());
             //ID
             idField = new com.vaadin.ui.TextField(getResource().getString("general.id") + ":");
             panel.addComponent(idField);
@@ -800,9 +789,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
             //Designation
             designationField = new com.vaadin.ui.TextField(getResource().getString("general.designation") + ":");
             panel.addComponent(designationField);
-            if (!newData) {
-                idField.setValue(data.getDesignation());
-            }
+            designationField.setValue(data.getDesignation());
             //Language selection
             int i = 0;
             for (Object language : XincoCoreLanguageServer.getXincoCoreLanguages()) {
@@ -821,7 +808,8 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                             "{0} not defined in com.bluecubs.xinco.messages.XincoMessagesLocale",
                             "Locale." + designation);
                 }
-                if (data != null && data.getXincoCoreLanguage().getSign().equals(designation)) {
+                if (data != null && data.getXincoCoreLanguage() != null
+                        && data.getXincoCoreLanguage().getSign().equals(designation)) {
                     languages.setValue("Locale." + designation);
                 }
             }
@@ -912,7 +900,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                             getResource().getString("message.missing.file"),
                             Notification.TYPE_ERROR_MESSAGE);
                 } else {
-                    data.setDesignation(um.fileName);
+                    data.setDesignation(fileName);
                 }
                 return um.isSuccess();
             }
@@ -1131,7 +1119,6 @@ public class Xinco extends Application implements Property.ValueChangeListener {
             Upload.Receiver {
 
         private File file;                          // File to write to.
-        private String fileName;                    // Original file name
         private boolean success = false;
 
         // Callback method to begin receiving the upload.
@@ -1163,17 +1150,8 @@ public class Xinco extends Application implements Property.ValueChangeListener {
 
         @Override
         public void uploadSucceeded(SucceededEvent event) {
-            try {
-                //Process the file
-                loadFile(file, fileName);
-                success = true;
-            } catch (XincoException ex) {
-                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            fileToLoad = file;
+            success = true;
         }
 
         @Override
@@ -1228,11 +1206,32 @@ public class Xinco extends Application implements Property.ValueChangeListener {
 
         @Override
         public void wizardCancelled(WizardCancelledEvent event) {
-            closeWizard();
+            try {
+                //Cancelled so roll back everything done in database
+                HashMap parameters = new HashMap();
+                parameters.put("id", data.getId());
+                if (data != null) {
+                    XincoCoreDataServer.removeFromDB(loggedUser.getId(), data.getId());
+                }
+                //Remove the file from the repository as well
+                closeWizard();
+            } catch (XincoException ex) {
+                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         private void finishWizard() {
-            discard();
+            try {
+                //Now load the file
+                loadFile(fileToLoad, fileName);
+            } catch (XincoException ex) {
+                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            closeWizard();
             getMainWindow().removeWindow(wizardWindow);
         }
 
@@ -1243,6 +1242,8 @@ public class Xinco extends Application implements Property.ValueChangeListener {
             attrDialog = null;
             ddManager = null;
             data = null;
+            fileToLoad = null;
+            fileName = null;
         }
 
         private void closeWizard() {
@@ -1255,6 +1256,12 @@ public class Xinco extends Application implements Property.ValueChangeListener {
                         + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.low").getIntValue() + " "
                         + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.postfix").getStringValue());
                 discard();
+                try {
+                    //Show changes in tree
+                    refresh();
+                } catch (XincoException ex) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } catch (XincoException ex) {
                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             }
