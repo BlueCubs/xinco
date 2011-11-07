@@ -44,6 +44,7 @@ import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
 import com.twiek.Utils.Base64;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Locale;
@@ -178,10 +179,14 @@ public class XincoPublisherServlet extends HttpServlet {
             try {
                 response.setContentType("unknown/unknown");
                 FileInputStream in = new FileInputStream(XincoCoreDataServer.getLastMajorVersionDataPath(coreDataId));
+                //Avoid IllegalStateException: getWriter() has already been called for this response
+                response.reset();
+                response.resetBuffer();
+                OutputStream os = response.getOutputStream();
                 byte[] buf = new byte[4096];
                 int len;
                 while ((len = in.read(buf)) > 0) {
-                    out.write(buf.toString(), 0, len);
+                    os.write(buf, 0, len);
                 }
                 in.close();
             } catch (Exception e) {
