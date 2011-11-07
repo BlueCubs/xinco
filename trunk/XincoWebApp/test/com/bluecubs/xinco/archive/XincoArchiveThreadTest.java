@@ -93,7 +93,7 @@ public class XincoArchiveThreadTest extends XincoTestCase {
             //Need to add at least one log (should be there by default (creation)
             c.setTimeInMillis(System.currentTimeMillis());
             XincoCoreLogServer log = new XincoCoreLogServer(xcds.getId(), 1,
-                    OPCode.CREATION.ordinal(), c, "", 1, 0, 0, "");
+                    OPCode.CREATION.ordinal() + 1, c, "", 1, 0, 0, "");
             log.write2DB();
             xcds.getXincoCoreLogs().add(log);
             xcds.write2DB();
@@ -109,7 +109,7 @@ public class XincoArchiveThreadTest extends XincoTestCase {
             fail();
         }
     }
-    
+
     /**
      * Test of archiveData method, of class XincoArchiveThread.
      */
@@ -168,7 +168,7 @@ public class XincoArchiveThreadTest extends XincoTestCase {
             //Need to add at least one log (should be there by default (creation)
             c.setTimeInMillis(System.currentTimeMillis());
             XincoCoreLogServer log = new XincoCoreLogServer(xcds.getId(), 1,
-                    OPCode.CREATION.ordinal(), c, "", 1, 0, 0, "");
+                    OPCode.CREATION.ordinal() + 1, c, "", 1, 0, 0, "");
             log.write2DB();
             xcds.getXincoCoreLogs().add(log);
             xcds.write2DB();

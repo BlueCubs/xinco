@@ -460,11 +460,6 @@ public class Xinco extends Application implements Property.ValueChangeListener {
         data.setStatusNumber(1);
         addDefaultAddAttributes();
         // invoke web service (update data / upload file / add log)
-        // save data to server
-        data = getService().getXincoPort().setXincoCoreData(data, loggedUser);
-        if (data == null) {
-            throw new XincoException(xerb.getString("datawizard.unabletosavedatatoserver"));
-        }
         // load file
         long totalLen = 0;
         CheckedInputStream cin = null;
@@ -496,7 +491,7 @@ public class Xinco extends Application implements Property.ValueChangeListener {
             Logger.getLogger(Xinco.class.getSimpleName()).log(Level.SEVERE, null, fe);
             throw new XincoException(xerb.getString("datawizard.unabletoloadfile") + "\n" + fe.getLocalizedMessage());
         }
-        // save data to server to update attributes added above)
+        // save data to server
         data = getService().getXincoPort().setXincoCoreData(data, loggedUser);
         if (data == null) {
             throw new XincoException(xerb.getString("datawizard.unabletosavedatatoserver"));
@@ -524,12 +519,9 @@ public class Xinco extends Application implements Property.ValueChangeListener {
         } catch (DatatypeConfigurationException ex) {
             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
         }
-        // update id cin log
-        newlog.setXincoCoreDataId(data.getId());
         // save log to server
         newlog = getService().getXincoPort().setXincoCoreLog(newlog, loggedUser);
         if (newlog == null) {
-            //TODO: Does this happen?
             Logger.getLogger(Xinco.class.getSimpleName()).severe("Unable to create new log entry!");
         } else {
             data.getXincoCoreLogs().add(newlog);
@@ -877,6 +869,16 @@ public class Xinco extends Application implements Property.ValueChangeListener {
     private void showDataDialog(final boolean newData) {
         final XincoWizard wizard = new XincoWizard();
         final UploadManager um = new UploadManager();
+        final Upload upload = new Upload(getResource().getString("general.file.select"), um);
+        final Upload.SucceededListener listener = new Upload.SucceededListener() {
+
+            @Override
+            public void uploadSucceeded(SucceededEvent event) {
+                if (upload != null) {
+                    upload.setEnabled(false);
+                }
+            }
+        };
         final WizardStep fileStep = new WizardStep() {
 
             @Override
@@ -886,8 +888,8 @@ public class Xinco extends Application implements Property.ValueChangeListener {
 
             @Override
             public com.vaadin.ui.Component getContent() {
-                Upload upload = new Upload(getResource().getString("general.file.select"), um);
                 upload.addListener((Upload.SucceededListener) um);
+                upload.addListener((Upload.SucceededListener) listener);
                 upload.addListener((Upload.FailedListener) um);
                 return upload;
             }

@@ -48,7 +48,7 @@ public class XincoCoreDataServerTest extends XincoTestCase {
                         xaa.getXincoCoreDataId(), xaa.getAttributeId()));
             }
             instance.write2DB();
-            XincoAddAttributeServer attr = null;
+            XincoAddAttributeServer attr;
             GregorianCalendar c = new GregorianCalendar();
             DatatypeFactory factory = DatatypeFactory.newInstance();
             for (int i = 1; i < 8; i++) {
@@ -75,7 +75,7 @@ public class XincoCoreDataServerTest extends XincoTestCase {
             //Need to add at least one log (should be there by default (creation)
             c.setTimeInMillis(System.currentTimeMillis());
             XincoCoreLogServer log = new XincoCoreLogServer(instance.getId(), 1,
-                    OPCode.CREATION.ordinal(), c, "", 1, 0, 0, "");
+                    OPCode.CREATION.ordinal() + 1, c, "", 1, 0, 0, "");
             log.write2DB();
             instance.getXincoCoreLogs().add(log);
             instance.write2DB();
