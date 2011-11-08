@@ -1,30 +1,28 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoCoreNodeServer
+ * Name: XincoCoreNodeServer
  *
- * Description:     node object
+ * Description: node object
  *
- * Original Author: Alexander Manes
- * Date:            2004
+ * Original Author: Alexander Manes Date: 2004
  *
  * Modifications:
  *
@@ -79,7 +77,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 fillXincoCoreData();
                 fillXincoCoreNodes();
             } else {
-                throw new XincoException();
+                throw new XincoException("Unable to find XincoCoreNode with id: " + attrID);
             }
         } catch (Exception e) {
             setXincoCoreLanguage(null);
@@ -91,7 +89,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
     }
 
     //create node object for data structures
-    public XincoCoreNodeServer(int attrID, int attrCNID, int attrLID, 
+    public XincoCoreNodeServer(int attrID, int attrCNID, int attrLID,
             String attrD, int attrSN) throws XincoException {
         try {
             setId(attrID);
@@ -160,7 +158,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             }
             setId(xcn.getId());
         } catch (Exception e) {
-            logger.log(Level.SEVERE,null, e);
+            logger.log(Level.SEVERE, null, e);
             throw new XincoException(e.getMessage());
         }
         return getId();
@@ -197,7 +195,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 }
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,null, e);
+            logger.log(Level.SEVERE, null, e);
             throw new XincoException(e.getMessage());
         }
     }
@@ -211,7 +209,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 ((ArrayList) getXincoCoreNodes()).add(new XincoCoreNodeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o));
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,null, e);
+            logger.log(Level.SEVERE, null, e);
             getXincoCoreNodes().clear();
         }
 
@@ -225,7 +223,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 ((ArrayList) getXincoCoreData()).add(new XincoCoreDataServer((com.bluecubs.xinco.core.server.persistence.XincoCoreData) o));
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,null, e);
+            logger.log(Level.SEVERE, null, e);
             getXincoCoreData().clear();
         }
     }
@@ -245,7 +243,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 }
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,null, e);
+            logger.log(Level.SEVERE, null, e);
             nodes.clear();
         }
         return nodes;
@@ -274,7 +272,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 }
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,null, e);
+            logger.log(Level.SEVERE, null, e);
             nodes.clear();
         }
         return nodes;
