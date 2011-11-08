@@ -1572,6 +1572,9 @@ public class Xinco extends Application implements Window.ResizeListener {
                     } else {
                         tempNode = new XincoCoreNodeServer(
                                 Integer.valueOf(form.getField("id").getValue().toString()));
+                        //Update with changes
+                        tempNode.setDesignation(form.getField("designation").getValue().toString());
+                        tempNode.setXincoCoreLanguage(((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(Integer.valueOf(languages.getValue().toString()))));
                     }
                     tempNode.setChangerID(getLoggedUser().getId());
                     try {
