@@ -61,7 +61,7 @@
     </target>
 
     <!-- Compiles the widget set using the GWT compiler. -->
-    <target name="compile-widgetset" depends="init, widgetset-init, generate-widgetset">
+    <target name="compile-widgetset" depends="widgetset-init, generate-widgetset">
         <echo>Compiling ${widgetset} into ${client-side-destination} directory...</echo>
         
         <java classname="com.google.gwt.dev.Compiler" failonerror="yes" fork="yes" maxmemory="256m">

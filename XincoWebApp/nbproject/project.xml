@@ -48,6 +48,7 @@
                 </library>
                 <library dirs="200">
                     <file>${file.reference.easyuploads-0.4.9.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
                     <file>${file.reference.vaadin-6.7.2.nightly-20111103-c21864.jar}</file>
@@ -111,6 +112,7 @@
                 </library>
                 <library dirs="200">
                     <file>${file.reference.ContextMenu3.1.0.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
                     <file>${file.reference.Base64-0.91.jar}</file>

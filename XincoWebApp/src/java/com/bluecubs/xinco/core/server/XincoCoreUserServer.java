@@ -482,7 +482,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
             parameters.put("userpassword", encrypt ? MD5.encrypt(password.replaceAll("'", "\\\\'")) : password);
             return !XincoDBManager.createdQuery("SELECT x FROM XincoCoreUser x "
                     + "WHERE x.username = :username and x.userpassword = :userpassword", parameters).isEmpty();
-        } catch (Exception e) {
+        } catch (XincoException e) {
             Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
             return false;
         }
