@@ -482,19 +482,6 @@ public class Xinco extends Application implements Window.ResizeListener {
                             getMainWindow().addWindow(w);
                         }
                     });
-                    repo.addItem(getResource().getString("menu.edit.folderdata"),
-                            null,//Icon 
-                            new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            if (xincoTree.getValue() instanceof XincoCoreNodeProperty) {
-                                showDataFolderDialog(false);
-                            } else if (xincoTree.getValue() instanceof XincoCoreDataProperty) {
-                                //TODO: Edit data
-                            }
-                        }
-                    });
                 }
             } //Actions user don't needs to be logged in
             else {
@@ -507,7 +494,30 @@ public class Xinco extends Application implements Window.ResizeListener {
             }//Actions user don't needs to be logged in
             else {
             }
-        }//Hide it if empty
+        }
+        //Menus for both data and folders
+        if (xincoTree.getValue() instanceof XincoCoreDataProperty
+                || xincoTree.getValue() instanceof XincoCoreNodeProperty) {
+            //Actions user needs to be logged in
+            if (getLoggedUser() != null) {
+                repo.addItem(getResource().getString("menu.edit.folderdata"),
+                        null,//Icon 
+                        new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        if (xincoTree.getValue() instanceof XincoCoreNodeProperty) {
+                            showDataFolderDialog(false);
+                        } else if (xincoTree.getValue() instanceof XincoCoreDataProperty) {
+                            showDataDialog(false);
+                        }
+                    }
+                });
+            }//Actions user don't needs to be logged in
+            else {
+            }
+        }
+        //Hide it if empty
         menuBar.setVisible(!menuBar.getItems().isEmpty());
         //Update the side menu
         updateSideMenu();
@@ -1000,6 +1010,8 @@ public class Xinco extends Application implements Window.ResizeListener {
                     if (newData && ((XincoCoreLanguageServer) language).getSign().equals("en")) //Select by default
                     {
                         languages.setValue(((XincoCoreLanguageServer) language).getId());
+                    } else if (!newData && ((XincoCoreLanguageServer) language).getId() == data.getXincoCoreLanguage().getId()) {
+                        languages.setValue(((XincoCoreLanguageServer) language).getId());
                     }
                     i++;
                 } else {
@@ -1075,178 +1087,189 @@ public class Xinco extends Application implements Window.ResizeListener {
 
     private void showDataDialog(final boolean newData) {
         final XincoWizard wizard = new XincoWizard();
-        final UploadManager um = new UploadManager();
-        final Upload upload = new Upload(getResource().getString("general.file.select"), um);
-        final Upload.SucceededListener listener = new Upload.SucceededListener() {
+        if (newData) {
+            final UploadManager um = new UploadManager();
+            final Upload upload = new Upload(getResource().getString("general.file.select"), um);
+            final Upload.SucceededListener listener = new Upload.SucceededListener() {
 
-            @Override
-            public void uploadSucceeded(SucceededEvent event) {
-                if (upload != null) {
-                    upload.setEnabled(false);
-                }
-            }
-        };
-        final WizardStep fileStep = new WizardStep() {
-
-            @Override
-            public String getCaption() {
-                return getResource().getString("general.file.select");
-            }
-
-            @Override
-            public com.vaadin.ui.Component getContent() {
-                upload.addListener((Upload.SucceededListener) um);
-                upload.addListener((Upload.SucceededListener) listener);
-                upload.addListener((Upload.FailedListener) um);
-                return upload;
-            }
-
-            @Override
-            public boolean onAdvance() {
-                //TODO: Not critical; Next button is enabled without a file loaded (but gives error message)
-                if (!um.isSuccess()) {
-                    getMainWindow().showNotification(
-                            getResource().getString("message.missing.file"),
-                            Notification.TYPE_ERROR_MESSAGE);
-                } else {
-                    data.setDesignation(fileName);
-                }
-                return um.isSuccess();
-            }
-
-            @Override
-            public boolean onBack() {
-                return true;
-            }
-        };
-        final WizardStep attrStep = new WizardStep() {
-
-            @Override
-            public String getCaption() {
-                return getResource().getString("window.addattributesuniversal");
-            }
-
-            @Override
-            public com.vaadin.ui.Component getContent() {
-                if (attrDialog == null) {
-                    attrDialog = new AddAttributeDialog(data);
-                    attrDialog.setSizeFull();
-                }
-                return attrDialog;
-            }
-
-            @Override
-            public boolean onAdvance() {
-                //True if there are more steps after this one
-                return wizard.getSteps().size() > wizard.getLastCompleted() + 1;
-            }
-
-            @Override
-            public boolean onBack() {
-                return true;
-            }
-        };
-        wizard.addStep(new WizardStep() {
-
-            @Override
-            public String getCaption() {
-                return getResource().getString("window.datatype");
-            }
-
-            @Override
-            public com.vaadin.ui.Component getContent() {
-                if (dataTypeDialog == null) {
-                    dataTypeDialog = new DataTypeDialog();
-                    dataTypeDialog.setSizeFull();
-                    dataTypeDialog.getTypes().addListener(new ValueChangeListener() {
-
-                        @Override
-                        public void valueChange(ValueChangeEvent event) {
-                            //File = 1
-                            if (Integer.valueOf(event.getProperty().toString()) == 1) {
-                                if (!wizard.getSteps().contains(fileStep)) {
-                                    //wizard.getLastCompleted() is the previous step, 
-                                    //the current is wizard.getLastCompleted() + 1, 
-                                    //the next step wizard.getLastCompleted() + 2
-                                    wizard.addStep(fileStep, wizard.getLastCompleted() + 1);
-                                }
-                            } else {
-                                wizard.removeStep(fileStep);
-                            }
-                        }
-                    });
-                }
-                return dataTypeDialog;
-            }
-
-            @Override
-            public boolean onAdvance() {
-                boolean value = true;
-                if (dataTypeDialog.getTypes().getValue() == null) {
-                    getMainWindow().showNotification(
-                            getResource().getString("message.missing.datatype"),
-                            Notification.TYPE_ERROR_MESSAGE);
-                    value = false;
-                } else {
-                    data = new XincoCoreData();
-                    //Process data
-                    data.setXincoCoreDataType((XincoCoreDataType) XincoCoreDataTypeServer.getXincoCoreDataTypes().get(Integer.valueOf(dataTypeDialog.getTypes().getValue().toString())));
-                    //Set the parent id to the current selected node
-                    data.setXincoCoreNodeId(((XincoCoreNode) ((XincoCoreNodeProperty) xincoTree.getValue()).getValue()).getId());
-                    addDefaultAddAttributes();
-                    if ((data.getXincoCoreDataType().getId() != 1
-                            || data.getXincoAddAttributes().size() > 8)
-                            && (data.getXincoCoreDataType().getId() != 2
-                            || data.getXincoAddAttributes().size() > 1)) {
-                        wizard.addStep(attrStep, wizard.getLastCompleted() + 2);
+                @Override
+                public void uploadSucceeded(SucceededEvent event) {
+                    if (upload != null) {
+                        upload.setEnabled(false);
                     }
-                    if (data.getXincoCoreDataType().getId() == 1) {
-                        //Is a file, show archiving dialog
-                        wizard.addStep(new WizardStep() {
+                }
+            };
+            final WizardStep fileStep = new WizardStep() {
+
+                @Override
+                public String getCaption() {
+                    return getResource().getString("general.file.select");
+                }
+
+                @Override
+                public com.vaadin.ui.Component getContent() {
+                    upload.addListener((Upload.SucceededListener) um);
+                    upload.addListener((Upload.SucceededListener) listener);
+                    upload.addListener((Upload.FailedListener) um);
+                    return upload;
+                }
+
+                @Override
+                public boolean onAdvance() {
+                    //TODO: Not critical; Next button is enabled without a file loaded (but gives error message)
+                    if (!um.isSuccess()) {
+                        getMainWindow().showNotification(
+                                getResource().getString("message.missing.file"),
+                                Notification.TYPE_ERROR_MESSAGE);
+                    } else {
+                        data.setDesignation(fileName);
+                    }
+                    return um.isSuccess();
+                }
+
+                @Override
+                public boolean onBack() {
+                    return true;
+                }
+            };
+            final WizardStep attrStep = new WizardStep() {
+
+                @Override
+                public String getCaption() {
+                    return getResource().getString("window.addattributesuniversal");
+                }
+
+                @Override
+                public com.vaadin.ui.Component getContent() {
+                    if (attrDialog == null) {
+                        attrDialog = new AddAttributeDialog(data);
+                        attrDialog.setSizeFull();
+                    }
+                    return attrDialog;
+                }
+
+                @Override
+                public boolean onAdvance() {
+                    //True if there are more steps after this one
+                    return wizard.getSteps().size() > wizard.getLastCompleted() + 1;
+                }
+
+                @Override
+                public boolean onBack() {
+                    return true;
+                }
+            };
+            wizard.addStep(new WizardStep() {
+
+                @Override
+                public String getCaption() {
+                    return getResource().getString("window.datatype");
+                }
+
+                @Override
+                public com.vaadin.ui.Component getContent() {
+                    if (dataTypeDialog == null) {
+                        dataTypeDialog = new DataTypeDialog();
+                        dataTypeDialog.setSizeFull();
+                        dataTypeDialog.getTypes().addListener(new ValueChangeListener() {
 
                             @Override
-                            public String getCaption() {
-                                return getResource().getString("window.archive");
-                            }
-
-                            @Override
-                            public com.vaadin.ui.Component getContent() {
-                                if (archDialog == null) {
-                                    archDialog = new ArchiveDialog();
-                                    archDialog.setSizeFull();
+                            public void valueChange(ValueChangeEvent event) {
+                                //File = 1
+                                if (Integer.valueOf(event.getProperty().toString()) == 1) {
+                                    if (!wizard.getSteps().contains(fileStep)) {
+                                        //wizard.getLastCompleted() is the previous step, 
+                                        //the current is wizard.getLastCompleted() + 1, 
+                                        //the next step wizard.getLastCompleted() + 2
+                                        wizard.addStep(fileStep, wizard.getLastCompleted() + 1);
+                                    }
+                                } else {
+                                    wizard.removeStep(fileStep);
                                 }
-                                return archDialog;
-                            }
-
-                            @Override
-                            public boolean onAdvance() {
-                                //True if there are more steps after this one
-                                return wizard.getSteps().size() > wizard.getLastCompleted() + 1;
-                            }
-
-                            @Override
-                            public boolean onBack() {
-                                return true;
                             }
                         });
                     }
-                    switch (data.getXincoCoreDataType().getId()) {
-                        //Text data
-                        case 2:
-                            //TODO: Prompt user to enter text
-                            break;
-                        //TODO handle other cases
-                        default:
-                    }
+                    return dataTypeDialog;
                 }
-                return value;
-            }
 
-            @Override
-            public boolean onBack() {
-                return true;
+                @Override
+                public boolean onAdvance() {
+                    boolean value = true;
+                    if (dataTypeDialog.getTypes().getValue() == null) {
+                        getMainWindow().showNotification(
+                                getResource().getString("message.missing.datatype"),
+                                Notification.TYPE_ERROR_MESSAGE);
+                        value = false;
+                    } else {
+                        data = new XincoCoreData();
+                        //Process data
+                        data.setXincoCoreDataType((XincoCoreDataType) XincoCoreDataTypeServer.getXincoCoreDataTypes().get(Integer.valueOf(dataTypeDialog.getTypes().getValue().toString())));
+                        //Set the parent id to the current selected node
+                        data.setXincoCoreNodeId(((XincoCoreNode) ((XincoCoreNodeProperty) xincoTree.getValue()).getValue()).getId());
+                        addDefaultAddAttributes();
+                        if ((data.getXincoCoreDataType().getId() != 1
+                                || data.getXincoAddAttributes().size() > 8)
+                                && (data.getXincoCoreDataType().getId() != 2
+                                || data.getXincoAddAttributes().size() > 1)) {
+                            wizard.addStep(attrStep, wizard.getLastCompleted() + 2);
+                        }
+                        if (data.getXincoCoreDataType().getId() == 1) {
+                            //Is a file, show archiving dialog
+                            wizard.addStep(new WizardStep() {
+
+                                @Override
+                                public String getCaption() {
+                                    return getResource().getString("window.archive");
+                                }
+
+                                @Override
+                                public com.vaadin.ui.Component getContent() {
+                                    if (archDialog == null) {
+                                        archDialog = new ArchiveDialog();
+                                        archDialog.setSizeFull();
+                                    }
+                                    return archDialog;
+                                }
+
+                                @Override
+                                public boolean onAdvance() {
+                                    //True if there are more steps after this one
+                                    return wizard.getSteps().size() > wizard.getLastCompleted() + 1;
+                                }
+
+                                @Override
+                                public boolean onBack() {
+                                    return true;
+                                }
+                            });
+                        }
+                        switch (data.getXincoCoreDataType().getId()) {
+                            //Text data
+                            case 2:
+                                //TODO: Prompt user to enter text
+                                break;
+                            //TODO handle other cases
+                            default:
+                        }
+                    }
+                    return value;
+                }
+
+                @Override
+                public boolean onBack() {
+                    return true;
+                }
+            });
+        } else {
+            try {
+                //Load from database
+                data = getService().getXincoPort().getXincoCoreData(
+                        ((XincoCoreData) ((XincoCoreDataProperty) xincoTree.getValue()).getValue()),
+                        loggedUser);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             }
-        });
+        }
         wizard.addStep(new WizardStep() {
 
             @Override
@@ -1292,7 +1315,9 @@ public class Xinco extends Application implements Window.ResizeListener {
         });
         wizardWindow.removeAllComponents();
         wizardWindow.addComponent(wizard);
-        ddManager = new DataDialogManager();
+        //Disable closing with the 'X' in the window
+        wizardWindow.setReadOnly(true);
+        ddManager = new DataDialogManager(newData);
         wizard.setSizeFull();
         wizard.addListener(ddManager);
         wizardWindow.setModal(true);
@@ -1397,6 +1422,12 @@ public class Xinco extends Application implements Window.ResizeListener {
 
     private class DataDialogManager implements WizardProgressListener {
 
+        private final boolean newData;
+
+        public DataDialogManager(boolean newData) {
+            this.newData = newData;
+        }
+
         @Override
         public void activeStepChanged(WizardStepActivationEvent event) {
             // display the step caption as the window title
@@ -1416,11 +1447,13 @@ public class Xinco extends Application implements Window.ResizeListener {
         @Override
         public void wizardCancelled(WizardCancelledEvent event) {
             try {
-                //Cancelled so roll back everything done in database
-                HashMap parameters = new HashMap();
-                parameters.put("id", data.getId());
-                if (data != null) {
-                    XincoCoreDataServer.removeFromDB(loggedUser.getId(), data.getId());
+                if (newData) {
+                    //Cancelled so roll back everything done in database
+                    HashMap parameters = new HashMap();
+                    parameters.put("id", data.getId());
+                    if (data != null) {
+                        XincoCoreDataServer.removeFromDB(loggedUser.getId(), data.getId());
+                    }
                 }
                 //Remove the file from the repository as well
                 closeWizard();
@@ -1430,15 +1463,24 @@ public class Xinco extends Application implements Window.ResizeListener {
         }
 
         private void finishWizard() {
-            try {
-                //Now load the file
-                loadFile(fileToLoad, fileName);
-            } catch (XincoException ex) {
-                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            if (newData) {
+                try {
+                    //Now load the file
+                    loadFile(fileToLoad, fileName);
+                } catch (XincoException ex) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                try {
+                    //Update data only
+                    getService().getXincoPort().setXincoCoreData(data, loggedUser);
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             closeWizard();
             getMainWindow().removeWindow(wizardWindow);
