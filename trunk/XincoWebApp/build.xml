@@ -310,13 +310,21 @@
         <antcall target="do-compile-widgetset-if-needed"/>
     </target>
     
-    <target name="do-compile-widgetset-if-needed" unless="widgetset.present">
+    <target name="do-compile-widgetset-if-needed" depends="no-need-to-compile-widgetset" unless="widgetset.present">
         <echo>Compiling Vaadin Add-ons, please wait!</echo>
         <antcall target="compile-widgetset"/>
         <echo>Done!</echo>
     </target>
+    
+    <target name="no-need-to-compile-widgetset" if="widgetset.present">
+        <echo>No need to recompile widgetset. If something was added/modified please run compile-widgetset target manually.</echo>
+    </target>
 
-    <target name="-pre-init">
+    <target name="-pre-init" depends="check" unless="widgetset.present">
+        <!--Clean the widgets directory so they are recompiled to avoid 
+        ClassNotFound errors. I know it takes a long time to compile Vaadin 
+        widget set, but there's no way around it if you did a clean.-->
+        <fail message="Widgetset not found at ${client-side-destination}. Please run the compile-widgetset first and then retry."/>
         <mkdir dir="${lib}"/>
         <echo>Updating version in Xinco/src/com/bluecubs/xinco/settings/settings.properties to: ${version_high}.${version_mid}.${version_low} ${version_postfix}</echo>
         <echo>To change this, change file build.ant.properties in xinco/</echo>
@@ -381,6 +389,7 @@
                        match="'version.postfix'.*"
                        replace="'version.postfix', '0', '${version_postfix}', '0', '0');"
                        byline="true"/>
+        <available file="web/VAADIN/widgetsets" property="widgetset.present" type="dir"/>
     </target>
     
     <target name="build-language-master-pack">
@@ -404,5 +413,11 @@
         <delete includeemptydirs="true">
             <fileset dir="${dist}" includes="XincoLanguageMasterPack-*/**" excludes="*.zip"/>
         </delete>
+    </target>
+    
+    <target name="check" depends="widgetset-init">
+        <condition property="widgetset.present">
+            <available file="${client-side-destination}" type="dir"/>
+        </condition>
     </target>
 </project>
