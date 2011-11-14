@@ -14,6 +14,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
+import com.vaadin.terminal.FileResource;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.ThemeResource;
@@ -195,32 +196,28 @@ public class Xinco extends Application implements Window.ResizeListener {
         }
     }
 
-    protected ThemeResource getIcon(String extension) throws IOException {
+    protected FileResource getIcon(String extension) throws IOException {
         WebApplicationContext context = (WebApplicationContext) getContext();
-        File iconsFolder = new File(context.getHttpSession().getServletContext().getRealPath("/WEB-INF") + System.getProperty("file.separator") + "icons");
+        File iconsFolder = new File(context.getHttpSession().getServletContext().getRealPath("/VAADIN/themes/xinco") + System.getProperty("file.separator") + "icons");
         if (!iconsFolder.exists()) {
             //Create it
             iconsFolder.mkdirs();
         }
-        Image image = iconToImage(xfm.getIcon(extension));
-        BufferedImage buffered = new BufferedImage(
-                image.getWidth(null),
-                image.getHeight(null),
-                BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = buffered.createGraphics();
-        g.drawImage(image, 0, 0, null);
-        g.dispose();
-        if (extension.indexOf('.') > -1) {
-            extension = extension.substring(extension.lastIndexOf('.') + 1,
-                    extension.length());
-        }
         File icon = new File(iconsFolder.getAbsolutePath()
                 + System.getProperty("file.separator") + extension + ".png");
-        ImageIO.write(buffered, "PNG", icon);
-        ThemeResource resource = new ThemeResource(".." + System.getProperty("file.separator")
-                + ".." + System.getProperty("file.separator")
-                + "icons" + System.getProperty("file.separator") + extension + ".png");
-        getMainWindow().showNotification(resource.getResourceId());
+        if (!icon.exists()) {
+            Image image = iconToImage(xfm.getIcon(extension));
+            BufferedImage buffered = new BufferedImage(
+                    image.getWidth(null),
+                    image.getHeight(null),
+                    BufferedImage.TYPE_INT_RGB);
+            Graphics2D g = buffered.createGraphics();
+            g.drawImage(image, 0, 0, null);
+            g.dispose();
+            ImageIO.write(buffered, "PNG", icon);
+        }
+        FileResource resource =
+                new FileResource(icon, Xinco.this);
         return resource;
     }
 
@@ -351,7 +348,7 @@ public class Xinco extends Application implements Window.ResizeListener {
             XincoCoreData temp = it.next();
             XincoCoreDataProperty dataProperty = new XincoCoreDataProperty(temp);
             //Add childen data
-//            Item item = 
+//            Item item =
             xincoTree.addItem(dataProperty);
             // Set it to be a child.
             xincoTree.setParent(dataProperty, parent);
@@ -359,15 +356,27 @@ public class Xinco extends Application implements Window.ResizeListener {
             xincoTree.setChildrenAllowed(dataProperty, false);
             //TODO: Add icons to files, not a critical feature
 //            try {
-//                if (data.getDesignation().contains(".")
-//                        && data.getDesignation().substring(data.getDesignation().lastIndexOf(".") + 1,
-//                        data.getDesignation().length()).length() == 3 
-//                        //                        && data.getXincoCoreDataType().getDesignation().equals("general.data.type.file")
-//                        ) {
+//                if (temp.getDesignation() != null
+//                        && temp.getDesignation().contains(".")
+//                        && temp.getDesignation().substring(temp.getDesignation().lastIndexOf(".") + 1,
+//                        temp.getDesignation().length()).length() == 3) {
 //                    //Set Icon
-//                    item.getItemProperty("icon").setValue(
-//                            xinco.getIcon(data.getDesignation().substring(data.getDesignation().lastIndexOf(".") + 1,
-//                            data.getDesignation().length())));
+//                    switch (temp.getXincoCoreDataType().getId()) {
+//                        case 1://File
+//                            //Fall through
+//                        case 5://Rendering
+//                            item.getItemProperty("icon").setValue(
+//                                    getIcon(temp.getDesignation().substring(temp.getDesignation().lastIndexOf(".") + 1,
+//                                    temp.getDesignation().length())));
+//                            break;
+//                        case 2://TODO: Text
+//                            break;
+//                        case 3://TODO: URL
+//                            break;
+//                        case 4://Contact
+//                            item.getItemProperty("icon").setValue(new ThemeResource("icons/contact.gif"));
+//                            break;
+//                    }
 //                }
 //            } catch (IOException ex) {
 //                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
@@ -522,6 +531,15 @@ public class Xinco extends Application implements Window.ResizeListener {
                         } else if (xincoTree.getValue() instanceof XincoCoreDataProperty) {
                             showDataDialog(false);
                         }
+                    }
+                });
+                repo.addItem(getResource().getString("menu.edit.acl"),
+                        smallIcon,//Icon 
+                        new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        showACLDialog();
                     }
                 });
             }//Actions user don't needs to be logged in
@@ -688,6 +706,161 @@ public class Xinco extends Application implements Window.ResizeListener {
             //Center sub window in new screen size
             w.center();
         }
+    }
+
+    private void showACLDialog() {
+        final Window aclWindow = new Window();
+        final Form form = new Form();
+        form.setCaption(getResource().getString("window.acl"));
+        final TwinColSelect acls = new TwinColSelect();
+        acls.setImmediate(true);
+        acls.setNewItemsAllowed(false);
+        acls.setNullSelectionAllowed(true);
+        acls.setMultiSelect(true);
+        // Set the column captions (optional)
+        acls.setNewItemsAllowed(false);
+        acls.setLeftColumnCaption(getResource().getString("general.notincluded"));
+        acls.setRightColumnCaption(getResource().getString("general.included"));
+        String[] values = new String[]{
+            getResource().getString("general.acl.readpermission"),
+            getResource().getString("general.acl.executepermission"),
+            getResource().getString("general.acl.writepermission"),
+            getResource().getString("general.acl.adminpermission")};
+        //Fill data
+        for (int i = 0; i < values.length; i++) {
+            acls.addItem(values[i]);
+        }
+        final Select groups = new Select();
+        int i = 0;
+        for (Iterator it = XincoCoreGroupServer.getXincoCoreGroups().iterator(); it.hasNext();) {
+            Object group = it.next();
+            String designation = ((XincoCoreGroupServer) group).getDesignation();
+            String value = getResource().containsKey(designation)
+                    ? getResource().getString(designation) : designation;
+            groups.addItem(((XincoCoreGroupServer) group).getId());
+            groups.setItemCaption(((XincoCoreGroupServer) group).getId(), value);
+            i++;
+        }
+        groups.setImmediate(true);
+        groups.setNewItemsAllowed(false);
+        final Select users = new Select();
+        i = 0;
+        for (Iterator it = XincoCoreUserServer.getXincoCoreUsers().iterator(); it.hasNext();) {
+            XincoCoreUserServer user = (XincoCoreUserServer) it.next();
+            String designation = user.getFirstname() + "_" + user.getName()
+                    + " (" + user.getUsername() + ")";
+            String value = getResource().containsKey(designation)
+                    ? getResource().getString(designation) : designation;
+            users.addItem(user.getId());
+            users.setItemCaption(user.getId(), value);
+            i++;
+        }
+        users.setImmediate(true);
+        users.setNewItemsAllowed(false);
+        ValueChangeListener listener = new ValueChangeListener() {
+
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+                acls.setEnabled(false);
+                int id = Integer.valueOf(event.getProperty().toString());
+                HashMap<Integer, XincoCoreACEServer> groupACL = new HashMap<Integer, XincoCoreACEServer>();
+                HashMap<Integer, XincoCoreACEServer> individualACL = new HashMap<Integer, XincoCoreACEServer>();
+                if (xincoTree.getValue() instanceof XincoCoreNodeProperty) {
+                    try {
+                        XincoCoreNodeServer tempNode = new XincoCoreNodeServer(((XincoCoreNode) ((XincoCoreNodeProperty) xincoTree.getValue()).getValue()).getId());
+                        for (Iterator<Object> it = tempNode.getXincoCoreAcl().iterator(); it.hasNext();) {
+                            XincoCoreACEServer temp = (XincoCoreACEServer) it.next();
+                            if (temp.getXincoCoreGroupId() > 0) {
+                                groupACL.put(temp.getXincoCoreGroupId(), temp);
+                            } else {
+                                individualACL.put(temp.getXincoCoreGroupId(), temp);
+                            }
+                        }
+                    } catch (XincoException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else if (xincoTree.getValue() instanceof XincoCoreDataProperty) {
+                    try {
+                        XincoCoreDataServer tempData = new XincoCoreDataServer(((XincoCoreData) ((XincoCoreDataProperty) xincoTree.getValue()).getValue()).getId());
+                        for (Iterator<XincoCoreACE> it = tempData.getXincoCoreAcl().iterator(); it.hasNext();) {
+                            XincoCoreACEServer temp = (XincoCoreACEServer) it.next();
+                            if (temp.getXincoCoreGroupId() > 0) {
+                                groupACL.put(temp.getXincoCoreGroupId(), temp);
+                            } else {
+                                individualACL.put(temp.getXincoCoreGroupId(), temp);
+                            }
+                        }
+                    } catch (XincoException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                // Preselect values
+                HashSet<String> preselected = new HashSet<String>();
+                if (groupACL.containsKey(id)) {
+                    XincoCoreACEServer acl = groupACL.get(id);
+                    if (acl.isAdminPermission()) {
+                        Collections.addAll(preselected,
+                                getResource().getString("general.acl.adminpermission"));
+                    }
+                    if (acl.isExecutePermission()) {
+                        Collections.addAll(preselected,
+                                getResource().getString("general.acl.executepermission"));
+                    }
+                    if (acl.isReadPermission()) {
+                        Collections.addAll(preselected,
+                                getResource().getString("general.acl.readpermission"));
+                    }
+                    if (acl.isWritePermission()) {
+                        Collections.addAll(preselected,
+                                getResource().getString("general.acl.writepermission"));
+                    }
+                }
+                acls.setValue(preselected);
+                // Set the number of visible items
+                acls.setRows(4);
+                acls.setEnabled(true);
+            }
+        };
+        form.getLayout().addComponent(new com.vaadin.ui.Label(
+                getResource().getString("window.acl.grouplabel")));
+        form.addField("group", users);
+        form.getField("group").setRequired(true);
+        form.getField("group").setRequiredError(getResource().getString("message.missing.group"));
+        form.getField("group").addListener(listener);
+        form.getLayout().addComponent(new com.vaadin.ui.Label(
+                getResource().getString("general.permission")));
+        form.addField("acl", acls);
+        form.setFooter(new HorizontalLayout());
+        //Used for validation purposes
+        final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
+                getResource().getString("general.save"), form, "commit");
+        final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
+                getResource().getString("general.cancel"),
+                new com.vaadin.ui.Button.ClickListener() {
+
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        updateMenu();
+                        getMainWindow().removeWindow(aclWindow);
+                    }
+                });
+        commit.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+            @Override
+            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                //TODO: Process data
+                getMainWindow().removeWindow(aclWindow);
+            }
+        });
+        form.getFooter().setSizeUndefined();
+        form.getFooter().addComponent(commit);
+        form.getFooter().addComponent(cancel);
+        form.setSizeFull();
+        aclWindow.addComponent(form);
+        aclWindow.center();
+        aclWindow.setModal(true);
+        aclWindow.setWidth(35, Sizeable.UNITS_PERCENTAGE);
+        getMainWindow().addWindow(aclWindow);
     }
 
     private void showLoginDialog() {
