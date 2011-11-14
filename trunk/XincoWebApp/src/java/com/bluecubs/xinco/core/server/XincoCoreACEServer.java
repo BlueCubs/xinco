@@ -1,46 +1,42 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoCoreACEServer
+ * Name: XincoCoreACEServer
  *
- * Description:     access control entry
+ * Description: access control entry
  *
- * Original Author: Alexander Manes
- * Date:            2004
+ * Original Author: Alexander Manes Date: 2004
  *
  * Modifications:
  *
- * Who?             When?             What?
- * -                -                 -
+ * Who? When? What? - - -
  *
  *************************************************************
  */
 package com.bluecubs.xinco.core.server;
 
-import java.util.ArrayList;
-
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreAceJpaController;
 import com.bluecubs.xinco.core.server.service.XincoCoreACE;
 import com.bluecubs.xinco.core.server.service.XincoCoreGroup;
 import com.bluecubs.xinco.core.server.service.XincoCoreUser;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -170,15 +166,16 @@ public class XincoCoreACEServer extends XincoCoreACE {
     }
 
     //create complete ACL for node or data
-    public static ArrayList getXincoCoreACL(int attrID, String attrT) {
-        ArrayList core_acl = new ArrayList();
+    public static ArrayList<XincoCoreACEServer> getXincoCoreACL(int attrID, String attrT) {
+        ArrayList<XincoCoreACEServer> core_acl = new ArrayList<XincoCoreACEServer>();
         try {
             result = XincoDBManager.createdQuery("SELECT xca FROM XincoCoreAce xca WHERE xca." + attrT
                     + "=" + attrID + "");
             //TODO: Uncomment when bug is fixed
             /**
-             * This is an eclipselink bug (https://bugs.eclipse.org/bugs/show_bug.cgi?id=294092)
-             * Leave commented while its fixed.
+             * This is an eclipselink bug
+             * (https://bugs.eclipse.org/bugs/show_bug.cgi?id=294092) Leave
+             * commented while its fixed.
              */
             // ORDER BY xca.xincoCoreUserId.id, xca.xincoCoreGroupId.id, "
             //                    + "xca.xincoCoreNodeId.id, xca.xincoCoreDataId.id
@@ -197,9 +194,9 @@ public class XincoCoreACEServer extends XincoCoreACE {
     //check access by comparing user / user groups to ACL and return permissions
     public static XincoCoreACE checkAccess(XincoCoreUser attrU, ArrayList attrACL) {
 
-        int i = 0;
-        int j = 0;
-        boolean match_ace = false;
+        int i;
+        int j;
+        boolean match_ace;
         XincoCoreACE core_ace = new XincoCoreACE();
 
         for (i = 0; i < attrACL.size(); i++) {
