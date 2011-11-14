@@ -158,7 +158,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     private XincoRepositoryActionHandler actionHandler = null;
     //Size of menu actions
     private int actionSize = 19;
-    private XincoExplorer.refreshThread rThread;
+    private XincoExplorer.RefreshThread rThread;
     private ArrayList<AbstractDialog> dialogs = null;
     private LockDialog lockDialog = null;
     //Status of the explorer: lock = true - idle time limit exceeded, user must log in again to continue use
@@ -2928,7 +2928,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
      */
     public void refreshJTree() {
         rThread = null;
-        rThread = new refreshThread();
+        rThread = new RefreshThread();
         rThread.start();
     }
 
@@ -2940,7 +2940,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
         return progressBar;
     }
 
-    private class refreshThread extends Thread {
+    private class RefreshThread extends Thread {
 
         @Override
         public void run() {
