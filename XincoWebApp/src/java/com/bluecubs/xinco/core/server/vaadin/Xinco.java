@@ -370,9 +370,9 @@ public class Xinco extends Application implements Window.ResizeListener {
 //                                    getIcon(temp.getDesignation().substring(temp.getDesignation().lastIndexOf(".") + 1,
 //                                    temp.getDesignation().length())));
 //                            break;
-//                        case 2://TODO: Text
+//                        case 2://Text
 //                            break;
-//                        case 3://TODO: URL
+//                        case 3://URL
 //                            break;
 //                        case 4://Contact
 //                            item.getItemProperty("icon").setValue(new ThemeResource("icons/contact.gif"));
@@ -541,6 +541,24 @@ public class Xinco extends Application implements Window.ResizeListener {
                     @Override
                     public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
                         showACLDialog();
+                    }
+                });
+                repo.addItem(getResource().getString("menu.edit.movefolderdatatoclipboard"),
+                        smallIcon,//Icon 
+                        new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        //TODO: Implement
+                    }
+                });
+                repo.addItem(getResource().getString("menu.edit.insertfolderdata"),
+                        smallIcon,//Icon 
+                        new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        //TODO: Implement
                     }
                 });
             }//Actions user don't needs to be logged in
@@ -2027,8 +2045,10 @@ public class Xinco extends Application implements Window.ResizeListener {
         xincoTree.removeAllItems();
         root = xincoTree.addItem(rootProperty);
         addChildren(rootProperty);
-        //Expand root
-        xincoTree.expandItem(root);
+        //Expand root node
+        for (Iterator<?> it = xincoTree.rootItemIds().iterator(); it.hasNext();) {
+            xincoTree.expandItemsRecursively(it.next());
+        }
     }
 
     private void processTreeSelection() {
