@@ -695,7 +695,7 @@ public class Xinco extends Application implements Window.ResizeListener {
      */
     public void resetTimer() {
         if (loggedUser == null) {
-            //TODO: Prompt for login
+            showLoginDialog();
         } else if (xat != null) {
             xat.getActivityTimer().restart();
         }
@@ -753,7 +753,6 @@ public class Xinco extends Application implements Window.ResizeListener {
         com.vaadin.ui.Label type;
         //Add Groups
         for (Iterator it = XincoCoreGroupServer.getXincoCoreGroups().iterator(); it.hasNext();) {
-            boolean add = false;
             XincoCoreGroupServer group = (XincoCoreGroupServer) it.next();
             String itemId = getResource().getString("general.group") + "-" + group.getId();
             String designation = ((XincoCoreGroupServer) group).getDesignation();
@@ -805,41 +804,24 @@ public class Xinco extends Application implements Window.ResizeListener {
                 }
             });
             write.setImmediate(true);
-            XincoCoreACEServer acl;
+            XincoCoreACEServer acl = null;
             if (xincoTree.getValue() instanceof XincoCoreNodeProperty) {
                 try {
                     XincoCoreNodeServer tempNode = new XincoCoreNodeServer(((XincoCoreNode) ((XincoCoreNodeProperty) xincoTree.getValue()).getValue()).getId());
+                    try {
+                        acl = new XincoCoreACEServer(0, 0, group.getId(), tempNode.getId(), 0, false, false, false, false);
+                    } catch (XincoException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     for (Iterator<Object> it2 = tempNode.getXincoCoreAcl().iterator(); it2.hasNext();) {
-                        acl = (XincoCoreACEServer) it2.next();
-                        if (acl.getXincoCoreGroupId() == group.getId()) {
-                            if (acl.isAdminPermission()) {
-                                admin.setValue(true);
-                                add = true;
-                            }
-                            if (acl.isExecutePermission()) {
-                                execute.setValue(true);
-                                add = true;
-                            }
-                            if (acl.isReadPermission()) {
-                                read.setValue(true);
-                                add = true;
-                            }
-                            if (acl.isWritePermission()) {
-                                write.setValue(true);
-                                add = true;
-                            }
-                            if (add) {
-                                Collections.addAll(preselected, value);
-                                aceList.put(itemId, acl);
-                                // Create the table row.
-                                admin.setData(itemId);
-                                read.setData(itemId);
-                                write.setData(itemId);
-                                execute.setData(itemId);
-                                table.addItem(new Object[]{name, type, admin, read, write, execute},
-                                        itemId);
-                                acls.addItem(value);
-                            }
+                        XincoCoreACEServer temp = (XincoCoreACEServer) it2.next();
+                        if (temp.getXincoCoreGroupId() == group.getId()) {
+                            admin.setValue(temp.isAdminPermission());
+                            execute.setValue(temp.isExecutePermission());
+                            read.setValue(temp.isReadPermission());
+                            write.setValue(temp.isWritePermission());
+                            acl = temp;
+                            break;
                         }
                     }
                 } catch (XincoException ex) {
@@ -848,43 +830,36 @@ public class Xinco extends Application implements Window.ResizeListener {
             } else if (xincoTree.getValue() instanceof XincoCoreDataProperty) {
                 try {
                     XincoCoreDataServer tempData = new XincoCoreDataServer(((XincoCoreData) ((XincoCoreDataProperty) xincoTree.getValue()).getValue()).getId());
+                    try {
+                        acl = new XincoCoreACEServer(0, 0, 0, 0, tempData.getId(), false, false, false, false);
+                    } catch (XincoException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     for (Iterator<XincoCoreACE> it2 = tempData.getXincoCoreAcl().iterator(); it2.hasNext();) {
-                        acl = (XincoCoreACEServer) it2.next();
-                        if (acl.getXincoCoreGroupId() == group.getId()) {
-                            if (acl.isAdminPermission()) {
-                                admin.setValue(true);
-                                add = true;
-                            }
-                            if (acl.isExecutePermission()) {
-                                execute.setValue(true);
-                                add = true;
-                            }
-                            if (acl.isReadPermission()) {
-                                read.setValue(true);
-                                add = true;
-                            }
-                            if (acl.isWritePermission()) {
-                                write.setValue(true);
-                                add = true;
-                            }
-                            if (add) {
-                                Collections.addAll(preselected, value);
-                                aceList.put(itemId, acl);
-                                // Create the table row.
-                                admin.setData(itemId);
-                                read.setData(itemId);
-                                write.setData(itemId);
-                                execute.setData(itemId);
-                                table.addItem(new Object[]{name, type, admin, read, write, execute},
-                                        itemId);
-                                acls.addItem(value);
-                            }
+                        XincoCoreACEServer temp = (XincoCoreACEServer) it2.next();
+                        if (temp.getXincoCoreGroupId() == group.getId()) {
+                            admin.setValue(temp.isAdminPermission());
+                            execute.setValue(temp.isExecutePermission());
+                            read.setValue(temp.isReadPermission());
+                            write.setValue(temp.isWritePermission());
+                            acl = temp;
+                            break;
                         }
                     }
                 } catch (XincoException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            Collections.addAll(preselected, value);
+            aceList.put(itemId, acl);
+            // Create the table row.
+            admin.setData(itemId);
+            read.setData(itemId);
+            write.setData(itemId);
+            execute.setData(itemId);
+            table.addItem(new Object[]{name, type, admin, read, write, execute},
+                    itemId);
+            acls.addItem(value);
         }
         //Add users
         for (Iterator it = XincoCoreUserServer.getXincoCoreUsers().iterator(); it.hasNext();) {
@@ -938,41 +913,24 @@ public class Xinco extends Application implements Window.ResizeListener {
                 }
             });
             write.setImmediate(true);
-            boolean add = false;
-            XincoCoreACEServer acl;
+            XincoCoreACEServer acl = null;
             if (xincoTree.getValue() instanceof XincoCoreNodeProperty) {
                 try {
                     XincoCoreNodeServer tempNode = new XincoCoreNodeServer(((XincoCoreNode) ((XincoCoreNodeProperty) xincoTree.getValue()).getValue()).getId());
+                    try {
+                        acl = new XincoCoreACEServer(0, loggedUser.getId(), 0, tempNode.getId(), 0, false, false, false, false);
+                    } catch (XincoException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     for (Iterator<Object> it2 = tempNode.getXincoCoreAcl().iterator(); it2.hasNext();) {
-                        acl = (XincoCoreACEServer) it2.next();
-                        if (acl.getXincoCoreUserId() == user.getId()) {
-                            if (acl.isAdminPermission()) {
-                                admin.setValue(true);
-                                add = true;
-                            }
-                            if (acl.isExecutePermission()) {
-                                execute.setValue(true);
-                                add = true;
-                            }
-                            if (acl.isReadPermission()) {
-                                read.setValue(true);
-                                add = true;
-                            }
-                            if (acl.isWritePermission()) {
-                                write.setValue(true);
-                                add = true;
-                            }
-                            if (add) {
-                                Collections.addAll(preselected, userLabel);
-                                admin.setData(itemId);
-                                read.setData(itemId);
-                                write.setData(itemId);
-                                execute.setData(itemId);
-                                // Create the table row.
-                                table.addItem(new Object[]{name, type, admin, read, write, execute},
-                                        itemId);
-                                aceList.put(itemId, acl);
-                            }
+                        XincoCoreACEServer temp = (XincoCoreACEServer) it2.next();
+                        if (temp.getXincoCoreGroupId() == user.getId()) {
+                            admin.setValue(temp.isAdminPermission());
+                            execute.setValue(temp.isExecutePermission());
+                            read.setValue(temp.isReadPermission());
+                            write.setValue(temp.isWritePermission());
+                            acl = temp;
+                            break;
                         }
                     }
                 } catch (XincoException ex) {
@@ -981,42 +939,35 @@ public class Xinco extends Application implements Window.ResizeListener {
             } else if (xincoTree.getValue() instanceof XincoCoreDataProperty) {
                 try {
                     XincoCoreDataServer tempData = new XincoCoreDataServer(((XincoCoreData) ((XincoCoreDataProperty) xincoTree.getValue()).getValue()).getId());
+                    try {
+                        acl = new XincoCoreACEServer(0, 0, loggedUser.getId(), 0, tempData.getId(), false, false, false, false);
+                    } catch (XincoException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     for (Iterator<XincoCoreACE> it2 = tempData.getXincoCoreAcl().iterator(); it2.hasNext();) {
-                        acl = (XincoCoreACEServer) it2.next();
-                        if (acl.getXincoCoreUserId() == user.getId()) {
-                            if (acl.isAdminPermission()) {
-                                admin.setValue(true);
-                                add = true;
-                            }
-                            if (acl.isExecutePermission()) {
-                                execute.setValue(true);
-                                add = true;
-                            }
-                            if (acl.isReadPermission()) {
-                                read.setValue(true);
-                                add = true;
-                            }
-                            if (acl.isWritePermission()) {
-                                write.setValue(true);
-                                add = true;
-                            }
-                            if (add) {
-                                Collections.addAll(preselected, userLabel);
-                                admin.setData(itemId);
-                                read.setData(itemId);
-                                write.setData(itemId);
-                                execute.setData(itemId);
-                                // Create the table row.
-                                table.addItem(new Object[]{name, type, admin, read, write, execute},
-                                        itemId);
-                                aceList.put(itemId, acl);
-                            }
+                        XincoCoreACEServer temp = (XincoCoreACEServer) it2.next();
+                        if (temp.getXincoCoreGroupId() == user.getId()) {
+                            admin.setValue(temp.isAdminPermission());
+                            execute.setValue(temp.isExecutePermission());
+                            read.setValue(temp.isReadPermission());
+                            write.setValue(temp.isWritePermission());
+                            acl = temp;
+                            break;
                         }
                     }
                 } catch (XincoException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            Collections.addAll(preselected, userLabel);
+            admin.setData(itemId);
+            read.setData(itemId);
+            write.setData(itemId);
+            execute.setData(itemId);
+            // Create the table row.
+            table.addItem(new Object[]{name, type, admin, read, write, execute},
+                    itemId);
+            aceList.put(itemId, acl);
             acls.addItem(getResource().getString("general.user") + ":" + userLabel);
         }
         table.setSizeFull();
@@ -1039,25 +990,46 @@ public class Xinco extends Application implements Window.ResizeListener {
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                try {
-                    for (Iterator<Entry<String, XincoCoreACEServer>> it = aceList.entrySet().iterator(); it.hasNext();) {
-                        Entry<String, XincoCoreACEServer> e = it.next();
-                        XincoCoreACEServer stored = new XincoCoreACEServer(e.getValue().getId());
-                        if (stored.isAdminPermission() != e.getValue().isAdminPermission()
-                                || stored.isExecutePermission() != e.getValue().isExecutePermission()
-                                || stored.isReadPermission() != e.getValue().isReadPermission()
-                                || stored.isWritePermission() != e.getValue().isWritePermission()) {
-                            //Is different so update
-                            stored.setReadPermission(e.getValue().isReadPermission());
-                            stored.setAdminPermission(e.getValue().isAdminPermission());
-                            stored.setExecutePermission(e.getValue().isExecutePermission());
-                            stored.setWritePermission(e.getValue().isWritePermission());
-                            stored.write2DB();
-                            System.out.println("Changed permissions for " + e.getKey());
+                for (Iterator<Entry<String, XincoCoreACEServer>> it = aceList.entrySet().iterator(); it.hasNext();) {
+                    Entry<String, XincoCoreACEServer> e = it.next();
+                    XincoCoreACEServer stored = null;
+                    XincoCoreACEServer value = e.getValue();
+                    try {
+                        stored = new XincoCoreACEServer(e.getValue().getId());
+                    } catch (XincoException ex) {
+                        try {
+                            //Doesn't exist, create a new one
+                            stored = new XincoCoreACEServer(0,
+                                    value.getXincoCoreUserId(),
+                                    value.getXincoCoreGroupId(),
+                                    value.getXincoCoreNodeId(),
+                                    value.getXincoCoreDataId(),
+                                    false, false,
+                                    false, false);
+                        } catch (XincoException ex1) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex1);
                         }
                     }
-                } catch (XincoException ex) {
-                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    if (stored.isAdminPermission() != e.getValue().isAdminPermission()
+                            || stored.isExecutePermission() != e.getValue().isExecutePermission()
+                            || stored.isReadPermission() != e.getValue().isReadPermission()
+                            || stored.isWritePermission() != e.getValue().isWritePermission()) {
+                        //Is different so update
+                        stored.setReadPermission(e.getValue().isReadPermission());
+                        stored.setAdminPermission(e.getValue().isAdminPermission());
+                        stored.setExecutePermission(e.getValue().isExecutePermission());
+                        stored.setWritePermission(e.getValue().isWritePermission());
+                    }
+                    try {
+                        if (stored.isAdminPermission()
+                                || stored.isExecutePermission()
+                                || stored.isReadPermission()
+                                || stored.isWritePermission()) {
+                            stored.write2DB();
+                        }
+                    } catch (XincoException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
                 getMainWindow().removeWindow(aclWindow);
             }
