@@ -49,37 +49,29 @@ public class XincoCoreACEServer extends XincoCoreACE {
     //create single ace object for data structures
 
     public XincoCoreACEServer(int attrID) throws XincoException {
-
-        try {
-            XincoCoreAceJpaController controller = new XincoCoreAceJpaController(XincoDBManager.getEntityManagerFactory());
-            com.bluecubs.xinco.core.server.persistence.XincoCoreAce ace = controller.findXincoCoreAce(attrID);
-            if (ace != null) {
-                setId(ace.getId());
-                if (ace.getXincoCoreUser() != null) {
-                    setXincoCoreUserId(ace.getXincoCoreUser().getId());
-                }
-                if (ace.getXincoCoreGroup() != null) {
-                    setXincoCoreGroupId(ace.getXincoCoreGroup().getId());
-                }
-                if (ace.getXincoCoreNode() != null) {
-                    setXincoCoreNodeId(ace.getXincoCoreNode().getId());
-                }
-                if (ace.getXincoCoreData() != null) {
-                    setXincoCoreDataId(ace.getXincoCoreData().getId());
-                }
-                setReadPermission(ace.getReadPermission());
-                setWritePermission(ace.getWritePermission());
-                setExecutePermission(ace.getExecutePermission());
-                setAdminPermission(ace.getAdminPermission());
-            } else {
-                throw new XincoException();
+        XincoCoreAceJpaController controller = new XincoCoreAceJpaController(XincoDBManager.getEntityManagerFactory());
+        com.bluecubs.xinco.core.server.persistence.XincoCoreAce ace = controller.findXincoCoreAce(attrID);
+        if (ace != null) {
+            setId(ace.getId());
+            if (ace.getXincoCoreUser() != null) {
+                setXincoCoreUserId(ace.getXincoCoreUser().getId());
             }
-
-        } catch (Exception e) {
-            Logger.getLogger(XincoCoreACEServer.class.getSimpleName()).log(Level.SEVERE, null, e);
-            throw new XincoException(e);
+            if (ace.getXincoCoreGroup() != null) {
+                setXincoCoreGroupId(ace.getXincoCoreGroup().getId());
+            }
+            if (ace.getXincoCoreNode() != null) {
+                setXincoCoreNodeId(ace.getXincoCoreNode().getId());
+            }
+            if (ace.getXincoCoreData() != null) {
+                setXincoCoreDataId(ace.getXincoCoreData().getId());
+            }
+            setReadPermission(ace.getReadPermission());
+            setWritePermission(ace.getWritePermission());
+            setExecutePermission(ace.getExecutePermission());
+            setAdminPermission(ace.getAdminPermission());
+        } else {
+            throw new XincoException("Unable to find ACE with id: " + attrID);
         }
-
     }
 
     public XincoCoreACEServer(com.bluecubs.xinco.core.server.persistence.XincoCoreAce ace) {
