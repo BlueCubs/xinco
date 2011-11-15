@@ -53,12 +53,20 @@ public class XincoCoreACEServer extends XincoCoreACE {
         try {
             XincoCoreAceJpaController controller = new XincoCoreAceJpaController(XincoDBManager.getEntityManagerFactory());
             com.bluecubs.xinco.core.server.persistence.XincoCoreAce ace = controller.findXincoCoreAce(attrID);
-            if (controller.findXincoCoreAce(attrID) != null) {
+            if (ace != null) {
                 setId(ace.getId());
-                setXincoCoreUserId(ace.getXincoCoreUser().getId());
-                setXincoCoreGroupId(ace.getXincoCoreGroup().getId());
-                setXincoCoreNodeId(ace.getXincoCoreNode().getId());
-                setXincoCoreDataId(ace.getXincoCoreData().getId());
+                if (ace.getXincoCoreUser() != null) {
+                    setXincoCoreUserId(ace.getXincoCoreUser().getId());
+                }
+                if (ace.getXincoCoreGroup() != null) {
+                    setXincoCoreGroupId(ace.getXincoCoreGroup().getId());
+                }
+                if (ace.getXincoCoreNode() != null) {
+                    setXincoCoreNodeId(ace.getXincoCoreNode().getId());
+                }
+                if (ace.getXincoCoreData() != null) {
+                    setXincoCoreDataId(ace.getXincoCoreData().getId());
+                }
                 setReadPermission(ace.getReadPermission());
                 setWritePermission(ace.getWritePermission());
                 setExecutePermission(ace.getExecutePermission());
@@ -68,7 +76,8 @@ public class XincoCoreACEServer extends XincoCoreACE {
             }
 
         } catch (Exception e) {
-            throw new XincoException();
+            Logger.getLogger(XincoCoreACEServer.class.getSimpleName()).log(Level.SEVERE, null, e);
+            throw new XincoException(e);
         }
 
     }
