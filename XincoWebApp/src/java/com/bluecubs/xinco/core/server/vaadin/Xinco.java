@@ -21,10 +21,7 @@ import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.event.dd.acceptcriteria.Not;
 import com.vaadin.event.dd.acceptcriteria.Or;
-import com.vaadin.terminal.FileResource;
-import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.terminal.*;
 import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.AbstractSelect.VerticalLocationIs;
@@ -384,7 +381,7 @@ public class Xinco extends Application implements Window.ResizeListener {
             xincoTable.addContainerProperty(getResource().getString("window.repository.table.attribute"),
                     String.class, null);
             xincoTable.addContainerProperty(getResource().getString("window.repository.table.details"),
-                    String.class, null);
+                    com.vaadin.ui.Component.class, null);
             // Send changes in selection immediately to server.
             xincoTable.setImmediate(true);
             //Disable sorting
@@ -2289,7 +2286,7 @@ public class Xinco extends Application implements Window.ResizeListener {
             xincoTable.removeAllItems();
             int i = 1;
             String value = "", header;
-            if (source.startsWith("node")) {
+            if (source != null && source.startsWith("node")) {
                 // only nodes have children
                 // check for children only if none have been found yet
                 XincoCoreNodeServer xcns = null;
@@ -2320,16 +2317,16 @@ public class Xinco extends Application implements Window.ResizeListener {
                             Window.Notification.TYPE_WARNING_MESSAGE);
                 }
                 // update details table
-                xincoTable.addItem(new Object[]{"\u00a0", "\u00a0"}, i++);
+                xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
                 xincoTable.addItem(new Object[]{getResource().getString("general.id"),
-                            xcns.getId()}, i++);
+                            new com.vaadin.ui.Label("" + xcns.getId())}, i++);
                 xincoTable.addItem(new Object[]{getResource().getString("general.designation"),
-                            xcns.getDesignation()}, i++);
+                            new com.vaadin.ui.Label(xcns.getDesignation())}, i++);
                 xincoTable.addItem(new Object[]{getResource().getString("general.language"),
-                            getResource().getString(xcns.getXincoCoreLanguage().getDesignation()) + " ("
+                            new com.vaadin.ui.Label(getResource().getString(xcns.getXincoCoreLanguage().getDesignation()) + " ("
                             + xcns.getXincoCoreLanguage().getSign()
-                            + ")"}, i++);
-                xincoTable.addItem(new Object[]{"\u00a0", "\u00a0"}, i++);
+                            + ")")}, i++);
+                xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
                 value = "[";
                 if (tempAce.isReadPermission()) {
                     value += "R";
@@ -2352,8 +2349,11 @@ public class Xinco extends Application implements Window.ResizeListener {
                     value += "-";
                 }
                 value = value + "]";
-                xincoTable.addItem(new Object[]{getResource().getString("general.accessrights"), value}, i++);
-                xincoTable.addItem(new Object[]{"\u00a0", "\u00a0"}, i++);
+                xincoTable.addItem(new Object[]{
+                            getResource().getString("general.accessrights"),
+                            new com.vaadin.ui.Label(value)}, i++);
+                xincoTable.addItem(new Object[]{"\u00a0",
+                            new com.vaadin.ui.Label()}, i++);
                 value = "";
                 if (xcns.getStatusNumber() == 1) {
                     value = getResource().getString("general.status.open") + "";
@@ -2364,8 +2364,10 @@ public class Xinco extends Application implements Window.ResizeListener {
                 if (xcns.getStatusNumber() == 3) {
                     value = getResource().getString("general.status.archived") + " (->)";
                 }
-                xincoTable.addItem(new Object[]{getResource().getString("general.status"), value}, i++);
-            } else if (source.startsWith("data")) {
+                xincoTable.addItem(new Object[]{
+                            getResource().getString("general.status"),
+                            new com.vaadin.ui.Label(value)}, i++);
+            } else if (source != null && source.startsWith("data")) {
                 // get ace
                 XincoCoreDataServer temp = null;
                 try {
@@ -2376,22 +2378,25 @@ public class Xinco extends Application implements Window.ResizeListener {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 xincoTable.addItem(new Object[]{
-                            getResource().getString("general.id"), temp.getId()}, i++);
+                            getResource().getString("general.id"),
+                            new com.vaadin.ui.Label("" + temp.getId())}, i++);
                 xincoTable.addItem(new Object[]{
-                            getResource().getString("general.designation"), temp.getDesignation()}, i++);
+                            getResource().getString("general.designation"),
+                            new com.vaadin.ui.Label(temp.getDesignation())}, i++);
                 xincoTable.addItem(new Object[]{
                             getResource().getString("general.language"),
-                            getResource().getString(temp.getXincoCoreLanguage().getDesignation())
+                            new com.vaadin.ui.Label(getResource().getString(temp.getXincoCoreLanguage().getDesignation())
                             + " ("
                             + temp.getXincoCoreLanguage().getSign()
-                            + ")"}, i++);
+                            + ")")}, i++);
                 xincoTable.addItem(new Object[]{
-                            getResource().getString("general.datatype"), getResource().getString(temp.getXincoCoreDataType().getDesignation())
+                            getResource().getString("general.datatype"),
+                            new com.vaadin.ui.Label(getResource().getString(temp.getXincoCoreDataType().getDesignation())
                             + " ("
                             + getResource().getString(temp.getXincoCoreDataType().getDescription())
-                            + ")"}, i++);
-                xincoTable.addItem(new Object[]{"\u00a0", "\u00a0"}, i++);
-                xincoTable.addItem(new Object[]{"\u00a0", "\u00a0"}, i++);
+                            + ")")}, i++);
+                xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
+                xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
                 if (tempAce.isReadPermission()) {
                     value += "R";
                 } else {
@@ -2414,9 +2419,9 @@ public class Xinco extends Application implements Window.ResizeListener {
                 }
                 xincoTable.addItem(new Object[]{
                             getResource().getString("general.accessrights"),
-                            "[" + value + "]"}, i++);
-                xincoTable.addItem(new Object[]{"\u00a0", "\u00a0"}, i++);
-                xincoTable.addItem(new Object[]{"\u00a0", "\u00a0"}, i++);
+                            new com.vaadin.ui.Label("[" + value + "]")}, i++);
+                xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
+                xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
                 switch (temp.getStatusNumber()) {
                     case 1:
                         value = getResource().getString("general.status.open");
@@ -2435,10 +2440,13 @@ public class Xinco extends Application implements Window.ResizeListener {
                         break;
                 }
                 xincoTable.addItem(new Object[]{
-                            getResource().getString("general.status"), value}, i++);
-                xincoTable.addItem(new Object[]{"\u00a0", "\u00a0"}, i++);
+                            getResource().getString("general.status"),
+                            new com.vaadin.ui.Label(value)}, i++);
+                xincoTable.addItem(new Object[]{"\u00a0",
+                            new com.vaadin.ui.Label()}, i++);
                 xincoTable.addItem(new Object[]{
-                            getResource().getString("general.typespecificattributes"), ""}, i++);
+                            getResource().getString("general.typespecificattributes"),
+                            new com.vaadin.ui.Label()}, i++);
                 // get add attributes of Core Data, if access granted
                 java.util.List<XincoAddAttribute> attributes =
                         temp.getXincoAddAttributes();
@@ -2477,19 +2485,21 @@ public class Xinco extends Application implements Window.ResizeListener {
                                     && cal.get(Calendar.YEAR) == 2
                                     && cal.get(Calendar.DAY_OF_MONTH) == 31) ? "" : "" + time;
                         }
-                        //TODO: show a clickable link for URL's
-                        xincoTable.addItem(new Object[]{header, value}, i++);
+                        Link link = new Link(value, new ExternalResource(value));
+                        link.setTargetName("_blank");
+                        link.setTargetBorder(Link.TARGET_BORDER_NONE);
+                        xincoTable.addItem(new Object[]{header, header.equals("URL") ? link : new com.vaadin.ui.Label(value)}, i++);
                     }
                 } else {
                     header = getResource().getString("error.accessdenied");
                     value = getResource().getString("error.content.sufficientrights");
-                    xincoTable.addItem(new Object[]{header, value}, i++);
+                    xincoTable.addItem(new Object[]{header, new com.vaadin.ui.Label(value)}, i++);
                 }
-                xincoTable.addItem(new Object[]{"\u00a0", "\u00a0"}, i++);
-                xincoTable.addItem(new Object[]{"\u00a0", "\u00a0"}, i++);
+                xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
+                xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
                 header = getResource().getString("general.logslastfirst");
                 value = "";
-                xincoTable.addItem(new Object[]{header, value}, i++);
+                xincoTable.addItem(new Object[]{header, new com.vaadin.ui.Label(value)}, i++);
                 Calendar cal;
                 XMLGregorianCalendar realcal;
                 Calendar ngc = new GregorianCalendar();
@@ -2537,7 +2547,7 @@ public class Xinco extends Application implements Window.ResizeListener {
                             + ((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getOpCode()
                             + ") "
                             + ((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getOpDescription();
-                    xincoTable.addItem(new Object[]{header, value}, i++);
+                    xincoTable.addItem(new Object[]{header, new com.vaadin.ui.Label(value)}, i++);
                     header = "";
                     try {
                         value = getResource().getString("general.version")
@@ -2549,7 +2559,7 @@ public class Xinco extends Application implements Window.ResizeListener {
                                 + ((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getVersion().getVersionLow()
                                 + ""
                                 + ((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getVersion().getVersionPostfix();
-                        xincoTable.addItem(new Object[]{header, value}, i++);
+                        xincoTable.addItem(new Object[]{header, new com.vaadin.ui.Label(value)}, i++);
                     } catch (Exception ex) {
                         Logger.getLogger(Xinco.class.getSimpleName()).log(Level.SEVERE, null, ex);
                     }
