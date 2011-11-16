@@ -734,13 +734,40 @@ public class Xinco extends Application implements Window.ResizeListener {
                         showACLDialog();
                     }
                 });
-                repo.addItem(getResource().getString("menu.edit.insertfolderdata"),
+                repo.addItem(getResource().getString("menu.repository.downloadfile"),
                         smallIcon,//Icon 
                         new com.vaadin.ui.MenuBar.Command() {
 
                     @Override
                     public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                        //TODO: Implement
+                        try {
+                            if (xincoTree.getValue() != null && xincoTree.getValue().toString().startsWith("data")) {
+                                String revision = "";
+                                XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                                //determine requested revision if data with only one specific log object is requested
+                                if ((temp.getXincoCoreLogs().size() > 1) && (temp.getXincoCoreLogs().size() == 1)) {
+                                    //find id of log
+                                    int LogId = 0;
+                                    if ((((XincoCoreLog) temp.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CREATION.ordinal() + 1)
+                                            || (((XincoCoreLog) temp.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CHECKIN.ordinal() + 1)) {
+                                        LogId = ((XincoCoreLog) temp.getXincoCoreLogs().get(0)).getId();
+                                    }
+                                    if (LogId > 0) {
+                                        revision = "-" + LogId;
+                                    }
+                                }
+                                //Download file
+                                FileDownloadResource downloadResource = new FileDownloadResource(
+                                        new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath,
+                                        temp.getId(), temp.getId() + revision)),
+                                        temp.getXincoAddAttributes().get(0).getAttribVarchar(),
+                                        Xinco.this);
+                                getMainWindow().open(downloadResource);
+                                downloadResource.cleanup();
+                            }
+                        } catch (XincoException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 });
             }//Actions user don't needs to be logged in
@@ -797,7 +824,7 @@ public class Xinco extends Application implements Window.ResizeListener {
         data = new XincoCoreData();
         data.setId(0);
         // set data attributes
-        data.setXincoCoreNodeId(Integer.valueOf(fileName));
+        data.setXincoCoreNodeId(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
         data.setDesignation(fileName);
         data.setXincoCoreDataType(xcdt1);
         data.setXincoCoreLanguage(xcl1);
@@ -1671,6 +1698,9 @@ public class Xinco extends Application implements Window.ResizeListener {
                 public void uploadSucceeded(SucceededEvent event) {
                     if (upload != null) {
                         upload.setEnabled(false);
+                        getMainWindow().showNotification(
+                                getResource().getString("datawizard.fileuploadsuccess"),
+                                Notification.TYPE_HUMANIZED_MESSAGE);
                     }
                 }
             };
@@ -1941,7 +1971,6 @@ public class Xinco extends Application implements Window.ResizeListener {
             try {
                 //Create upload folder if needed
                 File uploads = new File(XincoConfigSingletonServer.getInstance().FileRepositoryPath
-                        + System.getProperty("file.separator") + "uploads"
                         + System.getProperty("file.separator"));
                 uploads.mkdirs();
                 uploads.deleteOnExit();
