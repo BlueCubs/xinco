@@ -312,7 +312,10 @@ public class Xinco extends Application implements Window.ResizeListener {
 
                     @Override
                     public void nodeExpand(ExpandEvent event) {
+                        //Populate the children if you have access
                         processTreeSelection(event.getItemId().toString());
+                        //Now go with the expansion
+                        xincoTree.expandItem(event.getItemId().toString());
                     }
                 });
                 xincoTree.setImmediate(true);
@@ -2238,7 +2241,7 @@ public class Xinco extends Application implements Window.ResizeListener {
         addChildren(id);
         //Expand root node
         for (Iterator<?> it = xincoTreeContainer.rootItemIds().iterator(); it.hasNext();) {
-            xincoTree.expandItemsRecursively(it.next());
+            xincoTree.expandItem(it.next());
         }
     }
 
