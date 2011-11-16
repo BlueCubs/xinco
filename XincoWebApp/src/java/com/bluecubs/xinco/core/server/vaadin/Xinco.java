@@ -416,33 +416,35 @@ public class Xinco extends Application implements Window.ResizeListener {
             xincoTreeContainer.setParent(id, parent);
             // Set as leaves
             xincoTreeContainer.setChildrenAllowed(id, false);
-            //TODO: Add icons to files, not a critical feature
-//            try {
-//                if (temp.getDesignation() != null
-//                        && temp.getDesignation().contains(".")
-//                        && temp.getDesignation().substring(temp.getDesignation().lastIndexOf(".") + 1,
-//                        temp.getDesignation().length()).length() == 3) {
-//                    //Set Icon
-//                    switch (temp.getXincoCoreDataType().getId()) {
-//                        case 1://File
-//                            //Fall through
-//                        case 5://Rendering
-//                            item.getItemProperty("icon").setValue(
-//                                    getIcon(temp.getDesignation().substring(temp.getDesignation().lastIndexOf(".") + 1,
-//                                    temp.getDesignation().length())));
-//                            break;
-//                        case 2://Text
-//                            break;
-//                        case 3://URL
-//                            break;
-//                        case 4://Contact
-//                            item.getItemProperty("icon").setValue(new ThemeResource("icons/contact.gif"));
-//                            break;
-//                    }
-//                }
-//            } catch (IOException ex) {
-//                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-//            }
+            String name = temp.getXincoAddAttributes().get(0).getAttribVarchar();
+            try {
+                //Set Icon
+                switch (temp.getXincoCoreDataType().getId()) {
+                    case 1://File
+                    //Fall through
+                    case 5://Rendering
+                        if (name != null
+                                && name.contains(".")
+                                && name.substring(temp.getDesignation().lastIndexOf(".") + 1,
+                                temp.getDesignation().length()).length() >= 3) {
+                            item.getItemProperty("icon").setValue(
+                                    getIcon(name.substring(temp.getDesignation().lastIndexOf(".") + 1,
+                                    temp.getDesignation().length())));
+                        }
+                        break;
+                    case 2://Text
+                        item.getItemProperty("icon").setValue(getIcon("txt"));
+                        break;
+                    case 3://URL
+                        item.getItemProperty("icon").setValue(getIcon("html"));
+                        break;
+                    case 4://Contact
+                        item.getItemProperty("icon").setValue(new ThemeResource("icons/contact.gif"));
+                        break;
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
