@@ -569,7 +569,7 @@ public class Xinco extends Application implements Window.ResizeListener {
                     @Override
                     public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
                         //Show the Data Folder Dialog window
-                        showDataDialog(true);
+                        showDataDialog(false);
                     }
                 });
             }//Actions user don't needs to be logged in
@@ -773,9 +773,7 @@ public class Xinco extends Application implements Window.ResizeListener {
      * Reset activity timer
      */
     public void resetTimer() {
-        if (loggedUser == null) {
-            showLoginDialog();
-        } else if (xat != null) {
+        if (xat != null) {
             xat.getActivityTimer().restart();
         }
     }
