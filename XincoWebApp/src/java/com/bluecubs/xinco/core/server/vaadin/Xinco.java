@@ -41,6 +41,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.Map.Entry;
 import java.util.*;
 import java.util.logging.Level;
@@ -102,7 +103,11 @@ public class Xinco extends Application implements Window.ResizeListener {
                 @Override
                 public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                     loggedUser = null;
-                    updateMenu();
+                    try {
+                        updateMenu();
+                    } catch (XincoException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             });
     private ThemeResource smallIcon = new ThemeResource("img/blueCubsIcon16x16.GIF");
@@ -276,7 +281,11 @@ public class Xinco extends Application implements Window.ResizeListener {
         panel.addComponent(menuBar);
         menuBar.setSizeFull();
         panel.addComponent(xeSplitPanel);
-        updateMenu();
+        try {
+            updateMenu();
+        } catch (XincoException ex) {
+            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return panel;
     }
 
@@ -448,7 +457,7 @@ public class Xinco extends Application implements Window.ResizeListener {
         }
     }
 
-    protected void updateMenu() {
+    protected void updateMenu() throws XincoException {
         //Build Menu
         menuBar.removeItems();
         com.vaadin.ui.MenuBar.MenuItem repo = menuBar.addItem(getResource().getString("menu.repository"), null);
@@ -576,6 +585,122 @@ public class Xinco extends Application implements Window.ResizeListener {
                 });
             }//Actions user don't needs to be logged in
             else {
+                if (new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1))).getXincoCoreDataType().getId() == 3) {
+                    repo.addItem(getResource().getString("menu.repository.viewurl"),
+                            smallIcon,//Icon 
+                            new com.vaadin.ui.MenuBar.Command() {
+
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                            //open URL cin default browser
+                            Desktop desktop;
+                            // Before more Desktop API is used, first check
+                            // whether the API is supported by this particular
+                            // virtual machine (VM) on this particular host.
+                            if (Desktop.isDesktopSupported()) {
+                                try {
+                                    desktop = Desktop.getDesktop();
+                                    String temp_url = ((XincoAddAttribute) ((XincoCoreData) new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)))).getXincoAddAttributes().get(0)).getAttribVarchar();
+                                    java.net.URI uri = new java.net.URI(temp_url);
+                                    desktop.browse(uri);
+                                } catch (URISyntaxException ex) {
+                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (XincoException ex) {
+                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (IOException ex) {
+                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            } else {
+                                try {
+                                    String tempUrl = ((XincoAddAttribute) ((XincoCoreData) new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)))).getXincoAddAttributes().get(0)).getAttribVarchar();
+                                    if (System.getProperty("os.name").toLowerCase().indexOf("mac") > -1) {
+                                        try {
+                                            String[] cmd = {"open", tempUrl};
+                                            Runtime.getRuntime().exec(cmd);
+                                        } catch (Throwable t) {
+                                            Logger.getLogger(Xinco.class.getSimpleName()).log(
+                                                    Level.SEVERE, null, t);
+                                        }
+                                    } else if (System.getProperty("os.name").toLowerCase().indexOf("windows") > -1) {
+                                        try {
+                                            String cmd = "rundll32 url.dll,FileProtocolHandler" + " \"" + tempUrl + "\"";
+                                            Runtime.getRuntime().exec(cmd);
+                                        } catch (Throwable t) {
+                                            Logger.getLogger(Xinco.class.getSimpleName()).log(
+                                                    Level.SEVERE, null, t);
+                                        }
+                                    } else {
+                                        getMainWindow().showNotification(
+                                                xerb.getString("message.warning.operation.notsupported")
+                                                + " " + xerb.getString("general.reason")
+                                                + ": ", xerb.getString("general.error"),
+                                                Notification.TYPE_WARNING_MESSAGE);
+                                    }
+                                } catch (XincoException ex) {
+                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        }
+                    });
+                }
+                if (new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1))).getXincoCoreDataType().getId() == 4) {
+                    repo.addItem(getResource().getString("menu.repository.emailcontact"),
+                            smallIcon,//Icon 
+                            new com.vaadin.ui.MenuBar.Command() {
+
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {//open Contact cin default mail application
+                            Desktop desktop;
+                            // Before more Desktop API is used, first check
+                            // whether the API is supported by this particular
+                            // virtual machine (VM) on this particular host.
+                            if (Desktop.isDesktopSupported()) {
+                                try {
+                                    System.out.println("Supported");
+                                    desktop = Desktop.getDesktop();
+                                    String temp_email = ((XincoAddAttribute) ((XincoCoreData) new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)))).getXincoAddAttributes().get(9)).getAttribVarchar();
+                                    java.net.URI uriMailTo = new java.net.URI("mailto", temp_email, null);
+                                    desktop.mail(uriMailTo);
+                                } catch (IOException ex) {
+                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (URISyntaxException ex) {
+                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (XincoException ex) {
+                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            } else {
+                                try {
+                                    String temp_email = ((XincoAddAttribute) ((XincoCoreData) new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)))).getXincoAddAttributes().get(9)).getAttribVarchar();
+                                    if (System.getProperty("os.name").toLowerCase().indexOf("mac") > -1) {
+                                        try {
+                                            String[] cmd = {"open", "mailto:" + temp_email};
+                                            Runtime.getRuntime().exec(cmd);
+                                        } catch (Throwable t) {
+                                            Logger.getLogger(Xinco.class.getSimpleName()).log(
+                                                    Level.SEVERE, null, t);
+                                        }
+                                    } else if (System.getProperty("os.name").toLowerCase().indexOf("windows") > -1) {
+                                        try {
+                                            String cmd = "rundll32 url.dll,FileProtocolHandler" + " \"" + "mailto:" + temp_email + "\"";
+                                            Runtime.getRuntime().exec(cmd);
+                                        } catch (Throwable t) {
+                                            Logger.getLogger(Xinco.class.getSimpleName()).log(
+                                                    Level.SEVERE, null, t);
+                                        }
+                                    } else {
+                                        getMainWindow().showNotification(
+                                                xerb.getString("message.warning.operation.notsupported")
+                                                + " " + xerb.getString("general.reason")
+                                                + ": ", xerb.getString("general.error"),
+                                                Notification.TYPE_WARNING_MESSAGE);
+                                    }
+                                } catch (XincoException ex) {
+                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        }
+                    });
+                }
             }
         }
         //Menus for both data and folders
@@ -604,15 +729,6 @@ public class Xinco extends Application implements Window.ResizeListener {
                     @Override
                     public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
                         showACLDialog();
-                    }
-                });
-                repo.addItem(getResource().getString("menu.edit.movefolderdatatoclipboard"),
-                        smallIcon,//Icon 
-                        new com.vaadin.ui.MenuBar.Command() {
-
-                    @Override
-                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                        //TODO: Implement
                     }
                 });
                 repo.addItem(getResource().getString("menu.edit.insertfolderdata"),
@@ -1061,7 +1177,11 @@ public class Xinco extends Application implements Window.ResizeListener {
 
                     @Override
                     public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                        updateMenu();
+                        try {
+                            updateMenu();
+                        } catch (XincoException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         getMainWindow().removeWindow(aclWindow);
                     }
                 });
@@ -1149,7 +1269,11 @@ public class Xinco extends Application implements Window.ResizeListener {
 
                     @Override
                     public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                        updateMenu();
+                        try {
+                            updateMenu();
+                        } catch (XincoException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         getMainWindow().removeWindow(loginWindow);
                     }
                 });
@@ -2119,7 +2243,11 @@ public class Xinco extends Application implements Window.ResizeListener {
     }
 
     private void processTreeSelection(String source) {
-        updateMenu();
+        try {
+            updateMenu();
+        } catch (XincoException ex) {
+            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+        }
         XincoCoreACE tempAce = new XincoCoreACE();
         getXincoTable().setVisible(getLoggedUser() != null);
         getXincoTable().requestRepaint();
@@ -2317,6 +2445,7 @@ public class Xinco extends Application implements Window.ResizeListener {
                                     && cal.get(Calendar.YEAR) == 2
                                     && cal.get(Calendar.DAY_OF_MONTH) == 31) ? "" : "" + time;
                         }
+                        //TODO: show a clickable link for URL's
                         xincoTable.addItem(new Object[]{header, value}, i++);
                     }
                 } else {
