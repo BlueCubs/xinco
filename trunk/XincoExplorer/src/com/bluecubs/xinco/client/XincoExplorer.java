@@ -1896,23 +1896,12 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     public void doDataWizard(final int w_type) {
         this.wizardType = w_type;
         /*
-         * wizard type 
-         * = 1 = add new data 
-         * = 2 = edit data object 
-         * = 3 = edit add
-         * attributes 
-         * = 4 = checkout data 
-         * = 5 = undo checkout 
-         * = 6 = checkin data
-         * = 7 = download data 
-         * = 8 = open URL cin browser 
-         * = 9 = open email client with contact information 
-         * = 10 = publish data 
-         * = 11 = download previous revision 
-         * = 12 = lock data 
-         * = 13 = comment data 
-         * = 14 = preview data 
-         * = 15 = download file with predefined name
+         * wizard type = 1 = add new data = 2 = edit data object = 3 = edit add
+         * attributes = 4 = checkout data = 5 = undo checkout = 6 = checkin data
+         * = 7 = download data = 8 = open URL cin browser = 9 = open email
+         * client with contact information = 10 = publish data = 11 = download
+         * previous revision = 12 = lock data = 13 = comment data = 14 = preview
+         * data = 15 = download file with predefined name
          */
         int i;
         newnode = new XincoMutableTreeNode(new XincoCoreData(), this);
@@ -2007,7 +1996,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             setCurrentPathFilename(fc.getSelectedFile().getPath());
                             ((XincoCoreData) newnode.getUserObject()).setDesignation(getCurrentFileName());
                         }
-                        
+
                         //for text -> show text editing dialog
                         //text = 2
                         if (((XincoCoreData) newnode.getUserObject()).getXincoCoreDataType().getId() == 2) {
@@ -2407,14 +2396,14 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                         if (Desktop.isDesktopSupported()) {
                             desktop = Desktop.getDesktop();
                             String temp_url = ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXincoAddAttributes().get(0)).getAttribVarchar();
-                            desktop.open(new File(temp_url));
+                            java.net.URI uri = new java.net.URI(temp_url);
+                            desktop.browse(uri);
                         } else {
-                            Process process = null;
                             String tempUrl = ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXincoAddAttributes().get(0)).getAttribVarchar();
                             if (System.getProperty("os.name").toLowerCase().indexOf("mac") > -1) {
                                 try {
                                     String[] cmd = {"open", tempUrl};
-                                    process = Runtime.getRuntime().exec(cmd);
+                                    Runtime.getRuntime().exec(cmd);
                                 } catch (Throwable t) {
                                     Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
                                             Level.SEVERE, null, t);
@@ -2422,15 +2411,16 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             } else if (System.getProperty("os.name").toLowerCase().indexOf("windows") > -1) {
                                 try {
                                     String cmd = "rundll32 url.dll,FileProtocolHandler" + " \"" + tempUrl + "\"";
-                                    process = Runtime.getRuntime().exec(cmd);
+                                    Runtime.getRuntime().exec(cmd);
                                 } catch (Throwable t) {
                                     Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
                                             Level.SEVERE, null, t);
                                 }
                             } else {
-                                JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString(
-                                        "This Operative System is unsuported for this functionality. Please upgrade to Java 6+")
-                                        + " " + xerb.getString("general.reason") + ": ", xerb.getString("general.error"),
+                                JOptionPane.showMessageDialog(XincoExplorer.this,
+                                        xerb.getString("message.warning.operation.notsupported")
+                                        + " " + xerb.getString("general.reason")
+                                        + ": ", xerb.getString("general.error"),
                                         JOptionPane.WARNING_MESSAGE);
                             }
                         }
@@ -2438,7 +2428,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                     //Open cin Email Client
                     //contact = 4
                     if ((wizardType == 9) && (((XincoCoreData) newnode.getUserObject()).getXincoCoreDataType().getId() == 4)) {
-                        //open URL cin default browser
+                        //open Contact cin default mail application
                         Desktop desktop;
                         // Before more Desktop API is used, first check
                         // whether the API is supported by this particular
@@ -2451,12 +2441,11 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             uriMailTo = new URI("mailto", temp_email, null);
                             desktop.mail(uriMailTo);
                         } else {
-                            Process process = null;
                             String temp_email = ((XincoAddAttribute) ((XincoCoreData) newnode.getUserObject()).getXincoAddAttributes().get(9)).getAttribVarchar();
                             if (System.getProperty("os.name").toLowerCase().indexOf("mac") > -1) {
                                 try {
                                     String[] cmd = {"open", "mailto:" + temp_email};
-                                    process = Runtime.getRuntime().exec(cmd);
+                                    Runtime.getRuntime().exec(cmd);
                                 } catch (Throwable t) {
                                     Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
                                             Level.SEVERE, null, t);
@@ -2464,14 +2453,14 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             } else if (System.getProperty("os.name").toLowerCase().indexOf("windows") > -1) {
                                 try {
                                     String cmd = "rundll32 url.dll,FileProtocolHandler" + " \"" + "mailto:" + temp_email + "\"";
-                                    process = Runtime.getRuntime().exec(cmd);
+                                    Runtime.getRuntime().exec(cmd);
                                 } catch (Throwable t) {
                                     Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
                                             Level.SEVERE, null, t);
                                 }
                             } else {
-                                JOptionPane.showMessageDialog(XincoExplorer.this, xerb.getString(
-                                        "This Operative System is unsuported for this functionality. Please upgrade to Java 6+")
+                                JOptionPane.showMessageDialog(XincoExplorer.this, 
+                                        xerb.getString("message.warning.operation.notsupported")
                                         + " " + xerb.getString("general.reason") + ": ", xerb.getString("general.error"),
                                         JOptionPane.WARNING_MESSAGE);
                             }
