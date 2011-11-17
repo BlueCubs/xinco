@@ -315,6 +315,19 @@ public class Xinco extends Application implements Window.ResizeListener {
                         xincoTree.expandItem(event.getItemId().toString());
                     }
                 });
+                //TODO: Causing Communication Errors when done, weird.
+//                xincoTree.addListener(new ItemClickListener() {
+//
+//                    @Override
+//                    public void itemClick(ItemClickEvent event) {
+//                        if (event.getButton() == ItemClickEvent.BUTTON_LEFT
+//                                && event.isDoubleClick()
+//                                && xincoTree.getValue() != null
+//                                && xincoTree.getValue().toString().startsWith("data")) {
+//                            downloadFile();
+//                        }
+//                    }
+//                });
                 xincoTree.setImmediate(true);
                 xincoTree.setItemCaptionPropertyId("caption");
                 xincoTree.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
@@ -731,50 +744,57 @@ public class Xinco extends Application implements Window.ResizeListener {
                         showACLDialog();
                     }
                 });
-                repo.addItem(getResource().getString("menu.repository.downloadfile"),
+            }
+            //Actions user don't needs to be logged in
+            else {
+                
+            }
+            //Either logged or not
+            repo.addItem(getResource().getString("menu.repository.downloadfile"),
                         smallIcon,//Icon 
                         new com.vaadin.ui.MenuBar.Command() {
 
                     @Override
                     public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                        try {
-                            if (xincoTree.getValue() != null && xincoTree.getValue().toString().startsWith("data")) {
-                                String revision = "";
-                                XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-                                //determine requested revision if data with only one specific log object is requested
-                                if ((temp.getXincoCoreLogs().size() > 1) && (temp.getXincoCoreLogs().size() == 1)) {
-                                    //find id of log
-                                    int LogId = 0;
-                                    if ((((XincoCoreLog) temp.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CREATION.ordinal() + 1)
-                                            || (((XincoCoreLog) temp.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CHECKIN.ordinal() + 1)) {
-                                        LogId = ((XincoCoreLog) temp.getXincoCoreLogs().get(0)).getId();
-                                    }
-                                    if (LogId > 0) {
-                                        revision = "-" + LogId;
-                                    }
-                                }
-                                //Download file
-                                FileDownloadResource downloadResource = new FileDownloadResource(
-                                        new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath,
-                                        temp.getId(), temp.getId() + revision)),
-                                        temp.getXincoAddAttributes().get(0).getAttribVarchar(),
-                                        Xinco.this);
-                                getMainWindow().open(downloadResource);
-                                downloadResource.cleanup();
-                            }
-                        } catch (XincoException ex) {
-                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        downloadFile();
                     }
                 });
-            }//Actions user don't needs to be logged in
-            else {
-            }
         }
         //Hide it if empty
         menuBar.setVisible(!menuBar.getItems().isEmpty());
         //Update the side menu
         updateSideMenu();
+    }
+
+    private void downloadFile() {
+        try {
+            if (xincoTree.getValue() != null && xincoTree.getValue().toString().startsWith("data")) {
+                String revision = "";
+                XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                //determine requested revision if data with only one specific log object is requested
+                if ((temp.getXincoCoreLogs().size() > 1) && (temp.getXincoCoreLogs().size() == 1)) {
+                    //find id of log
+                    int LogId = 0;
+                    if ((((XincoCoreLog) temp.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CREATION.ordinal() + 1)
+                            || (((XincoCoreLog) temp.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CHECKIN.ordinal() + 1)) {
+                        LogId = ((XincoCoreLog) temp.getXincoCoreLogs().get(0)).getId();
+                    }
+                    if (LogId > 0) {
+                        revision = "-" + LogId;
+                    }
+                }
+                //Download file
+                FileDownloadResource downloadResource = new FileDownloadResource(
+                        new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath,
+                        temp.getId(), temp.getId() + revision)),
+                        temp.getXincoAddAttributes().get(0).getAttribVarchar(),
+                        Xinco.this);
+                getMainWindow().open(downloadResource);
+                downloadResource.cleanup();
+            }
+        } catch (XincoException ex) {
+            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void loadFile(File file, String fileName) throws XincoException, MalformedURLException, IOException {
