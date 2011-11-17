@@ -13,14 +13,15 @@ Author : Sudhir Ancha
  */
 package com.bluecubs.xinco.core.server.email;
 
+import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
-import com.bluecubs.xinco.core.server.XincoException;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.*;
-import javax.mail.internet.*;
-import java.util.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 public class XincoMailer {
 

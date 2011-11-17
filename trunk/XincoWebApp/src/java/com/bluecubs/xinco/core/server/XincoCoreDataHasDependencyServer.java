@@ -1,5 +1,6 @@
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependency;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependencyPK;

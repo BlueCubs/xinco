@@ -5,7 +5,6 @@ import com.vaadin.Application;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.FileResource;
 import java.io.*;
-import java.net.URLEncoder;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,8 +58,7 @@ public class FileDownloadResource extends FileResource {
             out.close();
             final DownloadStream ds = new DownloadStream(
                     new FileInputStream(newFile), getMIMEType(), fileName);
-            ds.setParameter("Content-Disposition", "attachment; filename="
-                    + URLEncoder.encode(fileName, "utf-8"));
+            ds.setParameter("Content-Disposition", "attachment; filename="+ fileName);
             ds.setCacheTime(getCacheTime());
             return ds;
         } catch (final FileNotFoundException ex) {

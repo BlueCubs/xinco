@@ -1,6 +1,7 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.OPCode;
+import com.bluecubs.xinco.core.XincoException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;

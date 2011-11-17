@@ -32,6 +32,7 @@
  */
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.XincoAddAttributePK;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJpaController;
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;

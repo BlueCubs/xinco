@@ -1,5 +1,6 @@
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.XincoId;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoIdJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;

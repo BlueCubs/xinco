@@ -1,5 +1,6 @@
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributePK;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeAttributeJpaController;
