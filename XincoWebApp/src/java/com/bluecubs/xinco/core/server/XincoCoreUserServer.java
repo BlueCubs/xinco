@@ -38,6 +38,7 @@
  */
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupPK;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserT;
@@ -133,7 +134,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
             if (result.isEmpty()) {
                 //Try again, check if password is encrypted already
                 result = XincoDBManager.createdQuery("SELECT xcu FROM XincoCoreUser xcu WHERE xcu.username='"
-                    + attrUN + "' AND xcu.userpassword='" + attrUPW + "' AND xcu.statusNumber <> 2");
+                        + attrUN + "' AND xcu.userpassword='" + attrUPW + "' AND xcu.statusNumber <> 2");
             }
             if (result.size() > 0) {
                 com.bluecubs.xinco.core.server.persistence.XincoCoreUser xcu =
@@ -456,8 +457,10 @@ public final class XincoCoreUserServer extends XincoCoreUser {
 
     /**
      * Check user credentials.
-     * 
-     * the password is already encrypted. Usually queries from within the server itself
+     *
+     * the password is already encrypted. Usually queries from within the server
+     * itself
+     *
      * @param username User name
      * @param password Password
      * @return true if valid
@@ -466,10 +469,12 @@ public final class XincoCoreUserServer extends XincoCoreUser {
         return validCredentials(username, password, false);
     }
 
-     /**
+    /**
      * Check user credentials.
-     * 
-     * the password is already encrypted. Usually queries from within the server itself
+     *
+     * the password is already encrypted. Usually queries from within the server
+     * itself
+     *
      * @param username User name
      * @param password Password
      * @param encrypt Password needs encrypting?

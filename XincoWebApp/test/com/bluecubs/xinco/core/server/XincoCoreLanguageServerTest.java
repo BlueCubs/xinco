@@ -1,5 +1,6 @@
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.XincoException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junit.framework.Test;

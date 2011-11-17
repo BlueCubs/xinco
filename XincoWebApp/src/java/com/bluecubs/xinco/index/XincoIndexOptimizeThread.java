@@ -35,10 +35,9 @@
  */
 package com.bluecubs.xinco.index;
 
+import com.bluecubs.xinco.core.server.XincoDBManager;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
-import com.bluecubs.xinco.core.server.XincoDBManager;
 
 /**
  * This class runs index optimizing in a separate thread
