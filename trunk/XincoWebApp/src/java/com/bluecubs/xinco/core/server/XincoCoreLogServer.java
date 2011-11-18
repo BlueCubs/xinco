@@ -177,7 +177,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
         try {
             result = XincoDBManager.createdQuery(
                     "SELECT xcl FROM XincoCoreLog xcl WHERE "
-                    + "xcl.xincoCoreData.id=" + attrID + " order by xcl.id desc");
+                    + "xcl.xincoCoreData.id=" + attrID + " order by xcl.id");
             for (Iterator it = result.iterator(); it.hasNext();) {
                 com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl = (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) it.next();
                 cal = new GregorianCalendar();
