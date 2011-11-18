@@ -1,6 +1,7 @@
 package com.bluecubs.xinco.core.server.vaadin;
 
 import com.bluecubs.xinco.core.OPCode;
+import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.*;
 import com.bluecubs.xinco.core.server.service.*;
 import com.bluecubs.xinco.core.server.vaadin.wizard.WizardStep;
@@ -13,6 +14,8 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.event.Transferable;
@@ -21,6 +24,7 @@ import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.event.dd.acceptcriteria.Not;
 import com.vaadin.event.dd.acceptcriteria.Or;
+import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.terminal.*;
 import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
@@ -38,7 +42,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.util.Map.Entry;
 import java.util.*;
 import java.util.logging.Level;
@@ -113,6 +116,200 @@ public class Xinco extends Application implements Window.ResizeListener {
     @Override
     public void init() {
         try {
+            int i = 0;
+            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+                    getResource().getString("menu.repository"),
+                    getResource().getString("menu.repository.refresh"),
+                    smallIcon,
+                    new com.vaadin.ui.MenuBar.Command() {
+
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                            try {
+                                refresh();
+                            } catch (XincoException ex) {
+                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    },
+                    false, //Need to be logged in
+                    false, //Data only
+                    false, //Node only
+                    false));
+            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+                    getResource().getString("menu.repository"),
+                    getResource().getString("menu.repository.addfolder"),
+                    smallIcon,
+                    new com.vaadin.ui.MenuBar.Command() {
+
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                            //Show the Data Folder Dialog window
+                            showDataFolderDialog(true);
+                        }
+                    },
+                    true, //Need to be logged in
+                    false, //Data only
+                    true, //Node only
+                    true //Something selected
+                    ));
+            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+                    getResource().getString("menu.repository"),
+                    getResource().getString("menu.repository.adddata"),
+                    smallIcon,
+                    new com.vaadin.ui.MenuBar.Command() {
+
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                            //Show the Data Folder Dialog window
+                            showDataDialog(true);
+                        }
+                    },
+                    true, //Need to be logged in
+                    false, //Data only
+                    true, //Node only
+                    true //Something selected
+                    ));
+            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+                    getResource().getString("menu.repository"),
+                    getResource().getString("menu.repository.adddatastructure"),
+                    smallIcon,
+                    new com.vaadin.ui.MenuBar.Command() {
+
+                        StringBuilder sb = new StringBuilder();
+
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                            //Show the Data Structure Dialog window
+                            final Window w = new Window("Mass import");
+                            MultiFileUpload fileUpload = new MultiFileUpload() {
+
+                                @Override
+                                protected void handleFile(File file, String fileName,
+                                        String mimeType, long length) {
+                                    if (length == 0) {
+                                        //Empty file or folder
+                                        if (sb.toString().isEmpty()) {
+                                            sb.append(getResource().getString("window.massiveimport.notsupported"));
+                                        }
+                                        sb.append("\n").append(fileName);
+                                        getMainWindow().showNotification(
+                                                sb.toString(),
+                                                Notification.TYPE_TRAY_NOTIFICATION);
+                                    } else {
+                                        getMainWindow().showNotification(
+                                                getResource().getString("window.massiveimport.progress"),
+                                                Notification.TYPE_TRAY_NOTIFICATION);
+                                        try {
+                                            loadFile(file, fileName);
+                                        } catch (XincoException ex) {
+                                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (MalformedURLException ex) {
+                                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (IOException ex) {
+                                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
+                                    }
+                                }
+                                //TODO: Notify the user about any issues
+                            };
+                            fileUpload.setWidth("600px");
+                            w.addComponent(fileUpload);
+                            w.setModal(true);
+                            w.center();
+                            getMainWindow().addWindow(w);
+                        }
+                    },
+                    true, //Need to be logged in
+                    false, //Data only
+                    true, //Node only
+                    true //Something selected
+                    ));
+            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+                    getResource().getString("menu.repository"),
+                    getResource().getString("menu.edit.folderdata"),
+                    smallIcon,
+                    new com.vaadin.ui.MenuBar.Command() {
+
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                            if (xincoTree.getValue().toString().startsWith("node")) {
+                                showDataFolderDialog(false);
+                            } else if (xincoTree.getValue().toString().startsWith("data")) {
+                                showDataDialog(false);
+                            }
+                        }
+                    },
+                    true, //Need to be logged in
+                    false, //Data only
+                    false, //Node only
+                    true //Something selected
+                    ));
+            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+                    getResource().getString("menu.repository"),
+                    getResource().getString("menu.repository.vieweditaddattributes"),
+                    smallIcon,
+                    new com.vaadin.ui.MenuBar.Command() {
+
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                            //Show the Data Folder Dialog window
+                            showDataDialog(false);
+                        }
+                    },
+                    true, //Need to be logged in
+                    true, //Data only
+                    false, //Node only
+                    true //Something selected
+                    ));
+            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+                    getResource().getString("menu.repository"),
+                    getResource().getString("menu.edit.acl"),
+                    smallIcon,
+                    new com.vaadin.ui.MenuBar.Command() {
+
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                            showACLDialog();
+                        }
+                    },
+                    true, //Need to be logged in
+                    false, //Data only
+                    false, //Node only
+                    true //Something selected
+                    ));
+            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+                    getResource().getString("menu.repository"),
+                    getResource().getString("menu.repository.downloadfile"),
+                    smallIcon,
+                    new com.vaadin.ui.MenuBar.Command() {
+
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                            downloadFile();
+                        }
+                    },
+                    false, //Need to be logged in
+                    false, //Data only
+                    false, //Node only
+                    true //Something selected
+                    ));
+            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+                    getResource().getString("menu.repository"),
+                    getResource().getString("menu.edit.checkoutfile"),
+                    smallIcon,
+                    new com.vaadin.ui.MenuBar.Command() {
+
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                            checkoutFile();
+                        }
+                    },
+                    true, //Need to be logged in
+                    true, //Data only
+                    false, //Node only
+                    true //Something selected
+                    ));
             //Switch to Xinco theme
             setTheme("xinco");
             defaultName = getResource().getString("general.clienttitle");
@@ -122,7 +319,7 @@ public class Xinco extends Application implements Window.ResizeListener {
                 xincoClientVersion.setVersionMid(XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.mid").getIntValue());
                 xincoClientVersion.setVersionLow(XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.low").getIntValue());
                 xincoClientVersion.setVersionPostfix(XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.postfix").getStringValue());
-            } catch (com.bluecubs.xinco.core.server.XincoException ex) {
+            } catch (com.bluecubs.xinco.core.XincoException ex) {
                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             }
             setMainWindow(new Window("Xinco"));
@@ -286,7 +483,7 @@ public class Xinco extends Application implements Window.ResizeListener {
         return panel;
     }
 
-    private Tree getXincoTree() {
+    protected Tree getXincoTree() {
         if (xincoTree == null) {
             try {
                 xincoTreeContainer = new HierarchicalContainer();
@@ -315,19 +512,18 @@ public class Xinco extends Application implements Window.ResizeListener {
                         xincoTree.expandItem(event.getItemId().toString());
                     }
                 });
-                //TODO: Causing Communication Errors when done, weird.
-//                xincoTree.addListener(new ItemClickListener() {
-//
-//                    @Override
-//                    public void itemClick(ItemClickEvent event) {
-//                        if (event.getButton() == ItemClickEvent.BUTTON_LEFT
-//                                && event.isDoubleClick()
-//                                && xincoTree.getValue() != null
-//                                && xincoTree.getValue().toString().startsWith("data")) {
-//                            downloadFile();
-//                        }
-//                    }
-//                });
+                xincoTree.addListener(new ItemClickListener() {
+
+                    @Override
+                    public void itemClick(ItemClickEvent event) {
+                        if (event.getButton() == ItemClickEvent.BUTTON_LEFT
+                                && event.isDoubleClick()
+                                && xincoTree.getValue() != null
+                                && xincoTree.getValue().toString().startsWith("data")) {
+                            downloadFile();
+                        }
+                    }
+                });
                 xincoTree.setImmediate(true);
                 xincoTree.setItemCaptionPropertyId("caption");
                 xincoTree.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
@@ -471,329 +667,68 @@ public class Xinco extends Application implements Window.ResizeListener {
     }
 
     protected void updateMenu() throws XincoException {
-        //Build Menu
-        menuBar.removeItems();
-        com.vaadin.ui.MenuBar.MenuItem repo = menuBar.addItem(getResource().getString("menu.repository"), null);
-        //Menus always enabled
-        repo.addItem(getResource().getString("menu.repository.refresh"),
-                smallIcon,//Icon 
-                new com.vaadin.ui.MenuBar.Command() {
-
-            @Override
-            public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                try {
-                    refresh();
-                } catch (XincoException ex) {
-                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
-        //Exclusive menus for Nodes
-        if (xincoTree.getValue() != null && xincoTree.getValue().toString().startsWith("node")) {
-            //Actions user needs to be logged in
-            if (getLoggedUser() != null) {
-                XincoCoreNodeServer node;
-                try {
-                    node = new XincoCoreNodeServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-                } catch (XincoException ex) {
-                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                    return;
-                }
-                XincoCoreACE tempAce = null;
-                try {
-                    tempAce = XincoCoreACEServer.checkAccess(new XincoCoreUserServer(getLoggedUser().getId()),
-                            (ArrayList) (node).getXincoCoreAcl());
-                } catch (XincoException ex) {
-                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                if (tempAce.isWritePermission()) {
-                    repo.addItem(getResource().getString("menu.repository.addfolder"),
-                            smallIcon,//Icon 
-                            new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            //Show the Data Folder Dialog window
-                            showDataFolderDialog(true);
-                        }
-                    });
-
-                    repo.addItem(getResource().getString("menu.repository.adddata"),
-                            smallIcon,//Icon 
-                            new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            //Show the Data Folder Dialog window
-                            showDataDialog(true);
-                        }
-                    });
-
-                    repo.addItem(getResource().getString("menu.repository.adddatastructure"),
-                            smallIcon,//Icon 
-                            new com.vaadin.ui.MenuBar.Command() {
-
-                        StringBuilder sb = new StringBuilder();
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            //Show the Data Structure Dialog window
-                            final Window w = new Window("Mass import");
-                            MultiFileUpload fileUpload = new MultiFileUpload() {
-
-                                @Override
-                                protected void handleFile(File file, String fileName,
-                                        String mimeType, long length) {
-                                    if (length == 0) {
-                                        //Empty file or folder
-                                        if (sb.toString().isEmpty()) {
-                                            sb.append(getResource().getString("window.massiveimport.notsupported"));
-                                        }
-                                        sb.append("\n").append(fileName);
-                                        getMainWindow().showNotification(
-                                                sb.toString(),
-                                                Notification.TYPE_TRAY_NOTIFICATION);
-                                    } else {
-                                        getMainWindow().showNotification(
-                                                getResource().getString("window.massiveimport.progress"),
-                                                Notification.TYPE_TRAY_NOTIFICATION);
-                                        try {
-                                            loadFile(file, fileName);
-                                        } catch (XincoException ex) {
-                                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                        } catch (MalformedURLException ex) {
-                                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                        } catch (IOException ex) {
-                                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                        }
-                                    }
-                                }
-                                //TODO: Notify the user about any issues
-                            };
-                            fileUpload.setWidth("600px");
-                            w.addComponent(fileUpload);
-                            w.setModal(true);
-                            w.center();
-                            getMainWindow().addWindow(w);
-                        }
-                    });
-                }
-            } //Actions user don't needs to be logged in
-            else {
-            }
-        }
-        //Exclusive menus for Data
-        if (xincoTree.getValue() != null && xincoTree.getValue().toString().startsWith("data")) {
-            //Actions user needs to be logged in
-            if (getLoggedUser() != null) {
-                repo.addItem(getResource().getString("menu.repository.vieweditaddattributes"),
-                        smallIcon,//Icon 
-                        new com.vaadin.ui.MenuBar.Command() {
-
-                    @Override
-                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                        //Show the Data Folder Dialog window
-                        showDataDialog(false);
-                    }
-                });
-            }//Actions user don't needs to be logged in
-            else {
-                if (new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1))).getXincoCoreDataType().getId() == 3) {
-                    repo.addItem(getResource().getString("menu.repository.viewurl"),
-                            smallIcon,//Icon 
-                            new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            //open URL cin default browser
-                            Desktop desktop;
-                            // Before more Desktop API is used, first check
-                            // whether the API is supported by this particular
-                            // virtual machine (VM) on this particular host.
-                            if (Desktop.isDesktopSupported()) {
-                                try {
-                                    desktop = Desktop.getDesktop();
-                                    String temp_url = ((XincoAddAttribute) ((XincoCoreData) new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)))).getXincoAddAttributes().get(0)).getAttribVarchar();
-                                    java.net.URI uri = new java.net.URI(temp_url);
-                                    desktop.browse(uri);
-                                } catch (URISyntaxException ex) {
-                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (XincoException ex) {
-                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (IOException ex) {
-                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                            } else {
-                                try {
-                                    String tempUrl = ((XincoAddAttribute) ((XincoCoreData) new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)))).getXincoAddAttributes().get(0)).getAttribVarchar();
-                                    if (System.getProperty("os.name").toLowerCase().indexOf("mac") > -1) {
-                                        try {
-                                            String[] cmd = {"open", tempUrl};
-                                            Runtime.getRuntime().exec(cmd);
-                                        } catch (Throwable t) {
-                                            Logger.getLogger(Xinco.class.getSimpleName()).log(
-                                                    Level.SEVERE, null, t);
-                                        }
-                                    } else if (System.getProperty("os.name").toLowerCase().indexOf("windows") > -1) {
-                                        try {
-                                            String cmd = "rundll32 url.dll,FileProtocolHandler" + " \"" + tempUrl + "\"";
-                                            Runtime.getRuntime().exec(cmd);
-                                        } catch (Throwable t) {
-                                            Logger.getLogger(Xinco.class.getSimpleName()).log(
-                                                    Level.SEVERE, null, t);
-                                        }
-                                    } else {
-                                        getMainWindow().showNotification(
-                                                xerb.getString("message.warning.operation.notsupported")
-                                                + " " + xerb.getString("general.reason")
-                                                + ": ", xerb.getString("general.error"),
-                                                Notification.TYPE_WARNING_MESSAGE);
-                                    }
-                                } catch (XincoException ex) {
-                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                            }
-                        }
-                    });
-                }
-                if (new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1))).getXincoCoreDataType().getId() == 4) {
-                    repo.addItem(getResource().getString("menu.repository.emailcontact"),
-                            smallIcon,//Icon 
-                            new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {//open Contact cin default mail application
-                            Desktop desktop;
-                            // Before more Desktop API is used, first check
-                            // whether the API is supported by this particular
-                            // virtual machine (VM) on this particular host.
-                            if (Desktop.isDesktopSupported()) {
-                                try {
-                                    System.out.println("Supported");
-                                    desktop = Desktop.getDesktop();
-                                    String temp_email = ((XincoAddAttribute) ((XincoCoreData) new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)))).getXincoAddAttributes().get(9)).getAttribVarchar();
-                                    java.net.URI uriMailTo = new java.net.URI("mailto", temp_email, null);
-                                    desktop.mail(uriMailTo);
-                                } catch (IOException ex) {
-                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (URISyntaxException ex) {
-                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (XincoException ex) {
-                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                            } else {
-                                try {
-                                    String temp_email = ((XincoAddAttribute) ((XincoCoreData) new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)))).getXincoAddAttributes().get(9)).getAttribVarchar();
-                                    if (System.getProperty("os.name").toLowerCase().indexOf("mac") > -1) {
-                                        try {
-                                            String[] cmd = {"open", "mailto:" + temp_email};
-                                            Runtime.getRuntime().exec(cmd);
-                                        } catch (Throwable t) {
-                                            Logger.getLogger(Xinco.class.getSimpleName()).log(
-                                                    Level.SEVERE, null, t);
-                                        }
-                                    } else if (System.getProperty("os.name").toLowerCase().indexOf("windows") > -1) {
-                                        try {
-                                            String cmd = "rundll32 url.dll,FileProtocolHandler" + " \"" + "mailto:" + temp_email + "\"";
-                                            Runtime.getRuntime().exec(cmd);
-                                        } catch (Throwable t) {
-                                            Logger.getLogger(Xinco.class.getSimpleName()).log(
-                                                    Level.SEVERE, null, t);
-                                        }
-                                    } else {
-                                        getMainWindow().showNotification(
-                                                xerb.getString("message.warning.operation.notsupported")
-                                                + " " + xerb.getString("general.reason")
-                                                + ": ", xerb.getString("general.error"),
-                                                Notification.TYPE_WARNING_MESSAGE);
-                                    }
-                                } catch (XincoException ex) {
-                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                            }
-                        }
-                    });
-                }
-            }
-        }
-        //Menus for both data and folders
-        if (xincoTree.getValue() != null
-                && (xincoTree.getValue().toString().startsWith("data")
-                || xincoTree.getValue().toString().startsWith("node"))) {
-            //Actions user needs to be logged in
-            if (getLoggedUser() != null) {
-                repo.addItem(getResource().getString("menu.edit.folderdata"),
-                        smallIcon,//Icon 
-                        new com.vaadin.ui.MenuBar.Command() {
-
-                    @Override
-                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                        if (xincoTree.getValue().toString().startsWith("node")) {
-                            showDataFolderDialog(false);
-                        } else if (xincoTree.getValue().toString().startsWith("data")) {
-                            showDataDialog(false);
-                        }
-                    }
-                });
-                repo.addItem(getResource().getString("menu.edit.acl"),
-                        smallIcon,//Icon 
-                        new com.vaadin.ui.MenuBar.Command() {
-
-                    @Override
-                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                        showACLDialog();
-                    }
-                });
-            }
-            //Actions user don't needs to be logged in
-            else {
-                
-            }
-            //Either logged or not
-            repo.addItem(getResource().getString("menu.repository.downloadfile"),
-                        smallIcon,//Icon 
-                        new com.vaadin.ui.MenuBar.Command() {
-
-                    @Override
-                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                        downloadFile();
-                    }
-                });
-        }
+        XincoMenuItemManager.updateMenuBar(this, menuBar);
         //Hide it if empty
         menuBar.setVisible(!menuBar.getItems().isEmpty());
         //Update the side menu
         updateSideMenu();
     }
 
-    private void downloadFile() {
+    private void checkoutFile() {
         try {
             if (xincoTree.getValue() != null && xincoTree.getValue().toString().startsWith("data")) {
-                String revision = "";
                 XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-                //determine requested revision if data with only one specific log object is requested
-                if ((temp.getXincoCoreLogs().size() > 1) && (temp.getXincoCoreLogs().size() == 1)) {
-                    //find id of log
-                    int LogId = 0;
-                    if ((((XincoCoreLog) temp.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CREATION.ordinal() + 1)
-                            || (((XincoCoreLog) temp.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CHECKIN.ordinal() + 1)) {
-                        LogId = ((XincoCoreLog) temp.getXincoCoreLogs().get(0)).getId();
+                //Set as checked out
+                try {
+                    if (getService().getXincoPort().doXincoCoreDataCheckout(temp, loggedUser) != null) {
+                        //Download the file
+                        downloadFile();
+                    } else {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE,
+                                "Unable to check out file: {0} with user: {1}",
+                                new Object[]{temp.getDesignation(), loggedUser});
+                        getMainWindow().showNotification(
+                                getResource().getString("general.error"),
+                                Notification.TYPE_WARNING_MESSAGE);
                     }
-                    if (LogId > 0) {
-                        revision = "-" + LogId;
-                    }
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                //Download file
-                FileDownloadResource downloadResource = new FileDownloadResource(
-                        new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath,
-                        temp.getId(), temp.getId() + revision)),
-                        temp.getXincoAddAttributes().get(0).getAttribVarchar(),
-                        Xinco.this);
-                getMainWindow().open(downloadResource);
-                downloadResource.cleanup();
             }
         } catch (XincoException ex) {
             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void downloadFile() {
+        boolean temporaryAccess = false;
+        try {
+            if (loggedUser == null) {
+                loggedUser = new XincoCoreUserServer(1);
+                temporaryAccess = true;
+            }
+            final XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+            StreamSource ss = new StreamSource() {
+
+                byte[] bytes = getService().getXincoPort().downloadXincoCoreData(
+                        temp, loggedUser);
+                InputStream is = new ByteArrayInputStream(bytes);
+
+                @Override
+                public InputStream getStream() {
+                    return is;
+                }
+            };
+            StreamResource sr = new StreamResource(ss, temp.getXincoAddAttributes().get(0).getAttribVarchar(), this);
+            getMainWindow().open(sr, "_blank");
+        } catch (XincoException ex) {
+            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (temporaryAccess) {
+                loggedUser = null;
+            }
         }
     }
 
