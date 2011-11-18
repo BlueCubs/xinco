@@ -2313,7 +2313,6 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                         getjInternalFrameInformationText().setText(xerb.getString("datawizard.filedownloadsuccess"));
                         //open file cin default application
                         if (wizardType != 15) {
-                            Process process = null;
                             boolean open_file = false;
                             if (System.getProperty("os.name").toLowerCase().indexOf("mac") > -1) {
                                 if (wizardType == 14) {
@@ -2330,7 +2329,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                                 if (open_file) {
                                     try {
                                         String[] cmd = {"open", getCurrentFullPath()};
-                                        process = Runtime.getRuntime().exec(cmd);
+                                        Runtime.getRuntime().exec(cmd);
                                     } catch (Throwable t) {
                                         Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
                                                 Level.SEVERE, null, t);
@@ -2351,7 +2350,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                                 if (open_file) {
                                     try {
                                         String cmd = "rundll32 url.dll,FileProtocolHandler" + " \"" + getCurrentFullPath() + "\"";
-                                        process = Runtime.getRuntime().exec(cmd);
+                                        Runtime.getRuntime().exec(cmd);
                                     } catch (Throwable t) {
                                         Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
                                                 Level.SEVERE, null, t);
@@ -2368,7 +2367,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                                 if (open_file) {
                                     try {
                                         String[] cmd = {"xdg-open", getCurrentFullPath()};
-                                        process = Runtime.getRuntime().exec(cmd);
+                                        Runtime.getRuntime().exec(cmd);
                                     } catch (Throwable t) {
                                         Logger.getLogger(XincoExplorer.class.getSimpleName()).log(
                                                 Level.SEVERE, null, t);
