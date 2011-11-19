@@ -3,7 +3,10 @@ package com.bluecubs.xinco.core.server.vaadin;
 import com.bluecubs.xinco.core.OPCode;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.*;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLogJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.service.*;
+import com.bluecubs.xinco.core.server.vaadin.custom.VersionSelector;
 import com.bluecubs.xinco.core.server.vaadin.wizard.WizardStep;
 import com.bluecubs.xinco.core.server.vaadin.wizard.XincoWizard;
 import com.bluecubs.xinco.core.server.vaadin.wizard.event.*;
@@ -54,13 +57,15 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
+import org.openide.util.lookup.ServiceProvider;
 import org.vaadin.easyuploads.MultiFileUpload;
 
 /**
  *
  * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
  */
-public class Xinco extends Application implements Window.ResizeListener {
+@ServiceProvider(service = XincoVaadinApplication.class)
+public class Xinco extends Application implements XincoVaadinApplication {
 
     //client version
     private XincoVersion xincoClientVersion = null;
@@ -117,7 +122,7 @@ public class Xinco extends Application implements Window.ResizeListener {
     public void init() {
         try {
             int i = 0;
-            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.repository.refresh"),
                     smallIcon,
@@ -136,7 +141,7 @@ public class Xinco extends Application implements Window.ResizeListener {
                     false, //Data only
                     false, //Node only
                     false));
-            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.repository.addfolder"),
                     smallIcon,
@@ -153,7 +158,7 @@ public class Xinco extends Application implements Window.ResizeListener {
                     true, //Node only
                     true //Something selected
                     ));
-            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.repository.adddata"),
                     smallIcon,
@@ -170,7 +175,7 @@ public class Xinco extends Application implements Window.ResizeListener {
                     true, //Node only
                     true //Something selected
                     ));
-            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.repository.adddatastructure"),
                     smallIcon,
@@ -225,7 +230,7 @@ public class Xinco extends Application implements Window.ResizeListener {
                     true, //Node only
                     true //Something selected
                     ));
-            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.edit.folderdata"),
                     smallIcon,
@@ -245,7 +250,7 @@ public class Xinco extends Application implements Window.ResizeListener {
                     false, //Node only
                     true //Something selected
                     ));
-            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.repository.vieweditaddattributes"),
                     smallIcon,
@@ -262,7 +267,7 @@ public class Xinco extends Application implements Window.ResizeListener {
                     false, //Node only
                     true //Something selected
                     ));
-            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.edit.acl"),
                     smallIcon,
@@ -278,7 +283,7 @@ public class Xinco extends Application implements Window.ResizeListener {
                     false, //Node only
                     true //Something selected
                     ));
-            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.repository.downloadfile"),
                     smallIcon,
@@ -294,7 +299,7 @@ public class Xinco extends Application implements Window.ResizeListener {
                     false, //Node only
                     true //Something selected
                     ));
-            XincoMenuItemManager.addItem(new XincoMenuItem(i+=1000,
+            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.edit.checkoutfile"),
                     smallIcon,
@@ -303,6 +308,38 @@ public class Xinco extends Application implements Window.ResizeListener {
                         @Override
                         public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
                             checkoutFile();
+                        }
+                    },
+                    true, //Need to be logged in
+                    true, //Data only
+                    false, //Node only
+                    true //Something selected
+                    ));
+            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
+                    getResource().getString("menu.repository"),
+                    getResource().getString("menu.edit.undocheckout"),
+                    smallIcon,
+                    new com.vaadin.ui.MenuBar.Command() {
+
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                            undoCheckoutFile();
+                        }
+                    },
+                    true, //Need to be logged in
+                    true, //Data only
+                    false, //Node only
+                    true //Something selected
+                    ));
+            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
+                    getResource().getString("menu.repository"),
+                    getResource().getString("menu.edit.checkinfile"),
+                    smallIcon,
+                    new com.vaadin.ui.MenuBar.Command() {
+
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                            checkinFile();
                         }
                     },
                     true, //Need to be logged in
@@ -450,6 +487,7 @@ public class Xinco extends Application implements Window.ResizeListener {
     /**
      * @return the Resource Bundle
      */
+    @Override
     public ResourceBundle getResource() {
         return xerb;
     }
@@ -457,6 +495,7 @@ public class Xinco extends Application implements Window.ResizeListener {
     /**
      * @return the loggedUser
      */
+    @Override
     public XincoCoreUser getLoggedUser() {
         return loggedUser;
     }
@@ -466,6 +505,8 @@ public class Xinco extends Application implements Window.ResizeListener {
         panel.setContent(new VerticalLayout());
         xeSplitPanel = new HorizontalSplitPanel();
         // Put two components in the container.
+        getXincoTree().setSizeFull();
+        getXincoTable().setSizeFull();
         xeSplitPanel.setFirstComponent(getXincoTree());
         xeSplitPanel.setSecondComponent(getXincoTable());
         xeSplitPanel.setHeight(500, Sizeable.UNITS_PIXELS);
@@ -483,7 +524,8 @@ public class Xinco extends Application implements Window.ResizeListener {
         return panel;
     }
 
-    protected Tree getXincoTree() {
+    @Override
+    public Tree getXincoTree() {
         if (xincoTree == null) {
             try {
                 xincoTreeContainer = new HierarchicalContainer();
@@ -521,6 +563,9 @@ public class Xinco extends Application implements Window.ResizeListener {
                                 && xincoTree.getValue() != null
                                 && xincoTree.getValue().toString().startsWith("data")) {
                             downloadFile();
+                        }
+                        if (xincoTree.getValue() != null) {
+                            processTreeSelection(xincoTree.getValue().toString());
                         }
                     }
                 });
@@ -643,11 +688,11 @@ public class Xinco extends Application implements Window.ResizeListener {
                     case 5://Rendering
                         if (name != null
                                 && name.contains(".")
-                                && name.substring(temp.getDesignation().lastIndexOf(".") + 1,
-                                temp.getDesignation().length()).length() >= 3) {
+                                && name.substring(name.lastIndexOf(".") + 1,
+                                name.length()).length() >= 3) {
                             item.getItemProperty("icon").setValue(
-                                    getIcon(name.substring(temp.getDesignation().lastIndexOf(".") + 1,
-                                    temp.getDesignation().length())));
+                                    getIcon(name.substring(name.lastIndexOf(".") + 1,
+                                    name.length())));
                         }
                         break;
                     case 2://Text
@@ -674,15 +719,264 @@ public class Xinco extends Application implements Window.ResizeListener {
         updateSideMenu();
     }
 
+    private void checkinFile() {
+        final XincoCoreLog newlog = new XincoCoreLog();
+        try {
+            final XincoWizard wizard = new XincoWizard();
+            final UploadManager um = new UploadManager();
+            final Upload upload = new Upload(getResource().getString("general.file.select"), um);
+            XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+            //Check in file
+            newlog.setOpCode(OPCode.CHECKIN.ordinal() + 1);
+            newlog.setOpDescription(xerb.getString(OPCode.getOPCode(newlog.getOpCode()).getName()));
+            newlog.setXincoCoreUserId(loggedUser.getId());
+            newlog.setXincoCoreDataId(temp.getId());
+            newlog.setVersion(((XincoCoreLog) temp.getXincoCoreLogs().get(temp.getXincoCoreLogs().size() - 1)).getVersion());
+            newlog.setOpDescription(newlog.getOpDescription() + " (" + xerb.getString("general.user") + ": " + loggedUser.getUsername() + ")");
+            //save log to server
+            XincoCoreLog tempLog = getService().getXincoPort().setXincoCoreLog(newlog, loggedUser);
+            if (tempLog != null) {
+                temp.getXincoCoreLogs().add(tempLog);
+            }
+            final int log_index = temp.getXincoCoreLogs().size() - 1;
+            final VersionSelector versionSelector = new VersionSelector(getResource().getString("general.version"),
+                    temp.getXincoCoreLogs().get(log_index).getVersion());
+            versionSelector.increaseHigh();
+            final Upload.SucceededListener listener = new Upload.SucceededListener() {
+
+                @Override
+                public void uploadSucceeded(SucceededEvent event) {
+                    if (upload != null) {
+                        upload.setEnabled(false);
+                        getMainWindow().showNotification(
+                                getResource().getString("datawizard.fileuploadsuccess"),
+                                Notification.TYPE_HUMANIZED_MESSAGE);
+                    }
+                }
+            };
+            wizard.addStep(new WizardStep() {
+
+                @Override
+                public String getCaption() {
+                    return getResource().getString("window.loggingdetails");
+                }
+
+                @Override
+                public com.vaadin.ui.Component getContent() {
+                    try {
+                        final Form form = new Form();
+                        form.addField("action", new com.vaadin.ui.TextField(
+                                getResource().getString("window.loggingdetails.action")
+                                + ":"));
+                        XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                        form.getField("action").setValue(temp.getXincoCoreLogs().get(log_index).getOpDescription());
+                        form.getField("action").setEnabled(false);
+                        form.addField("reason", new com.vaadin.ui.TextArea());
+                        switch (OPCode.getOPCode(temp.getXincoCoreLogs().get(log_index).getOpCode())) {
+                            case CHECKIN:
+                                versionSelector.setMinorEnabled(false);
+                            case COMMENT_COMMENT:
+                            case MODIFICATION:
+                            case LOCK_COMMENT:
+                            case PUBLISH_COMMENT:
+                            case CHECKOUT_UNDONE:
+                                form.getField("reason").setEnabled(true);
+                                break;
+                            default:
+                                form.getField("reason").setEnabled(false);
+                        }
+                        form.getLayout().addComponent(versionSelector);
+                        return form;
+                    } catch (XincoException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        return null;
+                    }
+                }
+
+                @Override
+                public boolean onAdvance() {
+                    //TODO: Check all fields
+                    return true;
+                }
+
+                @Override
+                public boolean onBack() {
+                    return false;
+                }
+            });
+            wizard.addStep(new WizardStep() {
+
+                @Override
+                public String getCaption() {
+                    return getResource().getString("general.file.select");
+                }
+
+                @Override
+                public com.vaadin.ui.Component getContent() {
+                    upload.addListener((Upload.SucceededListener) um);
+                    upload.addListener((Upload.SucceededListener) listener);
+                    upload.addListener((Upload.FailedListener) um);
+                    return upload;
+                }
+
+                @Override
+                public boolean onAdvance() {
+                    if (!um.isSuccess()) {
+                        getMainWindow().showNotification(
+                                getResource().getString("message.missing.file"),
+                                Notification.TYPE_ERROR_MESSAGE);
+                    }
+                    return um.isSuccess();
+                }
+
+                @Override
+                public boolean onBack() {
+                    return true;
+                }
+            });
+
+            wizardWindow.removeAllComponents();
+            wizardWindow.addComponent(wizard);
+            //Disable closing with the 'X' in the window
+            wizardWindow.setReadOnly(true);
+            wizard.setSizeFull();
+            wizard.addListener(new WizardProgressListener() {
+
+                @Override
+                public void activeStepChanged(WizardStepActivationEvent event) {
+                    //Nothing to do
+                }
+
+                @Override
+                public void stepSetChanged(WizardStepSetChangedEvent event) {
+                    //Nothing to do
+                }
+
+                @Override
+                public void wizardCompleted(WizardCompletedEvent event) {
+                    try {
+                        XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                        //Check in file
+                        if (getService().getXincoPort().doXincoCoreDataCheckin(temp, loggedUser) == null) {
+                            getMainWindow().showNotification(
+                                    getResource().getString("datawizard.unabletoloadfile"),
+                                    Notification.TYPE_ERROR_MESSAGE);
+                        }
+                        try {
+                            data = new XincoCoreDataServer(temp.getId());
+                            //Now load the file
+                            loadFile(fileToLoad, fileName);
+                            //Update log version
+                            XincoCoreLogServer log = new XincoCoreLogServer(data.getXincoCoreLogs().get(data.getXincoCoreLogs().size() - 1).getId());
+                            log.setVersion(versionSelector.getVersion());
+                            log.setChangerID(1);
+                            log.write2DB();
+                            refresh();
+                        } catch (XincoException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (MalformedURLException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } catch (MalformedURLException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (XincoException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    getMainWindow().removeWindow(wizardWindow);
+                }
+
+                @Override
+                public void wizardCancelled(WizardCancelledEvent event) {
+                    getMainWindow().removeWindow(wizardWindow);
+                    getMainWindow().setCaption(defaultName);
+                }
+            });
+            wizardWindow.setModal(true);
+            wizardWindow.setWidth(40, Sizeable.UNITS_PERCENTAGE);
+            // add the wizard to a layout
+            getMainWindow().addWindow(wizardWindow);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            if (newlog != null) {
+                try {
+                    XincoCoreLogServer log = new XincoCoreLogServer(newlog.getId());
+                    if (log != null) {
+                        new XincoCoreLogJpaController(XincoDBManager.getEntityManagerFactory()).destroy(log.getId());
+                    }
+                } catch (NonexistentEntityException ex1) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex1);
+                } catch (XincoException ex1) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex1);
+                }
+            }
+        } catch (XincoException ex) {
+            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            if (newlog != null) {
+                try {
+                    XincoCoreLogServer log = new XincoCoreLogServer(newlog.getId());
+                    if (log != null) {
+                        new XincoCoreLogJpaController(XincoDBManager.getEntityManagerFactory()).destroy(log.getId());
+                    }
+                } catch (NonexistentEntityException ex1) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex1);
+                } catch (XincoException ex1) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex1);
+                }
+            }
+        }
+    }
+
+    private void undoCheckoutFile() {
+        if (xincoTree.getValue() != null && xincoTree.getValue().toString().startsWith("data")) {
+            try {
+                XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                //Undo check out
+                XincoCoreLog newlog = new XincoCoreLog();
+                newlog.setOpCode(OPCode.CHECKOUT_UNDONE.ordinal() + 1);
+                newlog.setOpDescription(xerb.getString(OPCode.getOPCode(newlog.getOpCode()).getName()));
+                newlog.setXincoCoreUserId(loggedUser.getId());
+                newlog.setXincoCoreDataId(temp.getId());
+                newlog.setVersion(((XincoCoreLog) temp.getXincoCoreLogs().get(temp.getXincoCoreLogs().size() - 1)).getVersion());
+                newlog.setOpDescription(newlog.getOpDescription() + " (" + xerb.getString("general.user") + ": " + loggedUser.getUsername() + ")");
+                //save log to server
+                newlog = getService().getXincoPort().setXincoCoreLog(newlog, loggedUser);
+                if (newlog != null) {
+                    temp.getXincoCoreLogs().add(newlog);
+                }
+                getService().getXincoPort().undoXincoCoreDataCheckout(temp, loggedUser);
+                refresh();
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (XincoException ex) {
+                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     private void checkoutFile() {
         try {
             if (xincoTree.getValue() != null && xincoTree.getValue().toString().startsWith("data")) {
                 XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
                 //Set as checked out
                 try {
+                    XincoCoreLog newlog = new XincoCoreLog();
+                    newlog.setOpCode(OPCode.CHECKOUT.ordinal() + 1);
+                    newlog.setOpDescription(xerb.getString(OPCode.getOPCode(newlog.getOpCode()).getName()));
+                    newlog.setXincoCoreUserId(loggedUser.getId());
+                    newlog.setXincoCoreDataId(temp.getId());
+                    newlog.setVersion(((XincoCoreLog) temp.getXincoCoreLogs().get(temp.getXincoCoreLogs().size() - 1)).getVersion());
+                    newlog.setOpDescription(newlog.getOpDescription() + " (" + xerb.getString("general.user") + ": " + loggedUser.getUsername() + ")");
+                    //save log to server
+                    newlog = getService().getXincoPort().setXincoCoreLog(newlog, loggedUser);
+                    if (newlog != null) {
+                        temp.getXincoCoreLogs().add(newlog);
+                    }
                     if (getService().getXincoPort().doXincoCoreDataCheckout(temp, loggedUser) != null) {
                         //Download the file
                         downloadFile();
+                        refresh();
                     } else {
                         Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE,
                                 "Unable to check out file: {0} with user: {1}",
@@ -742,46 +1036,13 @@ public class Xinco extends Application implements Window.ResizeListener {
             temp.mkdirs();
             path_to_file = temp.getAbsolutePath() + System.getProperty("file.separator") + fileName;
             if (!file.renameTo(new File(path_to_file))) {
-                throw new RuntimeException("Unable to rename file!");
+                throw new RuntimeException("Unable to rename file from "
+                        + file.getAbsolutePath() + ", to " + path_to_file);
             }
             file.deleteOnExit();
             temp.deleteOnExit();
         }
         XincoCoreLog newlog;
-        XincoCoreDataType xcdt1 = null;
-        //find data type = 1
-        for (int j = 0; j < XincoCoreDataTypeServer.getXincoCoreDataTypes().size(); j++) {
-            if (((XincoCoreDataType) XincoCoreDataTypeServer.getXincoCoreDataTypes().get(j)).getId() == 1) {
-                xcdt1 = (XincoCoreDataType) XincoCoreDataTypeServer.getXincoCoreDataTypes().get(j);
-                break;
-            }
-        }
-        //find default language
-        XincoCoreLanguage xcl1;
-        int selection = -1;
-        int alt_selection = 0;
-        for (int j = 0; j < XincoCoreLanguageServer.getXincoCoreLanguages().size(); j++) {
-            if (((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(j)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
-                selection = j;
-                break;
-            }
-            if (((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(j)).getId() == 1) {
-                alt_selection = j;
-            }
-        }
-        if (selection == -1) {
-            selection = alt_selection;
-        }
-        xcl1 = (XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(selection);
-        data = new XincoCoreData();
-        data.setId(0);
-        // set data attributes
-        data.setXincoCoreNodeId(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-        data.setDesignation(fileName);
-        data.setXincoCoreDataType(xcdt1);
-        data.setXincoCoreLanguage(xcl1);
-        data.setStatusNumber(1);
-        addDefaultAddAttributes();
         // invoke web service (update data / upload file / add log)
         // load file
         long totalLen = 0;
@@ -821,7 +1082,7 @@ public class Xinco extends Application implements Window.ResizeListener {
         }
         // add log
         newlog = new XincoCoreLog();
-        newlog.setOpCode(OPCode.CREATION.ordinal() + 1);
+        newlog.setOpCode(data.getXincoCoreLogs().isEmpty() ? OPCode.CREATION.ordinal() + 1 : OPCode.CHECKIN.ordinal() + 1);
         newlog.setOpDescription(xerb.getString(OPCode.getOPCode(newlog.getOpCode()).getName())
                 + "!" + " ("
                 + xerb.getString("general.user") + ": "
@@ -829,11 +1090,13 @@ public class Xinco extends Application implements Window.ResizeListener {
                 + ")");
         newlog.setXincoCoreUserId(loggedUser.getId());
         newlog.setXincoCoreDataId(data.getId());
-        newlog.setVersion(new XincoVersion());
-        newlog.getVersion().setVersionHigh(1);
-        newlog.getVersion().setVersionMid(0);
-        newlog.getVersion().setVersionLow(0);
-        newlog.getVersion().setVersionPostfix("");
+        if (XincoCoreDataServer.getCurrentVersion(data.getId()) == null) {
+            newlog.setVersion(new XincoVersion());
+            newlog.getVersion().setVersionHigh(1);
+            newlog.getVersion().setVersionMid(0);
+            newlog.getVersion().setVersionLow(0);
+            newlog.getVersion().setVersionPostfix("");
+        }
         try {
             DatatypeFactory factory = DatatypeFactory.newInstance();
             GregorianCalendar cal = new GregorianCalendar();
@@ -872,6 +1135,7 @@ public class Xinco extends Application implements Window.ResizeListener {
     /**
      * Reset activity timer
      */
+    @Override
     public void resetTimer() {
         if (xat != null) {
             xat.getActivityTimer().restart();
@@ -1244,7 +1508,7 @@ public class Xinco extends Application implements Window.ResizeListener {
         form.setFooter(new HorizontalLayout());
         //Used for validation purposes
         final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
-                getResource().getString("general.save"), form, "commit");
+                getResource().getString("general.login"), form, "commit");
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
                 getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
@@ -1673,7 +1937,6 @@ public class Xinco extends Application implements Window.ResizeListener {
 
                 @Override
                 public boolean onAdvance() {
-                    //TODO: Not critical; Next button is enabled without a file loaded (but gives error message)
                     if (!um.isSuccess()) {
                         getMainWindow().showNotification(
                                 getResource().getString("message.missing.file"),
@@ -1988,8 +2251,7 @@ public class Xinco extends Application implements Window.ResizeListener {
 
         @Override
         public void activeStepChanged(WizardStepActivationEvent event) {
-            // display the step caption as the window title
-            getMainWindow().setCaption(event.getActivatedStep().getCaption());
+            //Nothing to do
         }
 
         @Override
@@ -2023,6 +2285,40 @@ public class Xinco extends Application implements Window.ResizeListener {
         private void finishWizard() {
             if (newData) {
                 try {
+                    XincoCoreDataType xcdt1 = null;
+                    //find data type = 1
+                    for (int j = 0; j < XincoCoreDataTypeServer.getXincoCoreDataTypes().size(); j++) {
+                        if (((XincoCoreDataType) XincoCoreDataTypeServer.getXincoCoreDataTypes().get(j)).getId() == 1) {
+                            xcdt1 = (XincoCoreDataType) XincoCoreDataTypeServer.getXincoCoreDataTypes().get(j);
+                            break;
+                        }
+                    }
+                    //find default language
+                    XincoCoreLanguage xcl1;
+                    int selection = -1;
+                    int alt_selection = 0;
+                    for (int j = 0; j < XincoCoreLanguageServer.getXincoCoreLanguages().size(); j++) {
+                        if (((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(j)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
+                            selection = j;
+                            break;
+                        }
+                        if (((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(j)).getId() == 1) {
+                            alt_selection = j;
+                        }
+                    }
+                    if (selection == -1) {
+                        selection = alt_selection;
+                    }
+                    xcl1 = (XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(selection);
+                    data = new XincoCoreData();
+                    data.setId(0);
+                    // set data attributes
+                    data.setXincoCoreNodeId(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                    data.setDesignation(fileName);
+                    data.setXincoCoreDataType(xcdt1);
+                    data.setXincoCoreLanguage(xcl1);
+                    data.setStatusNumber(1);
+                    addDefaultAddAttributes();
                     //Now load the file
                     loadFile(fileToLoad, fileName);
                 } catch (XincoException ex) {
@@ -2208,6 +2504,8 @@ public class Xinco extends Application implements Window.ResizeListener {
     }
 
     private void refresh() throws XincoException {
+        //Refresh and highlight current selection
+        String selectedId = xincoTree.getValue() == null ? null : xincoTree.getValue().toString();
         XincoCoreNodeServer xcns = null;
         try {
             xcns = new XincoCoreNodeServer(1);
@@ -2223,6 +2521,9 @@ public class Xinco extends Application implements Window.ResizeListener {
         //Expand root node
         for (Iterator<?> it = xincoTreeContainer.rootItemIds().iterator(); it.hasNext();) {
             xincoTree.expandItem(it.next());
+        }
+        if (selectedId != null) {
+            xincoTree.setValue(selectedId);
         }
     }
 

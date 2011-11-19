@@ -310,6 +310,14 @@
         <antcall target="do-compile-widgetset-if-needed"/>
     </target>
     
+    <target name="-pre-compile" depends="update-lookup-lib"/>
+    
+    <target name="update-lookup-lib">
+        <fileset id="finder" dir="${netbeans.home}/.." includes="**/org-openide-util-lookup.jar" />
+        <pathconvert property="lookup-lib" refid="finder" />
+        <copy file="${lookup-lib}" tofile="../XincoLibs/org-openide-util-lookup.jar"/>
+    </target>
+    
     <target name="do-compile-widgetset-if-needed" depends="no-need-to-compile-widgetset" unless="widgetset.present">
         <echo>Compiling Vaadin Add-ons, please wait!</echo>
         <antcall target="compile-widgetset"/>

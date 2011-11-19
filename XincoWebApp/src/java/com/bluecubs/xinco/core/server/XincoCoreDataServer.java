@@ -42,6 +42,7 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLogJpaCont
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.service.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoCoreLog;
+import com.bluecubs.xinco.core.server.service.XincoVersion;
 import java.io.File;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -157,6 +158,27 @@ public class XincoCoreDataServer extends XincoCoreData {
             }
         }
         throw new XincoException("No major log history for XincoCoreData with id: " + xincoCoreDataId);
+    }
+
+    public static XincoVersion getCurrentVersion(int xincoCoreDataId) throws XincoException {
+        XincoCoreDataServer temp = new XincoCoreDataServer(xincoCoreDataId);
+        temp.loadLogs();
+        if (!temp.getXincoCoreLogs().isEmpty()) {
+            return temp.getXincoCoreLogs().get(temp.getXincoCoreLogs().size() - 1).getVersion();
+        } else {
+            return null;
+        }
+    }
+
+    public static XincoVersion getLastMajorVersion(int xincoCoreDataId) throws XincoException {
+        XincoCoreDataServer temp = new XincoCoreDataServer(xincoCoreDataId);
+        temp.loadLogs();
+        for (XincoCoreLog log : temp.getXincoCoreLogs()) {
+            if (log.getVersion().getVersionMid() == 0) {
+                return log.getVersion();
+            }
+        }
+        return null;
     }
 
     //write to db
