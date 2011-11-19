@@ -1896,12 +1896,22 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
     public void doDataWizard(final int w_type) {
         this.wizardType = w_type;
         /*
-         * wizard type = 1 = add new data = 2 = edit data object = 3 = edit add
-         * attributes = 4 = checkout data = 5 = undo checkout = 6 = checkin data
-         * = 7 = download data = 8 = open URL cin browser = 9 = open email
-         * client with contact information = 10 = publish data = 11 = download
-         * previous revision = 12 = lock data = 13 = comment data = 14 = preview
-         * data = 15 = download file with predefined name
+         * wizard type 
+         * = 1 = add new data 
+         * = 2 = edit data object 
+         * = 3 = edit add attributes 
+         * = 4 = checkout data 
+         * = 5 = undo checkout 
+         * = 6 = checkin data
+         * = 7 = download data 
+         * = 8 = open URL cin browser 
+         * = 9 = open email client with contact information 
+         * = 10 = publish data 
+         * = 11 = download previous revision 
+         * = 12 = lock data 
+         * = 13 = comment data 
+         * = 14 = preview data 
+         * = 15 = download file with predefined name
          */
         int i;
         newnode = new XincoMutableTreeNode(new XincoCoreData(), this);
