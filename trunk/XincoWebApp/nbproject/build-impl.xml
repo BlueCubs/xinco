@@ -738,6 +738,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.vaadin-chameleon-theme-1.1.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.org-openide-util-lookup.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.stepper-1.1.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${libs.javaee-endorsed-api-6.0.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.activation.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.commons-codec-1.5.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.httpclient-4.1.2.jar}" todir="${build.web.dir}/client"/>
@@ -783,6 +784,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.vaadin-chameleon-theme-1.1.0.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.org-openide-util-lookup.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.stepper-1.1.0.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${libs.javaee-endorsed-api-6.0.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.activation.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.commons-codec-1.5.jar-1}" todir="${build.web.dir}/client"/>
         <copyfiles files="${file.reference.httpclient-4.1.2.jar}" todir="${build.web.dir}/client"/>
