@@ -100,6 +100,11 @@ public class XincoMenuItemManager {
         if (item.isLoggedIn() && xinco.getLoggedUser() != null) {
             return hasAccess;
         }
+        
+        if(item.isSelected() && selection == null){
+            return false;
+        }
+        
         return true;
     }
 }
