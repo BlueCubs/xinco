@@ -722,6 +722,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
     private void checkinFile() {
         final XincoCoreLog newlog = new XincoCoreLog();
         try {
+            final Form form = new Form();
             final XincoWizard wizard = new XincoWizard();
             final UploadManager um = new UploadManager();
             final Upload upload = new Upload(getResource().getString("general.file.select"), um);
@@ -764,7 +765,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
                 @Override
                 public com.vaadin.ui.Component getContent() {
                     try {
-                        final Form form = new Form();
                         form.addField("action", new com.vaadin.ui.TextField(
                                 getResource().getString("window.loggingdetails.action")
                                 + ":"));
@@ -772,9 +772,11 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         form.getField("action").setValue(temp.getXincoCoreLogs().get(log_index).getOpDescription());
                         form.getField("action").setEnabled(false);
                         form.addField("reason", new com.vaadin.ui.TextArea());
+                        versionSelector.setMinorEnabled(false);
                         switch (OPCode.getOPCode(temp.getXincoCoreLogs().get(log_index).getOpCode())) {
                             case CHECKIN:
-                                versionSelector.setMinorEnabled(false);
+                                versionSelector.setMinorEnabled(true);
+                                versionSelector.setVersionEnabled(false);
                             case COMMENT_COMMENT:
                             case MODIFICATION:
                             case LOCK_COMMENT:
@@ -785,6 +787,8 @@ public class Xinco extends Application implements XincoVaadinApplication {
                             default:
                                 form.getField("reason").setEnabled(false);
                         }
+                        form.getField("reason").setRequired(form.getField("reason").isEnabled());
+                        form.getField("reason").setRequiredError(getResource().getString("message.warning.reason"));
                         form.getLayout().addComponent(versionSelector);
                         return form;
                     } catch (XincoException ex) {
@@ -795,8 +799,12 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
                 @Override
                 public boolean onAdvance() {
-                    //TODO: Check all fields
-                    return true;
+                    if (form.getField("reason").isEnabled() 
+                            && form.getField("reason").getValue().toString().isEmpty()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
                 }
 
                 @Override

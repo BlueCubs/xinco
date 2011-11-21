@@ -1,11 +1,11 @@
 package com.bluecubs.xinco.core.server.vaadin.custom;
 
 import com.bluecubs.xinco.core.server.service.XincoVersion;
+import com.bluecubs.xinco.core.server.vaadin.XincoVaadinApplication;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.*;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import org.openide.util.Lookup;
 import org.vaadin.risto.stepper.IntStepper;
 
 /**
@@ -20,6 +20,7 @@ public class VersionSelector extends CustomComponent {
     private final IntStepper high = new IntStepper();
     private final IntStepper mid = new IntStepper();
     private final IntStepper low = new IntStepper();
+    private TextField postfix;
 
     public VersionSelector(String caption, XincoVersion version) {
         this.caption = caption;
@@ -57,7 +58,7 @@ public class VersionSelector extends CustomComponent {
         low.setMinValue(version.getVersionLow());
         low.setStepAmount(1);
         panel.addComponent(low);
-        TextField postfix = new TextField(getString("general.version.postfix"));
+        postfix = new TextField(getString("general.version.postfix"));
         postfix.setValue(version.getVersionPostfix());
         panel.addComponent(postfix);
         minor.addListener(new ValueChangeListener() {
@@ -84,19 +85,32 @@ public class VersionSelector extends CustomComponent {
     }
 
     private String getString(String key) {
-        return ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", Locale.getDefault()).getString(key);
-        //TODO: Use lookup
-//        return Lookup.getDefault().lookup(XincoVaadinApplication.class).getResource().getString(key);
+        return Lookup.getDefault().lookup(XincoVaadinApplication.class).getResource().getString(key);
     }
 
     public void increaseHigh() {
         high.setValue((Integer) high.getValue() + 1);
     }
 
+    /**
+     * Get the version currently displayed in the component
+     * @return 
+     */
     public XincoVersion getVersion() {
         version.setVersionHigh((Integer) high.getValue());
         version.setVersionMid((Integer) mid.getValue());
         version.setVersionLow((Integer) low.getValue());
         return version;
+    }
+
+    /**
+     * Enable/disable the version fields (only modifiable with the minor check box)
+     * @param enable 
+     */
+    public void setVersionEnabled(boolean enable) {
+        high.setEnabled(enable);
+        mid.setEnabled(enable);
+        low.setEnabled(enable);
+        postfix.setEnabled(enable);
     }
 }
