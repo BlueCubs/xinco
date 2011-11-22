@@ -1699,10 +1699,11 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
     private class AddAttributeDialog extends CustomComponent {
 
+        private Table attrTable = new Table("attributes");
+
         public AddAttributeDialog(XincoCoreData data) {
             com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(getResource().getString("window.addattributesuniversal"));
             panel.setContent(new VerticalLayout());
-            Table attrTable = new Table("attributes");
             /*
              * Define the names and data types of columns. The "default value"
              * parameter is meaningless here.
@@ -1749,11 +1750,29 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     value = "" + (attributes.get(i)).getAttribUnsignedint();
                 }
                 if (dataTypeAttributes.get(i).getDataType().equals("varchar")) {
-                    value = "" + (attributes.get(i)).getAttribVarchar();
+                    value = "" + (getResource().containsKey((attributes.get(i)).getAttribVarchar())
+                            ? getResource().getString((attributes.get(i)).getAttribVarchar()) : (attributes.get(i)).getAttribVarchar());
                 }
-                attrTable.addItem(new Object[]{
-                            dataTypeAttributes.get(i).getDesignation(), value}, count++);
+                String type = getResource().containsKey(dataTypeAttributes.get(i).getDesignation())
+                        ? getResource().getString(dataTypeAttributes.get(i).getDesignation()) : dataTypeAttributes.get(i).getDesignation();
+                attrTable.addItem(new Object[]{type, value}, count++);
             }
+            attrTable.setTableFieldFactory(new TableFieldFactory() {
+
+                @Override
+                public Field createField(com.vaadin.data.Container container,
+                        Object itemId,
+                        Object propertyId,
+                        com.vaadin.ui.Component uiContext) {
+                    if (propertyId.equals(getResource().getString("general.attribute"))) {
+                        com.vaadin.ui.TextField textField = new com.vaadin.ui.TextField();
+                        textField.setEnabled(false);
+                        return textField;
+                    } else {
+                        return new com.vaadin.ui.TextField();
+                    }
+                }
+            });
             attrTable.setEditable(true);
             panel.addComponent(attrTable);
             // Set the size as undefined at all levels
@@ -1763,6 +1782,15 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
             // The composition root MUST be set
             setCompositionRoot(panel);
+        }
+
+        public void updateAttributes() {
+            for (Iterator<?> it = attrTable.getItemIds().iterator(); it.hasNext();) {
+                int id = (Integer) it.next();
+                Item item = attrTable.getItem(id);
+                data.getXincoAddAttributes().get(id).setAttribVarchar(
+                        item.getItemProperty(getResource().getString("general.details")).getValue().toString());
+            }
         }
     }
 
@@ -1878,6 +1906,54 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
     private void showDataDialog(final boolean newData) {
         final XincoWizard wizard = new XincoWizard();
+        final WizardStep dataDetails = new WizardStep() {
+
+            @Override
+            public String getCaption() {
+                return getResource().getString("window.datadetails");
+            }
+
+            @Override
+            public com.vaadin.ui.Component getContent() {
+                if (dataDialog == null) {
+                    dataDialog = new DataDialog(newData);
+                    dataDialog.setSizeFull();
+                }
+                return dataDialog;
+            }
+
+            @Override
+            public boolean onAdvance() {
+                boolean value = true;
+                if (dataDialog.getDesignationField().getValue().toString().isEmpty()) {
+                    getMainWindow().showNotification(
+                            getResource().getString("message.missing.designation"),
+                            Notification.TYPE_ERROR_MESSAGE);
+                    value = false;
+                }
+                if (dataDialog.getLanguages().getValue() == null) {
+                    getMainWindow().showNotification(
+                            getResource().getString("message.missing.language"),
+                            Notification.TYPE_ERROR_MESSAGE);
+                    value = false;
+                } else {
+                    //Process data
+                    data.setDesignation(dataDialog.getDesignationField().getValue().toString());
+                    data.setXincoCoreLanguage((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(Integer.valueOf(dataDialog.getLanguages().getValue().toString())));
+                }
+                return value;
+            }
+
+            @Override
+            public boolean onBack() {
+                return true;
+            }
+
+            @Override
+            public String toString() {
+                return getCaption();
+            }
+        };
         if (newData) {
             final UploadManager um = new UploadManager();
             final Upload upload = new Upload(getResource().getString("general.file.select"), um);
@@ -1948,6 +2024,8 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
                 @Override
                 public boolean onAdvance() {
+                    //Process the data
+                    attrDialog.updateAttributes();
                     //True if there are more steps after this one
                     return wizard.getSteps().size() > wizard.getLastCompleted() + 1;
                 }
@@ -2002,13 +2080,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                     //File = 1
                                     case 1:
                                         clearTempSteps();
-                                        if ((data.getXincoCoreDataType().getId() != 1
-                                                || data.getXincoAddAttributes().size() > 8)
-                                                && (data.getXincoCoreDataType().getId() != 2
-                                                || data.getXincoAddAttributes().size() > 1)) {
-                                            temp.add(attrStep);
-                                            wizard.addStep(temp.get(temp.size() - 1), wizard.getLastCompleted() + 1);
-                                        }
+                                        addAttributeStep();
                                         temp.add(fileStep);
                                         wizard.addStep(temp.get(temp.size() - 1), wizard.getLastCompleted() + 1);
                                         data.getXincoAddAttributes().get(3).setAttribUnsignedint(1); //revision model
@@ -2051,13 +2123,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                     //Text data
                                     case 2:
                                         clearTempSteps();
-                                        if ((data.getXincoCoreDataType().getId() != 1
-                                                || data.getXincoAddAttributes().size() > 8)
-                                                && (data.getXincoCoreDataType().getId() != 2
-                                                || data.getXincoAddAttributes().size() > 1)) {
-                                            temp.add(attrStep);
-                                            wizard.addStep(temp.get(temp.size() - 1), wizard.getLastCompleted() + 1);
-                                        }
+                                        addAttributeStep();
                                         final ExpandingTextArea tArea = new ExpandingTextArea();
                                         temp.add(new WizardStep() {
 
@@ -2098,9 +2164,24 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                         });
                                         wizard.addStep(temp.get(temp.size() - 1), wizard.getLastCompleted() + 1);
                                         break;
+                                    case 3:
+                                        //URL
+                                        //Only show the attribute screen
+                                        addAttributeStep();
+                                        break;
                                     //TODO handle other cases
                                     default:
                                         clearTempSteps();
+                                }
+                            }
+
+                            private void addAttributeStep() {
+                                if ((data.getXincoCoreDataType().getId() != 1
+                                        || data.getXincoAddAttributes().size() > 8)
+                                        && (data.getXincoCoreDataType().getId() != 2
+                                        || data.getXincoAddAttributes().size() > 1)) {
+                                    temp.add(attrStep);
+                                    wizard.addStep(temp.get(temp.size() - 1), wizard.getLastCompleted() + 1);
                                 }
                             }
 
@@ -2125,7 +2206,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                 getResource().getString("message.missing.datatype"),
                                 Notification.TYPE_ERROR_MESSAGE);
                         value = false;
-                    } else {
                     }
                     return value;
                 }
@@ -2147,54 +2227,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        wizard.addStep(new WizardStep() {
-
-            @Override
-            public String getCaption() {
-                return getResource().getString("window.datadetails");
-            }
-
-            @Override
-            public com.vaadin.ui.Component getContent() {
-                if (dataDialog == null) {
-                    dataDialog = new DataDialog(newData);
-                    dataDialog.setSizeFull();
-                }
-                return dataDialog;
-            }
-
-            @Override
-            public boolean onAdvance() {
-                boolean value = true;
-                if (dataDialog.getDesignationField().getValue().toString().isEmpty()) {
-                    getMainWindow().showNotification(
-                            getResource().getString("message.missing.designation"),
-                            Notification.TYPE_ERROR_MESSAGE);
-                    value = false;
-                }
-                if (dataDialog.getLanguages().getValue() == null) {
-                    getMainWindow().showNotification(
-                            getResource().getString("message.missing.language"),
-                            Notification.TYPE_ERROR_MESSAGE);
-                    value = false;
-                } else {
-                    //Process data
-                    data.setDesignation(dataDialog.getDesignationField().getValue().toString());
-                    data.setXincoCoreLanguage((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(Integer.valueOf(dataDialog.getLanguages().getValue().toString())));
-                }
-                return value;
-            }
-
-            @Override
-            public boolean onBack() {
-                return true;
-            }
-
-            @Override
-            public String toString() {
-                return getCaption();
-            }
-        });
+        wizard.addStep(dataDetails);
         wizardWindow.removeAllComponents();
         wizardWindow.addComponent(wizard);
         //Disable closing with the 'X' in the window
@@ -2832,6 +2865,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                     && cal.get(Calendar.YEAR) == 2
                                     && cal.get(Calendar.DAY_OF_MONTH) == 31) ? "" : "" + time;
                         }
+                        //TODO: disable link based on settings
                         Link link = new Link(value, new ExternalResource(value));
                         link.setTargetName("_blank");
                         link.setTargetBorder(Link.TARGET_BORDER_NONE);
