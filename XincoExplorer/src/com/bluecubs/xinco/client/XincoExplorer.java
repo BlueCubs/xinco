@@ -2019,14 +2019,10 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                         }
                         //show dialog for all additional attributes and custom data types
                         //file = 1 / text = 2
-                        if ((((XincoCoreData) newnode.getUserObject()).getXincoCoreDataType().getId()
-                                != 1
-                                || ((XincoCoreData) newnode.getUserObject()).getXincoAddAttributes().size()
-                                > 8)
-                                && (((XincoCoreData) newnode.getUserObject()).getXincoCoreDataType().getId()
-                                != 2
-                                || ((XincoCoreData) newnode.getUserObject()).getXincoAddAttributes().size()
-                                > 1)) {
+                        if ((((XincoCoreData) newnode.getUserObject()).getXincoCoreDataType().getId() != 1
+                                || ((XincoCoreData) newnode.getUserObject()).getXincoAddAttributes().size() > 8)
+                                && (((XincoCoreData) newnode.getUserObject()).getXincoCoreDataType().getId() != 2
+                                || ((XincoCoreData) newnode.getUserObject()).getXincoAddAttributes().size() > 1)) {
                             //for other data type -> show universal add attribute dialog
                             AbstractDialogAddAttributesUniversal = new AddAttributeUniversalDialog(null, true, this);
                             setGlobalDialogReturnValue(0);
@@ -2468,7 +2464,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                                             Level.SEVERE, null, t);
                                 }
                             } else {
-                                JOptionPane.showMessageDialog(XincoExplorer.this, 
+                                JOptionPane.showMessageDialog(XincoExplorer.this,
                                         xerb.getString("message.warning.operation.notsupported")
                                         + " " + xerb.getString("general.reason") + ": ", xerb.getString("general.error"),
                                         JOptionPane.WARNING_MESSAGE);
