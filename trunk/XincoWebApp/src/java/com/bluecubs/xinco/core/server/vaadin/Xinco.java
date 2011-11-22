@@ -301,6 +301,28 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     );
             item.setDataTypes(new int[]{1});
             XincoMenuItemManager.addItem(item);
+//            item = new XincoMenuItem(i += 1000,
+//                    getResource().getString("menu.repository"),
+//                    getResource().getString("menu.repository.addrendering"),
+//                    smallIcon,
+//                    new com.vaadin.ui.MenuBar.Command() {
+//
+//                        @Override
+//                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+//                            try {
+//                                showRenderingDialog();
+//                            } catch (XincoException ex) {
+//                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+//                            }
+//                        }
+//                    },
+//                    false, //Need to be logged in
+//                    false, //Data only
+//                    false, //Node only
+//                    true //Something selected
+//                    );
+//            item.setDataTypes(new int[]{1});
+//            XincoMenuItemManager.addItem(item);
             XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.edit.checkoutfile"),
@@ -1125,12 +1147,20 @@ public class Xinco extends Application implements XincoVaadinApplication {
         }
     }
 
+//    private void showRenderingDialog() throws XincoException {
+//        final Window renderWindow = new Window();
+//        final Form form = new Form();
+//        form.setCaption(getResource().getString("general.data.type.rendering"));
+//        final ArrayList<XincoCoreDataServer> renderings =
+//                (ArrayList<XincoCoreDataServer>) XincoCoreDataHasDependencyServer.getRenderings(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+//        
+//    }
+
     private void showACLDialog() {
         final Window aclWindow = new Window();
         final Form form = new Form();
         form.setCaption(getResource().getString("window.acl"));
         final HashMap<String, XincoCoreACEServer> aceList = new HashMap<String, XincoCoreACEServer>();
-        // Create a table and add a style to allow setting the row height in theme.
         final Table table = new Table();
         final TwinColSelect acls = new TwinColSelect();
         acls.setImmediate(true);
@@ -2164,10 +2194,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                         });
                                         wizard.addStep(temp.get(temp.size() - 1), wizard.getLastCompleted() + 1);
                                         break;
-                                    case 5:
-                                        //TODO: Rendering
-                                        clearTempSteps();
-                                        break;
                                     default:
                                         clearTempSteps();
                                         //Only show the attribute screen
@@ -2866,11 +2892,16 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                     && cal.get(Calendar.YEAR) == 2
                                     && cal.get(Calendar.DAY_OF_MONTH) == 31) ? "" : "" + time;
                         }
-                        //TODO: disable link based on settings
                         Link link = new Link(value, new ExternalResource(value));
                         link.setTargetName("_blank");
                         link.setTargetBorder(Link.TARGET_BORDER_NONE);
-                        xincoTable.addItem(new Object[]{header, header.equals("URL") ? link : new com.vaadin.ui.Label(value)}, i++);
+                        try {
+                            xincoTable.addItem(new Object[]{header, header.equals("URL") 
+                                    && XincoSettingServer.getSetting(loggedUser, "setting.allowoutsidelinks").isBoolValue() ? 
+                                    link : new com.vaadin.ui.Label(value)}, i++);
+                        } catch (XincoException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 } else {
                     header = getResource().getString("error.accessdenied");
