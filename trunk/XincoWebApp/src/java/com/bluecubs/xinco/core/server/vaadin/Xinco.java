@@ -1603,7 +1603,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
             i++;
             panel.addComponent(archiveModel);
             //processing independent of creation
-            revisionModelCheckbox.setValue(attributes.get(3).getAttribUnsignedint() == 0);
             final DateField date = new DateField();
             // Set the date and time to present
             date.setValue(new Date());
