@@ -2164,14 +2164,15 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                         });
                                         wizard.addStep(temp.get(temp.size() - 1), wizard.getLastCompleted() + 1);
                                         break;
-                                    case 3:
-                                        //URL
+                                    case 5:
+                                        //TODO: Rendering
+                                        clearTempSteps();
+                                        break;
+                                    default:
+                                        clearTempSteps();
                                         //Only show the attribute screen
                                         addAttributeStep();
                                         break;
-                                    //TODO handle other cases
-                                    default:
-                                        clearTempSteps();
                                 }
                             }
 
