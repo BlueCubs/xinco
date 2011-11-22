@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bluecubs.xinco.core.server.vaadin.wizard;
 
 import com.bluecubs.xinco.core.server.vaadin.wizard.event.*;
@@ -164,10 +160,10 @@ public class XincoWizard extends CustomComponent {
      * the first step. This method is called when user clicks the back button.
      */
     public void back() {
-        lastCompleted = steps.indexOf(currentStep);
         progress--;
         if (lastCompleted > 0) {
             activateStep(steps.get(lastCompleted - 1));
+            lastCompleted = steps.indexOf(currentStep);
         }
     }
 
@@ -205,8 +201,8 @@ public class XincoWizard extends CustomComponent {
      * content or {@code null} if no header is specified.
      *
      * <p> By default the header is a {@link WizardProgressBar} component that
-     * is also registered as a {@link WizardProgressListener} to this XincoWizard.
-     * </p>
+     * is also registered as a {@link WizardProgressListener} to this
+     * XincoWizard. </p>
      *
      * @return {@link Component} that is displayed on top of the actual content
      * or {@code null}.
@@ -216,18 +212,18 @@ public class XincoWizard extends CustomComponent {
     }
 
     /**
-     * Method for adding steps not at the end of the wizard steps. If you are 
+     * Method for adding steps not at the end of the wizard steps. If you are
      * trying to add one at the end use use addStep(WizardStep step) instead.
-     * 
+     *
      * @param step Step to add
      * @param pos Position to add the step
      */
     public void addStep(WizardStep step, int pos) {
         synchronized (steps) {
-            if (pos < 0 ) {
+            if (pos < 0 || pos <= steps.indexOf(currentStep)) {
                 throw new RuntimeException("Invalid position: " + pos);
             }
-            if(pos >= steps.size()){
+            if (pos >= steps.size()) {
                 //Add normally at the end instead
                 addStep(step);
                 return;
@@ -422,7 +418,7 @@ public class XincoWizard extends CustomComponent {
         }
     }
 
-    private String getId(WizardStep step) {
+    public String getId(WizardStep step) {
         for (Map.Entry<String, WizardStep> entry : idMap.entrySet()) {
             if (entry.getValue().equals(step)) {
                 return entry.getKey();
