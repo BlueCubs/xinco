@@ -1,33 +1,31 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoArchiveThread
+ * Name: XincoArchiveThread
  *
- * Description:     handle document indexing in thread 
+ * Description: handle document indexing in thread
  *
- * Original Author: Alexander Manes
- * Date:            2005/01/16
+ * Original Author: Alexander Manes Date: 2005/01/16
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
@@ -35,6 +33,7 @@
  */
 package com.bluecubs.xinco.archive;
 
+import com.bluecubs.xinco.core.server.ConfigurationManager;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
@@ -50,10 +49,11 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openide.util.Lookup;
 
 /**
- * This class runs document archiving in a separate thread
- * (only one archiving thread is allowed)
+ * This class runs document archiving in a separate thread (only one archiving
+ * thread is allowed)
  */
 public class XincoArchiveThread extends Thread {
 
@@ -67,11 +67,11 @@ public class XincoArchiveThread extends Thread {
 
     @Override
     public void run() {
-        long archive_period = 14400000;
+        long archive_period;
         firstRun = new GregorianCalendar();
         while (true) {
             try {
-                archive_period = XincoDBManager.config.FileArchivePeriod;
+                archive_period = Lookup.getDefault().lookup(ConfigurationManager.class).getFileArchivePeriod();
                 //exit archiver if period = 0
                 if (archive_period == 0) {
                     break;
@@ -129,12 +129,12 @@ public class XincoArchiveThread extends Thread {
                 if (j == 1) {
                     result = XincoDBManager.createdQuery(query[j]);
                     //Now process the date part of the query in plain JAVA
-                    int delay =0;
+                    int delay = 0;
                     for (Object o : result) {
                         XincoCoreData data = (XincoCoreData) o;
                         //Get the amount of days for archival
-                        for(XincoAddAttribute attr:data.getXincoAddAttributeList()){
-                            if(attr.getXincoAddAttributePK().getAttributeId() == 7){
+                        for (XincoAddAttribute attr : data.getXincoAddAttributeList()) {
+                            if (attr.getXincoAddAttributePK().getAttributeId() == 7) {
                                 delay = (int) attr.getAttribUnsignedint();
                                 break;
                             }
@@ -143,7 +143,7 @@ public class XincoArchiveThread extends Thread {
                             GregorianCalendar c = new GregorianCalendar();
                             c.setTime(log.getOpDatetime());
                             c.add(Calendar.DAY_OF_YEAR, delay);
-                            if(c.getTime().before(new Date(System.currentTimeMillis()))){
+                            if (c.getTime().before(new Date(System.currentTimeMillis()))) {
                                 XincoArchiver.archiveData(new XincoCoreDataServer(data.getId()),
                                         XincoCoreNodeServer.getXincoCoreNodeParents(data.getXincoCoreNode().getId()));
                                 break;

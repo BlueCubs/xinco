@@ -32,8 +32,8 @@
  */
 package com.bluecubs.xinco.index;
 
+import com.bluecubs.xinco.core.server.ConfigurationManager;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.service.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
@@ -46,6 +46,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.openide.util.Lookup;
 
 /**
  * A utility for making Lucene Documents from a File.
@@ -85,9 +86,9 @@ public class XincoDocument {
             }
             //check which indexer to use for file extension
             fileType = 0; // default: index as TEXT
-            for (l = 0; l < XincoDBManager.config.FileIndexerCount; l++) {
-                for (i = 0; i < ((String[]) XincoDBManager.config.IndexFileTypesExt.get(l)).length; i++) {
-                    if (((String[]) XincoDBManager.config.IndexFileTypesExt.get(l))[i].compareTo(file_ext) == 0) {
+            for (l = 0; l < Lookup.getDefault().lookup(ConfigurationManager.class).getFileIndexerCount(); l++) {
+                for (i = 0; i < ((String[]) Lookup.getDefault().lookup(ConfigurationManager.class).getIndexFileTypesExt().get(l)).length; i++) {
+                    if (((String[]) Lookup.getDefault().lookup(ConfigurationManager.class).getIndexFileTypesExt().get(l))[i].compareTo(file_ext) == 0) {
                         fileType = l + 1; // file-type specific indexing
                         break;
                     }
@@ -97,8 +98,8 @@ public class XincoDocument {
                 }
             }
             if (fileType == 0) {
-                for (i = 0; i < XincoDBManager.config.IndexNoIndex.length; i++) {
-                    if (XincoDBManager.config.IndexNoIndex[i].compareTo(file_ext) == 0) {
+                for (i = 0; i < Lookup.getDefault().lookup(ConfigurationManager.class).getIndexNoIndex().length; i++) {
+                    if (Lookup.getDefault().lookup(ConfigurationManager.class).getIndexNoIndex()[i].compareTo(file_ext) == 0) {
                         fileType = -1; // NO indexing
                         break;
                     }
@@ -111,16 +112,25 @@ public class XincoDocument {
             if (fileType == 0) {
                 // index as TEXT
                 xift = new XincoIndexText();
-                doc.add(new Field("file", xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, d.getId(), "" + d.getId())))));
+                doc.add(new Field("file", xift.getFileContentReader(
+                        new File(XincoCoreDataServer.getXincoCoreDataPath(
+                        Lookup.getDefault().lookup(ConfigurationManager.class).getFileRepositoryPath(),
+                        d.getId(), "" + d.getId())))));
             } else if (fileType > 0) {
                 // file-type specific indexing
                 try {
-                    xift = (XincoIndexFileType) Class.forName((String) XincoDBManager.config.IndexFileTypesClass.get(fileType - 1)).newInstance();
-                    ContentReader = xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, d.getId(), "" + d.getId())));
+                    xift = (XincoIndexFileType) Class.forName((String) Lookup.getDefault().lookup(ConfigurationManager.class).getIndexFileTypesClass().get(fileType - 1)).newInstance();
+                    ContentReader = xift.getFileContentReader(
+                            new File(XincoCoreDataServer.getXincoCoreDataPath(
+                            Lookup.getDefault().lookup(ConfigurationManager.class).getFileRepositoryPath(),
+                            d.getId(), "" + d.getId())));
                     if (ContentReader != null) {
                         doc.add(new Field("file", ContentReader));
                     } else {
-                        ContentString = xift.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, d.getId(), "" + d.getId())));
+                        ContentString = xift.getFileContentString(
+                                new File(XincoCoreDataServer.getXincoCoreDataPath(
+                                Lookup.getDefault().lookup(ConfigurationManager.class).getFileRepositoryPath(),
+                                d.getId(), "" + d.getId())));
                         if (ContentString != null) {
                             doc.add(new Field("file", ContentString, Field.Store.YES, Field.Index.ANALYZED));
                         }
