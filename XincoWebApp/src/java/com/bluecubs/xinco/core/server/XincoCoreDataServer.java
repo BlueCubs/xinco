@@ -49,7 +49,6 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.util.Lookup;
 
 public class XincoCoreDataServer extends XincoCoreData {
 
@@ -150,15 +149,12 @@ public class XincoCoreDataServer extends XincoCoreData {
      * @throws SQLException
      * @throws XincoException
      */
-    public static String getLastMajorVersionDataPath(int xincoCoreDataId)
-            throws SQLException, XincoException {
+    public static String getLastMajorVersionDataPath(int xincoCoreDataId) throws SQLException, XincoException {
         XincoCoreDataServer temp = new XincoCoreDataServer(xincoCoreDataId);
         temp.loadLogs();
         for (XincoCoreLog log : temp.getXincoCoreLogs()) {
             if (log.getVersion().getVersionMid() == 0) {
-                return XincoCoreDataServer.getXincoCoreDataPath(
-                        Lookup.getDefault().lookup(ConfigurationManager.class).getFileRepositoryPath(),
-                        xincoCoreDataId, xincoCoreDataId + "-" + log.getId());
+                return XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, xincoCoreDataId, xincoCoreDataId + "-" + log.getId());
             }
         }
         throw new XincoException("No major log history for XincoCoreData with id: " + xincoCoreDataId);
@@ -303,9 +299,7 @@ public class XincoCoreDataServer extends XincoCoreData {
             //delete file / file = 1
             if (getXincoCoreDataType().getId() == 1) {
                 try {
-                    (new File(XincoCoreDataServer.getXincoCoreDataPath(
-                            Lookup.getDefault().lookup(ConfigurationManager.class).getFileRepositoryPath(),
-                            getId(), "" + getId()))).delete();
+                    (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, getId(), "" + getId()))).delete();
                 } catch (Exception dfe) {
                     // continue, file might not exist
                 }
@@ -313,10 +307,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                 for (int i = 0; i < getXincoCoreLogs().size(); i++) {
                     if ((((XincoCoreLog) getXincoCoreLogs().get(i)).getOpCode() == 1) || (((XincoCoreLog) getXincoCoreLogs().get(i)).getOpCode() == 5)) {
                         try {
-                            (new File(XincoCoreDataServer.getXincoCoreDataPath(
-                                    Lookup.getDefault().lookup(ConfigurationManager.class).getFileRepositoryPath(),
-                                    getId(), getId() + "-"
-                                    + ((XincoCoreLog) getXincoCoreLogs().get(i)).getId()))).delete();
+                            (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, getId(), getId() + "-" + ((XincoCoreLog) getXincoCoreLogs().get(i)).getId()))).delete();
                         } catch (Exception drfe) {
                             // continue, delete next revision
                         }
@@ -374,7 +365,7 @@ public class XincoCoreDataServer extends XincoCoreData {
             for (Object o : result) {
                 data.add(new XincoCoreDataServer(((com.bluecubs.xinco.core.server.persistence.XincoAddAttribute) o).getXincoCoreData().getId()));
                 i++;
-                if (i >= Lookup.getDefault().lookup(ConfigurationManager.class).getMaxSearchResult()) {
+                if (i >= XincoDBManager.config.MaxSearchResult) {
                     break;
                 }
             }

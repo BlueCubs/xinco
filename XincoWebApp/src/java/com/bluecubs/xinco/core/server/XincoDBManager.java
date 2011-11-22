@@ -50,11 +50,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.persistence.*;
-import org.openide.util.Lookup;
 
 public class XincoDBManager {
 
     private static EntityManagerFactory emf;
+    //load compiled configuartion
+    public final static XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
     private int EmailLink = 1, DataLink = 2;
     private static ResourceBundle lrb =
             ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
@@ -77,7 +78,7 @@ public class XincoDBManager {
     private static void reload() throws XincoException {
         getEntityManagerFactory();
         updateDBState();
-        Lookup.getDefault().lookup(ConfigurationManager.class).loadSettings();
+        config.loadSettings();
     }
 
     public static XincoDBManager get() throws Exception {
@@ -436,10 +437,9 @@ public class XincoDBManager {
                 setDBSystemDir();
                 //Use the context defined Database connection
                 (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
-                emf = Persistence.createEntityManagerFactory(
-                        Lookup.getDefault().lookup(ConfigurationManager.class).getJNDIDB());
+                emf = Persistence.createEntityManagerFactory(config.JNDIDB);
                 logger.log(Level.INFO, "Using context defined database connection: {0}",
-                        Lookup.getDefault().lookup(ConfigurationManager.class).getJNDIDB());
+                        config.JNDIDB);
                 usingContext = true;
             } catch (Exception e) {
                 if (!usingContext) {

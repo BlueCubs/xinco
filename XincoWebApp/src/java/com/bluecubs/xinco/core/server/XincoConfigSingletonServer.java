@@ -36,26 +36,24 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * This class handles the server configuration of xinco. Edit values in
- * context.xml
+ * database
  */
-@ServiceProvider(service = ConfigurationManager.class)
-public class XincoConfigSingletonServer implements ConfigurationManager {
+public class XincoConfigSingletonServer {
 
-    private String FileRepositoryPath = null;
-    private String FileIndexPath = null;
-    private String FileArchivePath = null;
-    private long FileArchivePeriod = 0;
+    public String FileRepositoryPath = null;
+    public String FileIndexPath = null;
+    public String FileArchivePath = null;
+    public long FileArchivePeriod = 0;
     private long FileIndexOptimizerPeriod = 0;
-    private long FileIndexerCount = 0;
-    private ArrayList IndexFileTypesClass = null;
-    private ArrayList IndexFileTypesExt = null;
-    private String[] IndexNoIndex = null;
-    private String JNDIDB = null;
-    private int MaxSearchResult = 0;
+    public long FileIndexerCount = 0;
+    public ArrayList IndexFileTypesClass = null;
+    public ArrayList IndexFileTypesExt = null;
+    public String[] IndexNoIndex = null;
+    public String JNDIDB = null;
+    public int MaxSearchResult = 0;
     private int OOPort = 0;
     private boolean allowOutsideLinks = true, allowPublisherList = true,
             guessLanguage = false;
@@ -71,7 +69,7 @@ public class XincoConfigSingletonServer implements ConfigurationManager {
 
     //private constructor to avoid instance generation with new-operator!
     @SuppressWarnings("unchecked")
-    public XincoConfigSingletonServer() {
+    private XincoConfigSingletonServer() {
         try {
             JNDIDB = (String) (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
         } catch (Exception e) {
@@ -79,14 +77,13 @@ public class XincoConfigSingletonServer implements ConfigurationManager {
         }
     }
 
-    @Override
     public void loadSettings() {
         ArrayList<Exception> exceptions = new ArrayList<Exception>();
         try {
             FileRepositoryPath = XincoSettingServer.getSetting("xinco/FileRepositoryPath").getStringValue();
             if (!FileRepositoryPath.isEmpty()
                     && !(FileRepositoryPath.substring(FileRepositoryPath.length() - 1).equals(System.getProperty("file.separator")))) {
-                FileRepositoryPath = getFileRepositoryPath() + System.getProperty("file.separator");
+                FileRepositoryPath = FileRepositoryPath + System.getProperty("file.separator");
             }
         } catch (Exception ce) {
             FileRepositoryPath = "";
@@ -97,16 +94,16 @@ public class XincoConfigSingletonServer implements ConfigurationManager {
         try {
             FileIndexPath = XincoSettingServer.getSetting("xinco/FileIndexPath").getStringValue();
         } catch (Exception ce) {
-            FileIndexPath = getFileRepositoryPath() + "index";
+            FileIndexPath = FileRepositoryPath + "index";
         }
         if (!(FileIndexPath.substring(FileIndexPath.length() - 1).equals(System.getProperty("file.separator")))) {
-            FileIndexPath = getFileIndexPath() + System.getProperty("file.separator");
+            FileIndexPath = FileIndexPath + System.getProperty("file.separator");
         }
         try {
             FileArchivePath = XincoSettingServer.getSetting("xinco/FileArchivePath").getStringValue();
             if (!FileArchivePath.isEmpty()
                     && !(FileArchivePath.substring(FileArchivePath.length() - 1).equals(System.getProperty("file.separator")))) {
-                FileArchivePath = getFileArchivePath() + System.getProperty("file.separator");
+                FileArchivePath = FileArchivePath + System.getProperty("file.separator");
             }
         } catch (Exception e) {
             FileArchivePath = "";
@@ -140,31 +137,31 @@ public class XincoConfigSingletonServer implements ConfigurationManager {
         IndexFileTypesClass = new ArrayList();
         IndexFileTypesExt = new ArrayList();
         try {
-            for (int i = 0; i < getFileIndexerCount(); i++) {
-                getIndexFileTypesClass().add(XincoSettingServer.getSetting("xinco/FileIndexer_" + (i + 1) + "_Class").getStringValue());
-                getIndexFileTypesExt().add(XincoSettingServer.getSetting("env/xinco/FileIndexer_" + (i + 1) + "_Ext").getStringValue().split(";"));
+            for (int i = 0; i < FileIndexerCount; i++) {
+                IndexFileTypesClass.add(XincoSettingServer.getSetting("xinco/FileIndexer_" + (i + 1) + "_Class").getStringValue());
+                IndexFileTypesExt.add(XincoSettingServer.getSetting("env/xinco/FileIndexer_" + (i + 1) + "_Ext").getStringValue().split(";"));
             }
         } catch (Exception e) {
             String[] tsa;
-            getIndexFileTypesClass().add("com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF");
+            IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF");
             tsa = new String[1];
             tsa[0] = "pdf";
-            getIndexFileTypesExt().add(tsa);
-            getIndexFileTypesClass().add("com.bluecubs.xinco.index.filetypes.XincoIndexMSWord");
+            IndexFileTypesExt.add(tsa);
+            IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexMSWord");
             tsa = new String[1];
             tsa[0] = "doc";
-            getIndexFileTypesExt().add(tsa);
-            getIndexFileTypesClass().add("com.bluecubs.xinco.index.filetypes.XincoIndexMSExcel");
+            IndexFileTypesExt.add(tsa);
+            IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexMSExcel");
             tsa = new String[1];
             tsa[0] = "xls";
-            getIndexFileTypesExt().add(tsa);
-            getIndexFileTypesClass().add("com.bluecubs.xinco.index.filetypes.XincoIndexHTML");
+            IndexFileTypesExt.add(tsa);
+            IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexHTML");
             tsa = new String[4];
             tsa[0] = "htm";
             tsa[1] = "html";
             tsa[2] = "php";
             tsa[3] = "jsp";
-            getIndexFileTypesExt().add(tsa);
+            IndexFileTypesExt.add(tsa);
             exceptions.add(e);
             loadDefault = true;
         }
@@ -214,21 +211,19 @@ public class XincoConfigSingletonServer implements ConfigurationManager {
             loadDefault = true;
         }
 
-        if (isLoadDefault()) {
+        if (loadDefault) {
             StringBuilder sb = new StringBuilder("Error loading configuration! Using default value for the ones not found.");
-            for (Exception ex : exceptions) {
+            for(Exception ex: exceptions){
                 sb.append("\n").append(ex.getLocalizedMessage());
             }
             Logger.getLogger(XincoConfigSingletonServer.class.getSimpleName()).log(Level.WARNING, sb.toString());
         }
     }
 
-    @Override
     public boolean isAllowOutsideLinks() {
         return allowOutsideLinks;
     }
 
-    @Override
     public long getFileIndexOptimizerPeriod() {
         return FileIndexOptimizerPeriod;
     }
@@ -237,7 +232,6 @@ public class XincoConfigSingletonServer implements ConfigurationManager {
         this.FileIndexOptimizerPeriod = FileIndexOptimizerPeriod;
     }
 
-    @Override
     public boolean isAllowPublisherList() {
         return allowPublisherList;
     }
@@ -245,96 +239,14 @@ public class XincoConfigSingletonServer implements ConfigurationManager {
     /**
      * @return the guessLanguage
      */
-    @Override
     public boolean isGuessLanguage() {
         return guessLanguage;
     }
 
-    @Override
+    /**
+     * @return the OOPort
+     */
     public int getOOPort() {
         return OOPort;
-    }
-
-    @Override
-    public String getJNDIDB() {
-        return JNDIDB;
-    }
-
-    /**
-     * @return the FileArchivePeriod
-     */
-    @Override
-    public long getFileArchivePeriod() {
-        return FileArchivePeriod;
-    }
-
-    /**
-     * @return the FileArchivePath
-     */
-    @Override
-    public String getFileArchivePath() {
-        return FileArchivePath;
-    }
-
-    /**
-     * @return the FileIndexerCount
-     */
-    @Override
-    public long getFileIndexerCount() {
-        return FileIndexerCount;
-    }
-
-    /**
-     * @return the IndexFileTypesClass
-     */
-    @Override
-    public ArrayList getIndexFileTypesClass() {
-        return IndexFileTypesClass;
-    }
-
-    /**
-     * @return the IndexFileTypesExt
-     */
-    @Override
-    public ArrayList getIndexFileTypesExt() {
-        return IndexFileTypesExt;
-    }
-
-    /**
-     * @return the IndexNoIndex
-     */
-    @Override
-    public String[] getIndexNoIndex() {
-        return IndexNoIndex;
-    }
-
-    /**
-     * @return the MaxSearchResult
-     */
-    @Override
-    public int getMaxSearchResult() {
-        return MaxSearchResult;
-    }
-
-    /**
-     * @return the loadDefault
-     */
-    @Override
-    public boolean isLoadDefault() {
-        return loadDefault;
-    }
-
-    /**
-     * @return the FileRepositoryPath
-     */
-    public String getFileRepositoryPath() {
-        return FileRepositoryPath;
-    }
-
-    /**
-     * @return the FileIndexPath
-     */
-    public String getFileIndexPath() {
-        return FileIndexPath;
     }
 }
