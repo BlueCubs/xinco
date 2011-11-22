@@ -91,7 +91,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
     private XincoActivityTimer xat = null;
     private File fileToLoad;
     private String fileName;                    // Original file name
-    private String defaultName;
     private HorizontalSplitPanel xeSplitPanel;
     private com.vaadin.ui.Button login = new com.vaadin.ui.Button(
             getResource().getString("general.login"),
@@ -285,21 +284,21 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     true //Something selected
                     ));
             XincoMenuItem item = new XincoMenuItem(i += 1000,
-                                                  getResource().getString("menu.repository"),
-                                                  getResource().getString("menu.repository.downloadfile"),
-                                                  smallIcon,
-                                                  new com.vaadin.ui.MenuBar.Command() {
+                    getResource().getString("menu.repository"),
+                    getResource().getString("menu.repository.downloadfile"),
+                    smallIcon,
+                    new com.vaadin.ui.MenuBar.Command() {
 
-                                                      @Override
-                                                      public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                                                          downloadFile();
-                                                      }
-                                                  },
-                                                  false, //Need to be logged in
-                                                  false, //Data only
-                                                  false, //Node only
-                                                  true //Something selected
-                                                  );
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                            downloadFile();
+                        }
+                    },
+                    false, //Need to be logged in
+                    false, //Data only
+                    false, //Node only
+                    true //Something selected
+                    );
             item.setDataTypes(new int[]{1});
             XincoMenuItemManager.addItem(item);
             XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
@@ -352,7 +351,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     ));
             //Switch to Xinco theme
             setTheme("xinco");
-            defaultName = getResource().getString("general.clienttitle");
             xincoClientVersion = new XincoVersion();
             try {
                 xincoClientVersion.setVersionHigh(XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.high").getIntValue());
@@ -901,7 +899,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
                 @Override
                 public void wizardCancelled(WizardCancelledEvent event) {
                     getMainWindow().removeWindow(wizardWindow);
-                    getMainWindow().setCaption(defaultName);
                 }
             });
             wizardWindow.setModal(true);
@@ -1053,7 +1050,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
             file.deleteOnExit();
             temp.deleteOnExit();
         }
-        XincoCoreLog newlog;
         // invoke web service (update data / upload file / add log)
         // load file
         long totalLen = 0;
@@ -1090,38 +1086,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
         data = getService().getXincoPort().setXincoCoreData(data, loggedUser);
         if (data == null) {
             throw new XincoException(xerb.getString("datawizard.unabletosavedatatoserver"));
-        }
-        // add log
-        newlog = new XincoCoreLog();
-        newlog.setOpCode(data.getXincoCoreLogs().isEmpty() ? OPCode.CREATION.ordinal() + 1 : OPCode.CHECKIN.ordinal() + 1);
-        newlog.setOpDescription(xerb.getString(OPCode.getOPCode(newlog.getOpCode()).getName())
-                + "!" + " ("
-                + xerb.getString("general.user") + ": "
-                + loggedUser.getUsername()
-                + ")");
-        newlog.setXincoCoreUserId(loggedUser.getId());
-        newlog.setXincoCoreDataId(data.getId());
-        if (XincoCoreDataServer.getCurrentVersion(data.getId()) == null) {
-            newlog.setVersion(new XincoVersion());
-            newlog.getVersion().setVersionHigh(1);
-            newlog.getVersion().setVersionMid(0);
-            newlog.getVersion().setVersionLow(0);
-            newlog.getVersion().setVersionPostfix("");
-        }
-        try {
-            DatatypeFactory factory = DatatypeFactory.newInstance();
-            GregorianCalendar cal = new GregorianCalendar();
-            cal.setTime(new Date());
-            newlog.setOpDatetime(factory.newXMLGregorianCalendar(cal));
-        } catch (DatatypeConfigurationException ex) {
-            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        // save log to server
-        newlog = getService().getXincoPort().setXincoCoreLog(newlog, loggedUser);
-        if (newlog == null) {
-            Logger.getLogger(Xinco.class.getSimpleName()).severe("Unable to create new log entry!");
-        } else {
-            data.getXincoCoreLogs().add(newlog);
         }
         // upload file
         if (getService().getXincoPort().uploadXincoCoreData(data, byteArray, loggedUser) != totalLen) {
@@ -2418,6 +2382,38 @@ public class Xinco extends Application implements XincoVaadinApplication {
                             }
                             break;
                     }
+                    //Add log
+                    XincoCoreLog newlog = new XincoCoreLog();
+                    newlog.setOpCode(data.getXincoCoreLogs().isEmpty() ? OPCode.CREATION.ordinal() + 1 : OPCode.CHECKIN.ordinal() + 1);
+                    newlog.setOpDescription(xerb.getString(OPCode.getOPCode(newlog.getOpCode()).getName())
+                            + "!" + " ("
+                            + xerb.getString("general.user") + ": "
+                            + loggedUser.getUsername()
+                            + ")");
+                    newlog.setXincoCoreUserId(loggedUser.getId());
+                    newlog.setXincoCoreDataId(data.getId());
+                    if (XincoCoreDataServer.getCurrentVersion(data.getId()) == null) {
+                        newlog.setVersion(new XincoVersion());
+                        newlog.getVersion().setVersionHigh(1);
+                        newlog.getVersion().setVersionMid(0);
+                        newlog.getVersion().setVersionLow(0);
+                        newlog.getVersion().setVersionPostfix("");
+                    }
+                    try {
+                        DatatypeFactory factory = DatatypeFactory.newInstance();
+                        GregorianCalendar cal = new GregorianCalendar();
+                        cal.setTime(new Date());
+                        newlog.setOpDatetime(factory.newXMLGregorianCalendar(cal));
+                    } catch (DatatypeConfigurationException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    // save log to server
+                    newlog = getService().getXincoPort().setXincoCoreLog(newlog, loggedUser);
+                    if (newlog == null) {
+                        Logger.getLogger(Xinco.class.getSimpleName()).severe("Unable to create new log entry!");
+                    } else {
+                        data.getXincoCoreLogs().add(newlog);
+                    }
                 } catch (XincoException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (MalformedURLException ex) {
@@ -2450,7 +2446,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
         private void closeWizard() {
             getMainWindow().removeWindow(wizardWindow);
-            getMainWindow().setCaption(defaultName);
             discard();
             try {
                 //Show changes in tree
