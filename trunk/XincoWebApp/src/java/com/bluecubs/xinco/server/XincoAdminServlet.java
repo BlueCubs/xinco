@@ -68,7 +68,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.openide.util.Lookup;
 
 public class XincoAdminServlet extends HttpServlet {
 
@@ -666,7 +665,7 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>");
         out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
         out.println("</head>");
-        out.println("<body " + (!Lookup.getDefault().lookup(ConfigurationManager.class).isAllowOutsideLinks() ? "oncontextmenu='return false;' " : " ")
+        out.println("<body " + (!XincoDBManager.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' " : " ")
                 + "onload=\"if (document.forms[0] != null) { if (document.forms[0].elements[0] != null) "
                 + "{ document.forms[0].elements[0].focus(); } }\">");
 
@@ -1434,14 +1433,11 @@ public class XincoAdminServlet extends HttpServlet {
                     File indexDirectoryFile;
                     String[] indexDirectoryFileList;
                     boolean indexDirectoryDeleted;
-                    indexDirectory = new File(
-                            Lookup.getDefault().lookup(ConfigurationManager.class).getFileIndexPath());
+                    indexDirectory = new File(XincoDBManager.config.FileIndexPath);
                     if (indexDirectory.exists()) {
                         indexDirectoryFileList = indexDirectory.list();
                         for (i = 0; i < indexDirectoryFileList.length; i++) {
-                            indexDirectoryFile = new File(
-                                    Lookup.getDefault().lookup(ConfigurationManager.class).getFileIndexPath()
-                                    + indexDirectoryFileList[i]);
+                            indexDirectoryFile = new File(XincoDBManager.config.FileIndexPath + indexDirectoryFileList[i]);
                             indexDirectoryFile.delete();
                         }
                         indexDirectoryDeleted = indexDirectory.delete();
@@ -1510,7 +1506,7 @@ public class XincoAdminServlet extends HttpServlet {
         out.println("<td class=\"text\">&copy; " + rb.getString("general.copyright.date") + ", "
                 + //Avoid external links if general.setting.allowoutsidelinks is set to false
                 //Security bug
-                (Lookup.getDefault().lookup(ConfigurationManager.class).isAllowOutsideLinks() ? rb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
+                (XincoDBManager.config.isAllowOutsideLinks() ? rb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
         out.println("</tr>");
         out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"
                 + rb.getString("message.admin.main.backtomain") + "' />"
