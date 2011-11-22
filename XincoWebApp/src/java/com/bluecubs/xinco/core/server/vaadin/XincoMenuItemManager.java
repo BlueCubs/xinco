@@ -105,10 +105,16 @@ public class XincoMenuItemManager {
             return false;
         }
 
-        if (selection != null && item.getDataTypes() != null) {
+        if (selection != null && selection.startsWith("data")
+                && item.getDataTypes() != null) {
             for (int x : item.getDataTypes()) {
-                if (x == Integer.valueOf(selection.substring(selection.indexOf('-') + 1))) {
-                    return true;
+                try {
+                    if (x == new XincoCoreDataServer(Integer.valueOf(selection.substring(selection.indexOf('-') + 1))).getXincoCoreDataType().getId()) {
+                        return true;
+                    }
+                } catch (XincoException ex) {
+                    Logger.getLogger(XincoMenuItemManager.class.getName()).log(Level.SEVERE, null, ex);
+                    return false;
                 }
             }
             return false;
