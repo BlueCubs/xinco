@@ -96,15 +96,24 @@ public class XincoMenuItemManager {
         if (item.isLoggedIn() && xinco.getLoggedUser() == null) {
             return false;
         }
-        
+
         if (item.isLoggedIn() && xinco.getLoggedUser() != null) {
             return hasAccess;
         }
-        
-        if(item.isSelected() && selection == null){
+
+        if (item.isSelected() && selection == null) {
             return false;
         }
-        
+
+        if (selection != null && item.getDataTypes() != null) {
+            for (int x : item.getDataTypes()) {
+                if (x == Integer.valueOf(selection.substring(selection.indexOf('-') + 1))) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         return true;
     }
 }

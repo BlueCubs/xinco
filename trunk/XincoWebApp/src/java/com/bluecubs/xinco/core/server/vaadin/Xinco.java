@@ -59,6 +59,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import org.openide.util.lookup.ServiceProvider;
 import org.vaadin.easyuploads.MultiFileUpload;
+import org.vaadin.hene.expandingtextarea.ExpandingTextArea;
 
 /**
  *
@@ -283,22 +284,24 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     false, //Node only
                     true //Something selected
                     ));
-            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
-                    getResource().getString("menu.repository"),
-                    getResource().getString("menu.repository.downloadfile"),
-                    smallIcon,
-                    new com.vaadin.ui.MenuBar.Command() {
+            XincoMenuItem item = new XincoMenuItem(i += 1000,
+                                                  getResource().getString("menu.repository"),
+                                                  getResource().getString("menu.repository.downloadfile"),
+                                                  smallIcon,
+                                                  new com.vaadin.ui.MenuBar.Command() {
 
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            downloadFile();
-                        }
-                    },
-                    false, //Need to be logged in
-                    false, //Data only
-                    false, //Node only
-                    true //Something selected
-                    ));
+                                                      @Override
+                                                      public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                                                          downloadFile();
+                                                      }
+                                                  },
+                                                  false, //Need to be logged in
+                                                  false, //Data only
+                                                  false, //Node only
+                                                  true //Something selected
+                                                  );
+            item.setDataTypes(new int[]{1});
+            XincoMenuItemManager.addItem(item);
             XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.edit.checkoutfile"),
@@ -799,7 +802,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
                 @Override
                 public boolean onAdvance() {
-                    if (form.getField("reason").isEnabled() 
+                    if (form.getField("reason").isEnabled()
                             && form.getField("reason").getValue().toString().isEmpty()) {
                         return false;
                     } else {
@@ -1612,6 +1615,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
             CheckBox revisionModelCheckbox =
                     new CheckBox(
                     getResource().getString("window.archive.revisionmodel"));
+            revisionModelCheckbox.setValue(true);
             panel.addComponent(revisionModelCheckbox);
             java.util.List<XincoAddAttribute> attributes;
             if (data.getId() == 0) {
@@ -1703,15 +1707,13 @@ public class Xinco extends Application implements XincoVaadinApplication {
             com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(getResource().getString("window.datatype"));
             panel.setContent(new VerticalLayout());
             //Data Type selection
-            int i = 1;
             for (Iterator it = XincoCoreDataTypeServer.getXincoCoreDataTypes().iterator(); it.hasNext();) {
-                Object type = it.next();
-                String designation = ((XincoCoreDataTypeServer) type).getDesignation();
+                XincoCoreDataTypeServer type = (XincoCoreDataTypeServer) it.next();
+                String designation = type.getDesignation();
                 if (getResource().containsKey(designation)) {
                     String value = getResource().getString(designation);
-                    types.addItem(((XincoCoreDataTypeServer) type).getId());
-                    types.setItemCaption(((XincoCoreDataTypeServer) type).getId(), value);
-                    i++;
+                    types.addItem(type.getId());
+                    types.setItemCaption(type.getId(), value);
                 }
             }
             panel.addComponent(types);
@@ -1959,6 +1961,11 @@ public class Xinco extends Application implements XincoVaadinApplication {
                 public boolean onBack() {
                     return true;
                 }
+
+                @Override
+                public String toString() {
+                    return getCaption();
+                }
             };
             final WizardStep attrStep = new WizardStep() {
 
@@ -1986,6 +1993,11 @@ public class Xinco extends Application implements XincoVaadinApplication {
                 public boolean onBack() {
                     return true;
                 }
+
+                @Override
+                public String toString() {
+                    return getCaption();
+                }
             };
             wizard.addStep(new WizardStep() {
 
@@ -1995,25 +2007,147 @@ public class Xinco extends Application implements XincoVaadinApplication {
                 }
 
                 @Override
+                public String toString() {
+                    return getCaption();
+                }
+
+                @Override
                 public com.vaadin.ui.Component getContent() {
                     if (dataTypeDialog == null) {
                         dataTypeDialog = new DataTypeDialog();
                         dataTypeDialog.setSizeFull();
                         dataTypeDialog.getTypes().addListener(new ValueChangeListener() {
 
+                            ArrayList<WizardStep> temp = new ArrayList<WizardStep>();
+
                             @Override
                             public void valueChange(ValueChangeEvent event) {
-                                //File = 1
-                                if (Integer.valueOf(event.getProperty().toString()) == 1) {
-                                    if (!wizard.getSteps().contains(fileStep)) {
-                                        //wizard.getLastCompleted() is the previous step, 
-                                        //the current is wizard.getLastCompleted() + 1, 
-                                        //the next step wizard.getLastCompleted() + 2
-                                        wizard.addStep(fileStep, wizard.getLastCompleted() + 1);
-                                    }
-                                } else {
-                                    wizard.removeStep(fileStep);
+                                data = new XincoCoreData();
+                                try {
+                                    //Process data
+                                    data.setXincoCoreDataType(new XincoCoreDataTypeServer(Integer.valueOf(dataTypeDialog.getTypes().getValue().toString())));
+                                } catch (XincoException ex) {
+                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                                 }
+                                //Set the parent id to the current selected node
+                                data.setXincoCoreNodeId(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                                addDefaultAddAttributes();
+                                //wizard.getLastCompleted() is the previous step, 
+                                //the current is wizard.getLastCompleted() + 1, 
+                                //the next step wizard.getLastCompleted() + 2
+                                switch (data.getXincoCoreDataType().getId()) {
+                                    //File = 1
+                                    case 1:
+                                        clearTempSteps();
+                                        if ((data.getXincoCoreDataType().getId() != 1
+                                                || data.getXincoAddAttributes().size() > 8)
+                                                && (data.getXincoCoreDataType().getId() != 2
+                                                || data.getXincoAddAttributes().size() > 1)) {
+                                            temp.add(attrStep);
+                                            wizard.addStep(temp.get(temp.size() - 1), wizard.getLastCompleted() + 1);
+                                        }
+                                        temp.add(fileStep);
+                                        wizard.addStep(temp.get(temp.size() - 1), wizard.getLastCompleted() + 1);
+                                        data.getXincoAddAttributes().get(3).setAttribUnsignedint(1); //revision model
+                                        data.getXincoAddAttributes().get(4).setAttribUnsignedint(0); //archiving model
+                                        //Is a file, show archiving dialog
+                                        temp.add(new WizardStep() {
+
+                                            @Override
+                                            public String getCaption() {
+                                                return getResource().getString("window.archive");
+                                            }
+
+                                            @Override
+                                            public com.vaadin.ui.Component getContent() {
+                                                if (archDialog == null) {
+                                                    archDialog = new ArchiveDialog();
+                                                    archDialog.setSizeFull();
+                                                }
+                                                return archDialog;
+                                            }
+
+                                            @Override
+                                            public boolean onAdvance() {
+                                                //True if there are more steps after this one
+                                                return wizard.getSteps().size() > wizard.getLastCompleted() + 1;
+                                            }
+
+                                            @Override
+                                            public boolean onBack() {
+                                                return true;
+                                            }
+
+                                            @Override
+                                            public String toString() {
+                                                return getCaption();
+                                            }
+                                        });
+                                        wizard.addStep(temp.get(temp.size() - 1));
+                                        break;
+                                    //Text data
+                                    case 2:
+                                        clearTempSteps();
+                                        if ((data.getXincoCoreDataType().getId() != 1
+                                                || data.getXincoAddAttributes().size() > 8)
+                                                && (data.getXincoCoreDataType().getId() != 2
+                                                || data.getXincoAddAttributes().size() > 1)) {
+                                            temp.add(attrStep);
+                                            wizard.addStep(temp.get(temp.size() - 1), wizard.getLastCompleted() + 1);
+                                        }
+                                        final ExpandingTextArea tArea = new ExpandingTextArea();
+                                        temp.add(new WizardStep() {
+
+                                            @Override
+                                            public String getCaption() {
+                                                return getResource().getString("window.addattributestext");
+                                            }
+
+                                            @Override
+                                            public com.vaadin.ui.Component getContent() {
+                                                return tArea;
+                                            }
+
+                                            @Override
+                                            public boolean onAdvance() {
+                                                if (tArea.getValue().toString().isEmpty()) {
+                                                    getMainWindow().showNotification(
+                                                            getResource().getString("general.error"),
+                                                            getResource().getString("message.missing.text"),
+                                                            Notification.TYPE_WARNING_MESSAGE);
+                                                    return false;
+                                                } else {
+                                                    //Process the data
+                                                    data.getXincoAddAttributes().get(0).setAttribText(tArea.getValue().toString());
+                                                    return true;
+                                                }
+                                            }
+
+                                            @Override
+                                            public boolean onBack() {
+                                                return true;
+                                            }
+
+                                            @Override
+                                            public String toString() {
+                                                return getCaption();
+                                            }
+                                        });
+                                        wizard.addStep(temp.get(temp.size() - 1), wizard.getLastCompleted() + 1);
+                                        break;
+                                    //TODO handle other cases
+                                    default:
+                                        clearTempSteps();
+                                }
+                            }
+
+                            private void clearTempSteps() {
+                                for (WizardStep ws : temp) {
+                                    if (wizard.getSteps().contains(ws)) {
+                                        wizard.removeStep(ws);
+                                    }
+                                }
+                                temp.clear();
                             }
                         });
                     }
@@ -2029,56 +2163,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                 Notification.TYPE_ERROR_MESSAGE);
                         value = false;
                     } else {
-                        data = new XincoCoreData();
-                        //Process data
-                        data.setXincoCoreDataType((XincoCoreDataType) XincoCoreDataTypeServer.getXincoCoreDataTypes().get(Integer.valueOf(dataTypeDialog.getTypes().getValue().toString())));
-                        //Set the parent id to the current selected node
-                        data.setXincoCoreNodeId(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-                        addDefaultAddAttributes();
-                        if ((data.getXincoCoreDataType().getId() != 1
-                                || data.getXincoAddAttributes().size() > 8)
-                                && (data.getXincoCoreDataType().getId() != 2
-                                || data.getXincoAddAttributes().size() > 1)) {
-                            wizard.addStep(attrStep, wizard.getLastCompleted() + 2);
-                        }
-                        if (data.getXincoCoreDataType().getId() == 1) {
-                            //Is a file, show archiving dialog
-                            wizard.addStep(new WizardStep() {
-
-                                @Override
-                                public String getCaption() {
-                                    return getResource().getString("window.archive");
-                                }
-
-                                @Override
-                                public com.vaadin.ui.Component getContent() {
-                                    if (archDialog == null) {
-                                        archDialog = new ArchiveDialog();
-                                        archDialog.setSizeFull();
-                                    }
-                                    return archDialog;
-                                }
-
-                                @Override
-                                public boolean onAdvance() {
-                                    //True if there are more steps after this one
-                                    return wizard.getSteps().size() > wizard.getLastCompleted() + 1;
-                                }
-
-                                @Override
-                                public boolean onBack() {
-                                    return true;
-                                }
-                            });
-                        }
-                        switch (data.getXincoCoreDataType().getId()) {
-                            //Text data
-                            case 2:
-                                //TODO: Prompt user to enter text
-                                break;
-                            //TODO handle other cases
-                            default:
-                        }
                     }
                     return value;
                 }
@@ -2140,7 +2224,12 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
             @Override
             public boolean onBack() {
-                return false;
+                return true;
+            }
+
+            @Override
+            public String toString() {
+                return getCaption();
             }
         });
         wizardWindow.removeAllComponents();
@@ -2293,42 +2382,42 @@ public class Xinco extends Application implements XincoVaadinApplication {
         private void finishWizard() {
             if (newData) {
                 try {
-                    XincoCoreDataType xcdt1 = null;
-                    //find data type = 1
-                    for (int j = 0; j < XincoCoreDataTypeServer.getXincoCoreDataTypes().size(); j++) {
-                        if (((XincoCoreDataType) XincoCoreDataTypeServer.getXincoCoreDataTypes().get(j)).getId() == 1) {
-                            xcdt1 = (XincoCoreDataType) XincoCoreDataTypeServer.getXincoCoreDataTypes().get(j);
-                            break;
+                    if (data.getXincoCoreLanguage() == null) {
+                        //find default language
+                        XincoCoreLanguage xcl1;
+                        int selection = -1;
+                        int alt_selection = 0;
+                        for (int j = 0; j < XincoCoreLanguageServer.getXincoCoreLanguages().size(); j++) {
+                            if (((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(j)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
+                                selection = j;
+                                break;
+                            }
+                            if (((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(j)).getId() == 1) {
+                                alt_selection = j;
+                            }
                         }
-                    }
-                    //find default language
-                    XincoCoreLanguage xcl1;
-                    int selection = -1;
-                    int alt_selection = 0;
-                    for (int j = 0; j < XincoCoreLanguageServer.getXincoCoreLanguages().size(); j++) {
-                        if (((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(j)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
-                            selection = j;
-                            break;
+                        if (selection == -1) {
+                            selection = alt_selection;
                         }
-                        if (((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(j)).getId() == 1) {
-                            alt_selection = j;
-                        }
+                        xcl1 = (XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(selection);
+                        data.setXincoCoreLanguage(xcl1);
                     }
-                    if (selection == -1) {
-                        selection = alt_selection;
-                    }
-                    xcl1 = (XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(selection);
-                    data = new XincoCoreData();
                     data.setId(0);
                     // set data attributes
-                    data.setXincoCoreNodeId(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-                    data.setDesignation(fileName);
-                    data.setXincoCoreDataType(xcdt1);
-                    data.setXincoCoreLanguage(xcl1);
                     data.setStatusNumber(1);
-                    addDefaultAddAttributes();
-                    //Now load the file
-                    loadFile(fileToLoad, fileName);
+                    switch (data.getXincoCoreDataType().getId()) {
+                        case 1:
+                            //Now load the file
+                            loadFile(fileToLoad, fileName);
+                            break;
+                        default:
+                            // save data to server
+                            data = getService().getXincoPort().setXincoCoreData(data, loggedUser);
+                            if (data == null) {
+                                throw new XincoException(xerb.getString("datawizard.unabletosavedatatoserver"));
+                            }
+                            break;
+                    }
                 } catch (XincoException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (MalformedURLException ex) {
