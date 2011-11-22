@@ -129,10 +129,6 @@ public class XincoMenuItem {
      * @param dataTypes the data types to set. Only meaning full for non node
      * objects
      */
-    /**
-     * @param dataTypes the data types to set. Only meaning full for non node
-     * objects
-     */
     public void setDataTypes(int[] dataTypes) {
         this.dataTypes = dataTypes;
     }
