@@ -300,7 +300,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     true //Something selected
                     );
             item.setDataTypes(new int[]{1});
-            XincoMenuItemManager.addItem(item);
+//            XincoMenuItemManager.addItem(item);
 //            item = new XincoMenuItem(i += 1000,
 //                    getResource().getString("menu.repository"),
 //                    getResource().getString("menu.repository.addrendering"),
@@ -317,7 +317,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
 //                        }
 //                    },
 //                    false, //Need to be logged in
-//                    false, //Data only
+//                    true, //Data only
 //                    false, //Node only
 //                    true //Something selected
 //                    );
@@ -1153,7 +1153,26 @@ public class Xinco extends Application implements XincoVaadinApplication {
 //        form.setCaption(getResource().getString("general.data.type.rendering"));
 //        final ArrayList<XincoCoreDataServer> renderings =
 //                (ArrayList<XincoCoreDataServer>) XincoCoreDataHasDependencyServer.getRenderings(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-//        
+//        final Table table = new Table(getResource().getString("general.data.type.rendering") + ":");
+//        table.addStyleName("striped");
+//        table.addContainerProperty(
+//                getResource().getString("general.name"),
+//                com.vaadin.ui.Label.class, null);
+//        table.addContainerProperty(
+//                getResource().getString("general.version"),
+//                com.vaadin.ui.Label.class, null);
+//        table.addContainerProperty(
+//                getResource().getString("general.extension"),
+//                com.vaadin.ui.Label.class, null);
+//        for (XincoCoreDataServer xcds : renderings) {
+//            String name = xcds.getXincoAddAttributes().get(0).getAttribVarchar();
+//            XincoVersion version = XincoCoreDataServer.getCurrentVersion(xcds.getId());
+//            table.addItem(new Object[]{xcds.getDesignation(),
+//                        version.getVersionHigh() + "." + version.getVersionMid()
+//                        + "." + version.getVersionLow() + " " + version.getVersionPostfix(),
+//                        name.substring(name.lastIndexOf(".") + 1, name.length())});
+//        }
+//        form.addField("renderings", table);
 //    }
 
     private void showACLDialog() {
@@ -2305,7 +2324,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
             fileName = filename;
             try {
                 //Create upload folder if needed
-                File uploads = new File(XincoConfigSingletonServer.getInstance().FileRepositoryPath
+                File uploads = new File(XincoConfigSingletonServer.getInstance().getFileRepositoryPath()
                         + System.getProperty("file.separator"));
                 uploads.mkdirs();
                 uploads.deleteOnExit();
@@ -2896,9 +2915,9 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         link.setTargetName("_blank");
                         link.setTargetBorder(Link.TARGET_BORDER_NONE);
                         try {
-                            xincoTable.addItem(new Object[]{header, header.equals("URL") 
-                                    && XincoSettingServer.getSetting(loggedUser, "setting.allowoutsidelinks").isBoolValue() ? 
-                                    link : new com.vaadin.ui.Label(value)}, i++);
+                            xincoTable.addItem(new Object[]{header, header.equals("URL")
+                                        && XincoSettingServer.getSetting(loggedUser, "setting.allowoutsidelinks", true).isBoolValue()
+                                        ? link : new com.vaadin.ui.Label(value)}, i++);
                         } catch (XincoException ex) {
                             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                         }

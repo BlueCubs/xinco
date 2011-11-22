@@ -98,7 +98,11 @@ public class XincoSettingServer extends XincoSetting {
     }
 
     public static XincoSettingServer getSetting(XincoCoreUser user, String desc) throws XincoException {
-        if (XincoCoreUserServer.validCredentials(user.getUsername(), user.getUserpassword())) {
+        return getSetting(user, desc, false);
+    }
+
+    public static XincoSettingServer getSetting(XincoCoreUser user, String desc, boolean encrypt) throws XincoException {
+        if (XincoCoreUserServer.validCredentials(user.getUsername(), user.getUserpassword(), encrypt)) {
             return getSetting(desc);
         } else {
             return null;
