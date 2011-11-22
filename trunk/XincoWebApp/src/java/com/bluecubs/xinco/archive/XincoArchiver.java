@@ -34,10 +34,10 @@ package com.bluecubs.xinco.archive;
 
 import com.bluecubs.xinco.core.OPCode;
 import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.ConfigurationManager;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreLogServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import java.io.*;
 import java.util.ArrayList;
@@ -45,6 +45,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 import org.apache.log4j.Logger;
+import org.openide.util.Lookup;
 
 /**
  * This class handles document archiving for Xinco. Edit configuration values in
@@ -80,7 +81,7 @@ public class XincoArchiver {
         Calendar ngc = new GregorianCalendar();
         archiveName = ngc.get(Calendar.YEAR) + "-" + (ngc.get(Calendar.MONTH) + 1)
                 + "-" + ngc.get(Calendar.DAY_OF_MONTH);
-        archiveBaseDir = XincoDBManager.config.FileArchivePath + archiveName;
+        archiveBaseDir = Lookup.getDefault().lookup(ConfigurationManager.class).getFileArchivePath() + archiveName;
         //archive data
         archiveFileDir = "";
         for (i = xnodeTempArrayList.size() - 1; i >= 0; i--) {
@@ -104,10 +105,10 @@ public class XincoArchiver {
             fileName = ((String) orgFileNames.get(k)) + "_"
                     + ((XincoAddAttribute) ((ArrayList) xdataTemp.getXincoAddAttributes()).get(0)).getAttribVarchar();
             if ((new File(XincoCoreDataServer.getXincoCoreDataPath(
-                    XincoDBManager.config.FileRepositoryPath, ((Integer) orgFileIDs.get(k)).intValue(),
+                    Lookup.getDefault().lookup(ConfigurationManager.class).getFileRepositoryPath(), ((Integer) orgFileIDs.get(k)).intValue(),
                     ((String) orgFileNames.get(k))))).exists()) {
                 fcis = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(
-                        XincoDBManager.config.FileRepositoryPath,
+                        Lookup.getDefault().lookup(ConfigurationManager.class).getFileRepositoryPath(),
                         ((Integer) orgFileIDs.get(k)).intValue(), ((String) orgFileNames.get(k)))));
                 fcos = new FileOutputStream(new File(archiveBaseDir + archiveFileDir
                         + System.getProperty("file.separator") + fileName));
@@ -120,7 +121,7 @@ public class XincoArchiver {
                 fcos.close();
                 //delete
                 (new File(XincoCoreDataServer.getXincoCoreDataPath(
-                        XincoDBManager.config.FileRepositoryPath,
+                        Lookup.getDefault().lookup(ConfigurationManager.class).getFileRepositoryPath(),
                         ((Integer) orgFileIDs.get(k)).intValue(),
                         ((String) orgFileNames.get(k))))).delete();
             }

@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openide.util.Lookup;
 
 public class XincoCoreNodeServer extends XincoCoreNode {
 
@@ -239,7 +240,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
             for (Object o : result) {
                 nodes.add(new XincoCoreNodeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o));
                 i++;
-                if (i >= XincoDBManager.config.MaxSearchResult) {
+                if (i >= Lookup.getDefault().lookup(ConfigurationManager.class).getMaxSearchResult()) {
                     break;
                 }
             }

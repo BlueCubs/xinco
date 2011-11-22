@@ -6,14 +6,15 @@ import com.artofsolving.jodconverter.DocumentFormat;
 import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
+import com.bluecubs.xinco.core.server.ConfigurationManager;
 import com.bluecubs.xinco.core.server.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import java.io.File;
 import java.net.ConnectException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openide.util.Lookup;
 
 /**
  * Name  Value Type Default Value Possible Values
@@ -79,10 +80,10 @@ public class FileConverter {
         // convert
         DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
         converter.convert(
-                new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, id, "" + id)),
-                new File(XincoDBManager.config.FileRepositoryPath + id + "-pdf"), customPdfFormat);
+                new File(XincoCoreDataServer.getXincoCoreDataPath(Lookup.getDefault().lookup(ConfigurationManager.class).getFileRepositoryPath(), id, "" + id)),
+                new File(Lookup.getDefault().lookup(ConfigurationManager.class).getFileRepositoryPath() + id + "-pdf"), customPdfFormat);
         Logger.getLogger(FileConverter.class.getName()).log(Level.INFO, "Rendering saved at: {0}{1}-pdf",
-                new Object[]{XincoDBManager.config.FileRepositoryPath, id});
+                new Object[]{Lookup.getDefault().lookup(ConfigurationManager.class).getFileRepositoryPath(), id});
         // close the connection
         connection.disconnect();
         return true;

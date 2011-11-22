@@ -33,10 +33,7 @@
 package com.bluecubs.xinco.server;
 
 import com.bluecubs.xinco.core.XincoDataStatus;
-import com.bluecubs.xinco.core.server.XincoConfigSingletonServer;
-import com.bluecubs.xinco.core.server.XincoCoreDataServer;
-import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
-import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.*;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.service.XincoCoreACE;
@@ -55,6 +52,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.openide.util.Lookup;
 
 public class XincoPublisherServlet extends HttpServlet {
 
@@ -213,7 +211,7 @@ public class XincoPublisherServlet extends HttpServlet {
             out.println("<link rel='shortcut icon' href='resources/images/favicon.ico' type='image/x-icon'>");
             out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
             out.println("</head>");
-            out.println("<body " + (!XincoDBManager.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' " : " ") + ">");
+            out.println("<body " + (!Lookup.getDefault().lookup(ConfigurationManager.class).isAllowOutsideLinks() ? "oncontextmenu='return false;' " : " ") + ">");
             out.println("<center>");
             out.println("<span class=\"text\">");
 
@@ -449,7 +447,7 @@ public class XincoPublisherServlet extends HttpServlet {
                 out.println("<td class=\"text\">&copy; " + rb.getString("general.copyright.date") + ", "
                         + //Avoid external links if general.setting.allowoutsidelinks is set to false
                         //Security bug
-                        (XincoDBManager.config.isAllowOutsideLinks() ? rb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
+                        (Lookup.getDefault().lookup(ConfigurationManager.class).isAllowOutsideLinks() ? rb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
                 out.println("</tr>");
                 out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"
                         + rb.getString("message.admin.main.backtomain") + "' />"

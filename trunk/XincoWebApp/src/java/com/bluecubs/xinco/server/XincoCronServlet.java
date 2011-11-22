@@ -1,30 +1,28 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoCronServlet
+ * Name: XincoCronServlet
  *
- * Description:     cronjob servlet
+ * Description: cronjob servlet
  *
- * Original Author: Alexander Manes
- * Date:            2005/01/17
+ * Original Author: Alexander Manes Date: 2005/01/17
  *
  * Modifications:
  *
@@ -36,6 +34,7 @@
 package com.bluecubs.xinco.server;
 
 import com.bluecubs.xinco.archive.XincoArchiveThread;
+import com.bluecubs.xinco.core.server.ConfigurationManager;
 import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.index.XincoIndexOptimizeThread;
 import java.io.IOException;
@@ -47,6 +46,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.openide.util.Lookup;
 
 public class XincoCronServlet extends HttpServlet {
 
@@ -57,7 +57,9 @@ public class XincoCronServlet extends HttpServlet {
     XincoIndexOptimizeThread xiot = null;
     private XincoDBManager db = null;
 
-    /** Initializes the servlet.
+    /**
+     * Initializes the servlet.
+     *
      * @param config
      * @throws javax.servlet.ServletException
      */
@@ -73,13 +75,18 @@ public class XincoCronServlet extends HttpServlet {
         xiot.start();
     }
 
-    /** Destroys the servlet.
+    /**
+     * Destroys the servlet.
      */
     @Override
     public void destroy() {
     }
 
-    /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+    /**
+     * Processes requests for both HTTP
+     * <code>GET</code> and
+     * <code>POST</code> methods.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws javax.servlet.ServletException
@@ -91,7 +98,7 @@ public class XincoCronServlet extends HttpServlet {
             db = XincoDBManager.get();
         } catch (Exception e) {
         }
-        Locale loc = null;
+        Locale loc;
         try {
             String list = request.getParameter("list");
             String[] locales;
@@ -126,7 +133,7 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<link rel='icon' href='resources/images/favicon.ico' type='image/x-icon'> ");
         out.println("</head>");
 
-        out.println("<body " + (!XincoDBManager.config.isAllowOutsideLinks() ? "oncontextmenu='return false;' " : " ") + ">");
+        out.println("<body " + (!Lookup.getDefault().lookup(ConfigurationManager.class).isAllowOutsideLinks() ? "oncontextmenu='return false;' " : " ") + ">");
         out.println("<center>");
         out.println("<span class=\"text\">");
 
@@ -204,17 +211,17 @@ public class XincoCronServlet extends HttpServlet {
         out.println("<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\">");
         out.println("<tr>");
         out.println("<td class=\"text\">&nbsp;</td>");
-        out.println("<td class=\"text\">&copy; " + lrb.getString("general.copyright.date") + ", " +
-                //Avoid external links if general.setting.allowoutsidelinks is set to false
+        out.println("<td class=\"text\">&copy; " + lrb.getString("general.copyright.date") + ", "
+                + //Avoid external links if general.setting.allowoutsidelinks is set to false
                 //Security bug
-                (XincoDBManager.config.isAllowOutsideLinks() ? lrb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
+                (Lookup.getDefault().lookup(ConfigurationManager.class).isAllowOutsideLinks() ? lrb.getString("message.admin.main.footer") : "blueCubs.com and xinco.org"));
         out.println("</tr>");
-        out.println("</table><tr><form action='menu.jsp'><input type='submit' value='" +
-                lrb.getString("message.admin.main.backtomain") + "' />" +
-                "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></form></tr>" +
-                "<tr><FORM><INPUT TYPE='button' VALUE='" + lrb.getString("message.admin.main.back") +
-                "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value='" +
-                request.getParameter("list") + "'/></FORM></tr>");
+        out.println("</table><tr><form action='menu.jsp'><input type='submit' value='"
+                + lrb.getString("message.admin.main.backtomain") + "' />"
+                + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/></form></tr>"
+                + "<tr><FORM><INPUT TYPE='button' VALUE='" + lrb.getString("message.admin.main.back")
+                + "' onClick='history.go(-1);return true;'><input type='hidden' name='list' value='"
+                + request.getParameter("list") + "'/></FORM></tr>");
 
         out.println("</span>");
         out.println("</center>");
@@ -225,7 +232,10 @@ public class XincoCronServlet extends HttpServlet {
 
     }
 
-    /** Handles the HTTP <code>GET</code> method.
+    /**
+     * Handles the HTTP
+     * <code>GET</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws javax.servlet.ServletException
@@ -237,7 +247,10 @@ public class XincoCronServlet extends HttpServlet {
         processRequest(request, response);
     }
 
-    /** Handles the HTTP <code>POST</code> method.
+    /**
+     * Handles the HTTP
+     * <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws javax.servlet.ServletException
@@ -249,7 +262,9 @@ public class XincoCronServlet extends HttpServlet {
         processRequest(request, response);
     }
 
-    /** Returns a short description of the servlet.
+    /**
+     * Returns a short description of the servlet.
+     *
      * @return
      */
     @Override

@@ -33,8 +33,8 @@
  */
 package com.bluecubs.xinco.index;
 
+import com.bluecubs.xinco.core.server.ConfigurationManager;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.server.service.XincoCoreData;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -55,6 +55,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
+import org.openide.util.Lookup;
 
 /**
  * This class handles document indexing for Xinco. Edit configuration values in
@@ -70,7 +71,9 @@ public class XincoIndexer {
             //check if document exists in index and delete
             XincoIndexer.removeXincoCoreData(d);
             //add document to index
-            writer = new IndexWriter(FSDirectory.open(new File(XincoDBManager.config.FileIndexPath)), new IndexWriterConfig(Version.LUCENE_34, new StandardAnalyzer(Version.LUCENE_34)));
+            writer = new IndexWriter(FSDirectory.open(new File(
+                    Lookup.getDefault().lookup(ConfigurationManager.class).getFileIndexPath())),
+                    new IndexWriterConfig(Version.LUCENE_34, new StandardAnalyzer(Version.LUCENE_34)));
             writer.addDocument(XincoDocument.getXincoDocument(d, index_content));
             //writer.optimize();
             writer.close();
@@ -92,7 +95,8 @@ public class XincoIndexer {
         IndexReader reader = null;
         //check if document exists in index and delete
         try {
-            reader = IndexReader.open(FSDirectory.open(new File(XincoDBManager.config.FileIndexPath)), false);
+            reader = IndexReader.open(FSDirectory.open(new File(
+                    Lookup.getDefault().lookup(ConfigurationManager.class).getFileIndexPath())), false);
             reader.deleteDocuments(new Term("id", "" + d.getId()));
             reader.close();
         } catch (Exception re) {
@@ -114,13 +118,15 @@ public class XincoIndexer {
         boolean result = false;
         try {
             //optimize index
-            writer = new IndexWriter(FSDirectory.open(new File(XincoDBManager.config.FileIndexPath)), new IndexWriterConfig(Version.LUCENE_34, new StandardAnalyzer(Version.LUCENE_34)));
+            writer = new IndexWriter(FSDirectory.open(new File(
+                    Lookup.getDefault().lookup(ConfigurationManager.class).getFileIndexPath())),
+                    new IndexWriterConfig(Version.LUCENE_34, new StandardAnalyzer(Version.LUCENE_34)));
             writer.optimize();
             writer.close();
             result = true;
         } catch (FileNotFoundException e) {
             logger.log(Level.INFO, "No index found at: {0}. Nothing to index.",
-                    XincoDBManager.config.FileIndexPath);
+                    Lookup.getDefault().lookup(ConfigurationManager.class).getFileIndexPath());
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
         } finally {
@@ -140,7 +146,8 @@ public class XincoIndexer {
         ArrayList<XincoCoreData> v = new ArrayList<XincoCoreData>();
         IndexSearcher searcher = null;
         try {
-            searcher = new IndexSearcher(FSDirectory.open(new File(XincoDBManager.config.FileIndexPath)));
+            searcher = new IndexSearcher(FSDirectory.open(new File(
+                    Lookup.getDefault().lookup(ConfigurationManager.class).getFileIndexPath())));
             Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_34);
 
             //add language to query
@@ -152,7 +159,7 @@ public class XincoIndexer {
             Query query = parser.parse(queryString);
 
             TopScoreDocCollector collector = TopScoreDocCollector.create(
-                    XincoDBManager.config.MaxSearchResult, true);
+                    Lookup.getDefault().lookup(ConfigurationManager.class).getMaxSearchResult(), true);
             searcher.search(query, collector);
             ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
@@ -163,7 +170,7 @@ public class XincoIndexer {
                 } catch (Exception xcde) {
                     // don't add non-existing data
                 }
-                if (i >= XincoDBManager.config.MaxSearchResult) {
+                if (i >= Lookup.getDefault().lookup(ConfigurationManager.class).getMaxSearchResult()) {
                     break;
                 }
             }
