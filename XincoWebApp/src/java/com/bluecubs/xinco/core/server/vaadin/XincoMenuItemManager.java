@@ -46,15 +46,16 @@ public class XincoMenuItemManager {
 
     private static boolean canAdd(Xinco xinco, XincoMenuItem item) {
         String selection = xinco.getXincoTree().getValue() == null ? null : xinco.getXincoTree().getValue().toString();
+        boolean add = true;
         boolean hasAccess = false;
         XincoCoreACE tempAce = null;
         if (xinco.getLoggedUser() != null && selection != null && selection.startsWith("node")) {
-            XincoCoreNodeServer node;
+            XincoCoreNodeServer node = null;
             try {
                 node = new XincoCoreNodeServer(Integer.valueOf(selection.substring(selection.indexOf('-') + 1)));
             } catch (XincoException ex) {
                 Logger.getLogger(XincoMenuItemManager.class.getSimpleName()).log(Level.SEVERE, null, ex);
-                return false;
+                add = false;
             }
 
             try {
@@ -64,12 +65,12 @@ public class XincoMenuItemManager {
                 Logger.getLogger(XincoMenuItemManager.class.getSimpleName()).log(Level.SEVERE, null, ex);
             }
         } else if (xinco.getLoggedUser() != null && selection != null && selection.startsWith("data")) {
-            XincoCoreDataServer data;
+            XincoCoreDataServer data = null;
             try {
                 data = new XincoCoreDataServer(Integer.valueOf(selection.substring(selection.indexOf('-') + 1)));
             } catch (XincoException ex) {
                 Logger.getLogger(XincoMenuItemManager.class.getSimpleName()).log(Level.SEVERE, null, ex);
-                return false;
+                add = false;
             }
             try {
                 tempAce = XincoCoreACEServer.checkAccess(new XincoCoreUserServer(xinco.getLoggedUser().getId()),
@@ -85,41 +86,68 @@ public class XincoMenuItemManager {
 
         if ((item.isDataOnly() && selection == null)
                 || (item.isDataOnly() && !selection.startsWith("data"))) {
-            return false;
+            add = false;
         }
 
         if ((item.isNodeOnly() && selection == null)
                 || (item.isNodeOnly() && !selection.startsWith("node"))) {
-            return false;
+            add = false;
         }
 
         if (item.isLoggedIn() && xinco.getLoggedUser() == null) {
-            return false;
+            add = false;
         }
 
-        if (item.isLoggedIn() && xinco.getLoggedUser() != null) {
-            return hasAccess;
+        if (item.isLoggedIn() && xinco.getLoggedUser() != null && !hasAccess) {
+            add = false;
         }
 
         if (item.isSelected() && selection == null) {
-            return false;
+            add = false;
         }
 
         if (selection != null && selection.startsWith("data")
                 && item.getDataTypes() != null) {
+            XincoCoreDataServer temp = null;
+            try {
+                temp = new XincoCoreDataServer(Integer.valueOf(selection.substring(selection.indexOf('-') + 1)));
+            } catch (XincoException ex) {
+                Logger.getLogger(XincoMenuItemManager.class.getName()).log(Level.SEVERE, null, ex);
+                add = false;
+            }
+            boolean found = false;
             for (int x : item.getDataTypes()) {
-                try {
-                    if (x == new XincoCoreDataServer(Integer.valueOf(selection.substring(selection.indexOf('-') + 1))).getXincoCoreDataType().getId()) {
-                        return true;
-                    }
-                } catch (XincoException ex) {
-                    Logger.getLogger(XincoMenuItemManager.class.getName()).log(Level.SEVERE, null, ex);
-                    return false;
+                if (x == temp.getXincoCoreDataType().getId()) {
+                    found = true;
+                    break;
                 }
             }
-            return false;
+            if (!found) {
+                add = false;
+            }
         }
 
-        return true;
+        if (selection != null && selection.startsWith("data")
+                && item.getStatuses() != null) {
+            XincoCoreDataServer temp = null;
+            try {
+                temp = new XincoCoreDataServer(Integer.valueOf(selection.substring(selection.indexOf('-') + 1)));
+            } catch (XincoException ex) {
+                Logger.getLogger(XincoMenuItemManager.class.getName()).log(Level.SEVERE, null, ex);
+                add = false;
+            }
+            boolean found = false;
+            for (int x : item.getStatuses()) {
+                if (x == temp.getStatusNumber()) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                add = false;
+            }
+        }
+
+        return add;
     }
 }

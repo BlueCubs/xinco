@@ -310,8 +310,6 @@
         <antcall target="do-compile-widgetset-if-needed"/>
     </target>
     
-    <target name="-pre-compile" depends="update-lookup-lib"/>
-    
     <target name="update-lookup-lib">
         <fileset id="finder" dir="${netbeans.home}/.." includes="**/org-openide-util-lookup.jar" />
         <pathconvert property="lookup-lib" refid="finder" />

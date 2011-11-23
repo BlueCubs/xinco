@@ -172,8 +172,9 @@ public class Xinco extends Application implements XincoVaadinApplication {
     @Override
     public void init() {
         try {
+            XincoMenuItem item;
             int i = 0;
-            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
+            item = new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.repository.refresh"),
                     smallIcon,
@@ -191,8 +192,9 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     false, //Need to be logged in
                     false, //Data only
                     false, //Node only
-                    false));
-            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
+                    false);
+            XincoMenuItemManager.addItem(item);
+            item = new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.repository.addfolder"),
                     smallIcon,
@@ -208,8 +210,9 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     false, //Data only
                     true, //Node only
                     true //Something selected
-                    ));
-            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
+                    );
+            XincoMenuItemManager.addItem(item);
+            item = new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.repository.adddata"),
                     smallIcon,
@@ -225,8 +228,9 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     false, //Data only
                     true, //Node only
                     true //Something selected
-                    ));
-            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
+                    );
+            XincoMenuItemManager.addItem(item);
+            item = new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.repository.adddatastructure"),
                     smallIcon,
@@ -280,8 +284,9 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     false, //Data only
                     true, //Node only
                     true //Something selected
-                    ));
-            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
+                    );
+            XincoMenuItemManager.addItem(item);
+            item = new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.edit.folderdata"),
                     smallIcon,
@@ -300,8 +305,10 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     false, //Data only
                     false, //Node only
                     true //Something selected
-                    ));
-            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
+                    );
+            item.setStatuses(new int[]{1, 4});
+            XincoMenuItemManager.addItem(item);
+            item = new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.repository.vieweditaddattributes"),
                     smallIcon,
@@ -317,8 +324,10 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     true, //Data only
                     false, //Node only
                     true //Something selected
-                    ));
-            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
+                    );
+            item.setStatuses(new int[]{1, 4});
+            XincoMenuItemManager.addItem(item);
+            item = new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.edit.acl"),
                     smallIcon,
@@ -333,8 +342,10 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     false, //Data only
                     false, //Node only
                     true //Something selected
-                    ));
-            XincoMenuItem item = new XincoMenuItem(i += 1000,
+                    );
+            item.setStatuses(new int[]{1, 4});
+            XincoMenuItemManager.addItem(item);
+            item = new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.repository.downloadfile"),
                     smallIcon,
@@ -351,6 +362,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     true //Something selected
                     );
             item.setDataTypes(new int[]{1});
+            XincoMenuItemManager.addItem(item);
             //TODO: Enable Rendering support
 //            XincoMenuItemManager.addItem(item);
 //            item = new XincoMenuItem(i += 1000,
@@ -375,7 +387,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
 //                    );
 //            item.setDataTypes(new int[]{1});
 //            XincoMenuItemManager.addItem(item);
-            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
+            item = new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.edit.checkoutfile"),
                     smallIcon,
@@ -390,8 +402,10 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     true, //Data only
                     false, //Node only
                     true //Something selected
-                    ));
-            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
+                    );
+            item.setStatuses(new int[]{1});
+            XincoMenuItemManager.addItem(item);
+            item = new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.edit.undocheckout"),
                     smallIcon,
@@ -406,8 +420,10 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     true, //Data only
                     false, //Node only
                     true //Something selected
-                    ));
-            XincoMenuItemManager.addItem(new XincoMenuItem(i += 1000,
+                    );
+            item.setStatuses(new int[]{4});
+            XincoMenuItemManager.addItem(item);
+            item = new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.edit.checkinfile"),
                     smallIcon,
@@ -422,7 +438,31 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     true, //Data only
                     false, //Node only
                     true //Something selected
-                    ));
+                    );
+            item.setStatuses(new int[]{4});
+            XincoMenuItemManager.addItem(item);
+            item = new XincoMenuItem(i += 1000,
+                    getResource().getString("menu.repository"),
+                    getResource().getString("menu.edit.publishdata"),
+                    smallIcon,
+                    new com.vaadin.ui.MenuBar.Command() {
+
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                            try {
+                                publishData();
+                            } catch (XincoException ex) {
+                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    },
+                    true, //Need to be logged in
+                    true, //Data only
+                    false, //Node only
+                    true //Something selected
+                    );
+            item.setStatuses(new int[]{1});
+            XincoMenuItemManager.addItem(item);
             //Switch to Xinco theme
             setTheme("xinco");
             xincoClientVersion = new XincoVersion();
@@ -1339,6 +1379,22 @@ public class Xinco extends Application implements XincoVaadinApplication {
 //        renderWindow.setWidth(50, Sizeable.UNITS_PERCENTAGE);
 //        getMainWindow().addWindow(renderWindow);
 //    }
+
+    private void publishData() throws XincoException {
+        XincoCoreDataServer xdata = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+        xdata.setStatusNumber(5);
+        xdata.write2DB();
+        refresh();
+        String tempUrl;
+        if (xdata.getXincoCoreDataType().getId() == 1) {
+            tempUrl = ((XincoAddAttribute) xdata.getXincoAddAttributes().get(0)).getAttribVarchar();
+        } else {
+            tempUrl = xdata.getDesignation();
+        }
+        getMainWindow().showNotification("",
+                xerb.getString("datawizard.updatesuccess.publisherinfo") + "\nhttp://[serverName]:[port]/xinco/XincoPublisher/" + xdata.getId() + "/" + tempUrl,
+                Notification.TYPE_TRAY_NOTIFICATION);
+    }
 
     private void showACLDialog() {
         final Window aclWindow = new Window();
@@ -2805,6 +2861,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
             xincoTree.expandItem(it.next());
         }
         if (selectedId != null) {
+            xincoTree.setValue("node-1");
             xincoTree.setValue(selectedId);
         }
     }
