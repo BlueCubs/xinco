@@ -353,7 +353,13 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
                         @Override
                         public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            downloadFile();
+                            try {
+                                downloadFile();
+                            } catch (MalformedURLException ex) {
+                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (XincoException ex) {
+                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                     },
                     false, //Need to be logged in
@@ -480,6 +486,24 @@ public class Xinco extends Application implements XincoVaadinApplication {
                             } catch (XincoException ex) {
                                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                             }
+                        }
+                    },
+                    true, //Need to be logged in
+                    true, //Data only
+                    false, //Node only
+                    true //Something selected
+                    );
+            item.setStatuses(new int[]{1});
+            XincoMenuItemManager.addItem(item);
+            item = new XincoMenuItem(i += 1000,
+                    getResource().getString("menu.repository"),
+                    getResource().getString("menu.edit.downloadrevision"),
+                    smallIcon,
+                    new com.vaadin.ui.MenuBar.Command() {
+
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                            showDownloadRevDialog();
                         }
                     },
                     true, //Need to be logged in
@@ -703,7 +727,13 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                 && event.isDoubleClick()
                                 && xincoTree.getValue() != null
                                 && xincoTree.getValue().toString().startsWith("data")) {
-                            downloadFile();
+                            try {
+                                downloadFile();
+                            } catch (MalformedURLException ex) {
+                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (XincoException ex) {
+                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                         if (xincoTree.getValue() != null) {
                             processTreeSelection(xincoTree.getValue().toString());
@@ -1157,36 +1187,32 @@ public class Xinco extends Application implements XincoVaadinApplication {
         }
     }
 
-    private void downloadFile() {
+    private void downloadFile(final XincoCoreData data) throws XincoException, MalformedURLException {
         boolean temporaryAccess = false;
-        try {
-            if (loggedUser == null) {
-                loggedUser = new XincoCoreUserServer(1);
-                temporaryAccess = true;
-            }
-            final XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-            StreamSource ss = new StreamSource() {
-
-                byte[] bytes = getService().getXincoPort().downloadXincoCoreData(
-                        temp, loggedUser);
-                InputStream is = new ByteArrayInputStream(bytes);
-
-                @Override
-                public InputStream getStream() {
-                    return is;
-                }
-            };
-            StreamResource sr = new StreamResource(ss, temp.getXincoAddAttributes().get(0).getAttribVarchar(), this);
-            getMainWindow().open(sr, "_blank");
-        } catch (XincoException ex) {
-            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (temporaryAccess) {
-                loggedUser = null;
-            }
+        if (loggedUser == null) {
+            loggedUser = new XincoCoreUserServer(1);
+            temporaryAccess = true;
         }
+        StreamSource ss = new StreamSource() {
+
+            byte[] bytes = getService().getXincoPort().downloadXincoCoreData(
+                    data, loggedUser);
+            InputStream is = new ByteArrayInputStream(bytes);
+
+            @Override
+            public InputStream getStream() {
+                return is;
+            }
+        };
+        StreamResource sr = new StreamResource(ss, data.getXincoAddAttributes().get(0).getAttribVarchar(), this);
+        getMainWindow().open(sr, "_blank");
+        if (temporaryAccess) {
+            loggedUser = null;
+        }
+    }
+
+    private void downloadFile() throws XincoException, MalformedURLException {
+        downloadFile(new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1))));
     }
 
     private void loadFile(File file, String fileName) throws XincoException, MalformedURLException, IOException {
@@ -1195,7 +1221,8 @@ public class Xinco extends Application implements XincoVaadinApplication {
         if (!file.getName().equals(fileName)) {
             //Different files, probably stored as a temp file. Need to rename it
             //Create a temp file to hide the transaction
-            temp = new File(file.getParentFile().getAbsolutePath() + System.getProperty("file.separator") + UUID.randomUUID().toString());
+            temp = new File(file.getParentFile().getAbsolutePath()
+                    + System.getProperty("file.separator") + UUID.randomUUID().toString());
             temp.mkdirs();
             path_to_file = temp.getAbsolutePath() + System.getProperty("file.separator") + fileName;
             if (!file.renameTo(new File(path_to_file))) {
@@ -1245,17 +1272,47 @@ public class Xinco extends Application implements XincoVaadinApplication {
         // upload file
         if (getService().getXincoPort().uploadXincoCoreData(data, byteArray, loggedUser) != totalLen) {
             cin.close();
-            file.delete();
-            if (temp != null) {
-                temp.delete();
-            }
+            removeDirectory(temp);
             throw new XincoException(xerb.getString("datawizard.fileuploadfailed"));
         }
         cin.close();
-        file.delete();
-        if (temp != null) {
-            temp.delete();
+        removeDirectory(temp);
+    }
+
+    public static boolean removeDirectory(File directory) {
+
+        if (directory == null) {
+            return false;
         }
+        if (!directory.exists()) {
+            return true;
+        }
+        if (!directory.isDirectory()) {
+            return false;
+        }
+
+        String[] list = directory.list();
+
+        // Some JVMs return null for File.list() when the
+        // directory is empty.
+        if (list != null) {
+            for (int i = 0; i < list.length; i++) {
+                File entry = new File(directory, list[i]);
+
+                //        System.out.println("\tremoving entry " + entry);
+
+                if (entry.isDirectory()) {
+                    if (!removeDirectory(entry)) {
+                        return false;
+                    }
+                } else {
+                    if (!entry.delete()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return directory.delete();
     }
 
     void setLock() {
@@ -2206,6 +2263,109 @@ public class Xinco extends Application implements XincoVaadinApplication {
          */
         public Select getLanguages() {
             return languages;
+        }
+    }
+
+    private void showDownloadRevDialog() {
+        try {
+            final Window revWindow = new Window(xerb.getString("window.revision"));
+            final Form form = new Form();
+            form.getLayout().addComponent(new com.vaadin.ui.Label(xerb.getString("window.revision")));
+            Select rev = new Select();
+            int i;
+            String text;
+            Calendar cal;
+            XMLGregorianCalendar realcal;
+            Calendar ngc = new GregorianCalendar();
+            final XincoCoreDataServer xdata = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+            for (i = 0; i < xdata.getXincoCoreLogs().size(); i++) {
+                if ((((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getOpCode() == 1)
+                        || (((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getOpCode() == 5)) {
+                    //convert clone from remote time to local time
+                    Date time = ((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getOpDatetime().toGregorianCalendar().getTime();
+                    cal = new GregorianCalendar();
+                    cal.setTime(time);
+                    realcal = (((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getOpDatetime());
+                    cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET)
+                            - realcal.toGregorianCalendar().get(Calendar.ZONE_OFFSET))
+                            - (ngc.get(Calendar.DST_OFFSET)
+                            + realcal.toGregorianCalendar().get(Calendar.DST_OFFSET)));
+                    text = "" + cal.get(Calendar.YEAR) + "/" + (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DAY_OF_MONTH);
+                    text = text + " - " + xerb.getString("general.version") + " " + ((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getVersion().getVersionHigh()
+                            + "." + ((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getVersion().getVersionMid() + "."
+                            + ((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getVersion().getVersionLow() + " "
+                            + ((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getVersion().getVersionPostfix();
+                    text = text + " - " + ((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getOpDescription();
+                    int id = ((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getId();
+                    rev.addItem(id);
+                    rev.setItemCaption(id, text);
+                }
+            }
+            form.addField("rev", rev);
+            form.getField("rev").setRequired(true);
+            form.getField("rev").setRequiredError(getResource().getString("message.missing.rev"));
+            form.setFooter(new HorizontalLayout());
+            //Used for validation purposes
+            final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
+                    getResource().getString("general.continue"), form, "commit");
+            final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
+                    getResource().getString("general.cancel"),
+                    new com.vaadin.ui.Button.ClickListener() {
+
+                        @Override
+                        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                            getMainWindow().removeWindow(revWindow);
+                        }
+                    });
+            commit.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+                @Override
+                public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                    try {
+                        //Disable data fields, make sure nothing gets modified after clicking save
+                        form.getField("rev").setEnabled(false);
+                        commit.setEnabled(false);
+                        cancel.setEnabled(false);
+                        //Process the data
+                        ArrayList dataLogArrayList = new ArrayList();
+                        dataLogArrayList.addAll(xdata.getXincoCoreLogs());
+                        XincoCoreLog revLog = null;
+                        for (int i = 0; i < xdata.getXincoCoreLogs().size(); i++) {
+                            if (((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getId()
+                                    == Integer.valueOf(form.getField("rev").getValue().toString())) {
+                                revLog = (XincoCoreLog) xdata.getXincoCoreLogs().get(i);
+                                break;
+                            }
+                        }
+                        ArrayList revLogArrayList = new ArrayList();
+                        revLogArrayList.add(revLog);
+                        xdata.getXincoCoreLogs().clear();
+                        xdata.getXincoCoreLogs().addAll(revLogArrayList);
+                        //Download file
+                        try {
+                            downloadFile(xdata);
+                        } catch (MalformedURLException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (XincoException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        getMainWindow().removeWindow(revWindow);
+                        refresh();
+                    } catch (XincoException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
+            form.getFooter().setSizeUndefined();
+            form.getFooter().addComponent(commit);
+            form.getFooter().addComponent(cancel);
+            revWindow.addComponent(form);
+            revWindow.setModal(true);
+            revWindow.center();
+            revWindow.setWidth(35, Sizeable.UNITS_PERCENTAGE);
+            getMainWindow().addWindow(revWindow);
+        } catch (XincoException ex) {
+            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

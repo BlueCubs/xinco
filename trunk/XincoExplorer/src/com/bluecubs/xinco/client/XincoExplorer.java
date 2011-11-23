@@ -2252,15 +2252,15 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                             }
                             dataLogArrayList = new ArrayList();
                             dataLogArrayList.addAll(((XincoCoreData) newnode.getUserObject()).getXincoCoreLogs());
-                            XincoCoreLog RevLog = null;
+                            XincoCoreLog revLog = null;
                             for (i = 0; i < ((XincoCoreData) newnode.getUserObject()).getXincoCoreLogs().size(); i++) {
                                 if (((XincoCoreLog) ((XincoCoreData) newnode.getUserObject()).getXincoCoreLogs().get(i)).getId() == getGlobalDialog_returnValue()) {
-                                    RevLog = (XincoCoreLog) ((XincoCoreData) newnode.getUserObject()).getXincoCoreLogs().get(i);
+                                    revLog = (XincoCoreLog) ((XincoCoreData) newnode.getUserObject()).getXincoCoreLogs().get(i);
                                     break;
                                 }
                             }
                             ArrayList revLogArrayList = new ArrayList();
-                            revLogArrayList.add(RevLog);
+                            revLogArrayList.add(revLog);
                             ((XincoCoreData) newnode.getUserObject()).getXincoCoreLogs().clear();
                             ((XincoCoreData) newnode.getUserObject()).getXincoCoreLogs().addAll(revLogArrayList);
                         }
