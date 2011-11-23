@@ -115,6 +115,57 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     }
                 }
             });
+    private final WizardStep fileStep = new WizardStep() {
+
+        final UploadManager um = new UploadManager();
+        final Upload upload = new Upload(getResource().getString("general.file.select"), um);
+        final Upload.SucceededListener listener = new Upload.SucceededListener() {
+
+            @Override
+            public void uploadSucceeded(SucceededEvent event) {
+                if (upload != null) {
+                    getMainWindow().showNotification(
+                            getResource().getString("datawizard.fileuploadsuccess"),
+                            Notification.TYPE_HUMANIZED_MESSAGE);
+                }
+            }
+        };
+
+        @Override
+        public String getCaption() {
+            return getResource().getString("general.file.select");
+        }
+
+        @Override
+        public com.vaadin.ui.Component getContent() {
+            upload.addListener((Upload.SucceededListener) um);
+            upload.addListener((Upload.SucceededListener) listener);
+            upload.addListener((Upload.FailedListener) um);
+            return upload;
+        }
+
+        @Override
+        public boolean onAdvance() {
+            if (!um.isSuccess()) {
+                getMainWindow().showNotification(
+                        getResource().getString("message.missing.file"),
+                        Notification.TYPE_ERROR_MESSAGE);
+            } else {
+                data.setDesignation(fileName);
+            }
+            return um.isSuccess();
+        }
+
+        @Override
+        public boolean onBack() {
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return getCaption();
+        }
+    };
     private ThemeResource smallIcon = new ThemeResource("img/blueCubsIcon16x16.GIF");
     private HierarchicalContainer xincoTreeContainer;
 
@@ -300,6 +351,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     true //Something selected
                     );
             item.setDataTypes(new int[]{1});
+            //TODO: Enable Rendering support
 //            XincoMenuItemManager.addItem(item);
 //            item = new XincoMenuItem(i += 1000,
 //                    getResource().getString("menu.repository"),
@@ -621,11 +673,26 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
                         // Drop right on an item -> make it a child
                         if (location == VerticalDropLocation.MIDDLE) {
-                            xincoTree.setParent(sourceItemId, targetItemId);
-                            //Now update things in the database
-                            System.err.println("Source: " + sourceItemId + ", Target: " + targetItemId);
                             try {
-                                refresh();
+                                xincoTree.setParent(sourceItemId, targetItemId);
+                                //Now update things in the database
+                                if (sourceItemId.toString().startsWith("data") && targetItemId.toString().startsWith("node")) {
+                                    XincoCoreDataServer source = new XincoCoreDataServer(Integer.valueOf(sourceItemId.toString().substring(sourceItemId.toString().indexOf('-') + 1)));
+                                    XincoCoreNodeServer targetN = new XincoCoreNodeServer(Integer.valueOf(targetItemId.toString().substring(targetItemId.toString().indexOf('-') + 1)));
+                                    source.setXincoCoreNodeId(targetN.getId());
+                                    source.write2DB();
+                                }
+                                if (sourceItemId.toString().startsWith("node") && targetItemId.toString().startsWith("node")) {
+                                    XincoCoreNodeServer source = new XincoCoreNodeServer(Integer.valueOf(sourceItemId.toString().substring(sourceItemId.toString().indexOf('-') + 1)));
+                                    XincoCoreNodeServer targetN = new XincoCoreNodeServer(Integer.valueOf(targetItemId.toString().substring(targetItemId.toString().indexOf('-') + 1)));
+                                    source.setXincoCoreNodeId(targetN.getId());
+                                    source.write2DB();
+                                }
+                                try {
+                                    refresh();
+                                } catch (XincoException ex) {
+                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                             } catch (XincoException ex) {
                                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -1146,14 +1213,15 @@ public class Xinco extends Application implements XincoVaadinApplication {
             w.center();
         }
     }
-
+//TODO: Rendering support
 //    private void showRenderingDialog() throws XincoException {
 //        final Window renderWindow = new Window();
 //        final Form form = new Form();
 //        form.setCaption(getResource().getString("general.data.type.rendering"));
 //        final ArrayList<XincoCoreDataServer> renderings =
-//                (ArrayList<XincoCoreDataServer>) XincoCoreDataHasDependencyServer.getRenderings(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-//        final Table table = new Table(getResource().getString("general.data.type.rendering") + ":");
+//                (ArrayList<XincoCoreDataServer>) XincoCoreDataHasDependencyServer.getRenderings(
+//                Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+//        final Table table = new Table();
 //        table.addStyleName("striped");
 //        table.addContainerProperty(
 //                getResource().getString("general.name"),
@@ -1172,7 +1240,104 @@ public class Xinco extends Application implements XincoVaadinApplication {
 //                        + "." + version.getVersionLow() + " " + version.getVersionPostfix(),
 //                        name.substring(name.lastIndexOf(".") + 1, name.length())});
 //        }
+//        form.setFooter(new HorizontalLayout());
+//        //Used for validation purposes
+//        final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
+//                getResource().getString("general.add"), form, "commit");
+//        final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
+//                getResource().getString("general.cancel"),
+//                new com.vaadin.ui.Button.ClickListener() {
+//
+//                    @Override
+//                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+//                        getMainWindow().removeWindow(renderWindow);
+//                    }
+//                });
+//        commit.addListener(new com.vaadin.ui.Button.ClickListener() {
+//
+//            @Override
+//            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+//                try {
+//                    final XincoCoreDataServer parent = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+//                    //initialize the data object
+//                    data = new XincoCoreData();
+//                    data.setXincoCoreDataType(new XincoCoreDataTypeServer(parent.getXincoCoreDataType().getId()));
+//                    data.setStatusNumber(parent.getStatusNumber());
+//                    data.setXincoCoreLanguage(parent.getXincoCoreLanguage());
+//                    data.setXincoCoreNodeId(parent.getXincoCoreNodeId());
+//                    addDefaultAddAttributes();
+//                    commit.setEnabled(false);
+//                    cancel.setEnabled(false);
+//                    XincoWizard wizard = new XincoWizard();
+//                    wizard.addStep(fileStep);
+//                    getMainWindow().removeWindow(renderWindow);
+//                    final Window addRenderingWindow = new Window();
+//                    addRenderingWindow.addComponent(wizard);
+//                    //Add the DataDialog manager to handle the adding data part
+//                    ddManager = new DataDialogManager(true);
+//                    wizard.setSizeFull();
+//                    wizard.addListener(ddManager);
+//                    //Add a custom listener to act when the wizard is done
+//                    wizard.addListener(new WizardProgressListener() {
+//
+//                        @Override
+//                        public void activeStepChanged(WizardStepActivationEvent event) {
+//                            //Do nothing
+//                        }
+//
+//                        @Override
+//                        public void stepSetChanged(WizardStepSetChangedEvent event) {
+//                            //Do nothing
+//                        }
+//
+//                        @Override
+//                        public void wizardCompleted(WizardCompletedEvent event) {
+//                            try {
+//                                //The data is in the data variable, now link to this data as rendering
+//                                XincoCoreDataJpaController controller = new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory());
+//                                XincoCoreDataHasDependencyServer dep = new XincoCoreDataHasDependencyServer(
+//                                        controller.findXincoCoreData(parent.getId()),
+//                                        controller.findXincoCoreData(data.getId()),
+//                                        new XincoDependencyTypeServer(5));//Rendering
+//                                dep.write2DB();
+//                            } catch (XincoException ex) {
+//                                getMainWindow().showNotification(getResource().getString("general.error"),
+//                                        getResource().getString("message.error.association.exists"),
+//                                        Notification.TYPE_ERROR_MESSAGE);
+//                            }
+//                            getMainWindow().removeWindow(addRenderingWindow);
+//                            try {
+//                                showRenderingDialog();
+//                            } catch (XincoException ex) {
+//                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void wizardCancelled(WizardCancelledEvent event) {
+//                            getMainWindow().removeWindow(addRenderingWindow);
+//                        }
+//                    });
+//                    getMainWindow().addWindow(addRenderingWindow);
+//                    addRenderingWindow.center();
+//                    addRenderingWindow.setModal(true);
+//                    addRenderingWindow.setWidth(35, Sizeable.UNITS_PERCENTAGE);
+//                } catch (XincoException ex) {
+//                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        });
+//        table.setSizeFull();
 //        form.addField("renderings", table);
+//        renderWindow.addComponent(form);
+//        form.getFooter().setSizeUndefined();
+//        form.getFooter().addComponent(commit);
+//        form.getFooter().addComponent(cancel);
+//        form.setSizeFull();
+//        renderWindow.center();
+//        renderWindow.setModal(true);
+//        renderWindow.setWidth(50, Sizeable.UNITS_PERCENTAGE);
+//        getMainWindow().addWindow(renderWindow);
 //    }
 
     private void showACLDialog() {
@@ -2004,57 +2169,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
             }
         };
         if (newData) {
-            final UploadManager um = new UploadManager();
-            final Upload upload = new Upload(getResource().getString("general.file.select"), um);
-            final Upload.SucceededListener listener = new Upload.SucceededListener() {
-
-                @Override
-                public void uploadSucceeded(SucceededEvent event) {
-                    if (upload != null) {
-                        upload.setEnabled(false);
-                        getMainWindow().showNotification(
-                                getResource().getString("datawizard.fileuploadsuccess"),
-                                Notification.TYPE_HUMANIZED_MESSAGE);
-                    }
-                }
-            };
-            final WizardStep fileStep = new WizardStep() {
-
-                @Override
-                public String getCaption() {
-                    return getResource().getString("general.file.select");
-                }
-
-                @Override
-                public com.vaadin.ui.Component getContent() {
-                    upload.addListener((Upload.SucceededListener) um);
-                    upload.addListener((Upload.SucceededListener) listener);
-                    upload.addListener((Upload.FailedListener) um);
-                    return upload;
-                }
-
-                @Override
-                public boolean onAdvance() {
-                    if (!um.isSuccess()) {
-                        getMainWindow().showNotification(
-                                getResource().getString("message.missing.file"),
-                                Notification.TYPE_ERROR_MESSAGE);
-                    } else {
-                        data.setDesignation(fileName);
-                    }
-                    return um.isSuccess();
-                }
-
-                @Override
-                public boolean onBack() {
-                    return true;
-                }
-
-                @Override
-                public String toString() {
-                    return getCaption();
-                }
-            };
             final WizardStep attrStep = new WizardStep() {
 
                 @Override
@@ -2324,7 +2438,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
             fileName = filename;
             try {
                 //Create upload folder if needed
-                File uploads = new File(XincoConfigSingletonServer.getInstance().getFileRepositoryPath()
+                File uploads = new File(XincoConfigSingletonServer.getInstance().FileRepositoryPath
                         + System.getProperty("file.separator"));
                 uploads.mkdirs();
                 uploads.deleteOnExit();
@@ -2406,13 +2520,11 @@ public class Xinco extends Application implements XincoVaadinApplication {
         @Override
         public void wizardCancelled(WizardCancelledEvent event) {
             try {
-                if (newData) {
+                if (newData && data != null) {
                     //Cancelled so roll back everything done in database
                     HashMap parameters = new HashMap();
                     parameters.put("id", data.getId());
-                    if (data != null) {
-                        XincoCoreDataServer.removeFromDB(loggedUser.getId(), data.getId());
-                    }
+                    XincoCoreDataServer.removeFromDB(loggedUser.getId(), data.getId());
                 }
                 //Remove the file from the repository as well
                 closeWizard();
@@ -2422,7 +2534,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
         }
 
         private void finishWizard() {
-            if (newData) {
+            if (newData && data != null) {
                 try {
                     if (data.getXincoCoreLanguage() == null) {
                         //find default language
