@@ -16,7 +16,7 @@ public class XincoMenuItem {
     private final boolean loggedIn;
     private final boolean dataOnly;
     private final boolean nodeOnly;
-    private int[] dataTypes;
+    private int[] dataTypes, statuses;
     private final boolean selected;
 
     /**
@@ -148,5 +148,19 @@ public class XincoMenuItem {
      */
     public boolean isSelected() {
         return selected;
+    }
+
+    /**
+     * @return the statuses
+     */
+    public int[] getStatuses() {
+        return statuses;
+    }
+
+    /**
+     * @param statuses the statuses to set
+     */
+    public void setStatuses(int[] statuses) {
+        this.statuses = statuses;
     }
 }
