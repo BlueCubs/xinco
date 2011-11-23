@@ -163,6 +163,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
             }
             setId(xcl.getId());
         } catch (Exception e) {
+            Logger.getLogger(XincoCoreLogServer.class.getSimpleName()).log(Level.SEVERE, null, e);
             throw new XincoException(e.getMessage());
         }
         return getId();

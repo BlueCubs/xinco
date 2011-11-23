@@ -451,6 +451,32 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
                             try {
                                 publishData();
+                            } catch (MalformedURLException ex) {
+                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (XincoException ex) {
+                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    },
+                    true, //Need to be logged in
+                    true, //Data only
+                    false, //Node only
+                    true //Something selected
+                    );
+            item.setStatuses(new int[]{1});
+            XincoMenuItemManager.addItem(item);
+            item = new XincoMenuItem(i += 1000,
+                    getResource().getString("menu.repository"),
+                    getResource().getString("menu.edit.lockdata"),
+                    smallIcon,
+                    new com.vaadin.ui.MenuBar.Command() {
+
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                            try {
+                                lockData();
+                            } catch (MalformedURLException ex) {
+                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (XincoException ex) {
                                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -1380,9 +1406,18 @@ public class Xinco extends Application implements XincoVaadinApplication {
 //        getMainWindow().addWindow(renderWindow);
 //    }
 
-    private void publishData() throws XincoException {
+    private void lockData() throws XincoException, MalformedURLException {
+        XincoCoreDataServer xdata = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+        xdata.setStatusNumber(2);
+        addLog(xdata, OPCode.LOCK_COMMENT);
+        xdata.write2DB();
+        refresh();
+    }
+
+    private void publishData() throws XincoException, MalformedURLException {
         XincoCoreDataServer xdata = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
         xdata.setStatusNumber(5);
+        addLog(xdata, OPCode.PUBLISH_COMMENT);
         xdata.write2DB();
         refresh();
         String tempUrl;
@@ -2628,38 +2663,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                             }
                             break;
                     }
-                    //Add log
-                    XincoCoreLog newlog = new XincoCoreLog();
-                    newlog.setOpCode(data.getXincoCoreLogs().isEmpty() ? OPCode.CREATION.ordinal() + 1 : OPCode.CHECKIN.ordinal() + 1);
-                    newlog.setOpDescription(xerb.getString(OPCode.getOPCode(newlog.getOpCode()).getName())
-                            + "!" + " ("
-                            + xerb.getString("general.user") + ": "
-                            + loggedUser.getUsername()
-                            + ")");
-                    newlog.setXincoCoreUserId(loggedUser.getId());
-                    newlog.setXincoCoreDataId(data.getId());
-                    if (XincoCoreDataServer.getCurrentVersion(data.getId()) == null) {
-                        newlog.setVersion(new XincoVersion());
-                        newlog.getVersion().setVersionHigh(1);
-                        newlog.getVersion().setVersionMid(0);
-                        newlog.getVersion().setVersionLow(0);
-                        newlog.getVersion().setVersionPostfix("");
-                    }
-                    try {
-                        DatatypeFactory factory = DatatypeFactory.newInstance();
-                        GregorianCalendar cal = new GregorianCalendar();
-                        cal.setTime(new Date());
-                        newlog.setOpDatetime(factory.newXMLGregorianCalendar(cal));
-                    } catch (DatatypeConfigurationException ex) {
-                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    // save log to server
-                    newlog = getService().getXincoPort().setXincoCoreLog(newlog, loggedUser);
-                    if (newlog == null) {
-                        Logger.getLogger(Xinco.class.getSimpleName()).severe("Unable to create new log entry!");
-                    } else {
-                        data.getXincoCoreLogs().add(newlog);
-                    }
+                    addLog(data, data.getXincoCoreLogs().isEmpty() ? OPCode.CREATION : OPCode.CHECKIN);
                 } catch (XincoException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (MalformedURLException ex) {
@@ -2699,6 +2703,43 @@ public class Xinco extends Application implements XincoVaadinApplication {
             } catch (XincoException ex) {
                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+    }
+
+    private void addLog(XincoCoreData data, OPCode code) throws XincoException, MalformedURLException {
+        //Add log
+        XincoCoreLog newlog = new XincoCoreLog();
+        newlog.setOpCode(code.ordinal() + 1);
+        newlog.setOpDescription(xerb.getString(OPCode.getOPCode(newlog.getOpCode()).getName())
+                + "!" + " ("
+                + xerb.getString("general.user") + ": "
+                + loggedUser.getUsername()
+                + ")");
+        newlog.setXincoCoreUserId(loggedUser.getId());
+        newlog.setXincoCoreDataId(data.getId());
+        if (XincoCoreDataServer.getCurrentVersion(data.getId()) == null) {
+            newlog.setVersion(new XincoVersion());
+            newlog.getVersion().setVersionHigh(1);
+            newlog.getVersion().setVersionMid(0);
+            newlog.getVersion().setVersionLow(0);
+            newlog.getVersion().setVersionPostfix("");
+        } else {
+            newlog.setVersion(XincoCoreDataServer.getCurrentVersion(data.getId()));
+        }
+        try {
+            DatatypeFactory factory = DatatypeFactory.newInstance();
+            GregorianCalendar cal = new GregorianCalendar();
+            cal.setTime(new Date());
+            newlog.setOpDatetime(factory.newXMLGregorianCalendar(cal));
+        } catch (DatatypeConfigurationException ex) {
+            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        // save log to server
+        newlog = getService().getXincoPort().setXincoCoreLog(newlog, loggedUser);
+        if (newlog == null) {
+            Logger.getLogger(Xinco.class.getSimpleName()).severe("Unable to create new log entry!");
+        } else {
+            data.getXincoCoreLogs().add(newlog);
         }
     }
 
