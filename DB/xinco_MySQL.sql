@@ -338,30 +338,6 @@ ROW_FORMAT = DEFAULT;
 
 
 -- -----------------------------------------------------
--- Table `xinco`.`xinco_core_user`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `xinco`.`xinco_core_user` ;
-
-CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user` (
-  `id` INT UNSIGNED NOT NULL ,
-  `username` VARCHAR(255) NOT NULL ,
-  `userpassword` VARCHAR(255) NOT NULL ,
-  `name` VARCHAR(255) NOT NULL ,
-  `firstname` VARCHAR(255) NOT NULL ,
-  `email` VARCHAR(255) NOT NULL ,
-  `status_number` INT UNSIGNED NOT NULL ,
-  `attempts` INT UNSIGNED NOT NULL DEFAULT 0 ,
-  `last_modified` DATE NOT NULL ,
-  PRIMARY KEY (`id`) ,
-  INDEX `xinco_core_user_index_username` (`username` ASC) ,
-  INDEX `xinco_core_user_index_status` (`status_number` ASC) ,
-  UNIQUE INDEX `unique id` (`username` ASC) )
-COMMENT = '\n'
-PACK_KEYS = 0
-ROW_FORMAT = DEFAULT;
-
-
--- -----------------------------------------------------
 -- Table `xinco`.`xinco_core_ace`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `xinco`.`xinco_core_ace` ;
@@ -401,6 +377,30 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_ace` (
     REFERENCES `xinco`.`xinco_core_user` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
+PACK_KEYS = 0
+ROW_FORMAT = DEFAULT;
+
+
+-- -----------------------------------------------------
+-- Table `xinco`.`xinco_core_user`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `xinco`.`xinco_core_user` ;
+
+CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user` (
+  `id` INT UNSIGNED NOT NULL ,
+  `username` VARCHAR(255) NOT NULL ,
+  `userpassword` VARCHAR(255) NOT NULL ,
+  `name` VARCHAR(255) NOT NULL ,
+  `firstname` VARCHAR(255) NOT NULL ,
+  `email` VARCHAR(255) NOT NULL ,
+  `status_number` INT UNSIGNED NOT NULL ,
+  `attempts` INT UNSIGNED NOT NULL DEFAULT 0 ,
+  `last_modified` DATE NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `xinco_core_user_index_username` (`username` ASC) ,
+  INDEX `xinco_core_user_index_status` (`status_number` ASC) ,
+  UNIQUE INDEX `unique id` (`username` ASC) )
+COMMENT = '\n'
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
@@ -718,7 +718,6 @@ INSERT INTO `xinco`.`xinco_core_data_type` (`id`, `designation`, `description`) 
 INSERT INTO `xinco`.`xinco_core_data_type` (`id`, `designation`, `description`) VALUES (2, 'general.data.type.text', 'general.data.type.text.description');
 INSERT INTO `xinco`.`xinco_core_data_type` (`id`, `designation`, `description`) VALUES (3, 'general.data.type.URL', 'general.data.type.URL.description');
 INSERT INTO `xinco`.`xinco_core_data_type` (`id`, `designation`, `description`) VALUES (4, 'general.data.type.contact', 'general.data.type.contact.description');
-INSERT INTO `xinco`.`xinco_core_data_type` (`id`, `designation`, `description`) VALUES (5, 'general.data.type.rendering', 'general.data.type.rendering.description');
 
 COMMIT;
 
@@ -740,17 +739,6 @@ USE `xinco`;
 INSERT INTO `xinco`.`xinco_core_group` (`id`, `designation`, `status_number`) VALUES (1, 'general.group.admin', 1);
 INSERT INTO `xinco`.`xinco_core_group` (`id`, `designation`, `status_number`) VALUES (2, 'general.group.allusers', 1);
 INSERT INTO `xinco`.`xinco_core_group` (`id`, `designation`, `status_number`) VALUES (3, 'general.group.public', 1);
-
-COMMIT;
-
--- -----------------------------------------------------
--- Data for table `xinco`.`xinco_core_user`
--- -----------------------------------------------------
-SET AUTOCOMMIT=0;
-USE `xinco`;
-INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (1, 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', 1, 0, now());
-INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (2, 'user', MD5('user'), 'User', 'Default', 'user@xinco.org', 1, 0, now());
-INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (3, 'bluecubs', MD5('system'), 'System', 'User', 'info@bluecubs.com', 1, 0, now());
 
 COMMIT;
 
@@ -781,6 +769,17 @@ INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_gr
 INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (20, NULL, 3, 4, NULL, 1, 0, 0, 0);
 INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (21, NULL, 3, NULL, 1, 1, 0, 0, 0);
 INSERT INTO `xinco`.`xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (22, NULL, 3, NULL, 2, 1, 0, 0, 0);
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `xinco`.`xinco_core_user`
+-- -----------------------------------------------------
+SET AUTOCOMMIT=0;
+USE `xinco`;
+INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (1, 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', 1, 0, now());
+INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (2, 'user', MD5('user'), 'User', 'Default', 'user@xinco.org', 1, 0, now());
+INSERT INTO `xinco`.`xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (3, 'bluecubs', MD5('system'), 'System', 'User', 'info@bluecubs.com', 1, 0, now());
 
 COMMIT;
 
