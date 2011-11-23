@@ -32,6 +32,8 @@ public class VersionSelector extends CustomComponent {
     public VersionSelector() {
         caption = "";
         version = new XincoVersion();
+        // The composition root MUST be set
+        setCompositionRoot(setup());
     }
 
     public void setMinorEnabled(boolean enable) {
@@ -94,7 +96,8 @@ public class VersionSelector extends CustomComponent {
 
     /**
      * Get the version currently displayed in the component
-     * @return 
+     *
+     * @return
      */
     public XincoVersion getVersion() {
         version.setVersionHigh((Integer) high.getValue());
@@ -104,13 +107,38 @@ public class VersionSelector extends CustomComponent {
     }
 
     /**
-     * Enable/disable the version fields (only modifiable with the minor check box)
-     * @param enable 
+     * Enable/disable the version fields (only modifiable with the minor check
+     * box)
+     *
+     * @param enable
      */
     public void setVersionEnabled(boolean enable) {
         high.setEnabled(enable);
         mid.setEnabled(enable);
         low.setEnabled(enable);
         postfix.setEnabled(enable);
+    }
+
+    public void setVersion(XincoVersion version) {
+        this.version.setVersionHigh(version.getVersionHigh());
+        this.version.setVersionMid(version.getVersionMid());
+        this.version.setVersionLow(version.getVersionLow());
+        update();
+    }
+
+    private void update() {
+        high.setValue(version.getVersionHigh());
+        high.setMaxValue(Integer.MAX_VALUE);
+        high.setMinValue(version.getVersionHigh());
+        high.setStepAmount(1);
+        mid.setValue(version.getVersionMid());
+        mid.setMaxValue(Integer.MAX_VALUE);
+        mid.setMinValue(version.getVersionMid());
+        mid.setStepAmount(1);
+        low.setValue(version.getVersionLow());
+        low.setMaxValue(Integer.MAX_VALUE);
+        low.setMinValue(version.getVersionLow());
+        low.setStepAmount(1);
+        postfix.setValue(version.getVersionPostfix());
     }
 }
