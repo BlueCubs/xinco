@@ -53,7 +53,9 @@ import com.bluecubs.xinco.core.server.*;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUser;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreGroupJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserHasXincoCoreGroupJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
 import com.bluecubs.xinco.core.server.service.XincoCoreGroup;
 import com.bluecubs.xinco.index.XincoIndexer;
 import java.io.File;
@@ -498,8 +500,11 @@ public class XincoAdminServlet extends HttpServlet {
         //add user to group
         if (request.getParameter("DialogEditGroupAddUser") != null) {
             try {
-                new XincoCoreUserHasXincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).create(new XincoCoreUserHasXincoCoreGroup(
-                        Integer.parseInt(request.getParameter("DialogEditGroupAddUser")), currentGroupSelection));
+                XincoCoreUserHasXincoCoreGroup uhg = new XincoCoreUserHasXincoCoreGroup(
+                                Integer.parseInt(request.getParameter("DialogEditGroupAddUser")), currentGroupSelection);
+                        uhg.setXincoCoreGroup(new XincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreGroup(currentGroupSelection));
+                        uhg.setXincoCoreUser(new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(Integer.parseInt(request.getParameter("DialogEditGroupAddUser"))));
+                        new XincoCoreUserHasXincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).create(uhg);
             } catch (Exception e) {
                 logger.log(Level.SEVERE, null, e);
             }
