@@ -320,7 +320,7 @@ public class LogDialog extends AbstractDialog {
                     JOptionPane.WARNING_MESSAGE);
         } else {
             log_index = 0;
-            String text = "";
+            String text;
             log_index = ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().size() - 1;
             //Reason really needed only for checkin
             text = action.getText() + " "

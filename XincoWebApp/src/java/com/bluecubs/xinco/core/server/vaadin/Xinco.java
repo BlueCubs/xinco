@@ -4,7 +4,11 @@ import com.bluecubs.xinco.core.OPCode;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.*;
 import com.bluecubs.xinco.core.server.db.DBState;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreGroupJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLogJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserHasXincoCoreGroupJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.service.*;
 import com.bluecubs.xinco.core.server.vaadin.custom.VersionSelector;
@@ -1950,6 +1954,106 @@ public class Xinco extends Application implements XincoVaadinApplication {
         getMainWindow().addWindow(loginWindow);
     }
 
+    private void refreshGroupTable(final Table table) {
+        ArrayList allgroups = XincoCoreGroupServer.getXincoCoreGroups();
+        for (Iterator<XincoCoreGroupServer> it = allgroups.iterator(); it.hasNext();) {
+            XincoCoreGroupServer group = it.next();
+            final com.vaadin.ui.Button edit = new com.vaadin.ui.Button(getResource().getString("general.edit"));
+            edit.setData(group.getId());
+            edit.addStyleName("link");
+            edit.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+                @Override
+                public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                    showEditSingleGroupWindow((Integer) edit.getData());
+                }
+            });
+            table.addItem(new Object[]{group.getId(),
+                        getResource().containsKey(group.getDesignation())
+                        ? getResource().getString(group.getDesignation())
+                        : group.getDesignation(),
+                        edit}, group.getId());
+        }
+    }
+
+    private void showEditSingleGroupWindow(final Integer groupId) {
+        final Window group = new Window();
+        final Form form = new Form();
+        refreshGroupContentsTables(form, groupId);
+        final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
+                getResource().getString("general.cancel"),
+                new com.vaadin.ui.Button.ClickListener() {
+
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        getMainWindow().removeWindow(group);
+                    }
+                });
+        form.getFooter().setSizeUndefined();
+        form.getFooter().addComponent(cancel);
+        group.addComponent(form);
+        group.setModal(true);
+        group.center();
+        group.setWidth(70, Sizeable.UNITS_PERCENTAGE);
+        getMainWindow().addWindow(group);
+    }
+
+    private void showGroupAdminWindow() {
+        final Window group = new Window();
+        final Form form = new Form();
+        final Table table = new Table();
+        table.addStyleName("striped");
+        table.addContainerProperty(getResource().getString("general.id"),
+                Integer.class, null);
+        table.addContainerProperty(getResource().getString("general.name"),
+                String.class, null);
+        table.addContainerProperty(getResource().getString("general.edit"),
+                com.vaadin.ui.Component.class, null);
+        table.setSortContainerPropertyId(getResource().getString("general.id"));
+        form.getLayout().addComponent(table);
+        refreshGroupTable(table);
+        form.addField("name", new com.vaadin.ui.TextField(getResource().getString("general.name") + ":"));
+        form.getField("name").setRequired(true);
+        form.getField("name").setRequiredError(getResource().getString("message.missing.groupname"));
+        //Used for validation purposes
+        final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
+                getResource().getString("general.add.group"), form, "commit");
+        final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
+                getResource().getString("general.cancel"),
+                new com.vaadin.ui.Button.ClickListener() {
+
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        getMainWindow().removeWindow(group);
+                    }
+                });
+        commit.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+            @Override
+            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                try {
+                    commit.setEnabled(false);
+                    cancel.setEnabled(false);
+                    //Process the data
+                    new XincoCoreGroupServer(0,
+                            form.getField("name").getValue().toString(),
+                            1).write2DB();
+                    refreshGroupTable(table);
+                } catch (XincoException ex) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        form.getFooter().setSizeUndefined();
+        form.getFooter().addComponent(commit);
+        form.getFooter().addComponent(cancel);
+        group.addComponent(form);
+        group.setModal(true);
+        group.center();
+        group.setWidth(25, Sizeable.UNITS_PERCENTAGE);
+        getMainWindow().addWindow(group);
+    }
+
     private void showUserAdminWindow() {
         final Window user = new Window();
         final Form form = new Form();
@@ -1970,7 +2074,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                 com.vaadin.ui.Component.class, null);
         table.addContainerProperty(getResource().getString("general.password.reset") + "*",
                 com.vaadin.ui.Component.class, null);
-        refreshTable(table);
+        refreshUserTable(table);
         table.setSortContainerPropertyId(getResource().getString("general.id"));
         form.getLayout().addComponent(table);
         form.addField("username", new com.vaadin.ui.TextField(getResource().getString("general.username") + ":"));
@@ -2024,7 +2128,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     //Reason for change
                     temp_user.setReason("audit.user.account.create");
                     temp_user.write2DB();
-                    refreshTable(table);
+                    refreshUserTable(table);
                 } catch (XincoException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -2036,7 +2140,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
         user.addComponent(form);
         user.setModal(true);
         user.center();
-        user.setWidth(75, Sizeable.UNITS_PERCENTAGE);
+        user.setWidth(25, Sizeable.UNITS_PERCENTAGE);
         getMainWindow().addWindow(user);
     }
 
@@ -2067,7 +2171,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                showGroupAdminWindow();
             }
         });
         adminPanel.addComponent(groupAdmin);
@@ -2149,7 +2253,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
         adminPanel.setVisible(isAdmin);
     }
 
-    private void refreshTable(final Table table) {
+    private void refreshUserTable(final Table table) {
         table.removeAllItems();
         ArrayList<XincoCoreUserServer> allusers = XincoCoreUserServer.getXincoCoreUsers();
         for (Iterator<XincoCoreUserServer> it = allusers.iterator(); it.hasNext();) {
@@ -2172,7 +2276,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         //Reason for change
                         temp_user.setReason("audit.user.account.lock");
                         temp_user.write2DB();
-                        refreshTable(table);
+                        refreshUserTable(table);
                     } catch (XincoException ex) {
                         Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -2198,7 +2302,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         //Reason for change
                         temp_user.setReason("audit.user.account.unlock");
                         temp_user.write2DB();
-                        refreshTable(table);
+                        refreshUserTable(table);
                     } catch (XincoException ex) {
                         Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -2222,7 +2326,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         //Reason for change
                         temp_user.setReason("audit.user.account.password.reset");
                         temp_user.write2DB();
-                        refreshTable(table);
+                        refreshUserTable(table);
                     } catch (XincoException ex) {
                         Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -2236,6 +2340,116 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         tempUser.getStatusNumber() == 1 ? lock : unlock,
                         reset}, tempUser.getId());
         }
+    }
+
+    private void refreshGroupContentsTables(final Form form, final int groupId) {
+        final Table table1 = new Table();
+        table1.addStyleName("striped");
+        table1.addContainerProperty(getResource().getString("general.id"),
+                Integer.class, null);
+        table1.addContainerProperty(getResource().getString("general.username"),
+                String.class, null);
+        table1.addContainerProperty(getResource().getString("general.firstname"),
+                String.class, null);
+        table1.addContainerProperty(getResource().getString("general.lastname"),
+                String.class, null);
+        table1.addContainerProperty(getResource().getString("general.email"),
+                String.class, null);
+        table1.addContainerProperty("", com.vaadin.ui.Component.class, null);
+        table1.setSortContainerPropertyId(getResource().getString("general.id"));
+        table1.setPageLength(10);
+        final Table table2 = new Table();
+        table2.addStyleName("striped");
+        table2.addContainerProperty(getResource().getString("general.id"),
+                Integer.class, null);
+        table2.addContainerProperty(getResource().getString("general.username"),
+                String.class, null);
+        table2.addContainerProperty(getResource().getString("general.firstname"),
+                String.class, null);
+        table2.addContainerProperty(getResource().getString("general.lastname"),
+                String.class, null);
+        table2.addContainerProperty(getResource().getString("general.email"),
+                String.class, null);
+        table2.addContainerProperty("", com.vaadin.ui.Component.class, null);
+        table2.setSortContainerPropertyId(getResource().getString("general.id"));
+        table1.setPageLength(2);
+        ArrayList<XincoCoreUserServer> allusers = XincoCoreUserServer.getXincoCoreUsers();
+        boolean member_ofGroup;
+        form.getLayout().removeAllComponents();
+        for (Iterator<XincoCoreUserServer> it = allusers.iterator(); it.hasNext();) {
+            XincoCoreUserServer tempUser = it.next();
+            member_ofGroup = false;
+            for (Iterator<XincoCoreGroup> it2 = tempUser.getXincoCoreGroups().iterator(); it2.hasNext();) {
+                if (it2.next().getId() == groupId) {
+                    member_ofGroup = true;
+                    break;
+                }
+            }
+            final com.vaadin.ui.Button remove = new com.vaadin.ui.Button(getResource().getString("general.group.removeuser"));
+            remove.setData(tempUser.getId());
+            remove.addStyleName("link");
+            remove.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+                @Override
+                public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                    //main admin always is admin and everyone is a regular user
+                    if (!(((groupId == 1) && ((Integer) remove.getData() == 1)) || (groupId == 2))) {
+                        try {
+                            java.util.List results = XincoDBManager.createdQuery("SELECT x FROM XincoCoreUserHasXincoCoreGroup x "
+                                    + "WHERE x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreUserId = " + (Integer) remove.getData()
+                                    + " and x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreGroupId = " + groupId);
+                            for (Object o : results) {
+                                new XincoCoreUserHasXincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).destroy(((XincoCoreUserHasXincoCoreGroup) o).getXincoCoreUserHasXincoCoreGroupPK());
+                            }
+                        } catch (Exception ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else {
+                        getMainWindow().showNotification(getResource().getString("error.user.remove.mainUserGroup"),
+                                Notification.TYPE_WARNING_MESSAGE);
+                    }
+                    refreshGroupContentsTables(form, groupId);
+                }
+            });
+            final com.vaadin.ui.Button add = new com.vaadin.ui.Button(getResource().getString("general.group.adduser"));
+            add.setData(tempUser.getId());
+            add.addStyleName("link");
+            add.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+                @Override
+                public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                    try {
+                        XincoCoreUserHasXincoCoreGroup uhg = new XincoCoreUserHasXincoCoreGroup(
+                                (Integer) add.getData(), groupId);
+                        uhg.setXincoCoreGroup(new XincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreGroup(groupId));
+                        uhg.setXincoCoreUser(new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser((Integer) add.getData()));
+                        new XincoCoreUserHasXincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).create(uhg);
+                    } catch (Exception ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    refreshGroupContentsTables(form, groupId);
+                }
+            });
+            if (member_ofGroup) {
+                table1.addItem(new Object[]{tempUser.getId(),
+                            tempUser.getUsername(),
+                            tempUser.getFirstname(),
+                            tempUser.getName(),
+                            tempUser.getEmail(),
+                            remove}, tempUser.getId());
+            } else {
+                table2.addItem(new Object[]{tempUser.getId(),
+                            tempUser.getUsername(),
+                            tempUser.getFirstname(),
+                            tempUser.getName(),
+                            tempUser.getEmail(),
+                            add}, tempUser.getId());
+            }
+        }
+        form.getLayout().addComponent(new com.vaadin.ui.Label(getResource().getString("general.group.member")));
+        form.getLayout().addComponent(table1);
+        form.getLayout().addComponent(new com.vaadin.ui.Label(getResource().getString("general.group.notmember")));
+        form.getLayout().addComponent(table2);
     }
 
     private class ArchiveDialog extends CustomComponent {
