@@ -248,5 +248,4 @@ public class XincoCoreGroupJpaController implements Serializable {
             em.close();
         }
     }
-    
 }
