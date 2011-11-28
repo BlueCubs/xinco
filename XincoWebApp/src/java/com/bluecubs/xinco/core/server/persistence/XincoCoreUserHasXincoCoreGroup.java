@@ -36,12 +36,6 @@ public class XincoCoreUserHasXincoCoreGroup implements Serializable {
     @JoinColumn(name = "xinco_core_user_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private XincoCoreUser xincoCoreUser;
-    @JoinColumn(name = "xinco_core_group_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private XincoCoreGroup xincoCoreGroup1;
-    @JoinColumn(name = "xinco_core_user_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private XincoCoreUser xincoCoreUser1;
 
     public XincoCoreUserHasXincoCoreGroup() {
     }
@@ -89,22 +83,6 @@ public class XincoCoreUserHasXincoCoreGroup implements Serializable {
 
     public void setXincoCoreUser(XincoCoreUser xincoCoreUser) {
         this.xincoCoreUser = xincoCoreUser;
-    }
-
-    public XincoCoreGroup getXincoCoreGroup1() {
-        return xincoCoreGroup1;
-    }
-
-    public void setXincoCoreGroup1(XincoCoreGroup xincoCoreGroup1) {
-        this.xincoCoreGroup1 = xincoCoreGroup1;
-    }
-
-    public XincoCoreUser getXincoCoreUser1() {
-        return xincoCoreUser1;
-    }
-
-    public void setXincoCoreUser1(XincoCoreUser xincoCoreUser1) {
-        this.xincoCoreUser1 = xincoCoreUser1;
     }
 
     @Override
