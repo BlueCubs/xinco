@@ -42,6 +42,7 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupPK;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserT;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreGroupJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserHasXincoCoreGroupJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
 import com.bluecubs.xinco.core.server.service.XincoCoreUser;
@@ -95,8 +96,9 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 getXincoCoreGroups().add(new XincoCoreGroupServer(((XincoCoreUserHasXincoCoreGroup) o).getXincoCoreGroup()));
             }
         } catch (Exception e) {
+            Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
             getXincoCoreGroups().clear();
-            throw new XincoException();
+            throw new XincoException(e);
         }
     }
 
@@ -105,23 +107,29 @@ public final class XincoCoreUserServer extends XincoCoreUser {
         try {
             parameters.clear();
             parameters.put("xincoCoreUserId", getId());
-            result = XincoDBManager.namedQuery("XincoCoreUserHasXincoCoreGroup.findByXincoCoreUserId");
+            result = XincoDBManager.namedQuery("XincoCoreUserHasXincoCoreGroup.findByXincoCoreUserId", parameters);
             XincoCoreUserHasXincoCoreGroupJpaController controller = new XincoCoreUserHasXincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory());
             try {
                 for (Object o : result) {
                     controller.destroy(((XincoCoreUserHasXincoCoreGroup) o).getXincoCoreUserHasXincoCoreGroupPK());
                 }
             } catch (Exception e) {
+                Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
                 getXincoCoreGroups().clear();
-                throw new XincoException();
+                throw new XincoException(e);
             }
             for (i = 0; i < getXincoCoreGroups().size(); i++) {
-                controller.create(new XincoCoreUserHasXincoCoreGroup(
+                XincoCoreUserHasXincoCoreGroup uhg =
+                        new XincoCoreUserHasXincoCoreGroup(
                         new XincoCoreUserHasXincoCoreGroupPK(getId(),
-                        ((XincoCoreGroupServer) getXincoCoreGroups().get(i)).getId()), 1));
+                        ((XincoCoreGroupServer) getXincoCoreGroups().get(i)).getId()), 1);
+                uhg.setXincoCoreUser(new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(uhg.getXincoCoreUserHasXincoCoreGroupPK().getXincoCoreUserId()));
+                uhg.setXincoCoreGroup(new XincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreGroup(uhg.getXincoCoreUserHasXincoCoreGroupPK().getXincoCoreGroupId()));
+                controller.create(uhg);
             }
         } catch (Exception e) {
-            throw new XincoException();
+            Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
+            throw new XincoException(e);
         }
     }
 
@@ -179,6 +187,22 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                     increaseAttempts = true;
                     com.bluecubs.xinco.core.server.persistence.XincoCoreUser xcu =
                             (com.bluecubs.xinco.core.server.persistence.XincoCoreUser) result.get(0);
+                    setId(xcu.getId());
+                    setUsername(xcu.getUsername());
+                    //previously hashing the already hashed password
+                    hashPassword = false;
+                    setUserpassword(xcu.getUserpassword());
+                    setName(xcu.getName());
+                    setFirstname(xcu.getFirstname());
+                    setEmail(xcu.getEmail());
+                    setStatusNumber(xcu.getStatusNumber());
+                    setAttempts(xcu.getAttempts());
+                    setLastModified(new Timestamp(xcu.getLastModified().getTime()));
+                    try {
+                        fillXincoCoreGroups();
+                    } catch (XincoException ex) {
+                        Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     setAttempts(xcu.getAttempts());
                     write2DB();
                 }
@@ -241,7 +265,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 setAttempts(xcu.getAttempts());
                 setLastModified(new Timestamp(xcu.getLastModified().getTime()));
             } else {
-                throw new XincoException();
+                throw new XincoException("Unable to find Xinco Core User with id: " + attrID);
             }
             fillXincoCoreGroups();
         } catch (Exception e) {
@@ -371,10 +395,10 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 xcu.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.create(xcu);
             }
+            setId(xcu.getId());
             if (isWriteGroups()) {
                 writeXincoCoreGroups();
             }
-            setId(xcu.getId());
         } catch (Exception e) {
             Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
             throw new XincoException();
@@ -386,14 +410,15 @@ public final class XincoCoreUserServer extends XincoCoreUser {
     }
 
 //create complete list of users
-    public static ArrayList getXincoCoreUsers() {
-        ArrayList coreUsers = new ArrayList();
+    public static ArrayList<XincoCoreUserServer> getXincoCoreUsers() {
+        ArrayList<XincoCoreUserServer> coreUsers = new ArrayList<XincoCoreUserServer>();
         try {
             result = XincoDBManager.createdQuery("Select x from XincoCoreUser x order by x.username");
             for (Object o : result) {
                 coreUsers.add(new XincoCoreUserServer((com.bluecubs.xinco.core.server.persistence.XincoCoreUser) o));
             }
         } catch (Exception e) {
+            Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
             coreUsers.clear();
         }
         return coreUsers;
