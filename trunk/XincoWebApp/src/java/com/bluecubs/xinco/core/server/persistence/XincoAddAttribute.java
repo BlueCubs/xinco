@@ -59,7 +59,7 @@ public class XincoAddAttribute extends XincoAuditedObject implements Serializabl
     @Column(name = "attrib_int")
     private Integer attribInt;
     @Column(name = "attrib_unsignedint")
-    private Integer attribUnsignedint;
+    private long attribUnsignedint;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "attrib_double")
     private Double attribDouble;
@@ -104,11 +104,11 @@ public class XincoAddAttribute extends XincoAuditedObject implements Serializabl
         this.attribInt = attribInt;
     }
 
-    public Integer getAttribUnsignedint() {
+    public long getAttribUnsignedint() {
         return attribUnsignedint;
     }
 
-    public void setAttribUnsignedint(Integer attribUnsignedint) {
+    public void setAttribUnsignedint(long attribUnsignedint) {
         this.attribUnsignedint = attribUnsignedint;
     }
 

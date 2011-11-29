@@ -24,9 +24,9 @@ INSERT INTO `xinco_core_data` (`id`, `xinco_core_node_id`, `xinco_core_language_
 INSERT INTO `xinco_core_group` (`id`, `designation`, `status_number`) VALUES (1, 'general.group.admin', 1);
 INSERT INTO `xinco_core_group` (`id`, `designation`, `status_number`) VALUES (2, 'general.group.allusers', 1);
 INSERT INTO `xinco_core_group` (`id`, `designation`, `status_number`) VALUES (3, 'general.group.public', 1);
-INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (1, 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', 1, 0, now());
-INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (2, 'user', MD5('user'), 'User', 'Default', 'user@xinco.org', 1, 0, now());
-INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `name`, `firstname`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (3, 'bluecubs', MD5('system'), 'System', 'User', 'info@bluecubs.com', 1, 0, now());
+INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `last_name`, `first_name`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (1, 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', 1, 0, now());
+INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `last_name`, `first_name`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (2, 'user', MD5('user'), 'User', 'Default', 'user@xinco.org', 1, 0, now());
+INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `last_name`, `first_name`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (3, 'bluecubs', MD5('system'), 'System', 'User', 'info@bluecubs.com', 1, 0, now());
 INSERT INTO `xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (1, 1, NULL, 1, NULL, 1, 1, 1, 1);
 INSERT INTO `xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (2, 1, NULL, 2, NULL, 1, 1, 1, 1);
 INSERT INTO `xinco_core_ace` (`id`, `xinco_core_user_id`, `xinco_core_group_id`, `xinco_core_node_id`, `xinco_core_data_id`, `read_permission`, `write_permission`, `execute_permission`, `admin_permission`) VALUES (3, 1, NULL, 3, NULL, 1, 1, 1, 1);

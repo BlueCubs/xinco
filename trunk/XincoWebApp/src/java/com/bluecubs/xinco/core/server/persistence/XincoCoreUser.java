@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -52,8 +53,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "XincoCoreUser.findById", query = "SELECT x FROM XincoCoreUser x WHERE x.id = :id"),
     @NamedQuery(name = "XincoCoreUser.findByUsername", query = "SELECT x FROM XincoCoreUser x WHERE x.username = :username"),
     @NamedQuery(name = "XincoCoreUser.findByUserpassword", query = "SELECT x FROM XincoCoreUser x WHERE x.userpassword = :userpassword"),
-    @NamedQuery(name = "XincoCoreUser.findByName", query = "SELECT x FROM XincoCoreUser x WHERE x.name = :name"),
-    @NamedQuery(name = "XincoCoreUser.findByFirstname", query = "SELECT x FROM XincoCoreUser x WHERE x.firstname = :firstname"),
+    @NamedQuery(name = "XincoCoreUser.findByLastName", query = "SELECT x FROM XincoCoreUser x WHERE x.lastName = :lastName"),
+    @NamedQuery(name = "XincoCoreUser.findByFirstName", query = "SELECT x FROM XincoCoreUser x WHERE x.firstName = :firstName"),
     @NamedQuery(name = "XincoCoreUser.findByEmail", query = "SELECT x FROM XincoCoreUser x WHERE x.email = :email"),
     @NamedQuery(name = "XincoCoreUser.findByStatusNumber", query = "SELECT x FROM XincoCoreUser x WHERE x.statusNumber = :statusNumber"),
     @NamedQuery(name = "XincoCoreUser.findByAttempts", query = "SELECT x FROM XincoCoreUser x WHERE x.attempts = :attempts"),
@@ -70,6 +71,7 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "username")
+    @Pattern(regexp="^[a-z0-9_-]{3,15}$", message="Invalid user name")
     private String username;
     @Basic(optional = false)
     @NotNull
@@ -79,14 +81,14 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
-    @Column(name = "name")
-    private String name;
+    @Column(name = "last_name")
+    private String lastName;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
-    @Column(name = "firstname")
-    private String firstname;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Column(name = "first_name")
+    private String firstName;
+    @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
@@ -121,12 +123,12 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
         this.id = id;
     }
 
-    public XincoCoreUser(Integer id, String username, String userpassword, String name, String firstname, String email, int statusNumber, int attempts, Date lastModified) {
+    public XincoCoreUser(Integer id, String username, String userpassword, String lastName, String firstName, String email, int statusNumber, int attempts, Date lastModified) {
         this.id = id;
         this.username = username;
         this.userpassword = userpassword;
-        this.name = name;
-        this.firstname = firstname;
+        this.lastName = lastName;
+        this.firstName = firstName;
         this.email = email;
         this.statusNumber = statusNumber;
         this.attempts = attempts;
@@ -157,20 +159,20 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
         this.userpassword = userpassword;
     }
 
-    public String getName() {
-        return name;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getEmail() {

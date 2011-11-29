@@ -73,7 +73,7 @@ public class XincoAddAttributeT implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "attrib_unsignedint")
-    private int attribUnsignedint;
+    private long attribUnsignedint;
     @Basic(optional = false)
     @NotNull
     @Column(name = "attrib_double")
@@ -102,7 +102,7 @@ public class XincoAddAttributeT implements Serializable {
         this.recordId = recordId;
     }
 
-    public XincoAddAttributeT(Integer recordId, int xincoCoreDataId, int attributeId, int attribInt, int attribUnsignedint, double attribDouble, String attribVarchar, String attribText, Date attribDatetime) {
+    public XincoAddAttributeT(Integer recordId, int xincoCoreDataId, int attributeId, int attribInt, long attribUnsignedint, double attribDouble, String attribVarchar, String attribText, Date attribDatetime) {
         this.recordId = recordId;
         this.xincoCoreDataId = xincoCoreDataId;
         this.attributeId = attributeId;
@@ -146,11 +146,11 @@ public class XincoAddAttributeT implements Serializable {
         this.attribInt = attribInt;
     }
 
-    public int getAttribUnsignedint() {
+    public long getAttribUnsignedint() {
         return attribUnsignedint;
     }
 
-    public void setAttribUnsignedint(int attribUnsignedint) {
+    public void setAttribUnsignedint(long attribUnsignedint) {
         this.attribUnsignedint = attribUnsignedint;
     }
 
