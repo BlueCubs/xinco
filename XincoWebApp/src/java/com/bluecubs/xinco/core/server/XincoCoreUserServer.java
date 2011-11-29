@@ -72,8 +72,8 @@ public final class XincoCoreUserServer extends XincoCoreUser {
         //previously hashing the already hashed password
         hashPassword = false;
         setUserpassword(xcu.getUserpassword());
-        setName(xcu.getName());
-        setFirstname(xcu.getFirstname());
+        setLastName(xcu.getLastName());
+        setFirstName(xcu.getFirstName());
         setEmail(xcu.getEmail());
         setStatusNumber(xcu.getStatusNumber());
         setAttempts(xcu.getAttempts());
@@ -152,8 +152,8 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 //previously hashing the already hashed password
                 hashPassword = false;
                 setUserpassword(attrUPW);
-                setName(xcu.getName());
-                setFirstname(xcu.getFirstname());
+                setLastName(xcu.getLastName());
+                setFirstName(xcu.getFirstName());
                 setEmail(xcu.getEmail());
                 int status = 0;
                 if (xcu.getStatusNumber() != 2) {
@@ -192,8 +192,8 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                     //previously hashing the already hashed password
                     hashPassword = false;
                     setUserpassword(xcu.getUserpassword());
-                    setName(xcu.getName());
-                    setFirstname(xcu.getFirstname());
+                    setLastName(xcu.getLastName());
+                    setFirstName(xcu.getFirstName());
                     setEmail(xcu.getEmail());
                     setStatusNumber(xcu.getStatusNumber());
                     setAttempts(xcu.getAttempts());
@@ -225,8 +225,8 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                     //Don't rehash the pasword!
                     hashPassword = false;
                     setUserpassword(xcu.getUserpassword());
-                    setName(xcu.getName());
-                    setFirstname(xcu.getFirstname());
+                    setLastName(xcu.getLastName());
+                    setFirstName(xcu.getFirstName());
                     setEmail(xcu.getEmail());
                     setStatusNumber(xcu.getStatusNumber());
                     //Increase attempts after a unsuccessfull login.
@@ -258,8 +258,8 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 //previously hashing the already hashed password
                 hashPassword = false;
                 setUserpassword(xcu.getUserpassword());
-                setName(xcu.getName());
-                setFirstname(xcu.getFirstname());
+                setLastName(xcu.getLastName());
+                setFirstName(xcu.getFirstName());
                 setEmail(xcu.getEmail());
                 setStatusNumber(xcu.getStatusNumber());
                 setAttempts(xcu.getAttempts());
@@ -282,8 +282,8 @@ public final class XincoCoreUserServer extends XincoCoreUser {
             setId(attrID);
             setUsername(attrUN);
             setUserpassword(attrUPW);
-            setName(attrN);
-            setFirstname(attrFN);
+            setLastName(attrN);
+            setFirstName(attrFN);
             setEmail(attrE);
             setStatusNumber(attrSN);
             setAttempts(attrAN);
@@ -367,7 +367,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 setLastModified(ts);
                 //Sometimes password got re-hashed
                 String password;
-                if (hashPassword) {
+                if (isHashPassword()) {
                     password = MD5.encrypt(getUserpassword().replaceAll("'", "\\\\'"));
                 } else {
                     password = getUserpassword().replaceAll("'", "\\\\'");
@@ -375,9 +375,9 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 xcu = controller.findXincoCoreUser(getId());
                 xcu.setAttempts(getAttempts());
                 xcu.setEmail(getEmail().replaceAll("'", "\\\\'"));
-                xcu.setFirstname(getFirstname().replaceAll("'", "\\\\'"));
+                xcu.setFirstName(getFirstName().replaceAll("'", "\\\\'"));
                 xcu.setLastModified(getLastModified());
-                xcu.setName(getName().replaceAll("'", "\\\\'"));
+                xcu.setLastName(getLastName().replaceAll("'", "\\\\'"));
                 xcu.setStatusNumber(getStatusNumber());
                 xcu.setUsername(getUsername().replaceAll("'", "\\\\'"));
                 xcu.setUserpassword(password);
@@ -387,8 +387,8 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 controller.edit(xcu);
             } else {
                 xcu = new com.bluecubs.xinco.core.server.persistence.XincoCoreUser(getId(),
-                        getUsername().replaceAll("'", "\\\\'"), getUserpassword(), getName().replaceAll("'", "\\\\'"),
-                        getFirstname().replaceAll("'", "\\\\'"), getEmail().replaceAll("'", "\\\\'"),
+                        getUsername().replaceAll("'", "\\\\'"), getUserpassword(), getLastName().replaceAll("'", "\\\\'"),
+                        getFirstName().replaceAll("'", "\\\\'"), getEmail().replaceAll("'", "\\\\'"),
                         getStatusNumber(), getAttempts(), getLastModified());
                 xcu.setModificationReason(getReason());
                 xcu.setModifierId(getChangerID());

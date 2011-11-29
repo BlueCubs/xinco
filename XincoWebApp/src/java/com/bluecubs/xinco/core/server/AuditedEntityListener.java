@@ -104,7 +104,7 @@ public class AuditedEntityListener {
                             XincoCoreUser user = (XincoCoreUser) o;
                             if (user.getId() != null && !user.equals(new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(user.getId()))) {
                                 new XincoCoreUserTJpaController(XincoDBManager.getEntityManagerFactory()).create(new XincoCoreUserT(record_ID, user.getId(), user.getUsername(), user.getUserpassword(),
-                                        user.getName(), user.getFirstname(), user.getEmail(), user.getStatusNumber(),
+                                        user.getLastName(), user.getFirstName(), user.getEmail(), user.getStatusNumber(),
                                         user.getAttempts(), new Timestamp(user.getLastModified().getTime())));
                             }
                             updated = true;

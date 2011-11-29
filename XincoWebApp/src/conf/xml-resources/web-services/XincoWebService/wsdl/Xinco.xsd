@@ -137,7 +137,7 @@
             <xs:element name="attrib_double" type="xs:double" />
             <xs:element name="attrib_int" type="xs:int" />
             <xs:element name="attrib_text" type="xs:string" minOccurs="0" />
-            <xs:element name="attrib_unsignedint" type="xs:int" />
+            <xs:element name="attrib_unsignedint" type="xs:long" />
             <xs:element name="attrib_varchar" type="xs:string" minOccurs="0" />
             <xs:element name="attribute_id" type="xs:int" />
             <xs:element name="change" type="xs:boolean" />
@@ -181,9 +181,9 @@
             <xs:element name="change" type="xs:boolean" />
             <xs:element name="changerID" type="xs:int" />
             <xs:element name="email" type="xs:string" minOccurs="0" />
-            <xs:element name="firstname" type="xs:string" minOccurs="0" />
+            <xs:element name="first_name" type="xs:string" minOccurs="0" />
             <xs:element name="id" type="xs:int" />
-            <xs:element name="name" type="xs:string" minOccurs="0" />
+            <xs:element name="last_name" type="xs:string" minOccurs="0" />
             <xs:element name="reason" type="xs:string" minOccurs="0" />
             <xs:element name="status_number" type="xs:int" />
             <xs:element name="username" type="xs:string" minOccurs="0" />

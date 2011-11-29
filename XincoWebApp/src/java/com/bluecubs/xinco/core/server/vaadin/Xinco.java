@@ -79,7 +79,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
     //TODO: use selected language
     private ResourceBundle xerb =
             ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", Locale.getDefault());
-    private XincoCoreUser loggedUser = null;
+    private XincoCoreUserServer loggedUser = null;
     private XincoFileIconManager xfm = new XincoFileIconManager();
     //Table linking displayed item with it's id
     private Tree xincoTree = null;
@@ -119,6 +119,15 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     } catch (XincoException ex) {
                         Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                }
+            });
+    private com.vaadin.ui.Button profile = new com.vaadin.ui.Button(
+            getResource().getString("message.admin.userProfile"),
+            new com.vaadin.ui.Button.ClickListener() {
+
+                @Override
+                public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                    showUserAdminWindow(false);
                 }
             });
     private final WizardStep fileStep = new WizardStep() {
@@ -1644,8 +1653,8 @@ public class Xinco extends Application implements XincoVaadinApplication {
         for (Iterator it = XincoCoreUserServer.getXincoCoreUsers().iterator(); it.hasNext();) {
             XincoCoreUserServer user = (XincoCoreUserServer) it.next();
             String itemId = getResource().getString("general.user") + "-" + user.getId();
-            String userLabel = user.getFirstname() + " "
-                    + user.getName() + " (" + user.getUsername() + ")";
+            String userLabel = user.getFirstName() + " "
+                    + user.getLastName() + " (" + user.getUsername() + ")";
             name = new com.vaadin.ui.Label(userLabel);
             type = new com.vaadin.ui.Label(getResource().getString("general.user"));
             final CheckBox admin = new CheckBox(getResource().getString("general.acl.adminpermission"));
@@ -2006,47 +2015,67 @@ public class Xinco extends Application implements XincoVaadinApplication {
         getMainWindow().addWindow(group);
     }
 
-    private void showUserAdminWindow() {
+    private void showUserAdminWindow(final boolean userAdmin) {
         final Window user = new Window();
         final Form form = new Form();
         final Table table = new Table();
-        table.addStyleName("striped");
-        table.addContainerProperty(getResource().getString("general.id"),
-                Integer.class, null);
-        table.addContainerProperty(getResource().getString("general.username"),
-                String.class, null);
-        table.addContainerProperty(getResource().getString("general.firstname"),
-                String.class, null);
-        table.addContainerProperty(getResource().getString("general.lastname"),
-                String.class, null);
-        table.addContainerProperty(getResource().getString("general.email"),
-                String.class, null);
-        table.addContainerProperty(getResource().getString("general.lock") + "/"
-                + getResource().getString("general.unlock"),
-                com.vaadin.ui.Component.class, null);
-        table.addContainerProperty(getResource().getString("general.password.reset") + "*",
-                com.vaadin.ui.Component.class, null);
-        refreshUserTable(table);
-        table.setSortContainerPropertyId(getResource().getString("general.id"));
-        form.getLayout().addComponent(table);
+        if (userAdmin) {
+            table.addStyleName("striped");
+            table.addContainerProperty(getResource().getString("general.id"),
+                    Integer.class, null);
+            table.addContainerProperty(getResource().getString("general.username"),
+                    String.class, null);
+            table.addContainerProperty(getResource().getString("general.firstname"),
+                    String.class, null);
+            table.addContainerProperty(getResource().getString("general.lastname"),
+                    String.class, null);
+            table.addContainerProperty(getResource().getString("general.email"),
+                    String.class, null);
+            table.addContainerProperty(getResource().getString("general.lock") + "/"
+                    + getResource().getString("general.unlock"),
+                    com.vaadin.ui.Component.class, null);
+            table.addContainerProperty(getResource().getString("general.password.reset") + "*",
+                    com.vaadin.ui.Component.class, null);
+            refreshUserTable(table);
+            table.setSortContainerPropertyId(getResource().getString("general.id"));
+            form.getLayout().addComponent(table);
+        }
         form.addField("username", new com.vaadin.ui.TextField(getResource().getString("general.username") + ":"));
-        form.getField("username").setRequired(true);
+        form.getField("username").setRequired(userAdmin);
         form.getField("username").setRequiredError(getResource().getString("message.missing.username"));
+        if (!userAdmin) {
+            form.getField("username").setValue(loggedUser.getUsername());
+        }
         form.addField("pass", new com.vaadin.ui.PasswordField(getResource().getString("general.password") + ":"));
-        form.getField("pass").setRequired(true);
+        form.getField("pass").setRequired(userAdmin);
         form.getField("pass").setRequiredError(getResource().getString("message.missing.password"));
+        if (!userAdmin) {
+            form.addField("verify", new com.vaadin.ui.PasswordField(getResource().getString("general.verifypassword") + ":"));
+            form.getField("verify").setRequired(userAdmin);
+            form.getField("verify").setRequiredError(getResource().getString("message.missing.password"));
+        }
         form.addField("firstname", new com.vaadin.ui.TextField(getResource().getString("general.firstname") + ":"));
-        form.getField("firstname").setRequired(true);
+        form.getField("firstname").setRequired(userAdmin);
         form.getField("firstname").setRequiredError(getResource().getString("message.missing.firstname"));
+        if (!userAdmin) {
+            form.getField("firstname").setValue(loggedUser.getFirstName());
+        }
         form.addField("lastname", new com.vaadin.ui.TextField(getResource().getString("general.lastname") + ":"));
-        form.getField("lastname").setRequired(true);
+        form.getField("lastname").setRequired(userAdmin);
         form.getField("lastname").setRequiredError(getResource().getString("message.missing.lastname"));
+        if (!userAdmin) {
+            form.getField("lastname").setValue(loggedUser.getLastName());
+        }
         form.addField("email", new com.vaadin.ui.TextField(getResource().getString("general.email") + ":"));
-        form.getField("email").setRequired(true);
+        form.getField("email").setRequired(userAdmin);
         form.getField("email").setRequiredError(getResource().getString("message.missing.email"));
+        if (!userAdmin) {
+            form.getField("email").setValue(loggedUser.getEmail());
+        }
         //Used for validation purposes
         final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
-                getResource().getString("general.add.user"), form, "commit");
+                userAdmin ? getResource().getString("general.add.user")
+                : getResource().getString("general.save"), form, "commit");
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
                 getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
@@ -2064,23 +2093,67 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     commit.setEnabled(false);
                     cancel.setEnabled(false);
                     //Process the data
-                    XincoCoreUserServer temp_user = new XincoCoreUserServer(0,
-                            form.getField("username").getValue().toString(),
-                            form.getField("pass").getValue().toString(),
-                            form.getField("lastname").getValue().toString(),
-                            form.getField("firstname").getValue().toString(),
-                            form.getField("email").getValue().toString(),
-                            1, 0, new Timestamp(System.currentTimeMillis()));
-                    temp_user.getXincoCoreGroups().add(new XincoCoreGroupServer(2));
+                    boolean changed = false;
+                    XincoCoreUserServer temp_user;
+                    if (userAdmin) {
+                        temp_user = new XincoCoreUserServer(0,
+                                form.getField("username").getValue().toString(),
+                                form.getField("pass").getValue().toString(),
+                                form.getField("lastname").getValue().toString(),
+                                form.getField("firstname").getValue().toString(),
+                                form.getField("email").getValue().toString(),
+                                1, 0, new Timestamp(System.currentTimeMillis()));
+                        temp_user.getXincoCoreGroups().add(new XincoCoreGroupServer(2));
+                        temp_user.setWriteGroups(true);
+                        //Reason for change
+                        temp_user.setReason("audit.user.account.create");
+                        changed = true;
+                    } else {
+                        temp_user = new XincoCoreUserServer(loggedUser.getId());
+                        if (!form.getField("username").getValue().toString().equals(loggedUser.getUsername())) {
+                            loggedUser.setUsername(form.getField("username").getValue().toString());
+                            changed = true;
+                        }
+                        if (!form.getField("pass").getValue().toString().isEmpty()
+                                && !form.getField("pass").getValue().toString().equals(loggedUser.getUserpassword())) {
+                            if (!form.getField("pass").getValue().toString().equals(form.getField("verify").getValue().toString())) {
+                                getMainWindow().showNotification("window.userinfo.passwordmismatch", Notification.TYPE_WARNING_MESSAGE);
+                                return;
+                            } else {
+                                loggedUser.setUserpassword(form.getField("pass").getValue().toString());
+                                loggedUser.setHashPassword(true);
+                                changed = true;
+                            }
+                        }
+                        if (!form.getField("username").getValue().toString().equals(loggedUser.getUsername())) {
+                            loggedUser.setUsername(form.getField("username").getValue().toString());
+                            changed = true;
+                        }
+                        if (!form.getField("lastname").getValue().toString().equals(loggedUser.getLastName())) {
+                            loggedUser.setLastName(form.getField("lastname").getValue().toString());
+                            changed = true;
+                        }
+                        if (!form.getField("firstname").getValue().toString().equals(loggedUser.getLastName())) {
+                            loggedUser.setFirstName(form.getField("firstname").getValue().toString());
+                            changed = true;
+                        }
+                        if (changed) {
+                            loggedUser.setReason("audit.user.account.modified");
+                            temp_user = loggedUser;
+                        }
+                    }
                     //The logged in admin does the locking
                     temp_user.setChangerID(loggedUser.getId());
-                    temp_user.setWriteGroups(true);
                     //Register change in audit trail
                     temp_user.setChange(true);
-                    //Reason for change
-                    temp_user.setReason("audit.user.account.create");
-                    temp_user.write2DB();
-                    refreshUserTable(table);
+                    if (changed) {
+                        temp_user.write2DB();
+                    }
+                    if (userAdmin) {
+                        refreshUserTable(table);
+                    } else {
+                        getMainWindow().removeWindow(user);
+                    }
                 } catch (XincoException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -2102,8 +2175,10 @@ public class Xinco extends Application implements XincoVaadinApplication {
         com.vaadin.ui.Panel accountPanel = new com.vaadin.ui.Panel();
         accountPanel.setContent(new VerticalLayout());
         accountPanel.addComponent(login);
+        accountPanel.addComponent(profile);
         accountPanel.addComponent(logout);
         login.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        profile.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         logout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         menu.addTab(accountPanel, getResource().getString("window.connection.profile"), null);
         adminPanel = new com.vaadin.ui.Panel();
@@ -2113,7 +2188,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                showUserAdminWindow();
+                showUserAdminWindow(true);
             }
         });
         adminPanel.addComponent(userAdmin);
@@ -2193,6 +2268,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
     private void updateSideMenu() {
         login.setEnabled(loggedUser == null);
         logout.setEnabled(loggedUser != null);
+        profile.setEnabled(loggedUser != null);
         boolean isAdmin = false;
         if (loggedUser != null) {
             for (XincoCoreGroup xcg : loggedUser.getXincoCoreGroups()) {
@@ -2286,8 +2362,8 @@ public class Xinco extends Application implements XincoVaadinApplication {
             });
             table.addItem(new Object[]{tempUser.getId(),
                         tempUser.getUsername(),
-                        tempUser.getFirstname(),
-                        tempUser.getName(),
+                        tempUser.getFirstName(),
+                        tempUser.getLastName(),
                         tempUser.getEmail(),
                         tempUser.getStatusNumber() == 1 ? lock : unlock,
                         reset}, tempUser.getId());
@@ -2385,15 +2461,15 @@ public class Xinco extends Application implements XincoVaadinApplication {
             if (member_ofGroup) {
                 table1.addItem(new Object[]{tempUser.getId(),
                             tempUser.getUsername(),
-                            tempUser.getFirstname(),
-                            tempUser.getName(),
+                            tempUser.getFirstName(),
+                            tempUser.getLastName(),
                             tempUser.getEmail(),
                             remove}, tempUser.getId());
             } else {
                 table2.addItem(new Object[]{tempUser.getId(),
                             tempUser.getUsername(),
-                            tempUser.getFirstname(),
-                            tempUser.getName(),
+                            tempUser.getFirstName(),
+                            tempUser.getLastName(),
                             tempUser.getEmail(),
                             add}, tempUser.getId());
             }

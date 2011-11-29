@@ -591,8 +591,8 @@ public class XincoWebService {
             //update user
             user.setUsername(in0.getUsername());
             user.setUserpassword(in0.getUserpassword());
-            user.setFirstname(in0.getFirstname());
-            user.setName(in0.getName());
+            user.setFirstName(in0.getFirstName());
+            user.setLastName(in0.getLastName());
             user.setEmail(in0.getEmail());
             user.setStatusNumber(in0.getStatusNumber());
             user.setChange(false);

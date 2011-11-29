@@ -31,6 +31,7 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -47,13 +48,14 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "XincoCoreUserT.findById", query = "SELECT x FROM XincoCoreUserT x WHERE x.id = :id"),
     @NamedQuery(name = "XincoCoreUserT.findByUsername", query = "SELECT x FROM XincoCoreUserT x WHERE x.username = :username"),
     @NamedQuery(name = "XincoCoreUserT.findByUserpassword", query = "SELECT x FROM XincoCoreUserT x WHERE x.userpassword = :userpassword"),
-    @NamedQuery(name = "XincoCoreUserT.findByName", query = "SELECT x FROM XincoCoreUserT x WHERE x.name = :name"),
-    @NamedQuery(name = "XincoCoreUserT.findByFirstname", query = "SELECT x FROM XincoCoreUserT x WHERE x.firstname = :firstname"),
+    @NamedQuery(name = "XincoCoreUserT.findByLastName", query = "SELECT x FROM XincoCoreUserT x WHERE x.lastName = :lastName"),
+    @NamedQuery(name = "XincoCoreUserT.findByFirstName", query = "SELECT x FROM XincoCoreUserT x WHERE x.firstName = :firstName"),
     @NamedQuery(name = "XincoCoreUserT.findByEmail", query = "SELECT x FROM XincoCoreUserT x WHERE x.email = :email"),
     @NamedQuery(name = "XincoCoreUserT.findByStatusNumber", query = "SELECT x FROM XincoCoreUserT x WHERE x.statusNumber = :statusNumber"),
     @NamedQuery(name = "XincoCoreUserT.findByAttempts", query = "SELECT x FROM XincoCoreUserT x WHERE x.attempts = :attempts"),
     @NamedQuery(name = "XincoCoreUserT.findByLastModified", query = "SELECT x FROM XincoCoreUserT x WHERE x.lastModified = :lastModified")})
 public class XincoCoreUserT implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -77,14 +79,14 @@ public class XincoCoreUserT implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
-    @Column(name = "name")
-    private String name;
+    @Column(name = "last_name")
+    private String lastName;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
-    @Column(name = "firstname")
-    private String firstname;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Column(name = "first_name")
+    private String firstName;
+    @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message = "Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
@@ -111,13 +113,13 @@ public class XincoCoreUserT implements Serializable {
         this.recordId = recordId;
     }
 
-    public XincoCoreUserT(Integer recordId, int id, String username, String userpassword, String name, String firstname, String email, int statusNumber, int attempts, Date lastModified) {
+    public XincoCoreUserT(Integer recordId, int id, String username, String userpassword, String lastName, String firstName, String email, int statusNumber, int attempts, Date lastModified) {
         this.recordId = recordId;
         this.id = id;
         this.username = username;
         this.userpassword = userpassword;
-        this.name = name;
-        this.firstname = firstname;
+        this.lastName = lastName;
+        this.firstName = firstName;
         this.email = email;
         this.statusNumber = statusNumber;
         this.attempts = attempts;
@@ -156,20 +158,20 @@ public class XincoCoreUserT implements Serializable {
         this.userpassword = userpassword;
     }
 
-    public String getName() {
-        return name;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getEmail() {
@@ -228,5 +230,4 @@ public class XincoCoreUserT implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserT[ recordId=" + recordId + " ]";
     }
-    
 }
