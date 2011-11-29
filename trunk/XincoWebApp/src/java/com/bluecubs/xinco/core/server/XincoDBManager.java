@@ -68,6 +68,23 @@ public class XincoDBManager {
     private static XincoDBManager instance;
     private static DBState state;
     private static final Logger logger = Logger.getLogger(XincoDBManager.class.getName());
+    private static final HashMap<String, Integer> ids = new HashMap<String, Integer>();
+
+    static {
+        ids.put("xinco_dependency_behavior", 999);
+        ids.put("xinco_dependency_behavior", 999);
+        ids.put("xinco_core_group", 999);
+        ids.put("xinco_core_data_type", 999);
+        ids.put("xinco_core_ace", 999);
+        ids.put("xinco_core_log", 999);
+        ids.put("xinco_dependency_type", 999);
+        ids.put("xinco_core_language", 999);
+        ids.put("xinco_setting", 999);
+        ids.put("xinco_core_user", 999);
+        ids.put("xinco_core_node", 999);
+        ids.put("xinco_core_data", 999);
+        ids.put("xinco_core_user_modified_record", 0);
+    }
 
     private XincoDBManager() throws Exception {
         reload();
@@ -78,7 +95,51 @@ public class XincoDBManager {
     private static void reload() throws XincoException {
         getEntityManagerFactory();
         updateDBState();
+        checkIdTables();
         config.loadSettings();
+    }
+
+    private static void checkIdTables() {
+        try {
+            List<XincoIdServer> idList = XincoIdServer.getIds();
+            if (idList.isEmpty() || idList.size() != ids.size()) {
+                generateIDs();
+            } else {
+                Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO, "Xinco ID's present...");
+            }
+        } catch (XincoException ex) {
+            generateIDs();
+        }
+    }
+
+    private static void generateIDs() {
+        try {
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO, "Creating ids to work around H2 issue...");
+            XincoIdServer temp;
+            for (Iterator<Entry<String, Integer>> it = ids.entrySet().iterator(); it.hasNext();) {
+                Entry<String, Integer> entry = it.next();
+                HashMap parameters= new HashMap();
+                parameters.put("tablename", entry.getKey());
+                if(XincoDBManager.namedQuery("XincoId.findByTablename", parameters).isEmpty()){
+                    temp = new XincoIdServer(entry.getKey(), entry.getValue());
+                    temp.write2DB();
+                }
+            }
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO, "Done!");
+        } catch (XincoException ex1) {
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex1);
+        } finally {
+            try {
+                for (Iterator<XincoIdServer> it = XincoIdServer.getIds().iterator(); it.hasNext();) {
+                    XincoIdServer next = it.next();
+                    Logger.getLogger(XincoDBManager.class.getName()).log(Level.CONFIG,
+                            "{0}, {1}, {2}", new Object[]{next.getId(),
+                                next.getTablename(), next.getLastId()});
+                }
+            } catch (XincoException ex1) {
+                Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        }
     }
 
     public static XincoDBManager get() throws Exception {
@@ -371,7 +432,7 @@ public class XincoDBManager {
                 logger.log(
                         Level.CONFIG, "Done!", statement);
             }
-        }else{
+        } else {
             throw new XincoException("Nothing to execute!");
         }
     }
@@ -704,8 +765,7 @@ public class XincoDBManager {
             Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
+
     /**
      * @return the initDone
      */

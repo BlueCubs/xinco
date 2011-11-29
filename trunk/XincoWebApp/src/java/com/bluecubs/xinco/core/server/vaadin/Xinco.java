@@ -558,54 +558,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
             //Switch to Xinco theme
             setTheme("xinco");
             setMainWindow(new Window("Xinco"));
-            try {
-                XincoIdServer.getIds();
-            } catch (XincoException ex) {
-                try {
-                    Logger.getLogger(Xinco.class.getName()).log(Level.WARNING, null, ex);
-                    Logger.getLogger(Xinco.class.getName()).log(Level.INFO, "Creating ids to work around H2 issue...");
-                    XincoIdServer temp = new XincoIdServer("xinco_dependency_behavior", 999);
-                    temp.write2DB();
-                    temp = new XincoIdServer("xinco_dependency_behavior", 999);
-                    temp.write2DB();
-                    temp = new XincoIdServer("xinco_core_group", 999);
-                    temp.write2DB();
-                    temp = new XincoIdServer("xinco_core_data_type", 999);
-                    temp.write2DB();
-                    temp = new XincoIdServer("xinco_core_ace", 999);
-                    temp.write2DB();
-                    temp = new XincoIdServer("xinco_core_log", 999);
-                    temp.write2DB();
-                    temp = new XincoIdServer("xinco_dependency_type", 999);
-                    temp.write2DB();
-                    temp = new XincoIdServer("xinco_core_language", 999);
-                    temp.write2DB();
-                    temp = new XincoIdServer("xinco_setting", 999);
-                    temp.write2DB();
-                    temp = new XincoIdServer("xinco_core_user", 999);
-                    temp.write2DB();
-                    temp = new XincoIdServer("xinco_core_node", 999);
-                    temp.write2DB();
-                    temp = new XincoIdServer("xinco_core_data", 999);
-                    temp.write2DB();
-                    temp = new XincoIdServer("xinco_core_user_modified_record", 0);
-                    temp.write2DB();
-                    Logger.getLogger(Xinco.class.getName()).log(Level.INFO, "Done!");
-                } catch (XincoException ex1) {
-                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex1);
-                } finally {
-                    try {
-                        for (Iterator<XincoIdServer> it = XincoIdServer.getIds().iterator(); it.hasNext();) {
-                            XincoIdServer next = it.next();
-                            Logger.getLogger(Xinco.class.getName()).log(Level.CONFIG,
-                                    "{0}, {1}, {2}", new Object[]{next.getId(),
-                                        next.getTablename(), next.getLastId()});
-                        }
-                    } catch (XincoException ex1) {
-                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex1);
-                    }
-                }
-            }
             //Build the window
             getMainWindow().removeAllComponents();
             if (xat == null) {
