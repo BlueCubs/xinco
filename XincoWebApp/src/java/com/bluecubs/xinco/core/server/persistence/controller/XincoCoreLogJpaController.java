@@ -1,25 +1,49 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2011 blueCubs.com.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
+ * 
+ * Name: XincoCoreLogJpaController
+ * 
+ * Description: //TODO: Add description
+ * 
+ * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * 
+ * ************************************************************
  */
 package com.bluecubs.xinco.core.server.persistence.controller;
+
+import java.io.Serializable;
+import javax.persistence.Query;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreUser;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreLog;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreUser;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import java.io.Serializable;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
 
 /**
  *
- * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 public class XincoCoreLogJpaController implements Serializable {
 
@@ -32,31 +56,36 @@ public class XincoCoreLogJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(XincoCoreLog xincoCoreLog) {
+    public void create(XincoCoreLog xincoCoreLog) throws PreexistingEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            XincoCoreData xincoCoreData = xincoCoreLog.getXincoCoreData();
-            if (xincoCoreData != null) {
-                xincoCoreData = em.getReference(xincoCoreData.getClass(), xincoCoreData.getId());
-                xincoCoreLog.setXincoCoreData(xincoCoreData);
-            }
             XincoCoreUser xincoCoreUser = xincoCoreLog.getXincoCoreUser();
             if (xincoCoreUser != null) {
                 xincoCoreUser = em.getReference(xincoCoreUser.getClass(), xincoCoreUser.getId());
                 xincoCoreLog.setXincoCoreUser(xincoCoreUser);
             }
-            em.persist(xincoCoreLog);
+            XincoCoreData xincoCoreData = xincoCoreLog.getXincoCoreData();
             if (xincoCoreData != null) {
-                xincoCoreData.getXincoCoreLogList().add(xincoCoreLog);
-                xincoCoreData = em.merge(xincoCoreData);
+                xincoCoreData = em.getReference(xincoCoreData.getClass(), xincoCoreData.getId());
+                xincoCoreLog.setXincoCoreData(xincoCoreData);
             }
+            em.persist(xincoCoreLog);
             if (xincoCoreUser != null) {
                 xincoCoreUser.getXincoCoreLogList().add(xincoCoreLog);
                 xincoCoreUser = em.merge(xincoCoreUser);
             }
+            if (xincoCoreData != null) {
+                xincoCoreData.getXincoCoreLogList().add(xincoCoreLog);
+                xincoCoreData = em.merge(xincoCoreData);
+            }
             em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (findXincoCoreLog(xincoCoreLog.getId()) != null) {
+                throw new PreexistingEntityException("XincoCoreLog " + xincoCoreLog + " already exists.", ex);
+            }
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -70,27 +99,19 @@ public class XincoCoreLogJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             XincoCoreLog persistentXincoCoreLog = em.find(XincoCoreLog.class, xincoCoreLog.getId());
-            XincoCoreData xincoCoreDataOld = persistentXincoCoreLog.getXincoCoreData();
-            XincoCoreData xincoCoreDataNew = xincoCoreLog.getXincoCoreData();
             XincoCoreUser xincoCoreUserOld = persistentXincoCoreLog.getXincoCoreUser();
             XincoCoreUser xincoCoreUserNew = xincoCoreLog.getXincoCoreUser();
-            if (xincoCoreDataNew != null) {
-                xincoCoreDataNew = em.getReference(xincoCoreDataNew.getClass(), xincoCoreDataNew.getId());
-                xincoCoreLog.setXincoCoreData(xincoCoreDataNew);
-            }
+            XincoCoreData xincoCoreDataOld = persistentXincoCoreLog.getXincoCoreData();
+            XincoCoreData xincoCoreDataNew = xincoCoreLog.getXincoCoreData();
             if (xincoCoreUserNew != null) {
                 xincoCoreUserNew = em.getReference(xincoCoreUserNew.getClass(), xincoCoreUserNew.getId());
                 xincoCoreLog.setXincoCoreUser(xincoCoreUserNew);
             }
+            if (xincoCoreDataNew != null) {
+                xincoCoreDataNew = em.getReference(xincoCoreDataNew.getClass(), xincoCoreDataNew.getId());
+                xincoCoreLog.setXincoCoreData(xincoCoreDataNew);
+            }
             xincoCoreLog = em.merge(xincoCoreLog);
-            if (xincoCoreDataOld != null && !xincoCoreDataOld.equals(xincoCoreDataNew)) {
-                xincoCoreDataOld.getXincoCoreLogList().remove(xincoCoreLog);
-                xincoCoreDataOld = em.merge(xincoCoreDataOld);
-            }
-            if (xincoCoreDataNew != null && !xincoCoreDataNew.equals(xincoCoreDataOld)) {
-                xincoCoreDataNew.getXincoCoreLogList().add(xincoCoreLog);
-                xincoCoreDataNew = em.merge(xincoCoreDataNew);
-            }
             if (xincoCoreUserOld != null && !xincoCoreUserOld.equals(xincoCoreUserNew)) {
                 xincoCoreUserOld.getXincoCoreLogList().remove(xincoCoreLog);
                 xincoCoreUserOld = em.merge(xincoCoreUserOld);
@@ -98,6 +119,14 @@ public class XincoCoreLogJpaController implements Serializable {
             if (xincoCoreUserNew != null && !xincoCoreUserNew.equals(xincoCoreUserOld)) {
                 xincoCoreUserNew.getXincoCoreLogList().add(xincoCoreLog);
                 xincoCoreUserNew = em.merge(xincoCoreUserNew);
+            }
+            if (xincoCoreDataOld != null && !xincoCoreDataOld.equals(xincoCoreDataNew)) {
+                xincoCoreDataOld.getXincoCoreLogList().remove(xincoCoreLog);
+                xincoCoreDataOld = em.merge(xincoCoreDataOld);
+            }
+            if (xincoCoreDataNew != null && !xincoCoreDataNew.equals(xincoCoreDataOld)) {
+                xincoCoreDataNew.getXincoCoreLogList().add(xincoCoreLog);
+                xincoCoreDataNew = em.merge(xincoCoreDataNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -128,15 +157,15 @@ public class XincoCoreLogJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The xincoCoreLog with id " + id + " no longer exists.", enfe);
             }
-            XincoCoreData xincoCoreData = xincoCoreLog.getXincoCoreData();
-            if (xincoCoreData != null) {
-                xincoCoreData.getXincoCoreLogList().remove(xincoCoreLog);
-                xincoCoreData = em.merge(xincoCoreData);
-            }
             XincoCoreUser xincoCoreUser = xincoCoreLog.getXincoCoreUser();
             if (xincoCoreUser != null) {
                 xincoCoreUser.getXincoCoreLogList().remove(xincoCoreLog);
                 xincoCoreUser = em.merge(xincoCoreUser);
+            }
+            XincoCoreData xincoCoreData = xincoCoreLog.getXincoCoreData();
+            if (xincoCoreData != null) {
+                xincoCoreData.getXincoCoreLogList().remove(xincoCoreLog);
+                xincoCoreData = em.merge(xincoCoreData);
             }
             em.remove(xincoCoreLog);
             em.getTransaction().commit();

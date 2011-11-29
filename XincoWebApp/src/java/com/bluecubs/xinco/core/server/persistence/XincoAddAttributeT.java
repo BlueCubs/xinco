@@ -1,13 +1,38 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2011 blueCubs.com.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
+ * 
+ * Name: XincoAddAttributeT
+ * 
+ * Description: //TODO: Add description
+ * 
+ * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * 
+ * ************************************************************
  */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -15,37 +40,58 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "xinco_add_attribute_t")
-@NamedQueries({@NamedQuery(name = "XincoAddAttributeT.findAll", query = "SELECT x FROM XincoAddAttributeT x"), @NamedQuery(name = "XincoAddAttributeT.findByRecordId", query = "SELECT x FROM XincoAddAttributeT x WHERE x.recordId = :recordId"), @NamedQuery(name = "XincoAddAttributeT.findByXincoCoreDataId", query = "SELECT x FROM XincoAddAttributeT x WHERE x.xincoCoreDataId = :xincoCoreDataId"), @NamedQuery(name = "XincoAddAttributeT.findByAttributeId", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attributeId = :attributeId"), @NamedQuery(name = "XincoAddAttributeT.findByAttribInt", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribInt = :attribInt"), @NamedQuery(name = "XincoAddAttributeT.findByAttribUnsignedint", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribUnsignedint = :attribUnsignedint"), @NamedQuery(name = "XincoAddAttributeT.findByAttribDouble", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribDouble = :attribDouble"), @NamedQuery(name = "XincoAddAttributeT.findByAttribVarchar", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribVarchar = :attribVarchar"), @NamedQuery(name = "XincoAddAttributeT.findByAttribDatetime", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribDatetime = :attribDatetime")})
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "XincoAddAttributeT.findAll", query = "SELECT x FROM XincoAddAttributeT x"),
+    @NamedQuery(name = "XincoAddAttributeT.findByRecordId", query = "SELECT x FROM XincoAddAttributeT x WHERE x.recordId = :recordId"),
+    @NamedQuery(name = "XincoAddAttributeT.findByXincoCoreDataId", query = "SELECT x FROM XincoAddAttributeT x WHERE x.xincoCoreDataId = :xincoCoreDataId"),
+    @NamedQuery(name = "XincoAddAttributeT.findByAttributeId", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attributeId = :attributeId"),
+    @NamedQuery(name = "XincoAddAttributeT.findByAttribInt", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribInt = :attribInt"),
+    @NamedQuery(name = "XincoAddAttributeT.findByAttribUnsignedint", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribUnsignedint = :attribUnsignedint"),
+    @NamedQuery(name = "XincoAddAttributeT.findByAttribDouble", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribDouble = :attribDouble"),
+    @NamedQuery(name = "XincoAddAttributeT.findByAttribVarchar", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribVarchar = :attribVarchar"),
+    @NamedQuery(name = "XincoAddAttributeT.findByAttribDatetime", query = "SELECT x FROM XincoAddAttributeT x WHERE x.attribDatetime = :attribDatetime")})
 public class XincoAddAttributeT implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "record_id", nullable = false)
+    @NotNull
+    @Column(name = "record_id")
     private Integer recordId;
     @Basic(optional = false)
-    @Column(name = "xinco_core_data_id", nullable = false)
+    @NotNull
+    @Column(name = "xinco_core_data_id")
     private int xincoCoreDataId;
     @Basic(optional = false)
-    @Column(name = "attribute_id", nullable = false)
+    @NotNull
+    @Column(name = "attribute_id")
     private int attributeId;
     @Basic(optional = false)
-    @Column(name = "attrib_int", nullable = false)
+    @NotNull
+    @Column(name = "attrib_int")
     private int attribInt;
     @Basic(optional = false)
-    @Column(name = "attrib_unsignedint", nullable = false)
-    private long attribUnsignedint;
+    @NotNull
+    @Column(name = "attrib_unsignedint")
+    private int attribUnsignedint;
     @Basic(optional = false)
-    @Column(name = "attrib_double", nullable = false)
+    @NotNull
+    @Column(name = "attrib_double")
     private double attribDouble;
     @Basic(optional = false)
-    @Column(name = "attrib_varchar", nullable = false, length = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "attrib_varchar")
     private String attribVarchar;
     @Basic(optional = false)
+    @NotNull
     @Lob
-    @Column(name = "attrib_text", nullable = false, length = 65535)
+    @Size(min = 1, max = 65535)
+    @Column(name = "attrib_text")
     private String attribText;
     @Basic(optional = false)
-    @Column(name = "attrib_datetime", nullable = false)
+    @NotNull
+    @Column(name = "attrib_datetime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date attribDatetime;
 
@@ -56,7 +102,7 @@ public class XincoAddAttributeT implements Serializable {
         this.recordId = recordId;
     }
 
-    public XincoAddAttributeT(Integer recordId, int xincoCoreDataId, int attributeId, int attribInt, long attribUnsignedint, double attribDouble, String attribVarchar, String attribText, Date attribDatetime) {
+    public XincoAddAttributeT(Integer recordId, int xincoCoreDataId, int attributeId, int attribInt, int attribUnsignedint, double attribDouble, String attribVarchar, String attribText, Date attribDatetime) {
         this.recordId = recordId;
         this.xincoCoreDataId = xincoCoreDataId;
         this.attributeId = attributeId;
@@ -100,11 +146,11 @@ public class XincoAddAttributeT implements Serializable {
         this.attribInt = attribInt;
     }
 
-    public long getAttribUnsignedint() {
+    public int getAttribUnsignedint() {
         return attribUnsignedint;
     }
 
-    public void setAttribUnsignedint(long attribUnsignedint) {
+    public void setAttribUnsignedint(int attribUnsignedint) {
         this.attribUnsignedint = attribUnsignedint;
     }
 
@@ -149,7 +195,7 @@ public class XincoAddAttributeT implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoAddAttributeT)) {
             return false;
         }
@@ -162,7 +208,7 @@ public class XincoAddAttributeT implements Serializable {
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoAddAttributeT[recordId=" + recordId + "]";
+        return "com.bluecubs.xinco.core.server.persistence.XincoAddAttributeT[ recordId=" + recordId + " ]";
     }
-
+    
 }

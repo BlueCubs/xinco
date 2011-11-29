@@ -1,13 +1,38 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2011 blueCubs.com.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
+ * 
+ * Name: XincoCoreLog
+ * 
+ * Description: //TODO: Add description
+ * 
+ * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * 
+ * ************************************************************
  */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -15,29 +40,37 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "xinco_core_log")
-@NamedQueries({@NamedQuery(name = "XincoCoreLog.findAll", query = "SELECT x FROM XincoCoreLog x"), @NamedQuery(name = "XincoCoreLog.findById", query = "SELECT x FROM XincoCoreLog x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreLog.findByOpCode", query = "SELECT x FROM XincoCoreLog x WHERE x.opCode = :opCode"), @NamedQuery(name = "XincoCoreLog.findByOpDatetime", query = "SELECT x FROM XincoCoreLog x WHERE x.opDatetime = :opDatetime"), @NamedQuery(name = "XincoCoreLog.findByOpDescription", query = "SELECT x FROM XincoCoreLog x WHERE x.opDescription = :opDescription"), @NamedQuery(name = "XincoCoreLog.findByVersionHigh", query = "SELECT x FROM XincoCoreLog x WHERE x.versionHigh = :versionHigh"), @NamedQuery(name = "XincoCoreLog.findByVersionMid", query = "SELECT x FROM XincoCoreLog x WHERE x.versionMid = :versionMid"), @NamedQuery(name = "XincoCoreLog.findByVersionLow", query = "SELECT x FROM XincoCoreLog x WHERE x.versionLow = :versionLow"), @NamedQuery(name = "XincoCoreLog.findByVersionPostfix", query = "SELECT x FROM XincoCoreLog x WHERE x.versionPostfix = :versionPostfix")})
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "XincoCoreLog.findAll", query = "SELECT x FROM XincoCoreLog x"),
+    @NamedQuery(name = "XincoCoreLog.findById", query = "SELECT x FROM XincoCoreLog x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreLog.findByOpCode", query = "SELECT x FROM XincoCoreLog x WHERE x.opCode = :opCode"),
+    @NamedQuery(name = "XincoCoreLog.findByOpDatetime", query = "SELECT x FROM XincoCoreLog x WHERE x.opDatetime = :opDatetime"),
+    @NamedQuery(name = "XincoCoreLog.findByOpDescription", query = "SELECT x FROM XincoCoreLog x WHERE x.opDescription = :opDescription"),
+    @NamedQuery(name = "XincoCoreLog.findByVersionHigh", query = "SELECT x FROM XincoCoreLog x WHERE x.versionHigh = :versionHigh"),
+    @NamedQuery(name = "XincoCoreLog.findByVersionMid", query = "SELECT x FROM XincoCoreLog x WHERE x.versionMid = :versionMid"),
+    @NamedQuery(name = "XincoCoreLog.findByVersionLow", query = "SELECT x FROM XincoCoreLog x WHERE x.versionLow = :versionLow"),
+    @NamedQuery(name = "XincoCoreLog.findByVersionPostfix", query = "SELECT x FROM XincoCoreLog x WHERE x.versionPostfix = :versionPostfix")})
 public class XincoCoreLog implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreLogGen")
-    @TableGenerator(name = "XincoCoreLogGen", table = "xinco_id",
-    pkColumnName = "tablename",
-    valueColumnName = "last_id",
-    pkColumnValue = "xinco_core_log",
-    allocationSize = 1,
-    initialValue=1000)
-    @Column(name = "id", nullable = false)
+    @NotNull
+    @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
-    @Column(name = "op_code", nullable = false)
+    @NotNull
+    @Column(name = "op_code")
     private int opCode;
     @Basic(optional = false)
-    @Column(name = "op_datetime", nullable = false)
+    @NotNull
+    @Column(name = "op_datetime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date opDatetime;
     @Basic(optional = false)
-    @Column(name = "op_description", nullable = false, length = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "op_description")
     private String opDescription;
     @Column(name = "version_high")
     private Integer versionHigh;
@@ -45,19 +78,25 @@ public class XincoCoreLog implements Serializable {
     private Integer versionMid;
     @Column(name = "version_low")
     private Integer versionLow;
-    @Column(name = "version_postfix", length = 255)
+    @Size(max = 255)
+    @Column(name = "version_postfix")
     private String versionPostfix;
-    @JoinColumn(name = "xinco_core_data_id", referencedColumnName = "id", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private XincoCoreData xincoCoreData;
-    @JoinColumn(name = "xinco_core_user_id", referencedColumnName = "id", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "xinco_core_user_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
     private XincoCoreUser xincoCoreUser;
+    @JoinColumn(name = "xinco_core_data_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private XincoCoreData xincoCoreData;
 
     public XincoCoreLog() {
     }
 
-    public XincoCoreLog(int opCode, Date opDatetime, String opDescription) {
+    public XincoCoreLog(Integer id) {
+        this.id = id;
+    }
+
+    public XincoCoreLog(Integer id, int opCode, Date opDatetime, String opDescription) {
+        this.id = id;
         this.opCode = opCode;
         this.opDatetime = opDatetime;
         this.opDescription = opDescription;
@@ -127,20 +166,20 @@ public class XincoCoreLog implements Serializable {
         this.versionPostfix = versionPostfix;
     }
 
-    public XincoCoreData getXincoCoreData() {
-        return xincoCoreData;
-    }
-
-    public void setXincoCoreData(XincoCoreData xincoCoreDataId) {
-        this.xincoCoreData = xincoCoreDataId;
-    }
-
     public XincoCoreUser getXincoCoreUser() {
         return xincoCoreUser;
     }
 
-    public void setXincoCoreUser(XincoCoreUser xincoCoreUserId) {
-        this.xincoCoreUser = xincoCoreUserId;
+    public void setXincoCoreUser(XincoCoreUser xincoCoreUser) {
+        this.xincoCoreUser = xincoCoreUser;
+    }
+
+    public XincoCoreData getXincoCoreData() {
+        return xincoCoreData;
+    }
+
+    public void setXincoCoreData(XincoCoreData xincoCoreData) {
+        this.xincoCoreData = xincoCoreData;
     }
 
     @Override
@@ -152,7 +191,7 @@ public class XincoCoreLog implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoCoreLog)) {
             return false;
         }
@@ -165,7 +204,7 @@ public class XincoCoreLog implements Serializable {
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreLog[id=" + id + "]";
+        return "com.bluecubs.xinco.core.server.persistence.XincoCoreLog[ id=" + id + " ]";
     }
-
+    
 }

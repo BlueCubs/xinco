@@ -1,14 +1,37 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2011 blueCubs.com.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
+ * 
+ * Name: XincoCoreUserHasXincoCoreGroupPK
+ * 
+ * Description: //TODO: Add description
+ * 
+ * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * 
+ * ************************************************************
  */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -17,10 +40,12 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class XincoCoreUserHasXincoCoreGroupPK implements Serializable {
     @Basic(optional = false)
-    @Column(name = "xinco_core_user_id", nullable = false)
+    @NotNull
+    @Column(name = "xinco_core_user_id")
     private int xincoCoreUserId;
     @Basic(optional = false)
-    @Column(name = "xinco_core_group_id", nullable = false)
+    @NotNull
+    @Column(name = "xinco_core_group_id")
     private int xincoCoreGroupId;
 
     public XincoCoreUserHasXincoCoreGroupPK() {
@@ -57,7 +82,7 @@ public class XincoCoreUserHasXincoCoreGroupPK implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoCoreUserHasXincoCoreGroupPK)) {
             return false;
         }
@@ -73,7 +98,7 @@ public class XincoCoreUserHasXincoCoreGroupPK implements Serializable {
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupPK[xincoCoreUserId=" + xincoCoreUserId + ", xincoCoreGroupId=" + xincoCoreGroupId + "]";
+        return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupPK[ xincoCoreUserId=" + xincoCoreUserId + ", xincoCoreGroupId=" + xincoCoreGroupId + " ]";
     }
-
+    
 }

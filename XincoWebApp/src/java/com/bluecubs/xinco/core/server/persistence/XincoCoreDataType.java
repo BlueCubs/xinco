@@ -1,11 +1,40 @@
+/*
+ * Copyright 2011 blueCubs.com.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
+ * 
+ * Name: XincoCoreDataType
+ * 
+ * Description: //TODO: Add description
+ * 
+ * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * 
+ * ************************************************************
+ */
 package com.bluecubs.xinco.core.server.persistence;
 
 import com.bluecubs.xinco.core.server.AuditedEntityListener;
 import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -15,39 +44,33 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "xinco_core_data_type")
 @EntityListeners(AuditedEntityListener.class)
+@XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "XincoCoreDataType.findAll",
-    query = "SELECT x FROM XincoCoreDataType x"),
-    @NamedQuery(name = "XincoCoreDataType.findById",
-    query = "SELECT x FROM XincoCoreDataType x WHERE x.id = :id"),
-    @NamedQuery(name = "XincoCoreDataType.findByDesignation",
-    query = "SELECT x FROM XincoCoreDataType x WHERE x.designation = :designation"),
+    @NamedQuery(name = "XincoCoreDataType.findAll", query = "SELECT x FROM XincoCoreDataType x"),
+    @NamedQuery(name = "XincoCoreDataType.findById", query = "SELECT x FROM XincoCoreDataType x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreDataType.findByDesignation", query = "SELECT x FROM XincoCoreDataType x WHERE x.designation = :designation"),
     @NamedQuery(name = "XincoCoreDataType.findByDescription", query = "SELECT x FROM XincoCoreDataType x WHERE x.description = :description")})
 public class XincoCoreDataType extends XincoAuditedObject implements Serializable {
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreDataType")
-    private Collection<XincoCoreData> xincoCoreDataCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreDataTypeGen")
-    @TableGenerator(name = "XincoCoreDataTypeGen", table = "xinco_id",
-    pkColumnName = "tablename",
-    valueColumnName = "last_id",
-    pkColumnValue = "xinco_core_data_type",
-    allocationSize = 1,
-    initialValue = 1000)
-    @Column(name = "id", nullable = false)
+    @NotNull
+    @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
-    @Column(name = "designation", nullable = false, length = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "designation")
     private String designation;
     @Basic(optional = false)
-    @Column(name = "description", nullable = false, length = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "description")
     private String description;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreDataType", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreDataType")
     private List<XincoCoreDataTypeAttribute> xincoCoreDataTypeAttributeList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreDataType", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreDataType")
     private List<XincoCoreData> xincoCoreDataList;
 
     public XincoCoreDataType() {
@@ -87,6 +110,7 @@ public class XincoCoreDataType extends XincoAuditedObject implements Serializabl
         this.description = description;
     }
 
+    @XmlTransient
     public List<XincoCoreDataTypeAttribute> getXincoCoreDataTypeAttributeList() {
         return xincoCoreDataTypeAttributeList;
     }
@@ -95,6 +119,7 @@ public class XincoCoreDataType extends XincoAuditedObject implements Serializabl
         this.xincoCoreDataTypeAttributeList = xincoCoreDataTypeAttributeList;
     }
 
+    @XmlTransient
     public List<XincoCoreData> getXincoCoreDataList() {
         return xincoCoreDataList;
     }
@@ -112,7 +137,7 @@ public class XincoCoreDataType extends XincoAuditedObject implements Serializabl
 
     @Override
     public boolean equals(Object object) {
-
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoCoreDataType)) {
             return false;
         }
@@ -125,15 +150,6 @@ public class XincoCoreDataType extends XincoAuditedObject implements Serializabl
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataType[id=" + id + "]";
-    }
-
-    @XmlTransient
-    public Collection<XincoCoreData> getXincoCoreDataCollection() {
-        return xincoCoreDataCollection;
-    }
-
-    public void setXincoCoreDataCollection(Collection<XincoCoreData> xincoCoreDataCollection) {
-        this.xincoCoreDataCollection = xincoCoreDataCollection;
+        return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataType[ id=" + id + " ]";
     }
 }

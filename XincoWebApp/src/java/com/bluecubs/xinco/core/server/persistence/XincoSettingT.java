@@ -1,17 +1,42 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2011 blueCubs.com.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
+ * 
+ * Name: XincoSettingT
+ * 
+ * Description: //TODO: Add description
+ * 
+ * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * 
+ * ************************************************************
  */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 @Entity
 @Table(name = "xinco_setting_t")
@@ -21,30 +46,35 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "XincoSettingT.findByRecordId", query = "SELECT x FROM XincoSettingT x WHERE x.recordId = :recordId"),
     @NamedQuery(name = "XincoSettingT.findById", query = "SELECT x FROM XincoSettingT x WHERE x.id = :id"),
     @NamedQuery(name = "XincoSettingT.findByDescription", query = "SELECT x FROM XincoSettingT x WHERE x.description = :description"),
-    @NamedQuery(name = "XincoSettingT.findByLongValue", query = "SELECT x FROM XincoSettingT x WHERE x.longValue = :longValue"),
+    @NamedQuery(name = "XincoSettingT.findByIntValue", query = "SELECT x FROM XincoSettingT x WHERE x.intValue = :intValue"),
     @NamedQuery(name = "XincoSettingT.findByBoolValue", query = "SELECT x FROM XincoSettingT x WHERE x.boolValue = :boolValue"),
-    @NamedQuery(name = "XincoSettingT.findByIntValue", query = "SELECT x FROM XincoSettingT x WHERE x.intValue = :intValue")})
+    @NamedQuery(name = "XincoSettingT.findByLongValue", query = "SELECT x FROM XincoSettingT x WHERE x.longValue = :longValue")})
 public class XincoSettingT implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "record_id", nullable = false)
+    @NotNull
+    @Column(name = "record_id")
     private Integer recordId;
     @Basic(optional = false)
-    @Column(name = "id", nullable = false)
+    @NotNull
+    @Column(name = "id")
     private int id;
     @Basic(optional = false)
-    @Column(name = "description", nullable = false, length = 45)
+    @NotNull
+    @Size(min = 1, max = 45)
+    @Column(name = "description")
     private String description;
-    @Column(name = "long_value")
-    private long longValue;
+    @Column(name = "int_value")
+    private Integer intValue;
     @Lob
-    @Column(name = "string_value", length = 65535)
+    @Size(max = 65535)
+    @Column(name = "string_value")
     private String stringValue;
     @Column(name = "bool_value")
     private Boolean boolValue;
-    @Column(name = "int_value")
-    private Integer intValue;
+    @Column(name = "long_value")
+    private BigInteger longValue;
 
     public XincoSettingT() {
     }
@@ -83,12 +113,12 @@ public class XincoSettingT implements Serializable {
         this.description = description;
     }
 
-    public long getLongValue() {
-        return longValue;
+    public Integer getIntValue() {
+        return intValue;
     }
 
-    public void setLongValue(long longValue) {
-        this.longValue = longValue;
+    public void setIntValue(Integer intValue) {
+        this.intValue = intValue;
     }
 
     public String getStringValue() {
@@ -107,12 +137,12 @@ public class XincoSettingT implements Serializable {
         this.boolValue = boolValue;
     }
 
-    public Integer getIntValue() {
-        return intValue;
+    public BigInteger getLongValue() {
+        return longValue;
     }
 
-    public void setIntValue(Integer intValue) {
-        this.intValue = intValue;
+    public void setLongValue(BigInteger longValue) {
+        this.longValue = longValue;
     }
 
     @Override
@@ -124,7 +154,7 @@ public class XincoSettingT implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoSettingT)) {
             return false;
         }
@@ -137,7 +167,7 @@ public class XincoSettingT implements Serializable {
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoSettingT[recordId=" + recordId + "]";
+        return "com.bluecubs.xinco.core.server.persistence.XincoSettingT[ recordId=" + recordId + " ]";
     }
-
+    
 }

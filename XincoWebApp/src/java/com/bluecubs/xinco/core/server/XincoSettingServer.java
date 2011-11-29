@@ -5,6 +5,7 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoSettingJpaCont
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.service.XincoCoreUser;
 import com.bluecubs.xinco.core.server.service.XincoSetting;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +32,7 @@ public class XincoSettingServer extends XincoSetting {
             if (setting.getIntValue() != null) {
                 setIntValue(setting.getIntValue());
             }
-            setLongValue(setting.getLongValue());
+            setLongValue(setting.getLongValue().longValue());
             if (setting.getStringValue() != null) {
                 setStringValue(setting.getStringValue());
             }
@@ -62,7 +63,7 @@ public class XincoSettingServer extends XincoSetting {
                 setting = controller.findXincoSetting(getId());
                 setting.setBoolValue(isBoolValue());
                 setting.setIntValue(getIntValue());
-                setting.setLongValue(getLongValue());
+                setting.setLongValue(BigInteger.valueOf(getLongValue()));
                 setting.setStringValue(getStringValue());
                 setting.setDescription(getDescription());
                 controller.edit(setting);
@@ -70,7 +71,7 @@ public class XincoSettingServer extends XincoSetting {
                 setting = new com.bluecubs.xinco.core.server.persistence.XincoSetting();
                 setting.setBoolValue(isBoolValue());
                 setting.setIntValue(getIntValue());
-                setting.setLongValue(getLongValue());
+                setting.setLongValue(BigInteger.valueOf(getLongValue()));
                 setting.setStringValue(getStringValue());
                 setting.setDescription(getDescription());
                 controller.create(setting);

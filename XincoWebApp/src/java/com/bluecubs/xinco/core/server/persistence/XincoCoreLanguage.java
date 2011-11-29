@@ -1,16 +1,40 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2011 blueCubs.com.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
+ * 
+ * Name: XincoCoreLanguage
+ * 
+ * Description: //TODO: Add description
+ * 
+ * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * 
+ * ************************************************************
  */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import com.bluecubs.xinco.core.server.AuditedEntityListener;
 import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -20,33 +44,32 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @EntityListeners(AuditedEntityListener.class)
 @Table(name = "xinco_core_language")
-@NamedQueries({@NamedQuery(name = "XincoCoreLanguage.findAll", query = "SELECT x FROM XincoCoreLanguage x"), @NamedQuery(name = "XincoCoreLanguage.findById", query = "SELECT x FROM XincoCoreLanguage x WHERE x.id = :id"), @NamedQuery(name = "XincoCoreLanguage.findBySign", query = "SELECT x FROM XincoCoreLanguage x WHERE x.sign = :sign"), @NamedQuery(name = "XincoCoreLanguage.findByDesignation", query = "SELECT x FROM XincoCoreLanguage x WHERE x.designation = :designation")})
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "XincoCoreLanguage.findAll", query = "SELECT x FROM XincoCoreLanguage x"),
+    @NamedQuery(name = "XincoCoreLanguage.findById", query = "SELECT x FROM XincoCoreLanguage x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreLanguage.findBySign", query = "SELECT x FROM XincoCoreLanguage x WHERE x.sign = :sign"),
+    @NamedQuery(name = "XincoCoreLanguage.findByDesignation", query = "SELECT x FROM XincoCoreLanguage x WHERE x.designation = :designation")})
 public class XincoCoreLanguage extends XincoAuditedObject implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguage")
-    private Collection<XincoCoreNode> xincoCoreNodeCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguage")
-    private Collection<XincoCoreData> xincoCoreDataCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreLanguageGen")
-    @TableGenerator(name = "XincoCoreLanguageGen", table = "xinco_id",
-    pkColumnName = "tablename",
-    valueColumnName = "last_id",
-    pkColumnValue = "xinco_core_language",
-    allocationSize = 1,
-    initialValue=1000)
-    @Column(name = "id", nullable = false)
+    @NotNull
+    @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
-    @Column(name = "sign", nullable = false, length = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "sign")
     private String sign;
     @Basic(optional = false)
-    @Column(name = "designation", nullable = false, length = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "designation")
     private String designation;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguage", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguage")
     private List<XincoCoreNode> xincoCoreNodeList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguage", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguage")
     private List<XincoCoreData> xincoCoreDataList;
 
     public XincoCoreLanguage() {
@@ -86,6 +109,7 @@ public class XincoCoreLanguage extends XincoAuditedObject implements Serializabl
         this.designation = designation;
     }
 
+    @XmlTransient
     public List<XincoCoreNode> getXincoCoreNodeList() {
         return xincoCoreNodeList;
     }
@@ -94,6 +118,7 @@ public class XincoCoreLanguage extends XincoAuditedObject implements Serializabl
         this.xincoCoreNodeList = xincoCoreNodeList;
     }
 
+    @XmlTransient
     public List<XincoCoreData> getXincoCoreDataList() {
         return xincoCoreDataList;
     }
@@ -111,7 +136,7 @@ public class XincoCoreLanguage extends XincoAuditedObject implements Serializabl
 
     @Override
     public boolean equals(Object object) {
-        
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoCoreLanguage)) {
             return false;
         }
@@ -124,25 +149,7 @@ public class XincoCoreLanguage extends XincoAuditedObject implements Serializabl
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage[id=" + id + "]";
+        return "com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage[ id=" + id + " ]";
     }
-
-    @XmlTransient
-    public Collection<XincoCoreNode> getXincoCoreNodeCollection() {
-        return xincoCoreNodeCollection;
-    }
-
-    public void setXincoCoreNodeCollection(Collection<XincoCoreNode> xincoCoreNodeCollection) {
-        this.xincoCoreNodeCollection = xincoCoreNodeCollection;
-    }
-
-    @XmlTransient
-    public Collection<XincoCoreData> getXincoCoreDataCollection() {
-        return xincoCoreDataCollection;
-    }
-
-    public void setXincoCoreDataCollection(Collection<XincoCoreData> xincoCoreDataCollection) {
-        this.xincoCoreDataCollection = xincoCoreDataCollection;
-    }
-
+    
 }

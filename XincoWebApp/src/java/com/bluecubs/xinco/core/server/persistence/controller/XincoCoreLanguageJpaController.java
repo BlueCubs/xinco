@@ -1,28 +1,51 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2011 blueCubs.com.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
+ * 
+ * Name: XincoCoreLanguageJpaController
+ * 
+ * Description: //TODO: Add description
+ * 
+ * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * 
+ * ************************************************************
  */
 package com.bluecubs.xinco.core.server.persistence.controller;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreNode;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-
+import com.bluecubs.xinco.core.server.persistence.XincoCoreNode;
+import java.util.ArrayList;
+import java.util.List;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 public class XincoCoreLanguageJpaController implements Serializable {
 
@@ -35,18 +58,12 @@ public class XincoCoreLanguageJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(XincoCoreLanguage xincoCoreLanguage) {
+    public void create(XincoCoreLanguage xincoCoreLanguage) throws PreexistingEntityException, Exception {
         if (xincoCoreLanguage.getXincoCoreNodeList() == null) {
             xincoCoreLanguage.setXincoCoreNodeList(new ArrayList<XincoCoreNode>());
         }
         if (xincoCoreLanguage.getXincoCoreDataList() == null) {
             xincoCoreLanguage.setXincoCoreDataList(new ArrayList<XincoCoreData>());
-        }
-        if (xincoCoreLanguage.getXincoCoreNodeCollection() == null) {
-            xincoCoreLanguage.setXincoCoreNodeCollection(new ArrayList<XincoCoreNode>());
-        }
-        if (xincoCoreLanguage.getXincoCoreDataCollection() == null) {
-            xincoCoreLanguage.setXincoCoreDataCollection(new ArrayList<XincoCoreData>());
         }
         EntityManager em = null;
         try {
@@ -64,18 +81,6 @@ public class XincoCoreLanguageJpaController implements Serializable {
                 attachedXincoCoreDataList.add(xincoCoreDataListXincoCoreDataToAttach);
             }
             xincoCoreLanguage.setXincoCoreDataList(attachedXincoCoreDataList);
-            Collection<XincoCoreNode> attachedXincoCoreNodeCollection = new ArrayList<XincoCoreNode>();
-            for (XincoCoreNode xincoCoreNodeCollectionXincoCoreNodeToAttach : xincoCoreLanguage.getXincoCoreNodeCollection()) {
-                xincoCoreNodeCollectionXincoCoreNodeToAttach = em.getReference(xincoCoreNodeCollectionXincoCoreNodeToAttach.getClass(), xincoCoreNodeCollectionXincoCoreNodeToAttach.getId());
-                attachedXincoCoreNodeCollection.add(xincoCoreNodeCollectionXincoCoreNodeToAttach);
-            }
-            xincoCoreLanguage.setXincoCoreNodeCollection(attachedXincoCoreNodeCollection);
-            Collection<XincoCoreData> attachedXincoCoreDataCollection = new ArrayList<XincoCoreData>();
-            for (XincoCoreData xincoCoreDataCollectionXincoCoreDataToAttach : xincoCoreLanguage.getXincoCoreDataCollection()) {
-                xincoCoreDataCollectionXincoCoreDataToAttach = em.getReference(xincoCoreDataCollectionXincoCoreDataToAttach.getClass(), xincoCoreDataCollectionXincoCoreDataToAttach.getId());
-                attachedXincoCoreDataCollection.add(xincoCoreDataCollectionXincoCoreDataToAttach);
-            }
-            xincoCoreLanguage.setXincoCoreDataCollection(attachedXincoCoreDataCollection);
             em.persist(xincoCoreLanguage);
             for (XincoCoreNode xincoCoreNodeListXincoCoreNode : xincoCoreLanguage.getXincoCoreNodeList()) {
                 XincoCoreLanguage oldXincoCoreLanguageOfXincoCoreNodeListXincoCoreNode = xincoCoreNodeListXincoCoreNode.getXincoCoreLanguage();
@@ -95,25 +100,12 @@ public class XincoCoreLanguageJpaController implements Serializable {
                     oldXincoCoreLanguageOfXincoCoreDataListXincoCoreData = em.merge(oldXincoCoreLanguageOfXincoCoreDataListXincoCoreData);
                 }
             }
-            for (XincoCoreNode xincoCoreNodeCollectionXincoCoreNode : xincoCoreLanguage.getXincoCoreNodeCollection()) {
-                XincoCoreLanguage oldXincoCoreLanguageOfXincoCoreNodeCollectionXincoCoreNode = xincoCoreNodeCollectionXincoCoreNode.getXincoCoreLanguage();
-                xincoCoreNodeCollectionXincoCoreNode.setXincoCoreLanguage(xincoCoreLanguage);
-                xincoCoreNodeCollectionXincoCoreNode = em.merge(xincoCoreNodeCollectionXincoCoreNode);
-                if (oldXincoCoreLanguageOfXincoCoreNodeCollectionXincoCoreNode != null) {
-                    oldXincoCoreLanguageOfXincoCoreNodeCollectionXincoCoreNode.getXincoCoreNodeCollection().remove(xincoCoreNodeCollectionXincoCoreNode);
-                    oldXincoCoreLanguageOfXincoCoreNodeCollectionXincoCoreNode = em.merge(oldXincoCoreLanguageOfXincoCoreNodeCollectionXincoCoreNode);
-                }
-            }
-            for (XincoCoreData xincoCoreDataCollectionXincoCoreData : xincoCoreLanguage.getXincoCoreDataCollection()) {
-                XincoCoreLanguage oldXincoCoreLanguageOfXincoCoreDataCollectionXincoCoreData = xincoCoreDataCollectionXincoCoreData.getXincoCoreLanguage();
-                xincoCoreDataCollectionXincoCoreData.setXincoCoreLanguage(xincoCoreLanguage);
-                xincoCoreDataCollectionXincoCoreData = em.merge(xincoCoreDataCollectionXincoCoreData);
-                if (oldXincoCoreLanguageOfXincoCoreDataCollectionXincoCoreData != null) {
-                    oldXincoCoreLanguageOfXincoCoreDataCollectionXincoCoreData.getXincoCoreDataCollection().remove(xincoCoreDataCollectionXincoCoreData);
-                    oldXincoCoreLanguageOfXincoCoreDataCollectionXincoCoreData = em.merge(oldXincoCoreLanguageOfXincoCoreDataCollectionXincoCoreData);
-                }
-            }
             em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (findXincoCoreLanguage(xincoCoreLanguage.getId()) != null) {
+                throw new PreexistingEntityException("XincoCoreLanguage " + xincoCoreLanguage + " already exists.", ex);
+            }
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -131,10 +123,6 @@ public class XincoCoreLanguageJpaController implements Serializable {
             List<XincoCoreNode> xincoCoreNodeListNew = xincoCoreLanguage.getXincoCoreNodeList();
             List<XincoCoreData> xincoCoreDataListOld = persistentXincoCoreLanguage.getXincoCoreDataList();
             List<XincoCoreData> xincoCoreDataListNew = xincoCoreLanguage.getXincoCoreDataList();
-            Collection<XincoCoreNode> xincoCoreNodeCollectionOld = persistentXincoCoreLanguage.getXincoCoreNodeCollection();
-            Collection<XincoCoreNode> xincoCoreNodeCollectionNew = xincoCoreLanguage.getXincoCoreNodeCollection();
-            Collection<XincoCoreData> xincoCoreDataCollectionOld = persistentXincoCoreLanguage.getXincoCoreDataCollection();
-            Collection<XincoCoreData> xincoCoreDataCollectionNew = xincoCoreLanguage.getXincoCoreDataCollection();
             List<String> illegalOrphanMessages = null;
             for (XincoCoreNode xincoCoreNodeListOldXincoCoreNode : xincoCoreNodeListOld) {
                 if (!xincoCoreNodeListNew.contains(xincoCoreNodeListOldXincoCoreNode)) {
@@ -150,22 +138,6 @@ public class XincoCoreLanguageJpaController implements Serializable {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
                     illegalOrphanMessages.add("You must retain XincoCoreData " + xincoCoreDataListOldXincoCoreData + " since its xincoCoreLanguage field is not nullable.");
-                }
-            }
-            for (XincoCoreNode xincoCoreNodeCollectionOldXincoCoreNode : xincoCoreNodeCollectionOld) {
-                if (!xincoCoreNodeCollectionNew.contains(xincoCoreNodeCollectionOldXincoCoreNode)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain XincoCoreNode " + xincoCoreNodeCollectionOldXincoCoreNode + " since its xincoCoreLanguage field is not nullable.");
-                }
-            }
-            for (XincoCoreData xincoCoreDataCollectionOldXincoCoreData : xincoCoreDataCollectionOld) {
-                if (!xincoCoreDataCollectionNew.contains(xincoCoreDataCollectionOldXincoCoreData)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain XincoCoreData " + xincoCoreDataCollectionOldXincoCoreData + " since its xincoCoreLanguage field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -185,20 +157,6 @@ public class XincoCoreLanguageJpaController implements Serializable {
             }
             xincoCoreDataListNew = attachedXincoCoreDataListNew;
             xincoCoreLanguage.setXincoCoreDataList(xincoCoreDataListNew);
-            Collection<XincoCoreNode> attachedXincoCoreNodeCollectionNew = new ArrayList<XincoCoreNode>();
-            for (XincoCoreNode xincoCoreNodeCollectionNewXincoCoreNodeToAttach : xincoCoreNodeCollectionNew) {
-                xincoCoreNodeCollectionNewXincoCoreNodeToAttach = em.getReference(xincoCoreNodeCollectionNewXincoCoreNodeToAttach.getClass(), xincoCoreNodeCollectionNewXincoCoreNodeToAttach.getId());
-                attachedXincoCoreNodeCollectionNew.add(xincoCoreNodeCollectionNewXincoCoreNodeToAttach);
-            }
-            xincoCoreNodeCollectionNew = attachedXincoCoreNodeCollectionNew;
-            xincoCoreLanguage.setXincoCoreNodeCollection(xincoCoreNodeCollectionNew);
-            Collection<XincoCoreData> attachedXincoCoreDataCollectionNew = new ArrayList<XincoCoreData>();
-            for (XincoCoreData xincoCoreDataCollectionNewXincoCoreDataToAttach : xincoCoreDataCollectionNew) {
-                xincoCoreDataCollectionNewXincoCoreDataToAttach = em.getReference(xincoCoreDataCollectionNewXincoCoreDataToAttach.getClass(), xincoCoreDataCollectionNewXincoCoreDataToAttach.getId());
-                attachedXincoCoreDataCollectionNew.add(xincoCoreDataCollectionNewXincoCoreDataToAttach);
-            }
-            xincoCoreDataCollectionNew = attachedXincoCoreDataCollectionNew;
-            xincoCoreLanguage.setXincoCoreDataCollection(xincoCoreDataCollectionNew);
             xincoCoreLanguage = em.merge(xincoCoreLanguage);
             for (XincoCoreNode xincoCoreNodeListNewXincoCoreNode : xincoCoreNodeListNew) {
                 if (!xincoCoreNodeListOld.contains(xincoCoreNodeListNewXincoCoreNode)) {
@@ -219,28 +177,6 @@ public class XincoCoreLanguageJpaController implements Serializable {
                     if (oldXincoCoreLanguageOfXincoCoreDataListNewXincoCoreData != null && !oldXincoCoreLanguageOfXincoCoreDataListNewXincoCoreData.equals(xincoCoreLanguage)) {
                         oldXincoCoreLanguageOfXincoCoreDataListNewXincoCoreData.getXincoCoreDataList().remove(xincoCoreDataListNewXincoCoreData);
                         oldXincoCoreLanguageOfXincoCoreDataListNewXincoCoreData = em.merge(oldXincoCoreLanguageOfXincoCoreDataListNewXincoCoreData);
-                    }
-                }
-            }
-            for (XincoCoreNode xincoCoreNodeCollectionNewXincoCoreNode : xincoCoreNodeCollectionNew) {
-                if (!xincoCoreNodeCollectionOld.contains(xincoCoreNodeCollectionNewXincoCoreNode)) {
-                    XincoCoreLanguage oldXincoCoreLanguageOfXincoCoreNodeCollectionNewXincoCoreNode = xincoCoreNodeCollectionNewXincoCoreNode.getXincoCoreLanguage();
-                    xincoCoreNodeCollectionNewXincoCoreNode.setXincoCoreLanguage(xincoCoreLanguage);
-                    xincoCoreNodeCollectionNewXincoCoreNode = em.merge(xincoCoreNodeCollectionNewXincoCoreNode);
-                    if (oldXincoCoreLanguageOfXincoCoreNodeCollectionNewXincoCoreNode != null && !oldXincoCoreLanguageOfXincoCoreNodeCollectionNewXincoCoreNode.equals(xincoCoreLanguage)) {
-                        oldXincoCoreLanguageOfXincoCoreNodeCollectionNewXincoCoreNode.getXincoCoreNodeCollection().remove(xincoCoreNodeCollectionNewXincoCoreNode);
-                        oldXincoCoreLanguageOfXincoCoreNodeCollectionNewXincoCoreNode = em.merge(oldXincoCoreLanguageOfXincoCoreNodeCollectionNewXincoCoreNode);
-                    }
-                }
-            }
-            for (XincoCoreData xincoCoreDataCollectionNewXincoCoreData : xincoCoreDataCollectionNew) {
-                if (!xincoCoreDataCollectionOld.contains(xincoCoreDataCollectionNewXincoCoreData)) {
-                    XincoCoreLanguage oldXincoCoreLanguageOfXincoCoreDataCollectionNewXincoCoreData = xincoCoreDataCollectionNewXincoCoreData.getXincoCoreLanguage();
-                    xincoCoreDataCollectionNewXincoCoreData.setXincoCoreLanguage(xincoCoreLanguage);
-                    xincoCoreDataCollectionNewXincoCoreData = em.merge(xincoCoreDataCollectionNewXincoCoreData);
-                    if (oldXincoCoreLanguageOfXincoCoreDataCollectionNewXincoCoreData != null && !oldXincoCoreLanguageOfXincoCoreDataCollectionNewXincoCoreData.equals(xincoCoreLanguage)) {
-                        oldXincoCoreLanguageOfXincoCoreDataCollectionNewXincoCoreData.getXincoCoreDataCollection().remove(xincoCoreDataCollectionNewXincoCoreData);
-                        oldXincoCoreLanguageOfXincoCoreDataCollectionNewXincoCoreData = em.merge(oldXincoCoreLanguageOfXincoCoreDataCollectionNewXincoCoreData);
                     }
                 }
             }
@@ -287,20 +223,6 @@ public class XincoCoreLanguageJpaController implements Serializable {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
                 illegalOrphanMessages.add("This XincoCoreLanguage (" + xincoCoreLanguage + ") cannot be destroyed since the XincoCoreData " + xincoCoreDataListOrphanCheckXincoCoreData + " in its xincoCoreDataList field has a non-nullable xincoCoreLanguage field.");
-            }
-            Collection<XincoCoreNode> xincoCoreNodeCollectionOrphanCheck = xincoCoreLanguage.getXincoCoreNodeCollection();
-            for (XincoCoreNode xincoCoreNodeCollectionOrphanCheckXincoCoreNode : xincoCoreNodeCollectionOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This XincoCoreLanguage (" + xincoCoreLanguage + ") cannot be destroyed since the XincoCoreNode " + xincoCoreNodeCollectionOrphanCheckXincoCoreNode + " in its xincoCoreNodeCollection field has a non-nullable xincoCoreLanguage field.");
-            }
-            Collection<XincoCoreData> xincoCoreDataCollectionOrphanCheck = xincoCoreLanguage.getXincoCoreDataCollection();
-            for (XincoCoreData xincoCoreDataCollectionOrphanCheckXincoCoreData : xincoCoreDataCollectionOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This XincoCoreLanguage (" + xincoCoreLanguage + ") cannot be destroyed since the XincoCoreData " + xincoCoreDataCollectionOrphanCheckXincoCoreData + " in its xincoCoreDataCollection field has a non-nullable xincoCoreLanguage field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

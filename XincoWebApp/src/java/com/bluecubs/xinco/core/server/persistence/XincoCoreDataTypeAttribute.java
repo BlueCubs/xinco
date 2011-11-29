@@ -1,14 +1,39 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2011 blueCubs.com.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
+ * 
+ * Name: XincoCoreDataTypeAttribute
+ * 
+ * Description: //TODO: Add description
+ * 
+ * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * 
+ * ************************************************************
  */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import com.bluecubs.xinco.core.server.AuditedEntityListener;
 import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -17,22 +42,35 @@ import javax.persistence.*;
 @Entity
 @Table(name = "xinco_core_data_type_attribute")
 @EntityListeners(AuditedEntityListener.class)
-@NamedQueries({@NamedQuery(name = "XincoCoreDataTypeAttribute.findAll", query = "SELECT x FROM XincoCoreDataTypeAttribute x"), @NamedQuery(name = "XincoCoreDataTypeAttribute.findByXincoCoreDataTypeId", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId = :xincoCoreDataTypeId"), @NamedQuery(name = "XincoCoreDataTypeAttribute.findByAttributeId", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.xincoCoreDataTypeAttributePK.attributeId = :attributeId"), @NamedQuery(name = "XincoCoreDataTypeAttribute.findByDesignation", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreDataTypeAttribute.findByDataType", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.dataType = :dataType"), @NamedQuery(name = "XincoCoreDataTypeAttribute.findByAttrSize", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.attrSize = :attrSize")})
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "XincoCoreDataTypeAttribute.findAll", query = "SELECT x FROM XincoCoreDataTypeAttribute x"),
+    @NamedQuery(name = "XincoCoreDataTypeAttribute.findByXincoCoreDataTypeId", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.xincoCoreDataTypeAttributePK.xincoCoreDataTypeId = :xincoCoreDataTypeId"),
+    @NamedQuery(name = "XincoCoreDataTypeAttribute.findByAttributeId", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.xincoCoreDataTypeAttributePK.attributeId = :attributeId"),
+    @NamedQuery(name = "XincoCoreDataTypeAttribute.findByDesignation", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.designation = :designation"),
+    @NamedQuery(name = "XincoCoreDataTypeAttribute.findByDataType", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.dataType = :dataType"),
+    @NamedQuery(name = "XincoCoreDataTypeAttribute.findByAttrSize", query = "SELECT x FROM XincoCoreDataTypeAttribute x WHERE x.attrSize = :attrSize")})
 public class XincoCoreDataTypeAttribute extends XincoAuditedObject implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected XincoCoreDataTypeAttributePK xincoCoreDataTypeAttributePK;
     @Basic(optional = false)
-    @Column(name = "designation", nullable = false, length = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "designation")
     private String designation;
     @Basic(optional = false)
-    @Column(name = "data_type", nullable = false, length = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "data_type")
     private String dataType;
     @Basic(optional = false)
-    @Column(name = "attr_size", nullable = false)
+    @NotNull
+    @Column(name = "attr_size")
     private int attrSize;
-    @JoinColumn(name = "xinco_core_data_type_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "xinco_core_data_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private XincoCoreDataType xincoCoreDataType;
 
     public XincoCoreDataTypeAttribute() {
@@ -102,7 +140,7 @@ public class XincoCoreDataTypeAttribute extends XincoAuditedObject implements Se
 
     @Override
     public boolean equals(Object object) {
-        
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoCoreDataTypeAttribute)) {
             return false;
         }
@@ -115,7 +153,6 @@ public class XincoCoreDataTypeAttribute extends XincoAuditedObject implements Se
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute[xincoCoreDataTypeAttributePK=" + xincoCoreDataTypeAttributePK + "]";
+        return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute[ xincoCoreDataTypeAttributePK=" + xincoCoreDataTypeAttributePK + " ]";
     }
-
 }
