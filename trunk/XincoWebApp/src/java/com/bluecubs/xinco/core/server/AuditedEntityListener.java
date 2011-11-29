@@ -102,7 +102,7 @@ public class AuditedEntityListener {
                         boolean updated = false;
                         if (o instanceof XincoCoreUser) {
                             XincoCoreUser user = (XincoCoreUser) o;
-                            if (!user.equals(new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(user.getId()))) {
+                            if (user.getId() != null && !user.equals(new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(user.getId()))) {
                                 new XincoCoreUserTJpaController(XincoDBManager.getEntityManagerFactory()).create(new XincoCoreUserT(record_ID, user.getId(), user.getUsername(), user.getUserpassword(),
                                         user.getName(), user.getFirstname(), user.getEmail(), user.getStatusNumber(),
                                         user.getAttempts(), new Timestamp(user.getLastModified().getTime())));
@@ -111,7 +111,7 @@ public class AuditedEntityListener {
                         }
                         if (o instanceof XincoCoreNode) {
                             XincoCoreNode node = (XincoCoreNode) o;
-                            if (!node.equals(new XincoCoreNodeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreNode(node.getId()))) {
+                            if (node.getId() != null && !node.equals(new XincoCoreNodeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreNode(node.getId()))) {
                                 new XincoCoreNodeTJpaController(XincoDBManager.getEntityManagerFactory()).create(new XincoCoreNodeT(record_ID, node.getId(),
                                         node.getXincoCoreNode() == null ? 0 : node.getXincoCoreNode().getId(),
                                         node.getXincoCoreLanguage() == null ? 1 : node.getXincoCoreLanguage().getId(),
@@ -121,7 +121,7 @@ public class AuditedEntityListener {
                         }
                         if (o instanceof XincoCoreLanguage) {
                             XincoCoreLanguage lang = (XincoCoreLanguage) o;
-                            if (!lang.equals(new XincoCoreLanguageJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreLanguage(lang.getId()))) {
+                            if (lang.getId() != null && !lang.equals(new XincoCoreLanguageJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreLanguage(lang.getId()))) {
                                 new XincoCoreLanguageTJpaController(XincoDBManager.getEntityManagerFactory()).create(new XincoCoreLanguageT(record_ID, lang.getId(),
                                         lang.getSign(), lang.getDesignation()));
                             }
@@ -129,7 +129,7 @@ public class AuditedEntityListener {
                         }
                         if (o instanceof XincoCoreGroup) {
                             XincoCoreGroup group = (XincoCoreGroup) o;
-                            if (!group.equals(new XincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreGroup(group.getId()))) {
+                            if (group.getId() != null && !group.equals(new XincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreGroup(group.getId()))) {
                                 new XincoCoreGroupTJpaController(XincoDBManager.getEntityManagerFactory()).create(new XincoCoreGroupT(record_ID, group.getId(),
                                         group.getDesignation(), group.getStatusNumber()));
                             }
@@ -137,7 +137,7 @@ public class AuditedEntityListener {
                         }
                         if (o instanceof XincoCoreDataType) {
                             XincoCoreDataType type = (XincoCoreDataType) o;
-                            if (!type.equals(new XincoCoreDataTypeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreDataType(type.getId()))) {
+                            if (type.getId() != null && !type.equals(new XincoCoreDataTypeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreDataType(type.getId()))) {
                                 new XincoCoreDataTypeTJpaController(XincoDBManager.getEntityManagerFactory()).create(new XincoCoreDataTypeT(record_ID, type.getId(),
                                         type.getDesignation(), type.getDescription()));
                             }
@@ -145,7 +145,7 @@ public class AuditedEntityListener {
                         }
                         if (o instanceof XincoCoreDataTypeAttribute) {
                             XincoCoreDataTypeAttribute attr = (XincoCoreDataTypeAttribute) o;
-                            if (!attr.equals(new XincoCoreDataTypeAttributeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreDataTypeAttribute(attr.getXincoCoreDataTypeAttributePK()))) {
+                            if (attr.getXincoCoreDataTypeAttributePK() != null && !attr.equals(new XincoCoreDataTypeAttributeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreDataTypeAttribute(attr.getXincoCoreDataTypeAttributePK()))) {
                                 new XincoCoreDataTypeAttributeTJpaController(XincoDBManager.getEntityManagerFactory()).create(new XincoCoreDataTypeAttributeT(record_ID,
                                         attr.getXincoCoreDataTypeAttributePK().getXincoCoreDataTypeId(),
                                         attr.getXincoCoreDataTypeAttributePK().getAttributeId(),
@@ -155,7 +155,7 @@ public class AuditedEntityListener {
                         }
                         if (o instanceof XincoCoreData) {
                             XincoCoreData data = (XincoCoreData) o;
-                            if (!data.equals(new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreData(data.getId()))) {
+                            if (data.getId() != null && !data.equals(new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreData(data.getId()))) {
                                 new XincoCoreDataTJpaController(XincoDBManager.getEntityManagerFactory()).create(new XincoCoreDataT(record_ID,
                                         data.getId(),
                                         data.getXincoCoreNode().getId(),
@@ -167,7 +167,7 @@ public class AuditedEntityListener {
                         }
                         if (o instanceof XincoCoreAce) {
                             XincoCoreAce ace = (XincoCoreAce) o;
-                            if (!ace.equals(new XincoCoreAceJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreAce(ace.getId()))) {
+                            if (ace.getId() != null && !ace.equals(new XincoCoreAceJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreAce(ace.getId()))) {
                                 new XincoCoreAceTJpaController(XincoDBManager.getEntityManagerFactory()).create(new XincoCoreAceT(record_ID,
                                         ace.getId(),
                                         ace.getReadPermission(),
@@ -179,7 +179,7 @@ public class AuditedEntityListener {
                         }
                         if (o instanceof XincoAddAttribute) {
                             XincoAddAttribute attr = (XincoAddAttribute) o;
-                            if (!attr.equals(new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoAddAttribute(attr.getXincoAddAttributePK()))) {
+                            if (attr.getXincoAddAttributePK() != null && !attr.equals(new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoAddAttribute(attr.getXincoAddAttributePK()))) {
                                 new XincoAddAttributeTJpaController(XincoDBManager.getEntityManagerFactory()).create(new XincoAddAttributeT(record_ID,
                                         attr.getXincoAddAttributePK().getAttributeId(),
                                         attr.getXincoAddAttributePK().getAttributeId(),
