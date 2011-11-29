@@ -1,19 +1,43 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2011 blueCubs.com.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
+ * 
+ * Name: XincoDependencyBehavior
+ * 
+ * Description: //TODO: Add description
+ * 
+ * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * 
+ * ************************************************************
  */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 @Entity
 @Table(name = "xinco_dependency_behavior", uniqueConstraints = {
@@ -22,28 +46,26 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "XincoDependencyBehavior.findAll", query = "SELECT x FROM XincoDependencyBehavior x"),
     @NamedQuery(name = "XincoDependencyBehavior.findById", query = "SELECT x FROM XincoDependencyBehavior x WHERE x.id = :id"),
-    @NamedQuery(name = "XincoDependencyBehavior.findByDescription", query = "SELECT x FROM XincoDependencyBehavior x WHERE x.description = :description"),
-    @NamedQuery(name = "XincoDependencyBehavior.findByDesignation", query = "SELECT x FROM XincoDependencyBehavior x WHERE x.designation = :designation")})
+    @NamedQuery(name = "XincoDependencyBehavior.findByDesignation", query = "SELECT x FROM XincoDependencyBehavior x WHERE x.designation = :designation"),
+    @NamedQuery(name = "XincoDependencyBehavior.findByDescription", query = "SELECT x FROM XincoDependencyBehavior x WHERE x.description = :description")})
 public class XincoDependencyBehavior implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoDependencyBehaviorGen")
-    @TableGenerator(name = "XincoDependencyBehaviorGen", table = "xinco_id",
-    pkColumnName = "tablename",
-    valueColumnName = "last_id",
-    pkColumnValue = "xinco_dependency_behavior",
-    allocationSize = 1,
-    initialValue=1000)
-    @Column(name = "id", nullable = false)
+    @NotNull
+    @Column(name = "id")
     private Integer id;
-    @Column(name = "description", length = 45)
-    private String description;
     @Basic(optional = false)
-    @Column(name = "designation", nullable = false, length = 45)
+    @NotNull
+    @Size(min = 1, max = 45)
+    @Column(name = "designation")
     private String designation;
+    @Size(max = 45)
+    @Column(name = "description")
+    private String description;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoDependencyBehavior")
-    private Collection<XincoDependencyType> xincoDependencyTypeCollection;
+    private List<XincoDependencyType> xincoDependencyTypeList;
 
     public XincoDependencyBehavior() {
     }
@@ -65,14 +87,6 @@ public class XincoDependencyBehavior implements Serializable {
         this.id = id;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getDesignation() {
         return designation;
     }
@@ -81,13 +95,21 @@ public class XincoDependencyBehavior implements Serializable {
         this.designation = designation;
     }
 
-    @XmlTransient
-    public Collection<XincoDependencyType> getXincoDependencyTypeCollection() {
-        return xincoDependencyTypeCollection;
+    public String getDescription() {
+        return description;
     }
 
-    public void setXincoDependencyTypeCollection(Collection<XincoDependencyType> xincoDependencyTypeCollection) {
-        this.xincoDependencyTypeCollection = xincoDependencyTypeCollection;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @XmlTransient
+    public List<XincoDependencyType> getXincoDependencyTypeList() {
+        return xincoDependencyTypeList;
+    }
+
+    public void setXincoDependencyTypeList(List<XincoDependencyType> xincoDependencyTypeList) {
+        this.xincoDependencyTypeList = xincoDependencyTypeList;
     }
 
     @Override
@@ -99,7 +121,7 @@ public class XincoDependencyBehavior implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoDependencyBehavior)) {
             return false;
         }
@@ -112,7 +134,7 @@ public class XincoDependencyBehavior implements Serializable {
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoDependencyBehavior[id=" + id + "]";
+        return "com.bluecubs.xinco.core.server.persistence.XincoDependencyBehavior[ id=" + id + " ]";
     }
-
+    
 }

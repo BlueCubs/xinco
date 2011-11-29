@@ -1,9 +1,38 @@
+/*
+ * Copyright 2011 blueCubs.com.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
+ * 
+ * Name: XincoCoreAce
+ * 
+ * Description: //TODO: Add description
+ * 
+ * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * 
+ * ************************************************************
+ */
 package com.bluecubs.xinco.core.server.persistence;
 
 import com.bluecubs.xinco.core.server.AuditedEntityListener;
 import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -12,57 +41,49 @@ import javax.persistence.*;
 @Entity
 @Table(name = "xinco_core_ace")
 @EntityListeners(AuditedEntityListener.class)
+@XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "XincoCoreAce.findAll",
-    query = "SELECT x FROM XincoCoreAce x"),
-    @NamedQuery(name = "XincoCoreAce.findById",
-    query = "SELECT x FROM XincoCoreAce x WHERE x.id = :id"),
-    @NamedQuery(name = "XincoCoreAce.findByReadPermission",
-    query = "SELECT x FROM XincoCoreAce x WHERE x.readPermission = :readPermission"),
-    @NamedQuery(name = "XincoCoreAce.findByWritePermission",
-    query = "SELECT x FROM XincoCoreAce x WHERE x.writePermission = :writePermission"),
-    @NamedQuery(name = "XincoCoreAce.findByExecutePermission",
-    query = "SELECT x FROM XincoCoreAce x WHERE x.executePermission = :executePermission"),
-    @NamedQuery(name = "XincoCoreAce.findByAdminPermission",
-    query = "SELECT x FROM XincoCoreAce x WHERE x.adminPermission = :adminPermission")})
+    @NamedQuery(name = "XincoCoreAce.findAll", query = "SELECT x FROM XincoCoreAce x"),
+    @NamedQuery(name = "XincoCoreAce.findById", query = "SELECT x FROM XincoCoreAce x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreAce.findByReadPermission", query = "SELECT x FROM XincoCoreAce x WHERE x.readPermission = :readPermission"),
+    @NamedQuery(name = "XincoCoreAce.findByWritePermission", query = "SELECT x FROM XincoCoreAce x WHERE x.writePermission = :writePermission"),
+    @NamedQuery(name = "XincoCoreAce.findByExecutePermission", query = "SELECT x FROM XincoCoreAce x WHERE x.executePermission = :executePermission"),
+    @NamedQuery(name = "XincoCoreAce.findByAdminPermission", query = "SELECT x FROM XincoCoreAce x WHERE x.adminPermission = :adminPermission")})
 public class XincoCoreAce extends XincoAuditedObject implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreACEGen")
-    @TableGenerator(name = "XincoCoreACEGen", table = "xinco_id",
-    pkColumnName = "tablename",
-    valueColumnName = "last_id",
-    pkColumnValue = "xinco_core_ace",
-    allocationSize = 1,
-    initialValue=1000)
-    @Column(name = "id", nullable = false)
+    @NotNull
+    @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
-    @Column(name = "read_permission", nullable = false)
+    @NotNull
+    @Column(name = "read_permission")
     private boolean readPermission;
     @Basic(optional = false)
-    @Column(name = "write_permission", nullable = false)
+    @NotNull
+    @Column(name = "write_permission")
     private boolean writePermission;
     @Basic(optional = false)
-    @Column(name = "execute_permission", nullable = false)
+    @NotNull
+    @Column(name = "execute_permission")
     private boolean executePermission;
     @Basic(optional = false)
-    @Column(name = "admin_permission", nullable = false)
+    @NotNull
+    @Column(name = "admin_permission")
     private boolean adminPermission;
-    @JoinColumn(name = "xinco_core_data_id", referencedColumnName = "id", nullable = true)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private XincoCoreData xincoCoreData;
-    @JoinColumn(name = "xinco_core_group_id", referencedColumnName = "id", nullable = true)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private XincoCoreGroup xincoCoreGroup;
-    @JoinColumn(name = "xinco_core_node_id", referencedColumnName = "id", nullable = true)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private XincoCoreNode xincoCoreNode;
-    @JoinColumn(name = "xinco_core_user_id", referencedColumnName = "id", nullable = true)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "xinco_core_user_id", referencedColumnName = "id")
+    @ManyToOne
     private XincoCoreUser xincoCoreUser;
+    @JoinColumn(name = "xinco_core_data_id", referencedColumnName = "id")
+    @ManyToOne
+    private XincoCoreData xincoCoreData;
+    @JoinColumn(name = "xinco_core_node_id", referencedColumnName = "id")
+    @ManyToOne
+    private XincoCoreNode xincoCoreNode;
+    @JoinColumn(name = "xinco_core_group_id", referencedColumnName = "id")
+    @ManyToOne
+    private XincoCoreGroup xincoCoreGroup;
 
     public XincoCoreAce() {
     }
@@ -119,36 +140,36 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
         this.adminPermission = adminPermission;
     }
 
+    public XincoCoreUser getXincoCoreUser() {
+        return xincoCoreUser;
+    }
+
+    public void setXincoCoreUser(XincoCoreUser xincoCoreUser) {
+        this.xincoCoreUser = xincoCoreUser;
+    }
+
     public XincoCoreData getXincoCoreData() {
         return xincoCoreData;
     }
 
-    public void setXincoCoreData(XincoCoreData xincoCoreDataId) {
-        this.xincoCoreData = xincoCoreDataId;
-    }
-
-    public XincoCoreGroup getXincoCoreGroup() {
-        return xincoCoreGroup;
-    }
-
-    public void setXincoCoreGroup(XincoCoreGroup xincoCoreGroupId) {
-        this.xincoCoreGroup = xincoCoreGroupId;
+    public void setXincoCoreData(XincoCoreData xincoCoreData) {
+        this.xincoCoreData = xincoCoreData;
     }
 
     public XincoCoreNode getXincoCoreNode() {
         return xincoCoreNode;
     }
 
-    public void setXincoCoreNode(XincoCoreNode xincoCoreNodeId) {
-        this.xincoCoreNode = xincoCoreNodeId;
+    public void setXincoCoreNode(XincoCoreNode xincoCoreNode) {
+        this.xincoCoreNode = xincoCoreNode;
     }
 
-    public XincoCoreUser getXincoCoreUser() {
-        return xincoCoreUser;
+    public XincoCoreGroup getXincoCoreGroup() {
+        return xincoCoreGroup;
     }
 
-    public void setXincoCoreUser(XincoCoreUser xincoCoreUserId) {
-        this.xincoCoreUser = xincoCoreUserId;
+    public void setXincoCoreGroup(XincoCoreGroup xincoCoreGroup) {
+        this.xincoCoreGroup = xincoCoreGroup;
     }
 
     @Override
@@ -160,7 +181,7 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoCoreAce)) {
             return false;
         }
@@ -173,6 +194,7 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreAce[id=" + id + "]";
+        return "com.bluecubs.xinco.core.server.persistence.XincoCoreAce[ id=" + id + " ]";
     }
+    
 }

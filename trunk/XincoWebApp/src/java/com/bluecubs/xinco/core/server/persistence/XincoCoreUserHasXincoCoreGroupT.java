@@ -1,12 +1,36 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2011 blueCubs.com.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
+ * 
+ * Name: XincoCoreUserHasXincoCoreGroupT
+ * 
+ * Description: //TODO: Add description
+ * 
+ * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * 
+ * ************************************************************
  */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -14,21 +38,31 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "xinco_core_user_has_xinco_core_group_t")
-@NamedQueries({@NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findAll", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x"), @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findByRecordId", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x WHERE x.recordId = :recordId"), @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findByXincoCoreUserId", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x WHERE x.xincoCoreUserId = :xincoCoreUserId"), @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findByXincoCoreGroupId", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x WHERE x.xincoCoreGroupId = :xincoCoreGroupId"), @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findByStatusNumber", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x WHERE x.statusNumber = :statusNumber")})
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findAll", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x"),
+    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findByRecordId", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x WHERE x.recordId = :recordId"),
+    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findByXincoCoreUserId", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x WHERE x.xincoCoreUserId = :xincoCoreUserId"),
+    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findByXincoCoreGroupId", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x WHERE x.xincoCoreGroupId = :xincoCoreGroupId"),
+    @NamedQuery(name = "XincoCoreUserHasXincoCoreGroupT.findByStatusNumber", query = "SELECT x FROM XincoCoreUserHasXincoCoreGroupT x WHERE x.statusNumber = :statusNumber")})
 public class XincoCoreUserHasXincoCoreGroupT implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "record_id", nullable = false)
+    @NotNull
+    @Column(name = "record_id")
     private Integer recordId;
     @Basic(optional = false)
-    @Column(name = "xinco_core_user_id", nullable = false)
+    @NotNull
+    @Column(name = "xinco_core_user_id")
     private int xincoCoreUserId;
     @Basic(optional = false)
-    @Column(name = "xinco_core_group_id", nullable = false)
+    @NotNull
+    @Column(name = "xinco_core_group_id")
     private int xincoCoreGroupId;
     @Basic(optional = false)
-    @Column(name = "status_number", nullable = false)
+    @NotNull
+    @Column(name = "status_number")
     private int statusNumber;
 
     public XincoCoreUserHasXincoCoreGroupT() {
@@ -86,7 +120,7 @@ public class XincoCoreUserHasXincoCoreGroupT implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoCoreUserHasXincoCoreGroupT)) {
             return false;
         }
@@ -99,7 +133,7 @@ public class XincoCoreUserHasXincoCoreGroupT implements Serializable {
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupT[recordId=" + recordId + "]";
+        return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupT[ recordId=" + recordId + " ]";
     }
-
+    
 }

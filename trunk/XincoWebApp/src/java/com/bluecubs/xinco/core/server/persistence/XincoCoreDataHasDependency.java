@@ -1,8 +1,30 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2011 blueCubs.com.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
+ * 
+ * Name: XincoCoreDataHasDependency
+ * 
+ * Description: //TODO: Add description
+ * 
+ * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * 
+ * ************************************************************
  */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
@@ -11,27 +33,27 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 @Entity
 @Table(name = "xinco_core_data_has_dependency")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "XincoCoreDataHasDependency.findAll", query = "SELECT x FROM XincoCoreDataHasDependency x"),
-    @NamedQuery(name = "XincoCoreDataHasDependency.findByDependencyTypeId", query = "SELECT x FROM XincoCoreDataHasDependency x WHERE x.xincoCoreDataHasDependencyPK.dependencyTypeId = :dependencyTypeId"),
     @NamedQuery(name = "XincoCoreDataHasDependency.findByXincoCoreDataParentId", query = "SELECT x FROM XincoCoreDataHasDependency x WHERE x.xincoCoreDataHasDependencyPK.xincoCoreDataParentId = :xincoCoreDataParentId"),
-    @NamedQuery(name = "XincoCoreDataHasDependency.findByXincoCoreDataChildrenId", query = "SELECT x FROM XincoCoreDataHasDependency x WHERE x.xincoCoreDataHasDependencyPK.xincoCoreDataChildrenId = :xincoCoreDataChildrenId")})
+    @NamedQuery(name = "XincoCoreDataHasDependency.findByXincoCoreDataChildrenId", query = "SELECT x FROM XincoCoreDataHasDependency x WHERE x.xincoCoreDataHasDependencyPK.xincoCoreDataChildrenId = :xincoCoreDataChildrenId"),
+    @NamedQuery(name = "XincoCoreDataHasDependency.findByDependencyTypeId", query = "SELECT x FROM XincoCoreDataHasDependency x WHERE x.xincoCoreDataHasDependencyPK.dependencyTypeId = :dependencyTypeId")})
 public class XincoCoreDataHasDependency implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected XincoCoreDataHasDependencyPK xincoCoreDataHasDependencyPK;
-    @JoinColumn(name = "dependency_type_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "dependency_type_id", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private XincoDependencyType xincoDependencyType;
-    @JoinColumn(name = "xinco_core_data_parent_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "xinco_core_data_children_id", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private XincoCoreData xincoCoreData;
-    @JoinColumn(name = "xinco_core_data_children_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "xinco_core_data_parent_id", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private XincoCoreData xincoCoreData1;
 
@@ -42,8 +64,8 @@ public class XincoCoreDataHasDependency implements Serializable {
         this.xincoCoreDataHasDependencyPK = xincoCoreDataHasDependencyPK;
     }
 
-    public XincoCoreDataHasDependency(int dependencyTypeId, int xincoCoreDataParentId, int xincoCoreDataChildrenId) {
-        this.xincoCoreDataHasDependencyPK = new XincoCoreDataHasDependencyPK(dependencyTypeId, xincoCoreDataParentId, xincoCoreDataChildrenId);
+    public XincoCoreDataHasDependency(int xincoCoreDataParentId, int xincoCoreDataChildrenId, int dependencyTypeId) {
+        this.xincoCoreDataHasDependencyPK = new XincoCoreDataHasDependencyPK(xincoCoreDataParentId, xincoCoreDataChildrenId, dependencyTypeId);
     }
 
     public XincoCoreDataHasDependencyPK getXincoCoreDataHasDependencyPK() {
@@ -87,7 +109,7 @@ public class XincoCoreDataHasDependency implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoCoreDataHasDependency)) {
             return false;
         }
@@ -100,7 +122,7 @@ public class XincoCoreDataHasDependency implements Serializable {
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependency[xincoCoreDataHasDependencyPK=" + xincoCoreDataHasDependencyPK + "]";
+        return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependency[ xincoCoreDataHasDependencyPK=" + xincoCoreDataHasDependencyPK + " ]";
     }
-
+    
 }

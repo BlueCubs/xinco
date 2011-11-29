@@ -1,6 +1,29 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2011 blueCubs.com.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
+ * 
+ * Name: XincoCoreUser
+ * 
+ * Description: //TODO: Add description
+ * 
+ * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * 
+ * ************************************************************
  */
 package com.bluecubs.xinco.core.server.persistence;
 
@@ -10,6 +33,10 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -19,74 +46,73 @@ import javax.persistence.*;
 @EntityListeners(AuditedEntityListener.class)
 @Table(name = "xinco_core_user", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"username"})})
+@XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "XincoCoreUser.findAll",
-    query = "SELECT x FROM XincoCoreUser x"),
-    @NamedQuery(name = "XincoCoreUser.findById",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.id = :id"),
-    @NamedQuery(name = "XincoCoreUser.findByUsername",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.username = :username"),
-    @NamedQuery(name = "XincoCoreUser.findByUserpassword",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.userpassword = :userpassword"),
-    @NamedQuery(name = "XincoCoreUser.findByName",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.name = :name"),
-    @NamedQuery(name = "XincoCoreUser.findByFirstname",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.firstname = :firstname"),
-    @NamedQuery(name = "XincoCoreUser.findByEmail",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.email = :email"),
-    @NamedQuery(name = "XincoCoreUser.findByStatusNumber",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.statusNumber = :statusNumber"),
-    @NamedQuery(name = "XincoCoreUser.findByAttempts",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.attempts = :attempts"),
-    @NamedQuery(name = "XincoCoreUser.findByLastModified",
-    query = "SELECT x FROM XincoCoreUser x WHERE x.lastModified = :lastModified")})
+    @NamedQuery(name = "XincoCoreUser.findAll", query = "SELECT x FROM XincoCoreUser x"),
+    @NamedQuery(name = "XincoCoreUser.findById", query = "SELECT x FROM XincoCoreUser x WHERE x.id = :id"),
+    @NamedQuery(name = "XincoCoreUser.findByUsername", query = "SELECT x FROM XincoCoreUser x WHERE x.username = :username"),
+    @NamedQuery(name = "XincoCoreUser.findByUserpassword", query = "SELECT x FROM XincoCoreUser x WHERE x.userpassword = :userpassword"),
+    @NamedQuery(name = "XincoCoreUser.findByName", query = "SELECT x FROM XincoCoreUser x WHERE x.name = :name"),
+    @NamedQuery(name = "XincoCoreUser.findByFirstname", query = "SELECT x FROM XincoCoreUser x WHERE x.firstname = :firstname"),
+    @NamedQuery(name = "XincoCoreUser.findByEmail", query = "SELECT x FROM XincoCoreUser x WHERE x.email = :email"),
+    @NamedQuery(name = "XincoCoreUser.findByStatusNumber", query = "SELECT x FROM XincoCoreUser x WHERE x.statusNumber = :statusNumber"),
+    @NamedQuery(name = "XincoCoreUser.findByAttempts", query = "SELECT x FROM XincoCoreUser x WHERE x.attempts = :attempts"),
+    @NamedQuery(name = "XincoCoreUser.findByLastModified", query = "SELECT x FROM XincoCoreUser x WHERE x.lastModified = :lastModified")})
 public class XincoCoreUser extends XincoAuditedObject implements Serializable {
-    @Basic(optional = false)
-    @Column(name = "last_modified", nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date lastModified;
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreUserGen")
-    @TableGenerator(name = "XincoCoreUserGen", table = "xinco_id",
-    pkColumnName = "tablename",
-    valueColumnName = "last_id",
-    pkColumnValue = "xinco_core_user",
-    allocationSize = 1,
-    initialValue=1000)
-    @Column(name = "id", nullable = false)
+    @NotNull
+    @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
-    @Column(name = "username", nullable = false, length = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "username")
     private String username;
     @Basic(optional = false)
-    @Column(name = "userpassword", nullable = false, length = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "userpassword")
     private String userpassword;
     @Basic(optional = false)
-    @Column(name = "name", nullable = false, length = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "name")
     private String name;
     @Basic(optional = false)
-    @Column(name = "firstname", nullable = false, length = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "firstname")
     private String firstname;
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
-    @Column(name = "email", nullable = false, length = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "email")
     private String email;
     @Basic(optional = false)
-    @Column(name = "status_number", nullable = false)
+    @NotNull
+    @Column(name = "status_number")
     private int statusNumber;
     @Basic(optional = false)
-    @Column(name = "attempts", nullable = false)
+    @NotNull
+    @Column(name = "attempts")
     private int attempts;
-    @OneToMany(mappedBy = "xincoCoreUser", fetch = FetchType.LAZY)
-    private List<XincoCoreAce> xincoCoreAceList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreUser", fetch = FetchType.LAZY)
-    private List<XincoCoreLog> xincoCoreLogList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreUser", fetch = FetchType.LAZY)
-    private List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreUser", fetch = FetchType.LAZY)
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "last_modified")
+    @Temporal(TemporalType.DATE)
+    private Date lastModified;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreUser")
     private List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordList;
+    @OneToMany(mappedBy = "xincoCoreUser")
+    private List<XincoCoreAce> xincoCoreAceList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreUser")
+    private List<XincoCoreLog> xincoCoreLogList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreUser")
+    private List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList;
 
     public XincoCoreUser() {
     }
@@ -179,6 +205,16 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
         this.lastModified = lastModified;
     }
 
+    @XmlTransient
+    public List<XincoCoreUserModifiedRecord> getXincoCoreUserModifiedRecordList() {
+        return xincoCoreUserModifiedRecordList;
+    }
+
+    public void setXincoCoreUserModifiedRecordList(List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordList) {
+        this.xincoCoreUserModifiedRecordList = xincoCoreUserModifiedRecordList;
+    }
+
+    @XmlTransient
     public List<XincoCoreAce> getXincoCoreAceList() {
         return xincoCoreAceList;
     }
@@ -187,6 +223,7 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
         this.xincoCoreAceList = xincoCoreAceList;
     }
 
+    @XmlTransient
     public List<XincoCoreLog> getXincoCoreLogList() {
         return xincoCoreLogList;
     }
@@ -195,20 +232,13 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
         this.xincoCoreLogList = xincoCoreLogList;
     }
 
-    public List<XincoCoreUserHasXincoCoreGroup> getXincoCoreUserHasXincoCoreGroupList1() {
-        return xincoCoreUserHasXincoCoreGroupList1;
+    @XmlTransient
+    public List<XincoCoreUserHasXincoCoreGroup> getXincoCoreUserHasXincoCoreGroupList() {
+        return xincoCoreUserHasXincoCoreGroupList;
     }
 
-    public void setXincoCoreUserHasXincoCoreGroupList1(List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList1) {
-        this.xincoCoreUserHasXincoCoreGroupList1 = xincoCoreUserHasXincoCoreGroupList1;
-    }
-
-    public List<XincoCoreUserModifiedRecord> getXincoCoreUserModifiedRecordList() {
-        return xincoCoreUserModifiedRecordList;
-    }
-
-    public void setXincoCoreUserModifiedRecordList(List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordList) {
-        this.xincoCoreUserModifiedRecordList = xincoCoreUserModifiedRecordList;
+    public void setXincoCoreUserHasXincoCoreGroupList(List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList) {
+        this.xincoCoreUserHasXincoCoreGroupList = xincoCoreUserHasXincoCoreGroupList;
     }
 
     @Override
@@ -220,7 +250,7 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoCoreUser)) {
             return false;
         }
@@ -233,6 +263,6 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreUser[id=" + id + "]";
+        return "com.bluecubs.xinco.core.server.persistence.XincoCoreUser[ id=" + id + " ]";
     }
 }

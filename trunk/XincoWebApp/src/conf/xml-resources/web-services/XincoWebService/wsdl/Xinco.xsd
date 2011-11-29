@@ -137,7 +137,7 @@
             <xs:element name="attrib_double" type="xs:double" />
             <xs:element name="attrib_int" type="xs:int" />
             <xs:element name="attrib_text" type="xs:string" minOccurs="0" />
-            <xs:element name="attrib_unsignedint" type="xs:long" />
+            <xs:element name="attrib_unsignedint" type="xs:int" />
             <xs:element name="attrib_varchar" type="xs:string" minOccurs="0" />
             <xs:element name="attribute_id" type="xs:int" />
             <xs:element name="change" type="xs:boolean" />

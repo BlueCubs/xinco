@@ -1,19 +1,45 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2011 blueCubs.com.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
+ * 
+ * Name: XincoCoreUserModifiedRecord
+ * 
+ * Description: //TODO: Add description
+ * 
+ * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * 
+ * ************************************************************
  */
 package com.bluecubs.xinco.core.server.persistence;
+
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-
 
 /**
  *
- * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
-@Entity@Table(name = "xinco_core_user_modified_record")
+@Entity
+@Table(name = "xinco_core_user_modified_record")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "XincoCoreUserModifiedRecord.findAll", query = "SELECT x FROM XincoCoreUserModifiedRecord x"),
@@ -26,14 +52,17 @@ public class XincoCoreUserModifiedRecord implements Serializable {
     @EmbeddedId
     protected XincoCoreUserModifiedRecordPK xincoCoreUserModifiedRecordPK;
     @Basic(optional = false)
-    @Column(name = "mod_Time", nullable = false)
+    @NotNull
+    @Column(name = "mod_Time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date modTime;
     @Basic(optional = false)
-    @Column(name = "mod_Reason", nullable = false, length = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "mod_Reason")
     private String modReason;
-    @JoinColumn(name = "id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private XincoCoreUser xincoCoreUser;
 
     public XincoCoreUserModifiedRecord() {
@@ -43,13 +72,14 @@ public class XincoCoreUserModifiedRecord implements Serializable {
         this.xincoCoreUserModifiedRecordPK = xincoCoreUserModifiedRecordPK;
     }
 
-    public XincoCoreUserModifiedRecord(XincoCoreUserModifiedRecordPK xincoCoreUserModifiedRecordPK, Date modTime) {
+    public XincoCoreUserModifiedRecord(XincoCoreUserModifiedRecordPK xincoCoreUserModifiedRecordPK, Date modTime, String modReason) {
         this.xincoCoreUserModifiedRecordPK = xincoCoreUserModifiedRecordPK;
         this.modTime = modTime;
+        this.modReason = modReason;
     }
 
-    public XincoCoreUserModifiedRecord(int id, int record_id) {
-        this.xincoCoreUserModifiedRecordPK = new XincoCoreUserModifiedRecordPK(id, record_id);
+    public XincoCoreUserModifiedRecord(int id, int recordId) {
+        this.xincoCoreUserModifiedRecordPK = new XincoCoreUserModifiedRecordPK(id, recordId);
     }
 
     public XincoCoreUserModifiedRecordPK getXincoCoreUserModifiedRecordPK() {
@@ -93,6 +123,7 @@ public class XincoCoreUserModifiedRecord implements Serializable {
 
     @Override
     public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoCoreUserModifiedRecord)) {
             return false;
         }
@@ -107,6 +138,5 @@ public class XincoCoreUserModifiedRecord implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecord[ xincoCoreUserModifiedRecordPK=" + xincoCoreUserModifiedRecordPK + " ]";
     }
-
     
 }

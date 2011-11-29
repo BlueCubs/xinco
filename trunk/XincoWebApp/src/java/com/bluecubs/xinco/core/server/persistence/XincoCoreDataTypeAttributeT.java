@@ -1,12 +1,37 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2011 blueCubs.com.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
+ * 
+ * Name: XincoCoreDataTypeAttributeT
+ * 
+ * Description: //TODO: Add description
+ * 
+ * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * 
+ * ************************************************************
  */
-
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -14,27 +39,43 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "xinco_core_data_type_attribute_t")
-@NamedQueries({@NamedQuery(name = "XincoCoreDataTypeAttributeT.findAll", query = "SELECT x FROM XincoCoreDataTypeAttributeT x"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByRecordId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.recordId = :recordId"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByXincoCoreDataTypeId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.xincoCoreDataTypeId = :xincoCoreDataTypeId"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByAttributeId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.attributeId = :attributeId"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByDesignation", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.designation = :designation"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByDataType", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.dataType = :dataType"), @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByAttrSize", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.attrSize = :attrSize")})
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "XincoCoreDataTypeAttributeT.findAll", query = "SELECT x FROM XincoCoreDataTypeAttributeT x"),
+    @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByRecordId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.recordId = :recordId"),
+    @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByXincoCoreDataTypeId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.xincoCoreDataTypeId = :xincoCoreDataTypeId"),
+    @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByAttributeId", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.attributeId = :attributeId"),
+    @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByDesignation", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.designation = :designation"),
+    @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByDataType", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.dataType = :dataType"),
+    @NamedQuery(name = "XincoCoreDataTypeAttributeT.findByAttrSize", query = "SELECT x FROM XincoCoreDataTypeAttributeT x WHERE x.attrSize = :attrSize")})
 public class XincoCoreDataTypeAttributeT implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "record_id", nullable = false)
+    @NotNull
+    @Column(name = "record_id")
     private Integer recordId;
     @Basic(optional = false)
-    @Column(name = "xinco_core_data_type_id", nullable = false)
+    @NotNull
+    @Column(name = "xinco_core_data_type_id")
     private int xincoCoreDataTypeId;
     @Basic(optional = false)
-    @Column(name = "attribute_id", nullable = false)
+    @NotNull
+    @Column(name = "attribute_id")
     private int attributeId;
     @Basic(optional = false)
-    @Column(name = "designation", nullable = false, length = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "designation")
     private String designation;
     @Basic(optional = false)
-    @Column(name = "data_type", nullable = false, length = 255)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "data_type")
     private String dataType;
     @Basic(optional = false)
-    @Column(name = "attr_size", nullable = false)
+    @NotNull
+    @Column(name = "attr_size")
     private int attrSize;
 
     public XincoCoreDataTypeAttributeT() {
@@ -110,7 +151,7 @@ public class XincoCoreDataTypeAttributeT implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoCoreDataTypeAttributeT)) {
             return false;
         }
@@ -123,7 +164,7 @@ public class XincoCoreDataTypeAttributeT implements Serializable {
 
     @Override
     public String toString() {
-        return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributeT[recordId=" + recordId + "]";
+        return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributeT[ recordId=" + recordId + " ]";
     }
-
+    
 }

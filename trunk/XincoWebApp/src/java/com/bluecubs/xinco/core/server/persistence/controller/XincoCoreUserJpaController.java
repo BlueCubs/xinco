@@ -1,25 +1,49 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2011 blueCubs.com.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
+ * 
+ * Name: XincoCoreUserJpaController
+ * 
+ * Description: //TODO: Add description
+ * 
+ * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * 
+ * ************************************************************
  */
 package com.bluecubs.xinco.core.server.persistence.controller;
+
 import com.bluecubs.xinco.core.server.persistence.*;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
-import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-
+import java.util.ArrayList;
+import java.util.List;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 public class XincoCoreUserJpaController implements Serializable {
 
@@ -32,23 +56,29 @@ public class XincoCoreUserJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(XincoCoreUser xincoCoreUser) {
+    public void create(XincoCoreUser xincoCoreUser) throws PreexistingEntityException, Exception {
+        if (xincoCoreUser.getXincoCoreUserModifiedRecordList() == null) {
+            xincoCoreUser.setXincoCoreUserModifiedRecordList(new ArrayList<XincoCoreUserModifiedRecord>());
+        }
         if (xincoCoreUser.getXincoCoreAceList() == null) {
             xincoCoreUser.setXincoCoreAceList(new ArrayList<XincoCoreAce>());
         }
         if (xincoCoreUser.getXincoCoreLogList() == null) {
             xincoCoreUser.setXincoCoreLogList(new ArrayList<XincoCoreLog>());
         }
-        if (xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList1() == null) {
-            xincoCoreUser.setXincoCoreUserHasXincoCoreGroupList1(new ArrayList<XincoCoreUserHasXincoCoreGroup>());
-        }
-        if (xincoCoreUser.getXincoCoreUserModifiedRecordList() == null) {
-            xincoCoreUser.setXincoCoreUserModifiedRecordList(new ArrayList<XincoCoreUserModifiedRecord>());
+        if (xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList() == null) {
+            xincoCoreUser.setXincoCoreUserHasXincoCoreGroupList(new ArrayList<XincoCoreUserHasXincoCoreGroup>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            List<XincoCoreUserModifiedRecord> attachedXincoCoreUserModifiedRecordList = new ArrayList<XincoCoreUserModifiedRecord>();
+            for (XincoCoreUserModifiedRecord xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecordToAttach : xincoCoreUser.getXincoCoreUserModifiedRecordList()) {
+                xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecordToAttach = em.getReference(xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecordToAttach.getClass(), xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecordToAttach.getXincoCoreUserModifiedRecordPK());
+                attachedXincoCoreUserModifiedRecordList.add(xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecordToAttach);
+            }
+            xincoCoreUser.setXincoCoreUserModifiedRecordList(attachedXincoCoreUserModifiedRecordList);
             List<XincoCoreAce> attachedXincoCoreAceList = new ArrayList<XincoCoreAce>();
             for (XincoCoreAce xincoCoreAceListXincoCoreAceToAttach : xincoCoreUser.getXincoCoreAceList()) {
                 xincoCoreAceListXincoCoreAceToAttach = em.getReference(xincoCoreAceListXincoCoreAceToAttach.getClass(), xincoCoreAceListXincoCoreAceToAttach.getId());
@@ -61,19 +91,22 @@ public class XincoCoreUserJpaController implements Serializable {
                 attachedXincoCoreLogList.add(xincoCoreLogListXincoCoreLogToAttach);
             }
             xincoCoreUser.setXincoCoreLogList(attachedXincoCoreLogList);
-            List<XincoCoreUserHasXincoCoreGroup> attachedXincoCoreUserHasXincoCoreGroupList1 = new ArrayList<XincoCoreUserHasXincoCoreGroup>();
-            for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupList1XincoCoreUserHasXincoCoreGroupToAttach : xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList1()) {
-                xincoCoreUserHasXincoCoreGroupList1XincoCoreUserHasXincoCoreGroupToAttach = em.getReference(xincoCoreUserHasXincoCoreGroupList1XincoCoreUserHasXincoCoreGroupToAttach.getClass(), xincoCoreUserHasXincoCoreGroupList1XincoCoreUserHasXincoCoreGroupToAttach.getXincoCoreUserHasXincoCoreGroupPK());
-                attachedXincoCoreUserHasXincoCoreGroupList1.add(xincoCoreUserHasXincoCoreGroupList1XincoCoreUserHasXincoCoreGroupToAttach);
+            List<XincoCoreUserHasXincoCoreGroup> attachedXincoCoreUserHasXincoCoreGroupList = new ArrayList<XincoCoreUserHasXincoCoreGroup>();
+            for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroupToAttach : xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList()) {
+                xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroupToAttach = em.getReference(xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroupToAttach.getClass(), xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroupToAttach.getXincoCoreUserHasXincoCoreGroupPK());
+                attachedXincoCoreUserHasXincoCoreGroupList.add(xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroupToAttach);
             }
-            xincoCoreUser.setXincoCoreUserHasXincoCoreGroupList1(attachedXincoCoreUserHasXincoCoreGroupList1);
-            List<XincoCoreUserModifiedRecord> attachedXincoCoreUserModifiedRecordList = new ArrayList<XincoCoreUserModifiedRecord>();
-            for (XincoCoreUserModifiedRecord xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecordToAttach : xincoCoreUser.getXincoCoreUserModifiedRecordList()) {
-                xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecordToAttach = em.getReference(xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecordToAttach.getClass(), xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecordToAttach.getXincoCoreUserModifiedRecordPK());
-                attachedXincoCoreUserModifiedRecordList.add(xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecordToAttach);
-            }
-            xincoCoreUser.setXincoCoreUserModifiedRecordList(attachedXincoCoreUserModifiedRecordList);
+            xincoCoreUser.setXincoCoreUserHasXincoCoreGroupList(attachedXincoCoreUserHasXincoCoreGroupList);
             em.persist(xincoCoreUser);
+            for (XincoCoreUserModifiedRecord xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord : xincoCoreUser.getXincoCoreUserModifiedRecordList()) {
+                XincoCoreUser oldXincoCoreUserOfXincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord = xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord.getXincoCoreUser();
+                xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord.setXincoCoreUser(xincoCoreUser);
+                xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord = em.merge(xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord);
+                if (oldXincoCoreUserOfXincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord != null) {
+                    oldXincoCoreUserOfXincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord.getXincoCoreUserModifiedRecordList().remove(xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord);
+                    oldXincoCoreUserOfXincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord = em.merge(oldXincoCoreUserOfXincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord);
+                }
+            }
             for (XincoCoreAce xincoCoreAceListXincoCoreAce : xincoCoreUser.getXincoCoreAceList()) {
                 XincoCoreUser oldXincoCoreUserOfXincoCoreAceListXincoCoreAce = xincoCoreAceListXincoCoreAce.getXincoCoreUser();
                 xincoCoreAceListXincoCoreAce.setXincoCoreUser(xincoCoreUser);
@@ -92,25 +125,21 @@ public class XincoCoreUserJpaController implements Serializable {
                     oldXincoCoreUserOfXincoCoreLogListXincoCoreLog = em.merge(oldXincoCoreUserOfXincoCoreLogListXincoCoreLog);
                 }
             }
-            for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupList1XincoCoreUserHasXincoCoreGroup : xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList1()) {
-                XincoCoreUser oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupList1XincoCoreUserHasXincoCoreGroup = xincoCoreUserHasXincoCoreGroupList1XincoCoreUserHasXincoCoreGroup.getXincoCoreUser();
-                xincoCoreUserHasXincoCoreGroupList1XincoCoreUserHasXincoCoreGroup.setXincoCoreUser(xincoCoreUser);
-                xincoCoreUserHasXincoCoreGroupList1XincoCoreUserHasXincoCoreGroup = em.merge(xincoCoreUserHasXincoCoreGroupList1XincoCoreUserHasXincoCoreGroup);
-                if (oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupList1XincoCoreUserHasXincoCoreGroup != null) {
-                    oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupList1XincoCoreUserHasXincoCoreGroup.getXincoCoreUserHasXincoCoreGroupList1().remove(xincoCoreUserHasXincoCoreGroupList1XincoCoreUserHasXincoCoreGroup);
-                    oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupList1XincoCoreUserHasXincoCoreGroup = em.merge(oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupList1XincoCoreUserHasXincoCoreGroup);
-                }
-            }
-            for (XincoCoreUserModifiedRecord xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord : xincoCoreUser.getXincoCoreUserModifiedRecordList()) {
-                XincoCoreUser oldXincoCoreUserOfXincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord = xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord.getXincoCoreUser();
-                xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord.setXincoCoreUser(xincoCoreUser);
-                xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord = em.merge(xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord);
-                if (oldXincoCoreUserOfXincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord != null) {
-                    oldXincoCoreUserOfXincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord.getXincoCoreUserModifiedRecordList().remove(xincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord);
-                    oldXincoCoreUserOfXincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord = em.merge(oldXincoCoreUserOfXincoCoreUserModifiedRecordListXincoCoreUserModifiedRecord);
+            for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroup : xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList()) {
+                XincoCoreUser oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroup = xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroup.getXincoCoreUser();
+                xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroup.setXincoCoreUser(xincoCoreUser);
+                xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroup = em.merge(xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroup);
+                if (oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroup != null) {
+                    oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroup.getXincoCoreUserHasXincoCoreGroupList().remove(xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroup);
+                    oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroup = em.merge(oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroup);
                 }
             }
             em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (findXincoCoreUser(xincoCoreUser.getId()) != null) {
+                throw new PreexistingEntityException("XincoCoreUser " + xincoCoreUser + " already exists.", ex);
+            }
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -124,31 +153,15 @@ public class XincoCoreUserJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             XincoCoreUser persistentXincoCoreUser = em.find(XincoCoreUser.class, xincoCoreUser.getId());
+            List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordListOld = persistentXincoCoreUser.getXincoCoreUserModifiedRecordList();
+            List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordListNew = xincoCoreUser.getXincoCoreUserModifiedRecordList();
             List<XincoCoreAce> xincoCoreAceListOld = persistentXincoCoreUser.getXincoCoreAceList();
             List<XincoCoreAce> xincoCoreAceListNew = xincoCoreUser.getXincoCoreAceList();
             List<XincoCoreLog> xincoCoreLogListOld = persistentXincoCoreUser.getXincoCoreLogList();
             List<XincoCoreLog> xincoCoreLogListNew = xincoCoreUser.getXincoCoreLogList();
-            List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList1Old = persistentXincoCoreUser.getXincoCoreUserHasXincoCoreGroupList1();
-            List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList1New = xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList1();
-            List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordListOld = persistentXincoCoreUser.getXincoCoreUserModifiedRecordList();
-            List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordListNew = xincoCoreUser.getXincoCoreUserModifiedRecordList();
+            List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupListOld = persistentXincoCoreUser.getXincoCoreUserHasXincoCoreGroupList();
+            List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupListNew = xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList();
             List<String> illegalOrphanMessages = null;
-            for (XincoCoreLog xincoCoreLogListOldXincoCoreLog : xincoCoreLogListOld) {
-                if (!xincoCoreLogListNew.contains(xincoCoreLogListOldXincoCoreLog)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain XincoCoreLog " + xincoCoreLogListOldXincoCoreLog + " since its xincoCoreUser field is not nullable.");
-                }
-            }
-            for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupList1OldXincoCoreUserHasXincoCoreGroup : xincoCoreUserHasXincoCoreGroupList1Old) {
-                if (!xincoCoreUserHasXincoCoreGroupList1New.contains(xincoCoreUserHasXincoCoreGroupList1OldXincoCoreUserHasXincoCoreGroup)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain XincoCoreUserHasXincoCoreGroup " + xincoCoreUserHasXincoCoreGroupList1OldXincoCoreUserHasXincoCoreGroup + " since its xincoCoreUser field is not nullable.");
-                }
-            }
             for (XincoCoreUserModifiedRecord xincoCoreUserModifiedRecordListOldXincoCoreUserModifiedRecord : xincoCoreUserModifiedRecordListOld) {
                 if (!xincoCoreUserModifiedRecordListNew.contains(xincoCoreUserModifiedRecordListOldXincoCoreUserModifiedRecord)) {
                     if (illegalOrphanMessages == null) {
@@ -157,9 +170,32 @@ public class XincoCoreUserJpaController implements Serializable {
                     illegalOrphanMessages.add("You must retain XincoCoreUserModifiedRecord " + xincoCoreUserModifiedRecordListOldXincoCoreUserModifiedRecord + " since its xincoCoreUser field is not nullable.");
                 }
             }
+            for (XincoCoreLog xincoCoreLogListOldXincoCoreLog : xincoCoreLogListOld) {
+                if (!xincoCoreLogListNew.contains(xincoCoreLogListOldXincoCoreLog)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain XincoCoreLog " + xincoCoreLogListOldXincoCoreLog + " since its xincoCoreUser field is not nullable.");
+                }
+            }
+            for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupListOldXincoCoreUserHasXincoCoreGroup : xincoCoreUserHasXincoCoreGroupListOld) {
+                if (!xincoCoreUserHasXincoCoreGroupListNew.contains(xincoCoreUserHasXincoCoreGroupListOldXincoCoreUserHasXincoCoreGroup)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain XincoCoreUserHasXincoCoreGroup " + xincoCoreUserHasXincoCoreGroupListOldXincoCoreUserHasXincoCoreGroup + " since its xincoCoreUser field is not nullable.");
+                }
+            }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
+            List<XincoCoreUserModifiedRecord> attachedXincoCoreUserModifiedRecordListNew = new ArrayList<XincoCoreUserModifiedRecord>();
+            for (XincoCoreUserModifiedRecord xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach : xincoCoreUserModifiedRecordListNew) {
+                xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach = em.getReference(xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach.getClass(), xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach.getXincoCoreUserModifiedRecordPK());
+                attachedXincoCoreUserModifiedRecordListNew.add(xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach);
+            }
+            xincoCoreUserModifiedRecordListNew = attachedXincoCoreUserModifiedRecordListNew;
+            xincoCoreUser.setXincoCoreUserModifiedRecordList(xincoCoreUserModifiedRecordListNew);
             List<XincoCoreAce> attachedXincoCoreAceListNew = new ArrayList<XincoCoreAce>();
             for (XincoCoreAce xincoCoreAceListNewXincoCoreAceToAttach : xincoCoreAceListNew) {
                 xincoCoreAceListNewXincoCoreAceToAttach = em.getReference(xincoCoreAceListNewXincoCoreAceToAttach.getClass(), xincoCoreAceListNewXincoCoreAceToAttach.getId());
@@ -174,21 +210,25 @@ public class XincoCoreUserJpaController implements Serializable {
             }
             xincoCoreLogListNew = attachedXincoCoreLogListNew;
             xincoCoreUser.setXincoCoreLogList(xincoCoreLogListNew);
-            List<XincoCoreUserHasXincoCoreGroup> attachedXincoCoreUserHasXincoCoreGroupList1New = new ArrayList<XincoCoreUserHasXincoCoreGroup>();
-            for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroupToAttach : xincoCoreUserHasXincoCoreGroupList1New) {
-                xincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroupToAttach = em.getReference(xincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroupToAttach.getClass(), xincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroupToAttach.getXincoCoreUserHasXincoCoreGroupPK());
-                attachedXincoCoreUserHasXincoCoreGroupList1New.add(xincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroupToAttach);
+            List<XincoCoreUserHasXincoCoreGroup> attachedXincoCoreUserHasXincoCoreGroupListNew = new ArrayList<XincoCoreUserHasXincoCoreGroup>();
+            for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach : xincoCoreUserHasXincoCoreGroupListNew) {
+                xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach = em.getReference(xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach.getClass(), xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach.getXincoCoreUserHasXincoCoreGroupPK());
+                attachedXincoCoreUserHasXincoCoreGroupListNew.add(xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach);
             }
-            xincoCoreUserHasXincoCoreGroupList1New = attachedXincoCoreUserHasXincoCoreGroupList1New;
-            xincoCoreUser.setXincoCoreUserHasXincoCoreGroupList1(xincoCoreUserHasXincoCoreGroupList1New);
-            List<XincoCoreUserModifiedRecord> attachedXincoCoreUserModifiedRecordListNew = new ArrayList<XincoCoreUserModifiedRecord>();
-            for (XincoCoreUserModifiedRecord xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach : xincoCoreUserModifiedRecordListNew) {
-                xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach = em.getReference(xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach.getClass(), xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach.getXincoCoreUserModifiedRecordPK());
-                attachedXincoCoreUserModifiedRecordListNew.add(xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecordToAttach);
-            }
-            xincoCoreUserModifiedRecordListNew = attachedXincoCoreUserModifiedRecordListNew;
-            xincoCoreUser.setXincoCoreUserModifiedRecordList(xincoCoreUserModifiedRecordListNew);
+            xincoCoreUserHasXincoCoreGroupListNew = attachedXincoCoreUserHasXincoCoreGroupListNew;
+            xincoCoreUser.setXincoCoreUserHasXincoCoreGroupList(xincoCoreUserHasXincoCoreGroupListNew);
             xincoCoreUser = em.merge(xincoCoreUser);
+            for (XincoCoreUserModifiedRecord xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord : xincoCoreUserModifiedRecordListNew) {
+                if (!xincoCoreUserModifiedRecordListOld.contains(xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord)) {
+                    XincoCoreUser oldXincoCoreUserOfXincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord = xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord.getXincoCoreUser();
+                    xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord.setXincoCoreUser(xincoCoreUser);
+                    xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord = em.merge(xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord);
+                    if (oldXincoCoreUserOfXincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord != null && !oldXincoCoreUserOfXincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord.equals(xincoCoreUser)) {
+                        oldXincoCoreUserOfXincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord.getXincoCoreUserModifiedRecordList().remove(xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord);
+                        oldXincoCoreUserOfXincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord = em.merge(oldXincoCoreUserOfXincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord);
+                    }
+                }
+            }
             for (XincoCoreAce xincoCoreAceListOldXincoCoreAce : xincoCoreAceListOld) {
                 if (!xincoCoreAceListNew.contains(xincoCoreAceListOldXincoCoreAce)) {
                     xincoCoreAceListOldXincoCoreAce.setXincoCoreUser(null);
@@ -217,25 +257,14 @@ public class XincoCoreUserJpaController implements Serializable {
                     }
                 }
             }
-            for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroup : xincoCoreUserHasXincoCoreGroupList1New) {
-                if (!xincoCoreUserHasXincoCoreGroupList1Old.contains(xincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroup)) {
-                    XincoCoreUser oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroup = xincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroup.getXincoCoreUser();
-                    xincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroup.setXincoCoreUser(xincoCoreUser);
-                    xincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroup = em.merge(xincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroup);
-                    if (oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroup != null && !oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroup.equals(xincoCoreUser)) {
-                        oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroup.getXincoCoreUserHasXincoCoreGroupList1().remove(xincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroup);
-                        oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroup = em.merge(oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupList1NewXincoCoreUserHasXincoCoreGroup);
-                    }
-                }
-            }
-            for (XincoCoreUserModifiedRecord xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord : xincoCoreUserModifiedRecordListNew) {
-                if (!xincoCoreUserModifiedRecordListOld.contains(xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord)) {
-                    XincoCoreUser oldXincoCoreUserOfXincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord = xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord.getXincoCoreUser();
-                    xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord.setXincoCoreUser(xincoCoreUser);
-                    xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord = em.merge(xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord);
-                    if (oldXincoCoreUserOfXincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord != null && !oldXincoCoreUserOfXincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord.equals(xincoCoreUser)) {
-                        oldXincoCoreUserOfXincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord.getXincoCoreUserModifiedRecordList().remove(xincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord);
-                        oldXincoCoreUserOfXincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord = em.merge(oldXincoCoreUserOfXincoCoreUserModifiedRecordListNewXincoCoreUserModifiedRecord);
+            for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroup : xincoCoreUserHasXincoCoreGroupListNew) {
+                if (!xincoCoreUserHasXincoCoreGroupListOld.contains(xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroup)) {
+                    XincoCoreUser oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroup = xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroup.getXincoCoreUser();
+                    xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroup.setXincoCoreUser(xincoCoreUser);
+                    xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroup = em.merge(xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroup);
+                    if (oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroup != null && !oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroup.equals(xincoCoreUser)) {
+                        oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroup.getXincoCoreUserHasXincoCoreGroupList().remove(xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroup);
+                        oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroup = em.merge(oldXincoCoreUserOfXincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroup);
                     }
                 }
             }
@@ -269,6 +298,13 @@ public class XincoCoreUserJpaController implements Serializable {
                 throw new NonexistentEntityException("The xincoCoreUser with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
+            List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordListOrphanCheck = xincoCoreUser.getXincoCoreUserModifiedRecordList();
+            for (XincoCoreUserModifiedRecord xincoCoreUserModifiedRecordListOrphanCheckXincoCoreUserModifiedRecord : xincoCoreUserModifiedRecordListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This XincoCoreUser (" + xincoCoreUser + ") cannot be destroyed since the XincoCoreUserModifiedRecord " + xincoCoreUserModifiedRecordListOrphanCheckXincoCoreUserModifiedRecord + " in its xincoCoreUserModifiedRecordList field has a non-nullable xincoCoreUser field.");
+            }
             List<XincoCoreLog> xincoCoreLogListOrphanCheck = xincoCoreUser.getXincoCoreLogList();
             for (XincoCoreLog xincoCoreLogListOrphanCheckXincoCoreLog : xincoCoreLogListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
@@ -276,19 +312,12 @@ public class XincoCoreUserJpaController implements Serializable {
                 }
                 illegalOrphanMessages.add("This XincoCoreUser (" + xincoCoreUser + ") cannot be destroyed since the XincoCoreLog " + xincoCoreLogListOrphanCheckXincoCoreLog + " in its xincoCoreLogList field has a non-nullable xincoCoreUser field.");
             }
-            List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList1OrphanCheck = xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList1();
-            for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupList1OrphanCheckXincoCoreUserHasXincoCoreGroup : xincoCoreUserHasXincoCoreGroupList1OrphanCheck) {
+            List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupListOrphanCheck = xincoCoreUser.getXincoCoreUserHasXincoCoreGroupList();
+            for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupListOrphanCheckXincoCoreUserHasXincoCoreGroup : xincoCoreUserHasXincoCoreGroupListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This XincoCoreUser (" + xincoCoreUser + ") cannot be destroyed since the XincoCoreUserHasXincoCoreGroup " + xincoCoreUserHasXincoCoreGroupList1OrphanCheckXincoCoreUserHasXincoCoreGroup + " in its xincoCoreUserHasXincoCoreGroupList1 field has a non-nullable xincoCoreUser field.");
-            }
-            List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordListOrphanCheck = xincoCoreUser.getXincoCoreUserModifiedRecordList();
-            for (XincoCoreUserModifiedRecord xincoCoreUserModifiedRecordListOrphanCheckXincoCoreUserModifiedRecord : xincoCoreUserModifiedRecordListOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This XincoCoreUser (" + xincoCoreUser + ") cannot be destroyed since the XincoCoreUserModifiedRecord " + xincoCoreUserModifiedRecordListOrphanCheckXincoCoreUserModifiedRecord + " in its xincoCoreUserModifiedRecordList field has a non-nullable xincoCoreUser field.");
+                illegalOrphanMessages.add("This XincoCoreUser (" + xincoCoreUser + ") cannot be destroyed since the XincoCoreUserHasXincoCoreGroup " + xincoCoreUserHasXincoCoreGroupListOrphanCheckXincoCoreUserHasXincoCoreGroup + " in its xincoCoreUserHasXincoCoreGroupList field has a non-nullable xincoCoreUser field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
