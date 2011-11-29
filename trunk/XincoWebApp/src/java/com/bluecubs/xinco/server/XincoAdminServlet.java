@@ -501,38 +501,48 @@ public class XincoAdminServlet extends HttpServlet {
         if (request.getParameter("DialogEditGroupAddUser") != null) {
             try {
                 XincoCoreUserHasXincoCoreGroup uhg = new XincoCoreUserHasXincoCoreGroup(
-                                Integer.parseInt(request.getParameter("DialogEditGroupAddUser")), currentGroupSelection);
-                        uhg.setXincoCoreGroup(new XincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreGroup(currentGroupSelection));
-                        uhg.setXincoCoreUser(new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(Integer.parseInt(request.getParameter("DialogEditGroupAddUser"))));
-                        new XincoCoreUserHasXincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).create(uhg);
+                        Integer.parseInt(request.getParameter("DialogEditGroupAddUser")), currentGroupSelection);
+                uhg.setXincoCoreGroup(new XincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreGroup(currentGroupSelection));
+                uhg.setXincoCoreUser(new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(Integer.parseInt(request.getParameter("DialogEditGroupAddUser"))));
+                new XincoCoreUserHasXincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).create(uhg);
             } catch (Exception e) {
                 logger.log(Level.SEVERE, null, e);
             }
         }
         //modify user profile
         if (request.getParameter("DialogEditUserProfileSubmit") != null) {
-            try {
-                temp_user = new XincoCoreUserServer(Integer.parseInt(request.getParameter("DialogEditUserProfileID")));
-                temp_user.setUsername(request.getParameter("DialogEditUserProfileUsername"));
-                temp_user.setUserpassword(request.getParameter("DialogEditUserProfilePassword"));
-                temp_user.setName(request.getParameter("DialogEditUserProfileLastname"));
-                temp_user.setFirstname(request.getParameter("DialogEditUserProfileFirstname"));
-                temp_user.setEmail(request.getParameter("DialogEditUserProfileEmail"));
-                //The logged in admin does the locking
-                if (login_user == null) {
-                    temp_user.setChangerID(temp_user.getId());
-                } else {
-                    temp_user.setChangerID(login_user.getId());
+            if (!request.getParameter("DialogEditUserProfilePasswordVerify").equals(
+                    request.getParameter("DialogEditUserProfilePassword"))) {
+                error_message = rb.getString("window.userinfo.passwordmismatch");
+            } else {
+                try {
+                    temp_user = new XincoCoreUserServer(Integer.parseInt(request.getParameter("DialogEditUserProfileID")));
+                    if (!temp_user.isPasswordUsable(request.getParameter("DialogEditUserProfilePassword"))) {
+                        error_message = rb.getString("password.unusable");
+                    } else {
+
+                        temp_user.setUsername(request.getParameter("DialogEditUserProfileUsername"));
+                        temp_user.setUserpassword(request.getParameter("DialogEditUserProfilePassword"));
+                        temp_user.setLastName(request.getParameter("DialogEditUserProfileLastname"));
+                        temp_user.setFirstName(request.getParameter("DialogEditUserProfileFirstname"));
+                        temp_user.setEmail(request.getParameter("DialogEditUserProfileEmail"));
+                        //The logged in admin does the locking
+                        if (login_user == null) {
+                            temp_user.setChangerID(temp_user.getId());
+                        } else {
+                            temp_user.setChangerID(login_user.getId());
+                        }
+                        temp_user.setWriteGroups(true);
+                        //Register change in audit trail
+                        temp_user.setChange(true);
+                        //Reason for change
+                        temp_user.setReason("audit.user.account.modified");
+                        temp_user.setHashPassword(true);
+                        temp_user.write2DB();
+                    }
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, null, e);
                 }
-                temp_user.setWriteGroups(true);
-                //Register change in audit trail
-                temp_user.setChange(true);
-                //Reason for change
-                temp_user.setReason("audit.user.account.modified");
-                temp_user.setHashPassword(true);
-                temp_user.write2DB();
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, null, e);
             }
         }
         //create new language
@@ -724,6 +734,9 @@ public class XincoAdminServlet extends HttpServlet {
             out.println("<td class=\"text\" rowspan=\"3\"><img src='resources/images/blueCubsSmall.gif' border=\"0\"/></td>");
             out.println("<td class=\"bigtext\" colspan=\"5\">XincoAdmin</td>");
             out.println("</tr>");
+            if (error_message.compareTo("") != 0) {
+                out.println("<center>" + error_message + "</center>");
+            }
             out.println("<tr>");
             out.println("<td class=\"text\" colspan=\"5\">" + rb.getString("general.location") + ": " + current_locationDesc + "</td>");
             out.println("</tr>");
@@ -845,8 +858,8 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<tr>");
                     out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getId() + "</td>");
                     out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getUsername() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getFirstname() + "</td>");
-                    out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getName() + "</td>");
+                    out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getFirstName() + "</td>");
+                    out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getLastName() + "</td>");
                     out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getEmail() + "</td>");
                     if (((XincoCoreUserServer) allusers.get(i)).getStatusNumber() == 1) {
                         out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogAdminUsersLock="
@@ -986,8 +999,8 @@ public class XincoAdminServlet extends HttpServlet {
                         out.println("<tr>");
                         out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getId() + "</td>");
                         out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getUsername() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getFirstname() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getName() + "</td>");
+                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getFirstName() + "</td>");
+                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getLastName() + "</td>");
                         out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getEmail() + "</td>");
                         out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogEditGroupRemoveUser="
                                 + ((XincoCoreUserServer) allusers.get(i)).getId()
@@ -1023,8 +1036,8 @@ public class XincoAdminServlet extends HttpServlet {
                         out.println("<tr>");
                         out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getId() + "</td>");
                         out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getUsername() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getFirstname() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getName() + "</td>");
+                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getFirstName() + "</td>");
+                        out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getLastName() + "</td>");
                         out.println("<td class=\"text\">" + ((XincoCoreUserServer) allusers.get(i)).getEmail() + "</td>");
                         out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogEditGroupAddUser="
                                 + ((XincoCoreUserServer) allusers.get(i)).getId()
@@ -1054,12 +1067,16 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<td class=\"text\"><input type=\"password\" name=\"DialogEditUserProfilePassword\" value=\"" + temp_user.getUserpassword() + "\" size=\"40\"/></td>");
                     out.println("</tr>");
                     out.println("<tr>");
+                    out.println("<td class=\"text\">" + rb.getString("general.verifypassword") + ":</td>");
+                    out.println("<td class=\"text\"><input type=\"password\" name=\"DialogEditUserProfilePasswordVerify\" value=\"" + temp_user.getUserpassword() + "\" size=\"40\"/></td>");
+                    out.println("</tr>");
+                    out.println("<tr>");
                     out.println("<td class=\"text\">" + rb.getString("general.firstname") + ":</td>");
-                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditUserProfileFirstname\" value=\"" + temp_user.getFirstname() + "\" size=\"40\"/></td>");
+                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditUserProfileFirstname\" value=\"" + temp_user.getFirstName() + "\" size=\"40\"/></td>");
                     out.println("</tr>");
                     out.println("<tr>");
                     out.println("<td class=\"text\">" + rb.getString("general.lastname") + ":</td>");
-                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditUserProfileLastname\" value=\"" + temp_user.getName() + "\" size=\"40\"/></td>");
+                    out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditUserProfileLastname\" value=\"" + temp_user.getLastName() + "\" size=\"40\"/></td>");
                     out.println("</tr>");
                     out.println("<tr>");
                     out.println("<td class=\"text\">" + rb.getString("general.email") + ":</td>");
