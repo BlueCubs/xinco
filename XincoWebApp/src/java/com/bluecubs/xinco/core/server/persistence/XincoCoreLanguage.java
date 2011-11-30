@@ -55,6 +55,13 @@ public class XincoCoreLanguage extends XincoAuditedObject implements Serializabl
     @Id
     @Basic(optional = false)
     @NotNull
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreLanguageGen")
+    @TableGenerator(name = "XincoCoreLanguageGen", table = "xinco_id",
+    pkColumnName = "tablename",
+    valueColumnName = "last_id",
+    pkColumnValue = "xinco_core_language",
+    allocationSize = 1,
+    initialValue=1000)
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)

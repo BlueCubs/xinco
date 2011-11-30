@@ -51,9 +51,15 @@ import javax.xml.bind.annotation.XmlTransient;
 public class XincoDependencyType implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @NotNull
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoDependencyTypeGen")
+    @TableGenerator(name = "XincoDependencyTypeGen", table = "xinco_id",
+    pkColumnName = "tablename",
+    valueColumnName = "last_id",
+    pkColumnValue = "xinco_dependency_type",
+    allocationSize = 1,
+    initialValue=1000)
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
