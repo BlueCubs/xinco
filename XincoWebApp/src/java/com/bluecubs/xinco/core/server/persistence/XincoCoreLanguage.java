@@ -43,7 +43,9 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @EntityListeners(AuditedEntityListener.class)
-@Table(name = "xinco_core_language")
+@Table(name = "xinco_core_language", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"designation"}),
+    @UniqueConstraint(columnNames = {"sign"})})
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "XincoCoreLanguage.findAll", query = "SELECT x FROM XincoCoreLanguage x"),
@@ -51,6 +53,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "XincoCoreLanguage.findBySign", query = "SELECT x FROM XincoCoreLanguage x WHERE x.sign = :sign"),
     @NamedQuery(name = "XincoCoreLanguage.findByDesignation", query = "SELECT x FROM XincoCoreLanguage x WHERE x.designation = :designation")})
 public class XincoCoreLanguage extends XincoAuditedObject implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -61,7 +64,7 @@ public class XincoCoreLanguage extends XincoAuditedObject implements Serializabl
     valueColumnName = "last_id",
     pkColumnValue = "xinco_core_language",
     allocationSize = 1,
-    initialValue=1000)
+    initialValue = 1000)
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
@@ -158,5 +161,4 @@ public class XincoCoreLanguage extends XincoAuditedObject implements Serializabl
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage[ id=" + id + " ]";
     }
-    
 }

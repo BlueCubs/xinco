@@ -107,6 +107,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
                 setId(xcl.getId());
             }
         } catch (Exception e) {
+            Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.SEVERE, null, e);
             throw new XincoException(e.getMessage());
         }
         return getId();
@@ -124,8 +125,8 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     }
 
     //create complete list of languages
-    public static ArrayList getXincoCoreLanguages() {
-        ArrayList coreLanguages = new ArrayList();
+    public static ArrayList<XincoCoreLanguageServer> getXincoCoreLanguages() {
+        ArrayList<XincoCoreLanguageServer> coreLanguages = new ArrayList<XincoCoreLanguageServer>();
         try {
             result = XincoDBManager.createdQuery("SELECT xcl FROM XincoCoreLanguage xcl ORDER BY xcl.designation");
             for (Object lang : result) {
