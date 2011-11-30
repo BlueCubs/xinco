@@ -87,4 +87,7 @@ public class FileConverter {
         connection.disconnect();
         return true;
     }
+
+    private FileConverter() {
+    }
 }

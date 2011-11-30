@@ -28,7 +28,6 @@ public class XincoCoreDataTypeServerTest extends XincoTestCase {
      */
     public void testWrite2DB() {
         try {
-            System.out.println("write2DB");
             XincoCoreDataTypeServer instance = new XincoCoreDataTypeServer(0, "Test", "Test desc", new ArrayList<XincoCoreDataTypeAttribute>());
             assertTrue(instance.write2DB() > 0);
             XincoCoreDataTypeServer.deleteFromDB(instance);
@@ -42,7 +41,6 @@ public class XincoCoreDataTypeServerTest extends XincoTestCase {
      * Test of getXincoCoreDataTypes method, of class XincoCoreDataTypeServer.
      */
     public void testGetXincoCoreDataTypes() {
-        System.out.println("getXincoCoreDataTypes");
         assertTrue(XincoCoreDataTypeServer.getXincoCoreDataTypes().size() > 0);
     }
 }

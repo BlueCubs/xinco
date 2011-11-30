@@ -150,4 +150,7 @@ public class XincoMenuItemManager {
 
         return add;
     }
+
+    private XincoMenuItemManager() {
+    }
 }

@@ -1,7 +1,7 @@
 package com.bluecubs.xinco.core;
 
+import static org.junit.Assert.assertTrue;
 import org.junit.*;
-import static org.junit.Assert.*;
 
 /**
  *

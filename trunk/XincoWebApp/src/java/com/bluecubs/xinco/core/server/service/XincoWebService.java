@@ -210,7 +210,7 @@ public class XincoWebService {
                 totalLen = 0;
                 while ((len = in.read(buf)) > 0) {
                     out.write(buf, 0, len);
-                    totalLen = totalLen + len;
+                    totalLen += len;
                 }
                 in.close();
                 byteArray = out.toByteArray();
@@ -242,7 +242,7 @@ public class XincoWebService {
                 totalLen = 0;
                 while ((len = in.read(buf)) > 0) {
                     out.write(buf, 0, len);
-                    totalLen = totalLen + len;
+                    totalLen += len;
                 }
                 in.close();
                 out.close();

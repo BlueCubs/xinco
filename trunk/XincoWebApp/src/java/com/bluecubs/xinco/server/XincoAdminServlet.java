@@ -1316,7 +1316,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("    </body>\n");
                     out.write("</html>\n");
                 } catch (Exception e) {
-                    global_error_message = global_error_message + e.toString();
+                    global_error_message += e.toString();
                     logger.log(Level.SEVERE, null, e);
                 }
             }
@@ -1376,7 +1376,7 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("    </body>\n");
                     out.write("</html>\n");
                 } catch (Exception e) {
-                    global_error_message = global_error_message + e.toString();
+                    global_error_message += e.toString();
                     logger.log(Level.SEVERE, null, e);
                 }
             }

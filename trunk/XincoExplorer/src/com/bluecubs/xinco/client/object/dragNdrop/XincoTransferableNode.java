@@ -35,7 +35,6 @@
 
 package com.bluecubs.xinco.client.object.dragNdrop;
 
-import com.bluecubs.xinco.client.object.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;

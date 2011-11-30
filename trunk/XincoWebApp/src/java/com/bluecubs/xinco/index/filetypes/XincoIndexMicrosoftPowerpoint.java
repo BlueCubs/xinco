@@ -90,7 +90,7 @@ public class XincoIndexMicrosoftPowerpoint implements XincoIndexFileType {
                     if (!(l > 0)) {
                         break;
                     }
-                    EventText = EventText + String.copyValueOf(ca, 0, l);
+                    EventText += String.copyValueOf(ca, 0, l);
                 }
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, null, ex);

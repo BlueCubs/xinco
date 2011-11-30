@@ -30,7 +30,6 @@ public class XincoCoreDataTypeAttributeServerTest extends XincoTestCase {
      */
     public void testWrite2DB() {
         try {
-            System.out.println("write2DB");
             XincoCoreDataTypeAttribute findXincoCoreDataTypeAttribute = new XincoCoreDataTypeAttributeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreDataTypeAttribute(new XincoCoreDataTypeAttributePK(1, 20));
             if (findXincoCoreDataTypeAttribute != null) {
                 new XincoCoreDataTypeAttributeJpaController(XincoDBManager.getEntityManagerFactory()).destroy(findXincoCoreDataTypeAttribute.getXincoCoreDataTypeAttributePK());
@@ -52,7 +51,6 @@ public class XincoCoreDataTypeAttributeServerTest extends XincoTestCase {
      * Test of getXincoCoreDataTypeAttributes method, of class XincoCoreDataTypeAttributeServer.
      */
     public void testGetXincoCoreDataTypeAttributes() {
-        System.out.println("getXincoCoreDataTypeAttributes");
         assertTrue(XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(1).size() > 0);
     }
 }

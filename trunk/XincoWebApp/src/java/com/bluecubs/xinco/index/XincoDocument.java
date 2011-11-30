@@ -73,7 +73,7 @@ public class XincoDocument {
         //add content of file
         if (indexContent && (d.getXincoCoreDataType().getId() == 1) && (d.getStatusNumber() != 3)) { //process non-archived file
             //extract file extension from file name
-            file_extIndex = ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(0)).getAttribVarchar().lastIndexOf(".");
+            file_extIndex = ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(0)).getAttribVarchar().lastIndexOf('.');
             if (file_extIndex == -1) {
                 file_ext = "";
             } else {

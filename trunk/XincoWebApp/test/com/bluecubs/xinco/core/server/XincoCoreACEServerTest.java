@@ -27,7 +27,6 @@ public class XincoCoreACEServerTest extends XincoTestCase {
      */
     public void testGetXincoCoreACL() {
         try {
-            System.out.println("getXincoCoreACL");
             int attrID = 1;
             String attrT = "xincoCoreUser.id";
             assertTrue(XincoCoreACEServer.getXincoCoreACL(attrID, attrT).size() > 0);
@@ -42,7 +41,6 @@ public class XincoCoreACEServerTest extends XincoTestCase {
      */
     public void testCheckAccess() {
         try {
-            System.out.println("checkAccess");
             XincoCoreUserServer user = new XincoCoreUserServer(1);
             XincoCoreNodeServer node = new XincoCoreNodeServer(2);
             assertTrue(XincoCoreACEServer.checkAccess(user, (ArrayList)node.getXincoCoreAcl()).isReadPermission());
@@ -62,7 +60,6 @@ public class XincoCoreACEServerTest extends XincoTestCase {
             instance.setChangerID(1);
             int id = instance.write2DB();
             assertTrue(id > 0);
-            System.out.println("deleteFromDB");
             assertTrue(XincoCoreACEServer.removeFromDB(instance, 1) == 0);
         } catch (XincoException ex) {
             Logger.getLogger(XincoCoreACEServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);

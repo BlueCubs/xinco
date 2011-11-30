@@ -31,7 +31,6 @@ public class XincoCoreUserServerTest extends XincoTestCase {
      */
     public void testGetAttempts() {
         try {
-            System.out.println("getAttempts");
             XincoCoreUserServer instance = new XincoCoreUserServer(1);
             assertTrue(instance.getAttempts() >= 0);
         } catch (XincoException ex) {
@@ -45,7 +44,6 @@ public class XincoCoreUserServerTest extends XincoTestCase {
      */
     public void testSetAttempts() {
         try {
-            System.out.println("setAttempts");
             XincoCoreUserServer instance = new XincoCoreUserServer(1);
             int attempts = instance.getAttempts();
             instance.setAttempts(attempts + 1);
@@ -65,7 +63,6 @@ public class XincoCoreUserServerTest extends XincoTestCase {
      * Test of getXincoCoreUsers method, of class XincoCoreUserServer.
      */
     public void testGetXincoCoreUsers() {
-        System.out.println("getXincoCoreUsers");
         assertTrue(XincoCoreUserServer.getXincoCoreUsers().size() > 0);
     }
 
@@ -74,7 +71,6 @@ public class XincoCoreUserServerTest extends XincoTestCase {
      */
     public void testIsPasswordUsable() {
         try {
-            System.out.println("isPasswordUsable");
             String newPass = "test";
             XincoCoreUserServer instance = new XincoCoreUserServer(1);
             instance.setReason("Test");
@@ -110,7 +106,6 @@ public class XincoCoreUserServerTest extends XincoTestCase {
      */
     public void testLogin() {
         try {
-            System.out.println("Login");
             XincoCoreUserServer instance = new XincoCoreUserServer("admin", "admin");
             assertTrue((instance.getXincoCoreGroups()).size() >= 0);
         } catch (XincoException ex) {

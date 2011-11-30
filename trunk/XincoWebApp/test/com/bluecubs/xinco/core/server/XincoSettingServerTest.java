@@ -19,7 +19,6 @@ public class XincoSettingServerTest extends XincoTestCase {
      */
     public void testWrite2DB() throws Exception {
         try {
-            System.out.println("write2DB");
             XincoSettingServer instance = new XincoSettingServer(0, "Test", 0,
                     "", false, 0);
             assertTrue(instance.write2DB() > 0);
@@ -41,7 +40,6 @@ public class XincoSettingServerTest extends XincoTestCase {
      * @throws Exception
      */
     public void testGetSetting() throws Exception {
-        System.out.println("getSetting");
         String desc = "password.aging";
         assertTrue(XincoSettingServer.getSetting(new XincoCoreUserServer(1),desc) != null);
     }
@@ -51,7 +49,6 @@ public class XincoSettingServerTest extends XincoTestCase {
      * @throws Exception 
      */
     public void testGetSettings() throws Exception {
-        System.out.println("getSettings");
         assertTrue(XincoSettingServer.getSettings(new XincoCoreUserServer(1)).size() > 0);
     }
 }

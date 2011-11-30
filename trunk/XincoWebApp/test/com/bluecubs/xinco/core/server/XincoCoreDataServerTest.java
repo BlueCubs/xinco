@@ -81,7 +81,6 @@ public class XincoCoreDataServerTest extends XincoTestCase {
             instance.getXincoCoreLogs().add(log);
             instance.write2DB();
             assertTrue(instance.write2DB() > 0);
-            System.out.println("deleteFromDB");
             assertTrue(instance.deleteFromDB() == 0);
         } catch (DatatypeConfigurationException ex) {
             Logger.getLogger(XincoCoreDataServerTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -102,7 +101,6 @@ public class XincoCoreDataServerTest extends XincoTestCase {
      * Test of findXincoCoreData method, of class XincoCoreDataServer.
      */
     public void testFindXincoCoreData() {
-        System.out.println("findXincoCoreData");
         String attrS = "xinco.org";
         int attrLID = 2;
         boolean attrSA = false;
