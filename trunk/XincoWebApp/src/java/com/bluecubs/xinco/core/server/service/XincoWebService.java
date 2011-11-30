@@ -95,8 +95,8 @@ public class XincoWebService {
         return list;
     }
 
-    public java.util.List<XincoCoreLanguage> getAllXincoCoreLanguages(XincoCoreUser in0) {
-        ArrayList<XincoCoreLanguage> list = null;
+    public java.util.List<XincoCoreLanguageServer> getAllXincoCoreLanguages(XincoCoreUser in0) {
+        ArrayList<XincoCoreLanguageServer> list = null;
         try {
             //check if user exists
             if (XincoCoreUserServer.validCredentials(in0.getUsername(), in0.getUserpassword(), true)) {
