@@ -2017,8 +2017,139 @@ public class Xinco extends Application implements XincoVaadinApplication {
         getMainWindow().addWindow(group);
     }
 
+    private void showDataTypeAttrAdminWindow(final int dataTypeId) {
+        final Window attr = new Window();
+        final Form form = new Form();
+        final Table table = new Table();
+        table.addStyleName("striped");
+        table.addContainerProperty(getResource().getString("general.position"),
+                Integer.class, null);
+        table.addContainerProperty(getResource().getString("general.designation"),
+                String.class, null);
+        table.addContainerProperty(getResource().getString("general.datatype"),
+                String.class, null);
+        table.addContainerProperty(getResource().getString("general.size"),
+                String.class, null);
+        table.addContainerProperty("", com.vaadin.ui.Component.class, null);
+        table.setSortContainerPropertyId(getResource().getString("general.position"));
+        form.getLayout().addComponent(table);
+        refreshFileTypeAttrTable(table, dataTypeId);
+        form.addField("position", new com.vaadin.ui.TextField(getResource().getString("general.position") + ":"));
+        form.getField("position").setRequired(true);
+        form.getField("position").setRequiredError(getResource().getString("message.missing.position"));
+        form.addField("designation", new com.vaadin.ui.TextField(getResource().getString("general.designation") + ":"));
+        form.getField("designation").setRequired(true);
+        form.getField("designation").setRequiredError(getResource().getString("message.missing.designation"));
+        Select types = new Select(getResource().getString("general.datatype") + ":");
+        HashMap<String, String> typeDefs = new HashMap<String, String>();
+        typeDefs.put("int", "int (Integer)");
+        typeDefs.put("unsignedint", "unsignedint (Unsigned Integer)");
+        typeDefs.put("double", "double (Floating Point Number)");
+        typeDefs.put("varchar", "varchar (String)");
+        typeDefs.put("text", "text (Text)");
+        typeDefs.put("datetime", "datetime (Date + Time)");
+        for (Entry<String, String> entry : typeDefs.entrySet()) {
+            types.addItem(entry.getKey());
+            types.setItemCaption(entry.getKey(), entry.getValue());
+        }
+        form.addField("type", types);
+        form.getField("type").setRequired(true);
+        form.getField("type").setRequiredError(getResource().getString("message.missing.datatype"));
+        form.addField("size", new com.vaadin.ui.TextField(getResource().getString("general.size") + ":"));
+        form.getField("size").setRequired(true);
+        form.getField("size").setRequiredError(getResource().getString("message.missing.size"));
+        form.getField("size").setDescription(getResource().getString("message.admin.attribute.req4string"));
+        //Used for validation purposes
+        final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
+                getResource().getString("general.add.attribute"), form, "commit");
+        final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
+                getResource().getString("general.cancel"),
+                new com.vaadin.ui.Button.ClickListener() {
+
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        getMainWindow().removeWindow(attr);
+                    }
+                });
+        commit.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+            @Override
+            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                try {
+                    commit.setEnabled(false);
+                    cancel.setEnabled(false);
+                    form.getField("position").setEnabled(false);
+                    form.getField("designation").setEnabled(false);
+                    form.getField("type").setEnabled(false);
+                    form.getField("size").setEnabled(false);
+                    XincoCoreDataTypeAttributeServer tempAttribute = new XincoCoreDataTypeAttributeServer(dataTypeId,
+                            Integer.valueOf(form.getField("position").getValue().toString()),
+                            form.getField("designation").getValue().toString(),
+                            form.getField("type").getValue().toString(),
+                            Integer.valueOf(form.getField("size").getValue().toString()));
+                    tempAttribute.setChangerID(loggedUser.getId());
+                    tempAttribute.write2DB();
+                } catch (XincoException ex) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                } finally {
+                    refreshFileTypeAttrTable(table, dataTypeId);
+                    form.getField("position").setEnabled(true);
+                    form.getField("designation").setEnabled(true);
+                    form.getField("type").setEnabled(true);
+                    form.getField("size").setEnabled(true);
+                    commit.setEnabled(true);
+                    cancel.setEnabled(true);
+                }
+            }
+        });
+
+        form.getLayout().addComponent(new com.vaadin.ui.Label(
+                getResource().getString("message.warning.attribute.remove")));
+        form.getFooter().setSizeUndefined();
+        form.getFooter().addComponent(commit);
+        form.getFooter().addComponent(cancel);
+        attr.addComponent(form);
+        attr.setModal(true);
+        attr.center();
+        attr.setWidth(50, Sizeable.UNITS_PERCENTAGE);
+        getMainWindow().addWindow(attr);
+    }
+
+    private void showAttrAdminWindow() {
+        final Window attr = new Window();
+        final Form form = new Form();
+        final Table table = new Table();
+        table.addStyleName("striped");
+        table.addContainerProperty(getResource().getString("general.id"),
+                Integer.class, null);
+        table.addContainerProperty(getResource().getString("general.designation"),
+                String.class, null);
+        table.addContainerProperty(getResource().getString("general.description"),
+                String.class, null);
+        table.addContainerProperty("", com.vaadin.ui.Component.class, null);
+        table.setSortContainerPropertyId(getResource().getString("general.id"));
+        form.getLayout().addComponent(table);
+        refreshFileTypeTable(table);
+        final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
+                getResource().getString("general.cancel"),
+                new com.vaadin.ui.Button.ClickListener() {
+
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        getMainWindow().removeWindow(attr);
+                    }
+                });
+        form.getFooter().setSizeUndefined();
+        form.getFooter().addComponent(cancel);
+        attr.addComponent(form);
+        attr.setModal(true);
+        attr.center();
+        attr.setWidth(50, Sizeable.UNITS_PERCENTAGE);
+        getMainWindow().addWindow(attr);
+    }
+
     private void showLangAdminWindow() {
-        final Window group = new Window();
+        final Window lang = new Window();
         final Form form = new Form();
         final Table table = new Table();
         table.addStyleName("striped");
@@ -2047,7 +2178,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
                     @Override
                     public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                        getMainWindow().removeWindow(group);
+                        getMainWindow().removeWindow(lang);
                     }
                 });
         commit.addListener(new com.vaadin.ui.Button.ClickListener() {
@@ -2060,9 +2191,9 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     form.getField("sign").setEnabled(false);
                     form.getField("designation").setEnabled(false);
                     /**
-                     * Check for duplicate designation. This is done
-                     * at DB level but won't work for default designation since
-                     * those are translated.
+                     * Check for duplicate designation. This is done at DB level
+                     * but won't work for default designation since those are
+                     * translated.
                      */
                     for (XincoCoreLanguageServer lang : XincoCoreLanguageServer.getXincoCoreLanguages()) {
                         if (getResource().containsKey(lang.getDesignation())
@@ -2098,11 +2229,11 @@ public class Xinco extends Application implements XincoVaadinApplication {
         form.getFooter().setSizeUndefined();
         form.getFooter().addComponent(commit);
         form.getFooter().addComponent(cancel);
-        group.addComponent(form);
-        group.setModal(true);
-        group.center();
-        group.setWidth(50, Sizeable.UNITS_PERCENTAGE);
-        getMainWindow().addWindow(group);
+        lang.addComponent(form);
+        lang.setModal(true);
+        lang.center();
+        lang.setWidth(50, Sizeable.UNITS_PERCENTAGE);
+        getMainWindow().addWindow(lang);
     }
 
     private void refreshLanguageTable(final Table table) {
@@ -2340,7 +2471,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                showAttrAdminWindow();
             }
         });
         adminPanel.addComponent(attrAdmin);
@@ -2592,6 +2723,75 @@ public class Xinco extends Application implements XincoVaadinApplication {
         form.getLayout().addComponent(table1);
         form.getLayout().addComponent(new com.vaadin.ui.Label(getResource().getString("general.group.notmember")));
         form.getLayout().addComponent(table2);
+    }
+
+    private void refreshFileTypeAttrTable(final Table table, final int dataTypeId) {
+        ArrayList<XincoCoreDataTypeAttribute> alldatatypes = (ArrayList<XincoCoreDataTypeAttribute>) XincoCoreDataTypeServer.getXincoCoreDataType(dataTypeId).getXincoCoreDataTypeAttributes();
+        table.removeAllItems();
+        for (Iterator<XincoCoreDataTypeAttribute> it = alldatatypes.iterator(); it.hasNext();) {
+            XincoCoreDataTypeAttribute type = it.next();
+            final com.vaadin.ui.Button delete = new com.vaadin.ui.Button(getResource().getString("general.delete") + "*");
+            delete.setData(type.getAttributeId());
+            delete.addStyleName("link");
+            delete.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+                @Override
+                public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                    try {
+                        XincoCoreDataTypeAttributeServer tempAttribute = new XincoCoreDataTypeAttributeServer(dataTypeId, (Integer) delete.getData());
+                        XincoCoreDataTypeAttributeServer.deleteFromDB(tempAttribute, loggedUser.getId());
+                        refreshFileTypeAttrTable(table, dataTypeId);
+                    } catch (Exception e) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, e);
+                    }
+                }
+            });
+            table.addItem(new Object[]{type.getAttributeId(),
+                        getResource().containsKey(type.getDesignation())
+                        ? getResource().getString(type.getDesignation())
+                        : type.getDesignation(),
+                        type.getDataType(),
+                        type.getSize(),
+                        ((dataTypeId == 1)
+                        && (type.getAttributeId() <= 8))
+                        || ((dataTypeId == 2)
+                        && (type.getAttributeId() <= 1))
+                        || ((dataTypeId == 3)
+                        && (type.getAttributeId() <= 1)) ? null : delete},
+                    type.getAttributeId());
+        }
+        table.sort();
+    }
+
+    private void refreshFileTypeTable(Table table) {
+        ArrayList alldatatypes = XincoCoreDataTypeServer.getXincoCoreDataTypes();
+        table.removeAllItems();
+        for (Iterator<XincoCoreDataTypeServer> it = alldatatypes.iterator(); it.hasNext();) {
+            XincoCoreDataTypeServer type = it.next();
+            final com.vaadin.ui.Button edit = new com.vaadin.ui.Button(getResource().getString("general.edit"));
+            edit.setData(type.getId());
+            edit.addStyleName("link");
+            edit.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+                @Override
+                public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                    try {
+                        showDataTypeAttrAdminWindow((Integer) edit.getData());
+                    } catch (Exception e) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, e);
+                    }
+                }
+            });
+            table.addItem(new Object[]{type.getId(),
+                        getResource().containsKey(type.getDesignation())
+                        ? getResource().getString(type.getDesignation())
+                        : type.getDesignation(),
+                        getResource().containsKey(type.getDescription())
+                        ? getResource().getString(type.getDescription())
+                        : type.getDescription(),
+                        edit}, type.getId());
+        }
+        table.sort();
     }
 
     private class ArchiveDialog extends CustomComponent {
