@@ -876,10 +876,10 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     case 5://Rendering
                         if (name != null
                                 && name.contains(".")
-                                && name.substring(name.lastIndexOf(".") + 1,
+                                && name.substring(name.lastIndexOf('.') + 1,
                                 name.length()).length() >= 3) {
                             item.getItemProperty("icon").setValue(
-                                    getIcon(name.substring(name.lastIndexOf(".") + 1,
+                                    getIcon(name.substring(name.lastIndexOf('.') + 1,
                                     name.length())));
                         }
                         break;
@@ -1917,6 +1917,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
     private void refreshGroupTable(final Table table) {
         ArrayList allgroups = XincoCoreGroupServer.getXincoCoreGroups();
+        table.removeAllItems();
         for (Iterator<XincoCoreGroupServer> it = allgroups.iterator(); it.hasNext();) {
             XincoCoreGroupServer group = it.next();
             final com.vaadin.ui.Button edit = new com.vaadin.ui.Button(getResource().getString("general.edit"));
@@ -1935,6 +1936,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         : group.getDesignation(),
                         edit}, group.getId());
         }
+        table.sort();
     }
 
     private void showEditSingleGroupWindow(final Integer groupId) {
@@ -2013,6 +2015,126 @@ public class Xinco extends Application implements XincoVaadinApplication {
         group.center();
         group.setWidth(25, Sizeable.UNITS_PERCENTAGE);
         getMainWindow().addWindow(group);
+    }
+
+    private void showLangAdminWindow() {
+        final Window group = new Window();
+        final Form form = new Form();
+        final Table table = new Table();
+        table.addStyleName("striped");
+        table.addContainerProperty(getResource().getString("general.id"),
+                Integer.class, null);
+        table.addContainerProperty(getResource().getString("general.name"),
+                String.class, null);
+        table.addContainerProperty(getResource().getString("general.designation"),
+                String.class, null);
+        table.addContainerProperty("", com.vaadin.ui.Component.class, null);
+        table.setSortContainerPropertyId(getResource().getString("general.id"));
+        form.getLayout().addComponent(table);
+        refreshLanguageTable(table);
+        form.addField("designation", new com.vaadin.ui.TextField(getResource().getString("general.designation") + ":"));
+        form.getField("designation").setRequired(true);
+        form.getField("designation").setRequiredError(getResource().getString("message.missing.designation"));
+        form.addField("sign", new com.vaadin.ui.TextField(getResource().getString("general.sign") + ":"));
+        form.getField("sign").setRequired(true);
+        form.getField("sign").setRequiredError(getResource().getString("message.missing.sign"));
+        //Used for validation purposes
+        final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
+                getResource().getString("general.add.language"), form, "commit");
+        final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
+                getResource().getString("general.cancel"),
+                new com.vaadin.ui.Button.ClickListener() {
+
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        getMainWindow().removeWindow(group);
+                    }
+                });
+        commit.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+            @Override
+            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                try {
+                    commit.setEnabled(false);
+                    cancel.setEnabled(false);
+                    form.getField("sign").setEnabled(false);
+                    form.getField("designation").setEnabled(false);
+                    /**
+                     * Check for duplicate designation. This is done
+                     * at DB level but won't work for default designation since
+                     * those are translated.
+                     */
+                    for (XincoCoreLanguageServer lang : XincoCoreLanguageServer.getXincoCoreLanguages()) {
+                        if (getResource().containsKey(lang.getDesignation())
+                                && getResource().getString(lang.getDesignation()).equals(form.getField("designation").getValue().toString())) {
+                            //Duplicate designation
+                            throw new XincoException();
+                        }
+                    }
+                    //Process the data
+                    XincoCoreLanguageServer lang = new XincoCoreLanguageServer(0,
+                            form.getField("sign").getValue().toString(),
+                            form.getField("designation").getValue().toString());
+                    lang.setChangerID(loggedUser.getId());
+                    lang.write2DB();
+                } catch (XincoException ex) {
+                    getMainWindow().showNotification(getResource().getString("general.error"),
+                            getResource().getString("error.language.add.duplicate"),
+                            Notification.TYPE_WARNING_MESSAGE);
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                } finally {
+                    refreshLanguageTable(table);
+                    form.getField("sign").setValue("");
+                    form.getField("designation").setValue("");
+                    form.getField("sign").setEnabled(true);
+                    form.getField("designation").setEnabled(true);
+                    commit.setEnabled(true);
+                    cancel.setEnabled(true);
+                }
+            }
+        });
+        form.getLayout().addComponent(new com.vaadin.ui.Label(
+                getResource().getString("error.language.delete.referenced")));
+        form.getFooter().setSizeUndefined();
+        form.getFooter().addComponent(commit);
+        form.getFooter().addComponent(cancel);
+        group.addComponent(form);
+        group.setModal(true);
+        group.center();
+        group.setWidth(50, Sizeable.UNITS_PERCENTAGE);
+        getMainWindow().addWindow(group);
+    }
+
+    private void refreshLanguageTable(final Table table) {
+        ArrayList allLanguages = XincoCoreLanguageServer.getXincoCoreLanguages();
+        boolean is_used;
+        table.removeAllItems();
+        for (Iterator<XincoCoreLanguageServer> it = allLanguages.iterator(); it.hasNext();) {
+            XincoCoreLanguageServer lang = it.next();
+            is_used = XincoCoreLanguageServer.isLanguageUsed(lang);
+            final com.vaadin.ui.Button delete = new com.vaadin.ui.Button(getResource().getString("general.delete"));
+            delete.setData(lang.getId());
+            delete.addStyleName("link");
+            delete.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+                @Override
+                public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                    try {
+                        XincoCoreLanguageServer.deleteFromDB(new XincoCoreLanguageServer((Integer) delete.getData()), loggedUser.getId());
+                        refreshLanguageTable(table);
+                    } catch (Exception e) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, e);
+                    }
+                }
+            });
+            table.addItem(new Object[]{lang.getId(),
+                        getResource().containsKey(lang.getDesignation())
+                        ? getResource().getString(lang.getDesignation())
+                        : lang.getDesignation(),
+                        lang.getSign(),
+                        is_used ? null : delete}, lang.getId());
+        }
+        table.sort();
     }
 
     private void showUserAdminWindow(final boolean userAdmin) {
@@ -2202,22 +2324,13 @@ public class Xinco extends Application implements XincoVaadinApplication {
             }
         });
         adminPanel.addComponent(groupAdmin);
-        com.vaadin.ui.Button userProfile = new com.vaadin.ui.Button(xerb.getString("message.admin.userProfile"));
-        userProfile.setWidth(100, Sizeable.UNITS_PERCENTAGE);
-        userProfile.addListener(new com.vaadin.ui.Button.ClickListener() {
-
-            @Override
-            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-            }
-        });
-        adminPanel.addComponent(userProfile);
         com.vaadin.ui.Button langAdmin = new com.vaadin.ui.Button(xerb.getString("message.admin.language"));
         langAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         langAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                showLangAdminWindow();
             }
         });
         adminPanel.addComponent(langAdmin);
@@ -2368,6 +2481,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         tempUser.getStatusNumber() == 1 ? lock : unlock,
                         reset}, tempUser.getId());
         }
+        table.sort();
     }
 
     private void refreshGroupContentsTables(final Form form, final int groupId) {
@@ -2485,7 +2599,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
         private final Select archiveModel = new Select(
                 getResource().getString("window.archive.archivingmodel") + ":");
 
-        public ArchiveDialog() {
+        ArchiveDialog() {
             com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(
                     getResource().getString("window.datatype"));
             panel.setContent(new VerticalLayout());
@@ -2579,7 +2693,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
         private final Select types = new Select(getResource().getString("window.datatype.datatype") + ":");
 
-        public DataTypeDialog() {
+        DataTypeDialog() {
             com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(getResource().getString("window.datatype"));
             panel.setContent(new VerticalLayout());
             //Data Type selection
@@ -2614,7 +2728,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
         private Table attrTable = new Table("attributes");
 
-        public AddAttributeDialog(XincoCoreData data) {
+        AddAttributeDialog(XincoCoreData data) {
             com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(getResource().getString("window.addattributesuniversal"));
             panel.setContent(new VerticalLayout());
             /*
@@ -2714,7 +2828,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
         private com.vaadin.ui.TextField statusField;
         private final Select languages = new Select(getResource().getString("general.language") + ":");
 
-        public DataDialog(boolean newData) {
+        DataDialog(boolean newData) {
             com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(getResource().getString("window.datadetails"));
             panel.setContent(new VerticalLayout());
             //ID
@@ -3375,7 +3489,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
         private final boolean newData;
 
-        public DataDialogManager(boolean newData) {
+        DataDialogManager(boolean newData) {
             this.newData = newData;
         }
 
@@ -3761,16 +3875,16 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     value += "-";
                 }
                 if (tempAce.isExecutePermission()) {
-                    value = value + "X";
+                    value += "X";
                 } else {
                     value += "-";
                 }
                 if (tempAce.isAdminPermission()) {
-                    value = value + "A";
+                    value += "A";
                 } else {
                     value += "-";
                 }
-                value = value + "]";
+                value += "]";
                 xincoTable.addItem(new Object[]{
                             getResource().getString("general.accessrights"),
                             new com.vaadin.ui.Label(value)}, i++);
