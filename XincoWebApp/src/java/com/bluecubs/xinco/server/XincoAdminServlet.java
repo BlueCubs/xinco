@@ -1236,17 +1236,24 @@ public class XincoAdminServlet extends HttpServlet {
                     out.println("<tr>");
                     out.println("<td class=\"bigtext\">" + rb.getString("general.position") + ":</td>");
                     out.println("<td class=\"bigtext\">" + rb.getString("general.designation") + ":</td>");
-                    out.println("<td class=\"bigtext\">" + rb.getString("general.position") + ":</td>");
+                    out.println("<td class=\"bigtext\">" + rb.getString("general.datatype") + ":</td>");
                     out.println("<td class=\"bigtext\">" + rb.getString("general.size") + ":</td>");
                     out.println("<td class=\"bigtext\">&nbsp;</td>");
                     out.println("</tr>");
                     for (i = 0; i < tempDatatype.getXincoCoreDataTypeAttributes().size(); i++) {
+                        XincoCoreDataTypeAttributeServer attr = (XincoCoreDataTypeAttributeServer) tempDatatype.getXincoCoreDataTypeAttributes().get(i);
                         out.println("<tr>");
-                        out.println("<td class=\"text\">" + ((XincoCoreDataTypeAttributeServer) tempDatatype.getXincoCoreDataTypeAttributes().get(i)).getAttributeId() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreDataTypeAttributeServer) tempDatatype.getXincoCoreDataTypeAttributes().get(i)).getDesignation() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreDataTypeAttributeServer) tempDatatype.getXincoCoreDataTypeAttributes().get(i)).getDataType() + "</td>");
-                        out.println("<td class=\"text\">" + ((XincoCoreDataTypeAttributeServer) tempDatatype.getXincoCoreDataTypeAttributes().get(i)).getSize() + "</td>");
-                        if (((currentDatatypeSelection == 1) && (((XincoCoreDataTypeAttributeServer) tempDatatype.getXincoCoreDataTypeAttributes().get(i)).getAttributeId() <= 8)) || ((currentDatatypeSelection == 2) && (((XincoCoreDataTypeAttributeServer) tempDatatype.getXincoCoreDataTypeAttributes().get(i)).getAttributeId() <= 1)) || ((currentDatatypeSelection == 3) && (((XincoCoreDataTypeAttributeServer) tempDatatype.getXincoCoreDataTypeAttributes().get(i)).getAttributeId() <= 1))) {
+                        out.println("<td class=\"text\">" + attr.getAttributeId() + "</td>");
+                        out.println("<td class=\"text\">" + (rb.containsKey(attr.getDesignation()) ? 
+                                rb.getString(attr.getDesignation()) : attr.getDesignation()) + "</td>");
+                        out.println("<td class=\"text\">" + attr.getDataType() + "</td>");
+                        out.println("<td class=\"text\">" + attr.getSize() + "</td>");
+                        if (((currentDatatypeSelection == 1)
+                                && (attr.getAttributeId() <= 8))
+                                || ((currentDatatypeSelection == 2)
+                                && (attr.getAttributeId() <= 1))
+                                || ((currentDatatypeSelection == 3)
+                                && (attr.getAttributeId() <= 1))) {
                             out.println("<td class=\"text\">&nbsp;</td>");
                         } else {
                             out.println("<td class=\"text\"><a href=\"XincoAdmin?DialogEditAttributesRemoveAttributeId="
