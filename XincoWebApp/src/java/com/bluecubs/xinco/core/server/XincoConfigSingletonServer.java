@@ -83,7 +83,7 @@ public class XincoConfigSingletonServer {
             FileRepositoryPath = XincoSettingServer.getSetting("xinco/FileRepositoryPath").getStringValue();
             if (!FileRepositoryPath.isEmpty()
                     && !(FileRepositoryPath.substring(FileRepositoryPath.length() - 1).equals(System.getProperty("file.separator")))) {
-                FileRepositoryPath = FileRepositoryPath + System.getProperty("file.separator");
+                FileRepositoryPath += System.getProperty("file.separator");
             }
         } catch (Exception ce) {
             FileRepositoryPath = "";
@@ -97,13 +97,13 @@ public class XincoConfigSingletonServer {
             FileIndexPath = FileRepositoryPath + "index";
         }
         if (!(FileIndexPath.substring(FileIndexPath.length() - 1).equals(System.getProperty("file.separator")))) {
-            FileIndexPath = FileIndexPath + System.getProperty("file.separator");
+            FileIndexPath += System.getProperty("file.separator");
         }
         try {
             FileArchivePath = XincoSettingServer.getSetting("xinco/FileArchivePath").getStringValue();
             if (!FileArchivePath.isEmpty()
                     && !(FileArchivePath.substring(FileArchivePath.length() - 1).equals(System.getProperty("file.separator")))) {
-                FileArchivePath = FileArchivePath + System.getProperty("file.separator");
+                FileArchivePath += System.getProperty("file.separator");
             }
         } catch (Exception e) {
             FileArchivePath = "";

@@ -97,9 +97,9 @@ public class XincoIndexMicrosoftExcel implements XincoIndexFileType {
                         }
 
                     }
-                    cell_string = cell_string + "\n";
+                    cell_string += "\n";
                 }
-                cell_string = cell_string + "\n\n\n";
+                cell_string += "\n\n\n";
             }
             is.close();
         } catch (Exception fe) {

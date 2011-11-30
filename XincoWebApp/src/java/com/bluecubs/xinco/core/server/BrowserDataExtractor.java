@@ -13,19 +13,19 @@ import javax.servlet.http.HttpSession;
  *
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public final class BrowserDataExtractor extends HttpServlet {
+public class BrowserDataExtractor extends HttpServlet {
 
-    protected HttpServletRequest request;
-    protected HttpSession session;
-    protected String userAgent;
-    protected String company;
-    protected String name;
-    protected String version;
-    protected String mainVersion;
-    protected String minorVersion;
-    protected String os;
-    protected String language = "en";
-    protected Locale locale;
+    HttpServletRequest request;
+    HttpSession session;
+    String userAgent;
+    String company;
+    String name;
+    String version;
+    String mainVersion;
+    String minorVersion;
+    String os;
+    String language = "en";
+    Locale locale;
     // Spracheinstellungen
     private HashMap<String, String> supportedLanguages;
 
@@ -107,11 +107,11 @@ public final class BrowserDataExtractor extends HttpServlet {
 
         if (company.equals("Microsoft")) {
             String str = userAgent.substring(userAgent.indexOf("msie") + 5);
-            version = str.substring(0, str.indexOf(";"));
+            version = str.substring(0, str.indexOf(';'));
         } else {
-            tmpString = (userAgent.substring(tmpPos = (userAgent.indexOf("/")) + 1,
-                    tmpPos + userAgent.indexOf(" "))).trim();
-            version = tmpString.substring(0, tmpString.indexOf(" "));
+            tmpString = (userAgent.substring(tmpPos = (userAgent.indexOf('/')) + 1,
+                    tmpPos + userAgent.indexOf(' '))).trim();
+            version = tmpString.substring(0, tmpString.indexOf(' '));
         }
     }
 
@@ -123,7 +123,7 @@ public final class BrowserDataExtractor extends HttpServlet {
     }
 
     private void setMainVersion() {
-        mainVersion = version.substring(0, version.indexOf("."));
+        mainVersion = version.substring(0, version.indexOf('.'));
     }
 
     /**
@@ -134,7 +134,7 @@ public final class BrowserDataExtractor extends HttpServlet {
     }
 
     private void setMinorVersion() {
-        minorVersion = version.substring(version.indexOf(".") + 1).trim();
+        minorVersion = version.substring(version.indexOf('.') + 1).trim();
     }
 
     /**

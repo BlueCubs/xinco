@@ -26,7 +26,6 @@ public class XincoCoreLogServerTest extends XincoTestCase {
      */
     public void testSetUser() {
         try {
-            System.out.println("setUser");
             XincoCoreUserServer user = new XincoCoreUserServer(2);
             XincoCoreLogServer instance = new XincoCoreLogServer(1);
             instance.setUser(user);
@@ -43,7 +42,6 @@ public class XincoCoreLogServerTest extends XincoTestCase {
      * Test of getXincoCoreLogs method, of class XincoCoreLogServer.
      */
     public void testGetXincoCoreLogs() {
-        System.out.println("getXincoCoreLogs");
         assertTrue(XincoCoreLogServer.getXincoCoreLogs(1).size() > 0);
     }
 }

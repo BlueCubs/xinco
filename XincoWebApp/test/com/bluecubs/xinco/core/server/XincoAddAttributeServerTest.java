@@ -35,7 +35,6 @@ public class XincoAddAttributeServerTest extends XincoTestCase {
      */
     @Test
     public void testWrite2DB() throws Exception {
-        System.out.println("write2DB");
         XincoAddAttributeServer xaa;
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.setTime(new Date());

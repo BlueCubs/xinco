@@ -69,7 +69,6 @@ public class XincoArchiveThreadTest extends XincoTestCase {
             XincoAddAttributeServer attr;
             GregorianCalendar c = new GregorianCalendar();
             DatatypeFactory factory = DatatypeFactory.newInstance();
-            System.out.println("Creating attributes for the test...");
             for (int i = 1; i < 8; i++) {
                 switch (i) {
                     case 5:
@@ -144,7 +143,6 @@ public class XincoArchiveThreadTest extends XincoTestCase {
             XincoAddAttributeServer attr;
             GregorianCalendar c = new GregorianCalendar();
             DatatypeFactory factory = DatatypeFactory.newInstance();
-            System.out.println("Creating attributes for the test...");
             for (int i = 1; i < 8; i++) {
                 switch (i) {
                     case 5:
@@ -205,15 +203,12 @@ public class XincoArchiveThreadTest extends XincoTestCase {
                 System.out.println("Attribute ID: " + attr.getAttributeId());
                 System.out.println("unsigned int: " + attr.getAttribUnsignedint());
                 System.out.println("date time: " + attr.getAttribDatetime());
-                System.out.println("data id: " + attr.getXincoCoreDataId());
             }
-            System.out.println("Logs:");
             for (XincoCoreLog log : xcds.getXincoCoreLogs()) {
                 System.out.println("ID: " + log.getId());
                 System.out.println("Code: " + log.getOpCode());
                 System.out.println("Description: " + log.getOpDescription());
                 System.out.println("Data ID: " + log.getXincoCoreDataId());
-                System.out.println("Time: " + log.getOpDatetime());
             }
         } catch (XincoException ex) {
             Logger.getLogger(XincoArchiveThreadTest.class.getName()).log(Level.SEVERE, null, ex);

@@ -218,7 +218,6 @@ public class XincoDBManager {
             out.println("</tr></table></center>");
         } catch (Exception e) {
             out.println(lrb.getString("general.nodata"));
-            System.out.println("Exception drawing table: " + e.getMessage());
         }
     }
 
@@ -241,7 +240,6 @@ public class XincoDBManager {
                 list += rsmd.getColumnName(i) + ",";
             }
         } catch (SQLException e) {
-            System.err.println("Error getting names from result set. " + e);
         }
         t = new StringTokenizer(list, ",");
         return t;
@@ -266,7 +264,6 @@ public class XincoDBManager {
             }
             header += "</td>";
         } catch (SQLException e) {
-            System.err.println("Error getting names from result set. " + e);
         }
         return header;
     }
@@ -606,10 +603,10 @@ public class XincoDBManager {
         }
         while (query.toLowerCase().contains("md5")) {
             int start = query.toLowerCase().indexOf("md5");
-            int end = query.toLowerCase().indexOf(")", start);
+            int end = query.toLowerCase().indexOf(')', start);
             String toEncrypt = query.substring(start, end);
-            toEncrypt = toEncrypt.substring(toEncrypt.indexOf("'") + 1,
-                    toEncrypt.lastIndexOf("'"));
+            toEncrypt = toEncrypt.substring(toEncrypt.indexOf('\'') + 1,
+                    toEncrypt.lastIndexOf('\''));
             logger.log(Level.FINE,
                     "To encrypt: {0}", toEncrypt);
             query = query.substring(0, start) + "'" + MD5.encrypt(toEncrypt)

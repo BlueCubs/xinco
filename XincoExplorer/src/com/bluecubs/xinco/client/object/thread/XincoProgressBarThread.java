@@ -38,8 +38,8 @@
  */
 package com.bluecubs.xinco.client.object.thread;
 
-import com.bluecubs.xinco.client.object.*;
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.object.XincoProgressBar;
 
 /**
  *

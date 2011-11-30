@@ -57,7 +57,7 @@ import java.util.logging.Logger;
 //3 = aged password
 //Temporary statuses
 //-1 = aged password modified, ready to turn unlocked
-public final class XincoCoreUserServer extends XincoCoreUser {
+public class XincoCoreUserServer extends XincoCoreUser {
 
     private boolean hashPassword = true;
     private boolean increaseAttempts = false;

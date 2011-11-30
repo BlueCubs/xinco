@@ -66,7 +66,6 @@ public class XincoIndexOptimizeThread extends Thread {
                 XincoIndexer.optimizeIndex();
                 lastRun = new GregorianCalendar();
             } catch (Exception e) {
-                e.printStackTrace();
             }
             try {
                 sleep(index_period);

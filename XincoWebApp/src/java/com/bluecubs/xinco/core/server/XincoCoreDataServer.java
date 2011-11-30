@@ -84,17 +84,17 @@ public class XincoCoreDataServer extends XincoCoreData {
         }
     }
 
-    public final void loadAddAttributes() {
+    public void loadAddAttributes() {
         getXincoAddAttributes().clear();
         getXincoAddAttributes().addAll(XincoAddAttributeServer.getXincoAddAttributes(getId()));
     }
 
-    public final void loadLogs() {
+    public void loadLogs() {
         getXincoCoreLogs().clear();
         getXincoCoreLogs().addAll(XincoCoreLogServer.getXincoCoreLogs(getId()));
     }
 
-    public final void loadACL() {
+    public void loadACL() {
         getXincoCoreAcl().clear();
         getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreData.id"));
     }

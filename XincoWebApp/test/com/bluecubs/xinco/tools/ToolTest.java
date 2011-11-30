@@ -34,7 +34,6 @@ public class ToolTest {
      */
     @Test
     public void testCompareNumberStrings() {
-        System.out.println("compareNumberStrings");
         String first = "2.1.0";
         String second = "2.01.00";
         assertTrue(Tool.compareNumberStrings(first, second));
@@ -51,7 +50,6 @@ public class ToolTest {
      */
     @Test
     public void testCompareNumberStrings3() {
-        System.out.println("conpareNumberStrings2");
         String first = "2,1,0";
         String second = "2,01,00";
         assertTrue(Tool.compareNumberStrings(first, second, ","));

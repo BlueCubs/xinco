@@ -26,7 +26,6 @@ public class XincoCoreNodeServerTest extends XincoTestCase {
      */
     public void testGetXincoCoreNodeParents() {
         try {
-            System.out.println("getXincoCoreNodeParents");
             assertTrue(XincoCoreNodeServer.getXincoCoreNodeParents(1).size() == 1);
             assertTrue(XincoCoreNodeServer.getXincoCoreNodeParents(2).size() == 2);
         } catch (Exception e) {
@@ -40,7 +39,6 @@ public class XincoCoreNodeServerTest extends XincoTestCase {
      */
     public void testFillXincoCoreNodes() {
         try {
-            System.out.println("fillXincoCoreNodes");
             XincoCoreNodeServer instance = new XincoCoreNodeServer(1);
             assertTrue((instance.getXincoCoreNodes()).size() > 0);
         } catch (Exception e) {
@@ -54,7 +52,6 @@ public class XincoCoreNodeServerTest extends XincoTestCase {
      */
     public void testFillXincoCoreData() {
         try {
-            System.out.println("fillXincoCoreData");
             XincoCoreNodeServer instance = new XincoCoreNodeServer(1);
             instance.fillXincoCoreData();
             assertTrue(instance.getXincoCoreData().size() > 0);
@@ -69,7 +66,6 @@ public class XincoCoreNodeServerTest extends XincoTestCase {
      */
     public void testFindXincoCoreNodes() {
         try {
-            System.out.println("findXincoCoreNodes");
             assertTrue(XincoCoreNodeServer.findXincoCoreNodes("xincoRoot", 1).size() > 0);
         } catch (Exception e) {
             Logger.getLogger(XincoCoreNodeServerTest.class.getSimpleName()).log(Level.SEVERE, null, e);
@@ -82,7 +78,6 @@ public class XincoCoreNodeServerTest extends XincoTestCase {
      */
     public void testWrite2DB() {
         try {
-            System.out.println("write2DB");
             XincoCoreNodeServer instance = new XincoCoreNodeServer(1);
             assertTrue(instance.write2DB() > 0);
             String designation = instance.getDesignation();
@@ -103,7 +98,6 @@ public class XincoCoreNodeServerTest extends XincoTestCase {
      */
     public void testDeleteFromDB() {
         try {
-            System.out.println("deleteFromDB");
             int userID = 1;
             XincoCoreNodeServer instance = new XincoCoreNodeServer(0, 1, 1, "Test", 1);
             instance.setChangerID(1);

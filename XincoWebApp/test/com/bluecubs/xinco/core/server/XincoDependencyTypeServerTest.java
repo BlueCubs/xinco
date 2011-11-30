@@ -21,7 +21,6 @@ public class XincoDependencyTypeServerTest extends XincoTestCase {
     @Test
     public void testWriteandDelete() {
         try {
-            System.out.println("writeAndDelete");
             XincoDependencyTypeServer instance = new XincoDependencyTypeServer(0,1, "test");
             assertTrue(instance.write2DB() > 0);
             assertEquals(XincoDependencyTypeServer.deleteFromDB(instance.getId()), 0);

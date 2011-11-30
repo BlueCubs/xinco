@@ -201,7 +201,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
         }
     }
 
-    public final void fillXincoCoreNodes() {
+    public void fillXincoCoreNodes() {
         try {
             getXincoCoreNodes().clear();
             result = XincoDBManager.createdQuery("SELECT xcn FROM XincoCoreNode xcn "
@@ -216,7 +216,7 @@ public class XincoCoreNodeServer extends XincoCoreNode {
 
     }
 
-    public final void fillXincoCoreData() {
+    public void fillXincoCoreData() {
         try {
             getXincoCoreData().clear();
             result = XincoDBManager.createdQuery("SELECT xcd FROM XincoCoreData xcd WHERE xcd.xincoCoreNode.id = " + getId() + " ORDER BY xcd.designation");

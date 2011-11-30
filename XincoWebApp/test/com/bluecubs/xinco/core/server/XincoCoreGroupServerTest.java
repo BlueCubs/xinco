@@ -26,7 +26,6 @@ public class XincoCoreGroupServerTest extends XincoTestCase {
      */
     public void testWrite2DB(){
         try {
-            System.out.println("write2DB");
             XincoCoreGroupServer instance = new XincoCoreGroupServer(0,"Test",1);
             assertTrue(instance.write2DB()>0);
             XincoCoreGroupServer.deleteFromDB(instance);
@@ -40,7 +39,6 @@ public class XincoCoreGroupServerTest extends XincoTestCase {
      * Test of getXincoCoreGroups method, of class XincoCoreGroupServer.
      */
     public void testGetXincoCoreGroups() {
-        System.out.println("getXincoCoreGroups");
         assertTrue(XincoCoreGroupServer.getXincoCoreGroups().size()>0);
     }
 }

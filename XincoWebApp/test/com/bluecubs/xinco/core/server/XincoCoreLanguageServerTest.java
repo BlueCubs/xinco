@@ -26,7 +26,6 @@ public class XincoCoreLanguageServerTest extends XincoTestCase {
      */
     public void testWrite2DB() {
         try {
-            System.out.println("write2DB");
             XincoCoreLanguageServer instance = new XincoCoreLanguageServer(0, "Test", "Test description");
             int id = instance.write2DB();
             assertTrue(id > 0);
@@ -42,7 +41,6 @@ public class XincoCoreLanguageServerTest extends XincoTestCase {
      * Test of getXincoCoreLanguages method, of class XincoCoreLanguageServer.
      */
     public void testGetXincoCoreLanguages() {
-        System.out.println("getXincoCoreLanguages");
         assertTrue(XincoCoreLanguageServer.getXincoCoreLanguages().size() > 0);
     }
 
@@ -51,7 +49,6 @@ public class XincoCoreLanguageServerTest extends XincoTestCase {
      */
     public void testIsLanguageUsed() {
         try {
-            System.out.println("isLanguageUsed");
             assertFalse(XincoCoreLanguageServer.isLanguageUsed(new XincoCoreLanguageServer(3)));
             assertTrue(XincoCoreLanguageServer.isLanguageUsed(new XincoCoreLanguageServer(2)));
         } catch (XincoException ex) {

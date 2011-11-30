@@ -39,8 +39,8 @@
 package com.bluecubs.xinco.client.dialogs;
 
 import com.bluecubs.xinco.client.ConfigElement;
-import com.bluecubs.xinco.client.object.XincoClientConnectionProfile;
 import com.bluecubs.xinco.client.XincoExplorer;
+import com.bluecubs.xinco.client.object.XincoClientConnectionProfile;
 import com.bluecubs.xinco.client.object.abstractObject.AbstractDialog;
 import java.util.ArrayList;
 import java.util.logging.Level;

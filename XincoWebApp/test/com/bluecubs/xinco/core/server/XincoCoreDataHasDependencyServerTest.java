@@ -28,7 +28,6 @@ public class XincoCoreDataHasDependencyServerTest extends XincoTestCase {
     @Test
     public void testWriteAndDelete() {
         try {
-            System.out.println("writeAndDelete");
             int xincoCoreDataParentId = 1, xincoCoreDataChildrenId = 2, dependencyTypeId = 3;
             XincoCoreDataHasDependencyServer instance =
                     new XincoCoreDataHasDependencyServer(new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreData(xincoCoreDataParentId),
