@@ -55,9 +55,15 @@ public class XincoSetting extends XincoAuditedObject implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @NotNull
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoSettingGen")
+    @TableGenerator(name = "XincoSettingGen", table = "xinco_id",
+    pkColumnName = "tablename",
+    valueColumnName = "last_id",
+    pkColumnValue = "xinco_setting",
+    allocationSize = 1,
+    initialValue=1000)
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)

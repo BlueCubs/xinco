@@ -54,6 +54,13 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreACEGen")
+    @TableGenerator(name = "XincoCoreACEGen", table = "xinco_id",
+    pkColumnName = "tablename",
+    valueColumnName = "last_id",
+    pkColumnValue = "xinco_core_ace",
+    allocationSize = 1,
+    initialValue=1000)
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
