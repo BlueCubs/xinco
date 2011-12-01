@@ -197,6 +197,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         (XincoDBManager.getState() != null ? XincoDBManager.getState().name() : null));
                 try {
                     Thread.currentThread().sleep(10000);
+                    
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -1237,7 +1238,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
             path_to_file = temp.getAbsolutePath() + System.getProperty("file.separator") + fileName;
             if (!file.renameTo(new File(path_to_file))) {
                 throw new RuntimeException("Unable to rename file from "
-                        + file.getAbsolutePath() + ", to " + path_to_file);
+                        + file.getAbsolutePath() + " to " + path_to_file);
             }
             file.deleteOnExit();
             temp.deleteOnExit();
@@ -2481,7 +2482,12 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                try {
+                    (new XincoCoreNodeServer(2)).deleteFromDB(false, loggedUser.getId());
+                    refresh();
+                } catch (Exception e) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, e);
+                }
             }
         });
         adminPanel.addComponent(trashAdmin);
