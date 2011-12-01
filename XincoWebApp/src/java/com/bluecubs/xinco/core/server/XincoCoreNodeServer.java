@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class XincoCoreNodeServer extends XincoCoreNode {
+public final class XincoCoreNodeServer extends XincoCoreNode {
 
     private static List result;
     private static HashMap parameters = new HashMap();
@@ -189,8 +189,6 @@ public class XincoCoreNodeServer extends XincoCoreNode {
                 }
                 for (i = 0; i < ((ArrayList) getXincoCoreData()).size(); i++) {
                     XincoIndexer.removeXincoCoreData((XincoCoreDataServer) ((ArrayList) getXincoCoreData()).get(i));
-                    XincoCoreDataServer.removeFromDB(userID,
-                            ((XincoCoreDataServer) ((ArrayList) getXincoCoreData()).get(i)).getId());
                     ((XincoCoreDataServer) ((ArrayList) getXincoCoreData()).get(i)).setChangerID(userID);
                     ((XincoCoreDataServer) ((ArrayList) getXincoCoreData()).get(i)).deleteFromDB();
                 }

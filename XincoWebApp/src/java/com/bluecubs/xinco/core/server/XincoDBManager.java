@@ -66,7 +66,7 @@ public class XincoDBManager {
     private static boolean usingContext = false;
     private static boolean initDone = false;
     private static XincoDBManager instance;
-    private static DBState state;
+    private static DBState state= DBState.START_UP;
     private static final Logger logger = Logger.getLogger(XincoDBManager.class.getName());
     private static final HashMap<String, Integer> ids = new HashMap<String, Integer>();
 

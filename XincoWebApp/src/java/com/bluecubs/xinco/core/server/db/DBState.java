@@ -32,7 +32,11 @@ public enum DBState {
     /*
      * Error detected
      */
-    ERROR("message.db.error");
+    ERROR("message.db.error"),
+    /*
+     * Start up
+     */
+    START_UP("message.db.startup");
     private final String mess;
     private static ResourceBundle lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
 
