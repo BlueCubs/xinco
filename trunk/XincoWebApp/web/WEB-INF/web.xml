@@ -72,7 +72,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>VaadinApplication</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/xinco2/*</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
