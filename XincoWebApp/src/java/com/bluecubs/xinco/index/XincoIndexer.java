@@ -26,8 +26,7 @@
  *
  * Modifications:
  *
- * Who?             When?             What?
- * -                -                 -
+ * Who? When? What? - - -
  *
  *************************************************************
  */
@@ -90,21 +89,24 @@ public class XincoIndexer {
 
     public static synchronized boolean removeXincoCoreData(XincoCoreData d) {
         IndexReader reader = null;
-        //check if document exists in index and delete
-        try {
-            reader = IndexReader.open(FSDirectory.open(new File(XincoDBManager.config.FileIndexPath)), false);
-            reader.deleteDocuments(new Term("id", "" + d.getId()));
-            reader.close();
-        } catch (Exception re) {
-            logger.log(Level.SEVERE, null, re);
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (Exception re2) {
-                    logger.log(Level.SEVERE, null, re2);
+        File indexDirectory = new File(XincoDBManager.config.FileIndexPath);
+        if (indexDirectory.exists()) {
+            //check if document exists in index and delete
+            try {
+                reader = IndexReader.open(FSDirectory.open(new File(XincoDBManager.config.FileIndexPath)), false);
+                reader.deleteDocuments(new Term("id", "" + d.getId()));
+                reader.close();
+            } catch (Exception re) {
+                logger.log(Level.SEVERE, null, re);
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (Exception re2) {
+                        logger.log(Level.SEVERE, null, re2);
+                    }
                 }
+                return false;
             }
-            return false;
         }
         return true;
     }
