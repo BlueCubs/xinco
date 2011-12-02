@@ -66,7 +66,7 @@ public class XincoDBManager {
     private static boolean usingContext = false;
     private static boolean initDone = false;
     private static XincoDBManager instance;
-    private static DBState state= DBState.START_UP;
+    private static DBState state = DBState.START_UP;
     private static final Logger logger = Logger.getLogger(XincoDBManager.class.getName());
     private static final HashMap<String, Integer> ids = new HashMap<String, Integer>();
 
@@ -118,9 +118,9 @@ public class XincoDBManager {
             XincoIdServer temp;
             for (Iterator<Entry<String, Integer>> it = ids.entrySet().iterator(); it.hasNext();) {
                 Entry<String, Integer> entry = it.next();
-                HashMap parameters= new HashMap();
+                HashMap parameters = new HashMap();
                 parameters.put("tablename", entry.getKey());
-                if(XincoDBManager.namedQuery("XincoId.findByTablename", parameters).isEmpty()){
+                if (XincoDBManager.namedQuery("XincoId.findByTablename", parameters).isEmpty()) {
                     temp = new XincoIdServer(entry.getKey(), entry.getValue());
                     temp.write2DB();
                 }
@@ -378,7 +378,7 @@ public class XincoDBManager {
         }
     }
 
-    private static String getDBVersion() {
+    public static String getDBVersion() {
         try {
             return getDBVersionNumber() + (XincoSettingServer.getSetting("version.postfix").getStringValue().isEmpty()
                     ? "" : " " + XincoSettingServer.getSetting("version.postfix").getStringValue());
@@ -392,22 +392,31 @@ public class XincoDBManager {
     }
 
     private static void runInitSQL() throws XincoException {
-        if (!isInitDone()) {
-            try {
-                if (XincoSettingServer.getSettings().isEmpty()) {
-                    logger.log(Level.INFO,
-                            "Running initialization script...");
-                    executeSQL("db/script/init.sql", null);
-                    logger.log(Level.INFO,
-                            "Done!");
+        if (!isInitDone() && state != DBState.UPDATING) {
+            new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (!isInitDone() && state != DBState.UPDATING) {
+                        try {
+                            state = DBState.UPDATING;
+                            if (XincoSettingServer.getSettings().isEmpty()) {
+                                logger.log(Level.INFO,
+                                        "Running initialization script...");
+                                executeSQL("db/script/init.sql", null);
+                                logger.log(Level.INFO,
+                                        "Done!");
+                            }
+                            initDone = true;
+                            state = DBState.UPDATED;
+                            logger.info(state.getMessage().replaceAll("%v", getVersion()));
+                        } catch (Exception e) {
+                            logger.log(Level.SEVERE, null, e);
+                            state = DBState.ERROR;
+                        }
+                    }
                 }
-                initDone = true;
-                state = DBState.UPDATED;
-                logger.info(state.getMessage().replaceAll("%v", getVersion()));
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, null, e);
-                state = DBState.ERROR;
-            }
+            }).start();
         }
     }
 
@@ -731,6 +740,10 @@ public class XincoDBManager {
         return state;
     }
 
+    protected static void setState(DBState newState) {
+        state = newState;
+    }
+
     //TODO: Update system. Won't be really needed until next DB change after 2.1.0
     /**
      * Update database to current version
@@ -739,27 +752,30 @@ public class XincoDBManager {
      * @param configVersion Latest version
      */
     private static void updateDatabase(String dbVersion, String configVersion) {
-        //TODO: Look for the proper update script(s) and run them
-        try {
-            XincoSettingServer setting = XincoSettingServer.getSetting("version.high");
-            setting.setIntValue(Integer.valueOf(settings.getString("version.high")));
-            setting.write2DB();
-            setting = XincoSettingServer.getSetting("version.mid");
-            setting.setIntValue(Integer.valueOf(settings.getString("version.mid")));
-            setting.write2DB();
-            setting = XincoSettingServer.getSetting("version.low");
-            setting.setIntValue(Integer.valueOf(settings.getString("version.low")));
-            setting.write2DB();
-            setting = XincoSettingServer.getSetting("version.mid");
-            setting.setIntValue(Integer.valueOf(settings.getString("version.mid")));
-            setting.write2DB();
-            setting = XincoSettingServer.getSetting("version.postfix");
-            setting.setStringValue(settings.getString("version.postfix"));
-            setting.write2DB();
-            state = DBState.UPDATED;
-            logger.info(state.getMessage().replaceAll("%v", configVersion));
-        } catch (XincoException ex) {
-            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+        if (state != DBState.UPDATING) {
+            //TODO: Look for the proper update script(s) and run them
+            try {
+                state = DBState.UPDATING;
+                XincoSettingServer setting = XincoSettingServer.getSetting("version.high");
+                setting.setIntValue(Integer.valueOf(settings.getString("version.high")));
+                setting.write2DB();
+                setting = XincoSettingServer.getSetting("version.mid");
+                setting.setIntValue(Integer.valueOf(settings.getString("version.mid")));
+                setting.write2DB();
+                setting = XincoSettingServer.getSetting("version.low");
+                setting.setIntValue(Integer.valueOf(settings.getString("version.low")));
+                setting.write2DB();
+                setting = XincoSettingServer.getSetting("version.mid");
+                setting.setIntValue(Integer.valueOf(settings.getString("version.mid")));
+                setting.write2DB();
+                setting = XincoSettingServer.getSetting("version.postfix");
+                setting.setStringValue(settings.getString("version.postfix"));
+                setting.write2DB();
+                state = DBState.UPDATED;
+                logger.info(state.getMessage().replaceAll("%v", configVersion));
+            } catch (XincoException ex) {
+                Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 

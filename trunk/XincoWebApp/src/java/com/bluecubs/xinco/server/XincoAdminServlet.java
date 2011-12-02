@@ -48,6 +48,7 @@
  */
 package com.bluecubs.xinco.server;
 
+import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.*;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreData;

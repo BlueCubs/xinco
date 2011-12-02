@@ -36,7 +36,11 @@ public enum DBState {
     /*
      * Start up
      */
-    START_UP("message.db.startup");
+    START_UP("message.db.startup"), 
+    /*
+     * Updating
+     */
+    UPDATING("message.update.db");
     private final String mess;
     private static ResourceBundle lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
 
