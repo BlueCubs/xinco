@@ -1448,7 +1448,7 @@ public class XincoAdminServlet extends HttpServlet {
                 try {
                     out.println("<table border=\"0\" width=\"750\" cellspacing=\"10\" cellpadding=\"0\">");
                     out.println("<tr>");
-                    out.println("<td class=\"bigtext\" colspan=\"2\">" + rb.getString("message.index.rebuild") + ":</td>");
+                    out.println("<td class=\"bigtext\" colspan=\"2\">" + rb.getString("message.index.rebuild") + "</td>");
                     out.println("</tr>");
                     out.println("<tr>");
                     out.println("<td class=\"text\" colspan=\"2\">" + rb.getString("message.warning.index.rebuild") + "</td>");
