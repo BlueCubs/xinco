@@ -15,6 +15,7 @@ import com.bluecubs.xinco.core.server.vaadin.custom.VersionSelector;
 import com.bluecubs.xinco.core.server.vaadin.wizard.WizardStep;
 import com.bluecubs.xinco.core.server.vaadin.wizard.XincoWizard;
 import com.bluecubs.xinco.core.server.vaadin.wizard.event.*;
+import com.bluecubs.xinco.index.XincoIndexer;
 import com.bluecubs.xinco.tools.XincoFileIconManager;
 import com.vaadin.Application;
 import com.vaadin.data.Item;
@@ -189,6 +190,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
     public void init() {
         try {
             XincoDBManager.getEntityManagerFactory();
+            XincoDBManager.updateDBState();
             while (XincoDBManager.getState() != DBState.VALID
                     && XincoDBManager.getState() != DBState.UPDATED
                     && XincoDBManager.getState() != DBState.ERROR) {
@@ -197,7 +199,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         (XincoDBManager.getState() != null ? XincoDBManager.getState().name() : null));
                 try {
                     Thread.currentThread().sleep(10000);
-                    
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -2497,7 +2498,86 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                com.vaadin.ui.Button ok = new com.vaadin.ui.Button(xerb.getString("general.ok"));
+                try {
+                    final Window progress = new Window();
+                    java.util.List result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreData x ORDER BY x.designation");
+                    final ProgressIndicator indicator = new ProgressIndicator(new Float(0.0));
+                    progress.addComponent(indicator);
+                    // Set polling frequency to 0.5 seconds.
+                    indicator.setPollingInterval(500);
+                    progress.addComponent(new com.vaadin.ui.Label("<b>" + xerb.getString("message.index.rebuild") + "</b>"));
+                    progress.addComponent(new com.vaadin.ui.Label(xerb.getString("message.warning.index.rebuild")));
+                    Table table = new Table();
+                    table.addStyleName("striped");
+                    table.addContainerProperty("", com.vaadin.ui.Label.class, null);
+                    table.addContainerProperty("", com.vaadin.ui.Label.class, null);
+                    progress.addComponent(table);
+                    Table table2 = new Table();
+                    table2.addStyleName("striped");
+                    table2.addContainerProperty(xerb.getString("message.data.sort.designation"),
+                            com.vaadin.ui.Label.class, null);
+                    table2.addContainerProperty(xerb.getString("message.indexing.status"),
+                            com.vaadin.ui.Label.class, null);
+                    progress.addComponent(table2);
+                    ok.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+                        @Override
+                        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                            getMainWindow().removeWindow(progress);
+                        }
+                    });
+                    progress.addComponent(ok);
+                    ok.setEnabled(false);
+                    getMainWindow().addWindow(progress);
+                    //Delete existing index
+                    File indexDirectory;
+                    File indexDirectoryFile;
+                    String[] indexDirectoryFileList;
+                    indexDirectory = new File(XincoDBManager.config.FileIndexPath);
+                    int work_units = result.size() + (indexDirectory.exists()
+                            ? indexDirectory.list().length + 1 : 0) + 1;
+                    int index = 0;
+                    int count = 0;
+                    if (indexDirectory.exists()) {
+                        indexDirectoryFileList = indexDirectory.list();
+                        for (int i = 0; i < indexDirectoryFileList.length; i++) {
+                            indexDirectoryFile = new File(XincoDBManager.config.FileIndexPath + indexDirectoryFileList[i]);
+                            indexDirectoryFile.delete();
+                            count++;
+                        }
+                        boolean indexDirectoryDeleted = indexDirectory.delete();
+                        count++;
+                        table.addItem(new Object[]{new com.vaadin.ui.Label("<b>"
+                                    + xerb.getString("message.index.delete") + "</b>"),
+                                    new com.vaadin.ui.Label(indexDirectoryDeleted
+                                    ? xerb.getString("general.ok") + "!" : xerb.getString("general.fail"))}, index++);
+                    }
+                    table.addItem(new Object[]{new com.vaadin.ui.Label(""),
+                                new com.vaadin.ui.Label("")}, index++);
+                    XincoCoreDataServer xdataTemp;
+                    boolean index_result;
+                    for (Object o : result) {
+                        xdataTemp = new XincoCoreDataServer((com.bluecubs.xinco.core.server.persistence.XincoCoreData) o);
+                        index_result = XincoIndexer.indexXincoCoreData(xdataTemp, true);
+                        table2.addItem(new Object[]{new com.vaadin.ui.Label(xdataTemp.getDesignation()),
+                                    new com.vaadin.ui.Label(index_result
+                                    ? xerb.getString("general.ok") + "!" : xerb.getString("general.fail"))}, index++);
+                        count++;
+                        indicator.setValue(new Float(count) / new Float(work_units));
+                    }
+                    index_result = XincoIndexer.optimizeIndex();
+                    //Optimize index
+                    table2.addItem(new Object[]{new com.vaadin.ui.Label(xerb.getString("message.index.optimize")),
+                                new com.vaadin.ui.Label(index_result
+                                ? xerb.getString("general.ok") + "!" : xerb.getString("general.fail"))}, index++);
+                    count++;
+                    indicator.setValue(new Float(1.0));
+                    ok.setEnabled(true);
+                } catch (XincoException ex) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    ok.setEnabled(true);
+                }
             }
         });
         adminPanel.addComponent(indexAdmin);
