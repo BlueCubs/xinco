@@ -66,6 +66,7 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.metamodel.EntityType;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -1245,8 +1246,8 @@ public class XincoAdminServlet extends HttpServlet {
                         XincoCoreDataTypeAttributeServer attr = (XincoCoreDataTypeAttributeServer) tempDatatype.getXincoCoreDataTypeAttributes().get(i);
                         out.println("<tr>");
                         out.println("<td class=\"text\">" + attr.getAttributeId() + "</td>");
-                        out.println("<td class=\"text\">" + (rb.containsKey(attr.getDesignation()) ? 
-                                rb.getString(attr.getDesignation()) : attr.getDesignation()) + "</td>");
+                        out.println("<td class=\"text\">" + (rb.containsKey(attr.getDesignation())
+                                ? rb.getString(attr.getDesignation()) : attr.getDesignation()) + "</td>");
                         out.println("<td class=\"text\">" + attr.getDataType() + "</td>");
                         out.println("<td class=\"text\">" + attr.getSize() + "</td>");
                         if (((currentDatatypeSelection == 1)
@@ -1314,7 +1315,7 @@ public class XincoAdminServlet extends HttpServlet {
 //                            + "from xincoCore_user a,xincoCore_user_modified_record b where a.id=b.id "
 //                            + ") b where b.recordId =a.recordId and a." + column
 //                            + " = '" + request.getParameter("id") + "' order by a.recordId desc");
-//                    dbm.drawTable(rs, response.getWriter(), dbm.getColumnNames(rs),
+//                    dbm.drawTable(rs, response.getWriter(), dbm.getColumnNamesHeader(rs),
 //                            "<center>" + rb.getString("general.audit.results").replaceAll("%i",
 //                            request.getParameter("id")).replaceAll("%t",
 //                            request.getParameter("table")) + "<br>", -1, false, -1);
@@ -1411,30 +1412,21 @@ public class XincoAdminServlet extends HttpServlet {
                     out.write("        \n");
                     out.write("        <center><h1>");
                     out.write("        ");
-//TODO: Replace the audit report system
-//                    ResultSet rs;
-//                    DatabaseMetaData meta = dbm.con.getMetaData();
-//                    String[] types = {
-//                        "TABLE"
-//                    };
-//                    rs = meta.getTables(null, null, null, types);
-//                    out.println("<center><table border='0'><tbody><thead><tr><th>"
-//                            + rb.getString("general.table") + "</th><th>"
-//                            + rb.getString("general.audit.action") + "</th></tr>");
-//                    while (rs.next()) {
-//                        if (!rs.getString("TABLE_NAME").endsWith("T")
-//                                && !rs.getString("TABLE_NAME").equals("xincoId")
-//                                && !rs.getString("TABLE_NAME").equals("xincoCore_log")
-//                                && !rs.getString("TABLE_NAME").equals("xincoCore_user_modified_record")
-//                                && rs.getString("TABLE_NAME").startsWith("xinco")
-//                                && !rs.getString("TABLE_NAME").equals("xincoCore_user_has_xincoCoreGroup")) {
-//                            out.println("<form action='XincoAdmin?MenuAudit=AuditQuery' method='POST'>");
-//                            out.println("<tr><td>" + rs.getString("TABLE_NAME") + "</td><td><center><input type='submit' value='"
-//                                    + rb.getString("general.continue") + "'/></center></td></tr>"
-//                                    + "<input type='hidden' name='list' value='" + request.getParameter("list") + "'/><input type='hidden' name='table' value='" + rs.getString("TABLE_NAME") + "' /></form>");
-//                        }
-//                    }
-//                    out.println("</tbody></table></center>");
+                    Set<EntityType<?>> entities = XincoDBManager.getEntityManagerFactory().getMetamodel().getEntities();
+                    out.println("<center><table border='0'><tbody><thead><tr><th>"
+                            + rb.getString("general.table") + "</th><th>"
+                            + rb.getString("general.audit.action") + "</th></tr>");
+                    for (EntityType type : entities) {
+                        String name = type.getName();
+                        if (type.getJavaType().getSuperclass() == XincoAuditedObject.class) {
+                            out.println("<form action='XincoAdmin?MenuAudit=AuditQuery' method='POST'>");
+                            out.println("<tr><td>" + name + "</td><td><center><input type='submit' value='"
+                                    + rb.getString("general.continue") + "'/></center></td></tr>"
+                                    + "<input type='hidden' name='list' value='" + request.getParameter("list")
+                                    + "'/><input type='hidden' name='table' value='" + type.getBindableJavaType().getName() + "' /></form>");
+                        }
+                    }
+                    out.println("</tbody></table></center>");
 
                     out.write("\n");
                     out.write("    </body>\n");

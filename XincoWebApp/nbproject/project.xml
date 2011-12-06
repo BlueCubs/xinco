@@ -115,10 +115,6 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.vaadin-chameleon-theme-1.1.0.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library dirs="200">
                     <file>${file.reference.org-openide-util-lookup.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
@@ -132,6 +128,14 @@
                 </library>
                 <library dirs="200">
                     <file>${file.reference.expandingtextarea-0.1.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.vaadin-chameleon-theme-1.1.0.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.xinco.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>

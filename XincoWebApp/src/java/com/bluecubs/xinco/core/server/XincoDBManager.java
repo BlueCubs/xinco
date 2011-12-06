@@ -41,9 +41,6 @@ import gudusoft.gsqlparser.EDbVendor;
 import gudusoft.gsqlparser.ESqlStatementType;
 import gudusoft.gsqlparser.TGSqlParser;
 import java.io.*;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.util.Map.Entry;
 import java.util.*;
 import java.util.logging.Level;
@@ -56,7 +53,6 @@ public class XincoDBManager {
     private static EntityManagerFactory emf;
     //load compiled configuartion
     public final static XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
-    private int EmailLink = 1, DataLink = 2;
     private static ResourceBundle lrb =
             ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
     private static ResourceBundle settings =
@@ -161,127 +157,6 @@ public class XincoDBManager {
      */
     public static void setLocked(boolean aLocked) {
         locked = aLocked;
-    }
-
-//TODO: Replace with a report
-    /**
-     * Draws a table with results of the query stored in the ResultSet rs in the
-     * PrintWriter out
-     *
-     * @param rs
-     * @param out
-     * @param header
-     * @param title
-     * @param columnAsLink
-     * @param details
-     * @param linkType
-     */
-    public void drawTable(ResultSet rs, PrintWriter out, String header, String title, int columnAsLink, boolean details, int linkType) {
-        try {
-            int size = rs.getMetaData().getColumnCount();
-            out.println(title);
-            out.println("<center><table border =1 ><tr>");
-            out.println(header + "</td></tr><tr>");
-            while (rs.next()) {
-                for (int i = 1; i <= size; i++) {
-                    String value = canReplace(rs.getString(i));
-                    if (rs.getMetaData().getColumnName(i).contains("password")) {
-                        value = "******************************";
-                    }
-                    if (i == size && details) {
-                        out.println("<td><form action='Detail.jsp' method='post'><input type='submit' value='Get Details' onclick='Detail.jsp'><input type='hidden' name = 'key' value='" + value + "'><input type='hidden' name='Page' value='ProcessData.jsp'></form></td>");
-                    } else {
-                        if (i == columnAsLink && linkType == this.EmailLink) {
-                            if (value == null) {
-                                out.println("<td>No email address available</td>");
-                            } else {
-                                out.println("<td><a href= mailto:" + value + ">Email this person</a></td>");
-                            }
-                        }
-                        if (i == columnAsLink && linkType == this.DataLink) {
-                            if (value == null) {
-                                out.println("<td>No code available</td>");
-                            } else {
-                                out.println("<td>" + value + "</td><td><form action='Detail.jsp' method='post'><input type='submit' value='Get Details' onclick='Detail.jsp'><input type='hidden' name = 'key' value='" + value + "'><input type='hidden' name='Page' value='Codes.jsp'></form></td>");
-                            }
-                        } else {
-                            if (value == null) {
-                                out.println("<td>" + lrb.getString("general.nodata") + "</td>");
-                            } else {
-                                out.println("<td>" + value + "</td>");
-                            }
-                        }
-                    }
-                }
-                out.println("</tr><tr>");
-            }
-            out.println("</tr></table></center>");
-        } catch (Exception e) {
-            out.println(lrb.getString("general.nodata"));
-        }
-    }
-
-    /**
-     * Returns the column names of the query in an HTML table format for use as
-     * header for a table produced by the drawTable method.
-     *
-     * @param rs
-     * @return
-     */
-    public StringTokenizer getColumnNamesList(ResultSet rs) {
-        String list = "";
-        StringTokenizer t;
-        try {
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int numColumns = rsmd.getColumnCount();
-
-            // Get the column names; column indices start from 1
-            for (int i = 1; i < numColumns + 1; i++) {
-                list += rsmd.getColumnName(i) + ",";
-            }
-        } catch (SQLException e) {
-        }
-        t = new StringTokenizer(list, ",");
-        return t;
-    }
-
-    /**
-     * Returns the column names of the query in an HTML table format for use as
-     * header for a table produced by the drawTable method.
-     *
-     * @param rs
-     * @return
-     */
-    public String getColumnNames(ResultSet rs) {
-        String header = "";
-        try {
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int numColumns = rsmd.getColumnCount();
-
-            // Get the column names; column indices start from 1
-            for (int i = 1; i < numColumns + 1; i++) {
-                header += "<td><b>" + rsmd.getColumnName(i) + "</b>";
-            }
-            header += "</td>";
-        } catch (SQLException e) {
-        }
-        return header;
-    }
-
-    /*
-     * Replace a string with contents of resource bundle if applicable Used to
-     * transform db contents to human readable form.
-     */
-    private String canReplace(String s) {
-        if (s == null) {
-            return null;
-        }
-        try {
-            lrb.getString(s);
-        } catch (MissingResourceException e) {
-            return s;
-        }
-        return lrb.getString(s);
     }
 
     public void setLoc(Locale loc) {
