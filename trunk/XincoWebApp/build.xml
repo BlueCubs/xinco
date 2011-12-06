@@ -12,6 +12,7 @@
     <import file="nbproject/build-impl.xml"/>
     <import file="build-widgetset.xml"/>
     <property file="build.ant.properties"/>
+    <property name="widget.dir" value="web/VAADIN/widgetsets"/>
     <taskdef resource="net/sf/antcontrib/antcontrib.properties">
         <classpath>
             <pathelement location="tools/ant-contrib-1.0b3.jar"/>
@@ -306,7 +307,7 @@
     </target>
     
     <target name="-pre-dist">
-        <available file="web/VAADIN/widgetsets" property="widgetset.present" type="dir"/>
+        <available file="${widget.dir}" property="widgetset.present" type="dir"/>
         <antcall target="do-compile-widgetset-if-needed"/>
     </target>
     
@@ -395,7 +396,7 @@
                        match="'version.postfix'.*"
                        replace="'version.postfix', '0', '${version_postfix}', '0', '0');"
                        byline="true"/>
-        <available file="web/VAADIN/widgetsets" property="widgetset.present" type="dir"/>
+        <available file="${widget.dir}" property="widgetset.present" type="dir"/>
     </target>
     
     <target name="build-language-master-pack">
@@ -425,5 +426,14 @@
         <condition property="widgetset.present">
             <available file="${client-side-destination}" type="dir"/>
         </condition>
+    </target>
+    
+    <target name="clean" depends="xinco-impl.clean">
+        <if>
+            <isset property="widgetset.present"/>
+            <then>
+                <delete dir="${widget.dir}"/>
+            </then>
+        </if>
     </target>
 </project>
