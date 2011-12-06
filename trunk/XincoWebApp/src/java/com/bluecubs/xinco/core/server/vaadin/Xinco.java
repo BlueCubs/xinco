@@ -5,10 +5,7 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.*;
 import com.bluecubs.xinco.core.server.db.DBState;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreGroupJpaController;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLogJpaController;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserHasXincoCoreGroupJpaController;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.*;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.service.*;
 import com.bluecubs.xinco.core.server.vaadin.custom.VersionSelector;
@@ -59,6 +56,7 @@ import java.util.logging.Logger;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import javax.imageio.ImageIO;
+import javax.persistence.metamodel.EntityType;
 import javax.swing.Icon;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -98,6 +96,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
     private XincoActivityTimer xat = null;
     private File fileToLoad;
     private String fileName;                    // Original file name
+    private boolean renderingSupportEnabled = false;
     private HorizontalSplitPanel xeSplitPanel;
     private com.vaadin.ui.Button login = new com.vaadin.ui.Button(
             getResource().getString("general.login"),
@@ -401,29 +400,31 @@ public class Xinco extends Application implements XincoVaadinApplication {
             item.setDataTypes(new int[]{1});
             XincoMenuItemManager.addItem(item);
             //TODO: Enable Rendering support
-//            XincoMenuItemManager.addItem(item);
-//            item = new XincoMenuItem(i += 1000,
-//                    getResource().getString("menu.repository"),
-//                    getResource().getString("menu.repository.addrendering"),
-//                    smallIcon,
-//                    new com.vaadin.ui.MenuBar.Command() {
-//
-//                        @Override
-//                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-//                            try {
-//                                showRenderingDialog();
-//                            } catch (XincoException ex) {
-//                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-//                            }
-//                        }
-//                    },
-//                    false, //Need to be logged in
-//                    true, //Data only
-//                    false, //Node only
-//                    true //Something selected
-//                    );
-//            item.setDataTypes(new int[]{1});
-//            XincoMenuItemManager.addItem(item);
+            if (renderingSupportEnabled) {
+                XincoMenuItemManager.addItem(item);
+                item = new XincoMenuItem(i += 1000,
+                        getResource().getString("menu.repository"),
+                        getResource().getString("menu.repository.addrendering"),
+                        smallIcon,
+                        new com.vaadin.ui.MenuBar.Command() {
+
+                            @Override
+                            public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                                try {
+                                    showRenderingDialog();
+                                } catch (XincoException ex) {
+                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        },
+                        false, //Need to be logged in
+                        true, //Data only
+                        false, //Node only
+                        true //Something selected
+                        );
+                item.setDataTypes(new int[]{1});
+                XincoMenuItemManager.addItem(item);
+            }
             item = new XincoMenuItem(i += 1000,
                     getResource().getString("menu.repository"),
                     getResource().getString("menu.edit.checkoutfile"),
@@ -1349,131 +1350,134 @@ public class Xinco extends Application implements XincoVaadinApplication {
         }
     }
 //TODO: Rendering support
-//    private void showRenderingDialog() throws XincoException {
-//        final Window renderWindow = new Window();
-//        final Form form = new Form();
-//        form.setCaption(getResource().getString("general.data.type.rendering"));
-//        final ArrayList<XincoCoreDataServer> renderings =
-//                (ArrayList<XincoCoreDataServer>) XincoCoreDataHasDependencyServer.getRenderings(
-//                Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-//        final Table table = new Table();
-//        table.addStyleName("striped");
-//        table.addContainerProperty(
-//                getResource().getString("general.name"),
-//                com.vaadin.ui.Label.class, null);
-//        table.addContainerProperty(
-//                getResource().getString("general.version"),
-//                com.vaadin.ui.Label.class, null);
-//        table.addContainerProperty(
-//                getResource().getString("general.extension"),
-//                com.vaadin.ui.Label.class, null);
-//        for (XincoCoreDataServer xcds : renderings) {
-//            String name = xcds.getXincoAddAttributes().get(0).getAttribVarchar();
-//            XincoVersion version = XincoCoreDataServer.getCurrentVersion(xcds.getId());
-//            table.addItem(new Object[]{xcds.getDesignation(),
-//                        version.getVersionHigh() + "." + version.getVersionMid()
-//                        + "." + version.getVersionLow() + " " + version.getVersionPostfix(),
-//                        name.substring(name.lastIndexOf(".") + 1, name.length())});
-//        }
-//        form.setFooter(new HorizontalLayout());
-//        //Used for validation purposes
-//        final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
-//                getResource().getString("general.add"), form, "commit");
-//        final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
-//                getResource().getString("general.cancel"),
-//                new com.vaadin.ui.Button.ClickListener() {
-//
-//                    @Override
-//                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-//                        getMainWindow().removeWindow(renderWindow);
-//                    }
-//                });
-//        commit.addListener(new com.vaadin.ui.Button.ClickListener() {
-//
-//            @Override
-//            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-//                try {
-//                    final XincoCoreDataServer parent = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-//                    //initialize the data object
-//                    data = new XincoCoreData();
-//                    data.setXincoCoreDataType(new XincoCoreDataTypeServer(parent.getXincoCoreDataType().getId()));
-//                    data.setStatusNumber(parent.getStatusNumber());
-//                    data.setXincoCoreLanguage(parent.getXincoCoreLanguage());
-//                    data.setXincoCoreNodeId(parent.getXincoCoreNodeId());
-//                    addDefaultAddAttributes();
-//                    commit.setEnabled(false);
-//                    cancel.setEnabled(false);
-//                    XincoWizard wizard = new XincoWizard();
-//                    wizard.addStep(fileStep);
-//                    getMainWindow().removeWindow(renderWindow);
-//                    final Window addRenderingWindow = new Window();
-//                    addRenderingWindow.addComponent(wizard);
-//                    //Add the DataDialog manager to handle the adding data part
-//                    ddManager = new DataDialogManager(true);
-//                    wizard.setSizeFull();
-//                    wizard.addListener(ddManager);
-//                    //Add a custom listener to act when the wizard is done
-//                    wizard.addListener(new WizardProgressListener() {
-//
-//                        @Override
-//                        public void activeStepChanged(WizardStepActivationEvent event) {
-//                            //Do nothing
-//                        }
-//
-//                        @Override
-//                        public void stepSetChanged(WizardStepSetChangedEvent event) {
-//                            //Do nothing
-//                        }
-//
-//                        @Override
-//                        public void wizardCompleted(WizardCompletedEvent event) {
-//                            try {
-//                                //The data is in the data variable, now link to this data as rendering
-//                                XincoCoreDataJpaController controller = new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory());
-//                                XincoCoreDataHasDependencyServer dep = new XincoCoreDataHasDependencyServer(
-//                                        controller.findXincoCoreData(parent.getId()),
-//                                        controller.findXincoCoreData(data.getId()),
-//                                        new XincoDependencyTypeServer(5));//Rendering
-//                                dep.write2DB();
-//                            } catch (XincoException ex) {
-//                                getMainWindow().showNotification(getResource().getString("general.error"),
-//                                        getResource().getString("message.error.association.exists"),
-//                                        Notification.TYPE_ERROR_MESSAGE);
-//                            }
-//                            getMainWindow().removeWindow(addRenderingWindow);
-//                            try {
-//                                showRenderingDialog();
-//                            } catch (XincoException ex) {
-//                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void wizardCancelled(WizardCancelledEvent event) {
-//                            getMainWindow().removeWindow(addRenderingWindow);
-//                        }
-//                    });
-//                    getMainWindow().addWindow(addRenderingWindow);
-//                    addRenderingWindow.center();
-//                    addRenderingWindow.setModal(true);
-//                    addRenderingWindow.setWidth(35, Sizeable.UNITS_PERCENTAGE);
-//                } catch (XincoException ex) {
-//                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-//        });
-//        table.setSizeFull();
-//        form.addField("renderings", table);
-//        renderWindow.addComponent(form);
-//        form.getFooter().setSizeUndefined();
-//        form.getFooter().addComponent(commit);
-//        form.getFooter().addComponent(cancel);
-//        form.setSizeFull();
-//        renderWindow.center();
-//        renderWindow.setModal(true);
-//        renderWindow.setWidth(50, Sizeable.UNITS_PERCENTAGE);
-//        getMainWindow().addWindow(renderWindow);
-//    }
+
+    private void showRenderingDialog() throws XincoException {
+        if (renderingSupportEnabled) {
+            final Window renderWindow = new Window();
+            final Form form = new Form();
+            form.setCaption(getResource().getString("general.data.type.rendering"));
+            final ArrayList<XincoCoreDataServer> renderings =
+                    (ArrayList<XincoCoreDataServer>) XincoCoreDataHasDependencyServer.getRenderings(
+                    Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+            final Table table = new Table();
+            table.addStyleName("striped");
+            table.addContainerProperty(
+                    getResource().getString("general.name"),
+                    com.vaadin.ui.Label.class, null);
+            table.addContainerProperty(
+                    getResource().getString("general.version"),
+                    com.vaadin.ui.Label.class, null);
+            table.addContainerProperty(
+                    getResource().getString("general.extension"),
+                    com.vaadin.ui.Label.class, null);
+            for (XincoCoreDataServer xcds : renderings) {
+                String name = xcds.getXincoAddAttributes().get(0).getAttribVarchar();
+                XincoVersion version = XincoCoreDataServer.getCurrentVersion(xcds.getId());
+                table.addItem(new Object[]{xcds.getDesignation(),
+                            version.getVersionHigh() + "." + version.getVersionMid()
+                            + "." + version.getVersionLow() + " " + version.getVersionPostfix(),
+                            name.substring(name.lastIndexOf(".") + 1, name.length())});
+            }
+            form.setFooter(new HorizontalLayout());
+            //Used for validation purposes
+            final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
+                    getResource().getString("general.add"), form, "commit");
+            final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
+                    getResource().getString("general.cancel"),
+                    new com.vaadin.ui.Button.ClickListener() {
+
+                        @Override
+                        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                            getMainWindow().removeWindow(renderWindow);
+                        }
+                    });
+            commit.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+                @Override
+                public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                    try {
+                        final XincoCoreDataServer parent = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                        //initialize the data object
+                        data = new XincoCoreData();
+                        data.setXincoCoreDataType(new XincoCoreDataTypeServer(parent.getXincoCoreDataType().getId()));
+                        data.setStatusNumber(parent.getStatusNumber());
+                        data.setXincoCoreLanguage(parent.getXincoCoreLanguage());
+                        data.setXincoCoreNodeId(parent.getXincoCoreNodeId());
+                        addDefaultAddAttributes();
+                        commit.setEnabled(false);
+                        cancel.setEnabled(false);
+                        XincoWizard wizard = new XincoWizard();
+                        wizard.addStep(fileStep);
+                        getMainWindow().removeWindow(renderWindow);
+                        final Window addRenderingWindow = new Window();
+                        addRenderingWindow.addComponent(wizard);
+                        //Add the DataDialog manager to handle the adding data part
+                        ddManager = new DataDialogManager(true);
+                        wizard.setSizeFull();
+                        wizard.addListener(ddManager);
+                        //Add a custom listener to act when the wizard is done
+                        wizard.addListener(new WizardProgressListener() {
+
+                            @Override
+                            public void activeStepChanged(WizardStepActivationEvent event) {
+                                //Do nothing
+                            }
+
+                            @Override
+                            public void stepSetChanged(WizardStepSetChangedEvent event) {
+                                //Do nothing
+                            }
+
+                            @Override
+                            public void wizardCompleted(WizardCompletedEvent event) {
+                                try {
+                                    //The data is in the data variable, now link to this data as rendering
+                                    XincoCoreDataJpaController controller = new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory());
+                                    XincoCoreDataHasDependencyServer dep = new XincoCoreDataHasDependencyServer(
+                                            controller.findXincoCoreData(parent.getId()),
+                                            controller.findXincoCoreData(data.getId()),
+                                            new XincoDependencyTypeServer(5));//Rendering
+                                    dep.write2DB();
+                                } catch (XincoException ex) {
+                                    getMainWindow().showNotification(getResource().getString("general.error"),
+                                            getResource().getString("message.error.association.exists"),
+                                            Notification.TYPE_ERROR_MESSAGE);
+                                }
+                                getMainWindow().removeWindow(addRenderingWindow);
+                                try {
+                                    showRenderingDialog();
+                                } catch (XincoException ex) {
+                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+
+                            @Override
+                            public void wizardCancelled(WizardCancelledEvent event) {
+                                getMainWindow().removeWindow(addRenderingWindow);
+                            }
+                        });
+                        getMainWindow().addWindow(addRenderingWindow);
+                        addRenderingWindow.center();
+                        addRenderingWindow.setModal(true);
+                        addRenderingWindow.setWidth(35, Sizeable.UNITS_PERCENTAGE);
+                    } catch (XincoException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
+            table.setSizeFull();
+            form.addField("renderings", table);
+            renderWindow.addComponent(form);
+            form.getFooter().setSizeUndefined();
+            form.getFooter().addComponent(commit);
+            form.getFooter().addComponent(cancel);
+            form.setSizeFull();
+            renderWindow.center();
+            renderWindow.setModal(true);
+            renderWindow.setWidth(50, Sizeable.UNITS_PERCENTAGE);
+            getMainWindow().addWindow(renderWindow);
+        }
+    }
 
     private void lockData() throws XincoException, MalformedURLException {
         XincoCoreDataServer xdata = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
@@ -2117,6 +2121,36 @@ public class Xinco extends Application implements XincoVaadinApplication {
         getMainWindow().addWindow(attr);
     }
 
+    private void showAuditWindow() throws XincoException {
+        final Window audit = new Window();
+        final Table table = new Table();
+        table.addStyleName("striped");
+        table.addContainerProperty(getResource().getString("general.table"),
+                String.class, null);
+        table.addContainerProperty(getResource().getString("general.audit.action"),
+                com.vaadin.ui.Component.class, null);
+        Set<EntityType<?>> entities = XincoDBManager.getEntityManagerFactory().getMetamodel().getEntities();
+        for (EntityType type : entities) {
+            String name = type.getName();
+            if (type.getJavaType().getSuperclass() == XincoAuditedObject.class) {
+                com.vaadin.ui.Button cont = new com.vaadin.ui.Button(xerb.getString("general.continue"));
+                cont.setData(name);
+                cont.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+                });
+                table.addItem(new Object[]{name, cont}, name);
+            }
+        }
+        audit.setModal(true);
+        audit.center();
+        audit.setWidth(90, Sizeable.UNITS_PERCENTAGE);
+        getMainWindow().addWindow(audit);
+    }
+
     private void showAttrAdminWindow() {
         final Window attr = new Window();
         final Form form = new Form();
@@ -2587,7 +2621,11 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                try {
+                    showAuditWindow();
+                } catch (XincoException ex) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         adminPanel.addComponent(auditAdmin);
