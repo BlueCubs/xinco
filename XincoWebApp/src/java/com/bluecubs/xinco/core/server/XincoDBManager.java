@@ -67,6 +67,7 @@ public class XincoDBManager {
     private static final HashMap<String, Integer> ids = new HashMap<String, Integer>();
 
     static {
+        //TODO: find a way to do this via JPA @GenerateValue
         ids.put("xinco_dependency_behavior", 999);
         ids.put("xinco_dependency_behavior", 999);
         ids.put("xinco_core_group", 999);
@@ -626,31 +627,47 @@ public class XincoDBManager {
      * @param dbVersion Current DB version
      * @param configVersion Latest version
      */
-    private static void updateDatabase(String dbVersion, String configVersion) {
+    private static void updateDatabase(String dbVersion, final String configVersion) {
         if (state != DBState.UPDATING) {
             //TODO: Look for the proper update script(s) and run them
-            try {
-                state = DBState.UPDATING;
-                XincoSettingServer setting = XincoSettingServer.getSetting("version.high");
-                setting.setIntValue(Integer.valueOf(settings.getString("version.high")));
-                setting.write2DB();
-                setting = XincoSettingServer.getSetting("version.mid");
-                setting.setIntValue(Integer.valueOf(settings.getString("version.mid")));
-                setting.write2DB();
-                setting = XincoSettingServer.getSetting("version.low");
-                setting.setIntValue(Integer.valueOf(settings.getString("version.low")));
-                setting.write2DB();
-                setting = XincoSettingServer.getSetting("version.mid");
-                setting.setIntValue(Integer.valueOf(settings.getString("version.mid")));
-                setting.write2DB();
-                setting = XincoSettingServer.getSetting("version.postfix");
-                setting.setStringValue(settings.getString("version.postfix"));
-                setting.write2DB();
-                state = DBState.UPDATED;
-                logger.info(state.getMessage().replaceAll("%v", configVersion));
-            } catch (XincoException ex) {
-                Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (state != DBState.UPDATING) {
+                        try {
+                            state = DBState.UPDATING;
+                            //Lock Database
+                            setLocked(true);
+                            //TODO: Create back up
+                            //Set to current version (this should be the last step)
+                            XincoSettingServer setting = XincoSettingServer.getSetting("version.high");
+                            setting.setIntValue(Integer.valueOf(settings.getString("version.high")));
+                            setting.write2DB();
+                            setting = XincoSettingServer.getSetting("version.mid");
+                            setting.setIntValue(Integer.valueOf(settings.getString("version.mid")));
+                            setting.write2DB();
+                            setting = XincoSettingServer.getSetting("version.low");
+                            setting.setIntValue(Integer.valueOf(settings.getString("version.low")));
+                            setting.write2DB();
+                            setting = XincoSettingServer.getSetting("version.mid");
+                            setting.setIntValue(Integer.valueOf(settings.getString("version.mid")));
+                            setting.write2DB();
+                            setting = XincoSettingServer.getSetting("version.postfix");
+                            setting.setStringValue(settings.getString("version.postfix"));
+                            setting.write2DB();
+                            state = DBState.UPDATED;
+                            logger.info(state.getMessage().replaceAll("%v", configVersion));
+                            //Unlock
+                            setLocked(false);
+                        } catch (XincoException ex) {
+                            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+                            //Unlock
+                            setLocked(false);
+                        }
+                    }
+                }
+            }).start();
         }
     }
 

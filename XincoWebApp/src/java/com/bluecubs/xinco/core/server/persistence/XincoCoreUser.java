@@ -27,7 +27,6 @@
  */
 package com.bluecubs.xinco.core.server.persistence;
 
-import com.bluecubs.xinco.core.server.AuditedEntityListener;
 import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import java.io.Serializable;
 import java.util.Date;
@@ -44,7 +43,6 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 @Entity
-@EntityListeners(AuditedEntityListener.class)
 @Table(name = "xinco_core_user", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"username"})})
 @XmlRootElement
