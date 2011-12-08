@@ -48,7 +48,6 @@
  */
 package com.bluecubs.xinco.server;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.*;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
@@ -925,6 +924,7 @@ public class XincoAdminServlet extends HttpServlet {
                     try {
                         label = rb.getString(label);
                     } catch (java.util.MissingResourceException e) {
+                        logger.log(Level.WARNING, null, e);
                         //Nothing to translate
                     }
                     out.println("<td class=\"text\">" + label + "</td>");
@@ -950,6 +950,7 @@ public class XincoAdminServlet extends HttpServlet {
                     try {
                         designation = rb.getString(tempGroup.getDesignation());
                     } catch (java.util.MissingResourceException e) {
+                        logger.log(Level.WARNING, null, e);
                         //Nothing to translate
                     }
                     out.println("<td class=\"text\"><input type=\"text\" name=\"DialogEditGroupName\" size=\"40\" value=\"" + designation + "\"/></td>");
