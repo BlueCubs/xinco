@@ -164,6 +164,7 @@ public class XincoIndexer {
                     v.add(new XincoCoreDataServer(Integer.parseInt(doc.get("id"))));
                 } catch (Exception xcde) {
                     // don't add non-existing data
+                    logger.log(Level.WARNING, null,xcde);
                 }
                 if (i >= XincoDBManager.config.MaxSearchResult) {
                     break;

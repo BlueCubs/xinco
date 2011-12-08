@@ -50,7 +50,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class XincoCoreDataServer extends XincoCoreData {
+public final class XincoCoreDataServer extends XincoCoreData {
 
     private static HashMap parameters = new HashMap();
     private static List result;
@@ -301,6 +301,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                 try {
                     (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, getId(), "" + getId()))).delete();
                 } catch (Exception dfe) {
+                    Logger.getLogger(XincoCoreDataServer.class.getSimpleName()).log(Level.WARNING, null, dfe);
                     // continue, file might not exist
                 }
                 // delete revisions created upon creation or checkin
@@ -309,6 +310,7 @@ public class XincoCoreDataServer extends XincoCoreData {
                         try {
                             (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, getId(), getId() + "-" + ((XincoCoreLog) getXincoCoreLogs().get(i)).getId()))).delete();
                         } catch (Exception drfe) {
+                            Logger.getLogger(XincoCoreDataServer.class.getSimpleName()).log(Level.WARNING, null, drfe);
                             // continue, delete next revision
                         }
                     }
