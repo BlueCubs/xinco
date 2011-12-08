@@ -56,6 +56,8 @@ import java.util.logging.Logger;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import javax.imageio.ImageIO;
+import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 import javax.persistence.metamodel.EntityType;
 import javax.swing.Icon;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -97,6 +99,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
     private File fileToLoad;
     private String fileName;                    // Original file name
     private boolean renderingSupportEnabled = false;
+    private String version;
     private HorizontalSplitPanel xeSplitPanel;
     private com.vaadin.ui.Button login = new com.vaadin.ui.Button(
             getResource().getString("general.login"),
@@ -186,6 +189,11 @@ public class Xinco extends Application implements XincoVaadinApplication {
     private com.vaadin.ui.Panel adminPanel;
 
     @Override
+    public String getVersion() {
+        return version;
+    }
+
+    @Override
     public void init() {
         try {
             XincoDBManager.getEntityManagerFactory();
@@ -197,376 +205,12 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         "Waiting for DB initialization. Current state:{0}",
                         (XincoDBManager.getState() != null ? XincoDBManager.getState().name() : null));
                 try {
-                    Thread.currentThread().sleep(10000);
+                    Thread.sleep(100);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            XincoMenuItem item;
-            int i = 0;
-            item = new XincoMenuItem(i += 1000,
-                    getResource().getString("menu.repository"),
-                    getResource().getString("menu.repository.refresh"),
-                    smallIcon,
-                    new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            try {
-                                refresh();
-                            } catch (XincoException ex) {
-                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
-                    },
-                    false, //Need to be logged in
-                    false, //Data only
-                    false, //Node only
-                    false);
-            XincoMenuItemManager.addItem(item);
-            item = new XincoMenuItem(i += 1000,
-                    getResource().getString("menu.repository"),
-                    getResource().getString("menu.repository.addfolder"),
-                    smallIcon,
-                    new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            //Show the Data Folder Dialog window
-                            showDataFolderDialog(true);
-                        }
-                    },
-                    true, //Need to be logged in
-                    false, //Data only
-                    true, //Node only
-                    true //Something selected
-                    );
-            XincoMenuItemManager.addItem(item);
-            item = new XincoMenuItem(i += 1000,
-                    getResource().getString("menu.repository"),
-                    getResource().getString("menu.repository.adddata"),
-                    smallIcon,
-                    new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            //Show the Data Folder Dialog window
-                            showDataDialog(true);
-                        }
-                    },
-                    true, //Need to be logged in
-                    false, //Data only
-                    true, //Node only
-                    true //Something selected
-                    );
-            XincoMenuItemManager.addItem(item);
-            item = new XincoMenuItem(i += 1000,
-                    getResource().getString("menu.repository"),
-                    getResource().getString("menu.repository.adddatastructure"),
-                    smallIcon,
-                    new com.vaadin.ui.MenuBar.Command() {
-
-                        StringBuilder sb = new StringBuilder();
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            //Show the Data Structure Dialog window
-                            final Window w = new Window("Mass import");
-                            MultiFileUpload fileUpload = new MultiFileUpload() {
-
-                                @Override
-                                protected void handleFile(File file, String fileName,
-                                        String mimeType, long length) {
-                                    if (length == 0) {
-                                        //Empty file or folder
-                                        if (sb.toString().isEmpty()) {
-                                            sb.append(getResource().getString("window.massiveimport.notsupported"));
-                                        }
-                                        sb.append("\n").append(fileName);
-                                        getMainWindow().showNotification(
-                                                sb.toString(),
-                                                Notification.TYPE_TRAY_NOTIFICATION);
-                                    } else {
-                                        getMainWindow().showNotification(
-                                                getResource().getString("window.massiveimport.progress"),
-                                                Notification.TYPE_TRAY_NOTIFICATION);
-                                        try {
-                                            loadFile(file, fileName);
-                                        } catch (XincoException ex) {
-                                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                        } catch (MalformedURLException ex) {
-                                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                        } catch (IOException ex) {
-                                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                        }
-                                    }
-                                }
-                                //TODO: Notify the user about any issues
-                            };
-                            fileUpload.setWidth("600px");
-                            w.addComponent(fileUpload);
-                            w.setModal(true);
-                            w.center();
-                            getMainWindow().addWindow(w);
-                        }
-                    },
-                    true, //Need to be logged in
-                    false, //Data only
-                    true, //Node only
-                    true //Something selected
-                    );
-            XincoMenuItemManager.addItem(item);
-            item = new XincoMenuItem(i += 1000,
-                    getResource().getString("menu.repository"),
-                    getResource().getString("menu.edit.folderdata"),
-                    smallIcon,
-                    new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            if (xincoTree.getValue().toString().startsWith("node")) {
-                                showDataFolderDialog(false);
-                            } else if (xincoTree.getValue().toString().startsWith("data")) {
-                                showDataDialog(false);
-                            }
-                        }
-                    },
-                    true, //Need to be logged in
-                    false, //Data only
-                    false, //Node only
-                    true //Something selected
-                    );
-            item.setStatuses(new int[]{1, 4});
-            XincoMenuItemManager.addItem(item);
-            item = new XincoMenuItem(i += 1000,
-                    getResource().getString("menu.repository"),
-                    getResource().getString("menu.repository.vieweditaddattributes"),
-                    smallIcon,
-                    new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            //Show the Data Folder Dialog window
-                            showDataDialog(false);
-                        }
-                    },
-                    true, //Need to be logged in
-                    true, //Data only
-                    false, //Node only
-                    true //Something selected
-                    );
-            item.setStatuses(new int[]{1, 4});
-            XincoMenuItemManager.addItem(item);
-            item = new XincoMenuItem(i += 1000,
-                    getResource().getString("menu.repository"),
-                    getResource().getString("menu.edit.acl"),
-                    smallIcon,
-                    new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            showACLDialog();
-                        }
-                    },
-                    true, //Need to be logged in
-                    false, //Data only
-                    false, //Node only
-                    true //Something selected
-                    );
-            item.setStatuses(new int[]{1, 4});
-            XincoMenuItemManager.addItem(item);
-            item = new XincoMenuItem(i += 1000,
-                    getResource().getString("menu.repository"),
-                    getResource().getString("menu.repository.downloadfile"),
-                    smallIcon,
-                    new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            try {
-                                downloadFile();
-                            } catch (MalformedURLException ex) {
-                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (XincoException ex) {
-                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
-                    },
-                    false, //Need to be logged in
-                    false, //Data only
-                    false, //Node only
-                    true //Something selected
-                    );
-            item.setDataTypes(new int[]{1});
-            XincoMenuItemManager.addItem(item);
-            //TODO: Enable Rendering support
-            if (renderingSupportEnabled) {
-                XincoMenuItemManager.addItem(item);
-                item = new XincoMenuItem(i += 1000,
-                        getResource().getString("menu.repository"),
-                        getResource().getString("menu.repository.addrendering"),
-                        smallIcon,
-                        new com.vaadin.ui.MenuBar.Command() {
-
-                            @Override
-                            public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                                try {
-                                    showRenderingDialog();
-                                } catch (XincoException ex) {
-                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                            }
-                        },
-                        false, //Need to be logged in
-                        true, //Data only
-                        false, //Node only
-                        true //Something selected
-                        );
-                item.setDataTypes(new int[]{1});
-                XincoMenuItemManager.addItem(item);
-            }
-            item = new XincoMenuItem(i += 1000,
-                    getResource().getString("menu.repository"),
-                    getResource().getString("menu.edit.checkoutfile"),
-                    smallIcon,
-                    new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            checkoutFile();
-                        }
-                    },
-                    true, //Need to be logged in
-                    true, //Data only
-                    false, //Node only
-                    true //Something selected
-                    );
-            item.setStatuses(new int[]{1});
-            XincoMenuItemManager.addItem(item);
-            item = new XincoMenuItem(i += 1000,
-                    getResource().getString("menu.repository"),
-                    getResource().getString("menu.edit.undocheckout"),
-                    smallIcon,
-                    new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            undoCheckoutFile();
-                        }
-                    },
-                    true, //Need to be logged in
-                    true, //Data only
-                    false, //Node only
-                    true //Something selected
-                    );
-            item.setStatuses(new int[]{4});
-            XincoMenuItemManager.addItem(item);
-            item = new XincoMenuItem(i += 1000,
-                    getResource().getString("menu.repository"),
-                    getResource().getString("menu.edit.checkinfile"),
-                    smallIcon,
-                    new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            checkinFile();
-                        }
-                    },
-                    true, //Need to be logged in
-                    true, //Data only
-                    false, //Node only
-                    true //Something selected
-                    );
-            item.setStatuses(new int[]{4});
-            XincoMenuItemManager.addItem(item);
-            item = new XincoMenuItem(i += 1000,
-                    getResource().getString("menu.repository"),
-                    getResource().getString("menu.edit.publishdata"),
-                    smallIcon,
-                    new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            try {
-                                publishData();
-                            } catch (MalformedURLException ex) {
-                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (XincoException ex) {
-                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
-                    },
-                    true, //Need to be logged in
-                    true, //Data only
-                    false, //Node only
-                    true //Something selected
-                    );
-            item.setStatuses(new int[]{1});
-            XincoMenuItemManager.addItem(item);
-            item = new XincoMenuItem(i += 1000,
-                    getResource().getString("menu.repository"),
-                    getResource().getString("menu.edit.lockdata"),
-                    smallIcon,
-                    new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            try {
-                                lockData();
-                            } catch (MalformedURLException ex) {
-                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (XincoException ex) {
-                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
-                    },
-                    true, //Need to be logged in
-                    true, //Data only
-                    false, //Node only
-                    true //Something selected
-                    );
-            item.setStatuses(new int[]{1});
-            XincoMenuItemManager.addItem(item);
-            item = new XincoMenuItem(i += 1000,
-                    getResource().getString("menu.repository"),
-                    getResource().getString("menu.edit.downloadrevision"),
-                    smallIcon,
-                    new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            showDownloadRevDialog();
-                        }
-                    },
-                    true, //Need to be logged in
-                    true, //Data only
-                    false, //Node only
-                    true //Something selected
-                    );
-            item.setStatuses(new int[]{1});
-            XincoMenuItemManager.addItem(item);
-            item = new XincoMenuItem(i += 1000,
-                    getResource().getString("menu.repository"),
-                    getResource().getString("menu.edit.commentdata"),
-                    smallIcon,
-                    new com.vaadin.ui.MenuBar.Command() {
-
-                        @Override
-                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
-                            try {
-                                showCommentDataDialog();
-                            } catch (XincoException ex) {
-                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
-                    },
-                    true, //Need to be logged in
-                    true, //Data only
-                    false, //Node only
-                    true //Something selected
-                    );
-            item.setStatuses(new int[]{1});
-            XincoMenuItemManager.addItem(item);
+            initMenuItems();
             //Switch to Xinco theme
             setTheme("xinco");
             setMainWindow(new Window("Xinco"));
@@ -595,12 +239,13 @@ public class Xinco extends Application implements XincoVaadinApplication {
             } catch (com.bluecubs.xinco.core.XincoException ex) {
                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             }
-            Embedded icon = new Embedded(getResource().getString("general.clienttitle") + " - "
-                    + getResource().getString("general.version") + " "
-                    + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.high").getIntValue() + "."
+            version = XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.high").getIntValue() + "."
                     + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.mid").getIntValue() + "."
                     + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.low").getIntValue() + " "
-                    + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.postfix").getStringValue(), new ThemeResource("img/blueCubsSmall.gif"));
+                    + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.postfix").getStringValue();
+            Embedded icon = new Embedded("Xinco - "
+                    + getResource().getString("general.version") + " "
+                    + version, new ThemeResource("img/blueCubsSmall.gif"));
             icon.setType(Embedded.TYPE_IMAGE);
             getMainWindow().addComponent(icon);
             HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
@@ -608,7 +253,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
             splitPanel.setFirstComponent(getSideMenu());
             splitPanel.setSecondComponent(getXincoExplorer());
             splitPanel.setHeight(500, Sizeable.UNITS_PIXELS);
-            splitPanel.setSplitPosition(15, Sizeable.UNITS_PERCENTAGE);
+            splitPanel.setSplitPosition(20, Sizeable.UNITS_PERCENTAGE);
             getMainWindow().addComponent(splitPanel);
         } catch (XincoException ex) {
             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
@@ -680,7 +325,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
         xeSplitPanel.setFirstComponent(getXincoTree());
         xeSplitPanel.setSecondComponent(getXincoTable());
         xeSplitPanel.setHeight(500, Sizeable.UNITS_PIXELS);
-        xeSplitPanel.setSplitPosition(100, Sizeable.UNITS_PERCENTAGE);
+        xeSplitPanel.setSplitPosition(20, Sizeable.UNITS_PERCENTAGE);
         //Hide details by default, user needs to log in for some features.
         getXincoTable().setVisible(false);
         panel.addComponent(menuBar);
@@ -1372,10 +1017,10 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     com.vaadin.ui.Label.class, null);
             for (XincoCoreDataServer xcds : renderings) {
                 String name = xcds.getXincoAddAttributes().get(0).getAttribVarchar();
-                XincoVersion version = XincoCoreDataServer.getCurrentVersion(xcds.getId());
+                XincoVersion xVersion = XincoCoreDataServer.getCurrentVersion(xcds.getId());
                 table.addItem(new Object[]{xcds.getDesignation(),
-                            version.getVersionHigh() + "." + version.getVersionMid()
-                            + "." + version.getVersionLow() + " " + version.getVersionPostfix(),
+                            xVersion.getVersionHigh() + "." + xVersion.getVersionMid()
+                            + "." + xVersion.getVersionLow() + " " + xVersion.getVersionPostfix(),
                             name.substring(name.lastIndexOf(".") + 1, name.length())});
             }
             form.setFooter(new HorizontalLayout());
@@ -1917,7 +1562,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
         loginWindow.addComponent(form);
         loginWindow.center();
         loginWindow.setModal(true);
-        loginWindow.setWidth(25, Sizeable.UNITS_PERCENTAGE);
+        loginWindow.setWidth(30, Sizeable.UNITS_PERCENTAGE);
         getMainWindow().addWindow(loginWindow);
     }
 
@@ -2129,26 +1774,74 @@ public class Xinco extends Application implements XincoVaadinApplication {
                 String.class, null);
         table.addContainerProperty(getResource().getString("general.audit.action"),
                 com.vaadin.ui.Component.class, null);
+        table.setSortContainerPropertyId(getResource().getString("general.table"));
         Set<EntityType<?>> entities = XincoDBManager.getEntityManagerFactory().getMetamodel().getEntities();
         for (EntityType type : entities) {
             String name = type.getName();
             if (type.getJavaType().getSuperclass() == XincoAuditedObject.class) {
-                com.vaadin.ui.Button cont = new com.vaadin.ui.Button(xerb.getString("general.continue"));
-                cont.setData(name);
+                final com.vaadin.ui.Button cont = new com.vaadin.ui.Button(xerb.getString("general.continue"));
+                cont.setData(type);
                 cont.addListener(new com.vaadin.ui.Button.ClickListener() {
 
                     @Override
                     public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                        throw new UnsupportedOperationException("Not supported yet.");
+                        getMainWindow().removeWindow(audit);
+                        showAuditDetails((EntityType) cont.getData());
                     }
                 });
                 table.addItem(new Object[]{name, cont}, name);
             }
         }
+        table.sort();
+        audit.addComponent(table);
         audit.setModal(true);
         audit.center();
-        audit.setWidth(90, Sizeable.UNITS_PERCENTAGE);
+        audit.setWidth(35, Sizeable.UNITS_PERCENTAGE);
         getMainWindow().addWindow(audit);
+    }
+
+    private void showAuditOptions(EntityType entity) {
+    }
+
+    private Table showEntitiesInTable(java.util.List entities) throws XincoException {
+        //Create the table
+        final Table table = new Table();
+        table.addStyleName("striped");
+        if (!entities.isEmpty()) {
+            Class<? extends Object> entityClass = entities.get(0).getClass();
+            EntityType entityType =
+                    XincoDBManager.getEntityManagerFactory().getMetamodel().entity(entityClass);
+            HashMap<String, PersistentAttributeType> typeMap = new HashMap<String, PersistentAttributeType>();
+            for (Iterator it = entityType.getAttributes().iterator(); it.hasNext();) {
+                Attribute attr = (Attribute) it.next();
+                table.addContainerProperty(attr.getName(), com.vaadin.ui.Component.class, null);
+                typeMap.put(attr.getName(), attr.getPersistentAttributeType());
+            }
+            for (Iterator it = entities.iterator(); it.hasNext();) {
+                Object o = it.next();
+                for (Entry<String, PersistentAttributeType> entry : typeMap.entrySet()) {
+                }
+            }
+//            table.addItem(new Object[]{new com.vaadin.ui.Label("<b>"
+//                            + xerb.getString("message.index.delete") + "</b>"),
+//                            new com.vaadin.ui.Label()}, index++);
+        }
+        return table;
+    }
+
+    private void showAuditDetails(EntityType entity) {
+        try {
+            final Window audit = new Window();
+            Table table = showEntitiesInTable(XincoDBManager.createdQuery("select distinct x from "
+                    + entity.getJavaType().getSimpleName() + "T x"));
+            audit.addComponent(table);
+            audit.setModal(true);
+            audit.center();
+            audit.setWidth(90, Sizeable.UNITS_PERCENTAGE);
+            getMainWindow().addWindow(audit);
+        } catch (XincoException ex) {
+            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void showAttrAdminWindow() {
@@ -2394,6 +2087,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                 1, 0, new Timestamp(System.currentTimeMillis()));
                         temp_user.getXincoCoreGroups().add(new XincoCoreGroupServer(2));
                         temp_user.setWriteGroups(true);
+                        temp_user.setHashPassword(true);
                         //Reason for change
                         temp_user.setReason("audit.user.account.create");
                         changed = true;
@@ -2916,6 +2610,374 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         edit}, type.getId());
         }
         table.sort();
+    }
+
+    private void initMenuItems() {
+        XincoMenuItem item;
+        int i = 0;
+        item = new XincoMenuItem(i += 1000,
+                getResource().getString("menu.repository"),
+                getResource().getString("menu.repository.refresh"),
+                smallIcon,
+                new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        try {
+                            refresh();
+                        } catch (XincoException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                },
+                false, //Need to be logged in
+                false, //Data only
+                false, //Node only
+                false);
+        XincoMenuItemManager.addItem(item);
+        item = new XincoMenuItem(i += 1000,
+                getResource().getString("menu.repository"),
+                getResource().getString("menu.repository.addfolder"),
+                smallIcon,
+                new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        //Show the Data Folder Dialog window
+                        showDataFolderDialog(true);
+                    }
+                },
+                true, //Need to be logged in
+                false, //Data only
+                true, //Node only
+                true //Something selected
+                );
+        XincoMenuItemManager.addItem(item);
+        item = new XincoMenuItem(i += 1000,
+                getResource().getString("menu.repository"),
+                getResource().getString("menu.repository.adddata"),
+                smallIcon,
+                new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        //Show the Data Folder Dialog window
+                        showDataDialog(true);
+                    }
+                },
+                true, //Need to be logged in
+                false, //Data only
+                true, //Node only
+                true //Something selected
+                );
+        XincoMenuItemManager.addItem(item);
+        item = new XincoMenuItem(i += 1000,
+                getResource().getString("menu.repository"),
+                getResource().getString("menu.repository.adddatastructure"),
+                smallIcon,
+                new com.vaadin.ui.MenuBar.Command() {
+
+                    StringBuilder sb = new StringBuilder();
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        //Show the Data Structure Dialog window
+                        final Window w = new Window("Mass import");
+                        MultiFileUpload fileUpload = new MultiFileUpload() {
+
+                            @Override
+                            protected void handleFile(File file, String fileName,
+                                    String mimeType, long length) {
+                                if (length == 0) {
+                                    //Empty file or folder
+                                    if (sb.toString().isEmpty()) {
+                                        sb.append(getResource().getString("window.massiveimport.notsupported"));
+                                    }
+                                    sb.append("\n").append(fileName);
+                                    getMainWindow().showNotification(
+                                            sb.toString(),
+                                            Notification.TYPE_TRAY_NOTIFICATION);
+                                } else {
+                                    getMainWindow().showNotification(
+                                            getResource().getString("window.massiveimport.progress"),
+                                            Notification.TYPE_TRAY_NOTIFICATION);
+                                    try {
+                                        loadFile(file, fileName);
+                                    } catch (XincoException ex) {
+                                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (MalformedURLException ex) {
+                                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (IOException ex) {
+                                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                            }
+                            //TODO: Notify the user about any issues
+                        };
+                        fileUpload.setWidth("600px");
+                        w.addComponent(fileUpload);
+                        w.setModal(true);
+                        w.center();
+                        getMainWindow().addWindow(w);
+                    }
+                },
+                true, //Need to be logged in
+                false, //Data only
+                true, //Node only
+                true //Something selected
+                );
+        XincoMenuItemManager.addItem(item);
+        item = new XincoMenuItem(i += 1000,
+                getResource().getString("menu.repository"),
+                getResource().getString("menu.edit.folderdata"),
+                smallIcon,
+                new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        if (xincoTree.getValue().toString().startsWith("node")) {
+                            showDataFolderDialog(false);
+                        } else if (xincoTree.getValue().toString().startsWith("data")) {
+                            showDataDialog(false);
+                        }
+                    }
+                },
+                true, //Need to be logged in
+                false, //Data only
+                false, //Node only
+                true //Something selected
+                );
+        item.setStatuses(new int[]{1, 4});
+        XincoMenuItemManager.addItem(item);
+        item = new XincoMenuItem(i += 1000,
+                getResource().getString("menu.repository"),
+                getResource().getString("menu.repository.vieweditaddattributes"),
+                smallIcon,
+                new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        //Show the Data Folder Dialog window
+                        showDataDialog(false);
+                    }
+                },
+                true, //Need to be logged in
+                true, //Data only
+                false, //Node only
+                true //Something selected
+                );
+        item.setStatuses(new int[]{1, 4});
+        XincoMenuItemManager.addItem(item);
+        item = new XincoMenuItem(i += 1000,
+                getResource().getString("menu.repository"),
+                getResource().getString("menu.edit.acl"),
+                smallIcon,
+                new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        showACLDialog();
+                    }
+                },
+                true, //Need to be logged in
+                false, //Data only
+                false, //Node only
+                true //Something selected
+                );
+        item.setStatuses(new int[]{1, 4});
+        XincoMenuItemManager.addItem(item);
+        item = new XincoMenuItem(i += 1000,
+                getResource().getString("menu.repository"),
+                getResource().getString("menu.repository.downloadfile"),
+                smallIcon,
+                new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        try {
+                            downloadFile();
+                        } catch (MalformedURLException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (XincoException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                },
+                false, //Need to be logged in
+                false, //Data only
+                false, //Node only
+                true //Something selected
+                );
+        item.setDataTypes(new int[]{1});
+        XincoMenuItemManager.addItem(item);
+        //TODO: Enable Rendering support
+        if (renderingSupportEnabled) {
+            XincoMenuItemManager.addItem(item);
+            item = new XincoMenuItem(i += 1000,
+                    getResource().getString("menu.repository"),
+                    getResource().getString("menu.repository.addrendering"),
+                    smallIcon,
+                    new com.vaadin.ui.MenuBar.Command() {
+
+                        @Override
+                        public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                            try {
+                                showRenderingDialog();
+                            } catch (XincoException ex) {
+                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    },
+                    false, //Need to be logged in
+                    true, //Data only
+                    false, //Node only
+                    true //Something selected
+                    );
+            item.setDataTypes(new int[]{1});
+            XincoMenuItemManager.addItem(item);
+        }
+        item = new XincoMenuItem(i += 1000,
+                getResource().getString("menu.repository"),
+                getResource().getString("menu.edit.checkoutfile"),
+                smallIcon,
+                new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        checkoutFile();
+                    }
+                },
+                true, //Need to be logged in
+                true, //Data only
+                false, //Node only
+                true //Something selected
+                );
+        item.setStatuses(new int[]{1});
+        XincoMenuItemManager.addItem(item);
+        item = new XincoMenuItem(i += 1000,
+                getResource().getString("menu.repository"),
+                getResource().getString("menu.edit.undocheckout"),
+                smallIcon,
+                new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        undoCheckoutFile();
+                    }
+                },
+                true, //Need to be logged in
+                true, //Data only
+                false, //Node only
+                true //Something selected
+                );
+        item.setStatuses(new int[]{4});
+        XincoMenuItemManager.addItem(item);
+        item = new XincoMenuItem(i += 1000,
+                getResource().getString("menu.repository"),
+                getResource().getString("menu.edit.checkinfile"),
+                smallIcon,
+                new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        checkinFile();
+                    }
+                },
+                true, //Need to be logged in
+                true, //Data only
+                false, //Node only
+                true //Something selected
+                );
+        item.setStatuses(new int[]{4});
+        XincoMenuItemManager.addItem(item);
+        item = new XincoMenuItem(i += 1000,
+                getResource().getString("menu.repository"),
+                getResource().getString("menu.edit.publishdata"),
+                smallIcon,
+                new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        try {
+                            publishData();
+                        } catch (MalformedURLException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (XincoException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                },
+                true, //Need to be logged in
+                true, //Data only
+                false, //Node only
+                true //Something selected
+                );
+        item.setStatuses(new int[]{1});
+        XincoMenuItemManager.addItem(item);
+        item = new XincoMenuItem(i += 1000,
+                getResource().getString("menu.repository"),
+                getResource().getString("menu.edit.lockdata"),
+                smallIcon,
+                new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        try {
+                            lockData();
+                        } catch (MalformedURLException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (XincoException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                },
+                true, //Need to be logged in
+                true, //Data only
+                false, //Node only
+                true //Something selected
+                );
+        item.setStatuses(new int[]{1});
+        XincoMenuItemManager.addItem(item);
+        item = new XincoMenuItem(i += 1000,
+                getResource().getString("menu.repository"),
+                getResource().getString("menu.edit.downloadrevision"),
+                smallIcon,
+                new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        showDownloadRevDialog();
+                    }
+                },
+                true, //Need to be logged in
+                true, //Data only
+                false, //Node only
+                true //Something selected
+                );
+        item.setStatuses(new int[]{1});
+        XincoMenuItemManager.addItem(item);
+        item = new XincoMenuItem(i += 1000,
+                getResource().getString("menu.repository"),
+                getResource().getString("menu.edit.commentdata"),
+                smallIcon,
+                new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        try {
+                            showCommentDataDialog();
+                        } catch (XincoException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                },
+                true, //Need to be logged in
+                true, //Data only
+                false, //Node only
+                true //Something selected
+                );
+        item.setStatuses(new int[]{1});
+        XincoMenuItemManager.addItem(item);
     }
 
     private class ArchiveDialog extends CustomComponent {
