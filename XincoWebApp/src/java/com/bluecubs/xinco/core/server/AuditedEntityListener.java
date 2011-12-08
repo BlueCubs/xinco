@@ -22,14 +22,14 @@ public class AuditedEntityListener {
     @PrePersist
     public void persistEntity(Object o) throws Exception {
         synchronized (this) {
-            Logger.getLogger(AuditedEntityListener.class.getName()).log(Level.INFO, "Pre-persist: {0}", o);
+            Logger.getLogger(AuditedEntityListener.class.getName()).log(Level.FINEST, "Pre-persist: {0}", o);
             if (o instanceof AuditedObject) {
                 XincoAuditedObject auditedObject = (XincoAuditedObject) o;
                 if (auditedObject.getModificationReason() == null || auditedObject.getModificationReason().isEmpty()) {
                     auditedObject.setModificationReason("audit.general.create");
                 }
                 auditTrail(o);
-                Logger.getLogger(AuditedEntityListener.class.getName()).log(Level.INFO, "Done!");
+                Logger.getLogger(AuditedEntityListener.class.getName()).log(Level.FINEST, "Done!");
             }
         }
     }
@@ -37,14 +37,14 @@ public class AuditedEntityListener {
     @PreRemove
     public void removeEntity(Object o) throws Exception {
         synchronized (this) {
-            Logger.getLogger(AuditedEntityListener.class.getName()).log(Level.INFO, "Pre-remove: {0}", o);
+            Logger.getLogger(AuditedEntityListener.class.getName()).log(Level.FINEST, "Pre-remove: {0}", o);
             if (o instanceof AuditedObject) {
                 XincoAuditedObject auditedObject = (XincoAuditedObject) o;
                 if (auditedObject.getModificationReason() == null || auditedObject.getModificationReason().isEmpty()) {
                     auditedObject.setModificationReason("audit.general.delete");
                 }
                 auditTrail(o);
-                Logger.getLogger(AuditedEntityListener.class.getName()).log(Level.INFO, "Done!");
+                Logger.getLogger(AuditedEntityListener.class.getName()).log(Level.FINEST, "Done!");
             }
         }
     }
@@ -54,12 +54,12 @@ public class AuditedEntityListener {
         synchronized (this) {
             if (o instanceof AuditedObject) {
                 XincoAuditedObject auditedObject = (XincoAuditedObject) o;
-                Logger.getLogger(AuditedEntityListener.class.getName()).log(Level.INFO, "Pre-update: {0}", o);
+                Logger.getLogger(AuditedEntityListener.class.getName()).log(Level.FINEST, "Pre-update: {0}", o);
                 if (auditedObject.getModificationReason() == null || auditedObject.getModificationReason().isEmpty()) {
                     auditedObject.setModificationReason("audit.general.modified");
                 }
                 auditTrail(o);
-                Logger.getLogger(AuditedEntityListener.class.getName()).log(Level.INFO, "Done!");
+                Logger.getLogger(AuditedEntityListener.class.getName()).log(Level.FINEST, "Done!");
             }
         }
     }
@@ -69,7 +69,7 @@ public class AuditedEntityListener {
             if (o instanceof AuditedObject) {
                 XincoAuditedObject auditedObject = (XincoAuditedObject) o;
                 if (auditedObject.isAuditable()) {
-                    Logger.getLogger(AuditedEntityListener.class.getName()).log(Level.INFO, "Creating audit trail for {0}", o);
+                    Logger.getLogger(AuditedEntityListener.class.getName()).log(Level.FINEST, "Creating audit trail for {0}", o);
                     modifier = new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(auditedObject.getModifierId());
                     if (modifier == null) {
                         //Default to admin
@@ -83,7 +83,7 @@ public class AuditedEntityListener {
                     mod.setXincoCoreUser(modifier);
                     mod.setModTime(new Date());
                     new XincoCoreUserModifiedRecordJpaController(XincoDBManager.getEntityManagerFactory()).create(mod);
-                    Logger.getLogger(AuditedEntityListener.class.getName()).log(Level.INFO, "Created XincoCoreUserModifiedRecord record");
+                    Logger.getLogger(AuditedEntityListener.class.getName()).log(Level.FINEST, "Created XincoCoreUserModifiedRecord record");
                     boolean updated = false;
                     if (o instanceof XincoCoreNode) {
                         XincoCoreNode node = (XincoCoreNode) o;
