@@ -414,14 +414,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
         //Create audit trail record
         int record_ID;
         XincoCoreUserJpaController controller = new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory());
-        try {
-            record_ID = XincoIdServer.getNextId("xinco_core_user_modified_record");
-        } catch (XincoException ex) {
-            //It doesn't exist, create one
-            XincoIdServer tempId = new XincoIdServer("xinco_core_user_modified_record", 0);
-            tempId.write2DB();
-            record_ID = XincoIdServer.getNextId("xinco_core_user_modified_record");
-        }
+        record_ID = XincoIdServer.getNextId("xinco_core_user_modified_record");
         new XincoCoreUserTJpaController(XincoDBManager.getEntityManagerFactory()).create(
                 new XincoCoreUserT(record_ID, getId(), getUsername(), getUserpassword(),
                 getLastName(), getFirstName(), getEmail(), getStatusNumber(),
