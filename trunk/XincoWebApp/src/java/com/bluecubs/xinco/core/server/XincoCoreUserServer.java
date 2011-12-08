@@ -39,12 +39,9 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroupPK;
-import com.bluecubs.xinco.core.server.persistence.XincoCoreUserT;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreGroupJpaController;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserHasXincoCoreGroupJpaController;
-import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
+import com.bluecubs.xinco.core.server.persistence.*;
+import com.bluecubs.xinco.core.server.persistence.controller.*;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
 import com.bluecubs.xinco.core.server.service.XincoCoreUser;
 import com.bluecubs.xinco.tools.MD5;
 import java.sql.Timestamp;
@@ -385,6 +382,8 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 xcu.setModifierId(getChangerID());
                 xcu.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.edit(xcu);
+                //Create audit trail record
+                createAuditTrail(xcu);
             } else {
                 xcu = new com.bluecubs.xinco.core.server.persistence.XincoCoreUser(getId(),
                         getUsername().replaceAll("'", "\\\\'"), getUserpassword(), getLastName().replaceAll("'", "\\\\'"),
@@ -394,6 +393,8 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 xcu.setModifierId(getChangerID());
                 xcu.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.create(xcu);
+                //Create audit trail record
+                createAuditTrail(xcu);
             }
             setId(xcu.getId());
             if (isWriteGroups()) {
@@ -407,6 +408,30 @@ public final class XincoCoreUserServer extends XincoCoreUser {
         setWriteGroups(false);
         setReason("");
         return getId();
+    }
+
+    private void createAuditTrail(com.bluecubs.xinco.core.server.persistence.XincoCoreUser xcu) throws XincoException, PreexistingEntityException, Exception {
+        //Create audit trail record
+        int record_ID;
+        XincoCoreUserJpaController controller = new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory());
+        try {
+            record_ID = XincoIdServer.getNextId("xinco_core_user_modified_record");
+        } catch (XincoException ex) {
+            //It doesn't exist, create one
+            XincoIdServer tempId = new XincoIdServer("xinco_core_user_modified_record", 0);
+            tempId.write2DB();
+            record_ID = XincoIdServer.getNextId("xinco_core_user_modified_record");
+        }
+        new XincoCoreUserTJpaController(XincoDBManager.getEntityManagerFactory()).create(
+                new XincoCoreUserT(record_ID, getId(), getUsername(), getUserpassword(),
+                getLastName(), getFirstName(), getEmail(), getStatusNumber(),
+                getAttempts(), new Timestamp(getLastModified().getTime())));
+        XincoCoreUserModifiedRecord mod = new XincoCoreUserModifiedRecord(new XincoCoreUserModifiedRecordPK(
+                getChangerID(), record_ID));
+        mod.setModReason(xcu.getModificationReason());
+        mod.setXincoCoreUser(controller.findXincoCoreUser(xcu.getModifierId()));
+        mod.setModTime(new Date());
+        new XincoCoreUserModifiedRecordJpaController(XincoDBManager.getEntityManagerFactory()).create(mod);
     }
 
 //create complete list of users
