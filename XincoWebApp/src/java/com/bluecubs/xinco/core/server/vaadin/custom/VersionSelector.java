@@ -61,7 +61,7 @@ public class VersionSelector extends CustomComponent {
         low.setStepAmount(1);
         panel.addComponent(low);
         postfix = new TextField(getString("general.version.postfix"));
-        postfix.setValue(version.getVersionPostfix());
+        postfix.setValue(version.getVersionPostfix() == null ? "" : version.getVersionPostfix());
         panel.addComponent(postfix);
         minor.addListener(new ValueChangeListener() {
 
