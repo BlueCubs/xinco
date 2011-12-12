@@ -235,7 +235,6 @@ public class XincoDBManager {
     public static String getVersion() {
         return getVersionNumber() + ((settings.getString("version.postfix").isEmpty()
                 ? "" : " " + settings.getString("version.postfix")));
-
     }
 
     private static String getDBVersionNumber() {

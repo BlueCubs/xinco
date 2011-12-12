@@ -761,7 +761,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
         versionSelector.setVersion(temp.getXincoCoreLogs().get(log_index).getVersion());
         OPCode code = OPCode.getOPCode(temp.getXincoCoreLogs().get(log_index).getOpCode());
         switch (code) {
-            case COMMENT_COMMENT:
+            case COMMENT:
             case CHECKIN:
                 versionSelector.setMinorEnabled(code == OPCode.CHECKIN);
                 versionSelector.setVersionEnabled(false);
@@ -3345,7 +3345,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     int log_index;
                     String text;
                     final XincoCoreDataServer xdata = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-                    addLog(xdata, OPCode.COMMENT_COMMENT);
+                    addLog(xdata, OPCode.COMMENT);
                     log_index = xdata.getXincoCoreLogs().size() - 1;
                     XincoCoreLogServer newLog = new XincoCoreLogServer(((XincoCoreLog) xdata.getXincoCoreLogs().get(log_index)).getId());
                     //Reason really needed only for checkin
