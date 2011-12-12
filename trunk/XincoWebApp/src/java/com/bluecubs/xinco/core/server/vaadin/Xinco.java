@@ -193,6 +193,8 @@ public class Xinco extends Application implements XincoVaadinApplication {
     private ThemeResource smallIcon = new ThemeResource("img/blueCubsIcon16x16.GIF");
     private HierarchicalContainer xincoTreeContainer;
     private com.vaadin.ui.Panel adminPanel;
+    private boolean commentAdded;
+    private boolean waitingForComment;
 
     @Override
     public String getVersion() {
@@ -437,24 +439,25 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                 (ArrayList) (targetN).getXincoCoreAcl()).isWritePermission()
                                 && location == VerticalDropLocation.MIDDLE) {
                             try {
-                                xincoTree.setParent(sourceItemId, targetItemId);
                                 //Now update things in the database
                                 if (sourceItemId.toString().startsWith("data") && targetItemId.toString().startsWith("node")) {
                                     XincoCoreDataServer source = new XincoCoreDataServer(Integer.valueOf(sourceItemId.toString().substring(sourceItemId.toString().indexOf('-') + 1)));
+                                    // Get a reason for the move:
                                     source.setXincoCoreNodeId(targetN.getId());
-                                    source.write2DB();
+                                    showCommentDataDialog(source, OPCode.DATA_MOVE);
                                 }
                                 if (sourceItemId.toString().startsWith("node") && targetItemId.toString().startsWith("node")) {
                                     XincoCoreNodeServer source = new XincoCoreNodeServer(Integer.valueOf(sourceItemId.toString().substring(sourceItemId.toString().indexOf('-') + 1)));
                                     source.setXincoCoreNodeId(targetN.getId());
                                     source.write2DB();
                                 }
+                                xincoTree.setParent(sourceItemId, targetItemId);
                                 try {
                                     refresh();
                                 } catch (XincoException ex) {
                                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                                 }
-                            } catch (XincoException ex) {
+                            }catch (XincoException ex) {
                                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
@@ -616,7 +619,8 @@ public class Xinco extends Application implements XincoVaadinApplication {
                 @Override
                 public com.vaadin.ui.Component getContent() {
                     try {
-                        buildLogDialog(form, versionSelector);
+                        XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                        buildLogDialog(temp, form, versionSelector);
                         return form;
                     } catch (XincoException ex) {
                         Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
@@ -762,11 +766,10 @@ public class Xinco extends Application implements XincoVaadinApplication {
         }
     }
 
-    private void buildLogDialog(Form form, VersionSelector versionSelector) throws XincoException {
+    private void buildLogDialog(XincoCoreDataServer temp, Form form, VersionSelector versionSelector) throws XincoException {
         form.addField("action", new com.vaadin.ui.TextField(
                 getResource().getString("window.loggingdetails.action")
                 + ":"));
-        XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
         final int log_index = temp.getXincoCoreLogs().size() - 1;
         form.getField("action").setValue(temp.getXincoCoreLogs().get(log_index).getOpDescription());
         form.getField("action").setEnabled(false);
@@ -784,11 +787,13 @@ public class Xinco extends Application implements XincoVaadinApplication {
             case LOCK_COMMENT:
             case PUBLISH_COMMENT:
             case CHECKOUT_UNDONE:
+            case DATA_MOVE:
                 form.getField("reason").setEnabled(true);
                 break;
             default:
                 form.getField("reason").setEnabled(false);
         }
+        versionSelector.setEnabled(code != OPCode.DATA_MOVE);
         form.getField("reason").setRequired(form.getField("reason").isEnabled());
         form.getField("reason").setRequiredError(getResource().getString("message.warning.reason"));
         form.getLayout().addComponent(versionSelector);
@@ -3060,7 +3065,10 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     @Override
                     public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
                         try {
-                            showCommentDataDialog();
+                            final XincoCoreDataServer xdata = new XincoCoreDataServer(
+                                    Integer.valueOf(xincoTree.getValue().toString().substring(
+                                    xincoTree.getValue().toString().indexOf('-') + 1)));
+                            showCommentDataDialog(xdata, OPCode.COMMENT);
                         } catch (XincoException ex) {
                             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -3412,10 +3420,12 @@ public class Xinco extends Application implements XincoVaadinApplication {
         }
     }
 
-    private void showCommentDataDialog() throws XincoException {
+    private void showCommentDataDialog(final XincoCoreDataServer data, final OPCode opcode) throws XincoException {
         final Form form = new Form();
+        commentAdded = false;
+        waitingForComment = true;
         final VersionSelector versionSelector = new VersionSelector();
-        buildLogDialog(form, versionSelector);
+        buildLogDialog(data, form, versionSelector);
         final Window comment = new Window();
         //Used for validation purposes
         final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
@@ -3427,6 +3437,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     @Override
                     public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                         getMainWindow().removeWindow(comment);
+                        waitingForComment = false;
                     }
                 });
         commit.addListener(new com.vaadin.ui.Button.ClickListener() {
@@ -3439,13 +3450,12 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     //Process the data
                     int log_index;
                     String text;
-                    final XincoCoreDataServer xdata = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-                    addLog(xdata, OPCode.COMMENT);
-                    log_index = xdata.getXincoCoreLogs().size() - 1;
-                    XincoCoreLogServer newLog = new XincoCoreLogServer(((XincoCoreLog) xdata.getXincoCoreLogs().get(log_index)).getId());
+                    addLog(data, opcode);
+                    log_index = data.getXincoCoreLogs().size() - 1;
+                    XincoCoreLogServer newLog = new XincoCoreLogServer(((XincoCoreLog) data.getXincoCoreLogs().get(log_index)).getId());
                     //Reason really needed only for checkin
                     text = newLog.getOpDescription() + " "
-                            + (((XincoCoreLog) xdata.getXincoCoreLogs().get(log_index)).getOpCode() == 3 ? getResource().getString("general.status.checkedout") : form.getField("reason").getValue());
+                            + (((XincoCoreLog) data.getXincoCoreLogs().get(log_index)).getOpCode() == 3 ? getResource().getString("general.status.checkedout") : form.getField("reason").getValue());
                     newLog.setOpDescription(text);
                     text = "" + versionSelector.getVersion().getVersionHigh();
                     try {
@@ -3468,12 +3478,17 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     text = versionSelector.getVersion().getVersionPostfix() == null ? "" : versionSelector.getVersion().getVersionPostfix();
                     newLog.getVersion().setVersionPostfix(text);
                     newLog.write2DB();
+                    data.write2DB();
                     getMainWindow().removeWindow(comment);
+                    commentAdded = true;
+                    waitingForComment = false;
                     refresh();
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    waitingForComment = false;
                 } catch (XincoException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    waitingForComment = false;
                 }
             }
         });
@@ -4276,7 +4291,8 @@ public class Xinco extends Application implements XincoVaadinApplication {
         xincoTreeContainer.removeAllItems();
         String id = "node-" + xcns.getId();
         root = xincoTreeContainer.addItem(id);
-        root.getItemProperty("caption").setValue(xcns.getDesignation());
+        root.getItemProperty("caption").setValue(xcns.getDesignation() == null
+                ? "" : xcns.getDesignation());
         addChildren(id);
         //Expand root node
         for (Iterator<?> it = xincoTreeContainer.rootItemIds().iterator(); it.hasNext();) {

@@ -52,7 +52,8 @@ public enum OPCode {
     PUBLISH_COMMENT("datawizard.logging.publishcomment"),
     LOCK_COMMENT("datawizard.logging.lockcomment"),
     ARCHIVED("datawizard.logging.archivecomment"),
-    COMMENT_COMMENT("datawizard.logging.commentcomment");
+    COMMENT("datawizard.logging.commentcomment"),
+    DATA_MOVE("datawizard.logging.move");
     private String name;
 
     OPCode(String name) {
