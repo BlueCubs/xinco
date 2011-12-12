@@ -457,7 +457,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                 } catch (XincoException ex) {
                                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                                 }
-                            }catch (XincoException ex) {
+                            } catch (XincoException ex) {
                                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
@@ -713,10 +713,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
                             refresh();
                         } catch (XincoException ex) {
                             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (MalformedURLException ex) {
-                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IOException ex) {
-                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } catch (MalformedURLException ex) {
                         Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
@@ -893,68 +889,86 @@ public class Xinco extends Application implements XincoVaadinApplication {
         downloadFile(new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1))));
     }
 
-    private void loadFile(File file, String fileName) throws XincoException, MalformedURLException, IOException {
-        String path_to_file = file.getAbsolutePath();
-        File temp = null;
-        if (!file.getName().equals(fileName)) {
-            //Different files, probably stored as a temp file. Need to rename it
-            //Create a temp file to hide the transaction
-            temp = new File(file.getParentFile().getAbsolutePath()
-                    + System.getProperty("file.separator") + UUID.randomUUID().toString());
-            temp.mkdirs();
-            path_to_file = temp.getAbsolutePath() + System.getProperty("file.separator") + fileName;
-            if (!file.renameTo(new File(path_to_file))) {
-                throw new RuntimeException("Unable to rename file from "
-                        + file.getAbsolutePath() + " to " + path_to_file);
-            }
-            file.deleteOnExit();
-            temp.deleteOnExit();
-        }
-        // invoke web service (update data / upload file / add log)
-        // load file
-        long totalLen = 0;
-        CheckedInputStream cin = null;
-        ByteArrayOutputStream out;
-
-        byte[] byteArray = null;
+    private void loadFile(File file, String fileName) {
         try {
-            cin = new CheckedInputStream(new FileInputStream(path_to_file),
-                    new CRC32());
-            out = new ByteArrayOutputStream();
-            byte[] buf = new byte[4096];
-            int len;
-
-            totalLen = 0;
-            while ((len = cin.read(buf)) > 0) {
-                out.write(buf, 0, len);
-                totalLen += len;
+            String path_to_file = file.getAbsolutePath();
+            File temp = null;
+            if (!file.getName().equals(fileName)) {
+                //Different files, probably stored as a temp file. Need to rename it
+                //Create a temp file to hide the transaction
+                temp = new File(file.getParentFile().getAbsolutePath()
+                        + System.getProperty("file.separator") + UUID.randomUUID().toString());
+                temp.mkdirs();
+                path_to_file = temp.getAbsolutePath() + System.getProperty("file.separator") + fileName;
+                if (!file.renameTo(new File(path_to_file))) {
+                    throw new RuntimeException("Unable to rename file from "
+                            + file.getAbsolutePath() + " to " + path_to_file);
+                }
+                file.deleteOnExit();
+                temp.deleteOnExit();
             }
-            byteArray = out.toByteArray();
-            out.close();
-            // update attributes
-            ((XincoAddAttribute) data.getXincoAddAttributes().get(0)).setAttribVarchar(fileName);
-            ((XincoAddAttribute) data.getXincoAddAttributes().get(1)).setAttribUnsignedint(totalLen);
-            ((XincoAddAttribute) data.getXincoAddAttributes().get(2)).setAttribVarchar(""
-                    + cin.getChecksum().getValue());
-            ((XincoAddAttribute) data.getXincoAddAttributes().get(3)).setAttribUnsignedint(1);
-            ((XincoAddAttribute) data.getXincoAddAttributes().get(4)).setAttribUnsignedint(0);
-        } catch (Exception fe) {
-            Logger.getLogger(Xinco.class.getSimpleName()).log(Level.SEVERE, null, fe);
-            throw new XincoException(xerb.getString("datawizard.unabletoloadfile") + "\n" + fe.getLocalizedMessage());
-        }
-        // save data to server
-        data = getService().getXincoPort().setXincoCoreData(data, loggedUser);
-        if (data == null) {
-            throw new XincoException(xerb.getString("datawizard.unabletosavedatatoserver"));
-        }
-        // upload file
-        if (getService().getXincoPort().uploadXincoCoreData(data, byteArray, loggedUser) != totalLen) {
+            // invoke web service (update data / upload file / add log)
+            // load file
+            long totalLen = 0;
+            CheckedInputStream cin = null;
+            ByteArrayOutputStream out;
+
+            byte[] byteArray = null;
+            try {
+                cin = new CheckedInputStream(new FileInputStream(path_to_file),
+                        new CRC32());
+                out = new ByteArrayOutputStream();
+                byte[] buf = new byte[4096];
+                int len;
+
+                totalLen = 0;
+                while ((len = cin.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                    totalLen += len;
+                }
+                byteArray = out.toByteArray();
+                out.close();
+                // update attributes
+                ((XincoAddAttribute) data.getXincoAddAttributes().get(0)).setAttribVarchar(fileName);
+                ((XincoAddAttribute) data.getXincoAddAttributes().get(1)).setAttribUnsignedint(totalLen);
+                ((XincoAddAttribute) data.getXincoAddAttributes().get(2)).setAttribVarchar(""
+                        + cin.getChecksum().getValue());
+                ((XincoAddAttribute) data.getXincoAddAttributes().get(3)).setAttribUnsignedint(1);
+                ((XincoAddAttribute) data.getXincoAddAttributes().get(4)).setAttribUnsignedint(0);
+            } catch (Exception fe) {
+                Logger.getLogger(Xinco.class.getSimpleName()).log(Level.SEVERE, null, fe);
+                getMainWindow().showNotification(
+                        xerb.getString("datawizard.unabletoloadfile"),
+                        Notification.TYPE_ERROR_MESSAGE);
+            }
+            // save data to server
+            data = getService().getXincoPort().setXincoCoreData(data, loggedUser);
+            if (data == null) {
+                getMainWindow().showNotification(
+                        xerb.getString("datawizard.unabletosavedatatoserver"),
+                        Notification.TYPE_ERROR_MESSAGE);
+            }
+            // upload file
+            if (getService().getXincoPort().uploadXincoCoreData(data, byteArray, loggedUser) != totalLen) {
+                cin.close();
+                removeDirectory(temp);
+                getMainWindow().showNotification(
+                        xerb.getString("datawizard.fileuploadfailed"),
+                        Notification.TYPE_ERROR_MESSAGE);
+            }
             cin.close();
             removeDirectory(temp);
-            throw new XincoException(xerb.getString("datawizard.fileuploadfailed"));
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            getMainWindow().showNotification(
+                        xerb.getString("datawizard.fileuploadfailed"),
+                        Notification.TYPE_ERROR_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            getMainWindow().showNotification(
+                        xerb.getString("datawizard.fileuploadfailed"),
+                        Notification.TYPE_ERROR_MESSAGE);
         }
-        cin.close();
-        removeDirectory(temp);
     }
 
     public static boolean removeDirectory(File directory) {
@@ -2801,18 +2815,9 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                     getMainWindow().showNotification(
                                             getResource().getString("window.massiveimport.progress"),
                                             Notification.TYPE_TRAY_NOTIFICATION);
-                                    try {
-                                        loadFile(file, fileName);
-                                    } catch (XincoException ex) {
-                                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (MalformedURLException ex) {
-                                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (IOException ex) {
-                                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
+                                    loadFile(file, fileName);
                                 }
                             }
-                            //TODO: Notify the user about any issues
                         };
                         fileUpload.setWidth("600px");
                         w.addComponent(fileUpload);
