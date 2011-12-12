@@ -107,94 +107,13 @@ public class Xinco extends Application implements XincoVaadinApplication {
     private boolean renderingSupportEnabled = false;
     private String version;
     private HorizontalSplitPanel xeSplitPanel;
-    private com.vaadin.ui.Button login = new com.vaadin.ui.Button(
-            getResource().getString("general.login"),
-            new com.vaadin.ui.Button.ClickListener() {
-
-                @Override
-                public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                    showLoginDialog();
-                }
-            });
-    private com.vaadin.ui.Button logout = new com.vaadin.ui.Button(
-            getResource().getString("general.logout"),
-            new com.vaadin.ui.Button.ClickListener() {
-
-                @Override
-                public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                    loggedUser = null;
-                    try {
-                        updateMenu();
-                    } catch (XincoException ex) {
-                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            });
-    private com.vaadin.ui.Button profile = new com.vaadin.ui.Button(
-            getResource().getString("message.admin.userProfile"),
-            new com.vaadin.ui.Button.ClickListener() {
-
-                @Override
-                public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                    showUserAdminWindow(false);
-                }
-            });
-    private final WizardStep fileStep = new WizardStep() {
-
-        final UploadManager um = new UploadManager();
-        final Upload upload = new Upload(getResource().getString("general.file.select"), um);
-        final Upload.SucceededListener listener = new Upload.SucceededListener() {
-
-            @Override
-            public void uploadSucceeded(SucceededEvent event) {
-                if (upload != null) {
-                    getMainWindow().showNotification(
-                            getResource().getString("datawizard.fileuploadsuccess"),
-                            Notification.TYPE_HUMANIZED_MESSAGE);
-                }
-            }
-        };
-
-        @Override
-        public String getCaption() {
-            return getResource().getString("general.file.select");
-        }
-
-        @Override
-        public com.vaadin.ui.Component getContent() {
-            upload.addListener((Upload.SucceededListener) um);
-            upload.addListener((Upload.SucceededListener) listener);
-            upload.addListener((Upload.FailedListener) um);
-            return upload;
-        }
-
-        @Override
-        public boolean onAdvance() {
-            if (!um.isSuccess()) {
-                getMainWindow().showNotification(
-                        getResource().getString("message.missing.file"),
-                        Notification.TYPE_ERROR_MESSAGE);
-            } else {
-                data.setDesignation(fileName);
-            }
-            return um.isSuccess();
-        }
-
-        @Override
-        public boolean onBack() {
-            return true;
-        }
-
-        @Override
-        public String toString() {
-            return getCaption();
-        }
-    };
+    private com.vaadin.ui.Button login;
+    private com.vaadin.ui.Button logout;
+    private com.vaadin.ui.Button profile;
+    private WizardStep fileStep;
     private ThemeResource smallIcon = new ThemeResource("img/blueCubsIcon16x16.GIF");
     private HierarchicalContainer xincoTreeContainer;
     private com.vaadin.ui.Panel adminPanel;
-    private boolean commentAdded;
-    private boolean waitingForComment;
 
     @Override
     public String getVersion() {
@@ -218,7 +137,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            initMenuItems();
             //Switch to Xinco theme
             setTheme("xinco");
             setMainWindow(new Window("Xinco"));
@@ -256,21 +174,154 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     + version, new ThemeResource("img/blueCubsSmall.gif"));
             icon.setType(Embedded.TYPE_IMAGE);
             getMainWindow().addComponent(icon);
-            HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
-            // Put two components in the container.
-            splitPanel.setFirstComponent(getSideMenu());
-            splitPanel.setSecondComponent(getXincoExplorer());
-            splitPanel.setHeight(700, Sizeable.UNITS_PIXELS);
-            splitPanel.setSplitPosition(20, Sizeable.UNITS_PERCENTAGE);
-            getMainWindow().addComponent(splitPanel);
+            if (XincoDBManager.config.isGuessLanguage()) {
+                // Use the locale from the request as default.
+                // Login uses this setting later.
+                setLocale(((WebApplicationContext) getContext()).getBrowser().getLocale());
+                showMainWindow();
+            } else {
+                showLanguageSelection();
+            }
         } catch (XincoException ex) {
             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    @Override
+    public void setLocale(Locale locale) {
+        super.setLocale(locale);
+        xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", getLocale());
+        login = new com.vaadin.ui.Button(
+                getResource().getString("general.login"),
+                new com.vaadin.ui.Button.ClickListener() {
+
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        showLoginDialog();
+                    }
+                });
+        logout = new com.vaadin.ui.Button(
+                getResource().getString("general.logout"),
+                new com.vaadin.ui.Button.ClickListener() {
+
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        loggedUser = null;
+                        try {
+                            updateMenu();
+                        } catch (XincoException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                });
+        profile = new com.vaadin.ui.Button(
+                getResource().getString("message.admin.userProfile"),
+                new com.vaadin.ui.Button.ClickListener() {
+
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        showUserAdminWindow(false);
+                    }
+                });
+        fileStep = new WizardStep() {
+
+            final UploadManager um = new UploadManager();
+            final Upload upload = new Upload(getResource().getString("general.file.select"), um);
+            final Upload.SucceededListener listener = new Upload.SucceededListener() {
+
+                @Override
+                public void uploadSucceeded(SucceededEvent event) {
+                    if (upload != null) {
+                        getMainWindow().showNotification(
+                                getResource().getString("datawizard.fileuploadsuccess"),
+                                Notification.TYPE_HUMANIZED_MESSAGE);
+                    }
+                }
+            };
+
+            @Override
+            public String getCaption() {
+                return getResource().getString("general.file.select");
+            }
+
+            @Override
+            public com.vaadin.ui.Component getContent() {
+                upload.addListener((Upload.SucceededListener) um);
+                upload.addListener((Upload.SucceededListener) listener);
+                upload.addListener((Upload.FailedListener) um);
+                return upload;
+            }
+
+            @Override
+            public boolean onAdvance() {
+                if (!um.isSuccess()) {
+                    getMainWindow().showNotification(
+                            getResource().getString("message.missing.file"),
+                            Notification.TYPE_ERROR_MESSAGE);
+                } else {
+                    data.setDesignation(fileName);
+                }
+                return um.isSuccess();
+            }
+
+            @Override
+            public boolean onBack() {
+                return true;
+            }
+
+            @Override
+            public String toString() {
+                return getCaption();
+            }
+        };
+        initMenuItems();
+    }
+
+    private void showMainWindow() {
+        HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
+        // Put two components in the container.
+        splitPanel.setFirstComponent(getSideMenu());
+        splitPanel.setSecondComponent(getXincoExplorer());
+        splitPanel.setHeight(700, Sizeable.UNITS_PIXELS);
+        splitPanel.setSplitPosition(20, Sizeable.UNITS_PERCENTAGE);
+        getMainWindow().addComponent(splitPanel);
+    }
+
+    private FileResource getFlagIcon(String code) throws IOException {
+        if (code == null || code.isEmpty()) {
+            return null;
+        }
+        //Format if it has '_' underscore
+        if (code.contains("_")) {
+            String newCode = code.substring(code.lastIndexOf('_') + 1);
+            Logger.getLogger(Xinco.class.getSimpleName()).log(Level.FINE,
+                    "Converting code from: {0} to {1}!", new Object[]{code, newCode});
+            code = newCode;
+        }
+        Logger.getLogger(Xinco.class.getSimpleName()).log(Level.FINE,
+                "Requested icon for code: {0}", code);
+        WebApplicationContext context = (WebApplicationContext) getContext();
+        File iconsFolder = new File(context.getHttpSession().getServletContext().getRealPath(
+                "/VAADIN/themes/xinco") + System.getProperty("file.separator") + "icons"
+                + System.getProperty("file.separator") + "flags");
+        File icon = new File(iconsFolder.getAbsolutePath()
+                + System.getProperty("file.separator") + code.toLowerCase() + ".png");
+        FileResource resource = null;
+        if (icon.exists()) {
+            Logger.getLogger(Xinco.class.getSimpleName()).log(Level.FINE,
+                    "Found icon for code: {0}!", code);
+            resource = new FileResource(icon, Xinco.this);
+        } else {
+            Logger.getLogger(Xinco.class.getSimpleName()).log(Level.FINE,
+                    "Unable to find icon for: {0}", code);
+        }
+        return resource;
+    }
+
     protected FileResource getIcon(String extension) throws IOException {
         WebApplicationContext context = (WebApplicationContext) getContext();
-        File iconsFolder = new File(context.getHttpSession().getServletContext().getRealPath("/VAADIN/themes/xinco") + System.getProperty("file.separator") + "icons");
+        File iconsFolder = new File(context.getHttpSession().getServletContext().getRealPath(
+                "/VAADIN/themes/xinco") + System.getProperty("file.separator") + "icons");
         if (!iconsFolder.exists()) {
             //Create it
             iconsFolder.mkdirs();
@@ -961,13 +1012,13 @@ public class Xinco extends Application implements XincoVaadinApplication {
         } catch (MalformedURLException ex) {
             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             getMainWindow().showNotification(
-                        xerb.getString("datawizard.fileuploadfailed"),
-                        Notification.TYPE_ERROR_MESSAGE);
+                    xerb.getString("datawizard.fileuploadfailed"),
+                    Notification.TYPE_ERROR_MESSAGE);
         } catch (IOException ex) {
             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             getMainWindow().showNotification(
-                        xerb.getString("datawizard.fileuploadfailed"),
-                        Notification.TYPE_ERROR_MESSAGE);
+                    xerb.getString("datawizard.fileuploadfailed"),
+                    Notification.TYPE_ERROR_MESSAGE);
         }
     }
 
@@ -1798,6 +1849,71 @@ public class Xinco extends Application implements XincoVaadinApplication {
         attr.center();
         attr.setWidth(50, Sizeable.UNITS_PERCENTAGE);
         getMainWindow().addWindow(attr);
+    }
+
+    private void showLanguageSelection() {
+        final Window lang = new Window();
+        final Form form = new Form();
+        form.getLayout().addComponent(new com.vaadin.ui.Label(
+                "Please choose a language:"));
+        final Select languages = new Select();
+        ArrayList<String> locales = new ArrayList<String>();
+        ResourceBundle lrb = ResourceBundle.getBundle(
+                "com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
+        locales.addAll(Arrays.asList(lrb.getString("AvailableLocales").split(",")));
+        for (Iterator<String> it = locales.iterator(); it.hasNext();) {
+            String locale = it.next();
+            languages.addItem(locale);
+            languages.setItemCaption(locale, lrb.getString("Locale." + locale));
+            try {
+                FileResource flagIcon = getFlagIcon(locale);
+                languages.setItemIcon(locale, flagIcon);
+            } catch (IOException ex) {
+                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        form.addField("type", languages);
+        //Used for validation purposes
+        final com.vaadin.ui.Button commit = new com.vaadin.ui.Button("Submit",
+                form, "commit");
+        commit.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+            @Override
+            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                Locale loc = null;
+                try {
+                    String list = languages.getValue().toString();
+                    String[] locales;
+                    locales = list.split("_");
+                    switch (locales.length) {
+                        case 1:
+                            loc = new Locale(locales[0]);
+                            break;
+                        case 2:
+                            loc = new Locale(locales[0], locales[1]);
+                            break;
+                        case 3:
+                            loc = new Locale(locales[0], locales[1], locales[2]);
+                            break;
+                        default:
+                            loc = Locale.getDefault();
+                    }
+                } catch (Exception e) {
+                    loc = Locale.getDefault();
+                }
+                setLocale(loc);
+                xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", getLocale());
+                getMainWindow().removeWindow(lang);
+                showMainWindow();
+            }
+        });
+        form.getFooter().setSizeUndefined();
+        form.getFooter().addComponent(commit);
+        lang.addComponent(form);
+        lang.setModal(true);
+        lang.center();
+        lang.setWidth(25, Sizeable.UNITS_PERCENTAGE);
+        getMainWindow().addWindow(lang);
     }
 
     private void showAuditWindow() throws XincoException {
@@ -3427,8 +3543,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
     private void showCommentDataDialog(final XincoCoreDataServer data, final OPCode opcode) throws XincoException {
         final Form form = new Form();
-        commentAdded = false;
-        waitingForComment = true;
         final VersionSelector versionSelector = new VersionSelector();
         buildLogDialog(data, form, versionSelector);
         final Window comment = new Window();
@@ -3442,7 +3556,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     @Override
                     public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                         getMainWindow().removeWindow(comment);
-                        waitingForComment = false;
                     }
                 });
         commit.addListener(new com.vaadin.ui.Button.ClickListener() {
@@ -3485,15 +3598,11 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     newLog.write2DB();
                     data.write2DB();
                     getMainWindow().removeWindow(comment);
-                    commentAdded = true;
-                    waitingForComment = false;
                     refresh();
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                    waitingForComment = false;
                 } catch (XincoException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                    waitingForComment = false;
                 }
             }
         });
