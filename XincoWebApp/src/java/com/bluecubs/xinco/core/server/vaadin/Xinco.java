@@ -5,6 +5,7 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.*;
 import com.bluecubs.xinco.core.server.db.DBState;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
+import com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecord;
 import com.bluecubs.xinco.core.server.persistence.controller.*;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.service.*;
@@ -15,11 +16,15 @@ import com.bluecubs.xinco.core.server.vaadin.wizard.event.*;
 import com.bluecubs.xinco.index.XincoIndexer;
 import com.bluecubs.xinco.tools.XincoFileIconManager;
 import com.vaadin.Application;
+import com.vaadin.data.Container.Filterable;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.data.util.filter.SimpleStringFilter;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents.ClickEvent;
@@ -47,6 +52,7 @@ import com.vaadin.ui.Window.ResizeEvent;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.sql.Timestamp;
 import java.util.Map.Entry;
@@ -205,7 +211,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         "Waiting for DB initialization. Current state:{0}",
                         (XincoDBManager.getState() != null ? XincoDBManager.getState().name() : null));
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10000);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -252,7 +258,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
             // Put two components in the container.
             splitPanel.setFirstComponent(getSideMenu());
             splitPanel.setSecondComponent(getXincoExplorer());
-            splitPanel.setHeight(500, Sizeable.UNITS_PIXELS);
+            splitPanel.setHeight(700, Sizeable.UNITS_PIXELS);
             splitPanel.setSplitPosition(20, Sizeable.UNITS_PERCENTAGE);
             getMainWindow().addComponent(splitPanel);
         } catch (XincoException ex) {
@@ -324,7 +330,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
         getXincoTable().setSizeFull();
         xeSplitPanel.setFirstComponent(getXincoTree());
         xeSplitPanel.setSecondComponent(getXincoTable());
-        xeSplitPanel.setHeight(500, Sizeable.UNITS_PIXELS);
+        xeSplitPanel.setHeight(700, Sizeable.UNITS_PIXELS);
         xeSplitPanel.setSplitPosition(20, Sizeable.UNITS_PERCENTAGE);
         //Hide details by default, user needs to log in for some features.
         getXincoTable().setVisible(false);
@@ -400,6 +406,10 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
                     @Override
                     public void drop(DragAndDropEvent event) {
+                        if (loggedUser == null) {
+                            return;
+                        }
+
                         // Wrapper for the object that is dragged
                         Transferable t = event.getTransferable();
 
@@ -414,23 +424,28 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         Object sourceItemId = t.getData("itemId");
                         Object targetItemId = target.getItemIdOver();
 
+                        XincoCoreNodeServer targetN =
+                                new XincoCoreNodeServer(Integer.valueOf(
+                                targetItemId.toString().substring(
+                                targetItemId.toString().indexOf('-') + 1)));
+
                         // On which side of the target the item was dropped 
                         VerticalDropLocation location = target.getDropLocation();
 
                         // Drop right on an item -> make it a child
-                        if (location == VerticalDropLocation.MIDDLE) {
+                        if (XincoCoreACEServer.checkAccess(loggedUser,
+                                (ArrayList) (targetN).getXincoCoreAcl()).isWritePermission()
+                                && location == VerticalDropLocation.MIDDLE) {
                             try {
                                 xincoTree.setParent(sourceItemId, targetItemId);
                                 //Now update things in the database
                                 if (sourceItemId.toString().startsWith("data") && targetItemId.toString().startsWith("node")) {
                                     XincoCoreDataServer source = new XincoCoreDataServer(Integer.valueOf(sourceItemId.toString().substring(sourceItemId.toString().indexOf('-') + 1)));
-                                    XincoCoreNodeServer targetN = new XincoCoreNodeServer(Integer.valueOf(targetItemId.toString().substring(targetItemId.toString().indexOf('-') + 1)));
                                     source.setXincoCoreNodeId(targetN.getId());
                                     source.write2DB();
                                 }
                                 if (sourceItemId.toString().startsWith("node") && targetItemId.toString().startsWith("node")) {
                                     XincoCoreNodeServer source = new XincoCoreNodeServer(Integer.valueOf(sourceItemId.toString().substring(sourceItemId.toString().indexOf('-') + 1)));
-                                    XincoCoreNodeServer targetN = new XincoCoreNodeServer(Integer.valueOf(targetItemId.toString().substring(targetItemId.toString().indexOf('-') + 1)));
                                     source.setXincoCoreNodeId(targetN.getId());
                                     source.write2DB();
                                 }
@@ -1779,17 +1794,21 @@ public class Xinco extends Application implements XincoVaadinApplication {
         for (EntityType type : entities) {
             String name = type.getName();
             if (type.getJavaType().getSuperclass() == XincoAuditedObject.class) {
-                final com.vaadin.ui.Button cont = new com.vaadin.ui.Button(xerb.getString("general.continue"));
-                cont.setData(type);
-                cont.addListener(new com.vaadin.ui.Button.ClickListener() {
+                java.util.List<Object> result = XincoDBManager.createdQuery("select distinct x from "
+                        + type.getJavaType().getSimpleName() + "T x");
+                if (!result.isEmpty()) {
+                    final com.vaadin.ui.Button cont = new com.vaadin.ui.Button(xerb.getString("general.continue"));
+                    cont.setData(type);
+                    cont.addListener(new com.vaadin.ui.Button.ClickListener() {
 
-                    @Override
-                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                        getMainWindow().removeWindow(audit);
-                        showAuditDetails((EntityType) cont.getData());
-                    }
-                });
-                table.addItem(new Object[]{name, cont}, name);
+                        @Override
+                        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                            getMainWindow().removeWindow(audit);
+                            showAuditDetails((EntityType) cont.getData());
+                        }
+                    });
+                    table.addItem(new Object[]{name, cont}, name);
+                }
             }
         }
         table.sort();
@@ -1800,40 +1819,116 @@ public class Xinco extends Application implements XincoVaadinApplication {
         getMainWindow().addWindow(audit);
     }
 
-    private void showAuditOptions(EntityType entity) {
-    }
-
     private Table showEntitiesInTable(java.util.List entities) throws XincoException {
         //Create the table
         final Table table = new Table();
         table.addStyleName("striped");
+        table.setSizeFull();
         if (!entities.isEmpty()) {
             Class<? extends Object> entityClass = entities.get(0).getClass();
             EntityType entityType =
                     XincoDBManager.getEntityManagerFactory().getMetamodel().entity(entityClass);
-            HashMap<String, PersistentAttributeType> typeMap = new HashMap<String, PersistentAttributeType>();
+            LinkedHashMap<String, PersistentAttributeType> typeMap = new LinkedHashMap<String, PersistentAttributeType>();
             for (Iterator it = entityType.getAttributes().iterator(); it.hasNext();) {
                 Attribute attr = (Attribute) it.next();
                 table.addContainerProperty(attr.getName(), com.vaadin.ui.Component.class, null);
                 typeMap.put(attr.getName(), attr.getPersistentAttributeType());
             }
+            //Now add the audit fields
+            table.addContainerProperty(getResource().getString("general.reason"), com.vaadin.ui.Component.class, null);
+            table.addContainerProperty(getResource().getString("general.audit.modtime"), com.vaadin.ui.Component.class, null);
+            table.addContainerProperty(getResource().getString("general.user"), com.vaadin.ui.Component.class, null);
+            int index = 0;
             for (Iterator it = entities.iterator(); it.hasNext();) {
+                int recordId = 0;
                 Object o = it.next();
-                for (Entry<String, PersistentAttributeType> entry : typeMap.entrySet()) {
+                ArrayList values = new ArrayList();
+                int i = 0;
+                for (Iterator<Entry<String, PersistentAttributeType>> it2 = typeMap.entrySet().iterator(); it2.hasNext();) {
+                    Entry<String, PersistentAttributeType> entry = it2.next();
+                    try {
+
+                        java.lang.reflect.Method method = o.getClass().getMethod("get"
+                                + entry.getKey().substring(0, 1).toUpperCase() + entry.getKey().substring(1));
+                        if (entry.getKey().equals("recordId")) {
+                            recordId = Integer.valueOf(method.invoke(o).toString());
+                        }
+                        String value = method.invoke(o).toString();
+                        switch (entry.getValue()) {
+                            case BASIC:
+                                values.add(new com.vaadin.ui.Label(entry.getKey().contains("password")
+                                        ? "**********" : (getResource().containsKey(value)
+                                        ? getResource().getString(value) : value)));
+                                break;
+                            default:
+                                throw new XincoException(entry.getValue().name() + " not supported yet!");
+                        }
+                        i++;
+                    } catch (IllegalAccessException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        throw new XincoException(ex.getLocalizedMessage());
+                    } catch (IllegalArgumentException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        throw new XincoException(ex.getLocalizedMessage());
+                    } catch (InvocationTargetException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        throw new XincoException(ex.getLocalizedMessage());
+                    } catch (NoSuchMethodException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        throw new XincoException(ex.getLocalizedMessage());
+                    } catch (SecurityException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        throw new XincoException(ex.getLocalizedMessage());
+                    }
                 }
+                //Now add the audit fields
+                HashMap parameters = new HashMap();
+                parameters.put("recordId", recordId);
+                XincoCoreUserModifiedRecord record = (XincoCoreUserModifiedRecord) XincoDBManager.namedQuery("XincoCoreUserModifiedRecord.findByRecordId", parameters).get(0);
+                values.add(new com.vaadin.ui.Label(getResource().containsKey(record.getModReason())
+                        ? getResource().getString(record.getModReason())
+                        : record.getModReason()));
+                values.add(new com.vaadin.ui.Label(record.getModTime().toString()));
+                values.add(new com.vaadin.ui.Label(record.getXincoCoreUser().getFirstName()
+                        + " " + record.getXincoCoreUser().getLastName()));
+                table.addItem(values.toArray(), index++);
             }
-//            table.addItem(new Object[]{new com.vaadin.ui.Label("<b>"
-//                            + xerb.getString("message.index.delete") + "</b>"),
-//                            new com.vaadin.ui.Label()}, index++);
         }
         return table;
     }
 
-    private void showAuditDetails(EntityType entity) {
+    private void showAuditDetails(final EntityType entity) {
         try {
             final Window audit = new Window();
-            Table table = showEntitiesInTable(XincoDBManager.createdQuery("select distinct x from "
+            final com.vaadin.ui.TextField tf = new com.vaadin.ui.TextField(
+                    entity.getId(entity.getIdType().getJavaType()).getName());
+            tf.focus();
+            final Table table = showEntitiesInTable(XincoDBManager.createdQuery("select distinct x from "
                     + entity.getJavaType().getSimpleName() + "T x"));
+            table.setSortDisabled(false);
+            tf.addListener(new TextChangeListener() {
+
+                SimpleStringFilter filter = null;
+
+                @Override
+                public void textChange(TextChangeEvent event) {
+                    Filterable f = (Filterable) table.getContainerDataSource();
+
+                    // Remove old filter
+                    if (filter != null) {
+                        f.removeContainerFilter(filter);
+                    }
+                    // Set new filter for the "key" column
+                    filter = new SimpleStringFilter(
+                            entity.getId(entity.getIdType().getJavaType()).getName(),
+                            event.getText(),
+                            true, false);
+                    f.addContainerFilter(filter);
+                }
+            });
+            if (entity.getId(entity.getIdType().getJavaType()).getPersistentAttributeType() == PersistentAttributeType.BASIC) {
+                audit.addComponent(tf);
+            }
             audit.addComponent(table);
             audit.setModal(true);
             audit.center();
@@ -2122,7 +2217,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         }
                         if (changed) {
                             loggedUser.setReason("audit.user.account.modified");
-                            temp_user = loggedUser;
                         }
                     }
                     //The logged in admin does the locking
@@ -2131,6 +2225,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     temp_user.setChange(true);
                     if (changed) {
                         temp_user.write2DB();
+                        loggedUser = temp_user;
                     }
                     if (userAdmin) {
                         refreshUserTable(table);

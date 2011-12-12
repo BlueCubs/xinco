@@ -21,11 +21,11 @@
   <!-- ### AUTO_SERVER=TRUE;LOCK_TIMEOUT=10000                         ###-->
   <!-- ### driverClassName: org.h2.Driver                              ###-->
   <!-- ###################################################################-->
-    <Resource auth="Container" driverClassName="org.h2.Driver"
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver"
                       factory="org.apache.commons.dbcp.BasicDataSourceFactory"
                       maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB"
-                      password="" type="javax.sql.DataSource"
-                      url="jdbc:h2:file:~/Xinco/data/xinco;CREATE=TRUE;AUTO_SERVER=TRUE;LOCK_TIMEOUT=10000"
+                      password="arthrocare" type="javax.sql.DataSource"
+                      url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true"
                       username="root"/>
   <!-- ################# Optional Configuration #################-->
   <!-- Database JNDI Name -->

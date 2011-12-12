@@ -34,7 +34,7 @@ package com.bluecubs.xinco.core;
 
 import java.util.List;
 
-public class XincoException extends Exception {
+public class XincoException extends Error {
 
     String xinco_message = "";
 
