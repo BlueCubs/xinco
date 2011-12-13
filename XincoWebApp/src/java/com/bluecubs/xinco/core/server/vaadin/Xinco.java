@@ -168,11 +168,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.mid").getIntValue() + "."
                     + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.low").getIntValue() + " "
                     + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.postfix").getStringValue();
-            Embedded icon = new Embedded("Xinco - "
-                    + getResource().getString("general.version") + " "
-                    + version, new ThemeResource("img/blueCubsSmall.gif"));
-            icon.setType(Embedded.TYPE_IMAGE);
-            getMainWindow().addComponent(icon);
             if (XincoDBManager.config.isGuessLanguage()) {
                 // Use the locale from the request as default.
                 // Login uses this setting later.
@@ -2454,6 +2449,12 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     temp_user.setChangerID(loggedUser.getId());
                     //Register change in audit trail
                     temp_user.setChange(true);
+                    boolean passwordIsUsable = loggedUser.isPasswordUsable(form.getField("pass").getValue().toString());
+                    if (!passwordIsUsable) {
+                        getMainWindow().showNotification(xerb.getString("password.unusable"),
+                                Notification.TYPE_WARNING_MESSAGE);
+                        changed = false;
+                    }
                     if (changed) {
                         temp_user.write2DB();
                         loggedUser = temp_user;
@@ -2479,6 +2480,12 @@ public class Xinco extends Application implements XincoVaadinApplication {
     }
 
     private com.vaadin.ui.Component getSideMenu() throws XincoException {
+        com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel();
+        Embedded icon = new Embedded("Xinco - "
+                + getResource().getString("general.version") + " "
+                + version, new ThemeResource("img/blueCubsSmall.gif"));
+        icon.setType(Embedded.TYPE_IMAGE);
+        panel.addComponent(icon);
         Accordion menu = new Accordion();
         menu.setSizeFull();
         com.vaadin.ui.Panel accountPanel = new com.vaadin.ui.Panel();
@@ -2650,7 +2657,8 @@ public class Xinco extends Application implements XincoVaadinApplication {
         });
         adminPanel.addComponent(auditAdmin);
         menu.addTab(adminPanel, "XincoAdmin", null);
-        return menu;
+        panel.addComponent(menu);
+        return panel;
     }
 
     private void updateSideMenu() {
