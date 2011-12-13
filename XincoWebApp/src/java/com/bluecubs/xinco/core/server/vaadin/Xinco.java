@@ -83,7 +83,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
     //client version
     private XincoVersion xincoClientVersion = null;
-    //TODO: use selected language
     private ResourceBundle xerb =
             ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", Locale.getDefault());
     private XincoCoreUserServer loggedUser = null;
@@ -1622,6 +1621,42 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     getMainWindow().showNotification(
                             getResource().getString("menu.connection.error.user"),
                             Notification.TYPE_WARNING_MESSAGE);
+                    String username = ((com.vaadin.ui.TextField) form.getField("username")).getValue().toString();
+                    //Wrong password or username
+                    java.util.List result = XincoDBManager.createdQuery(
+                            "SELECT x FROM XincoCoreUser x WHERE x.username='"
+                            + username + "' AND x.statusNumber<>2");
+                    //Check if the username is correct if not just throw the wrong login message
+                    if (result.isEmpty()) {
+                        throw new XincoException("Login " + xerb.getString("general.fail") + " Username and/or Password may be incorrect!");
+                    }
+                    result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreUser x WHERE x.username='"
+                            + username + "'");
+                    if (result.size() > 0) {
+                        XincoCoreUserServer temp_user = new XincoCoreUserServer((com.bluecubs.xinco.core.server.persistence.XincoCoreUser) result.get(0));
+                        long attempts = XincoSettingServer.getSetting(new XincoCoreUserServer(1),
+                                "password.attempts").getLongValue();
+                        //If user exists increase the atempt tries in the db. If limit reached lock account
+                        if (temp_user.getAttempts() >= attempts && temp_user.getId() != 1) {
+                            //The logged in admin does the locking
+                            int adminId = 1;
+                            temp_user.setChangerID(adminId);
+                            temp_user.setWriteGroups(true);
+                            //Register change in audit trail
+                            temp_user.setChange(true);
+                            //Reason for change
+                            temp_user.setReason(xerb.getString("password.attempt.limitReached"));
+                            //the password retrieved when you logon is already hashed...
+                            temp_user.setHashPassword(false);
+                            temp_user.setIncreaseAttempts(true);
+                            temp_user.write2DB();
+                            getMainWindow().showNotification(xerb.getString("password.attempt.limitReached"),
+                                    Notification.TYPE_WARNING_MESSAGE);
+                        } else {
+                            getMainWindow().showNotification(xerb.getString("password.login.fail"),
+                                    Notification.TYPE_WARNING_MESSAGE);
+                        }
+                    }
                     //Enable so they can retry
                     form.getField("username").setEnabled(true);
                     form.getField("password").setEnabled(true);
@@ -1632,12 +1667,16 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         //Update logged user
                         loggedUser = new XincoCoreUserServer(((com.vaadin.ui.TextField) form.getField("username")).getValue().toString(),
                                 ((PasswordField) form.getField("password")).getValue().toString());
+                        if (loggedUser.getStatusNumber() == 3) {
+                            //Password aging
+                            showChangePasswordDialog();
+                        }
                         updateMenu();
                     } catch (XincoException ex) {
                         Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    getMainWindow().removeWindow(loginWindow);
                 }
+                getMainWindow().removeWindow(loginWindow);
             }
         });
         form.getFooter().setSizeUndefined();
@@ -1849,6 +1888,63 @@ public class Xinco extends Application implements XincoVaadinApplication {
         attr.center();
         attr.setWidth(50, Sizeable.UNITS_PERCENTAGE);
         getMainWindow().addWindow(attr);
+    }
+
+    private void showChangePasswordDialog() {
+        final Window pass = new Window();
+        final Form form = new Form();
+        form.getLayout().addComponent(new com.vaadin.ui.Label(xerb.getString("password.aged")));
+        form.addField("password", new PasswordField(getResource().getString("general.password")));
+        form.addField("confirm", new PasswordField(getResource().getString("general.verifypassword")));
+        form.getField("password").setRequired(true);
+        form.getField("password").setRequiredError(getResource().getString("message.missing.password"));
+        form.getField("confirm").setRequired(true);
+        form.getField("confirm").setRequiredError(getResource().getString("message.missing.designation"));
+        final com.vaadin.ui.Button commit = new com.vaadin.ui.Button("Submit",
+                form, "commit");
+        commit.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+            @Override
+            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                if (!form.getField("password").getValue().equals(form.getField("confirm").getValue())) {
+                    getMainWindow().showNotification(
+                            getResource().getString("window.userinfo.passwordmismatch"),
+                            Notification.TYPE_WARNING_MESSAGE);
+                } else {
+                    boolean passwordIsUsable = loggedUser.isPasswordUsable(form.getField("password").getValue().toString());
+                    if (passwordIsUsable) {
+                        try {
+                            XincoCoreUserServer temp_user = new XincoCoreUserServer(loggedUser.getId());
+                            temp_user.setUserpassword(form.getField("password").getValue().toString());
+                            temp_user.setLastModified(new Timestamp(System.currentTimeMillis()));
+                            temp_user.setChangerID(loggedUser.getId());
+                            temp_user.setWriteGroups(true);
+                            //Register change in audit trail
+                            temp_user.setChange(true);
+                            //Reason for change
+                            temp_user.setReason("audit.user.account.password.change");
+                            temp_user.setHashPassword(true);
+                            temp_user.write2DB();
+                            getMainWindow().showNotification(xerb.getString("password.changed"),
+                                    Notification.TYPE_TRAY_NOTIFICATION);
+                            getMainWindow().removeWindow(pass);
+                        } catch (XincoException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else {
+                        getMainWindow().showNotification(xerb.getString("password.unusable"),
+                                Notification.TYPE_WARNING_MESSAGE);
+                    }
+                }
+            }
+        });
+        form.getFooter().setSizeUndefined();
+        form.getFooter().addComponent(commit);
+        pass.addComponent(form);
+        pass.setModal(true);
+        pass.center();
+        pass.setWidth(25, Sizeable.UNITS_PERCENTAGE);
+        getMainWindow().addWindow(pass);
     }
 
     private void showLanguageSelection() {

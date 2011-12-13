@@ -75,7 +75,6 @@ import javax.servlet.http.HttpSession;
 public class XincoAdminServlet extends HttpServlet {
 
     private ResourceBundle rb;
-    private ResourceBundle settings;
     private XincoCoreUserServer login_user = null;
     private static List result;
     private HashMap parameters = new HashMap();
@@ -124,7 +123,6 @@ public class XincoAdminServlet extends HttpServlet {
             loc = Locale.getDefault();
         }
         rb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
-        settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings", loc);
         XincoDBManager dbm;
         String global_error_message = "";
         int i, j;
@@ -211,7 +209,7 @@ public class XincoAdminServlet extends HttpServlet {
                             + request.getParameter("DialogLoginUsername") + "'");
                     if (result.size() > 0) {
                         temp_user = new XincoCoreUserServer((XincoCoreUser) result.get(0));
-                        long attempts = Long.parseLong(settings.getString("password.attempts"));
+                        long attempts = XincoSettingServer.getSetting(new XincoCoreUserServer(1), "password.attempts").getLongValue();
                         //If user exists increase the atempt tries in the db. If limit reached lock account
                         if (temp_user.getAttempts() >= attempts && temp_user.getId() != 1) {
                             //The logged in admin does the locking
@@ -664,6 +662,7 @@ public class XincoAdminServlet extends HttpServlet {
                     temp_user.setChange(true);
                     //Reason for change
                     temp_user.setReason("audit.user.account.password.change");
+                    temp_user.setHashPassword(true);
                     temp_user.write2DB();
                     out.println(rb.getString("password.changed"));
                     status = 1;

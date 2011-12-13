@@ -152,7 +152,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 setLastName(xcu.getLastName());
                 setFirstName(xcu.getFirstName());
                 setEmail(xcu.getEmail());
-                int status = 0;
+                int status = 2;
                 if (xcu.getStatusNumber() != 2) {
                     Calendar cal2 = GregorianCalendar.getInstance(), now = GregorianCalendar.getInstance();
                     cal2.setTime(xcu.getLastModified());
