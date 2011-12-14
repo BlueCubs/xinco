@@ -41,7 +41,7 @@ import javax.naming.InitialContext;
  * This class handles the server configuration of xinco. Edit values in
  * database
  */
-public class XincoConfigSingletonServer {
+public final class XincoConfigSingletonServer {
 
     public String FileRepositoryPath = null;
     public String FileIndexPath = null;
@@ -59,6 +59,7 @@ public class XincoConfigSingletonServer {
             guessLanguage = false;
     private static XincoConfigSingletonServer instance = null;
     private boolean loadDefault;
+    private static final Logger logger = Logger.getLogger(XincoConfigSingletonServer.class.getSimpleName());
 
     public static XincoConfigSingletonServer getInstance() {
         if (instance == null) {
@@ -73,6 +74,7 @@ public class XincoConfigSingletonServer {
         try {
             JNDIDB = (String) (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
         } catch (Exception e) {
+            logger.log(Level.SEVERE, null, e);
             JNDIDB = "XincoPUJNDI";
         }
     }
@@ -85,15 +87,16 @@ public class XincoConfigSingletonServer {
                     && !(FileRepositoryPath.substring(FileRepositoryPath.length() - 1).equals(System.getProperty("file.separator")))) {
                 FileRepositoryPath += System.getProperty("file.separator");
             }
-        } catch (Exception ce) {
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, null, e);
             FileRepositoryPath = "";
-            exceptions.add(ce);
+            exceptions.add(e);
             loadDefault = true;
         }
         //optional: FileIndexPath
         try {
             FileIndexPath = XincoSettingServer.getSetting("xinco/FileIndexPath").getStringValue();
-        } catch (Exception ce) {
+        } catch (Exception e) {
             FileIndexPath = FileRepositoryPath + "index";
         }
         if (!(FileIndexPath.substring(FileIndexPath.length() - 1).equals(System.getProperty("file.separator")))) {
@@ -106,6 +109,7 @@ public class XincoConfigSingletonServer {
                 FileArchivePath += System.getProperty("file.separator");
             }
         } catch (Exception e) {
+            logger.log(Level.SEVERE, null, e);
             FileArchivePath = "";
             exceptions.add(e);
             loadDefault = true;
@@ -113,6 +117,7 @@ public class XincoConfigSingletonServer {
         try {
             FileArchivePeriod = XincoSettingServer.getSetting("xinco/FileArchivePeriod").getLongValue();
         } catch (Exception e) {
+            logger.log(Level.SEVERE, null, e);
             FileArchivePeriod = 14400000;
             exceptions.add(e);
             loadDefault = true;
@@ -121,6 +126,7 @@ public class XincoConfigSingletonServer {
         try {
             FileIndexOptimizerPeriod = XincoSettingServer.getSetting("xinco/FileIndexOptimizerPeriod").getLongValue();
         } catch (Exception e) {
+            logger.log(Level.SEVERE, null, e);
             FileIndexOptimizerPeriod = 14400000;
             exceptions.add(e);
             loadDefault = true;
@@ -130,6 +136,7 @@ public class XincoConfigSingletonServer {
             //TODO: Being read as zero?
             FileIndexerCount = ((Long) XincoDBManager.createdQuery("select count(s) from XincoSetting s where s.description like 'xinco/FileIndexer_'").get(0));
         } catch (Exception e) {
+            logger.log(Level.SEVERE, null, e);
             FileIndexerCount = 4;
             exceptions.add(e);
             loadDefault = true;
@@ -142,6 +149,7 @@ public class XincoConfigSingletonServer {
                 IndexFileTypesExt.add(XincoSettingServer.getSetting("env/xinco/FileIndexer_" + (i + 1) + "_Ext").getStringValue().split(";"));
             }
         } catch (Exception e) {
+            logger.log(Level.SEVERE, null, e);
             String[] tsa;
             IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF");
             tsa = new String[1];
@@ -168,6 +176,7 @@ public class XincoConfigSingletonServer {
         try {
             IndexNoIndex = XincoSettingServer.getSetting("xinco/IndexNoIndex").getStringValue().split(";");
         } catch (Exception e) {
+            logger.log(Level.SEVERE, null, e);
             IndexNoIndex = new String[3];
             IndexNoIndex[0] = "";
             IndexNoIndex[1] = "com";
@@ -178,6 +187,7 @@ public class XincoConfigSingletonServer {
         try {
             allowOutsideLinks = XincoSettingServer.getSetting("setting.allowoutsidelinks").isBoolValue();
         } catch (Exception e) {
+            logger.log(Level.SEVERE, null, e);
             allowOutsideLinks = true;
             exceptions.add(e);
             loadDefault = true;
@@ -185,6 +195,7 @@ public class XincoConfigSingletonServer {
         try {
             allowPublisherList = XincoSettingServer.getSetting("setting.allowpublisherlist").isBoolValue();
         } catch (Exception e) {
+            logger.log(Level.SEVERE, null, e);
             allowPublisherList = true;
             exceptions.add(e);
             loadDefault = true;
@@ -192,6 +203,7 @@ public class XincoConfigSingletonServer {
         try {
             guessLanguage = XincoSettingServer.getSetting("setting.guessLanguage").isBoolValue();
         } catch (Exception e) {
+            logger.log(Level.SEVERE, null, e);
             guessLanguage = false;
             exceptions.add(e);
             loadDefault = true;
@@ -199,6 +211,7 @@ public class XincoConfigSingletonServer {
         try {
             MaxSearchResult = XincoSettingServer.getSetting("xinco/MaxSearchResult").getIntValue();
         } catch (Exception e) {
+            logger.log(Level.SEVERE, null, e);
             MaxSearchResult = 30;
             exceptions.add(e);
             loadDefault = true;
@@ -206,6 +219,7 @@ public class XincoConfigSingletonServer {
         try {
             OOPort = XincoSettingServer.getSetting("setting.OOPort").getIntValue();
         } catch (Exception e) {
+            logger.log(Level.SEVERE, null, e);
             OOPort = 8100;
             exceptions.add(e);
             loadDefault = true;
@@ -216,7 +230,7 @@ public class XincoConfigSingletonServer {
             for(Exception ex: exceptions){
                 sb.append("\n").append(ex.getLocalizedMessage());
             }
-            Logger.getLogger(XincoConfigSingletonServer.class.getSimpleName()).log(Level.WARNING, sb.toString());
+            logger.log(Level.SEVERE, sb.toString());
         }
     }
 

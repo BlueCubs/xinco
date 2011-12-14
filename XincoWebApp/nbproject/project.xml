@@ -50,11 +50,11 @@
                     <file>${file.reference.gwt-dev.jar}</file>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.vaadin-6.7.2.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
+                    <file>${file.reference.validation-api-1.0.0.GA.jar}</file>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.validation-api-1.0.0.GA.jar}</file>
+                    <file>${file.reference.vaadin-6.7.3.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
                     <file>${file.reference.lucene-demos-3.0.3.jar}</file>
@@ -132,6 +132,10 @@
                 </library>
                 <library dirs="200">
                     <file>${libs.eclipselink.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.lucenecontainer-1.0.2.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
