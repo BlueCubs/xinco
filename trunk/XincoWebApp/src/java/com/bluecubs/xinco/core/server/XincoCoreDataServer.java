@@ -334,14 +334,6 @@ public final class XincoCoreDataServer extends XincoCoreData {
         return 0;
     }
 
-    public static byte[] loadBinaryData(XincoCoreData attrCD) {
-
-        byte[] binaryData = null;
-
-        return binaryData;
-
-    }
-
     public static ArrayList findXincoCoreData(String attrS, int attrLID, boolean attrSA, boolean attrSFD) {
         ArrayList data = new ArrayList();
         try {
