@@ -47,6 +47,7 @@ import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.Window.ResizeEvent;
 import java.awt.*;
@@ -121,7 +122,9 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
     @Override
     public void init() {
+        //TODO: Add way to change language after being selected.
         try {
+            XincoDBManager.reload();
             XincoDBManager.getEntityManagerFactory();
             XincoDBManager.updateDBState();
             while (XincoDBManager.getState() != DBState.VALID
@@ -272,6 +275,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
     }
 
     private void showMainWindow() {
+        getMainWindow().removeAllComponents();
         HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
         // Put two components in the container.
         splitPanel.setFirstComponent(getSideMenu());
@@ -1944,6 +1948,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
     private void showLanguageSelection() {
         final Window lang = new Window();
+//        lang.setReadOnly(true);
         final Form form = new Form();
         form.getLayout().addComponent(new com.vaadin.ui.Label(
                 "Please choose a language:"));
@@ -3306,6 +3311,27 @@ public class Xinco extends Application implements XincoVaadinApplication {
                 );
         item.setStatuses(new int[]{1});
         XincoMenuItemManager.addItem(item);
+        item = new XincoMenuItem(i += 1000,
+                getResource().getString("menu.search"),
+                getResource().getString("menu.search.search_repository"),
+                smallIcon,
+                new com.vaadin.ui.MenuBar.Command() {
+
+                    @Override
+                    public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
+                        try {
+                            showLuceneSearchWindow();
+                        } catch (XincoException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                },
+                false, //Need to be logged in
+                false, //Data only
+                false, //Node only
+                false //Something selected
+                );
+        XincoMenuItemManager.addItem(item);
     }
 
     private class ArchiveDialog extends CustomComponent {
@@ -4143,7 +4169,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
             fileName = filename;
             try {
                 //Create upload folder if needed
-                File uploads = new File(XincoConfigSingletonServer.getInstance().FileRepositoryPath
+                File uploads = new File(XincoDBManager.config.FileRepositoryPath
                         + System.getProperty("file.separator"));
                 uploads.mkdirs();
                 uploads.deleteOnExit();
@@ -4835,11 +4861,16 @@ public class Xinco extends Application implements XincoVaadinApplication {
         return endpoint;
     }
 
-    private Xinco_Service getService() throws MalformedURLException {
+    @Override
+    public Xinco_Service getService() throws MalformedURLException {
         if (service == null) {
             service = new Xinco_Service(new java.net.URL(getEndpoint()),
                     new QName("http://service.server.core.xinco.bluecubs.com/", "Xinco"));
         }
         return service;
+    }
+
+    private void showLuceneSearchWindow() {
+        getMainWindow().addWindow(new LuceneSearchWindow());
     }
 }

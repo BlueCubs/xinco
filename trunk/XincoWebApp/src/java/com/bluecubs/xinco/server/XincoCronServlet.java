@@ -63,6 +63,7 @@ public class XincoCronServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+        XincoDBManager.getEntityManagerFactory();
         //init archiving thread
         xat = XincoArchiveThread.getInstance();
         xat.start();

@@ -2078,7 +2078,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                                 newlog.setOpDescription(xerb.getString(OPCode.getOPCode(newlog.getOpCode()).getName()));
                             }
                             if (wizardType == 13) {
-                                newlog.setOpCode(OPCode.COMMENT_COMMENT.ordinal() + 1);
+                                newlog.setOpCode(OPCode.COMMENT.ordinal() + 1);
                                 newlog.setOpDescription(xerb.getString(OPCode.getOPCode(newlog.getOpCode()).getName()));
                             }
                             newlog.setXincoCoreUserId(xincoClientSession.getUser().getId());

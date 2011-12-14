@@ -89,7 +89,7 @@ public class XincoDBManager {
 //        FileConverter.createPDFRendering(1);
     }
 
-    private static void reload() throws XincoException {
+    public static void reload() throws XincoException {
         getEntityManagerFactory();
         updateDBState();
         checkIdTables();

@@ -97,10 +97,11 @@ public class LogDialog extends AbstractDialog {
             versionPostfix.setText("" + ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(log_index)).getVersion().getVersionPostfix());
             //Only enabled for checkin, modify and/or comment
             reason.setEnabled(((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(log_index)).getOpCode() == OPCode.CHECKIN.ordinal() + 1
-                    || ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(log_index)).getOpCode() == OPCode.COMMENT_COMMENT.ordinal() + 1
+                    || ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(log_index)).getOpCode() == OPCode.COMMENT.ordinal() + 1
                     || ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(log_index)).getOpCode() == OPCode.MODIFICATION.ordinal() + 1
                     || ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(log_index)).getOpCode() == OPCode.LOCK_COMMENT.ordinal() + 1
                     || ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(log_index)).getOpCode() == OPCode.PUBLISH_COMMENT.ordinal() + 1
+                    || ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(log_index)).getOpCode() == OPCode.DATA_MOVE.ordinal() + 1
                     || ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(log_index)).getOpCode() == OPCode.CHECKOUT_UNDONE.ordinal() + 1);
             action.setText(((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(log_index)).getOpDescription());
             versionHigh.setText("" + (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(log_index)).getVersion().getVersionHigh()));
@@ -127,7 +128,7 @@ public class LogDialog extends AbstractDialog {
         int lowV = (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(log_index)).getVersion().getVersionLow());
         versionHigh.setText("" + (majorV == 0 && midV == 0 && lowV == 0 ? 1 : majorV));
         //Increase low after adding a comment or changing metadata
-        if (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(log_index)).getOpCode() == OPCode.COMMENT_COMMENT.ordinal() + 1
+        if (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(log_index)).getOpCode() == OPCode.COMMENT.ordinal() + 1
                 || ((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(log_index)).getOpCode() == OPCode.MODIFICATION.ordinal() + 1) {
             versionLow.setText("" + (((XincoCoreLog) ((XincoCoreData) explorer.getSession().getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(log_index)).getVersion().getVersionLow() + 1));
         }
