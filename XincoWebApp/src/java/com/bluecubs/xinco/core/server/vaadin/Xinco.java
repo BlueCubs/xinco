@@ -47,7 +47,6 @@ import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.Window.ResizeEvent;
 import java.awt.*;
@@ -1948,7 +1947,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
 
     private void showLanguageSelection() {
         final Window lang = new Window();
-//        lang.setReadOnly(true);
+        lang.setReadOnly(true);
         final Form form = new Form();
         form.getLayout().addComponent(new com.vaadin.ui.Label(
                 "Please choose a language:"));
