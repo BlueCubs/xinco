@@ -43,28 +43,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "XincoId.findAll", query = "SELECT x FROM XincoId x"),
     @NamedQuery(name = "XincoId.findById", query = "SELECT x FROM XincoId x WHERE x.id = :id"),
-    @NamedQuery(name = "XincoId.findByTablename", query = "SELECT x FROM XincoId x WHERE x.tablename = :tablename"),
-    @NamedQuery(name = "XincoId.findByLastId", query = "SELECT x FROM XincoId x WHERE x.lastId = :lastId")})
+    @NamedQuery(name = "XincoId.findByLastId", query = "SELECT x FROM XincoId x WHERE x.lastId = :lastId"),
+    @NamedQuery(name = "XincoId.findByTablename", query = "SELECT x FROM XincoId x WHERE x.tablename = :tablename")})
 public class XincoId implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "XincoIdGen")
+    @SequenceGenerator(name = "XincoIdGen", sequenceName = "XINCO_ID_SEQ",
+    allocationSize = 1)
     @Basic(optional = false)
     @NotNull
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "XincoIdGen")
-    @SequenceGenerator(name = "XincoIdGen", sequenceName = "XINCO_ID_SEQ", 
-            allocationSize = 1)
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
-    @NotNull
+    @Column(name = "last_id")
+    private Integer lastId;
     @Size(min = 1, max = 255)
     @Column(name = "tablename")
     private String tablename;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "last_id")
-    private int lastId;
 
     public XincoId() {
     }
@@ -82,20 +78,20 @@ public class XincoId implements Serializable {
         this.id = id;
     }
 
+    public Integer getLastId() {
+        return lastId;
+    }
+
+    public void setLastId(Integer lastId) {
+        this.lastId = lastId;
+    }
+
     public String getTablename() {
         return tablename;
     }
 
     public void setTablename(String tablename) {
         this.tablename = tablename;
-    }
-
-    public int getLastId() {
-        return lastId;
-    }
-
-    public void setLastId(int lastId) {
-        this.lastId = lastId;
     }
 
     @Override
