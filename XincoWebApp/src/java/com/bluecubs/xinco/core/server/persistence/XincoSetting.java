@@ -30,7 +30,6 @@ package com.bluecubs.xinco.core.server.persistence;
 import com.bluecubs.xinco.core.server.AuditedEntityListener;
 import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import java.io.Serializable;
-import java.math.BigInteger;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -63,7 +62,7 @@ public class XincoSetting extends XincoAuditedObject implements Serializable {
     valueColumnName = "last_id",
     pkColumnValue = "xinco_setting",
     allocationSize = 1,
-    initialValue=1000)
+    initialValue = 1000)
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
@@ -80,7 +79,7 @@ public class XincoSetting extends XincoAuditedObject implements Serializable {
     @Column(name = "bool_value")
     private Boolean boolValue;
     @Column(name = "long_value")
-    private BigInteger longValue;
+    private long longValue;
 
     public XincoSetting() {
     }
@@ -134,11 +133,11 @@ public class XincoSetting extends XincoAuditedObject implements Serializable {
         this.boolValue = boolValue;
     }
 
-    public BigInteger getLongValue() {
+    public long getLongValue() {
         return longValue;
     }
 
-    public void setLongValue(BigInteger longValue) {
+    public void setLongValue(long longValue) {
         this.longValue = longValue;
     }
 

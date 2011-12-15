@@ -51,6 +51,7 @@
                 </library>
                 <library dirs="200">
                     <file>${file.reference.validation-api-1.0.0.GA.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
                     <file>${file.reference.vaadin-6.7.3.jar}</file>
@@ -104,9 +105,6 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.validation-api-1.0.0.GA-sources.jar}</file>
-                </library>
-                <library dirs="200">
                     <file>${file.reference.Base64-0.91.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
@@ -136,6 +134,22 @@
                 </library>
                 <library dirs="200">
                     <file>${file.reference.lucenecontainer-1.0.2.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.vaadin-jpacontainer-agpl-3.0-2.0.0-RC1.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.vaadin-beanvalidation-1.0.0.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.hibernate-validator-4.2.0.Final.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.slf4j-api-1.6.1.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>

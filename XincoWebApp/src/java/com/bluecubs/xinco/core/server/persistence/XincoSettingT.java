@@ -28,7 +28,6 @@
 package com.bluecubs.xinco.core.server.persistence;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -50,6 +49,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "XincoSettingT.findByBoolValue", query = "SELECT x FROM XincoSettingT x WHERE x.boolValue = :boolValue"),
     @NamedQuery(name = "XincoSettingT.findByLongValue", query = "SELECT x FROM XincoSettingT x WHERE x.longValue = :longValue")})
 public class XincoSettingT implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -74,7 +74,7 @@ public class XincoSettingT implements Serializable {
     @Column(name = "bool_value")
     private Boolean boolValue;
     @Column(name = "long_value")
-    private BigInteger longValue;
+    private long longValue;
 
     public XincoSettingT() {
     }
@@ -83,10 +83,15 @@ public class XincoSettingT implements Serializable {
         this.recordId = recordId;
     }
 
-    public XincoSettingT(Integer recordId, int id, String description) {
+    public XincoSettingT(Integer recordId, int id, String description, int intVal,
+            String stringVal, boolean boolVal, long longVal) {
         this.recordId = recordId;
         this.id = id;
         this.description = description;
+        this.intValue = intVal;
+        this.longValue = longVal;
+        this.stringValue = stringVal;
+        this.boolValue = boolVal;
     }
 
     public Integer getRecordId() {
@@ -137,11 +142,11 @@ public class XincoSettingT implements Serializable {
         this.boolValue = boolValue;
     }
 
-    public BigInteger getLongValue() {
+    public long getLongValue() {
         return longValue;
     }
 
-    public void setLongValue(BigInteger longValue) {
+    public void setLongValue(long longValue) {
         this.longValue = longValue;
     }
 
@@ -169,5 +174,4 @@ public class XincoSettingT implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoSettingT[ recordId=" + recordId + " ]";
     }
-    
 }

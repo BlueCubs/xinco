@@ -152,6 +152,17 @@ public class AuditedEntityListener {
                                 attr.getAttribDatetime()));
                         updated = true;
                     }
+                    if (o instanceof XincoSetting) {
+                        XincoSetting setting = (XincoSetting) o;
+                        new XincoSettingTJpaController(XincoDBManager.getEntityManagerFactory()).create(new XincoSettingT(record_ID,
+                                setting.getId(),
+                                setting.getDescription(),
+                                setting.getIntValue(),
+                                setting.getStringValue(),
+                                setting.getBoolValue(),
+                                setting.getLongValue()));
+                        updated = true;
+                    }
                     if (!updated) {
                         throw new XincoException(o + " is an Auditable "
                                 + "Object but it's processing logic is not "

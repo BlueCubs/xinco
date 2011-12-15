@@ -2017,6 +2017,15 @@ public class Xinco extends Application implements XincoVaadinApplication {
         getMainWindow().addWindow(lang);
     }
 
+    private void showSettingAdminWindow() {
+        Window setting = new Window();
+        setting.setContent(new SettingAdminWindow());
+        setting.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        setting.center();
+        setting.setModal(true);
+        getMainWindow().addWindow(setting);
+    }
+
     private void showAuditWindow() throws XincoException {
         final Window audit = new Window();
         final Table table = new Table();
@@ -2662,6 +2671,16 @@ public class Xinco extends Application implements XincoVaadinApplication {
             }
         });
         adminPanel.addComponent(auditAdmin);
+        com.vaadin.ui.Button settingAdmin = new com.vaadin.ui.Button(xerb.getString("message.admin.settingAdmin"));
+        settingAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        settingAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
+
+            @Override
+            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                showSettingAdminWindow();
+            }
+        });
+        adminPanel.addComponent(settingAdmin);
         menu.addTab(adminPanel, "XincoAdmin", null);
         panel.addComponent(menu);
         return panel;
