@@ -67,7 +67,7 @@ public class XincoDBManager {
     private static final HashMap<String, Integer> ids = new HashMap<String, Integer>();
 
     static {
-        //TODO: find a way to do this via JPA @GenerateValue
+        //TODO: remove when bug is fixed: https://bugs.eclipse.org/bugs/show_bug.cgi?id=366852
         ids.put("xinco_dependency_behavior", 999);
         ids.put("xinco_dependency_behavior", 999);
         ids.put("xinco_core_group", 999);
@@ -111,7 +111,9 @@ public class XincoDBManager {
 
     private static void generateIDs() {
         try {
-            Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO, "Creating ids to work around H2 issue...");
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO, 
+                    "Creating ids to work around eclipse issue "
+                    + "(https://bugs.eclipse.org/bugs/show_bug.cgi?id=366852)...");
             XincoIdServer temp;
             for (Iterator<Entry<String, Integer>> it = ids.entrySet().iterator(); it.hasNext();) {
                 Entry<String, Integer> entry = it.next();
