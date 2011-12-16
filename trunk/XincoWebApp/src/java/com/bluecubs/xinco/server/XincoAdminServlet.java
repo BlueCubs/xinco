@@ -1455,11 +1455,11 @@ public class XincoAdminServlet extends HttpServlet {
                     File indexDirectoryFile;
                     String[] indexDirectoryFileList;
                     boolean indexDirectoryDeleted;
-                    indexDirectory = new File(XincoDBManager.config.FileIndexPath);
+                    indexDirectory = new File(XincoDBManager.config.fileIndexPath);
                     if (indexDirectory.exists()) {
                         indexDirectoryFileList = indexDirectory.list();
                         for (i = 0; i < indexDirectoryFileList.length; i++) {
-                            indexDirectoryFile = new File(XincoDBManager.config.FileIndexPath + indexDirectoryFileList[i]);
+                            indexDirectoryFile = new File(XincoDBManager.config.fileIndexPath + indexDirectoryFileList[i]);
                             indexDirectoryFile.delete();
                         }
                         indexDirectoryDeleted = indexDirectory.delete();

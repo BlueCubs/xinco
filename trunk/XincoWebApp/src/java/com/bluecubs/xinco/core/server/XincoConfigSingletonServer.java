@@ -32,28 +32,28 @@
  */
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.server.persistence.XincoSetting;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 
 /**
- * This class handles the server configuration of xinco. Edit values in
- * database
+ * This class handles the server configuration of xinco. Edit values in database
  */
 public final class XincoConfigSingletonServer {
 
-    public String FileRepositoryPath = null;
-    public String FileIndexPath = null;
-    public String FileArchivePath = null;
-    public long FileArchivePeriod = 0;
-    private long FileIndexOptimizerPeriod = 0;
-    public long FileIndexerCount = 0;
-    public ArrayList IndexFileTypesClass = null;
-    public ArrayList IndexFileTypesExt = null;
-    public String[] IndexNoIndex = null;
-    public String JNDIDB = null;
-    public int MaxSearchResult = 0;
+    public String fileRepositoryPath = null;
+    public String fileIndexPath = null;
+    public String fileArchivePath = null;
+    public long fileArchivePeriod = 0;
+    private long fileIndexOptimizerPeriod = 0;
+    private long fileIndexerCount = 0;
+    private ArrayList indexFileTypesClass = null;
+    private ArrayList indexFileTypesExt = null;
+    private String[] indexNoIndex = null;
+    private String JNDIDB = null;
+    private int maxSearchResult = 0;
     private int OOPort = 0;
     private boolean allowOutsideLinks = true, allowPublisherList = true,
             guessLanguage = false;
@@ -82,105 +82,104 @@ public final class XincoConfigSingletonServer {
     public void loadSettings() {
         ArrayList<Exception> exceptions = new ArrayList<Exception>();
         try {
-            FileRepositoryPath = XincoSettingServer.getSetting("xinco/FileRepositoryPath").getStringValue();
-            if (!FileRepositoryPath.isEmpty()
-                    && !(FileRepositoryPath.substring(FileRepositoryPath.length() - 1).equals(System.getProperty("file.separator")))) {
-                FileRepositoryPath += System.getProperty("file.separator");
+            fileRepositoryPath = XincoSettingServer.getSetting("xinco/FileRepositoryPath").getStringValue();
+            if (!fileRepositoryPath.isEmpty()
+                    && !(fileRepositoryPath.substring(fileRepositoryPath.length() - 1).equals(System.getProperty("file.separator")))) {
+                fileRepositoryPath += System.getProperty("file.separator");
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
-            FileRepositoryPath = "";
+            fileRepositoryPath = "";
             exceptions.add(e);
             loadDefault = true;
         }
-        //optional: FileIndexPath
+        //optional: fileIndexPath
         try {
-            FileIndexPath = XincoSettingServer.getSetting("xinco/FileIndexPath").getStringValue();
+            fileIndexPath = XincoSettingServer.getSetting("xinco/FileIndexPath").getStringValue();
         } catch (Exception e) {
-            FileIndexPath = FileRepositoryPath + "index";
+            fileIndexPath = fileRepositoryPath + "index";
         }
-        if (!(FileIndexPath.substring(FileIndexPath.length() - 1).equals(System.getProperty("file.separator")))) {
-            FileIndexPath += System.getProperty("file.separator");
+        if (!(fileIndexPath.substring(fileIndexPath.length() - 1).equals(System.getProperty("file.separator")))) {
+            fileIndexPath += System.getProperty("file.separator");
         }
         try {
-            FileArchivePath = XincoSettingServer.getSetting("xinco/FileArchivePath").getStringValue();
-            if (!FileArchivePath.isEmpty()
-                    && !(FileArchivePath.substring(FileArchivePath.length() - 1).equals(System.getProperty("file.separator")))) {
-                FileArchivePath += System.getProperty("file.separator");
+            fileArchivePath = XincoSettingServer.getSetting("xinco/FileArchivePath").getStringValue();
+            if (!fileArchivePath.isEmpty()
+                    && !(fileArchivePath.substring(fileArchivePath.length() - 1).equals(System.getProperty("file.separator")))) {
+                fileArchivePath += System.getProperty("file.separator");
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
-            FileArchivePath = "";
+            fileArchivePath = "";
             exceptions.add(e);
             loadDefault = true;
         }
         try {
-            FileArchivePeriod = XincoSettingServer.getSetting("xinco/FileArchivePeriod").getLongValue();
+            fileArchivePeriod = XincoSettingServer.getSetting("xinco/FileArchivePeriod").getLongValue();
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
-            FileArchivePeriod = 14400000;
+            fileArchivePeriod = 14400000;
             exceptions.add(e);
             loadDefault = true;
         }
 
         try {
-            FileIndexOptimizerPeriod = XincoSettingServer.getSetting("xinco/FileIndexOptimizerPeriod").getLongValue();
+            fileIndexOptimizerPeriod = XincoSettingServer.getSetting("xinco/FileIndexOptimizerPeriod").getLongValue();
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
-            FileIndexOptimizerPeriod = 14400000;
+            fileIndexOptimizerPeriod = 14400000;
             exceptions.add(e);
             loadDefault = true;
         }
 
         try {
-            //TODO: Being read as zero?
-            FileIndexerCount = ((Long) XincoDBManager.createdQuery("select count(s) from XincoSetting s where s.description like 'xinco/FileIndexer_'").get(0));
+            fileIndexerCount = ((Long) XincoDBManager.createdQuery("select count(s) from XincoSetting s where s.description like 'xinco/FileIndexer_%_Class'").get(0));
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
-            FileIndexerCount = 4;
+            fileIndexerCount = 4;
             exceptions.add(e);
             loadDefault = true;
         }
-        IndexFileTypesClass = new ArrayList();
-        IndexFileTypesExt = new ArrayList();
+        indexFileTypesClass = new ArrayList();
+        indexFileTypesExt = new ArrayList();
         try {
-            for (int i = 0; i < FileIndexerCount; i++) {
-                IndexFileTypesClass.add(XincoSettingServer.getSetting("xinco/FileIndexer_" + (i + 1) + "_Class").getStringValue());
-                IndexFileTypesExt.add(XincoSettingServer.getSetting("env/xinco/FileIndexer_" + (i + 1) + "_Ext").getStringValue().split(";"));
+            for (int i = 0; i < getFileIndexerCount(); i++) {
+                getIndexFileTypesClass().add(XincoSettingServer.getSetting("xinco/FileIndexer_" + (i + 1) + "_Class").getStringValue());
+                getIndexFileTypesExt().add(XincoSettingServer.getSetting("xinco/FileIndexer_" + (i + 1) + "_Ext").getStringValue().split(";"));
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
             String[] tsa;
-            IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF");
+            getIndexFileTypesClass().add("com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF");
             tsa = new String[1];
             tsa[0] = "pdf";
-            IndexFileTypesExt.add(tsa);
-            IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexMSWord");
+            getIndexFileTypesExt().add(tsa);
+            getIndexFileTypesClass().add("com.bluecubs.xinco.index.filetypes.XincoIndexMSWord");
             tsa = new String[1];
             tsa[0] = "doc";
-            IndexFileTypesExt.add(tsa);
-            IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexMSExcel");
+            getIndexFileTypesExt().add(tsa);
+            getIndexFileTypesClass().add("com.bluecubs.xinco.index.filetypes.XincoIndexMSExcel");
             tsa = new String[1];
             tsa[0] = "xls";
-            IndexFileTypesExt.add(tsa);
-            IndexFileTypesClass.add("com.bluecubs.xinco.index.filetypes.XincoIndexHTML");
+            getIndexFileTypesExt().add(tsa);
+            getIndexFileTypesClass().add("com.bluecubs.xinco.index.filetypes.XincoIndexHTML");
             tsa = new String[4];
             tsa[0] = "htm";
             tsa[1] = "html";
             tsa[2] = "php";
             tsa[3] = "jsp";
-            IndexFileTypesExt.add(tsa);
+            getIndexFileTypesExt().add(tsa);
             exceptions.add(e);
             loadDefault = true;
         }
         try {
-            IndexNoIndex = XincoSettingServer.getSetting("xinco/IndexNoIndex").getStringValue().split(";");
+            indexNoIndex = XincoSettingServer.getSetting("xinco/IndexNoIndex").getStringValue().split(";");
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
-            IndexNoIndex = new String[3];
-            IndexNoIndex[0] = "";
-            IndexNoIndex[1] = "com";
-            IndexNoIndex[2] = "exe";
+            indexNoIndex = new String[3];
+            indexNoIndex[0] = "";
+            indexNoIndex[1] = "com";
+            indexNoIndex[2] = "exe";
             exceptions.add(e);
             loadDefault = true;
         }
@@ -209,10 +208,10 @@ public final class XincoConfigSingletonServer {
             loadDefault = true;
         }
         try {
-            MaxSearchResult = XincoSettingServer.getSetting("xinco/MaxSearchResult").getIntValue();
+            maxSearchResult = XincoSettingServer.getSetting("xinco/MaxSearchResult").getIntValue();
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
-            MaxSearchResult = 30;
+            maxSearchResult = 30;
             exceptions.add(e);
             loadDefault = true;
         }
@@ -227,11 +226,12 @@ public final class XincoConfigSingletonServer {
 
         if (loadDefault) {
             StringBuilder sb = new StringBuilder("Error loading configuration! Using default value for the ones not found.");
-            for(Exception ex: exceptions){
+            for (Exception ex : exceptions) {
                 sb.append("\n").append(ex.getLocalizedMessage());
             }
             logger.log(Level.SEVERE, sb.toString());
         }
+        showSettings();
     }
 
     public boolean isAllowOutsideLinks() {
@@ -239,11 +239,11 @@ public final class XincoConfigSingletonServer {
     }
 
     public long getFileIndexOptimizerPeriod() {
-        return FileIndexOptimizerPeriod;
+        return fileIndexOptimizerPeriod;
     }
 
     public void setFileIndexOptimizerPeriod(long FileIndexOptimizerPeriod) {
-        this.FileIndexOptimizerPeriod = FileIndexOptimizerPeriod;
+        this.fileIndexOptimizerPeriod = FileIndexOptimizerPeriod;
     }
 
     public boolean isAllowPublisherList() {
@@ -262,5 +262,60 @@ public final class XincoConfigSingletonServer {
      */
     public int getOOPort() {
         return OOPort;
+    }
+
+    /**
+     * @return the fileIndexerCount
+     */
+    public long getFileIndexerCount() {
+        return fileIndexerCount;
+    }
+
+    /**
+     * @return the indexFileTypesClass
+     */
+    public ArrayList getIndexFileTypesClass() {
+        return indexFileTypesClass;
+    }
+
+    /**
+     * @return the indexFileTypesExt
+     */
+    public ArrayList getIndexFileTypesExt() {
+        return indexFileTypesExt;
+    }
+
+    /**
+     * @return the indexNoIndex
+     */
+    public String[] getIndexNoIndex() {
+        return indexNoIndex;
+    }
+
+    /**
+     * @return the JNDIDB
+     */
+    public String getJNDIDB() {
+        return JNDIDB;
+    }
+
+    /**
+     * @return the maxSearchResult
+     */
+    public int getMaxSearchResult() {
+        return maxSearchResult;
+    }
+
+    private void showSettings() {
+        for (Object o : XincoDBManager.namedQuery("XincoSetting.findAll")) {
+            XincoSetting setting = (XincoSetting) o;
+            System.out.println("-------------" + setting.getDescription() + "-------------");
+            System.out.println("id: " + setting.getId());
+            System.out.println("int: " + setting.getIntValue());
+            System.out.println("long: " + setting.getLongValue());
+            System.out.println("string: " + setting.getStringValue());
+            System.out.println("string: " + setting.getBoolValue());
+            System.out.println("--------------------------");
+        }
     }
 }
