@@ -65,6 +65,8 @@ public class XincoDBManager {
     private static DBState state = DBState.START_UP;
     private static final Logger logger = Logger.getLogger(XincoDBManager.class.getName());
     private static final HashMap<String, Integer> ids = new HashMap<String, Integer>();
+    private static boolean demo = false;
+    private static long demoResetPeriod = 0;
 
     static {
         //TODO: remove when bug is fixed: https://bugs.eclipse.org/bugs/show_bug.cgi?id=366852
@@ -83,6 +85,20 @@ public class XincoDBManager {
         ids.put("xinco_core_user_modified_record", 0);
     }
 
+    /**
+     * @return the demo
+     */
+    public static boolean isDemo() {
+        return demo;
+    }
+
+    /**
+     * @return the demoResetPeriod
+     */
+    public static long getDemoResetPeriod() {
+        return demoResetPeriod;
+    }
+
     private XincoDBManager() throws Exception {
         reload();
         //Test: create pdf rendering
@@ -90,6 +106,28 @@ public class XincoDBManager {
     }
 
     public static void reload() throws XincoException {
+        reload(false);
+    }
+
+    public static void waitForDB() {
+        while (XincoDBManager.getState() != DBState.VALID
+                && XincoDBManager.getState() != DBState.UPDATED
+                && XincoDBManager.getState() != DBState.ERROR) {
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO,
+                    "Waiting for DB initialization. Current state:{0}",
+                    (XincoDBManager.getState() != null ? XincoDBManager.getState().name() : null));
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public static void reload(boolean close) throws XincoException {
+        if (close) {
+            close();
+        }
         getEntityManagerFactory();
         updateDBState();
         checkIdTables();
@@ -111,7 +149,7 @@ public class XincoDBManager {
 
     private static void generateIDs() {
         try {
-            Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO, 
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO,
                     "Creating ids to work around eclipse issue "
                     + "(https://bugs.eclipse.org/bugs/show_bug.cgi?id=366852)...");
             XincoIdServer temp;
@@ -159,6 +197,8 @@ public class XincoDBManager {
      * @param aLocked the lock to set
      */
     public static void setLocked(boolean aLocked) {
+        logger.log(Level.WARNING, "{0} the database.",
+                (aLocked ? "Locking" : "Unlocking"));
         locked = aLocked;
     }
 
@@ -218,6 +258,7 @@ public class XincoDBManager {
                 logger.log(Level.INFO, "{0}: {1}",
                         new Object[]{state.getMessage(), getVersion()});
             }
+            waitForDB();
         } catch (XincoException ex) {
             logger.log(Level.SEVERE, null, ex);
             state = DBState.ERROR;
@@ -362,7 +403,7 @@ public class XincoDBManager {
     }
 
     private static void setDBSystemDir() {
-        // Decide on the db system directory: <userhome>/.addressbook/
+        // Decide on the db system directory: <userhome>/.xinco/
         String userHomeDir = System.getProperty("user.home", ".");
         String systemDir = userHomeDir
                 + System.getProperty("file.separator", "/") + ".xinco";
@@ -381,11 +422,25 @@ public class XincoDBManager {
                 setDBSystemDir();
                 //Use the context defined Database connection
                 (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
-                emf = Persistence.createEntityManagerFactory(config.JNDIDB);
-                logger.log(Level.INFO, "Using context defined database connection: {0}",
-                        config.JNDIDB);
+                try {
+                    demo = (Boolean) (new InitialContext()).lookup("java:comp/env/xinco/demo");
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, null, e);
+                    demo = false;
+                }
+                if (isDemo()) {
+                    try {
+                        demoResetPeriod = (Long) (new InitialContext()).lookup("java:comp/env/xinco/demo-period");
+                    } catch (Exception e) {
+                        logger.log(Level.SEVERE, null, e);
+                        demoResetPeriod = 0;
+                    }
+                }
+                emf = Persistence.createEntityManagerFactory(config.getJNDIDB());
+                logger.log(Level.INFO, "Using context defined database connection: {0}", config.getJNDIDB());
                 usingContext = true;
             } catch (Exception e) {
+                demo = false;
                 if (!usingContext) {
                     logger.log(Level.WARNING,
                             "Manually specified connection parameters. "
@@ -480,7 +535,7 @@ public class XincoDBManager {
         return result;
     }
 
-    private static void nativeQuery(String query) throws XincoException {
+    public static void nativeQuery(String query) throws XincoException {
         EntityManager em;
         if (isLocked() && locked) {
             em = getProtectedEntityManager();
@@ -510,11 +565,12 @@ public class XincoDBManager {
 
     static void close() {
         try {
-            getEntityManager().close();
             getEntityManagerFactory().close();
         } catch (XincoException ex) {
             logger.log(Level.SEVERE, null, ex);
         }
+        emf = null;
+        initDone = false;
     }
 
     public static EntityTransaction getTransaction() throws XincoException {

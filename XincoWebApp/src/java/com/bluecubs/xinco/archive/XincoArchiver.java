@@ -80,7 +80,7 @@ public class XincoArchiver {
         Calendar ngc = new GregorianCalendar();
         archiveName = ngc.get(Calendar.YEAR) + "-" + (ngc.get(Calendar.MONTH) + 1)
                 + "-" + ngc.get(Calendar.DAY_OF_MONTH);
-        archiveBaseDir = XincoDBManager.config.FileArchivePath + archiveName;
+        archiveBaseDir = XincoDBManager.config.fileArchivePath + archiveName;
         //archive data
         archiveFileDir = "";
         for (i = xnodeTempArrayList.size() - 1; i >= 0; i--) {
@@ -104,10 +104,10 @@ public class XincoArchiver {
             fileName = ((String) orgFileNames.get(k)) + "_"
                     + ((XincoAddAttribute) ((ArrayList) xdataTemp.getXincoAddAttributes()).get(0)).getAttribVarchar();
             if ((new File(XincoCoreDataServer.getXincoCoreDataPath(
-                    XincoDBManager.config.FileRepositoryPath, ((Integer) orgFileIDs.get(k)).intValue(),
+                    XincoDBManager.config.fileRepositoryPath, ((Integer) orgFileIDs.get(k)).intValue(),
                     ((String) orgFileNames.get(k))))).exists()) {
                 fcis = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(
-                        XincoDBManager.config.FileRepositoryPath,
+                        XincoDBManager.config.fileRepositoryPath,
                         ((Integer) orgFileIDs.get(k)).intValue(), ((String) orgFileNames.get(k)))));
                 fcos = new FileOutputStream(new File(archiveBaseDir + archiveFileDir
                         + System.getProperty("file.separator") + fileName));
@@ -120,7 +120,7 @@ public class XincoArchiver {
                 fcos.close();
                 //delete
                 (new File(XincoCoreDataServer.getXincoCoreDataPath(
-                        XincoDBManager.config.FileRepositoryPath,
+                        XincoDBManager.config.fileRepositoryPath,
                         ((Integer) orgFileIDs.get(k)).intValue(),
                         ((String) orgFileNames.get(k))))).delete();
             }

@@ -69,7 +69,7 @@ public class XincoIndexer {
             //check if document exists in index and delete
             XincoIndexer.removeXincoCoreData(d);
             //add document to index
-            writer = new IndexWriter(FSDirectory.open(new File(XincoDBManager.config.FileIndexPath)), new IndexWriterConfig(Version.LUCENE_34, new StandardAnalyzer(Version.LUCENE_34)));
+            writer = new IndexWriter(FSDirectory.open(new File(XincoDBManager.config.fileIndexPath)), new IndexWriterConfig(Version.LUCENE_34, new StandardAnalyzer(Version.LUCENE_34)));
             writer.addDocument(XincoDocument.getXincoDocument(d, index_content));
             //writer.optimize();
             writer.close();
@@ -89,11 +89,11 @@ public class XincoIndexer {
 
     public static synchronized boolean removeXincoCoreData(XincoCoreData d) {
         IndexReader reader = null;
-        File indexDirectory = new File(XincoDBManager.config.FileIndexPath);
+        File indexDirectory = new File(XincoDBManager.config.fileIndexPath);
         if (indexDirectory.exists()) {
             //check if document exists in index and delete
             try {
-                reader = IndexReader.open(FSDirectory.open(new File(XincoDBManager.config.FileIndexPath)), false);
+                reader = IndexReader.open(FSDirectory.open(new File(XincoDBManager.config.fileIndexPath)), false);
                 reader.deleteDocuments(new Term("id", "" + d.getId()));
                 reader.close();
             } catch (Exception re) {
@@ -116,13 +116,13 @@ public class XincoIndexer {
         boolean result = false;
         try {
             //optimize index
-            writer = new IndexWriter(FSDirectory.open(new File(XincoDBManager.config.FileIndexPath)), new IndexWriterConfig(Version.LUCENE_34, new StandardAnalyzer(Version.LUCENE_34)));
+            writer = new IndexWriter(FSDirectory.open(new File(XincoDBManager.config.fileIndexPath)), new IndexWriterConfig(Version.LUCENE_34, new StandardAnalyzer(Version.LUCENE_34)));
             writer.optimize();
             writer.close();
             result = true;
         } catch (FileNotFoundException e) {
             logger.log(Level.INFO, "No index found at: {0}. Nothing to index.",
-                    XincoDBManager.config.FileIndexPath);
+                    XincoDBManager.config.fileIndexPath);
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
         } finally {
@@ -142,7 +142,7 @@ public class XincoIndexer {
         ArrayList<XincoCoreData> v = new ArrayList<XincoCoreData>();
         IndexSearcher searcher = null;
         try {
-            searcher = new IndexSearcher(FSDirectory.open(new File(XincoDBManager.config.FileIndexPath)));
+            searcher = new IndexSearcher(FSDirectory.open(new File(XincoDBManager.config.fileIndexPath)));
             Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_34);
 
             //add language to query
@@ -154,7 +154,7 @@ public class XincoIndexer {
             Query query = parser.parse(queryString);
 
             TopScoreDocCollector collector = TopScoreDocCollector.create(
-                    XincoDBManager.config.MaxSearchResult, true);
+                    XincoDBManager.config.getMaxSearchResult(), true);
             searcher.search(query, collector);
             ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
@@ -166,7 +166,7 @@ public class XincoIndexer {
                     // don't add non-existing data
                     logger.log(Level.WARNING, null,xcde);
                 }
-                if (i >= XincoDBManager.config.MaxSearchResult) {
+                if (i >= XincoDBManager.config.getMaxSearchResult()) {
                     break;
                 }
             }

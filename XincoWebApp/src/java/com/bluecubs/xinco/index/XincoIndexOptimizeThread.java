@@ -26,8 +26,7 @@
  *
  * Modifications:
  *
- * Who?             When?             What?
- * -                -                 -
+ * Who? When? What? - - -
  *
  *************************************************************
  */
@@ -58,11 +57,10 @@ public class XincoIndexOptimizeThread extends Thread {
             try {
                 index_period = XincoDBManager.config.getFileIndexOptimizerPeriod();
                 //exit indexer if period = 0
-                if (index_period == 0) {
-                    break;
+                if (index_period > 0) {
+                    XincoIndexer.optimizeIndex();
+                    lastRun = new GregorianCalendar();
                 }
-                XincoIndexer.optimizeIndex();
-                lastRun = new GregorianCalendar();
             } catch (Exception e) {
                 Logger.getLogger(XincoIndexOptimizeThread.class.getSimpleName()).log(Level.WARNING, null, e);
             }

@@ -202,7 +202,7 @@ public class XincoWebService {
                     }
                 }
                 in = new CheckedInputStream(new FileInputStream(
-                        XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath,
+                        XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath,
                         data.getId(), data.getId() + revision)), new CRC32());
                 out = new ByteArrayOutputStream();
                 byte[] buf = new byte[4096];
@@ -237,7 +237,7 @@ public class XincoWebService {
             ace = XincoCoreACEServer.checkAccess(user, (ArrayList) data.getXincoCoreAcl());
             if (ace.isWritePermission()) {
                 in = new ByteArrayInputStream(in1);
-                CheckedOutputStream out = new CheckedOutputStream(new FileOutputStream(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, data.getId(), "" + data.getId())), new CRC32());
+                CheckedOutputStream out = new CheckedOutputStream(new FileOutputStream(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, data.getId(), "" + data.getId())), new CRC32());
                 byte[] buf = new byte[4096];
                 totalLen = 0;
                 while ((len = in.read(buf)) > 0) {
@@ -259,8 +259,8 @@ public class XincoWebService {
                     }
                     if (MaxLogId > 0) {
                         //copy file
-                        FileInputStream fcis = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, data.getId(), "" + data.getId())));
-                        FileOutputStream fcos = new FileOutputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, data.getId(), data.getId() + "-" + MaxLogId)));
+                        FileInputStream fcis = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, data.getId(), "" + data.getId())));
+                        FileOutputStream fcos = new FileOutputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, data.getId(), data.getId() + "-" + MaxLogId)));
                         byte[] fcbuf = new byte[4096];
                         while ((len = fcis.read(fcbuf)) != -1) {
                             fcos.write(fcbuf, 0, len);

@@ -26,8 +26,7 @@
  *
  * Modifications:
  *
- * Who?             When?             What?
- * -                -                 -
+ * Who? When? What? - - -
  *
  *************************************************************
  */
@@ -40,6 +39,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -53,6 +53,8 @@ public class XincoCronServlet extends HttpServlet {
     XincoArchiveThread xat = null;
     //single instance of index optimizing thread
     XincoIndexOptimizeThread xiot = null;
+    //Single instance of demo resetting thread
+    XincoDemoResetThread xdrt = null;
 
     /**
      * Initializes the servlet.
@@ -63,6 +65,7 @@ public class XincoCronServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+        Logger.getLogger(XincoCronServlet.class.getSimpleName()).info("Starting XincoCronServlet...");
         XincoDBManager.getEntityManagerFactory();
         //init archiving thread
         xat = XincoArchiveThread.getInstance();
@@ -71,6 +74,12 @@ public class XincoCronServlet extends HttpServlet {
         //init index optimizing thread
         xiot = XincoIndexOptimizeThread.getInstance();
         xiot.start();
+
+        //Only for demo on embedded H2 database
+        if (XincoDBManager.isDemo()) {
+            xdrt = XincoDemoResetThread.getInstance();
+            xdrt.start();
+        }
     }
 
     /**

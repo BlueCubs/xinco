@@ -237,7 +237,7 @@ public final class XincoCoreNodeServer extends XincoCoreNode {
             for (Object o : result) {
                 nodes.add(new XincoCoreNodeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o));
                 i++;
-                if (i >= XincoDBManager.config.MaxSearchResult) {
+                if (i >= XincoDBManager.config.getMaxSearchResult()) {
                     break;
                 }
             }

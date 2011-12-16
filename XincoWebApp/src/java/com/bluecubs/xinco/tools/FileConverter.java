@@ -79,10 +79,10 @@ public class FileConverter {
         // convert
         DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
         converter.convert(
-                new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.FileRepositoryPath, id, "" + id)),
-                new File(XincoDBManager.config.FileRepositoryPath + id + "-pdf"), customPdfFormat);
+                new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, id, "" + id)),
+                new File(XincoDBManager.config.fileRepositoryPath + id + "-pdf"), customPdfFormat);
         Logger.getLogger(FileConverter.class.getName()).log(Level.INFO, "Rendering saved at: {0}{1}-pdf",
-                new Object[]{XincoDBManager.config.FileRepositoryPath, id});
+                new Object[]{XincoDBManager.config.fileRepositoryPath, id});
         // close the connection
         connection.disconnect();
         return true;

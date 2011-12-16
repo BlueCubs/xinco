@@ -3,7 +3,6 @@ package com.bluecubs.xinco.core.server.vaadin;
 import com.bluecubs.xinco.core.OPCode;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.*;
-import com.bluecubs.xinco.core.server.db.DBState;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecord;
 import com.bluecubs.xinco.core.server.persistence.controller.*;
@@ -128,18 +127,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
             XincoDBManager.reload();
             XincoDBManager.getEntityManagerFactory();
             XincoDBManager.updateDBState();
-            while (XincoDBManager.getState() != DBState.VALID
-                    && XincoDBManager.getState() != DBState.UPDATED
-                    && XincoDBManager.getState() != DBState.ERROR) {
-                Logger.getLogger(Xinco.class.getName()).log(Level.INFO,
-                        "Waiting for DB initialization. Current state:{0}",
-                        (XincoDBManager.getState() != null ? XincoDBManager.getState().name() : null));
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
             //Switch to Xinco theme
             setTheme("xinco");
             setMainWindow(new Window("Xinco"));
@@ -2610,7 +2597,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     File indexDirectory;
                     File indexDirectoryFile;
                     String[] indexDirectoryFileList;
-                    indexDirectory = new File(XincoDBManager.config.FileIndexPath);
+                    indexDirectory = new File(XincoDBManager.config.fileIndexPath);
                     int work_units = result.size() + (indexDirectory.exists()
                             ? indexDirectory.list().length + 1 : 0) + 1;
                     int index = 0;
@@ -2618,7 +2605,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     if (indexDirectory.exists()) {
                         indexDirectoryFileList = indexDirectory.list();
                         for (int i = 0; i < indexDirectoryFileList.length; i++) {
-                            indexDirectoryFile = new File(XincoDBManager.config.FileIndexPath + indexDirectoryFileList[i]);
+                            indexDirectoryFile = new File(XincoDBManager.config.fileIndexPath + indexDirectoryFileList[i]);
                             indexDirectoryFile.delete();
                             count++;
                         }
@@ -4210,7 +4197,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
             fileName = filename;
             try {
                 //Create upload folder if needed
-                File uploads = new File(XincoDBManager.config.FileRepositoryPath
+                File uploads = new File(XincoDBManager.config.fileRepositoryPath
                         + System.getProperty("file.separator"));
                 uploads.mkdirs();
                 uploads.deleteOnExit();
@@ -4996,7 +4983,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                             fixTable();
                         }
                     });
-            dataSource = new LuceneContainer(XincoDBManager.config.FileIndexPath);
+            dataSource = new LuceneContainer(XincoDBManager.config.fileIndexPath);
             table.setContainerDataSource(dataSource);
             //Collapse some columns by default
             table.setColumnCollapsingAllowed(true);
