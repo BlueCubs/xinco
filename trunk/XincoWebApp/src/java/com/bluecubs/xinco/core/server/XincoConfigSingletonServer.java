@@ -309,13 +309,14 @@ public final class XincoConfigSingletonServer {
     private void showSettings() {
         for (Object o : XincoDBManager.namedQuery("XincoSetting.findAll")) {
             XincoSetting setting = (XincoSetting) o;
-            System.out.println("-------------" + setting.getDescription() + "-------------");
-            System.out.println("id: " + setting.getId());
-            System.out.println("int: " + setting.getIntValue());
-            System.out.println("long: " + setting.getLongValue());
-            System.out.println("string: " + setting.getStringValue());
-            System.out.println("string: " + setting.getBoolValue());
-            System.out.println("--------------------------");
+            logger.log(Level.FINE, "-------------{0}-------------",
+                    setting.getDescription());
+            logger.log(Level.FINE, "id: {0}", setting.getId());
+            logger.log(Level.FINE, "int: {0}", setting.getIntValue());
+            logger.log(Level.FINE, "long: {0}", setting.getLongValue());
+            logger.log(Level.FINE, "string: {0}", setting.getStringValue());
+            logger.log(Level.FINE, "string: {0}", setting.getBoolValue());
+            logger.fine("--------------------------");
         }
     }
 }
