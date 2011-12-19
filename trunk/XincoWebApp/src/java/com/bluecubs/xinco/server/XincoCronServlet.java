@@ -65,7 +65,7 @@ public class XincoCronServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        Logger.getLogger(XincoCronServlet.class.getSimpleName()).info("Starting XincoCronServlet...");
+        Logger.getLogger(XincoCronServlet.class.getSimpleName()).fine("Starting XincoCronServlet...");
         XincoDBManager.getEntityManagerFactory();
         //init archiving thread
         xat = XincoArchiveThread.getInstance();

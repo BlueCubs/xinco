@@ -18,16 +18,6 @@
         <listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
     </listener>
     <servlet>
-        <display-name>XincoAdminServlet</display-name>
-        <servlet-name>XincoAdminServlet</servlet-name>
-        <servlet-class>com.bluecubs.xinco.server.XincoAdminServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <display-name>XincoPublisherServlet</display-name>
-        <servlet-name>XincoPublisherServlet</servlet-name>
-        <servlet-class>com.bluecubs.xinco.server.XincoPublisherServlet</servlet-class>
-    </servlet>
-    <servlet>
         <display-name>XincoCronServlet</display-name>
         <servlet-name>XincoCronServlet</servlet-name>
         <servlet-class>com.bluecubs.xinco.server.XincoCronServlet</servlet-class>
@@ -53,14 +43,6 @@
     <servlet-mapping>
         <servlet-name>Xinco</servlet-name>
         <url-pattern>/Xinco</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>XincoAdminServlet</servlet-name>
-        <url-pattern>/XincoAdmin</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>XincoPublisherServlet</servlet-name>
-        <url-pattern>/XincoPublisher/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>XincoCronServlet</servlet-name>
