@@ -13,6 +13,7 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.CheckedOutputStream;
 import javax.jws.WebService;
+import javax.xml.ws.BindingType;
 
 /**
  *
@@ -22,6 +23,7 @@ import javax.jws.WebService;
 endpointInterface = "com.bluecubs.xinco.core.server.service.Xinco",
 targetNamespace = "http://service.server.core.xinco.bluecubs.com/",
 wsdlLocation = "WEB-INF/wsdl/XincoWebService/Xinco.wsdl")
+@BindingType(value = "http://java.sun.com/xml/ns/jaxws/2003/05/soap/bindings/HTTP/")
 public class XincoWebService {
 
     public XincoCoreDataType getXincoCoreDataType(XincoCoreDataType in0, XincoCoreUser in1) {
@@ -446,10 +448,9 @@ public class XincoWebService {
                 data.write2DB();
 
                 //index data (not on checkout, only when status = open = 1)
-                //TODO: Why this here? We are already indexing when we actually get the file.
-//                if (data.getStatusNumber() == 1) {
-//                    XincoIndexer.indexXincoCoreData(data, true);
-//                }
+                if (data.getStatusNumber() == 1) {
+                    XincoIndexer.indexXincoCoreData(data, true);
+                }
 
                 //insert default ACL when inserting new node
                 if (insertnewdata) {
