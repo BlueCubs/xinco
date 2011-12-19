@@ -1,7 +1,7 @@
 package com.bluecubs.xinco.core.server.vaadin;
 
 import com.bluecubs.xinco.core.server.service.XincoCoreUser;
-import com.bluecubs.xinco.core.server.service.Xinco_Service;
+import com.bluecubs.xinco.core.server.service.XincoWebService;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.ResizeListener;
@@ -50,7 +50,7 @@ public interface XincoVaadinApplication extends ResizeListener {
      * @return Xinco Service
      * @throws MalformedURLException
      */
-    public Xinco_Service getService() throws MalformedURLException;
+    public XincoWebService getService();
 
     /**
      * Expand a node in the tree
