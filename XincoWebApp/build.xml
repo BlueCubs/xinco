@@ -428,7 +428,7 @@
         </condition>
     </target>
     
-    <target name="clean" depends="xinco-impl.clean">
+    <target name="clean-widgets">
         <if>
             <isset property="widgetset.present"/>
             <then>
