@@ -25,9 +25,10 @@
  * 
  * ************************************************************
  */
-package com.bluecubs.xinco.core.server.vaadin;
+package com.bluecubs.xinco.core.server.vaadin.setting;
 
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.vaadin.XincoVaadinApplication;
 import com.vaadin.addon.jpacontainer.EntityContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.data.Property;

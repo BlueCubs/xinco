@@ -25,9 +25,10 @@
  * 
  * ************************************************************
  */
-package com.bluecubs.xinco.core.server.vaadin;
+package com.bluecubs.xinco.core.server.vaadin.setting;
 
 import com.bluecubs.xinco.core.server.persistence.XincoSetting;
+import com.bluecubs.xinco.core.server.vaadin.XincoVaadinApplication;
 import com.vaadin.addon.beanvalidation.BeanValidationForm;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button.ClickEvent;
@@ -89,7 +90,7 @@ class SettingEditor extends Window implements Button.ClickListener, FormFieldFac
 
     @Override
     public Field createField(Item item, Object propertyId, Component uiContext) {
-        Field field = DefaultFieldFactory.get().createField(item, propertyId,
+        Field field = XincoSettingFieldFactory.get().createField(item, propertyId,
                 uiContext);
         if (field instanceof TextField) {
             ((TextField) field).setNullRepresentation("null");
