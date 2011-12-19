@@ -271,7 +271,7 @@ public class XincoWebService {
                         fcos.close();
                     } else {
                         Logger.getLogger(XincoWebService.class.getName()).log(Level.WARNING,
-                                "Didn''t find default version log. Not creating copy of: {0}", in0);
+                                "Didn''t find default version log. Not creating copy of: {0}", in0.getDesignation());
                     }
                 }
                 try {
