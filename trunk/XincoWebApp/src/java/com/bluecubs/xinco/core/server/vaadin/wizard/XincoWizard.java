@@ -133,6 +133,10 @@ public class XincoWizard extends CustomComponent {
      */
     public void finish() {
         if (isLastStep(currentStep) && currentStep.onAdvance()) {
+            finishButton.setEnabled(false);
+            backButton.setEnabled(false);
+            nextButton.setEnabled(false);
+            cancelButton.setEnabled(false);
             // next (finish) allowed -> fire complete event
             fireEvent(new WizardCompletedEvent(this));
         }
