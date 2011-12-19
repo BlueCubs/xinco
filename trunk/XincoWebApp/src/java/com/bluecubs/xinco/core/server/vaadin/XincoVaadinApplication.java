@@ -18,24 +18,24 @@ public interface XincoVaadinApplication extends ResizeListener {
     /**
      * @return the loggedUser
      */
-    XincoCoreUser getLoggedUser();
+    public XincoCoreUser getLoggedUser();
 
     /**
      * @return the Resource Bundle
      */
-    ResourceBundle getResource();
+    public ResourceBundle getResource();
 
     /**
      * Reset activity timer
      */
-    void resetTimer();
+    public void resetTimer();
 
     /**
      * Get the tree of the application
      *
      * @return Tree
      */
-    Tree getXincoTree();
+    public Tree getXincoTree();
 
     /**
      * Get main window
@@ -59,11 +59,17 @@ public interface XincoVaadinApplication extends ResizeListener {
      * @return true if successful
      */
     public boolean expandTreeNodes(List<Integer> parents);
-    
+
     /**
      * Select node in tree
+     *
      * @param nodeId Id to select (use "node-" for nodes and "data-" for data)
      * @return true if successful
      */
     public boolean selectNode(String nodeId);
+
+    /**
+     * Lock the application (requires log in or disconnection)
+     */
+    public void setLock();
 }

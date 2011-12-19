@@ -9,6 +9,7 @@ import com.bluecubs.xinco.core.server.persistence.controller.*;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.service.*;
 import com.bluecubs.xinco.core.server.vaadin.custom.VersionSelector;
+import com.bluecubs.xinco.core.server.vaadin.setting.SettingAdminWindow;
 import com.bluecubs.xinco.core.server.vaadin.wizard.WizardStep;
 import com.bluecubs.xinco.core.server.vaadin.wizard.XincoWizard;
 import com.bluecubs.xinco.core.server.vaadin.wizard.event.*;
@@ -1048,8 +1049,14 @@ public class Xinco extends Application implements XincoVaadinApplication {
         return directory.delete();
     }
 
-    void setLock() {
-        //
+    @Override
+    public void setLock() {
+        //Don't do anything if no one is logged in.
+        if (loggedUser != null) {
+            //Give user a chance to login
+            showLoginDialog();
+        }
+        resetTimer();
     }
 
     /**
@@ -1589,7 +1596,12 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     @Override
                     public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                         try {
+                            //Make sure to log out anyone previously logged in
+                            loggedUser = null;
                             updateMenu();
+                            //Select root node
+                            xincoTree.setValue("node-1");
+                            getMainWindow().removeWindow(loginWindow);
                         } catch (XincoException ex) {
                             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -1616,36 +1628,40 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     //Wrong password or username
                     java.util.List result = XincoDBManager.createdQuery(
                             "SELECT x FROM XincoCoreUser x WHERE x.username='"
-                            + username + "' AND x.statusNumber<>2");
+                            + username + "' AND x.statusNumber <> 2");
                     //Check if the username is correct if not just throw the wrong login message
                     if (result.isEmpty()) {
-                        throw new XincoException("Login " + xerb.getString("general.fail") + " Username and/or Password may be incorrect!");
-                    }
-                    result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreUser x WHERE x.username='"
-                            + username + "'");
-                    if (result.size() > 0) {
-                        XincoCoreUserServer temp_user = new XincoCoreUserServer((com.bluecubs.xinco.core.server.persistence.XincoCoreUser) result.get(0));
-                        long attempts = XincoSettingServer.getSetting(new XincoCoreUserServer(1),
-                                "password.attempts").getLongValue();
-                        //If user exists increase the atempt tries in the db. If limit reached lock account
-                        if (temp_user.getAttempts() >= attempts && temp_user.getId() != 1) {
-                            //The logged in admin does the locking
-                            int adminId = 1;
-                            temp_user.setChangerID(adminId);
-                            temp_user.setWriteGroups(true);
-                            //Register change in audit trail
-                            temp_user.setChange(true);
-                            //Reason for change
-                            temp_user.setReason(xerb.getString("password.attempt.limitReached"));
-                            //the password retrieved when you logon is already hashed...
-                            temp_user.setHashPassword(false);
-                            temp_user.setIncreaseAttempts(true);
-                            temp_user.write2DB();
-                            getMainWindow().showNotification(xerb.getString("password.attempt.limitReached"),
-                                    Notification.TYPE_WARNING_MESSAGE);
-                        } else {
-                            getMainWindow().showNotification(xerb.getString("password.login.fail"),
-                                    Notification.TYPE_WARNING_MESSAGE);
+                        getMainWindow().showNotification("Login "
+                                + xerb.getString("general.fail")
+                                + " Username and/or Password may be incorrect!",
+                                Notification.TYPE_WARNING_MESSAGE);
+                    } else {
+                        result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreUser x WHERE x.username='"
+                                + username + "'");
+                        if (result.size() > 0) {
+                            XincoCoreUserServer temp_user = new XincoCoreUserServer((com.bluecubs.xinco.core.server.persistence.XincoCoreUser) result.get(0));
+                            long attempts = XincoSettingServer.getSetting(new XincoCoreUserServer(1),
+                                    "password.attempts").getLongValue();
+                            //If user exists increase the atempt tries in the db. If limit reached lock account
+                            if (temp_user.getAttempts() >= attempts && temp_user.getId() != 1) {
+                                //The logged in admin does the locking
+                                int adminId = 1;
+                                temp_user.setChangerID(adminId);
+                                temp_user.setWriteGroups(true);
+                                //Register change in audit trail
+                                temp_user.setChange(true);
+                                //Reason for change
+                                temp_user.setReason(xerb.getString("password.attempt.limitReached"));
+                                //the password retrieved when you logon is already hashed...
+                                temp_user.setHashPassword(false);
+                                temp_user.setIncreaseAttempts(true);
+                                temp_user.write2DB();
+                                getMainWindow().showNotification(xerb.getString("password.attempt.limitReached"),
+                                        Notification.TYPE_WARNING_MESSAGE);
+                            } else {
+                                getMainWindow().showNotification(xerb.getString("password.login.fail"),
+                                        Notification.TYPE_WARNING_MESSAGE);
+                            }
                         }
                     }
                     //Enable so they can retry
@@ -1678,6 +1694,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
         loginWindow.center();
         loginWindow.setModal(true);
         loginWindow.setWidth(30, Sizeable.UNITS_PERCENTAGE);
+        loginWindow.setReadOnly(true);
         getMainWindow().addWindow(loginWindow);
     }
 
@@ -1954,7 +1971,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
             languages.addItem(locale);
             languages.setItemCaption(locale, lrb.getString("Locale." + locale));
             try {
-                FileResource flagIcon = getFlagIcon(locale);
+                FileResource flagIcon = getFlagIcon(locale.isEmpty() ? "us" : locale);
                 languages.setItemIcon(locale, flagIcon);
             } catch (IOException ex) {
                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
