@@ -97,7 +97,8 @@ public class XincoCoreDataHasDependencyServer extends XincoCoreDataHasDependency
                     + "and x.xincoCoreDataHasDependencyPK.xincoCoreDataChildrenId = :xincoCoreDataChildrenId "
                     + "and x.xincoCoreDataHasDependencyPK.dependencyTypeId = :dependencyTypeId", parameters);
             if (!result.isEmpty()) {
-                new XincoCoreDataHasDependencyJpaController(XincoDBManager.getEntityManagerFactory()).destroy((XincoCoreDataHasDependencyPK) result.get(0));
+                new XincoCoreDataHasDependencyJpaController(XincoDBManager.getEntityManagerFactory()).destroy(
+                        ((XincoCoreDataHasDependency) result.get(0)).getXincoCoreDataHasDependencyPK());
             }
         } catch (Exception ex) {
             Logger.getLogger(XincoCoreDataHasDependencyServer.class.getName()).log(Level.SEVERE, null, ex);
