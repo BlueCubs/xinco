@@ -285,6 +285,11 @@ public final class XincoCoreDataServer extends XincoCoreData {
                             (com.bluecubs.xinco.core.server.persistence.XincoAddAttribute) it.next();
                     new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).destroy(attr.getXincoAddAttributePK());
                 }
+                //Related renderings
+                for (Iterator it = XincoCoreDataHasDependencyServer.getRenderings(id).iterator(); it.hasNext();) {
+                    XincoCoreData next = (XincoCoreData) it.next();
+                    removeFromDB(userID, next.getId());
+                }
                 //Data itself
                 new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).destroy(id);
             } catch (Exception e) {
