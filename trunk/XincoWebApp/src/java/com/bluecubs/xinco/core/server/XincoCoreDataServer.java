@@ -183,7 +183,7 @@ public final class XincoCoreDataServer extends XincoCoreData {
 
     //write to db
     public int write2DB() throws XincoException {
-        boolean created = false;
+        boolean create;
         com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd;
         XincoCoreDataJpaController controller = new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory());
         try {
@@ -222,23 +222,24 @@ public final class XincoCoreDataServer extends XincoCoreData {
                 xcd.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.create(xcd);
                 setId(xcd.getId());
-                created = true;
             }
             //Update add attributes
-            for (int i = 0; i < getXincoAddAttributes().size(); i++) {
+            for (Iterator<XincoAddAttribute> it = getXincoAddAttributes().iterator(); it.hasNext();) {
                 /**
                  * Copy fields from XincoAddAttribute to XincoAddAttribute
                  * (Persistence) The delete and create approach doesn't go well
                  * with persistence.
                  */
-                XincoAddAttribute temp = (XincoAddAttribute) getXincoAddAttributes().get(i);
+                com.bluecubs.xinco.core.server.service.XincoAddAttribute temp = it.next();
                 com.bluecubs.xinco.core.server.persistence.XincoAddAttribute xaa;
-                if (created) {
+                //Try to retrieve from database
+                xaa = new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoAddAttribute(new XincoAddAttributePK(getId(),
+                        temp.getAttributeId()));
+                create = xaa == null;
+                if (create) {
+                    //Not in the database yet, get ready to create it.
                     xaa = new com.bluecubs.xinco.core.server.persistence.XincoAddAttribute();
                     xaa.setXincoAddAttributePK(new XincoAddAttributePK(xcd.getId(), temp.getAttributeId()));
-                } else {
-                    xaa = new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoAddAttribute(new XincoAddAttributePK(getId(),
-                            temp.getAttributeId()));
                 }
                 xaa.setAttribInt(temp.getAttribInt());
                 xaa.setAttribUnsignedint(temp.getAttribUnsignedint());
@@ -247,7 +248,7 @@ public final class XincoCoreDataServer extends XincoCoreData {
                 xaa.setAttribText(temp.getAttribText());
                 xaa.setAttribDatetime(temp.getAttribDatetime().toGregorianCalendar().getTime());
                 xaa.setXincoCoreData(xcd);
-                if (created) {
+                if (create) {
                     new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).create(xaa);
                 } else {
                     new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).edit(xaa);
