@@ -44,16 +44,22 @@ public class XincoCoreDataHasDependencyServer extends XincoCoreDataHasDependency
         }
     }
 
-    public static List<XincoCoreDataServer> getRenderings(int id) throws XincoException {
-        ArrayList<XincoCoreDataServer> renderings = new ArrayList<XincoCoreDataServer>();
+    public static List<XincoCoreData> getRenderings(int id) throws XincoException {
+        ArrayList<XincoCoreData> renderings = new ArrayList<XincoCoreData>();
         parameters.clear();
         parameters.put("xincoCoreDataParentId", id);
         for (Iterator<Object> it = XincoDBManager.namedQuery(
                 "XincoCoreDataHasDependency.findByXincoCoreDataParentId", parameters).iterator(); it.hasNext();) {
             XincoCoreDataHasDependency dep = (XincoCoreDataHasDependency) it.next();
-            renderings.add(new XincoCoreDataServer(dep.getXincoCoreData1()));
+            renderings.add(dep.getXincoCoreData1());
         }
         return renderings;
+    }
+
+    public static boolean isRendering(int id) throws XincoException {
+        parameters.clear();
+        parameters.put("xincoCoreDataChildrenId", id);
+        return !XincoDBManager.namedQuery("XincoCoreDataHasDependency.findByXincoCoreDataChildrenId", parameters).isEmpty();
     }
 
     public XincoCoreDataHasDependencyServer(XincoCoreData parent,
