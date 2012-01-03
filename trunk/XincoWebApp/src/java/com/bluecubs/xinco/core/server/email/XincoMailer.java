@@ -1,21 +1,22 @@
 /*
-Some SMTP servers require a username and password authentication before you
-can use their Server for Sending mail. This is most common with couple
-of ISP's who provide SMTP Address to Send Mail.
+ Some SMTP servers require a username and password authentication before you
+ can use their Server for Sending mail. This is most common with couple
+ of ISP's who provide SMTP Address to Send Mail.
 
-This Program gives any example on how to do SMTP Authentication
-(User and Password verification)
+ This Program gives any example on how to do SMTP Authentication
+ (User and Password verification)
 
-This is a free source code and is provided as it is without any warranties and
-it can be used in any your code for free.
+ This is a free source code and is provided as it is without any warranties and
+ it can be used in any your code for free.
 
-Author : Sudhir Ancha
+ Author : Sudhir Ancha
  */
 package com.bluecubs.xinco.core.server.email;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,7 +26,7 @@ import javax.mail.internet.MimeMessage;
 
 public class XincoMailer {
 
-    public void postMail(String recipients[], String subject,
+    public static void postMail(List<String> recipients, String subject,
             String message, String from) throws MessagingException, XincoException {
         boolean debug = false;
 
@@ -53,9 +54,11 @@ public class XincoMailer {
         InternetAddress addressFrom = new InternetAddress(from);
         msg.setFrom(addressFrom);
 
-        InternetAddress[] addressTo = new InternetAddress[recipients.length];
-        for (int i = 0; i < recipients.length; i++) {
-            addressTo[i] = new InternetAddress(recipients[i]);
+        InternetAddress[] addressTo = new InternetAddress[recipients.size()];
+        int i = 0;
+        for (String email : recipients) {
+            addressTo[i] = new InternetAddress(email);
+            i++;
         }
         msg.setRecipients(Message.RecipientType.TO, addressTo);
 
@@ -67,10 +70,10 @@ public class XincoMailer {
     }
 
     /**
-     * SimpleAuthenticator is used to do simple authentication
-     * when the SMTP server requires it.
+     * SimpleAuthenticator is used to do simple authentication when the SMTP
+     * server requires it.
      */
-    private class SMTPAuthenticator extends javax.mail.Authenticator {
+    private static class SMTPAuthenticator extends javax.mail.Authenticator {
 
         @Override
         public PasswordAuthentication getPasswordAuthentication() {
