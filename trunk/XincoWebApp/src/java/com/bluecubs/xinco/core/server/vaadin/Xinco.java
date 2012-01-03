@@ -69,7 +69,6 @@ import javax.swing.Icon;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 import org.openide.util.lookup.ServiceProvider;
 import org.vaadin.easyuploads.MultiFileUpload;
 import org.vaadin.hene.expandingtextarea.ExpandingTextArea;
@@ -93,7 +92,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
     private Table xincoTable = null;
     private com.vaadin.ui.MenuBar menuBar = new com.vaadin.ui.MenuBar();
     private Item root;
-    private Xinco_Service service;
+    private XincoWebService service;
     private Window wizardWindow = new Window();
     private DataDialog dataDialog;
     private DataTypeDialog dataTypeDialog;
@@ -104,7 +103,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
     private XincoActivityTimer xat = null;
     private File fileToLoad;
     private String fileName;                    // Original file name
-    private boolean renderingSupportEnabled = false;
+    private boolean renderingSupportEnabled = true;
     private String version;
     private HorizontalSplitPanel xeSplitPanel;
     private com.vaadin.ui.Button login;
@@ -149,17 +148,25 @@ public class Xinco extends Application implements XincoVaadinApplication {
             });
             xincoClientVersion = new XincoVersion();
             try {
-                xincoClientVersion.setVersionHigh(XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.high").getIntValue());
-                xincoClientVersion.setVersionMid(XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.mid").getIntValue());
-                xincoClientVersion.setVersionLow(XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.low").getIntValue());
-                xincoClientVersion.setVersionPostfix(XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.postfix").getStringValue());
+                xincoClientVersion.setVersionHigh(XincoSettingServer.getSetting(
+                        new XincoCoreUserServer(1), "version.high").getIntValue());
+                xincoClientVersion.setVersionMid(XincoSettingServer.getSetting(
+                        new XincoCoreUserServer(1), "version.mid").getIntValue());
+                xincoClientVersion.setVersionLow(XincoSettingServer.getSetting(
+                        new XincoCoreUserServer(1), "version.low").getIntValue());
+                xincoClientVersion.setVersionPostfix(XincoSettingServer.getSetting(
+                        new XincoCoreUserServer(1), "version.postfix").getStringValue());
             } catch (com.bluecubs.xinco.core.XincoException ex) {
                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             }
-            version = XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.high").getIntValue() + "."
-                    + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.mid").getIntValue() + "."
-                    + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.low").getIntValue() + " "
-                    + XincoSettingServer.getSetting(new XincoCoreUserServer(1), "version.postfix").getStringValue();
+            version = XincoSettingServer.getSetting(new XincoCoreUserServer(1),
+                    "version.high").getIntValue() + "."
+                    + XincoSettingServer.getSetting(new XincoCoreUserServer(1),
+                    "version.mid").getIntValue() + "."
+                    + XincoSettingServer.getSetting(new XincoCoreUserServer(1),
+                    "version.low").getIntValue() + " "
+                    + XincoSettingServer.getSetting(new XincoCoreUserServer(1),
+                    "version.postfix").getStringValue();
             icon = new Embedded("Xinco - "
                     + getResource().getString("general.version") + " "
                     + version, new ThemeResource("img/blueCubsSmall.gif"));
@@ -375,7 +382,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
         xeSplitPanel.setFirstComponent(getXincoTree());
         xeSplitPanel.setSecondComponent(getXincoTable());
         xeSplitPanel.setHeight(700, Sizeable.UNITS_PIXELS);
-        xeSplitPanel.setSplitPosition(20, Sizeable.UNITS_PERCENTAGE);
+        xeSplitPanel.setSplitPosition(100, Sizeable.UNITS_PERCENTAGE);
         //Hide details by default, user needs to log in for some features.
         getXincoTable().setVisible(false);
         panel.addComponent(menuBar);
@@ -482,14 +489,18 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                 && location == VerticalDropLocation.MIDDLE) {
                             try {
                                 //Now update things in the database
-                                if (sourceItemId.toString().startsWith("data") && targetItemId.toString().startsWith("node")) {
-                                    XincoCoreDataServer source = new XincoCoreDataServer(Integer.valueOf(sourceItemId.toString().substring(sourceItemId.toString().indexOf('-') + 1)));
+                                if (sourceItemId.toString().startsWith("data")
+                                        && targetItemId.toString().startsWith("node")) {
+                                    XincoCoreDataServer source =
+                                            new XincoCoreDataServer(Integer.valueOf(sourceItemId.toString().substring(sourceItemId.toString().indexOf('-') + 1)));
                                     // Get a reason for the move:
                                     source.setXincoCoreNodeId(targetN.getId());
                                     showCommentDataDialog(source, OPCode.DATA_MOVE);
                                 }
-                                if (sourceItemId.toString().startsWith("node") && targetItemId.toString().startsWith("node")) {
-                                    XincoCoreNodeServer source = new XincoCoreNodeServer(Integer.valueOf(sourceItemId.toString().substring(sourceItemId.toString().indexOf('-') + 1)));
+                                if (sourceItemId.toString().startsWith("node")
+                                        && targetItemId.toString().startsWith("node")) {
+                                    XincoCoreNodeServer source =
+                                            new XincoCoreNodeServer(Integer.valueOf(sourceItemId.toString().substring(sourceItemId.toString().indexOf('-') + 1)));
                                     source.setXincoCoreNodeId(targetN.getId());
                                     source.write2DB();
                                 }
@@ -508,7 +519,8 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     @Override
                     public AcceptCriterion getAcceptCriterion() {
                         //Accepts drops only on nodes that allow children, but between all nodes
-                        return new Or(Tree.TargetItemAllowsChildren.get(), new Not(VerticalLocationIs.MIDDLE));
+                        return new Or(Tree.TargetItemAllowsChildren.get(),
+                                new Not(VerticalLocationIs.MIDDLE));
                     }
                 });
             } catch (XincoException ex) {
@@ -564,45 +576,51 @@ public class Xinco extends Application implements XincoVaadinApplication {
     }
 
     private void addChildrenData(String parent) throws XincoException {
-        XincoCoreNodeServer xcns = new XincoCoreNodeServer(Integer.valueOf(parent.substring(parent.indexOf('-') + 1)));
+        XincoCoreNodeServer xcns = new XincoCoreNodeServer(Integer.valueOf(
+                parent.substring(parent.indexOf('-') + 1)));
         for (Iterator<XincoCoreData> it = xcns.getXincoCoreData().iterator(); it.hasNext();) {
             XincoCoreData temp = it.next();
-            //Add childen data
-            String id = "data-" + temp.getId();
-            Item item = xincoTreeContainer.addItem(id);
-            item.getItemProperty("caption").setValue(temp.getDesignation());
-            // Set it to be a child.
-            xincoTreeContainer.setParent(id, parent);
-            // Set as leaves
-            xincoTreeContainer.setChildrenAllowed(id, false);
-            String name = temp.getXincoAddAttributes().get(0).getAttribVarchar();
-            try {
-                //Set Icon
-                switch (temp.getXincoCoreDataType().getId()) {
-                    case 1://File
-                    //Fall through
-                    case 5://Rendering
-                        if (name != null
-                                && name.contains(".")
-                                && name.substring(name.lastIndexOf('.') + 1,
-                                name.length()).length() >= 3) {
-                            item.getItemProperty("icon").setValue(
-                                    getIcon(name.substring(name.lastIndexOf('.') + 1,
-                                    name.length())));
+            //Only show files that are not renderings
+            if (!XincoCoreDataHasDependencyServer.isRendering(temp.getId())) {
+                //Add childen data
+                String id = "data-" + temp.getId();
+                Item item = xincoTreeContainer.addItem(id);
+                item.getItemProperty("caption").setValue(temp.getDesignation());
+                // Set it to be a child.
+                xincoTreeContainer.setParent(id, parent);
+                // Set as leaves
+                xincoTreeContainer.setChildrenAllowed(id, false);
+                if (!temp.getXincoAddAttributes().isEmpty()) {
+                    String name = temp.getXincoAddAttributes().get(0).getAttribVarchar();
+                    try {
+                        //Set Icon
+                        switch (temp.getXincoCoreDataType().getId()) {
+                            case 1://File
+                            //Fall through
+                            case 5://Rendering
+                                if (name != null
+                                        && name.contains(".")
+                                        && name.substring(name.lastIndexOf('.') + 1,
+                                        name.length()).length() >= 3) {
+                                    item.getItemProperty("icon").setValue(
+                                            getIcon(name.substring(name.lastIndexOf('.') + 1,
+                                            name.length())));
+                                }
+                                break;
+                            case 2://Text
+                                item.getItemProperty("icon").setValue(getIcon("txt"));
+                                break;
+                            case 3://URL
+                                item.getItemProperty("icon").setValue(getIcon("html"));
+                                break;
+                            case 4://Contact
+                                item.getItemProperty("icon").setValue(new ThemeResource("icons/contact.gif"));
+                                break;
                         }
-                        break;
-                    case 2://Text
-                        item.getItemProperty("icon").setValue(getIcon("txt"));
-                        break;
-                    case 3://URL
-                        item.getItemProperty("icon").setValue(getIcon("html"));
-                        break;
-                    case 4://Contact
-                        item.getItemProperty("icon").setValue(new ThemeResource("icons/contact.gif"));
-                        break;
+                    } catch (IOException ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-            } catch (IOException ex) {
-                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -622,16 +640,20 @@ public class Xinco extends Application implements XincoVaadinApplication {
             final XincoWizard wizard = new XincoWizard();
             final UploadManager um = new UploadManager();
             final Upload upload = new Upload(getResource().getString("general.file.select"), um);
-            XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+            XincoCoreDataServer temp = new XincoCoreDataServer(
+                    Integer.valueOf(xincoTree.getValue().toString().substring(
+                    xincoTree.getValue().toString().indexOf('-') + 1)));
             //Check in file
             newlog.setOpCode(OPCode.CHECKIN.ordinal() + 1);
             newlog.setOpDescription(xerb.getString(OPCode.getOPCode(newlog.getOpCode()).getName()));
             newlog.setXincoCoreUserId(loggedUser.getId());
             newlog.setXincoCoreDataId(temp.getId());
-            newlog.setVersion(((XincoCoreLog) temp.getXincoCoreLogs().get(temp.getXincoCoreLogs().size() - 1)).getVersion());
-            newlog.setOpDescription(newlog.getOpDescription() + " (" + xerb.getString("general.user") + ": " + loggedUser.getUsername() + ")");
+            newlog.setVersion(((XincoCoreLog) temp.getXincoCoreLogs().get(
+                    temp.getXincoCoreLogs().size() - 1)).getVersion());
+            newlog.setOpDescription(newlog.getOpDescription() + " ("
+                    + xerb.getString("general.user") + ": " + loggedUser.getUsername() + ")");
             //save log to server
-            XincoCoreLog tempLog = getService().getXincoPort().setXincoCoreLog(newlog, loggedUser);
+            XincoCoreLog tempLog = getService().setXincoCoreLog(newlog, loggedUser);
             if (tempLog != null) {
                 temp.getXincoCoreLogs().add(tempLog);
             }
@@ -738,7 +760,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     try {
                         XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
                         //Check in file
-                        if (getService().getXincoPort().doXincoCoreDataCheckin(temp, loggedUser) == null) {
+                        if (getService().doXincoCoreDataCheckin(temp, loggedUser) == null) {
                             getMainWindow().showNotification(
                                     getResource().getString("datawizard.unabletoloadfile"),
                                     Notification.TYPE_ERROR_MESSAGE);
@@ -756,8 +778,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         } catch (XincoException ex) {
                             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                    } catch (MalformedURLException ex) {
-                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (XincoException ex) {
                         Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -773,20 +793,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
             wizardWindow.setWidth(40, Sizeable.UNITS_PERCENTAGE);
             // add the wizard to a layout
             getMainWindow().addWindow(wizardWindow);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-            if (newlog != null) {
-                try {
-                    XincoCoreLogServer log = new XincoCoreLogServer(newlog.getId());
-                    if (log != null) {
-                        new XincoCoreLogJpaController(XincoDBManager.getEntityManagerFactory()).destroy(log.getId());
-                    }
-                } catch (NonexistentEntityException ex1) {
-                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex1);
-                } catch (XincoException ex1) {
-                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex1);
-                }
-            }
         } catch (XincoException ex) {
             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             if (newlog != null) {
@@ -850,14 +856,12 @@ public class Xinco extends Application implements XincoVaadinApplication {
                 newlog.setVersion(((XincoCoreLog) temp.getXincoCoreLogs().get(temp.getXincoCoreLogs().size() - 1)).getVersion());
                 newlog.setOpDescription(newlog.getOpDescription() + " (" + xerb.getString("general.user") + ": " + loggedUser.getUsername() + ")");
                 //save log to server
-                newlog = getService().getXincoPort().setXincoCoreLog(newlog, loggedUser);
+                newlog = getService().setXincoCoreLog(newlog, loggedUser);
                 if (newlog != null) {
                     temp.getXincoCoreLogs().add(newlog);
                 }
-                getService().getXincoPort().undoXincoCoreDataCheckout(temp, loggedUser);
+                getService().undoXincoCoreDataCheckout(temp, loggedUser);
                 refresh();
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             } catch (XincoException ex) {
                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -878,11 +882,11 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     newlog.setVersion(((XincoCoreLog) temp.getXincoCoreLogs().get(temp.getXincoCoreLogs().size() - 1)).getVersion());
                     newlog.setOpDescription(newlog.getOpDescription() + " (" + xerb.getString("general.user") + ": " + loggedUser.getUsername() + ")");
                     //save log to server
-                    newlog = getService().getXincoPort().setXincoCoreLog(newlog, loggedUser);
+                    newlog = getService().setXincoCoreLog(newlog, loggedUser);
                     if (newlog != null) {
                         temp.getXincoCoreLogs().add(newlog);
                     }
-                    if (getService().getXincoPort().doXincoCoreDataCheckout(temp, loggedUser) != null) {
+                    if (getService().doXincoCoreDataCheckout(temp, loggedUser) != null) {
                         //Download the file
                         downloadFile();
                         refresh();
@@ -911,7 +915,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
         }
         StreamSource ss = new StreamSource() {
 
-            byte[] bytes = getService().getXincoPort().downloadXincoCoreData(
+            byte[] bytes = getService().downloadXincoCoreData(
                     data, loggedUser);
             InputStream is = new ByteArrayInputStream(bytes);
 
@@ -928,7 +932,22 @@ public class Xinco extends Application implements XincoVaadinApplication {
     }
 
     private void downloadFile() throws XincoException, MalformedURLException {
-        downloadFile(new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1))));
+        XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(
+                xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+        //Check for available renderings
+        java.util.List<com.bluecubs.xinco.core.server.persistence.XincoCoreData> renderings =
+                XincoCoreDataHasDependencyServer.getRenderings(temp.getId());
+        if (!renderings.isEmpty()) {
+            for (Iterator<com.bluecubs.xinco.core.server.persistence.XincoCoreData> it = renderings.iterator(); it.hasNext();) {
+                com.bluecubs.xinco.core.server.persistence.XincoCoreData rendering = it.next();
+                if (!rendering.getXincoAddAttributeList().isEmpty()
+                        && rendering.getXincoAddAttributeList().get(0).getAttribVarchar().endsWith(".pdf")) {
+                    //Download the PDF rendering instead
+                    temp = new XincoCoreDataServer(rendering.getId());
+                }
+            }
+        }
+        downloadFile(temp);
     }
 
     private void loadFile(File file, String fileName) {
@@ -984,14 +1003,14 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         Notification.TYPE_ERROR_MESSAGE);
             }
             // save data to server
-            data = getService().getXincoPort().setXincoCoreData(data, loggedUser);
+            data = getService().setXincoCoreData(data, loggedUser);
             if (data == null) {
                 getMainWindow().showNotification(
                         xerb.getString("datawizard.unabletosavedatatoserver"),
                         Notification.TYPE_ERROR_MESSAGE);
             }
             // upload file
-            if (getService().getXincoPort().uploadXincoCoreData(data, byteArray, loggedUser) != totalLen) {
+            if (getService().uploadXincoCoreData(data, byteArray, loggedUser) != totalLen) {
                 cin.close();
                 removeDirectory(temp);
                 getMainWindow().showNotification(
@@ -1083,8 +1102,8 @@ public class Xinco extends Application implements XincoVaadinApplication {
             final Window renderWindow = new Window();
             final Form form = new Form();
             form.setCaption(getResource().getString("general.data.type.rendering"));
-            final ArrayList<XincoCoreDataServer> renderings =
-                    (ArrayList<XincoCoreDataServer>) XincoCoreDataHasDependencyServer.getRenderings(
+            final ArrayList<com.bluecubs.xinco.core.server.persistence.XincoCoreData> renderings =
+                    (ArrayList<com.bluecubs.xinco.core.server.persistence.XincoCoreData>) XincoCoreDataHasDependencyServer.getRenderings(
                     Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
             final Table table = new Table();
             table.addStyleName("striped");
@@ -1097,13 +1116,16 @@ public class Xinco extends Application implements XincoVaadinApplication {
             table.addContainerProperty(
                     getResource().getString("general.extension"),
                     com.vaadin.ui.Label.class, null);
-            for (XincoCoreDataServer xcds : renderings) {
+            form.getLayout().addComponent(table);
+            for (com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd : renderings) {
+                XincoCoreDataServer xcds = new XincoCoreDataServer(xcd.getId());
                 String name = xcds.getXincoAddAttributes().get(0).getAttribVarchar();
                 XincoVersion xVersion = XincoCoreDataServer.getCurrentVersion(xcds.getId());
-                table.addItem(new Object[]{xcds.getDesignation(),
-                            xVersion.getVersionHigh() + "." + xVersion.getVersionMid()
-                            + "." + xVersion.getVersionLow() + " " + xVersion.getVersionPostfix(),
-                            name.substring(name.lastIndexOf(".") + 1, name.length())});
+                table.addItem(new Object[]{new com.vaadin.ui.Label(xcds.getDesignation()),
+                            new com.vaadin.ui.Label(xVersion.getVersionHigh() + "." + xVersion.getVersionMid()
+                            + "." + xVersion.getVersionLow() + " " + xVersion.getVersionPostfix()),
+                            new com.vaadin.ui.Label(name.substring(name.lastIndexOf(".") + 1, name.length()))},
+                        xcds.getId());
             }
             form.setFooter(new HorizontalLayout());
             //Used for validation purposes
@@ -1130,7 +1152,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         data.setStatusNumber(parent.getStatusNumber());
                         data.setXincoCoreLanguage(parent.getXincoCoreLanguage());
                         data.setXincoCoreNodeId(parent.getXincoCoreNodeId());
-                        addDefaultAddAttributes();
+                        addDefaultAddAttributes(data);
                         commit.setEnabled(false);
                         cancel.setEnabled(false);
                         XincoWizard wizard = new XincoWizard();
@@ -1192,8 +1214,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     }
                 }
             });
-            table.setSizeFull();
-            form.addField("renderings", table);
+            table.setWidth(100, Sizeable.UNITS_INCH);
             renderWindow.addComponent(form);
             form.getFooter().setSizeUndefined();
             form.getFooter().addComponent(commit);
@@ -3182,7 +3203,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                             }
                         }
                     },
-                    false, //Need to be logged in
+                    true, //Need to be logged in
                     true, //Data only
                     false, //Node only
                     true //Something selected
@@ -4011,7 +4032,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                 }
                                 //Set the parent id to the current selected node
                                 data.setXincoCoreNodeId(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-                                addDefaultAddAttributes();
+                                addDefaultAddAttributes(data);
                                 //wizard.getLastCompleted() is the previous step, 
                                 //the current is wizard.getLastCompleted() + 1, 
                                 //the next step wizard.getLastCompleted() + 2
@@ -4154,11 +4175,9 @@ public class Xinco extends Application implements XincoVaadinApplication {
         } else {
             try {
                 //Load from database
-                data = getService().getXincoPort().getXincoCoreData(
+                data = getService().getXincoCoreData(
                         new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1))),
                         loggedUser);
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             } catch (XincoException ex) {
                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -4177,14 +4196,16 @@ public class Xinco extends Application implements XincoVaadinApplication {
         getMainWindow().addWindow(wizardWindow);
     }
 
-    private void addDefaultAddAttributes() {
+    @Override
+    public void addDefaultAddAttributes(com.bluecubs.xinco.core.server.service.XincoCoreData data) {
         //add specific attributes
         data.getXincoAddAttributes().clear();
         XincoAddAttribute xaa;
-        for (int i = 0; i < data.getXincoCoreDataType().getXincoCoreDataTypeAttributes().size(); i++) {
+        for (Iterator<XincoCoreDataTypeAttribute> it = data.getXincoCoreDataType().getXincoCoreDataTypeAttributes().iterator(); it.hasNext();) {
+            XincoCoreDataTypeAttribute attr = it.next();
             try {
                 xaa = new XincoAddAttribute();
-                xaa.setAttributeId(((XincoCoreDataTypeAttribute) data.getXincoCoreDataType().getXincoCoreDataTypeAttributes().get(i)).getAttributeId());
+                xaa.setAttributeId(attr.getAttributeId());
                 xaa.setAttribVarchar("");
                 xaa.setAttribText("");
                 GregorianCalendar calendar = new GregorianCalendar();
@@ -4196,6 +4217,8 @@ public class Xinco extends Application implements XincoVaadinApplication {
                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        Logger.getLogger(Xinco.class.getName()).log(Level.FINE,
+                "Added {0} attributes!", data.getXincoAddAttributes().size());
     }
 
     private class UploadManager extends CustomComponent
@@ -4342,7 +4365,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                             break;
                         default:
                             // save data to server
-                            data = getService().getXincoPort().setXincoCoreData(data, loggedUser);
+                            data = getService().setXincoCoreData(data, loggedUser);
                             if (data == null) {
                                 throw new XincoException(xerb.getString("datawizard.unabletosavedatatoserver"));
                             }
@@ -4357,12 +4380,8 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
-                try {
-                    //Update data only
-                    getService().getXincoPort().setXincoCoreData(data, loggedUser);
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                //Update data only
+                getService().setXincoCoreData(data, loggedUser);
             }
             closeWizard();
             getMainWindow().removeWindow(wizardWindow);
@@ -4420,7 +4439,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
         }
         // save log to server
-        newlog = getService().getXincoPort().setXincoCoreLog(newlog, loggedUser);
+        newlog = getService().setXincoCoreLog(newlog, loggedUser);
         if (newlog == null) {
             Logger.getLogger(Xinco.class.getSimpleName()).severe("Unable to create new log entry!");
         } else {
@@ -4537,15 +4556,11 @@ public class Xinco extends Application implements XincoVaadinApplication {
                             tempNode.setXincoCoreLanguage(((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(Integer.valueOf(languages.getValue().toString()))));
                         }
                         tempNode.setChangerID(getLoggedUser().getId());
-                        try {
-                            //Call the web service
-                            if (getService().getXincoPort().setXincoCoreNode(tempNode, loggedUser) == null) {
-                                getMainWindow().showNotification(getResource().getString("error.accessdenied"),
-                                        getResource().getString("error.folder.sufficientrights"),
-                                        Window.Notification.TYPE_ERROR_MESSAGE);
-                            }
-                        } catch (MalformedURLException ex) {
-                            throw new XincoException(ex);
+                        //Call the web service
+                        if (getService().setXincoCoreNode(tempNode, loggedUser) == null) {
+                            getMainWindow().showNotification(getResource().getString("error.accessdenied"),
+                                    getResource().getString("error.folder.sufficientrights"),
+                                    Window.Notification.TYPE_ERROR_MESSAGE);
                         }
                         getMainWindow().removeWindow(dataFolderDialog);
                         refresh();
@@ -4900,18 +4915,10 @@ public class Xinco extends Application implements XincoVaadinApplication {
         getMainWindow().requestRepaintAll();
     }
 
-    private String getEndpoint() {
-        String fullURL = getMainWindow().getURL().toString();
-        String key = "xinco";
-        String endpoint = fullURL.substring(0, fullURL.indexOf(key) + key.length()) + "/Xinco";
-        return endpoint;
-    }
-
     @Override
-    public Xinco_Service getService() throws MalformedURLException {
+    public XincoWebService getService() {
         if (service == null) {
-            service = new Xinco_Service(new java.net.URL(getEndpoint()),
-                    new QName("http://service.server.core.xinco.bluecubs.com/", "Xinco"));
+            service = new XincoWebService();
         }
         return service;
     }

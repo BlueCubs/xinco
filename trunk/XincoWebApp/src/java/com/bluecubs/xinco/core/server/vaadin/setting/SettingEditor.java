@@ -19,7 +19,7 @@
  * 
  * Name: SettingEditor
  * 
- * Description: //TODO: Add description
+ * Description: Edit settings
  * 
  * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Dec 14, 2011
  * 
@@ -27,9 +27,11 @@
  */
 package com.bluecubs.xinco.core.server.vaadin.setting;
 
+import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.server.persistence.XincoSetting;
+import com.bluecubs.xinco.core.server.persistence.controller.XincoSettingJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.vaadin.XincoVaadinApplication;
-import com.vaadin.addon.beanvalidation.BeanValidationForm;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.*;
@@ -37,13 +39,15 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.Lookup;
 
 /**
  *
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
-class SettingEditor extends Window implements Button.ClickListener, FormFieldFactory {
+class SettingEditor extends Window implements Button.ClickListener {
 
     private final Item settingItem;
     private Form editorForm;
@@ -52,8 +56,7 @@ class SettingEditor extends Window implements Button.ClickListener, FormFieldFac
 
     public SettingEditor(Item item) {
         this.settingItem = item;
-        editorForm = new BeanValidationForm<XincoSetting>(XincoSetting.class);
-        editorForm.setFormFieldFactory(SettingEditor.this);
+        editorForm = new Form();
         editorForm.setWriteThrough(false);
         editorForm.setImmediate(true);
         editorForm.setItemDataSource(settingItem,
@@ -61,7 +64,23 @@ class SettingEditor extends Window implements Button.ClickListener, FormFieldFac
                 "stringValue", "longValue", "boolValue", "intValue"));
         saveButton = new Button(getResource().getString("general.save"), this);
         cancelButton = new Button(getResource().getString("general.cancel"), this);
-
+        editorForm.getField("id").setEnabled(false);
+        editorForm.getField("description").setCaption(getResource().getString("general.description"));
+        editorForm.getField("description").setEnabled(false);
+        ((TextField) editorForm.getField("description")).setNullRepresentation("null");
+        editorForm.getField("description").setRequired(editorForm.getField("description").isEnabled());
+        editorForm.getField("description").setRequiredError(getResource().getString("message.missing.description"));
+        ((TextField) editorForm.getField("stringValue")).setNullRepresentation("null");
+        editorForm.getField("stringValue").setRequired(editorForm.getField("stringValue").isEnabled());
+        editorForm.getField("stringValue").setRequiredError(getResource().getString("message.missing.value"));
+        ((TextField) editorForm.getField("longValue")).setNullRepresentation("null");
+        editorForm.getField("longValue").setRequired(editorForm.getField("longValue").isEnabled());
+        editorForm.getField("longValue").setRequiredError(getResource().getString("message.missing.value"));
+        editorForm.getField("boolValue").setRequired(editorForm.getField("boolValue").isEnabled());
+        editorForm.getField("boolValue").setRequiredError(getResource().getString("message.missing.value"));
+        ((TextField) editorForm.getField("intValue")).setNullRepresentation("null");
+        editorForm.getField("intValue").setRequired(editorForm.getField("intValue").isEnabled());
+        editorForm.getField("intValue").setRequiredError(getResource().getString("message.missing.value"));
         editorForm.getFooter().addComponent(saveButton);
         editorForm.getFooter().addComponent(cancelButton);
         getContent().setSizeUndefined();
@@ -80,24 +99,39 @@ class SettingEditor extends Window implements Button.ClickListener, FormFieldFac
     @Override
     public void buttonClick(ClickEvent event) {
         if (event.getButton() == saveButton) {
-            editorForm.commit();
+            XincoSetting setting =
+                    new XincoSettingJpaController(XincoDBManager.getEntityManagerFactory()).findXincoSetting(Integer.valueOf(editorForm.getField("id").getValue().toString()));
+            boolean modified = false;
+            if (setting.getLongValue() != ((Long) editorForm.getField("longValue").getValue())) {
+                modified = true;
+                setting.setLongValue((Long) editorForm.getField("longValue").getValue());
+            }
+            if (setting.getIntValue() != (Integer) editorForm.getField("intValue").getValue()) {
+                modified = true;
+                setting.setIntValue((Integer) editorForm.getField("intValue").getValue());
+            }
+            if (!setting.getStringValue().equals(editorForm.getField("stringValue").getValue().toString())) {
+                modified = true;
+                setting.setStringValue(editorForm.getField("stringValue").getValue().toString());
+            }
+            if (setting.getBoolValue() != editorForm.getField("boolValue").getValue()) {
+                modified = true;
+                setting.setBoolValue((Boolean) editorForm.getField("boolValue").getValue());
+            }
+            if (modified) {
+                try {
+                    new XincoSettingJpaController(XincoDBManager.getEntityManagerFactory()).edit(setting);
+                } catch (NonexistentEntityException ex) {
+                    Logger.getLogger(SettingEditor.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    Logger.getLogger(SettingEditor.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             fireEvent(new EditorSavedEvent(this, settingItem));
         } else if (event.getButton() == cancelButton) {
             editorForm.discard();
         }
         close();
-    }
-
-    @Override
-    public Field createField(Item item, Object propertyId, Component uiContext) {
-        Field field = XincoSettingFieldFactory.get().createField(item, propertyId,
-                uiContext);
-        if (field instanceof TextField) {
-            ((TextField) field).setNullRepresentation("null");
-        }
-        field.setEnabled(!"id".equals(propertyId.toString().toLowerCase())
-                && !"description".equals(propertyId.toString().toLowerCase()));// id and description are not modifiable.
-        return field;
     }
 
     public static class EditorSavedEvent extends Component.Event {
@@ -130,7 +164,7 @@ class SettingEditor extends Window implements Button.ClickListener, FormFieldFac
                     "Internal error, editor saved method not found");
         }
     }
-    
+
     private ResourceBundle getResource() {
         return Lookup.getDefault().lookup(XincoVaadinApplication.class).getResource();
     }

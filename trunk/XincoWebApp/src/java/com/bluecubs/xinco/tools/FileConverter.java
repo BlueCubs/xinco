@@ -1,19 +1,15 @@
 package com.bluecubs.xinco.tools;
 
-import com.artofsolving.jodconverter.DocumentConverter;
-import com.artofsolving.jodconverter.DocumentFamily;
-import com.artofsolving.jodconverter.DocumentFormat;
-import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
-import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
-import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
-import com.bluecubs.xinco.core.server.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import com.bluecubs.xinco.core.server.XincoSettingServer;
 import java.io.File;
-import java.net.ConnectException;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.artofsolving.jodconverter.OfficeDocumentConverter;
+import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
+import org.artofsolving.jodconverter.office.OfficeManager;
 
 /**
  * Name  Value Type Default Value Possible Values
@@ -36,55 +32,29 @@ import java.util.logging.Logger;
 public class FileConverter {
 
     public static void main(String[] args) {
-        try {
-            File inputFile = new File("C:\\document.doc");
-            File outputFile = new File("C:\\document.pdf");
-            // connect to an OpenOffice.org instance
-            OpenOfficeConnection connection = new SocketOpenOfficeConnection(
-                    XincoConfigSingletonServer.getInstance().getOOPort());
-            connection.connect();
-            // convert
-            DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
-            converter.convert(inputFile, outputFile);
-            // close the connection
-            connection.disconnect();
-        } catch (ConnectException ex) {
-            Logger.getLogger(FileConverter.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        OfficeManager officeManager = new DefaultOfficeManagerConfiguration().buildOfficeManager();
+        officeManager.start();
+
+        OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
+        converter.convert(new File("C:\\document.docx"), new File("C:\\document.pdf"));
+
+        officeManager.stop();
     }
 
-    private static OpenOfficeConnection connectToOpenOffice() {
-        OpenOfficeConnection connection;
-        try {
-            // connect to an OpenOffice.org instance running on port 8100
-            connection = new SocketOpenOfficeConnection(
-                    XincoConfigSingletonServer.getInstance().getOOPort());
-            connection.connect();
-        } catch (ConnectException ex) {
-            Logger.getLogger(FileConverter.class.getName()).log(Level.SEVERE, null, ex);
-            connection = null;
-        }
-        return connection;
-    }
-
-    public static boolean createPDFRendering(int id) {
+    public static boolean getPDFRendering(int id) {
         // connect to an OpenOffice.org instance running on port 8100
-        OpenOfficeConnection connection = connectToOpenOffice();
-        DocumentFormat customPdfFormat =
-                new DocumentFormat("Portable Document Format", "application/pdf", "pdf");
-        customPdfFormat.setExportFilter(DocumentFamily.TEXT, "writer_pdf_Export");
-        HashMap pdfOptions = new HashMap();
-        pdfOptions.put("EnableCopyingOfContent", Boolean.FALSE);
-        customPdfFormat.setExportOption(DocumentFamily.TEXT, "FilterData", pdfOptions);
-        // convert
-        DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
+        OfficeManager officeManager = new DefaultOfficeManagerConfiguration().setPortNumber(XincoSettingServer.getSetting(new XincoCoreUserServer(1),
+                "setting.OOPort").getIntValue()).buildOfficeManager();
+        officeManager.start();
+
+        OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
         converter.convert(
                 new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, id, "" + id)),
-                new File(XincoDBManager.config.fileRepositoryPath + id + "-pdf"), customPdfFormat);
+                new File(XincoDBManager.config.fileRepositoryPath + id + ".pdf"));
         Logger.getLogger(FileConverter.class.getName()).log(Level.INFO, "Rendering saved at: {0}{1}-pdf",
                 new Object[]{XincoDBManager.config.fileRepositoryPath, id});
         // close the connection
-        connection.disconnect();
+        officeManager.stop();
         return true;
     }
 

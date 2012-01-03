@@ -5,8 +5,10 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.*;
 import com.bluecubs.xinco.index.XincoIndexThread;
 import com.bluecubs.xinco.index.XincoIndexer;
+import com.bluecubs.xinco.rendering.XincoRenderingThread;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.CRC32;
@@ -203,6 +205,18 @@ public class XincoWebService {
                         revision = "-" + LogId;
                     }
                 }
+                //Check for available renderings
+                List<com.bluecubs.xinco.core.server.persistence.XincoCoreData> renderings =
+                        XincoCoreDataHasDependencyServer.getRenderings(data.getId());
+                if (!renderings.isEmpty()) {
+                    for (com.bluecubs.xinco.core.server.persistence.XincoCoreData rendering : renderings) {
+                        if (!rendering.getXincoAddAttributeList().isEmpty()
+                                && rendering.getXincoAddAttributeList().get(0).getAttribVarchar().endsWith(".pdf")) {
+                            //Download the PDF rendering instead
+                            data = new XincoCoreDataServer(rendering.getId());
+                        }
+                    }
+                }
                 in = new CheckedInputStream(new FileInputStream(
                         XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath,
                         data.getId(), data.getId() + revision)), new CRC32());
@@ -226,8 +240,12 @@ public class XincoWebService {
     }
 
     public int uploadXincoCoreData(XincoCoreData in0, byte[] in1, XincoCoreUser in2) {
+        XincoCoreDataServer data = null;
+        File rendition = null;
+        File xincoFile = null;
+        XincoCoreDataServer rendering = null;
+        XincoCoreDataHasDependencyServer dependency = null;
         try {
-            XincoCoreDataServer data;
             XincoCoreACE ace;
             int i;
             int len;
@@ -239,7 +257,11 @@ public class XincoWebService {
             ace = XincoCoreACEServer.checkAccess(user, (ArrayList) data.getXincoCoreAcl());
             if (ace.isWritePermission()) {
                 in = new ByteArrayInputStream(in1);
-                CheckedOutputStream out = new CheckedOutputStream(new FileOutputStream(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, data.getId(), "" + data.getId())), new CRC32());
+                xincoFile = new File(XincoCoreDataServer.getXincoCoreDataPath(
+                        XincoDBManager.config.fileRepositoryPath, data.getId(),
+                        "" + data.getId()));
+                CheckedOutputStream out = new CheckedOutputStream(
+                        new FileOutputStream(xincoFile), new CRC32());
                 byte[] buf = new byte[4096];
                 totalLen = 0;
                 while ((len = in.read(buf)) > 0) {
@@ -270,8 +292,8 @@ public class XincoWebService {
                         fcis.close();
                         fcos.close();
                     } else {
-                        Logger.getLogger(XincoWebService.class.getName()).log(Level.WARNING,
-                                "Didn''t find default version log. Not creating copy of: {0}", in0.getDesignation());
+                        Logger.getLogger(XincoWebService.class.getName()).log(Level.FINE,
+                                "Didn't find default version log. Not creating copy of: {0}", in0.getDesignation());
                     }
                 }
                 try {
@@ -280,12 +302,36 @@ public class XincoWebService {
                 } catch (Exception xite) {
                     Logger.getLogger(XincoWebService.class.getName()).log(Level.SEVERE, null, xite);
                 }
+                //Create PDF rendering of the file
+                if (!data.getAttribute(1).getAttribVarchar().toLowerCase().endsWith(".pdf")) {
+                    XincoRenderingThread xrt = new XincoRenderingThread(data, in2);
+                    xrt.start();
+                }
                 return (int) totalLen;
             } else {
                 return 0;
             }
         } catch (Exception e) {
             Logger.getLogger(XincoWebService.class.getName()).log(Level.SEVERE, null, e);
+            //Clean up after yourself
+            if (dependency != null) {
+                XincoCoreDataHasDependencyServer.deleteFromDB(
+                        dependency.getXincoCoreData1().getId(),
+                        dependency.getXincoCoreData().getId(),
+                        dependency.getXincoDependencyType().getId());
+            }
+            if (rendering != null) {
+                XincoCoreDataServer.removeFromDB(in2.getId(), rendering.getId());
+            }
+            if (data != null) {
+                data.deleteFromDB();
+            }
+            if (rendition == null && rendition.exists()) {
+                rendition.delete();
+            }
+            if (xincoFile == null && xincoFile.exists()) {
+                xincoFile.delete();
+            }
             return 0;
         }
     }
@@ -446,11 +492,6 @@ public class XincoWebService {
                 data.getXincoAddAttributes().addAll(in0.getXincoAddAttributes());
                 data.setStatusNumber(in0.getStatusNumber());
                 data.write2DB();
-
-                //index data (not on checkout, only when status = open = 1)
-                if (data.getStatusNumber() == 1) {
-                    XincoIndexer.indexXincoCoreData(data, true);
-                }
 
                 //insert default ACL when inserting new node
                 if (insertnewdata) {
@@ -644,6 +685,24 @@ public class XincoWebService {
             return XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(in0.getId());
         } else {
             return null;
+        }
+    }
+
+    public java.util.List<com.bluecubs.xinco.core.server.persistence.XincoCoreData> getRenderings(XincoCoreDataType in0, XincoCoreUser in1) {
+        try {
+            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
+            return XincoCoreDataHasDependencyServer.getRenderings(in0.getId());
+        } catch (XincoException e) {
+            return new ArrayList<com.bluecubs.xinco.core.server.persistence.XincoCoreData>();
+        }
+    }
+
+    public boolean isRendering(XincoCoreDataType in0, XincoCoreUser in1) {
+        try {
+            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
+            return XincoCoreDataHasDependencyServer.isRendering(in0.getId());
+        } catch (XincoException e) {
+            return false;
         }
     }
     //TODO: Add a set setting method
