@@ -19,7 +19,7 @@
  * 
  * Name: XincoCoreDataHasDependencyT
  * 
- * Description: //TODO: Add description
+ * Description: Table entity
  * 
  * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
  * 
@@ -120,7 +120,6 @@ public class XincoCoreDataHasDependencyT implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof XincoCoreDataHasDependencyT)) {
             return false;
         }
