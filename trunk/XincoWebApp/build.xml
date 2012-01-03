@@ -327,11 +327,7 @@
         <echo>No need to recompile widgetset. If something was added/modified please run compile-widgetset target manually.</echo>
     </target>
 
-    <target name="-pre-init" depends="check" unless="widgetset.present">
-        <!--Clean the widgets directory so they are recompiled to avoid 
-        ClassNotFound errors. I know it takes a long time to compile Vaadin 
-        widget set, but there's no way around it if you did a clean.-->
-        <fail message="Widgetset not found at ${client-side-destination}. Please run the compile-widgetset first and then retry."/>
+    <target name="-pre-init" depends="check">
         <mkdir dir="${lib}"/>
         <echo>Updating version in Xinco/src/com/bluecubs/xinco/settings/settings.properties to: ${version_high}.${version_mid}.${version_low} ${version_postfix}</echo>
         <echo>To change this, change file build.ant.properties in xinco/</echo>
@@ -358,11 +354,13 @@
                                replace="version.postfix = ${version_postfix}"
                                byline="true"/>
             </then>
+            <else>
+                <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
+                               match="version.postfix?=?_"
+                               replace="version.postfix ="
+                               byline="true"/>
+            </else>
         </if>
-        <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
-                       match="version.postfix?=?_"
-                       replace="version.postfix ="
-                       byline="true"/>
         <replaceregexp file="../Xinco/nbproject/project.properties" flags="s"
                        match="mf.version.impl?=?(.*)"
                        replace="mf.version.impl = ${version_high}.${version_mid}.${version_low} ${version_postfix}"
@@ -426,6 +424,7 @@
         <condition property="widgetset.present">
             <available file="${client-side-destination}" type="dir"/>
         </condition>
+        <fail unless="widgetset.present" message="Widgetset not found at ${client-side-destination}. Please run the compile-widgetset first and then retry."/>
     </target>
     
     <target name="clean-widgets">
