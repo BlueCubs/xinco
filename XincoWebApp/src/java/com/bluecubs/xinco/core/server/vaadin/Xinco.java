@@ -2660,12 +2660,14 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     boolean index_result;
                     for (Object o : result) {
                         xdataTemp = new XincoCoreDataServer((com.bluecubs.xinco.core.server.persistence.XincoCoreData) o);
-                        index_result = XincoIndexer.indexXincoCoreData(xdataTemp, true);
-                        table2.addItem(new Object[]{new com.vaadin.ui.Label(xdataTemp.getDesignation()),
-                                    new com.vaadin.ui.Label(index_result
-                                    ? xerb.getString("general.ok") + "!" : xerb.getString("general.fail"))}, index++);
-                        count++;
-                        indicator.setValue(new Float(count) / new Float(work_units));
+                        if (!XincoCoreDataHasDependencyServer.isRendering(xdataTemp.getId())) {
+                            index_result = XincoIndexer.indexXincoCoreData(xdataTemp, true);
+                            table2.addItem(new Object[]{new com.vaadin.ui.Label(xdataTemp.getDesignation()),
+                                        new com.vaadin.ui.Label(index_result
+                                        ? xerb.getString("general.ok") + "!" : xerb.getString("general.fail"))}, index++);
+                            count++;
+                            indicator.setValue(new Float(count) / new Float(work_units));
+                        }
                     }
                     index_result = XincoIndexer.optimizeIndex();
                     //Optimize index
