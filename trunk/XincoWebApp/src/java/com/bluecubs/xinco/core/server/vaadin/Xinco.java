@@ -888,7 +888,8 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     }
                     if (getService().doXincoCoreDataCheckout(temp, loggedUser) != null) {
                         //Download the file
-                        downloadFile();
+                        downloadFile(false);
+                        xincoTree.setValue("node-1");
                         refresh();
                     } else {
                         Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE,
@@ -932,12 +933,16 @@ public class Xinco extends Application implements XincoVaadinApplication {
     }
 
     private void downloadFile() throws XincoException, MalformedURLException {
+        downloadFile(true);
+    }
+
+    private void downloadFile(boolean useRendering) throws XincoException, MalformedURLException {
         XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(
                 xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
         //Check for available renderings
         java.util.List<com.bluecubs.xinco.core.server.persistence.XincoCoreData> renderings =
                 XincoCoreDataHasDependencyServer.getRenderings(temp.getId());
-        if (!renderings.isEmpty()) {
+        if (useRendering && !renderings.isEmpty()) {
             for (Iterator<com.bluecubs.xinco.core.server.persistence.XincoCoreData> it = renderings.iterator(); it.hasNext();) {
                 com.bluecubs.xinco.core.server.persistence.XincoCoreData rendering = it.next();
                 if (!rendering.getXincoAddAttributeList().isEmpty()

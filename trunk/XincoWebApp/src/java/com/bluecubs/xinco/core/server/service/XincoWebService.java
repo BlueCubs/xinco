@@ -8,7 +8,6 @@ import com.bluecubs.xinco.index.XincoIndexer;
 import com.bluecubs.xinco.rendering.XincoRenderingThread;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.CRC32;
@@ -203,18 +202,6 @@ public class XincoWebService {
                     }
                     if (LogId > 0) {
                         revision = "-" + LogId;
-                    }
-                }
-                //Check for available renderings
-                List<com.bluecubs.xinco.core.server.persistence.XincoCoreData> renderings =
-                        XincoCoreDataHasDependencyServer.getRenderings(data.getId());
-                if (!renderings.isEmpty()) {
-                    for (com.bluecubs.xinco.core.server.persistence.XincoCoreData rendering : renderings) {
-                        if (!rendering.getXincoAddAttributeList().isEmpty()
-                                && rendering.getXincoAddAttributeList().get(0).getAttribVarchar().endsWith(".pdf")) {
-                            //Download the PDF rendering instead
-                            data = new XincoCoreDataServer(rendering.getId());
-                        }
                     }
                 }
                 in = new CheckedInputStream(new FileInputStream(
