@@ -14,7 +14,7 @@
  * limitations under the License.
  * *************************************************************
  * This project supports the blueCubs vision of giving back to the community in
- * exchange for free software! More information on: http://www.bluecubs.org
+ * exchange for free software! More FINErmation on: http://www.bluecubs.org
  * ************************************************************
  * 
  * Name: XincoRenderingThread
@@ -76,7 +76,7 @@ public class XincoRenderingThread extends Thread {
                 xincoFile = new File(XincoCoreDataServer.getXincoCoreDataPath(
                         XincoDBManager.config.fileRepositoryPath, original.getId(),
                         "" + original.getId()));
-                Logger.getLogger(XincoWebService.class.getName()).log(Level.INFO, "Creating PDF rendering");
+                Logger.getLogger(XincoWebService.class.getName()).log(Level.FINE, "Creating PDF rendering");
                 //Enter the rendering into the system
                 rendering = new XincoCoreDataServer(0, original.getXincoCoreNodeId(),
                         original.getXincoCoreLanguage().getId(),
@@ -89,14 +89,14 @@ public class XincoRenderingThread extends Thread {
                 rendering.setXincoCoreLanguage(original.getXincoCoreLanguage());
                 rendering.setXincoCoreNodeId(original.getXincoCoreNodeId());
                 rendering = (XincoCoreDataServer) service.setXincoCoreData(rendering, user);
-                Logger.getLogger(XincoWebService.class.getName()).log(Level.INFO, "Rendering id: {0}", rendering.getId());
+                Logger.getLogger(XincoWebService.class.getName()).log(Level.FINE, "Rendering id: {0}", rendering.getId());
                 //Mark as a rendering
                 dependency =
                         new XincoCoreDataHasDependencyServer(new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreData(original.getId()),
                         new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreData(rendering.getId()),
                         new XincoDependencyTypeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoDependencyType(5));//rendering
                 dependency.write2DB();
-                Logger.getLogger(XincoWebService.class.getName()).log(Level.INFO, "Marked as rendering");
+                Logger.getLogger(XincoWebService.class.getName()).log(Level.FINE, "Marked as rendering");
                 //Now create the pdf rendering
                 //First save a temporary file
                 String renderingFileName = rendering.getId() + ".pdf";
@@ -121,7 +121,7 @@ public class XincoRenderingThread extends Thread {
                         + System.getProperty("file.separator")
                         + rendering.getId()));
                 rendition.delete();
-                Logger.getLogger(XincoWebService.class.getName()).log(Level.INFO, "Converted the file!");
+                Logger.getLogger(XincoWebService.class.getName()).log(Level.FINE, "Converted the file!");
             } catch (Exception ex) {
                 //Cleanup
                 if (dependency != null) {
