@@ -101,8 +101,6 @@ public class XincoDBManager {
 
     private XincoDBManager() throws Exception {
         reload();
-        //Test: create pdf rendering
-//        FileConverter.createPDFRendering(1);
     }
 
     public static void reload() throws XincoException {
@@ -114,7 +112,7 @@ public class XincoDBManager {
                 && XincoDBManager.getState() != DBState.UPDATED
                 && XincoDBManager.getState() != DBState.ERROR) {
             Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO,
-                    "Waiting for DB initialization. Current state:{0}",
+                    "Waiting for DB initialization. Current state: {0}",
                     (XincoDBManager.getState() != null ? XincoDBManager.getState().name() : null));
             try {
                 Thread.sleep(10000);
