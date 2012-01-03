@@ -2607,7 +2607,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     progress.addComponent(indicator);
                     // Set polling frequency to 0.5 seconds.
                     indicator.setPollingInterval(500);
-                    progress.addComponent(new com.vaadin.ui.Label("<b>" + xerb.getString("message.index.rebuild") + "</b>"));
+                    progress.addComponent(new com.vaadin.ui.Label(xerb.getString("message.index.rebuild")));
                     progress.addComponent(new com.vaadin.ui.Label(xerb.getString("message.warning.index.rebuild")));
                     Table table = new Table();
                     table.addStyleName("striped");
