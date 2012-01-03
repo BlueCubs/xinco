@@ -38,6 +38,7 @@ import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.service.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.index.filetypes.XincoIndexFileType;
+import com.bluecubs.xinco.index.filetypes.XincoIndexGenericFile;
 import com.bluecubs.xinco.index.filetypes.XincoIndexText;
 import java.io.File;
 import java.io.Reader;
@@ -113,8 +114,8 @@ public class XincoDocument {
                 xift = new XincoIndexText();
                 doc.add(new Field("file", xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, d.getId(), "" + d.getId())))));
             } else if (fileType > 0) {
-                // file-type specific indexing
                 try {
+                    // file-type specific indexing
                     xift = (XincoIndexFileType) Class.forName((String) XincoDBManager.config.getIndexFileTypesClass().get(fileType - 1)).newInstance();
                     ContentReader = xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, d.getId(), "" + d.getId())));
                     if (ContentReader != null) {
@@ -124,6 +125,13 @@ public class XincoDocument {
                         if (ContentString != null) {
                             doc.add(new Field("file", ContentString, Field.Store.YES, Field.Index.ANALYZED));
                         }
+                    }
+                } catch (ClassNotFoundException ex) {
+                    //Try the generic method
+                    XincoIndexGenericFile generic = new XincoIndexGenericFile();
+                    ContentString = generic.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, d.getId(), "" + d.getId())));
+                    if (ContentString != null) {
+                        doc.add(new Field("file", ContentString, Field.Store.YES, Field.Index.ANALYZED));
                     }
                 } catch (Exception ie) {
                     logger.log(Level.SEVERE, d.toString(), ie);
