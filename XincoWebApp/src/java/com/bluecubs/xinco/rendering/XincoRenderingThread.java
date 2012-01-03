@@ -107,7 +107,7 @@ public class XincoRenderingThread extends Thread {
                 getPDFRendering(xincoFile, rendition);
                 Lookup.getDefault().lookup(XincoVaadinApplication.class).addDefaultAddAttributes(rendering);
                 // update attributes
-                rendering.getXincoAddAttributes().get(0).setAttribVarchar(renderingFileName);
+                rendering.getXincoAddAttributes().get(0).setAttribVarchar(rendering.getDesignation());
                 rendering.getXincoAddAttributes().get(1).setAttribUnsignedint(rendition.length());
                 rendering.getXincoAddAttributes().get(2).setAttribVarchar(""
                         + new CheckedInputStream(new FileInputStream(rendition),
