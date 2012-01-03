@@ -19,7 +19,7 @@
  * 
  * Name: SettingAdminWindow
  * 
- * Description: //TODO: Add description
+ * Description: Admin window for managing settings
  * 
  * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Dec 14, 2011
  * 
