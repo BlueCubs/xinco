@@ -114,4 +114,22 @@ public class ToolTest {
         destFile.deleteOnExit();
         assertTrue(destFile.exists());
     }
+
+    /**
+     * Test of isValidEmailAddress method, of class Tool.
+     */
+    @Test
+    public void testIsValidEmailAddress() {
+        System.out.println("isValidEmailAddress");
+        String email = "javier.ortiz.78@gmail.com";
+        assertTrue(Tool.isValidEmailAddress(email));
+        email = "javier.ortiz.78@";
+        assertFalse(Tool.isValidEmailAddress(email));
+        email = "javier.ortiz.78 gmail.com";
+        assertFalse(Tool.isValidEmailAddress(email));
+        email = "javier.ortiz.78@@";
+        assertFalse(Tool.isValidEmailAddress(email));
+        email = "@gmail.com";
+        assertFalse(Tool.isValidEmailAddress(email));
+    }
 }
