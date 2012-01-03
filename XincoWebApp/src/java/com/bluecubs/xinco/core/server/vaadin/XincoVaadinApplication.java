@@ -72,4 +72,11 @@ public interface XincoVaadinApplication extends ResizeListener {
      * Lock the application (requires log in or disconnection)
      */
     public void setLock();
+
+    /**
+     * Add the default attributes for this data.
+     * Warning: this removes all previous attributes (if any)
+     * @param data XincoCoredata to modify
+     */
+    public void addDefaultAddAttributes(com.bluecubs.xinco.core.server.service.XincoCoreData data);
 }

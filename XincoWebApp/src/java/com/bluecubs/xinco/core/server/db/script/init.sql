@@ -125,7 +125,7 @@ INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (1, 'version.high', 3, NULL, 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (2, 'version.mid', 0, NULL, 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (3, 'version.low', 0, NULL, 0, 0);
-INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (4, 'version.postfix', 0, 'M3', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (4, 'version.postfix', '0', 'M4', '0', '0');
 INSERT INTO `xinco_dependency_behavior` (`id`, `designation`, `description`) VALUES (1, 'dependency.behavior.one-way', 'dependency.behavior.one-way.desc');
 INSERT INTO `xinco_dependency_behavior` (`id`, `designation`, `description`) VALUES (2, 'dependency.behavior.two-way', 'dependency.behavior.two-way.desc');
 INSERT INTO `xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES (1, 2, 'dependency.related', 'dependency.related.desc');

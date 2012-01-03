@@ -6,6 +6,7 @@ import com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependency;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependencyPK;
 import com.bluecubs.xinco.core.server.persistence.XincoDependencyType;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataHasDependencyJpaController;
+import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,7 +52,7 @@ public class XincoCoreDataHasDependencyServer extends XincoCoreDataHasDependency
         for (Iterator<Object> it = XincoDBManager.namedQuery(
                 "XincoCoreDataHasDependency.findByXincoCoreDataParentId", parameters).iterator(); it.hasNext();) {
             XincoCoreDataHasDependency dep = (XincoCoreDataHasDependency) it.next();
-            renderings.add(dep.getXincoCoreData1());
+            renderings.add(dep.getXincoCoreData());
         }
         return renderings;
     }
@@ -111,5 +112,13 @@ public class XincoCoreDataHasDependencyServer extends XincoCoreDataHasDependency
             throw new XincoException(ex.getLocalizedMessage());
         }
         return 0;
+    }
+
+    public void deleteFromDB() {
+        try {
+            new XincoCoreDataHasDependencyJpaController(XincoDBManager.getEntityManagerFactory()).destroy(getXincoCoreDataHasDependencyPK());
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(XincoCoreDataHasDependencyServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
