@@ -37,15 +37,19 @@ public class XincoFileIconManagerTest {
         System.out.println("getIcon");
         String extension = ".txt";
         XincoFileIconManager instance = new XincoFileIconManager();
+        System.out.println("testing with extension: " + extension);
         Icon result = instance.getIcon(extension);
         assertTrue(result != null);
         extension = null;
+        System.out.println("testing with extension: " + extension);
         result = instance.getIcon(extension);
         assertTrue(result == null);
         extension = "txt";
+        System.out.println("testing with extension: " + extension);
         result = instance.getIcon(extension);
         assertTrue(result != null);
         extension = "tx";
+        System.out.println("testing with extension: " + extension);
         result = instance.getIcon(extension);
         assertTrue(result == null);
     }

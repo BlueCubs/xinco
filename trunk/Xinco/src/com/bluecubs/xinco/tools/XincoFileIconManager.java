@@ -1,30 +1,28 @@
 /**
- *Copyright 2007 blueCubs.com
+ * Copyright 2007 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoFileIconManager
+ * Name: XincoFileIconManager
  *
- * Description:     XincoFileIconManager
+ * Description: XincoFileIconManager
  *
- * Original Author: Javier A. Ortiz
- * Date:            February 16, 2007, 12:48 PM
+ * Original Author: Javier A. Ortiz Date: February 16, 2007, 12:48 PM
  *
  * Modifications:
  *
@@ -42,13 +40,15 @@ import javax.swing.filechooser.FileSystemView;
 
 /**
  *
- * @author Javier A. Ortiz
+ * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 public class XincoFileIconManager {
 
     private File file = null;
 
-    /** Creates a new instance of XincoFileIconManager */
+    /**
+     * Creates a new instance of XincoFileIconManager
+     */
     public XincoFileIconManager() {
     }
 
@@ -62,7 +62,7 @@ public class XincoFileIconManager {
         if (extension.length() < 3) {
             return null;
         }
-        Icon icon = null;
+        Icon icon;
         try {
             if (extension.length() < 3) {
                 return null;
