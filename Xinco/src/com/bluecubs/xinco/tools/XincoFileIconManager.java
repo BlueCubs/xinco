@@ -26,7 +26,7 @@
  *
  * Modifications:
  *
- * Who?             When?             What?
+ * Who? When? What?
  *
  *
  *************************************************************
@@ -36,6 +36,7 @@ package com.bluecubs.xinco.tools;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.Icon;
+import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 
 /**
@@ -69,9 +70,15 @@ public class XincoFileIconManager {
             }
             //Create a temporary file with the specified extension
             file = File.createTempFile("icon", "." + extension);
-
-            FileSystemView view = FileSystemView.getFileSystemView();
-            icon = view.getSystemIcon(file);
+            try {
+                FileSystemView view = FileSystemView.getFileSystemView();
+                icon = view.getSystemIcon(file);
+            } catch (Exception e) {
+                //For some reason the method above didn't work. Use alternate method.
+                JFileChooser chooser = new JFileChooser();
+                // Get the icon
+                icon = chooser.getIcon(file);
+            }
 
             //Delete the temporary file
             file.delete();
