@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public class BrowserDataExtractor extends HttpServlet {
+public final class BrowserDataExtractor extends HttpServlet {
 
     HttpServletRequest request;
     HttpSession session;

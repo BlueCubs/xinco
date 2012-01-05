@@ -38,7 +38,7 @@ public class XincoMailer {
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.port", XincoSettingServer.getSetting(
                 new XincoCoreUserServer(1),
-                "setting.email.port").getStringValue());
+                "setting.email.port").getIntValue());
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.auth ", "true ");
 

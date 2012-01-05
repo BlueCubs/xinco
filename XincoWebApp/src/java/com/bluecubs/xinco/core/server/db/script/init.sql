@@ -93,7 +93,7 @@ INSERT INTO `xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, 
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (5, 'password.aging', 120, NULL, 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (6, 'password.attempts', 3, NULL, 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (7, 'password.unusable_period', 365, NULL, 0, 0);
-INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (8, 'general.copyright.date', 0, '2004-2011', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (8, 'general.copyright.date', 0, '2004-2012', 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (9, 'setting.enable.savepassword', NULL, NULL, 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (10, 'system.password', NULL, 'system', 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (11, 'xinco/FileRepositoryPath', NULL, 'C:\\\\Temp\\\\xinco\\\\file_repository\\\\', 0, 0);
@@ -126,6 +126,8 @@ INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (2, 'version.mid', 0, NULL, 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (3, 'version.low', 0, NULL, 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (4, 'version.postfix', '0', 'M4', '0', '0');
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (37, 'import.path', NULL, 'C:\\\\Temp\\\\xinco\\\\file_repository\\\\import', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (38, 'import.period', NULL, NULL, 0, 14400000);
 INSERT INTO `xinco_dependency_behavior` (`id`, `designation`, `description`) VALUES (1, 'dependency.behavior.one-way', 'dependency.behavior.one-way.desc');
 INSERT INTO `xinco_dependency_behavior` (`id`, `designation`, `description`) VALUES (2, 'dependency.behavior.two-way', 'dependency.behavior.two-way.desc');
 INSERT INTO `xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES (1, 2, 'dependency.related', 'dependency.related.desc');
