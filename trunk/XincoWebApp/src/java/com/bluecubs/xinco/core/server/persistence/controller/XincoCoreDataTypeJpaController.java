@@ -102,6 +102,7 @@ public class XincoCoreDataTypeJpaController implements Serializable {
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
+            ex.printStackTrace();
             if (findXincoCoreDataType(xincoCoreDataType.getId()) != null) {
                 throw new PreexistingEntityException("XincoCoreDataType " + xincoCoreDataType + " already exists.", ex);
             }

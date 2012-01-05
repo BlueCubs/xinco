@@ -47,6 +47,7 @@ public class XincoCoreUserServerTest extends XincoTestCase {
             XincoCoreUserServer instance = new XincoCoreUserServer(1);
             int attempts = instance.getAttempts();
             instance.setAttempts(attempts + 1);
+            instance.setChangerID(1);
             instance.write2DB();
             instance = new XincoCoreUserServer(1);
             assertTrue(instance.getAttempts() == attempts + 1);
@@ -80,6 +81,7 @@ public class XincoCoreUserServerTest extends XincoTestCase {
             //Check against recently updated password
             instance.setUserpassword(newPass);
             instance.setHashPassword(true);
+            instance.setChangerID(1);
             instance.write2DB();
             assertFalse(instance.isPasswordUsable(newPass));
             //Change last modified out of invalid range

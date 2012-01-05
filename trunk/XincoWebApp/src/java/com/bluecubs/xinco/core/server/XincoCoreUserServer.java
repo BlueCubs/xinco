@@ -401,8 +401,7 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 writeXincoCoreGroups();
             }
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreUserServer.class.getName()).log(Level.SEVERE, null, e);
-            throw new XincoException();
+            throw new XincoException(e);
         }
         setChange(false);
         setWriteGroups(false);
@@ -422,7 +421,8 @@ public final class XincoCoreUserServer extends XincoCoreUser {
         XincoCoreUserModifiedRecord mod = new XincoCoreUserModifiedRecord(new XincoCoreUserModifiedRecordPK(
                 getChangerID(), record_ID));
         mod.setModReason(xcu.getModificationReason());
-        mod.setXincoCoreUser(controller.findXincoCoreUser(xcu.getModifierId()));
+        com.bluecubs.xinco.core.server.persistence.XincoCoreUser modifier = controller.findXincoCoreUser(xcu.getModifierId());
+        mod.setXincoCoreUser(modifier == null ? controller.findXincoCoreUser(1) : modifier);
         mod.setModTime(new Date());
         new XincoCoreUserModifiedRecordJpaController(XincoDBManager.getEntityManagerFactory()).create(mod);
     }

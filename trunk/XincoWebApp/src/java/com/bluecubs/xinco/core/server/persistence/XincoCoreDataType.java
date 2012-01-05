@@ -56,6 +56,13 @@ public class XincoCoreDataType extends XincoAuditedObject implements Serializabl
     @Id
     @Basic(optional = false)
     @NotNull
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreDataTypeGen")
+    @TableGenerator(name = "XincoCoreDataTypeGen", table = "xinco_id",
+    pkColumnName = "tablename",
+    valueColumnName = "last_id",
+    pkColumnValue = "xinco_core_data_type",
+    allocationSize = 1,
+    initialValue = 1000)
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
