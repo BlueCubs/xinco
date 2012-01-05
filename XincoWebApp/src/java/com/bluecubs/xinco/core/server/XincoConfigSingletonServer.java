@@ -74,7 +74,6 @@ public final class XincoConfigSingletonServer {
         try {
             JNDIDB = (String) (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
         } catch (Exception e) {
-            logger.log(Level.SEVERE, null, e);
             JNDIDB = "XincoPUJNDI";
         }
     }

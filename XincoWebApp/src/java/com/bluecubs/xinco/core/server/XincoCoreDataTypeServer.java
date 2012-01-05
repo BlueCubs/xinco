@@ -133,7 +133,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
                 xcdt.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.edit(xcdt);
             } else {
-                xcdt = new com.bluecubs.xinco.core.server.persistence.XincoCoreDataType(getId());
+                xcdt = new com.bluecubs.xinco.core.server.persistence.XincoCoreDataType();
                 xcdt.setDesignation(getDesignation().replaceAll("'", "\\\\'"));
                 xcdt.setDescription(getDescription().replaceAll("'", "\\\\'"));
                 xcdt.setModificationReason("audit.general.created");
@@ -143,6 +143,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
             }
             setId(xcdt.getId());
         } catch (Exception e) {
+            Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getSimpleName()).log(Level.SEVERE, null, e);
             throw new XincoException(e.getMessage());
         }
         return getId();
