@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileSystemView;
 
 /**
  *
@@ -69,15 +70,15 @@ public class XincoFileIconManager {
             }
             //Create a temporary file with the specified extension
             file = File.createTempFile("icon", "." + extension);
-            /**
-             * FileSystemView view = FileSystemView.getFileSystemView();
-             * icon = view.getSystemIcon(file);
-             */
-            //For some reason the method above doesn't work on hudson server. 
-            //Use alternate method.
-            JFileChooser chooser = new JFileChooser();
-            // Get the icon
-            icon = chooser.getIcon(file);
+            if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+                //For some reason the method above doesn't work on Mac. 
+                //Use alternate method.
+                JFileChooser chooser = new JFileChooser();
+                // Get the icon
+                icon = chooser.getIcon(file);
+            } else {
+                icon = FileSystemView.getFileSystemView().getSystemIcon(file);
+            }
 
             //Delete the temporary file
             file.delete();
