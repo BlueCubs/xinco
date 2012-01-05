@@ -29,6 +29,7 @@ package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.XincoExceptionListener;
+import com.bluecubs.xinco.core.server.db.DBState;
 import com.bluecubs.xinco.core.server.email.XincoMailer;
 import com.bluecubs.xinco.tools.Tool;
 import java.util.ArrayList;
@@ -47,15 +48,18 @@ public class XincoExceptionNotifier implements XincoExceptionListener {
 
     public void onException(XincoException e) {
         try {
-            ArrayList<String> recipients = new ArrayList<String>();
-            for (Iterator<XincoCoreUserServer> it = XincoCoreGroupServer.getMembersOfGroup(1).iterator(); it.hasNext();) {
-                XincoCoreUserServer admin = it.next();
-                String email = admin.getEmail();
-                if (Tool.isValidEmailAddress(email)) {
-                    recipients.add(email);
+            if (XincoDBManager.getState() == DBState.UPDATED
+                    || XincoDBManager.getState() == DBState.VALID) {
+                ArrayList<String> recipients = new ArrayList<String>();
+                for (Iterator<XincoCoreUserServer> it = XincoCoreGroupServer.getMembersOfGroup(1).iterator(); it.hasNext();) {
+                    XincoCoreUserServer admin = it.next();
+                    String email = admin.getEmail();
+                    if (Tool.isValidEmailAddress(email)) {
+                        recipients.add(email);
+                    }
                 }
+                XincoMailer.postMail(recipients, "XincoException", e.toString(), "xinco.system@xinco.org");
             }
-            XincoMailer.postMail(recipients, "XincoException", e.toString(), "xinco.system@xinco.org");
         } catch (MessagingException ex) {
             Logger.getLogger(XincoExceptionNotifier.class.getName()).log(Level.SEVERE, null, ex);
         } catch (XincoException ex) {

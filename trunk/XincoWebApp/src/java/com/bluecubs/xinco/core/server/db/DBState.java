@@ -42,7 +42,8 @@ public enum DBState {
      */
     UPDATING("message.update.db");
     private final String mess;
-    private static ResourceBundle lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+    private static ResourceBundle lrb = ResourceBundle.getBundle(
+            "com.bluecubs.xinco.messages.XincoMessages");
 
     DBState(String mess) {
         this.mess = mess;
