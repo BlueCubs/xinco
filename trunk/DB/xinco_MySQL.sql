@@ -37,10 +37,10 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_ace_t` (
   `xinco_core_group_id` INT(10) UNSIGNED NULL ,
   `xinco_core_node_id` INT(10) UNSIGNED NULL ,
   `xinco_core_data_id` INT(10) UNSIGNED NULL ,
-  `read_permission` TINYINT(1)  NOT NULL ,
-  `write_permission` TINYINT(1)  NOT NULL ,
-  `execute_permission` TINYINT(1)  NOT NULL ,
-  `admin_permission` TINYINT(1)  NOT NULL ,
+  `read_permission` TINYINT(1) NOT NULL ,
+  `write_permission` TINYINT(1) NOT NULL ,
+  `execute_permission` TINYINT(1) NOT NULL ,
+  `admin_permission` TINYINT(1) NOT NULL ,
   PRIMARY KEY (`record_id`) )
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
@@ -213,12 +213,7 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_modified_record` (
   `mod_Time` TIMESTAMP NOT NULL ,
   `mod_Reason` VARCHAR(255) NOT NULL ,
   PRIMARY KEY (`record_id`, `id`) ,
-  INDEX `fk_{66203500-79C5-4ABB-AF2B-546B0D7CD657}` (`id` ASC) ,
-  CONSTRAINT `fk_{66203500-79C5-4ABB-AF2B-546B0D7CD657}`
-    FOREIGN KEY (`id` )
-    REFERENCES `xinco`.`xinco_core_user` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  INDEX `fk_{66203500-79C5-4ABB-AF2B-546B0D7CD657}` (`id` ASC) )
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
@@ -253,17 +248,7 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_node` (
   INDEX `xinco_core_node_FKIndex1` (`xinco_core_node_id` ASC) ,
   INDEX `xinco_core_node_FKIndex2` (`xinco_core_language_id` ASC) ,
   INDEX `xinco_core_node_index_designation` (`designation` ASC) ,
-  INDEX `xinco_core_node_index_status` (`status_number` ASC) ,
-  CONSTRAINT `fk_{52D94EF1-ED6A-43AD-9C52-7E883915CF11}`
-    FOREIGN KEY (`xinco_core_node_id` )
-    REFERENCES `xinco`.`xinco_core_node` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_{E427E1BE-0EC7-40B2-9822-8756CE5FFF5C}`
-    FOREIGN KEY (`xinco_core_language_id` )
-    REFERENCES `xinco`.`xinco_core_language` (`id` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE)
+  INDEX `xinco_core_node_index_status` (`status_number` ASC) )
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
@@ -299,22 +284,7 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data` (
   INDEX `xinco_core_data_FKIndex2` (`xinco_core_language_id` ASC) ,
   INDEX `xinco_core_data_FKIndex5` (`xinco_core_data_type_id` ASC) ,
   INDEX `xinco_core_data_index_designation` (`designation` ASC) ,
-  INDEX `xinco_core_data_index_status` (`status_number` ASC) ,
-  CONSTRAINT `fk_{0FE42428-0C82-42FC-923F-7314A740D04F}`
-    FOREIGN KEY (`xinco_core_node_id` )
-    REFERENCES `xinco`.`xinco_core_node` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_{249C3090-F2CF-4C6B-A528-C9DDF697E702}`
-    FOREIGN KEY (`xinco_core_language_id` )
-    REFERENCES `xinco`.`xinco_core_language` (`id` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_{592A6D87-0049-4758-9D7F-D4F421983CDB}`
-    FOREIGN KEY (`xinco_core_data_type_id` )
-    REFERENCES `xinco`.`xinco_core_data_type` (`id` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE)
+  INDEX `xinco_core_data_index_status` (`status_number` ASC) )
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
@@ -369,35 +339,15 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_ace` (
   `xinco_core_group_id` INT UNSIGNED NULL ,
   `xinco_core_node_id` INT UNSIGNED NULL ,
   `xinco_core_data_id` INT UNSIGNED NULL ,
-  `read_permission` TINYINT(1)  NOT NULL ,
-  `write_permission` TINYINT(1)  NOT NULL ,
-  `execute_permission` TINYINT(1)  NOT NULL ,
-  `admin_permission` TINYINT(1)  NOT NULL ,
+  `read_permission` TINYINT(1) NOT NULL ,
+  `write_permission` TINYINT(1) NOT NULL ,
+  `execute_permission` TINYINT(1) NOT NULL ,
+  `admin_permission` TINYINT(1) NOT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `xinco_core_ace_FKIndex2` (`xinco_core_group_id` ASC) ,
   INDEX `xinco_core_ace_FKIndex3` (`xinco_core_node_id` ASC) ,
   INDEX `xinco_core_ace_FKIndex4` (`xinco_core_data_id` ASC) ,
-  INDEX `fk_xinco_core_ace_xinco_core_user2` (`xinco_core_user_id` ASC) ,
-  CONSTRAINT `fk_{BE5919E0-4B49-4754-861D-E7834EB59238}`
-    FOREIGN KEY (`xinco_core_group_id` )
-    REFERENCES `xinco`.`xinco_core_group` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_{8CCF024C-2E44-468D-B847-EF00897639E3}`
-    FOREIGN KEY (`xinco_core_node_id` )
-    REFERENCES `xinco`.`xinco_core_node` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_{4F26567D-38D8-4210-86D6-524AE418D6EB}`
-    FOREIGN KEY (`xinco_core_data_id` )
-    REFERENCES `xinco`.`xinco_core_data` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_xinco_core_ace_xinco_core_user2`
-    FOREIGN KEY (`xinco_core_user_id` )
-    REFERENCES `xinco`.`xinco_core_user` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  INDEX `fk_xinco_core_ace_xinco_core_user2` (`xinco_core_user_id` ASC) )
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
@@ -414,17 +364,7 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_user_has_xinco_core_group` (
   PRIMARY KEY (`xinco_core_user_id`, `xinco_core_group_id`) ,
   INDEX `xinco_core_user_has_xinco_core_group_FKIndex2` (`xinco_core_group_id` ASC) ,
   INDEX `xinco_core_user_has_xinco_core_group_index_status` (`status_number` ASC) ,
-  INDEX `fk_xinco_core_user_has_xinco_core_group_xinco_core_user1` (`xinco_core_user_id` ASC) ,
-  CONSTRAINT `fk_{BB4D6DB4-7E25-4F88-801D-A715A8A28E33}`
-    FOREIGN KEY (`xinco_core_group_id` )
-    REFERENCES `xinco`.`xinco_core_group` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_xinco_core_user_has_xinco_core_group_xinco_core_user1`
-    FOREIGN KEY (`xinco_core_user_id` )
-    REFERENCES `xinco`.`xinco_core_user` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  INDEX `fk_xinco_core_user_has_xinco_core_group_xinco_core_user1` (`xinco_core_user_id` ASC) )
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
@@ -444,12 +384,7 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_add_attribute` (
   `attrib_text` TEXT NULL ,
   `attrib_datetime` DATETIME NULL ,
   PRIMARY KEY (`xinco_core_data_id`, `attribute_id`) ,
-  INDEX `xinco_add_attribute_FKIndex1` (`xinco_core_data_id` ASC) ,
-  CONSTRAINT `fk_{DEA334D0-7F8F-4E6B-81EA-671A6C493FCC}`
-    FOREIGN KEY (`xinco_core_data_id` )
-    REFERENCES `xinco`.`xinco_core_data` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
+  INDEX `xinco_add_attribute_FKIndex1` (`xinco_core_data_id` ASC) )
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
@@ -466,12 +401,7 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_type_attribute` (
   `data_type` VARCHAR(255) NOT NULL ,
   `attr_size` INT UNSIGNED NOT NULL DEFAULT 0 ,
   PRIMARY KEY (`xinco_core_data_type_id`, `attribute_id`) ,
-  INDEX `xinco_core_data_type_attribute_FKIndex1` (`xinco_core_data_type_id` ASC) ,
-  CONSTRAINT `fk_{E75392C0-42A1-47BE-8007-549B123B7775}`
-    FOREIGN KEY (`xinco_core_data_type_id` )
-    REFERENCES `xinco`.`xinco_core_data_type` (`id` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE)
+  INDEX `xinco_core_data_type_attribute_FKIndex1` (`xinco_core_data_type_id` ASC) )
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
@@ -494,17 +424,7 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_log` (
   `version_postfix` VARCHAR(255) NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `xinco_core_log_FKIndex1` (`xinco_core_data_id` ASC) ,
-  INDEX `fk_xinco_core_log_xinco_core_user2` (`xinco_core_user_id` ASC) ,
-  CONSTRAINT `fk_{E4C7D7F8-39B7-48D1-B9EE-BD9DE0D2CB4A}`
-    FOREIGN KEY (`xinco_core_data_id` )
-    REFERENCES `xinco`.`xinco_core_data` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_xinco_core_log_xinco_core_user2`
-    FOREIGN KEY (`xinco_core_user_id` )
-    REFERENCES `xinco`.`xinco_core_user` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  INDEX `fk_xinco_core_log_xinco_core_user2` (`xinco_core_user_id` ASC) )
 PACK_KEYS = 0
 ROW_FORMAT = DEFAULT;
 
@@ -519,7 +439,7 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_setting` (
   `description` VARCHAR(45) NOT NULL ,
   `int_value` INT UNSIGNED NULL DEFAULT NULL ,
   `string_value` TEXT NULL DEFAULT NULL ,
-  `bool_value` TINYINT(1)  NULL ,
+  `bool_value` TINYINT(1) NULL ,
   `long_value` BIGINT NULL ,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `unique` (`description` ASC) )
@@ -537,7 +457,7 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_setting_t` (
   `description` VARCHAR(45) NOT NULL ,
   `int_value` INT UNSIGNED NULL DEFAULT NULL ,
   `string_value` TEXT NULL DEFAULT NULL ,
-  `bool_value` TINYINT(1)  NULL ,
+  `bool_value` TINYINT(1) NULL ,
   `long_value` BIGINT NULL ,
   PRIMARY KEY (`record_id`) )
 ENGINE = InnoDB;
@@ -590,22 +510,7 @@ CREATE  TABLE IF NOT EXISTS `xinco`.`xinco_core_data_has_dependency` (
   PRIMARY KEY (`xinco_core_data_parent_id`, `xinco_core_data_children_id`, `dependency_type_id`) ,
   INDEX `fk_xinco_core_data_has_xinco_core_data_xinco_core_data1` (`xinco_core_data_parent_id` ASC) ,
   INDEX `fk_xinco_core_data_has_xinco_core_data_xinco_core_data2` (`xinco_core_data_children_id` ASC) ,
-  INDEX `fk_xinco_core_data_has_dependency_dependency_type1` (`dependency_type_id` ASC) ,
-  CONSTRAINT `fk_xinco_core_data_has_xinco_core_data_xinco_core_data1`
-    FOREIGN KEY (`xinco_core_data_parent_id` )
-    REFERENCES `xinco`.`xinco_core_data` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_xinco_core_data_has_xinco_core_data_xinco_core_data2`
-    FOREIGN KEY (`xinco_core_data_children_id` )
-    REFERENCES `xinco`.`xinco_core_data` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_xinco_core_data_has_dependency_dependency_type1`
-    FOREIGN KEY (`dependency_type_id` )
-    REFERENCES `xinco`.`xinco_dependency_type` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+  INDEX `fk_xinco_core_data_has_dependency_dependency_type1` (`dependency_type_id` ASC) );
 
 
 -- -----------------------------------------------------
@@ -860,20 +765,20 @@ USE `xinco`;
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (5, 'password.aging', 120, NULL, 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (6, 'password.attempts', 3, NULL, 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (7, 'password.unusable_period', 365, NULL, 0, 0);
-INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (8, 'general.copyright.date', 0, '2004-2011', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (8, 'general.copyright.date', 0, '2004-2012', 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (9, 'setting.enable.savepassword', NULL, NULL, 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (10, 'system.password', NULL, 'system', 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (11, 'xinco/FileRepositoryPath', NULL, 'C:\\\\Temp\\\\xinco\\\\file_repository\\\\', 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (12, 'xinco/FileIndexPath', NULL, 'C:\\\\Temp\\\\xinco\\\\file_repository\\\\index\\\\', 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (13, 'xinco/FileArchivePath', NULL, 'C:\\\\Temp\\\\xinco\\\\file_repository\\\\archive\\\\', 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (14, 'xinco/FileArchivePeriod', NULL, NULL, 0, 14400000);
-INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (15, 'xinco/FileIndexer_1_Class', NULL, 'com.bluecubs.xinco.index.filetypes.XincoIndexAdobePDF', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (15, 'xinco/FileIndexer_1_Class', NULL, 'com.bluecubs.xinco.index.filetypes.XincoIndexGenericFile', 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (16, 'xinco/FileIndexer_1_Ext', NULL, 'pdf', 0, 0);
-INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (17, 'xinco/FileIndexer_2_Class', NULL, 'com.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftWord', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (17, 'xinco/FileIndexer_2_Class', NULL, 'com.bluecubs.xinco.index.filetypes.XincoIndexGenericFile', 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (18, 'xinco/FileIndexer_2_Ext', NULL, 'doc', 0, 0);
-INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (19, 'xinco/FileIndexer_3_Class', NULL, 'com.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftExcel', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (19, 'xinco/FileIndexer_3_Class', NULL, 'com.bluecubs.xinco.index.filetypes.XincoIndexGenericFile', 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (20, 'xinco/FileIndexer_3_Ext', NULL, 'xls', 0, 0);
-INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (21, 'xinco/FileIndexer_4_Class', NULL, 'com.bluecubs.xinco.index.filetypes.XincoIndexMicrosoftPowerpoint', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (21, 'xinco/FileIndexer_4_Class', NULL, 'com.bluecubs.xinco.index.filetypes.XincoIndexGenericFile', 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (22, 'xinco/FileIndexer_4_Ext', NULL, 'ppt', 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (23, 'xinco/FileIndexer_5_Class', NULL, 'com.bluecubs.xinco.index.filetypes.XincoIndexHTML', 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (24, 'xinco/FileIndexer_5_Ext', NULL, 'asp;htm;html;jsf;jsp;php;php3;php4', 0, 0);
@@ -893,6 +798,8 @@ INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_v
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (2, 'version.mid', 0, NULL, 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (3, 'version.low', 0, NULL, 0, 0);
 INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (4, 'version.postfix', 0, 'M3', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (37, 'import.path', NULL, 'C:\\\\Temp\\\\xinco\\\\file_repository\\\\import', 0, 0);
+INSERT INTO `xinco`.`xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (38, 'import.period', NULL, NULL, 0, 14400000);
 
 COMMIT;
 

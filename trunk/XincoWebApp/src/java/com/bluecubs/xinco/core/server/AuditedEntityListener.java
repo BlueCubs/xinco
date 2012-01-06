@@ -4,6 +4,7 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.persistence.*;
 import com.bluecubs.xinco.core.server.persistence.controller.*;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.PrePersist;
@@ -76,7 +77,14 @@ public class AuditedEntityListener {
                         modifier = new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(1);
                     }
                     //Get an id from database
-                    record_ID = XincoIdServer.getNextId("xinco_core_user_modified_record");
+                    boolean used = true;
+                    HashMap parameters = new HashMap();
+                    while (used) {
+                        record_ID = XincoIdServer.getNextId("xinco_core_user_modified_record");
+                        parameters.clear();
+                        parameters.put("recordId", record_ID);
+                        used = !XincoDBManager.namedQuery("XincoCoreUserModifiedRecord.findByRecordId", parameters).isEmpty();
+                    }
                     XincoCoreUserModifiedRecord mod = new XincoCoreUserModifiedRecord(new XincoCoreUserModifiedRecordPK(
                             modifier.getId(), record_ID));
                     mod.setModReason(auditedObject.getModificationReason());
