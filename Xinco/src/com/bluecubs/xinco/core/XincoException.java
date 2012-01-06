@@ -33,7 +33,6 @@
 package com.bluecubs.xinco.core;
 
 import java.util.List;
-import org.openide.util.Lookup;
 
 public class XincoException extends Error {
 
@@ -47,30 +46,21 @@ public class XincoException extends Error {
     public XincoException(String s) {
         super(s);
         xinco_message = s;
-        notifyListeners();
     }
 
     public XincoException(List<String> messages) {
         for (String s : messages) {
             xinco_message += s + "\n";
         }
-        notifyListeners();
     }
 
     public XincoException(Throwable cause) {
         super(cause);
         xinco_message = cause.getLocalizedMessage();
-        notifyListeners();
     }
 
     @Override
     public String toString() {
         return xinco_message;
-    }
-
-    private void notifyListeners() {
-        for (XincoExceptionListener listener : Lookup.getDefault().lookupAll(XincoExceptionListener.class)) {
-            listener.onException(this);
-        }
     }
 }
