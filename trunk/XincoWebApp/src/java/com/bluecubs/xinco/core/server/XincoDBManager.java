@@ -433,6 +433,11 @@ public class XincoDBManager {
                         logger.log(Level.SEVERE, null, e);
                         demoResetPeriod = 0;
                     }
+                    if (demoResetPeriod > 0) {
+                        logger.log(Level.WARNING, 
+                                "Instance configured as demo, database will reset"
+                                + " each " + demoResetPeriod + " milliseconds");
+                    }
                 }
                 emf = Persistence.createEntityManagerFactory(config.getJNDIDB());
                 logger.log(Level.INFO, "Using context defined database connection: {0}", config.getJNDIDB());
