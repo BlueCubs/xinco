@@ -70,15 +70,13 @@ public class XincoFileIconManager {
             }
             //Create a temporary file with the specified extension
             file = File.createTempFile("icon", "." + extension);
-            if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+//            if (System.getProperty("os.name").toLowerCase().contains("mac")) {
                 //For some reason the method above doesn't work on Mac. 
                 //Use alternate method.
-                JFileChooser chooser = new JFileChooser();
-                // Get the icon
-                icon = chooser.getIcon(file);
-            } else {
-                icon = FileSystemView.getFileSystemView().getSystemIcon(file);
-            }
+                icon = new JFileChooser().getIcon(file);
+//            } else {
+//                icon = FileSystemView.getFileSystemView().getSystemIcon(file);
+//            }
 
             //Delete the temporary file
             file.delete();
