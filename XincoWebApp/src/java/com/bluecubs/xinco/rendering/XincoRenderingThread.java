@@ -61,8 +61,7 @@ public class XincoRenderingThread extends Thread {
     private XincoWebService service = new XincoWebService();
     private File rendition;
     private File xincoFile;
-    private static int port = XincoSettingServer.getSetting(new XincoCoreUserServer(1),
-            "setting.OOPort").getIntValue();
+    private static int port;
 
     public XincoRenderingThread(XincoCoreData original, XincoCoreUser user) {
         this.original = original;
@@ -71,6 +70,8 @@ public class XincoRenderingThread extends Thread {
 
     @Override
     public void run() {
+        port = XincoSettingServer.getSetting(new XincoCoreUserServer(1),
+            "setting.OOPort").getIntValue();
         if (port >= 0 && !original.getXincoAddAttributes().isEmpty()
                 && !original.getXincoAddAttributes().get(0).getAttribVarchar().toLowerCase().endsWith(".pdf")) {
             try {
