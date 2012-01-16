@@ -126,7 +126,7 @@
             <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.DefaultSessionLog"/>
             <property name="eclipselink.logging.level" value="SEVERE"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:h2:file:data/xinco-test;MODE=MySQL"/>
-            <property name="eclipselink.target-database" value="oopex.eclipselink2.jpa2.queries.H2Platform"/>
+            <property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.H2Platform"/>
             <property name="javax.persistence.jdbc.password" value=""/>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="javax.persistence.jdbc.user" value="root"/>
