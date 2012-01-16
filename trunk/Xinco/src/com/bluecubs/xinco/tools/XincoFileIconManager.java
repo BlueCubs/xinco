@@ -68,7 +68,7 @@ public class XincoFileIconManager {
             if (extension.length() < 3) {
                 return null;
             }
-            if (FileSystemView.getFileSystemView() == null) {
+            if (FileSystemView.getFileSystemView() != null) {
                 //Create a temporary file with the specified extension
                 file = File.createTempFile("icon", "." + extension);
                 if (System.getProperty("os.name").toLowerCase().contains("mac")) {
