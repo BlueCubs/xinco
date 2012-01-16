@@ -50,7 +50,7 @@
 
         <java classname="com.vaadin.terminal.gwt.widgetsetutils.WidgetSetBuilder" failonerror="yes" fork="yes" maxmemory="256m">
             <arg value="${widgetset}"/>
-            <jvmarg value="-Xss256k"/>
+            <jvmarg value="-Xss128k"/>
             <jvmarg value="-Djava.awt.headless=true"/>
             <classpath>
                 <pathelement path="${src.dir}" />
