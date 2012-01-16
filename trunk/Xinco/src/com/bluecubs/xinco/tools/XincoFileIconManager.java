@@ -68,18 +68,22 @@ public class XincoFileIconManager {
             if (extension.length() < 3) {
                 return null;
             }
-            //Create a temporary file with the specified extension
-            file = File.createTempFile("icon", "." + extension);
-//            if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-                //For some reason the method above doesn't work on Mac. 
-                //Use alternate method.
-                icon = new JFileChooser().getIcon(file);
-//            } else {
-//                icon = FileSystemView.getFileSystemView().getSystemIcon(file);
-//            }
+            if (FileSystemView.getFileSystemView() == null) {
+                //Create a temporary file with the specified extension
+                file = File.createTempFile("icon", "." + extension);
+                if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+                    //For some reason the method above doesn't work on Mac. 
+                    //Use alternate method.
+                    icon = new JFileChooser().getIcon(file);
+                } else {
+                    icon = FileSystemView.getFileSystemView().getSystemIcon(file);
+                }
 
-            //Delete the temporary file
-            file.delete();
+                //Delete the temporary file
+                file.delete();
+            } else {
+                return null;
+            }
         } catch (IOException ioe) {
             return null;
         }
