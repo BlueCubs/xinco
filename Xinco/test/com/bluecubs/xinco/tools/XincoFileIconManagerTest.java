@@ -1,6 +1,7 @@
 package com.bluecubs.xinco.tools;
 
 import javax.swing.Icon;
+import javax.swing.filechooser.FileSystemView;
 import static org.junit.Assert.assertTrue;
 import org.junit.*;
 
@@ -39,7 +40,7 @@ public class XincoFileIconManagerTest {
         XincoFileIconManager instance = new XincoFileIconManager();
         System.out.println("Testing with extension: " + extension);
         Icon result = instance.getIcon(extension);
-        assertTrue(result != null);
+        assertTrue(FileSystemView.getFileSystemView() == null ? result == null : result != null);
         extension = null;
         System.out.println("Testing with extension: " + extension);
         result = instance.getIcon(extension);
@@ -47,10 +48,10 @@ public class XincoFileIconManagerTest {
         extension = "txt";
         System.out.println("Testing with extension: " + extension);
         result = instance.getIcon(extension);
-        assertTrue(result != null);
+        assertTrue(FileSystemView.getFileSystemView() == null ? result == null : result != null);
         extension = "tx";
         System.out.println("Testing with extension: " + extension);
         result = instance.getIcon(extension);
-        assertTrue(result == null);
+        assertTrue(result != null);
     }
 }
