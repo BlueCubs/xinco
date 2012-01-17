@@ -158,6 +158,9 @@
                 <library dirs="200">
                     <file>${file.reference.validation-api-1.0.0.GA-sources.jar}</file>
                 </library>
+                <library dirs="200">
+                    <file>${file.reference.catalina-ant.jar}</file>
+                </library>
             </web-module-libraries>
             <web-module-additional-libraries>
                 <library dirs="200">
