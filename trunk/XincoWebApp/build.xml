@@ -436,11 +436,17 @@
         </if>
     </target>
     
-    <target name="deploy-demo" depends="dist">
+    <target name="deploy-demo">
         <!--Copy the demo context file-->
-        <fail unless="demo.context.path" message="demo.context.path is not set!"/>
         <echo>Copying file from ${demo.context.path}...</echo>
         <copy todir="web/META_INF" file="${demo.context.path}"/>
+        <!--Display build number as postfix-->
+        <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
+                               match="version.postfix?=?(.*)"
+                               replace="version.postfix = ${demo_version_postfix}"
+                               byline="true"/>
+        <!--Build with the demo context file-->
+        <antcall target="dist"/>
         <!--Delete the war-->
         <delete file="${j2ee.server.home}/webapps/${war.name}" quiet="true"/>
         <!--Delete the folder-->
