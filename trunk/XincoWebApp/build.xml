@@ -19,15 +19,27 @@
         </classpath>
     </taskdef>
     <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask">
-		<classpath>
+        <classpath>
             <pathelement location="tools/catalina-ant.jar"/>
         </classpath>
-	</taskdef>
+    </taskdef>
     <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask">
-		<classpath>
+        <classpath>
             <pathelement location="tools/catalina-ant.jar"/>
         </classpath>
-	</taskdef>
+    </taskdef>
+    <path id="catalina-ant-classpath">
+    <!-- We need the Catalina jars for Tomcat -->
+    <!--  * for other app servers - check the docs --> 
+        <fileset dir="${j2ee.server.home}\lib">
+            <include name="catalina-ant.jar"/>
+            <include name="tomcat-coyote.jar"/>
+            <include name="tomcat-util.jar"/>
+        </fileset>
+        <fileset dir="${j2ee.server.home}/bin">
+            <include name="tomcat-juli.jar"/>
+        </fileset>
+    </path>
     <!--
 
     There exist several targets which are by default empty and which can be 
@@ -452,19 +464,25 @@
         <copy todir="web/META_INF" file="${demo.context.path}"/>
     </target>
     
-    <target name="undeploy">    
+    <target name="undeploy">
+        <fail unless="tomcat.manager" message="tomcat.manager is not set!"/>
+        <fail unless="tomcat.username" message="tomcat.username is not set!"/>
+        <fail unless="tomcat.password" message="tomcat.password is not set!"/>
         <undeploy url="${tomcat.manager}"
-              username="${tomcat.username}"
-              password="${tomcat.password}"
-              path="/${war.name}" />
+                  username="${tomcat.username}"
+                  password="${tomcat.password}"
+                  path="/xinco" />
     </target>
     
-    <target name="deploy" depends="dist">
-    <deploy url="${tomcat.manager}"
-        username="${tomcat.username}"
-        password="${tomcat.password}"
-        path="/${war.name}"
-        update="true"
-        localWar="${dist.war}" />
-</target>
+    <target name="deploy">
+        <fail unless="tomcat.manager" message="tomcat.manager is not set!"/>
+        <fail unless="tomcat.username" message="tomcat.username is not set!"/>
+        <fail unless="tomcat.password" message="tomcat.password is not set!"/>
+        <deploy url="${tomcat.manager}"
+                username="${tomcat.username}"
+                password="${tomcat.password}"
+                path="/xinco"
+                update="true"
+                localWar="${dist.war}" />
+    </target>
 </project>
