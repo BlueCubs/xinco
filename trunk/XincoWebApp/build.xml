@@ -18,28 +18,6 @@
             <pathelement location="tools/ant-contrib-1.0b3.jar"/>
         </classpath>
     </taskdef>
-    <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask">
-        <classpath>
-            <pathelement location="tools/catalina-ant.jar"/>
-        </classpath>
-    </taskdef>
-    <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask">
-        <classpath>
-            <pathelement location="tools/catalina-ant.jar"/>
-        </classpath>
-    </taskdef>
-    <path id="catalina-ant-classpath">
-    <!-- We need the Catalina jars for Tomcat -->
-    <!--  * for other app servers - check the docs --> 
-        <fileset dir="${j2ee.server.home}\lib">
-            <include name="catalina-ant.jar"/>
-            <include name="tomcat-coyote.jar"/>
-            <include name="tomcat-util.jar"/>
-        </fileset>
-        <fileset dir="${j2ee.server.home}/bin">
-            <include name="tomcat-juli.jar"/>
-        </fileset>
-    </path>
     <!--
 
     There exist several targets which are by default empty and which can be 
@@ -458,31 +436,16 @@
         </if>
     </target>
     
-    <target name="copy-demo-context">
+    <target name="deploy-demo" depends="dist">
+        <!--Copy the demo context file-->
         <fail unless="demo.context.path" message="demo.context.path is not set!"/>
         <echo>Copying file from ${demo.context.path}...</echo>
         <copy todir="web/META_INF" file="${demo.context.path}"/>
-    </target>
-    
-    <target name="undeploy">
-        <fail unless="tomcat.manager" message="tomcat.manager is not set!"/>
-        <fail unless="tomcat.username" message="tomcat.username is not set!"/>
-        <fail unless="tomcat.password" message="tomcat.password is not set!"/>
-        <undeploy url="${tomcat.manager}"
-                  username="${tomcat.username}"
-                  password="${tomcat.password}"
-                  path="/xinco" />
-    </target>
-    
-    <target name="deploy">
-        <fail unless="tomcat.manager" message="tomcat.manager is not set!"/>
-        <fail unless="tomcat.username" message="tomcat.username is not set!"/>
-        <fail unless="tomcat.password" message="tomcat.password is not set!"/>
-        <deploy url="${tomcat.manager}"
-                username="${tomcat.username}"
-                password="${tomcat.password}"
-                path="/xinco"
-                update="true"
-                localWar="${dist.war}" />
+        <!--Delete the war-->
+        <delete file="${j2ee.server.home}/webapps/${war.name}" quiet="true"/>
+        <!--Delete the folder-->
+        <delete dir="${j2ee.server.home}/webapps/xinco" quiet="true"/>
+        <!--Now copy the new one-->
+        <copy todir="${j2ee.server.home}/webapps" file="${dist.war}"/>
     </target>
 </project>
