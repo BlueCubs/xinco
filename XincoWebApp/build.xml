@@ -18,8 +18,16 @@
             <pathelement location="tools/ant-contrib-1.0b3.jar"/>
         </classpath>
     </taskdef>
-    <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask" />
-    <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask" />
+    <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask">
+		<classpath>
+            <pathelement location="tools/catalina-ant.jar"/>
+        </classpath>
+	</taskdef>
+    <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask">
+		<classpath>
+            <pathelement location="tools/catalina-ant.jar"/>
+        </classpath>
+	</taskdef>
     <!--
 
     There exist several targets which are by default empty and which can be 
@@ -451,7 +459,7 @@
               path="/${war.name}" />
     </target>
     
-    <target name="deploy" depends="war">
+    <target name="deploy" depends="dist">
     <deploy url="${tomcat.manager}"
         username="${tomcat.username}"
         password="${tomcat.password}"
