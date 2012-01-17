@@ -18,6 +18,8 @@
             <pathelement location="tools/ant-contrib-1.0b3.jar"/>
         </classpath>
     </taskdef>
+    <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask" />
+    <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask" />
     <!--
 
     There exist several targets which are by default empty and which can be 
@@ -441,4 +443,20 @@
         <echo>Copying file from ${demo.context.path}...</echo>
         <copy todir="web/META_INF" file="${demo.context.path}"/>
     </target>
+    
+    <target name="undeploy">    
+        <undeploy url="${tomcat.manager}"
+              username="${tomcat.username}"
+              password="${tomcat.password}"
+              path="/${war.name}" />
+    </target>
+    
+    <target name="deploy" depends="war">
+    <deploy url="${tomcat.manager}"
+        username="${tomcat.username}"
+        password="${tomcat.password}"
+        path="/${war.name}"
+        update="true"
+        localWar="${dist.war}" />
+</target>
 </project>
