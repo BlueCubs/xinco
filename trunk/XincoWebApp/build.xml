@@ -12,6 +12,7 @@
     <import file="nbproject/build-impl.xml"/>
     <import file="build-widgetset.xml"/>
     <property file="build.ant.properties"/>
+    <property file="nbproject/project.properties"/>
     <property name="widget.dir" value="web/VAADIN/widgetsets"/>
     <taskdef resource="net/sf/antcontrib/antcontrib.properties">
         <classpath>
@@ -437,9 +438,9 @@
     </target>
     
     <target name="deploy-demo">
-        <!--Copy the demo context file-->
-        <echo>Copying file from ${demo.context.path}...</echo>
-        <copy todir="web/META_INF" file="${demo.context.path}"/>
+        <fail unless="j2ee.server.home" message="j2ee.server.home not defined!"/>
+        <!--Copy the demo context file (if present)-->
+        <copy todir="web/META_INF" file="${demo.context.path}" failonerror="false"/>
         <!--Display build number as postfix-->
         <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
                                match="version.postfix?=?(.*)"
