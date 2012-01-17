@@ -68,7 +68,7 @@
             <arg value="-war" />
             <arg value="${client-side-destination}" />
             <arg value="${widgetset}" />
-            <jvmarg value="-Xss1024k"/>
+            <jvmarg value="-Xss128k"/>
             <jvmarg value="-Djava.awt.headless=true"/>
             <classpath>
                 <pathelement path="${src.dir}" />
