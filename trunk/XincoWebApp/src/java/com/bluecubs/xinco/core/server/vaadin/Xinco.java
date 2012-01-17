@@ -324,21 +324,26 @@ public class Xinco extends Application implements XincoVaadinApplication {
             //Create it
             iconsFolder.mkdirs();
         }
-        File tempIcon = new File(iconsFolder.getAbsolutePath()
+        File tempIconFile = new File(iconsFolder.getAbsolutePath()
                 + System.getProperty("file.separator") + extension + ".png");
-        if (!tempIcon.exists()) {
-            Image image = iconToImage(xfm.getIcon(extension));
-            BufferedImage buffered = new BufferedImage(
-                    image.getWidth(null),
-                    image.getHeight(null),
-                    BufferedImage.TYPE_INT_RGB);
-            Graphics2D g = buffered.createGraphics();
-            g.drawImage(image, 0, 0, null);
-            g.dispose();
-            ImageIO.write(buffered, "PNG", tempIcon);
+        if (!tempIconFile.exists()) {
+            Icon tempIcon = xfm.getIcon(extension);
+            if (tempIcon != null) {
+                Image image = iconToImage(tempIcon);
+                BufferedImage buffered = new BufferedImage(
+                        image.getWidth(null),
+                        image.getHeight(null),
+                        BufferedImage.TYPE_INT_RGB);
+                Graphics2D g = buffered.createGraphics();
+                g.drawImage(image, 0, 0, null);
+                g.dispose();
+                ImageIO.write(buffered, "PNG", tempIconFile);
+            } else {
+                return null;
+            }
         }
         FileResource resource =
-                new FileResource(tempIcon, Xinco.this);
+                new FileResource(tempIconFile, Xinco.this);
         return resource;
     }
 
@@ -593,6 +598,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                 if (!temp.getXincoAddAttributes().isEmpty()) {
                     String name = temp.getXincoAddAttributes().get(0).getAttribVarchar();
                     try {
+                        FileResource icon1 = null;
                         //Set Icon
                         switch (temp.getXincoCoreDataType().getId()) {
                             case 1://File
@@ -602,20 +608,23 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                         && name.contains(".")
                                         && name.substring(name.lastIndexOf('.') + 1,
                                         name.length()).length() >= 3) {
-                                    item.getItemProperty("icon").setValue(
-                                            getIcon(name.substring(name.lastIndexOf('.') + 1,
-                                            name.length())));
+                                    icon1 = getIcon(name.substring(name.lastIndexOf('.') + 1,
+                                            name.length()));
                                 }
                                 break;
                             case 2://Text
-                                item.getItemProperty("icon").setValue(getIcon("txt"));
+                                icon1 = getIcon("txt");
+
                                 break;
                             case 3://URL
-                                item.getItemProperty("icon").setValue(getIcon("html"));
+                                icon1 = getIcon("html");
                                 break;
                             case 4://Contact
                                 item.getItemProperty("icon").setValue(new ThemeResource("icons/contact.gif"));
                                 break;
+                        }
+                        if (icon1 != null) {
+                            item.getItemProperty("icon").setValue(icon1);
                         }
                     } catch (IOException ex) {
                         Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);

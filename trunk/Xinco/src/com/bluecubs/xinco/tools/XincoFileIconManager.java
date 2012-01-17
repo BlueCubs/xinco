@@ -84,7 +84,7 @@ public class XincoFileIconManager {
             } else {
                 return null;
             }
-        } catch (IOException ioe) {
+        } catch (Exception ioe) {
             return null;
         }
         return icon;
