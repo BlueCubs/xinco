@@ -435,4 +435,10 @@
             </then>
         </if>
     </target>
+    
+    <target name="copy-demo-context">
+        <fail unless="demo.context.path" message="demo.context.path is not set!"/>
+        <echo>Copying file from ${demo.context.path}...</echo>
+        <copy todir="web/META_INF" file="${demo.context.path}"/>
+    </target>
 </project>
