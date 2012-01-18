@@ -87,6 +87,9 @@ public class XincoCronServlet extends HttpServlet {
      */
     @Override
     public void destroy() {
+        System.out.println("Closing database connection...");
+        XincoDBManager.getEntityManagerFactory().close();
+        System.out.println("Done!");
     }
 
     /**

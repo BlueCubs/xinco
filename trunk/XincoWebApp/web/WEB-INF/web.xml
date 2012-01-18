@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <display-name>xinco</display-name>
+    <!--Comment if not using H2 database-->
+    <context-param>
+        <param-name>db.url</param-name>
+        <param-value>jdbc:h2:file:~/Xinco/data/xinco;CREATE=TRUE;LOCK_TIMEOUT=10000</param-value>
+    </context-param>
+    <context-param>
+        <param-name>db.user</param-name>
+        <param-value>root</param-value>
+    </context-param>
+    <context-param>
+        <param-name>db.password</param-name>
+        <param-value></param-value>
+    </context-param>
+    <listener>
+        <listener-class>org.h2.server.web.DbStarter</listener-class>
+    </listener>
+    <!--End of H2 database exclusive settings-->
     <filter>
         <description>Make GB2312\GBK or others to UTF-8 for chineese character support</description>
         <filter-name>SetCharacterEncodingFilter</filter-name>
