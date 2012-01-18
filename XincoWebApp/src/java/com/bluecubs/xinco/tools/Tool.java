@@ -1,5 +1,6 @@
 package com.bluecubs.xinco.tools;
 
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -7,7 +8,12 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.nio.channels.FileChannel;
+import java.util.Iterator;
 import java.util.StringTokenizer;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.stream.ImageInputStream;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
@@ -174,5 +180,40 @@ public class Tool {
      */
     public static boolean textHasContent(String aText) {
         return (aText != null) && (aText.trim().length() > 0);
+    }
+
+    public static Dimension getImageDim(final String path) {
+        Dimension result = null;
+        String suffix = getFileSuffix(path);
+        Iterator<ImageReader> iter = ImageIO.getImageReadersBySuffix(suffix);
+        if (iter.hasNext()) {
+            ImageReader reader = iter.next();
+            try {
+                ImageInputStream stream = new FileImageInputStream(new File(path));
+                reader.setInput(stream);
+                int width = reader.getWidth(reader.getMinIndex());
+                int height = reader.getHeight(reader.getMinIndex());
+                result = new Dimension(width, height);
+            } catch (Exception e) {
+                
+            } finally {
+                reader.dispose();
+            }
+        }
+        return result;
+    }
+
+    public static String getFileSuffix(final String path) {
+        String result = null;
+        if (path != null) {
+            result = "";
+            if (path.lastIndexOf('.') != -1) {
+                result = path.substring(path.lastIndexOf('.'));
+                if (result.startsWith(".")) {
+                    result = result.substring(1);
+                }
+            }
+        }
+        return result;
     }
 }
