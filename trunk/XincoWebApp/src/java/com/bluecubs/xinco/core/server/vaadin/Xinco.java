@@ -1006,6 +1006,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                 out.close();
                 // update attributes
                 ((XincoAddAttribute) data.getXincoAddAttributes().get(0)).setAttribVarchar(fileName);
+                data.setDesignation(fileName);
                 ((XincoAddAttribute) data.getXincoAddAttributes().get(1)).setAttribUnsignedint(totalLen);
                 ((XincoAddAttribute) data.getXincoAddAttributes().get(2)).setAttribVarchar(""
                         + cin.getChecksum().getValue());
@@ -3113,6 +3114,12 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                     getMainWindow().showNotification(
                                             getResource().getString("window.massiveimport.progress"),
                                             Notification.TYPE_TRAY_NOTIFICATION);
+                                    data = new XincoCoreData();
+                                    data.setXincoCoreDataType(new XincoCoreDataTypeServer(1));
+                                    data.setStatusNumber(1);
+                                    data.setXincoCoreLanguage(new XincoCoreLanguageServer(2));
+                                    data.setXincoCoreNodeId(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                                    addDefaultAddAttributes(data);
                                     loadFile(file, fileName);
                                 }
                             }
