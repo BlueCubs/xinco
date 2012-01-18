@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
  */
-public class XincoWizard extends CustomComponent {
+public final class XincoWizard extends CustomComponent {
 
     private final List<WizardStep> steps = new ArrayList<WizardStep>();
     private final List<WizardProgressListener> listeners =
@@ -47,9 +47,17 @@ public class XincoWizard extends CustomComponent {
     private WizardStep lastCompletedStep;
     private Component header;
     private int lastCompleted, progress;
+    private ResourceBundle xerb;
 
-    public XincoWizard() {
+    public XincoWizard(Locale locale) {
+        setLocale(locale);
         init();
+    }
+
+    @Override
+    public void setLocale(Locale locale) {
+        super.setLocale(locale);
+        xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", getLocale());
     }
 
     private void init() {
@@ -80,7 +88,7 @@ public class XincoWizard extends CustomComponent {
     }
 
     private void initControlButtons() {
-        nextButton = new Button("Next");
+        nextButton = new Button(xerb.getString("general.next"));
         nextButton.addListener(new Button.ClickListener() {
 
             @Override
@@ -89,7 +97,7 @@ public class XincoWizard extends CustomComponent {
             }
         });
 
-        backButton = new Button("Back");
+        backButton = new Button(xerb.getString("general.back"));
         backButton.addListener(new Button.ClickListener() {
 
             @Override
@@ -98,7 +106,7 @@ public class XincoWizard extends CustomComponent {
             }
         });
 
-        finishButton = new Button("Finish");
+        finishButton = new Button(xerb.getString("general.finish"));
         finishButton.addListener(new Button.ClickListener() {
 
             @Override
@@ -108,7 +116,7 @@ public class XincoWizard extends CustomComponent {
         });
         finishButton.setEnabled(false);
 
-        cancelButton = new Button("Cancel");
+        cancelButton = new Button(xerb.getString("general.cancel"));
         cancelButton.addListener(new Button.ClickListener() {
 
             @Override
@@ -117,7 +125,7 @@ public class XincoWizard extends CustomComponent {
             }
         });
     }
-
+    
     /**
      * Cancels this XincoWizard triggering a {@link WizardCancelledEvent}. This
      * method is called when user clicks the cancel button.
