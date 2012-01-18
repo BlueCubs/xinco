@@ -7,6 +7,7 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.ResizeListener;
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -79,4 +80,6 @@ public interface XincoVaadinApplication extends ResizeListener {
      * @param data XincoCoredata to modify
      */
     public void addDefaultAddAttributes(com.bluecubs.xinco.core.server.service.XincoCoreData data);
+
+    public Locale getLocale();
 }

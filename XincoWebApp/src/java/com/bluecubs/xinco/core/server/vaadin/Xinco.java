@@ -647,7 +647,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
         final XincoCoreLog newlog = new XincoCoreLog();
         try {
             final Form form = new Form();
-            final XincoWizard wizard = new XincoWizard();
+            final XincoWizard wizard = new XincoWizard(getLocale());
             final UploadManager um = new UploadManager();
             final Upload upload = new Upload(getResource().getString("general.file.select"), um);
             XincoCoreDataServer temp = new XincoCoreDataServer(
@@ -1170,7 +1170,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         addDefaultAddAttributes(data);
                         commit.setEnabled(false);
                         cancel.setEnabled(false);
-                        XincoWizard wizard = new XincoWizard();
+                        XincoWizard wizard = new XincoWizard(getLocale());
                         wizard.addStep(fileStep);
                         getMainWindow().removeWindow(renderWindow);
                         final Window addRenderingWindow = new Window();
@@ -2046,7 +2046,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
                     loc = Locale.getDefault();
                 }
                 setLocale(loc);
-                xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", getLocale());
                 getMainWindow().removeWindow(lang);
                 showMainWindow();
             }
@@ -3945,7 +3944,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
     }
 
     private void showDataDialog(final boolean newData) {
-        final XincoWizard wizard = new XincoWizard();
+        final XincoWizard wizard = new XincoWizard(getLocale());
         final WizardStep dataDetails = new WizardStep() {
 
             @Override
