@@ -14,6 +14,7 @@ import com.bluecubs.xinco.core.server.vaadin.wizard.WizardStep;
 import com.bluecubs.xinco.core.server.vaadin.wizard.XincoWizard;
 import com.bluecubs.xinco.core.server.vaadin.wizard.event.*;
 import com.bluecubs.xinco.index.XincoIndexer;
+import com.bluecubs.xinco.tools.Tool;
 import com.bluecubs.xinco.tools.XincoFileIconManager;
 import com.vaadin.Application;
 import com.vaadin.data.Container.Filterable;
@@ -1994,6 +1995,9 @@ public class Xinco extends Application implements XincoVaadinApplication {
         final Window lang = new Window();
         lang.setReadOnly(true);
         final Form form = new Form();
+        Embedded logo = new Embedded("", new ThemeResource("img/xinco_logo.gif"));
+        logo.setType(Embedded.TYPE_IMAGE);
+        form.getLayout().addComponent(logo);
         form.getLayout().addComponent(new com.vaadin.ui.Label(
                 "Please choose a language:"));
         final Select languages = new Select();
@@ -2052,7 +2056,11 @@ public class Xinco extends Application implements XincoVaadinApplication {
         lang.addComponent(form);
         lang.setModal(true);
         lang.center();
-        lang.setWidth(20, Sizeable.UNITS_PERCENTAGE);
+        WebApplicationContext context = (WebApplicationContext) getContext();
+        lang.setWidth(Tool.getImageDim(context.getHttpSession().getServletContext().getRealPath(
+                "/VAADIN/themes/xinco") + System.getProperty("file.separator") + "img"
+                + System.getProperty("file.separator") + "xinco_logo.gif").width + 30,
+                logo.getWidthUnits());
         getMainWindow().addWindow(lang);
     }
 
