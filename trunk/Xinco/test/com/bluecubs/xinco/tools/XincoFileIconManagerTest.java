@@ -1,6 +1,7 @@
 package com.bluecubs.xinco.tools;
 
 import javax.swing.Icon;
+import javax.swing.filechooser.FileSystemView;
 import static org.junit.Assert.assertTrue;
 import org.junit.*;
 
@@ -34,8 +35,8 @@ public class XincoFileIconManagerTest {
      */
     @Test
     public void testGetIcon() {
-        try {
-            System.out.println("getIcon");
+        System.out.println("getIcon");
+        if (FileSystemView.getFileSystemView() != null) {
             String extension = ".txt";
             XincoFileIconManager instance = new XincoFileIconManager();
             System.out.println("Testing with extension: " + extension);
@@ -53,9 +54,6 @@ public class XincoFileIconManagerTest {
             System.out.println("Testing with extension: " + extension);
             result = instance.getIcon(extension);
             assertTrue(result == null);
-        } catch (Exception e) {
-            //TODO: For some reason it fails on the server's virtual machine
-            e.printStackTrace();
         }
     }
 }
