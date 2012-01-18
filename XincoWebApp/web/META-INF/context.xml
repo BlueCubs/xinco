@@ -20,12 +20,14 @@
   <!-- ### url: jdbc:h2:file:~/Xinco/data/xinco;CREATE=TRUE;           ###-->
   <!-- ### AUTO_SERVER=TRUE;LOCK_TIMEOUT=10000                         ###-->
   <!-- ### driverClassName: org.h2.Driver                              ###-->
+  <!-- ### Note: For H2, make sure this values match the contents of   ###-->
+  <!-- ### web.xml for proper shutdown of H2 database!                 ###-->
   <!-- ###################################################################-->
     <Resource auth="Container" driverClassName="org.h2.Driver"
               factory="org.apache.commons.dbcp.BasicDataSourceFactory"
               maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB"
               password="" type="javax.sql.DataSource"
-              url="jdbc:h2:file:~/Xinco/data/xinco;CREATE=TRUE;AUTO_SERVER=TRUE;LOCK_TIMEOUT=10000"
+              url="jdbc:h2:file:~/Xinco/data/xinco;CREATE=TRUE;LOCK_TIMEOUT=10000"
               username="root"/>
   <!-- Turn off session serialization -->
     <Manager pathname=""/>
