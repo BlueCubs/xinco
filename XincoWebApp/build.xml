@@ -455,4 +455,19 @@
         <!--Now copy the new one-->
         <copy todir="${j2ee.server.home}/webapps" file="${dist.war}"/>
     </target>
+    
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
+        <classpath>
+            <pathelement location="../tools/PMD/pmd-4.3.jar"/>
+        </classpath>
+    </taskdef>
+
+    <target name="pmd">
+        <pmd rulesetfiles="basic,design">
+            <formatter type="xml" toFile="../reports/pmd/pmd.xml"/>
+            <fileset dir="./src">
+                <include name="**/*.java"/>
+            </fileset>
+        </pmd>
+    </target>
 </project>
