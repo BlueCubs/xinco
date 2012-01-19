@@ -11,7 +11,7 @@
     <description>Builds, tests, and runs the project Xinco.</description>
     <import file="nbproject/build-impl.xml"/>
     <property file="build.ant.properties"/>
-        <property environment="env"/>
+    <property environment="env"/>
     <property name="cobertura.dir" value="../XincoLibs/cobertura" />
 
     <path id="cobertura.classpath">
@@ -115,5 +115,20 @@
       <!-- Used by the hudson plug-in -->
         <cobertura-report format="xml" srcdir="${src.dir}" destdir="${build.report.cobertura.dir}"/>
         <delete file="cobertura.ser" />
+    </target>
+    
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
+        <classpath>
+            <pathelement location="../tools/PMD/pmd-4.3.jar"/>
+        </classpath>
+    </taskdef>
+
+    <target name="pmd">
+        <pmd rulesetfiles="basic,design">
+            <formatter type="xml" toFile="../reports/pmd/pmd.xml"/>
+            <fileset dir="./src">
+                <include name="**/*.java"/>
+            </fileset>
+        </pmd>
     </target>
 </project>

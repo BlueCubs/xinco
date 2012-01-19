@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd version="4.3" timestamp="2012-01-19T13:22:45.294">
+<file name="Z:\NetBeans\Xinco\xinco\Xinco\src\com\bluecubs\xinco\tools\MD5.java">
+<violation beginline="12" endline="39" begincolumn="18" endcolumn="1" rule="UseSingleton" ruleset="Design Rules" package="com.bluecubs.xinco.tools" class="MD5" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UseSingleton" priority="3">
+All methods are static.  Consider using Singleton instead.  Alternatively, you could add a private constructor or make the class abstract to silence this warning.
+</violation>
+<violation beginline="21" endline="21" begincolumn="13" endcolumn="69" rule="PreserveStackTrace" ruleset="Design Rules" package="com.bluecubs.xinco.tools" class="MD5" method="encrypt" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#PreserveStackTrace" priority="3">
+New exception is thrown in catch block, original stack trace may be lost
+</violation>
+</file>
+<file name="Z:\NetBeans\Xinco\xinco\Xinco\src\com\bluecubs\xinco\tools\XincoFileIconManager.java">
+<violation beginline="53" endline="54" begincolumn="12" endcolumn="5" rule="UncommentedEmptyConstructor" ruleset="Design Rules" package="com.bluecubs.xinco.tools" class="XincoFileIconManager" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UncommentedEmptyConstructor" priority="3">
+Document empty constructor
+</violation>
+<violation beginline="56" endline="56" begincolumn="32" endcolumn="40" rule="AvoidReassigningParameters" ruleset="Design Rules" package="com.bluecubs.xinco.tools" class="XincoFileIconManager" method="getIcon" variable="extension" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidReassigningParameters" priority="2">
+Avoid reassigning parameters such as 'extension'
+</violation>
+<violation beginline="71" endline="86" begincolumn="13" endcolumn="13" rule="ConfusingTernary" ruleset="Design Rules" package="com.bluecubs.xinco.tools" class="XincoFileIconManager" method="getIcon" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#ConfusingTernary" priority="3">
+Avoid if (x != y) ..; else ..;
+</violation>
+</file>
+</pmd>
