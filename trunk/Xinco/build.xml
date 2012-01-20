@@ -124,6 +124,9 @@
     </taskdef>
 
     <target name="pmd">
+        <mkdir dir="../reports/pmd"/>
+        <delete file = "../reports/pmd/pmd.xml"/> 
+        <touch file = "../reports/pmd/pmd.xml" /> 
         <pmd rulesetfiles="basic,design">
             <formatter type="xml" toFile="../reports/pmd/pmd.xml"/>
             <fileset dir="./src">
