@@ -440,7 +440,7 @@
     <target name="deploy-demo">
         <fail unless="j2ee.server.home" message="j2ee.server.home not defined!"/>
         <!--Copy the demo context file (if present)-->
-        <copy todir="web/META_INF" file="${demo.context.path}" failonerror="false"/>
+        <copy todir="web/META-INF" file="${demo.context.path}" failonerror="false"/>
         <!--Display build number as postfix-->
         <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
                                match="version.postfix?=?(.*)"
