@@ -1588,6 +1588,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                 || stored.isReadPermission()
                                 || stored.isWritePermission()) {
                             stored.write2DB();
+                            showCommentDataDialog(new XincoCoreDataServer(data.getId()), OPCode.MODIFICATION);
                         }
                     } catch (XincoException ex) {
                         Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
