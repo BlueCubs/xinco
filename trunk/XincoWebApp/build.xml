@@ -438,14 +438,17 @@
     </target>
     
     <target name="deploy-demo">
+        <echo>Build ID: ${BUILD_ID}</echo>
         <fail unless="j2ee.server.home" message="j2ee.server.home not defined!"/>
         <!--Copy the demo context file (if present)-->
         <copy todir="web/META-INF" file="${demo.context.path}" failonerror="false"/>
+        <!--Copy the demo persistence file (if present)-->
+        <copy todir="src/conf" file="${demo.persistence.path}" failonerror="false"/>
         <!--Display build number as postfix-->
-        <replaceregexp file="../Xinco/src/com/bluecubs/xinco/settings/settings.properties"
-                               match="version.postfix?=?(.*)"
-                               replace="version.postfix = ${demo_version_postfix}"
-                               byline="true"/>
+        <replaceregexp file="build.ant.properties"
+                       match="version.postfix?=?(.*)"
+                       replace="version.postfix = ${demo_version_postfix}"
+                       byline="true"/>
         <!--Build with the demo context file-->
         <antcall target="dist"/>
         <!--Delete the war-->
