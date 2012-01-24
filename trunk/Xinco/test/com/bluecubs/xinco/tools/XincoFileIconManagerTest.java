@@ -1,10 +1,7 @@
 package com.bluecubs.xinco.tools;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Icon;
-import javax.swing.filechooser.FileSystemView;
 import static org.junit.Assert.assertTrue;
 import org.junit.*;
 
@@ -37,7 +34,7 @@ public class XincoFileIconManagerTest {
      * Test of getIcon method, of class XincoFileIconManager.
      */
     @Test
-    public void testGetIcon() {
+    public void testGetIcon() throws IOException{
         try {
             System.out.println("getIcon");
             String extension = ".txt";
