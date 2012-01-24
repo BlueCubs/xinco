@@ -35,6 +35,8 @@ package com.bluecubs.xinco.tools;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
@@ -53,7 +55,7 @@ public class XincoFileIconManager {
     public XincoFileIconManager() {
     }
 
-    public Icon getIcon(String extension) throws IOException {
+    public Icon getIcon(String extension) {
         if (extension == null) {
             return null;
         }
@@ -63,25 +65,30 @@ public class XincoFileIconManager {
         if (extension.length() < 3) {
             return null;
         }
-        Icon icon;
-        if (extension.length() < 3) {
-            return null;
-        }
-        if (FileSystemView.getFileSystemView() != null) {
-            //Create a temporary file with the specified extension
-            file = File.createTempFile("icon", "." + extension);
-            if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-                //For some reason the method above doesn't work on Mac. 
-                //Use alternate method.
-                icon = new JFileChooser().getIcon(file);
-            } else {
-                icon = FileSystemView.getFileSystemView().getSystemIcon(file);
+        Icon icon = null;
+        try {
+            if (extension.length() < 3) {
+                return null;
             }
+            if (FileSystemView.getFileSystemView() != null) {
 
-            //Delete the temporary file
-            file.delete();
-        } else {
-            return null;
+                //Create a temporary file with the specified extension
+                file = File.createTempFile("icon", "." + extension);
+                if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+                    //For some reason the method above doesn't work on Mac. 
+                    //Use alternate method.
+                    icon = new JFileChooser().getIcon(file);
+                } else {
+                    icon = FileSystemView.getFileSystemView().getSystemIcon(file);
+                }
+
+                //Delete the temporary file
+                file.delete();
+            } else {
+                return null;
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(XincoFileIconManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         return icon;
     }
