@@ -52,17 +52,11 @@ public class LuceneSearchWindow extends Window {
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 String field;
                 //create field string
-                //create field string
-                //create field string
-                //create field string
                 if (options.getValue() != null) {
                     field = ((String) options.getValue()) + ":";
                 } else {
                     field = "";
                 }
-                // append to query
-                // append to query
-                // append to query
                 // append to query
                 queryField.setValue(queryField.getValue().toString() + (operator.getValue() == null ? "" : operator.getValue()) + field + variableField.getValue().toString() + " ");
                 variableField.setValue("");
@@ -96,9 +90,6 @@ public class LuceneSearchWindow extends Window {
         dataSource = new LuceneContainer(XincoDBManager.config.fileIndexPath);
         table.setContainerDataSource(dataSource);
         //Collapse some columns by default
-        //Collapse some columns by default
-        //Collapse some columns by default
-        //Collapse some columns by default
         table.setColumnCollapsingAllowed(true);
         fixTable();
         table.setSelectable(true);
@@ -118,13 +109,7 @@ public class LuceneSearchWindow extends Window {
                 boolean haveAccess;
                 boolean loggedIn = xinco.getLoggedUser() != null;
                 //Get selected data
-                //Get selected data
-                //Get selected data
-                //Get selected data
                 XincoCoreDataServer data = new XincoCoreDataServer(Integer.valueOf(table.getItem(table.getValue()).getItemProperty("id").toString()));
-                //Now check permissions on the file for the user
-                //Now check permissions on the file for the user
-                //Now check permissions on the file for the user
                 //Now check permissions on the file for the user
                 data.loadACL();
                 if (loggedIn) {
@@ -134,14 +119,8 @@ public class LuceneSearchWindow extends Window {
                     haveAccess = canRead(data.getXincoCoreAcl());
                 }
                 //Store path of ids
-                //Store path of ids
-                //Store path of ids
-                //Store path of ids
                 LinkedList<Integer> parents = new LinkedList<Integer>();
                 if (haveAccess) {
-                    //Now have to make sure there is access to all parent folders of data
-                    //Now have to make sure there is access to all parent folders of data
-                    //Now have to make sure there is access to all parent folders of data
                     //Now have to make sure there is access to all parent folders of data
                     XincoCoreNodeServer parent = null;
                     if (data.getXincoCoreNodeId() > 0) {
@@ -158,16 +137,10 @@ public class LuceneSearchWindow extends Window {
                         }
                     }
                     //If the last in the list is the root (1) we can access it!
-                    //If the last in the list is the root (1) we can access it!
-                    //If the last in the list is the root (1) we can access it!
-                    //If the last in the list is the root (1) we can access it!
                     haveAccess = parents.getLast() == 1;
                 }
                 close();
                 if (!(haveAccess && xinco.expandTreeNodes(parents))) {
-                    //Able to expand nodes
-                    //Able to expand nodes
-                    //Able to expand nodes
                     //Able to expand nodes
                     getApplication().getMainWindow().showNotification(xinco.getResource().getString("error.data.sufficientrights"), Notification.TYPE_WARNING_MESSAGE);
                 } else {
@@ -232,9 +205,6 @@ public class LuceneSearchWindow extends Window {
         form.getFooter().addComponent(goToSelection);
         addComponent(form);
         // Set the size as undefined at all levels
-        // Set the size as undefined at all levels
-        // Set the size as undefined at all levels
-        // Set the size as undefined at all levels
         getContent().setSizeUndefined();
         setSizeUndefined();
     }
@@ -242,7 +212,6 @@ public class LuceneSearchWindow extends Window {
     private void fixTable() {
         for (Object id : table.getContainerPropertyIds()) {
             table.setColumnCollapsed(id, !id.equals("id") && !id.equals("designation"));
-            //Fix headers
             //Fix headers
             table.setColumnHeader(id, xinco.getResource().containsKey(id.toString()) ? xinco.getResource().getString(id.toString()) : id.toString());
         }
@@ -253,7 +222,6 @@ public class LuceneSearchWindow extends Window {
         for (Iterator<XincoCoreACE> it = list.iterator(); it.hasNext();) {
             XincoCoreACE ace = it.next();
             if (ace.isReadPermission() && ace.getXincoCoreGroupId() == 3) {
-                //Public
                 //Public
                 haveAccess = ace.isReadPermission();
                 break;
