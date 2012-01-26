@@ -44,7 +44,6 @@ import com.vaadin.ui.AbstractSelect.VerticalLocationIs;
 import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.Tree.TreeDragMode;
 import com.vaadin.ui.Tree.TreeTargetDetails;
-import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Window;
@@ -220,7 +219,7 @@ public class Xinco extends Application {
                 });
         fileStep = new WizardStep() {
 
-            final UploadManager um = new UploadManager();
+            final UploadManager um = new UploadManager(com.bluecubs.xinco.core.server.vaadin.Xinco.this);
             final Upload upload = new Upload(getResource().getString("general.file.select"), um);
             final Upload.SucceededListener listener = new Upload.SucceededListener() {
 
@@ -254,7 +253,7 @@ public class Xinco extends Application {
                             getResource().getString("message.missing.file"),
                             Notification.TYPE_ERROR_MESSAGE);
                 } else {
-                    getXincoCoreData().setDesignation(fileName);
+                    getXincoCoreData().setDesignation(getFileName());
                 }
                 return um.isSuccess();
             }
@@ -678,7 +677,7 @@ public class Xinco extends Application {
         try {
             final Form form = new Form();
             final XincoWizard wizard = new XincoWizard(getLocale());
-            final UploadManager um = new UploadManager();
+            final UploadManager um = new UploadManager(this);
             final Upload upload = new Upload(getResource().getString("general.file.select"), um);
             XincoCoreDataServer temp = new XincoCoreDataServer(
                     Integer.valueOf(xincoTree.getValue().toString().substring(
@@ -808,7 +807,7 @@ public class Xinco extends Application {
                         try {
                             data = new XincoCoreDataServer(temp.getId());
                             //Now load the file
-                            loadFile(fileToLoad, fileName);
+                            loadFile(getFileToLoad(), getFileName());
                             //Update log version
                             XincoCoreLogServer log = new XincoCoreLogServer(getXincoCoreData().getXincoCoreLogs().get(getXincoCoreData().getXincoCoreLogs().size() - 1).getId());
                             log.setVersion(versionSelector.getVersion());
@@ -3932,76 +3931,32 @@ public class Xinco extends Application {
         getMainWindow().addWindow(wizardWindow);
     }
 
-    private class UploadManager extends CustomComponent
-            implements Upload.SucceededListener,
-            Upload.FailedListener,
-            Upload.Receiver {
+    /**
+     * @return the fileToLoad
+     */
+    protected File getFileToLoad() {
+        return fileToLoad;
+    }
 
-        private File file;                          // File to write to.
-        private boolean success = false;
+    /**
+     * @return the fileName
+     */
+    protected String getFileName() {
+        return fileName;
+    }
 
-        // Callback method to begin receiving the upload.
-        @Override
-        public OutputStream receiveUpload(String filename,
-                String MIMEType) {
-            FileOutputStream fos; // Output stream to write to
-            fileName = filename;
-            try {
-                //Create upload folder if needed
-                File uploads = new File(XincoDBManager.config.fileRepositoryPath
-                        + System.getProperty("file.separator"));
-                uploads.mkdirs();
-                uploads.deleteOnExit();
-                file = File.createTempFile("xinco", ".xtf", uploads);
-            } catch (IOException ex) {
-                return null;
-            }
-            getFile().deleteOnExit();
-            try {
-                // Open the file for writing.
-                fos = new FileOutputStream(getFile());
-            } catch (final java.io.FileNotFoundException e) {
-                return null;
-            }
-            return fos; // Return the output stream to write to
-        }
+    /**
+     * @param fileToLoad the fileToLoad to set
+     */
+    protected void setFileToLoad(File fileToLoad) {
+        this.fileToLoad = fileToLoad;
+    }
 
-        @Override
-        public void uploadSucceeded(SucceededEvent event) {
-            fileToLoad = file;
-            success = true;
-        }
-
-        @Override
-        public void uploadFailed(FailedEvent event) {
-            getMainWindow().showNotification(
-                    getResource().getString("datawizard.unabletoloadfile"),
-                    Notification.TYPE_ERROR_MESSAGE);
-            file = null;
-            fileName = null;
-            success = false;
-        }
-
-        /**
-         * @return the file
-         */
-        public File getFile() {
-            return file;
-        }
-
-        /**
-         * @return the fileName
-         */
-        public String getFileName() {
-            return fileName;
-        }
-
-        /**
-         * @return the success
-         */
-        public boolean isSuccess() {
-            return success;
-        }
+    /**
+     * @param fileName the fileName to set
+     */
+    protected void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     private class DataDialogManager implements WizardProgressListener {
@@ -4072,7 +4027,7 @@ public class Xinco extends Application {
                     switch (getXincoCoreData().getXincoCoreDataType().getId()) {
                         case 1:
                             //Now load the file
-                            loadFile(fileToLoad, fileName);
+                            loadFile(getFileToLoad(), getFileName());
                             break;
                         default:
                             // save data to server
@@ -4105,8 +4060,8 @@ public class Xinco extends Application {
             attrDialog = null;
             ddManager = null;
             data = null;
-            fileToLoad = null;
-            fileName = null;
+            setFileToLoad(null);
+            setFileName(null);
         }
 
         private void closeWizard() {
