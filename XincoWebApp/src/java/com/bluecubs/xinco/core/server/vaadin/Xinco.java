@@ -72,7 +72,6 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import org.vaadin.easyuploads.MultiFileUpload;
 import org.vaadin.hene.expandingtextarea.ExpandingTextArea;
-import org.vaadin.lucenecontainer.LuceneContainer;
 
 /**
  *
@@ -255,7 +254,7 @@ public class Xinco extends Application {
                             getResource().getString("message.missing.file"),
                             Notification.TYPE_ERROR_MESSAGE);
                 } else {
-                    data.setDesignation(fileName);
+                    getXincoCoreData().setDesignation(fileName);
                 }
                 return um.isSuccess();
             }
@@ -811,7 +810,7 @@ public class Xinco extends Application {
                             //Now load the file
                             loadFile(fileToLoad, fileName);
                             //Update log version
-                            XincoCoreLogServer log = new XincoCoreLogServer(data.getXincoCoreLogs().get(data.getXincoCoreLogs().size() - 1).getId());
+                            XincoCoreLogServer log = new XincoCoreLogServer(getXincoCoreData().getXincoCoreLogs().get(getXincoCoreData().getXincoCoreLogs().size() - 1).getId());
                             log.setVersion(versionSelector.getVersion());
                             log.setChangerID(1);
                             log.write2DB();
@@ -1036,13 +1035,13 @@ public class Xinco extends Application {
                 byteArray = out.toByteArray();
                 out.close();
                 // update attributes
-                ((XincoAddAttribute) data.getXincoAddAttributes().get(0)).setAttribVarchar(fileName);
-                data.setDesignation(fileName);
-                ((XincoAddAttribute) data.getXincoAddAttributes().get(1)).setAttribUnsignedint(totalLen);
-                ((XincoAddAttribute) data.getXincoAddAttributes().get(2)).setAttribVarchar(""
+                ((XincoAddAttribute) getXincoCoreData().getXincoAddAttributes().get(0)).setAttribVarchar(fileName);
+                getXincoCoreData().setDesignation(fileName);
+                ((XincoAddAttribute) getXincoCoreData().getXincoAddAttributes().get(1)).setAttribUnsignedint(totalLen);
+                ((XincoAddAttribute) getXincoCoreData().getXincoAddAttributes().get(2)).setAttribVarchar(""
                         + cin.getChecksum().getValue());
-                ((XincoAddAttribute) data.getXincoAddAttributes().get(3)).setAttribUnsignedint(1);
-                ((XincoAddAttribute) data.getXincoAddAttributes().get(4)).setAttribUnsignedint(0);
+                ((XincoAddAttribute) getXincoCoreData().getXincoAddAttributes().get(3)).setAttribUnsignedint(1);
+                ((XincoAddAttribute) getXincoCoreData().getXincoAddAttributes().get(4)).setAttribUnsignedint(0);
             } catch (Exception fe) {
                 Logger.getLogger(Xinco.class.getSimpleName()).log(Level.SEVERE, null, fe);
                 getMainWindow().showNotification(
@@ -1050,14 +1049,14 @@ public class Xinco extends Application {
                         Notification.TYPE_ERROR_MESSAGE);
             }
             // save data to server
-            data = getService().setXincoCoreData(data, loggedUser);
-            if (data == null) {
+            data = getService().setXincoCoreData(getXincoCoreData(), loggedUser);
+            if (getXincoCoreData() == null) {
                 getMainWindow().showNotification(
                         xerb.getString("datawizard.unabletosavedatatoserver"),
                         Notification.TYPE_ERROR_MESSAGE);
             }
             // upload file
-            if (getService().uploadXincoCoreData(data, byteArray, loggedUser) != totalLen) {
+            if (getService().uploadXincoCoreData(getXincoCoreData(), byteArray, loggedUser) != totalLen) {
                 cin.close();
                 removeDirectory(temp);
                 getMainWindow().showNotification(
@@ -1192,11 +1191,11 @@ public class Xinco extends Application {
                         final XincoCoreDataServer parent = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
                         //initialize the data object
                         data = new XincoCoreData();
-                        data.setXincoCoreDataType(new XincoCoreDataTypeServer(parent.getXincoCoreDataType().getId()));
-                        data.setStatusNumber(parent.getStatusNumber());
-                        data.setXincoCoreLanguage(parent.getXincoCoreLanguage());
-                        data.setXincoCoreNodeId(parent.getXincoCoreNodeId());
-                        Tool.addDefaultAddAttributes(data);
+                        getXincoCoreData().setXincoCoreDataType(new XincoCoreDataTypeServer(parent.getXincoCoreDataType().getId()));
+                        getXincoCoreData().setStatusNumber(parent.getStatusNumber());
+                        getXincoCoreData().setXincoCoreLanguage(parent.getXincoCoreLanguage());
+                        getXincoCoreData().setXincoCoreNodeId(parent.getXincoCoreNodeId());
+                        Tool.addDefaultAddAttributes(getXincoCoreData());
                         commit.setEnabled(false);
                         cancel.setEnabled(false);
                         XincoWizard wizard = new XincoWizard(getLocale());
@@ -1228,7 +1227,7 @@ public class Xinco extends Application {
                                     XincoCoreDataJpaController controller = new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory());
                                     XincoCoreDataHasDependencyServer dep = new XincoCoreDataHasDependencyServer(
                                             controller.findXincoCoreData(parent.getId()),
-                                            controller.findXincoCoreData(data.getId()),
+                                            controller.findXincoCoreData(getXincoCoreData().getId()),
                                             new XincoDependencyTypeServer(5));//Rendering
                                     dep.write2DB();
                                 } catch (XincoException ex) {
@@ -1616,7 +1615,7 @@ public class Xinco extends Application {
                                 || stored.isReadPermission()
                                 || stored.isWritePermission()) {
                             stored.write2DB();
-                            showCommentDataDialog(new XincoCoreDataServer(data.getId()), OPCode.MODIFICATION);
+                            showCommentDataDialog(new XincoCoreDataServer(getXincoCoreData().getId()), OPCode.MODIFICATION);
                         }
                     } catch (XincoException ex) {
                         Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
@@ -3149,11 +3148,11 @@ public class Xinco extends Application {
                                             getResource().getString("window.massiveimport.progress"),
                                             Notification.TYPE_TRAY_NOTIFICATION);
                                     data = new XincoCoreData();
-                                    data.setXincoCoreDataType(new XincoCoreDataTypeServer(1));
-                                    data.setStatusNumber(1);
-                                    data.setXincoCoreLanguage(new XincoCoreLanguageServer(2));
-                                    data.setXincoCoreNodeId(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-                                    Tool.addDefaultAddAttributes(data);
+                                    getXincoCoreData().setXincoCoreDataType(new XincoCoreDataTypeServer(1));
+                                    getXincoCoreData().setStatusNumber(1);
+                                    getXincoCoreData().setXincoCoreLanguage(new XincoCoreLanguageServer(2));
+                                    getXincoCoreData().setXincoCoreNodeId(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                                    Tool.addDefaultAddAttributes(getXincoCoreData());
                                     loadFile(file, fileName);
                                 }
                             }
@@ -3467,99 +3466,11 @@ public class Xinco extends Application {
         return true;
     }
 
-    private class ArchiveDialog extends CustomComponent {
-
-        private final Select archiveModel = new Select(
-                getResource().getString("window.archive.archivingmodel") + ":");
-
-        ArchiveDialog() {
-            com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(
-                    getResource().getString("window.datatype"));
-            panel.setContent(new VerticalLayout());
-            CheckBox revisionModelCheckbox =
-                    new CheckBox(
-                    getResource().getString("window.archive.revisionmodel"));
-            revisionModelCheckbox.setValue(true);
-            panel.addComponent(revisionModelCheckbox);
-            java.util.List<XincoAddAttribute> attributes;
-            if (data.getId() == 0) {
-                // Is a new data, there's nothing yet in the database.
-                // Load local values.
-                attributes = data.getXincoAddAttributes();
-            } else {
-                attributes = XincoAddAttributeServer.getXincoAddAttributes(data.getId());
-            }
-            int i = 0;
-            archiveModel.addItem(i);
-            archiveModel.setItemCaption(i, getResource().getString("window.archive.archivingmodel.none"));
-            //Set as default
-            archiveModel.setValue(i);
-            i++;
-            archiveModel.addItem(i);
-            archiveModel.setItemCaption(i, getResource().getString("window.archive.archivingmodel.archivedate"));
-            i++;
-            archiveModel.addItem(i);
-            archiveModel.setItemCaption(i, getResource().getString("window.archive.archivingmodel.archivedays"));
-            i++;
-            panel.addComponent(archiveModel);
-            //processing independent of creation
-            final DateField date = new DateField();
-            // Set the date and time to present
-            date.setValue(new Date());
-            date.setDateFormat("dd-MM-yyyy");
-            date.setCaption(getResource().getString("window.archive.archivedate") + ":");
-            panel.addComponent(date);
-            //Disabled by default
-            date.setEnabled(false);
-            //set date / days
-            //convert clone from remote time to local time
-            Calendar cal = (Calendar) ((XMLGregorianCalendar) (attributes.get(5)).getAttribDatetime()).toGregorianCalendar().clone();
-            Calendar realcal = ((XMLGregorianCalendar) (attributes.get(5)).getAttribDatetime()).toGregorianCalendar();
-            Calendar ngc = new GregorianCalendar();
-            cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - realcal.get(Calendar.ZONE_OFFSET)) - (ngc.get(Calendar.DST_OFFSET) + realcal.get(Calendar.DST_OFFSET)));
-            date.setValue(cal.getTime());
-            final com.vaadin.ui.TextField days = new com.vaadin.ui.TextField(
-                    getResource().getString("window.archive.archivedays") + ":");
-            panel.addComponent(days);
-            //Disabled by default
-            days.setEnabled(false);
-            archiveModel.addListener(new ValueChangeListener() {
-
-                @Override
-                public void valueChange(ValueChangeEvent event) {
-                    switch (Integer.valueOf(event.getProperty().toString())) {
-                        case 1:
-                            //Enable date
-                            date.setEnabled(true);
-                            days.setEnabled(false);
-                            break;
-                        case 2:
-                            //Enable days
-                            days.setEnabled(true);
-                            date.setEnabled(false);
-                            break;
-                        default:
-                            //Disable both
-                            date.setEnabled(false);
-                            days.setEnabled(false);
-                            break;
-                    }
-                }
-            });
-            // Set the size as undefined at all levels
-            panel.getContent().setSizeUndefined();
-            panel.setSizeUndefined();
-            setSizeUndefined();
-            // The composition root MUST be set
-            setCompositionRoot(panel);
-        }
-
-        /**
-         * @return the archiveModel
-         */
-        public Select getArchiveModel() {
-            return archiveModel;
-        }
+    /**
+     * @return the data
+     */
+    protected XincoCoreData getXincoCoreData() {
+        return data;
     }
 
     private class DataTypeDialog extends CustomComponent {
@@ -3688,7 +3599,7 @@ public class Xinco extends Application {
             for (Iterator<?> it = attrTable.getItemIds().iterator(); it.hasNext();) {
                 int id = (Integer) it.next();
                 Item item = attrTable.getItem(id);
-                data.getXincoAddAttributes().get(id).setAttribVarchar(
+                getXincoCoreData().getXincoAddAttributes().get(id).setAttribVarchar(
                         item.getItemProperty(getResource().getString("general.details")).getValue().toString());
             }
         }
@@ -3710,14 +3621,14 @@ public class Xinco extends Application {
             if (newData) {
                 idField.setValue("0");
             } else {
-                idField.setValue(data.getId());
+                idField.setValue(getXincoCoreData().getId());
             }
             //Not editable
             idField.setEnabled(false);
             //Designation
             designationField = new com.vaadin.ui.TextField(getResource().getString("general.designation") + ":");
             panel.addComponent(designationField);
-            designationField.setValue(data.getDesignation());
+            designationField.setValue(getXincoCoreData().getDesignation());
             //Language selection
             int i = 0;
             for (Object language : XincoCoreLanguageServer.getXincoCoreLanguages()) {
@@ -3729,7 +3640,7 @@ public class Xinco extends Application {
                     if (newData && ((XincoCoreLanguageServer) language).getSign().equals("en")) //Select by default
                     {
                         languages.setValue(((XincoCoreLanguageServer) language).getId());
-                    } else if (!newData && ((XincoCoreLanguageServer) language).getId() == data.getXincoCoreLanguage().getId()) {
+                    } else if (!newData && ((XincoCoreLanguageServer) language).getId() == getXincoCoreData().getXincoCoreLanguage().getId()) {
                         languages.setValue(((XincoCoreLanguageServer) language).getId());
                     }
                     i++;
@@ -3738,8 +3649,8 @@ public class Xinco extends Application {
                             "{0} not defined in com.bluecubs.xinco.messages.XincoMessagesLocale",
                             "Locale." + designation);
                 }
-                if (data != null && data.getXincoCoreLanguage() != null
-                        && data.getXincoCoreLanguage().getSign().equals(designation)) {
+                if (getXincoCoreData() != null && getXincoCoreData().getXincoCoreLanguage() != null
+                        && getXincoCoreData().getXincoCoreLanguage().getSign().equals(designation)) {
                     languages.setValue("Locale." + designation);
                 }
             }
@@ -3749,19 +3660,19 @@ public class Xinco extends Application {
             //Not editable
             statusField.setEnabled(false);
             String text = "";
-            if (newData || data.getStatusNumber() == 1) {
+            if (newData || getXincoCoreData().getStatusNumber() == 1) {
                 text = getResource().getString("general.status.open");
             }
-            if (data != null && data.getStatusNumber() == 2) {
+            if (getXincoCoreData() != null && getXincoCoreData().getStatusNumber() == 2) {
                 text = getResource().getString("general.status.locked") + " (-)";
             }
-            if (data != null && data.getStatusNumber() == 3) {
+            if (getXincoCoreData() != null && getXincoCoreData().getStatusNumber() == 3) {
                 text = getResource().getString("general.status.archived") + " (->)";
             }
-            if (data != null && data.getStatusNumber() == 4) {
+            if (getXincoCoreData() != null && getXincoCoreData().getStatusNumber() == 4) {
                 text = getResource().getString("general.status.checkedout") + " (X)";
             }
-            if (data != null && data.getStatusNumber() == 5) {
+            if (getXincoCoreData() != null && getXincoCoreData().getStatusNumber() == 5) {
                 text = getResource().getString("general.status.published") + " (WWW)";
             }
             statusField.setValue(text);
@@ -4016,8 +3927,8 @@ public class Xinco extends Application {
                     value = false;
                 } else {
                     //Process data
-                    data.setDesignation(dataDialog.getDesignationField().getValue().toString());
-                    data.setXincoCoreLanguage((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(Integer.valueOf(dataDialog.getLanguages().getValue().toString())));
+                    getXincoCoreData().setDesignation(dataDialog.getDesignationField().getValue().toString());
+                    getXincoCoreData().setXincoCoreLanguage((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(Integer.valueOf(dataDialog.getLanguages().getValue().toString())));
                 }
                 return value;
             }
@@ -4043,7 +3954,7 @@ public class Xinco extends Application {
                 @Override
                 public com.vaadin.ui.Component getContent() {
                     if (attrDialog == null) {
-                        attrDialog = new AddAttributeDialog(data);
+                        attrDialog = new AddAttributeDialog(getXincoCoreData());
                         attrDialog.setSizeFull();
                     }
                     return attrDialog;
@@ -4093,25 +4004,25 @@ public class Xinco extends Application {
                                 data = new XincoCoreData();
                                 try {
                                     //Process data
-                                    data.setXincoCoreDataType(new XincoCoreDataTypeServer(Integer.valueOf(dataTypeDialog.getTypes().getValue().toString())));
+                                    getXincoCoreData().setXincoCoreDataType(new XincoCoreDataTypeServer(Integer.valueOf(dataTypeDialog.getTypes().getValue().toString())));
                                 } catch (XincoException ex) {
                                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                                 //Set the parent id to the current selected node
-                                data.setXincoCoreNodeId(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-                                Tool.addDefaultAddAttributes(data);
+                                getXincoCoreData().setXincoCoreNodeId(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                                Tool.addDefaultAddAttributes(getXincoCoreData());
                                 //wizard.getLastCompleted() is the previous step, 
                                 //the current is wizard.getLastCompleted() + 1, 
                                 //the next step wizard.getLastCompleted() + 2
-                                switch (data.getXincoCoreDataType().getId()) {
+                                switch (getXincoCoreData().getXincoCoreDataType().getId()) {
                                     //File = 1
                                     case 1:
                                         clearTempSteps();
                                         addAttributeStep();
                                         temp.add(fileStep);
                                         wizard.addStep(temp.get(temp.size() - 1), wizard.getLastCompleted() + 1);
-                                        data.getXincoAddAttributes().get(3).setAttribUnsignedint(1); //revision model
-                                        data.getXincoAddAttributes().get(4).setAttribUnsignedint(0); //archiving model
+                                        getXincoCoreData().getXincoAddAttributes().get(3).setAttribUnsignedint(1); //revision model
+                                        getXincoCoreData().getXincoAddAttributes().get(4).setAttribUnsignedint(0); //archiving model
                                         //Is a file, show archiving dialog
                                         temp.add(new WizardStep() {
 
@@ -4123,7 +4034,7 @@ public class Xinco extends Application {
                                             @Override
                                             public com.vaadin.ui.Component getContent() {
                                                 if (archDialog == null) {
-                                                    archDialog = new ArchiveDialog();
+                                                    archDialog = new ArchiveDialog(com.bluecubs.xinco.core.server.vaadin.Xinco.this);
                                                     archDialog.setSizeFull();
                                                 }
                                                 return archDialog;
@@ -4174,7 +4085,7 @@ public class Xinco extends Application {
                                                     return false;
                                                 } else {
                                                     //Process the data
-                                                    data.getXincoAddAttributes().get(0).setAttribText(tArea.getValue().toString());
+                                                    getXincoCoreData().getXincoAddAttributes().get(0).setAttribText(tArea.getValue().toString());
                                                     return true;
                                                 }
                                             }
@@ -4200,10 +4111,10 @@ public class Xinco extends Application {
                             }
 
                             private void addAttributeStep() {
-                                if ((data.getXincoCoreDataType().getId() != 1
-                                        || data.getXincoAddAttributes().size() > 8)
-                                        && (data.getXincoCoreDataType().getId() != 2
-                                        || data.getXincoAddAttributes().size() > 1)) {
+                                if ((getXincoCoreData().getXincoCoreDataType().getId() != 1
+                                        || getXincoCoreData().getXincoAddAttributes().size() > 8)
+                                        && (getXincoCoreData().getXincoCoreDataType().getId() != 2
+                                        || getXincoCoreData().getXincoAddAttributes().size() > 1)) {
                                     temp.add(attrStep);
                                     wizard.addStep(temp.get(temp.size() - 1), wizard.getLastCompleted() + 1);
                                 }
@@ -4361,11 +4272,11 @@ public class Xinco extends Application {
         @Override
         public void wizardCancelled(WizardCancelledEvent event) {
             try {
-                if (newData && data != null) {
+                if (newData && getXincoCoreData() != null) {
                     //Cancelled so roll back everything done in database
                     HashMap parameters = new HashMap();
-                    parameters.put("id", data.getId());
-                    XincoCoreDataServer.removeFromDB(loggedUser.getId(), data.getId());
+                    parameters.put("id", getXincoCoreData().getId());
+                    XincoCoreDataServer.removeFromDB(loggedUser.getId(), getXincoCoreData().getId());
                 }
                 //Remove the file from the repository as well
                 closeWizard();
@@ -4375,9 +4286,9 @@ public class Xinco extends Application {
         }
 
         private void finishWizard() {
-            if (newData && data != null) {
+            if (newData && getXincoCoreData() != null) {
                 try {
-                    if (data.getXincoCoreLanguage() == null) {
+                    if (getXincoCoreData().getXincoCoreLanguage() == null) {
                         //find default language
                         XincoCoreLanguage xcl1;
                         int selection = -1;
@@ -4395,25 +4306,25 @@ public class Xinco extends Application {
                             selection = alt_selection;
                         }
                         xcl1 = (XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(selection);
-                        data.setXincoCoreLanguage(xcl1);
+                        getXincoCoreData().setXincoCoreLanguage(xcl1);
                     }
-                    data.setId(0);
+                    getXincoCoreData().setId(0);
                     // set data attributes
-                    data.setStatusNumber(1);
-                    switch (data.getXincoCoreDataType().getId()) {
+                    getXincoCoreData().setStatusNumber(1);
+                    switch (getXincoCoreData().getXincoCoreDataType().getId()) {
                         case 1:
                             //Now load the file
                             loadFile(fileToLoad, fileName);
                             break;
                         default:
                             // save data to server
-                            data = getService().setXincoCoreData(data, loggedUser);
-                            if (data == null) {
+                            data = getService().setXincoCoreData(getXincoCoreData(), loggedUser);
+                            if (getXincoCoreData() == null) {
                                 throw new XincoException(xerb.getString("datawizard.unabletosavedatatoserver"));
                             }
                             break;
                     }
-                    addLog(data, data.getXincoCoreLogs().isEmpty() ? OPCode.CREATION : OPCode.CHECKIN);
+                    addLog(getXincoCoreData(), getXincoCoreData().getXincoCoreLogs().isEmpty() ? OPCode.CREATION : OPCode.CHECKIN);
                 } catch (XincoException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (MalformedURLException ex) {
@@ -4423,7 +4334,7 @@ public class Xinco extends Application {
                 }
             } else {
                 //Update data only
-                getService().setXincoCoreData(data, loggedUser);
+                getService().setXincoCoreData(getXincoCoreData(), loggedUser);
             }
             closeWizard();
             getMainWindow().removeWindow(wizardWindow);
