@@ -3473,41 +3473,6 @@ public class Xinco extends Application {
         return data;
     }
 
-    private class DataTypeDialog extends CustomComponent {
-
-        private final Select types = new Select(getResource().getString("window.datatype.datatype") + ":");
-
-        DataTypeDialog() {
-            com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(getResource().getString("window.datatype"));
-            panel.setContent(new VerticalLayout());
-            //Data Type selection
-            for (Iterator it = XincoCoreDataTypeServer.getXincoCoreDataTypes().iterator(); it.hasNext();) {
-                XincoCoreDataTypeServer type = (XincoCoreDataTypeServer) it.next();
-                String designation = type.getDesignation();
-                if (getResource().containsKey(designation)) {
-                    String value = getResource().getString(designation);
-                    types.addItem(type.getId());
-                    types.setItemCaption(type.getId(), value);
-                }
-            }
-            panel.addComponent(types);
-            // Set the size as undefined at all levels
-            panel.getContent().setSizeUndefined();
-            panel.setSizeUndefined();
-            setSizeUndefined();
-
-            // The composition root MUST be set
-            setCompositionRoot(panel);
-        }
-
-        /**
-         * @return the types
-         */
-        public Select getTypes() {
-            return types;
-        }
-    }
-
     private void showCommentDataDialog(final XincoCoreDataServer data, final OPCode opcode) throws XincoException {
         final Form form = new Form();
         final VersionSelector versionSelector = new VersionSelector();
@@ -3786,7 +3751,7 @@ public class Xinco extends Application {
                 @Override
                 public com.vaadin.ui.Component getContent() {
                     if (dataTypeDialog == null) {
-                        dataTypeDialog = new DataTypeDialog();
+                        dataTypeDialog = new DataTypeDialog(com.bluecubs.xinco.core.server.vaadin.Xinco.this);
                         dataTypeDialog.setSizeFull();
                         dataTypeDialog.getTypes().addListener(new ValueChangeListener() {
 
