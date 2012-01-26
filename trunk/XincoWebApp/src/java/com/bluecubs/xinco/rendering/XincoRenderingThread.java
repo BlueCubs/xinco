@@ -34,7 +34,6 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoDependencyType
 import com.bluecubs.xinco.core.server.service.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoCoreUser;
 import com.bluecubs.xinco.core.server.service.XincoWebService;
-import com.bluecubs.xinco.core.server.vaadin.XincoVaadinApplication;
 import com.bluecubs.xinco.tools.Tool;
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,7 +45,6 @@ import org.artofsolving.jodconverter.OfficeDocumentConverter;
 import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
 import org.artofsolving.jodconverter.office.OfficeException;
 import org.artofsolving.jodconverter.office.OfficeManager;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -107,7 +105,7 @@ public class XincoRenderingThread extends Thread {
                         renderingFileName));
                 //Convert to pdf
                 getPDFRendering(xincoFile, rendition);
-                Lookup.getDefault().lookup(XincoVaadinApplication.class).addDefaultAddAttributes(rendering);
+                Tool.addDefaultAddAttributes(rendering);
                 // update attributes
                 rendering.getXincoAddAttributes().get(0).setAttribVarchar(rendering.getDesignation());
                 rendering.getXincoAddAttributes().get(1).setAttribUnsignedint(rendition.length());

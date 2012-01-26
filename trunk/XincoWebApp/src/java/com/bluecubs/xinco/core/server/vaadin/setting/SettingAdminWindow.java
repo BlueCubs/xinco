@@ -28,14 +28,13 @@
 package com.bluecubs.xinco.core.server.vaadin.setting;
 
 import com.bluecubs.xinco.core.server.XincoDBManager;
-import com.bluecubs.xinco.core.server.vaadin.XincoVaadinApplication;
+import com.bluecubs.xinco.core.server.vaadin.Xinco;
 import com.vaadin.addon.jpacontainer.EntityContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.*;
 import java.util.ResourceBundle;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -114,6 +113,6 @@ public class SettingAdminWindow extends Panel implements ComponentContainer {
     }
 
     private ResourceBundle getResource() {
-        return Lookup.getDefault().lookup(XincoVaadinApplication.class).getResource();
+        return ((Xinco) getApplication()).getResource();
     }
 }

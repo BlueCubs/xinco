@@ -1,11 +1,10 @@
 package com.bluecubs.xinco.core.server.vaadin.custom;
 
 import com.bluecubs.xinco.core.server.service.XincoVersion;
-import com.bluecubs.xinco.core.server.vaadin.XincoVaadinApplication;
+import com.bluecubs.xinco.core.server.vaadin.Xinco;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.*;
-import org.openide.util.Lookup;
 import org.vaadin.risto.stepper.IntStepper;
 
 /**
@@ -87,7 +86,7 @@ public class VersionSelector extends CustomComponent {
     }
 
     private String getString(String key) {
-        return Lookup.getDefault().lookup(XincoVaadinApplication.class).getResource().getString(key);
+        return ((Xinco) getApplication()).getResource().getString(key);
     }
 
     public void increaseHigh() {
