@@ -70,7 +70,6 @@ import javax.swing.Icon;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import org.openide.util.lookup.ServiceProvider;
 import org.vaadin.easyuploads.MultiFileUpload;
 import org.vaadin.hene.expandingtextarea.ExpandingTextArea;
 import org.vaadin.lucenecontainer.LuceneContainer;
@@ -79,8 +78,7 @@ import org.vaadin.lucenecontainer.LuceneContainer;
  *
  * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
  */
-@ServiceProvider(service = XincoVaadinApplication.class)
-public class Xinco extends Application implements XincoVaadinApplication {
+public class Xinco extends Application {
 
     //client version
     private XincoVersion xincoClientVersion = null;
@@ -104,7 +102,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
     private XincoActivityTimer xat = null;
     private File fileToLoad;
     private String fileName;                    // Original file name
-    private boolean renderingSupportEnabled = true;
+    private boolean renderingSupportEnabled = false;
     private String version;
     private HorizontalSplitPanel xeSplitPanel;
     private com.vaadin.ui.Button login;
@@ -283,6 +281,38 @@ public class Xinco extends Application implements XincoVaadinApplication {
         splitPanel.setSecondComponent(getXincoExplorer());
         splitPanel.setHeight(700, Sizeable.UNITS_PIXELS);
         splitPanel.setSplitPosition(20, Sizeable.UNITS_PERCENTAGE);
+        final Select languages = getLanguageOptions();
+        languages.setImmediate(true);
+        languages.addListener(new ValueChangeListener() {
+
+            public void valueChange(ValueChangeEvent event) {
+                Locale loc;
+                try {
+                    String list = languages.getValue().toString();
+                    String[] locales;
+                    locales = list.split("_");
+                    switch (locales.length) {
+                        case 1:
+                            loc = new Locale(locales[0]);
+                            break;
+                        case 2:
+                            loc = new Locale(locales[0], locales[1]);
+                            break;
+                        case 3:
+                            loc = new Locale(locales[0], locales[1], locales[2]);
+                            break;
+                        default:
+                            loc = Locale.getDefault();
+                    }
+                } catch (Exception e) {
+                    loc = Locale.getDefault();
+                }
+                setLocale(loc);
+                refresh();
+            }
+        });
+        languages.setCaption(getResource().getString("general.language") + ":");
+        getMainWindow().addComponent(languages);
         getMainWindow().addComponent(splitPanel);
     }
 
@@ -365,7 +395,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
     /**
      * @return the Resource Bundle
      */
-    @Override
     public ResourceBundle getResource() {
         return xerb;
     }
@@ -373,7 +402,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
     /**
      * @return the loggedUser
      */
-    @Override
     public XincoCoreUser getLoggedUser() {
         return loggedUser;
     }
@@ -402,7 +430,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
         return panel;
     }
 
-    @Override
     public Tree getXincoTree() {
         if (xincoTree == null) {
             try {
@@ -1084,7 +1111,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
         return directory.delete();
     }
 
-    @Override
     public void setLock() {
         //Don't do anything if no one is logged in.
         if (loggedUser != null) {
@@ -1097,14 +1123,12 @@ public class Xinco extends Application implements XincoVaadinApplication {
     /**
      * Reset activity timer
      */
-    @Override
     public void resetTimer() {
         if (xat != null) {
             xat.getActivityTimer().restart();
         }
     }
 
-    @Override
     public void windowResized(ResizeEvent e) {
         for (Window w : getMainWindow().getChildWindows()) {
             //Center sub window in new screen size
@@ -1168,7 +1192,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                         data.setStatusNumber(parent.getStatusNumber());
                         data.setXincoCoreLanguage(parent.getXincoCoreLanguage());
                         data.setXincoCoreNodeId(parent.getXincoCoreNodeId());
-                        addDefaultAddAttributes(data);
+                        Tool.addDefaultAddAttributes(data);
                         commit.setEnabled(false);
                         cancel.setEnabled(false);
                         XincoWizard wizard = new XincoWizard(getLocale());
@@ -1993,15 +2017,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
         getMainWindow().addWindow(pass);
     }
 
-    private void showLanguageSelection() {
-        final Window lang = new Window();
-        lang.setReadOnly(true);
-        final Form form = new Form();
-        Embedded logo = new Embedded("", new ThemeResource("img/xinco_logo.gif"));
-        logo.setType(Embedded.TYPE_IMAGE);
-        form.getLayout().addComponent(logo);
-        form.getLayout().addComponent(new com.vaadin.ui.Label(
-                "Please choose a language:"));
+    private Select getLanguageOptions() {
         final Select languages = new Select();
         ArrayList<String> locales = new ArrayList<String>();
         ResourceBundle lrb = ResourceBundle.getBundle(
@@ -2018,6 +2034,19 @@ public class Xinco extends Application implements XincoVaadinApplication {
                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        return languages;
+    }
+
+    private void showLanguageSelection() {
+        final Window lang = new Window();
+        lang.setReadOnly(true);
+        final Form form = new Form();
+        Embedded logo = new Embedded("", new ThemeResource("img/xinco_logo.gif"));
+        logo.setType(Embedded.TYPE_IMAGE);
+        form.getLayout().addComponent(logo);
+        form.getLayout().addComponent(new com.vaadin.ui.Label(
+                "Please choose a language:"));
+        final Select languages = getLanguageOptions();
         form.addField("type", languages);
         //Used for validation purposes
         final com.vaadin.ui.Button commit = new com.vaadin.ui.Button("Submit",
@@ -3120,7 +3149,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                     data.setStatusNumber(1);
                                     data.setXincoCoreLanguage(new XincoCoreLanguageServer(2));
                                     data.setXincoCoreNodeId(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-                                    addDefaultAddAttributes(data);
+                                    Tool.addDefaultAddAttributes(data);
                                     loadFile(file, fileName);
                                 }
                             }
@@ -3415,7 +3444,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
         XincoMenuItemManager.addItem(item);
     }
 
-    @Override
     public boolean selectNode(String nodeId) {
         if (getXincoTree() == null) {
             return false;
@@ -3423,7 +3451,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
         return getXincoTree().expandItem(nodeId);
     }
 
-    @Override
     public boolean expandTreeNodes(java.util.List<Integer> parents) {
         if (getXincoTree() == null) {
             return false;
@@ -4068,7 +4095,7 @@ public class Xinco extends Application implements XincoVaadinApplication {
                                 }
                                 //Set the parent id to the current selected node
                                 data.setXincoCoreNodeId(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-                                addDefaultAddAttributes(data);
+                                Tool.addDefaultAddAttributes(data);
                                 //wizard.getLastCompleted() is the previous step, 
                                 //the current is wizard.getLastCompleted() + 1, 
                                 //the next step wizard.getLastCompleted() + 2
@@ -4230,31 +4257,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
         wizardWindow.setWidth(40, Sizeable.UNITS_PERCENTAGE);
         // add the wizard to a layout
         getMainWindow().addWindow(wizardWindow);
-    }
-
-    @Override
-    public void addDefaultAddAttributes(com.bluecubs.xinco.core.server.service.XincoCoreData data) {
-        //add specific attributes
-        data.getXincoAddAttributes().clear();
-        XincoAddAttribute xaa;
-        for (Iterator<XincoCoreDataTypeAttribute> it = data.getXincoCoreDataType().getXincoCoreDataTypeAttributes().iterator(); it.hasNext();) {
-            XincoCoreDataTypeAttribute attr = it.next();
-            try {
-                xaa = new XincoAddAttribute();
-                xaa.setAttributeId(attr.getAttributeId());
-                xaa.setAttribVarchar("");
-                xaa.setAttribText("");
-                GregorianCalendar calendar = new GregorianCalendar();
-                calendar.setTime(new Date());
-                DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
-                xaa.setAttribDatetime(DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
-                data.getXincoAddAttributes().add(xaa);
-            } catch (DatatypeConfigurationException ex) {
-                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        Logger.getLogger(Xinco.class.getName()).log(Level.FINE,
-                "Added {0} attributes!", data.getXincoAddAttributes().size());
     }
 
     private class UploadManager extends CustomComponent
@@ -4951,7 +4953,6 @@ public class Xinco extends Application implements XincoVaadinApplication {
         getMainWindow().requestRepaintAll();
     }
 
-    @Override
     public XincoWebService getService() {
         if (service == null) {
             service = new XincoWebService();

@@ -1,5 +1,8 @@
 package com.bluecubs.xinco.tools;
 
+import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
+import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
+import com.bluecubs.xinco.core.server.vaadin.Xinco;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,14 +11,20 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.nio.channels.FileChannel;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 
 /**
  *
@@ -195,7 +204,6 @@ public class Tool {
                 int height = reader.getHeight(reader.getMinIndex());
                 result = new Dimension(width, height);
             } catch (Exception e) {
-                
             } finally {
                 reader.dispose();
             }
@@ -215,5 +223,29 @@ public class Tool {
             }
         }
         return result;
+    }
+
+    public static void addDefaultAddAttributes(com.bluecubs.xinco.core.server.service.XincoCoreData data) {
+        //add specific attributes
+        data.getXincoAddAttributes().clear();
+        XincoAddAttribute xaa;
+        for (Iterator<XincoCoreDataTypeAttribute> it = data.getXincoCoreDataType().getXincoCoreDataTypeAttributes().iterator(); it.hasNext();) {
+            XincoCoreDataTypeAttribute attr = it.next();
+            try {
+                xaa = new XincoAddAttribute();
+                xaa.setAttributeId(attr.getAttributeId());
+                xaa.setAttribVarchar("");
+                xaa.setAttribText("");
+                GregorianCalendar calendar = new GregorianCalendar();
+                calendar.setTime(new Date());
+                DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
+                xaa.setAttribDatetime(DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
+                data.getXincoAddAttributes().add(xaa);
+            } catch (DatatypeConfigurationException ex) {
+                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        Logger.getLogger(Tool.class.getName()).log(Level.FINE,
+                "Added {0} attributes!", data.getXincoAddAttributes().size());
     }
 }

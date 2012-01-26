@@ -27,9 +27,8 @@
  */
 package com.bluecubs.xinco.core.server.vaadin.setting;
 
-import com.bluecubs.xinco.core.server.vaadin.XincoVaadinApplication;
+import com.bluecubs.xinco.core.server.vaadin.Xinco;
 import com.vaadin.ui.DefaultFieldFactory;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -38,28 +37,30 @@ import org.openide.util.Lookup;
 public class XincoSettingFieldFactory extends DefaultFieldFactory {
 
     private static final XincoSettingFieldFactory instance = new XincoSettingFieldFactory();
+    private static Xinco xinco;
 
     /**
      * Singleton method to get an instance of DefaultFieldFactory.
      *
      * @return an instance of DefaultFieldFactory
      */
-    public static XincoSettingFieldFactory get() {
+    public static XincoSettingFieldFactory get(Xinco xincoInstance) {
+        xinco = xincoInstance;
         return instance;
     }
-    
+
     /**
      * If name follows method naming conventions, convert the name to spaced
      * upper case text. For example, convert "firstName" to "First Name"
-     * 
+     *
      * @param propertyId
      * @return the formatted caption string
      */
     public static String createCaptionByPropertyId(Object propertyId) {
         String name = propertyId.toString();
         if (name.length() > 0) {
-            if("description".equals(name)){
-                name = Lookup.getDefault().lookup(XincoVaadinApplication.class).getResource().getString("general.description");
+            if ("description".equals(name)) {
+                name = xinco.getResource().getString("general.description");
             }
         }
         return name;

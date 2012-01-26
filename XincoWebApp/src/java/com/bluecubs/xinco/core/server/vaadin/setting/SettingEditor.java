@@ -31,7 +31,7 @@ import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.server.persistence.XincoSetting;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoSettingJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.vaadin.XincoVaadinApplication;
+import com.bluecubs.xinco.core.server.vaadin.Xinco;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.*;
@@ -41,7 +41,6 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -166,6 +165,6 @@ class SettingEditor extends Window implements Button.ClickListener {
     }
 
     private ResourceBundle getResource() {
-        return Lookup.getDefault().lookup(XincoVaadinApplication.class).getResource();
+        return ((Xinco) getApplication()).getResource();
     }
 }
