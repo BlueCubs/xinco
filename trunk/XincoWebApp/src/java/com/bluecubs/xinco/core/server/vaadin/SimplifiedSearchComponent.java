@@ -52,9 +52,9 @@ public class SimplifiedSearchComponent extends CustomComponent {
     private final Xinco xinco;
     private LuceneContainer dataSource = null;
     private final Table table = new Table();
-    private final com.vaadin.ui.Label info = new com.vaadin.ui.Label();
-    private Button goToSelection;
+    private Button goToSelection, search;
     private Window results;
+    private com.vaadin.ui.Panel panel;
 
     public SimplifiedSearchComponent(final Xinco xinco) {
         this.xinco = xinco;
@@ -63,11 +63,11 @@ public class SimplifiedSearchComponent extends CustomComponent {
         table.setWidth(50, Sizeable.UNITS_PERCENTAGE);
         table.setColumnCollapsingAllowed(true);
         table.setSelectable(true);
-        com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(xinco.getResource().getString("menu.search"));
+        panel = new com.vaadin.ui.Panel(xinco.getResource().getString("menu.search"));
         panel.setContent(new HorizontalLayout());
         final TextField criteria = new TextField();
         panel.addComponent(criteria);
-        Button search = new Button(xinco.getResource().getString("menu.search"), new com.vaadin.ui.Button.ClickListener() {
+        search = new Button(xinco.getResource().getString("menu.search"), new com.vaadin.ui.Button.ClickListener() {
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -83,7 +83,6 @@ public class SimplifiedSearchComponent extends CustomComponent {
                 dataSource.search(query, null, false);
                 long time = System.currentTimeMillis() - st;
                 int hits = dataSource.size();
-                info.setValue("Found " + hits + " docs in " + time + "ms");
                 table.setContainerDataSource(dataSource);
                 fixTable();
                 if (hits > 0) {
@@ -145,12 +144,10 @@ public class SimplifiedSearchComponent extends CustomComponent {
                 } else {
                     xinco.getXincoTree().setValue("data-" + data.getId());
                 }
-                info.setValue("");
                 xinco.getMainWindow().removeWindow(results);
             }
         });
         panel.addComponent(search);
-        panel.addComponent(info);
         // Set the size as undefined at all levels
         panel.getContent().setSizeUndefined();
         panel.setSizeUndefined();
@@ -178,5 +175,10 @@ public class SimplifiedSearchComponent extends CustomComponent {
             }
         }
         return haveAccess;
+    }
+
+    void refresh() {
+        panel.setCaption(xinco.getResource().getString("menu.search"));
+        search.setCaption(xinco.getResource().getString("menu.search"));
     }
 }

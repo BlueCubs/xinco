@@ -272,6 +272,7 @@ public class Xinco extends Application {
 
     private void addHeader() {
         final Select languages = getLanguageOptions();
+        final SimplifiedSearchComponent ssc = new SimplifiedSearchComponent(this);
         languages.setImmediate(true);
         languages.addListener(new ValueChangeListener() {
 
@@ -298,12 +299,15 @@ public class Xinco extends Application {
                     loc = Locale.getDefault();
                 }
                 setLocale(loc);
-                refresh();
+                languages.setCaption(getResource().getString("general.language") + ":");
+                showMainWindow();
+                ssc.refresh();
             }
         });
         languages.setCaption(getResource().getString("general.language") + ":");
+        languages.setValue(getLocale().getLanguage());
         getMainWindow().addComponent(languages);
-        getMainWindow().addComponent(new SimplifiedSearchComponent(this));
+        getMainWindow().addComponent(ssc);
     }
 
     private void showMainWindow() {
