@@ -119,7 +119,6 @@ public class Xinco extends Application {
 
     @Override
     public void init() {
-        //TODO: Add way to change language after being selected.
         try {
             XincoDBManager.reload();
             XincoDBManager.getEntityManagerFactory();
@@ -304,6 +303,7 @@ public class Xinco extends Application {
         });
         languages.setCaption(getResource().getString("general.language") + ":");
         getMainWindow().addComponent(languages);
+        getMainWindow().addComponent(new SimplifiedSearchComponent(this));
     }
 
     private void showMainWindow() {
