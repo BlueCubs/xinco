@@ -32,11 +32,9 @@ public class LuceneSearchWindow extends Window {
     private Select operator = new Select();
     private Select options = new Select();
     private final CheckBox allLanguages;
-    private final Xinco xinco;
 
-    public LuceneSearchWindow(final Xinco xinco) {
-        this.xinco = xinco;
-        allLanguages = new CheckBox(xinco.getResource().getString("window.search.alllanguages"), new com.vaadin.ui.Button.ClickListener() {
+    public LuceneSearchWindow() {
+        allLanguages = new CheckBox(Xinco.getInstance().getResource().getString("window.search.alllanguages"), new com.vaadin.ui.Button.ClickListener() {
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -46,7 +44,7 @@ public class LuceneSearchWindow extends Window {
         });
         table.setWidth(50, Sizeable.UNITS_PERCENTAGE);
         setContent(new VerticalLayout());
-        com.vaadin.ui.Button addToQuery = new com.vaadin.ui.Button(xinco.getResource().getString("window.search.addtoquery"), new com.vaadin.ui.Button.ClickListener() {
+        com.vaadin.ui.Button addToQuery = new com.vaadin.ui.Button(Xinco.getInstance().getResource().getString("window.search.addtoquery"), new com.vaadin.ui.Button.ClickListener() {
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -62,14 +60,14 @@ public class LuceneSearchWindow extends Window {
                 variableField.setValue("");
             }
         });
-        com.vaadin.ui.Button reset = new com.vaadin.ui.Button(xinco.getResource().getString("general.reset"), new com.vaadin.ui.Button.ClickListener() {
+        com.vaadin.ui.Button reset = new com.vaadin.ui.Button(Xinco.getInstance().getResource().getString("general.reset"), new com.vaadin.ui.Button.ClickListener() {
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 queryField.setValue("");
             }
         });
-        com.vaadin.ui.Button searchButton = new com.vaadin.ui.Button(xinco.getResource().getString("window.search"), new com.vaadin.ui.Button.ClickListener() {
+        com.vaadin.ui.Button searchButton = new com.vaadin.ui.Button(Xinco.getInstance().getResource().getString("window.search"), new com.vaadin.ui.Button.ClickListener() {
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -95,14 +93,14 @@ public class LuceneSearchWindow extends Window {
         table.setSelectable(true);
         table.setImmediate(true);
         table.setWidth(100, Sizeable.UNITS_PERCENTAGE);
-        final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(xinco.getResource().getString("general.cancel"), new com.vaadin.ui.Button.ClickListener() {
+        final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(Xinco.getInstance().getResource().getString("general.cancel"), new com.vaadin.ui.Button.ClickListener() {
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 getApplication().getMainWindow().removeWindow(LuceneSearchWindow.this);
             }
         });
-        final com.vaadin.ui.Button goToSelection = getToSelectionButton(xinco);
+        final com.vaadin.ui.Button goToSelection = getToSelectionButton();
         table.addListener(new ValueChangeListener() {
 
             @Override
@@ -117,7 +115,7 @@ public class LuceneSearchWindow extends Window {
         operator.addItem("+");
         operator.addItem("-");
         options.addItem("file");
-        options.setItemCaption("file", xinco.getResource().getString("window.search.filecontent") + " (file)");
+        options.setItemCaption("file", Xinco.getInstance().getResource().getString("window.search.filecontent") + " (file)");
         String text;
         ArrayList alldatatypes = XincoCoreDataTypeServer.getXincoCoreDataTypes();
         for (Iterator<XincoCoreDataTypeServer> it = alldatatypes.iterator(); it.hasNext();) {
@@ -126,12 +124,12 @@ public class LuceneSearchWindow extends Window {
                 com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute attr = it2.next();
                 text = attr.getDesignation();
                 options.addItem(text);
-                options.setItemCaption(text, xinco.getResource().containsKey(text) ? xinco.getResource().getString(text) : text);
+                options.setItemCaption(text, Xinco.getInstance().getResource().containsKey(text) ? Xinco.getInstance().getResource().getString(text) : text);
             }
         }
-        form.getLayout().addComponent(new com.vaadin.ui.Label(xinco.getResource().getString("window.search.querybuilder") + ":"));
-        form.getLayout().addComponent(new com.vaadin.ui.Label(xinco.getResource().getString("window.search.querybuilderhints")));
-        form.getLayout().addComponent(new com.vaadin.ui.Label(xinco.getResource().getString("window.search.querybuilderhintslabel")));
+        form.getLayout().addComponent(new com.vaadin.ui.Label(Xinco.getInstance().getResource().getString("window.search.querybuilder") + ":"));
+        form.getLayout().addComponent(new com.vaadin.ui.Label(Xinco.getInstance().getResource().getString("window.search.querybuilderhints")));
+        form.getLayout().addComponent(new com.vaadin.ui.Label(Xinco.getInstance().getResource().getString("window.search.querybuilderhintslabel")));
         form.getLayout().addComponent(info);
         hl.addComponent(operator);
         hl.addComponent(options);
@@ -142,7 +140,7 @@ public class LuceneSearchWindow extends Window {
         hl3.addComponent(queryField);
         hl3.addComponent(reset);
         form.getLayout().addComponent(hl3);
-        hl4.addComponent(new com.vaadin.ui.Label(xinco.getResource().getString("general.language") + ":"));
+        hl4.addComponent(new com.vaadin.ui.Label(Xinco.getInstance().getResource().getString("general.language") + ":"));
         for (Iterator<XincoCoreLanguageServer> it = XincoCoreLanguageServer.getXincoCoreLanguages().iterator(); it.hasNext();) {
             XincoCoreLanguageServer language = it.next();
             text = language.getDesignation() + " (" + language.getSign() + ")";
@@ -164,19 +162,19 @@ public class LuceneSearchWindow extends Window {
         setSizeUndefined();
     }
 
-    protected final com.vaadin.ui.Button getToSelectionButton(final Xinco xinco) {
-        return new com.vaadin.ui.Button(xinco.getResource().getString("window.search.gotoselection"), new com.vaadin.ui.Button.ClickListener() {
+    protected final com.vaadin.ui.Button getToSelectionButton() {
+        return new com.vaadin.ui.Button(Xinco.getInstance().getResource().getString("window.search.gotoselection"), new com.vaadin.ui.Button.ClickListener() {
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 boolean haveAccess;
-                boolean loggedIn = xinco.getLoggedUser() != null;
+                boolean loggedIn = Xinco.getInstance().getLoggedUser() != null;
                 //Get selected data
                 XincoCoreDataServer data = new XincoCoreDataServer(Integer.valueOf(table.getItem(table.getValue()).getItemProperty("id").toString()));
                 //Now check permissions on the file for the user
                 data.loadACL();
                 if (loggedIn) {
-                    XincoCoreACE ace = XincoCoreACEServer.checkAccess(xinco.getLoggedUser(), (ArrayList) data.getXincoCoreAcl());
+                    XincoCoreACE ace = XincoCoreACEServer.checkAccess(Xinco.getInstance().getLoggedUser(), (ArrayList) data.getXincoCoreAcl());
                     haveAccess = ace.isReadPermission();
                 } else {
                     haveAccess = canRead(data.getXincoCoreAcl());
@@ -190,7 +188,7 @@ public class LuceneSearchWindow extends Window {
                         parent = new XincoCoreNodeServer(data.getXincoCoreNodeId());
                     }
                     while (parent != null) {
-                        if ((loggedIn && XincoCoreACEServer.checkAccess(xinco.getLoggedUser(), (ArrayList) data.getXincoCoreAcl()).isReadPermission()) || canRead(parent.getXincoCoreAcl())) {
+                        if ((loggedIn && XincoCoreACEServer.checkAccess(Xinco.getInstance().getLoggedUser(), (ArrayList) data.getXincoCoreAcl()).isReadPermission()) || canRead(parent.getXincoCoreAcl())) {
                             parents.add(parent.getId());
                         }
                         if (parent.getXincoCoreNodeId() > 0) {
@@ -203,11 +201,11 @@ public class LuceneSearchWindow extends Window {
                     haveAccess = parents.getLast() == 1;
                 }
                 close();
-                if (!(haveAccess && xinco.expandTreeNodes(parents))) {
+                if (!(haveAccess && Xinco.getInstance().expandTreeNodes(parents))) {
                     //Able to expand nodes
-                    getApplication().getMainWindow().showNotification(xinco.getResource().getString("error.data.sufficientrights"), Notification.TYPE_WARNING_MESSAGE);
+                    getApplication().getMainWindow().showNotification(Xinco.getInstance().getResource().getString("error.data.sufficientrights"), Notification.TYPE_WARNING_MESSAGE);
                 } else {
-                    xinco.getXincoTree().setValue("data-" + data.getId());
+                    Xinco.getInstance().getXincoTree().setValue("data-" + data.getId());
                 }
             }
         });
@@ -217,7 +215,7 @@ public class LuceneSearchWindow extends Window {
         for (Object id : table.getContainerPropertyIds()) {
             table.setColumnCollapsed(id, !id.equals("id") && !id.equals("designation"));
             //Fix headers
-            table.setColumnHeader(id, xinco.getResource().containsKey(id.toString()) ? xinco.getResource().getString(id.toString()) : id.toString());
+            table.setColumnHeader(id, Xinco.getInstance().getResource().containsKey(id.toString()) ? Xinco.getInstance().getResource().getString(id.toString()) : id.toString());
         }
     }
 

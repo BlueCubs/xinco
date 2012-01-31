@@ -2,7 +2,6 @@ package com.bluecubs.xinco.tools;
 
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
-import com.bluecubs.xinco.core.server.vaadin.Xinco;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
@@ -242,7 +241,7 @@ public class Tool {
                 xaa.setAttribDatetime(DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
                 data.getXincoAddAttributes().add(xaa);
             } catch (DatatypeConfigurationException ex) {
-                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Tool.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         Logger.getLogger(Tool.class.getName()).log(Level.FINE,

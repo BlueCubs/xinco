@@ -165,6 +165,6 @@ class SettingEditor extends Window implements Button.ClickListener {
     }
 
     private ResourceBundle getResource() {
-        return ((Xinco) getApplication()).getResource();
+        return Xinco.getInstance().getResource();
     }
 }

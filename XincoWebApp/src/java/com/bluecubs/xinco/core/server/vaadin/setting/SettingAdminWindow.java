@@ -113,6 +113,6 @@ public class SettingAdminWindow extends Panel implements ComponentContainer {
     }
 
     private ResourceBundle getResource() {
-        return ((Xinco) getApplication()).getResource();
+        return Xinco.getInstance().getResource();
     }
 }
