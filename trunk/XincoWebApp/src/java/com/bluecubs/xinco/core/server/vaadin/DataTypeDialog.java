@@ -40,19 +40,17 @@ import java.util.Iterator;
 class DataTypeDialog extends CustomComponent {
 
     private final Select types;
-    private final Xinco xinco;
 
-    DataTypeDialog(final Xinco xinco) {
-        this.xinco = xinco;
-        types = new Select(xinco.getResource().getString("window.datatype.datatype") + ":");
-        com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(xinco.getResource().getString("window.datatype"));
+    DataTypeDialog() {
+        types = new Select(Xinco.getInstance().getResource().getString("window.datatype.datatype") + ":");
+        com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(Xinco.getInstance().getResource().getString("window.datatype"));
         panel.setContent(new VerticalLayout());
         //Data Type selection
         for (Iterator it = XincoCoreDataTypeServer.getXincoCoreDataTypes().iterator(); it.hasNext();) {
             XincoCoreDataTypeServer type = (XincoCoreDataTypeServer) it.next();
             String designation = type.getDesignation();
-            if (xinco.getResource().containsKey(designation)) {
-                String value = xinco.getResource().getString(designation);
+            if (Xinco.getInstance().getResource().containsKey(designation)) {
+                String value = Xinco.getInstance().getResource().getString(designation);
                 types.addItem(type.getId());
                 types.setItemCaption(type.getId(), value);
             }

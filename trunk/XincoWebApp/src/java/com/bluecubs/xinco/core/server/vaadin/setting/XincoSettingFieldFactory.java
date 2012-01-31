@@ -37,17 +37,6 @@ import com.vaadin.ui.DefaultFieldFactory;
 public class XincoSettingFieldFactory extends DefaultFieldFactory {
 
     private static final XincoSettingFieldFactory instance = new XincoSettingFieldFactory();
-    private static Xinco xinco;
-
-    /**
-     * Singleton method to get an instance of DefaultFieldFactory.
-     *
-     * @return an instance of DefaultFieldFactory
-     */
-    public static XincoSettingFieldFactory get(Xinco xincoInstance) {
-        xinco = xincoInstance;
-        return instance;
-    }
 
     /**
      * If name follows method naming conventions, convert the name to spaced
@@ -60,7 +49,7 @@ public class XincoSettingFieldFactory extends DefaultFieldFactory {
         String name = propertyId.toString();
         if (name.length() > 0) {
             if ("description".equals(name)) {
-                name = xinco.getResource().getString("general.description");
+                name = Xinco.getInstance().getResource().getString("general.description");
             }
         }
         return name;

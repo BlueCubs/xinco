@@ -15,20 +15,10 @@ import java.util.logging.Logger;
  */
 public class XincoActivityActionListener implements ActionListener {
 
-    private Xinco explorer = null;
-
-    /** Creates a new instance of XincoActivityActionListener
-     * @param e
-     * @param xat 
-     */
-    public XincoActivityActionListener(Xinco e) {
-        this.explorer = e;
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            explorer.setLock();
+            Xinco.getInstance().setLock();
         } catch (Throwable ex) {
             Logger.getLogger(XincoActivityActionListener.class.getName()).log(Level.SEVERE, null, ex);
         }

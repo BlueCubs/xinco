@@ -46,17 +46,12 @@ class UploadManager extends CustomComponent implements Upload.SucceededListener,
 
     private File file; // File to write to.
     private boolean success = false;
-    private final Xinco xinco;
-
-    UploadManager(final Xinco xinco) {
-        this.xinco = xinco;
-    }
 
     // Callback method to begin receiving the upload.
     @Override
     public OutputStream receiveUpload(String filename, String MIMEType) {
         FileOutputStream fos; // Output stream to write to
-        xinco.setFileName(filename);
+        Xinco.getInstance().setFileName(filename);
         try {
             //Create upload folder if needed
             File uploads = new File(XincoDBManager.config.fileRepositoryPath + System.getProperty("file.separator"));
@@ -78,15 +73,15 @@ class UploadManager extends CustomComponent implements Upload.SucceededListener,
 
     @Override
     public void uploadSucceeded(SucceededEvent event) {
-        xinco.setFileToLoad(file);
+        Xinco.getInstance().setFileToLoad(file);
         success = true;
     }
 
     @Override
     public void uploadFailed(FailedEvent event) {
-        getApplication().getMainWindow().showNotification(xinco.getResource().getString("datawizard.unabletoloadfile"), Notification.TYPE_ERROR_MESSAGE);
+        getApplication().getMainWindow().showNotification(Xinco.getInstance().getResource().getString("datawizard.unabletoloadfile"), Notification.TYPE_ERROR_MESSAGE);
         file = null;
-        xinco.setFileName(null);
+        Xinco.getInstance().setFileName(null);
         success = false;
     }
 
@@ -101,7 +96,7 @@ class UploadManager extends CustomComponent implements Upload.SucceededListener,
      * @return the fileName
      */
     public String getFileName() {
-        return xinco.getFileName();
+        return Xinco.getInstance().getFileName();
     }
 
     /**

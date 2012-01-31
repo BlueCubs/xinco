@@ -9,7 +9,6 @@ import javax.swing.Timer;
  */
 public final class XincoActivityTimer {
 
-    private Xinco explorer = null;
     private Timer activityTimer = null;
 
     /**
@@ -18,9 +17,8 @@ public final class XincoActivityTimer {
      * @param e
      * @param delay
      */
-    public XincoActivityTimer(Xinco e, int delay) {
-        this.explorer = e;
-        ActionListener lockExplorer = new XincoActivityActionListener(explorer);
+    public XincoActivityTimer(int delay) {
+        ActionListener lockExplorer = new XincoActivityActionListener();
         //Use delay as minute value
         activityTimer = new Timer(delay * 1000 * 60, lockExplorer);
         getActivityTimer().start();

@@ -86,7 +86,7 @@ public class VersionSelector extends CustomComponent {
     }
 
     private String getString(String key) {
-        return ((Xinco) getApplication()).getResource().getString(key);
+        return Xinco.getInstance().getResource().getString(key);
     }
 
     public void increaseHigh() {

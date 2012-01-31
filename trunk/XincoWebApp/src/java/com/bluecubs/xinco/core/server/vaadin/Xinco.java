@@ -39,6 +39,7 @@ import com.vaadin.event.dd.acceptcriteria.Or;
 import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.terminal.*;
 import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
+import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.AbstractSelect.VerticalLocationIs;
 import com.vaadin.ui.Tree.ExpandEvent;
@@ -65,6 +66,8 @@ import javax.imageio.ImageIO;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 import javax.persistence.metamodel.EntityType;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.swing.Icon;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -76,7 +79,7 @@ import org.vaadin.hene.expandingtextarea.ExpandingTextArea;
  *
  * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
  */
-public class Xinco extends Application {
+public class Xinco extends Application implements HttpServletRequestListener {
 
     //client version
     private XincoVersion xincoClientVersion = null;
@@ -111,14 +114,36 @@ public class Xinco extends Application {
     private HierarchicalContainer xincoTreeContainer;
     private com.vaadin.ui.Panel adminPanel;
     private Embedded icon;
+    private static ThreadLocal<Xinco> threadLocal = new ThreadLocal<Xinco>();
 
     @Override
     public String getVersion() {
         return version;
     }
 
+    // @return the current application instance	  	
+    public static Xinco getInstance() {
+        return threadLocal.get();
+    }
+
+    // Set the current application instance 	
+    public static void setInstance(Xinco application) {
+        threadLocal.set(application);
+    }
+
+    @Override
+    public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
+        Xinco.setInstance(this);
+    }
+
+    @Override
+    public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {
+        threadLocal.remove();
+    }
+
     @Override
     public void init() {
+        setInstance(this);
         try {
             XincoDBManager.reload();
             XincoDBManager.getEntityManagerFactory();
@@ -130,7 +155,7 @@ public class Xinco extends Application {
             getMainWindow().removeAllComponents();
             if (xat == null) {
                 //5 mins
-                xat = new XincoActivityTimer(this, 5);
+                xat = new XincoActivityTimer(5);
                 xat.getActivityTimer().start();
             } else {
                 resetTimer();
@@ -218,7 +243,7 @@ public class Xinco extends Application {
                 });
         fileStep = new WizardStep() {
 
-            final UploadManager um = new UploadManager(com.bluecubs.xinco.core.server.vaadin.Xinco.this);
+            final UploadManager um = new UploadManager();
             final Upload upload = new Upload(getResource().getString("general.file.select"), um);
             final Upload.SucceededListener listener = new Upload.SucceededListener() {
 
@@ -272,7 +297,7 @@ public class Xinco extends Application {
 
     private void addHeader() {
         final Select languages = getLanguageOptions();
-        final SimplifiedSearchComponent ssc = new SimplifiedSearchComponent(this);
+        final SimplifiedSearchComponent ssc = new SimplifiedSearchComponent();
         languages.setImmediate(true);
         languages.addListener(new ValueChangeListener() {
 
@@ -669,7 +694,7 @@ public class Xinco extends Application {
     }
 
     protected void updateMenu() throws XincoException {
-        XincoMenuItemManager.updateMenuBar(this, menuBar);
+        XincoMenuItemManager.updateMenuBar(menuBar);
         //Hide it if empty
         menuBar.setVisible(!menuBar.getItems().isEmpty());
         //Update the side menu
@@ -681,7 +706,7 @@ public class Xinco extends Application {
         try {
             final Form form = new Form();
             final XincoWizard wizard = new XincoWizard(getLocale());
-            final UploadManager um = new UploadManager(this);
+            final UploadManager um = new UploadManager();
             final Upload upload = new Upload(getResource().getString("general.file.select"), um);
             XincoCoreDataServer temp = new XincoCoreDataServer(
                     Integer.valueOf(xincoTree.getValue().toString().substring(
@@ -3666,7 +3691,7 @@ public class Xinco extends Application {
             @Override
             public com.vaadin.ui.Component getContent() {
                 if (dataDialog == null) {
-                    dataDialog = new DataDialog(newData, com.bluecubs.xinco.core.server.vaadin.Xinco.this);
+                    dataDialog = new DataDialog(newData);
                     dataDialog.setSizeFull();
                 }
                 return dataDialog;
@@ -3715,7 +3740,7 @@ public class Xinco extends Application {
                 @Override
                 public com.vaadin.ui.Component getContent() {
                     if (attrDialog == null) {
-                        attrDialog = new AddAttributeDialog(getXincoCoreData(), com.bluecubs.xinco.core.server.vaadin.Xinco.this);
+                        attrDialog = new AddAttributeDialog(getXincoCoreData());
                         attrDialog.setSizeFull();
                     }
                     return attrDialog;
@@ -3754,7 +3779,7 @@ public class Xinco extends Application {
                 @Override
                 public com.vaadin.ui.Component getContent() {
                     if (dataTypeDialog == null) {
-                        dataTypeDialog = new DataTypeDialog(com.bluecubs.xinco.core.server.vaadin.Xinco.this);
+                        dataTypeDialog = new DataTypeDialog();
                         dataTypeDialog.setSizeFull();
                         dataTypeDialog.getTypes().addListener(new ValueChangeListener() {
 
@@ -3795,7 +3820,7 @@ public class Xinco extends Application {
                                             @Override
                                             public com.vaadin.ui.Component getContent() {
                                                 if (archDialog == null) {
-                                                    archDialog = new ArchiveDialog(com.bluecubs.xinco.core.server.vaadin.Xinco.this);
+                                                    archDialog = new ArchiveDialog();
                                                     archDialog.setSizeFull();
                                                 }
                                                 return archDialog;
@@ -4593,7 +4618,7 @@ public class Xinco extends Application {
     }
 
     private void showLuceneSearchWindow() {
-        LuceneSearchWindow search = new LuceneSearchWindow(this);
+        LuceneSearchWindow search = new LuceneSearchWindow();
         search.center();
         getMainWindow().addWindow(search);
     }
