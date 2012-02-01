@@ -482,18 +482,41 @@
         </pmd>
     </target>
     
-    <target name="publish" description="This will publish the release on Source Forge" depends="release">
+    <target name="publish" description="This will publish the release on Source Forge"><!-- depends="release">-->
         <fail unless="sf.usr" message="Please define sf.usr in the nbproject/private/private.properties or pass as build parameter to ant"/>
         <fail unless="sf.pwd" message="Please define sf.pwd in the nbproject/private/private.properties or pass as build parameter to ant"/>
         <fail unless="sf.hst" message="Please define sf.pwd in the nbproject/private/private.properties or pass as build parameter to ant"/>
+        <property name="server.path" value="/home/frs/project/x/xi/xinco/xinco_DMS_Server/${dist.name}"/>
+        <property name="client.path" value="/home/frs/project/x/xi/xinco/XincoExplorer_Standalone_Client/${standalone.dist.name}"/>
+        <sshexec host="shell.sourceforge.net"
+                 username="${sf.usr},xinco"
+                 password="${sf.pwd}"
+                 command="create"
+                 trust="true"/>
+        <!--Create the new folders for release-->
+        <sshexec host="shell.sourceforge.net"
+                 username="${sf.usr},xinco"
+                 password="${sf.pwd}"
+                 command="mkdir &quot;${server.path}&quot;"
+                 trust="true"/>
+        <sshexec host="shell.sourceforge.net"
+                 username="${sf.usr}"
+                 password="${sf.pwd}"
+                 command="mkdir &quot;${client.path}&quot;"
+                 trust="true"/>
+        <sshexec host="shell.sourceforge.net"
+                          username="${sf.usr},xinco"
+                          password="${sf.pwd}"
+                          command="shutdown"
+                          trust="true"/>
         <echo>Publishing ${dist.name}</echo>
-        <scp todir="${sf.usr},xinco:${sf.pwd}@${sf.hst}:/home/pfs/project/x/xi/xinco/xinco DMS Server/${dist.name}/" 
+        <scp todir="${sf.usr},xinco:${sf.pwd}@${sf.hst}:${server.path}/" 
              trust="true" 
              sftp="true"
              file="dist/${dist.name}.zip"/>
         <echo>Done!</echo>
-        <echo>Publishing ${dist.name}</echo>
-        <scp todir="${sf.usr},xinco:${sf.pwd}@${sf.hst}:/home/pfs/project/x/xi/xinco/XincoExplorer StandaloneClient/${standalone.dist.name}/" 
+        <echo>Publishing ${standalone.dist.name}</echo>
+        <scp todir="${sf.usr},xinco:${sf.pwd}@${sf.hst}:${client.path}/" 
              trust="true" 
              sftp="true"
              file="dist/${standalone.dist.name}.zip"/>
