@@ -22,8 +22,8 @@ public class XincoMenuItem {
     /**
      *
      * @param index Order of the item
-     * @param groupName Name of the item group
-     * @param name Name of the item
+     * @param groupName Name of the item group (Resource Bundle key)
+     * @param name Name of the item (Resource Bundle key)
      * @param icon Icon for the item (null for none)
      * @param command Command to be performed
      * @param loggedIn User needs to be logged in to use
@@ -62,7 +62,7 @@ public class XincoMenuItem {
      * @return the name
      */
     public String getName() {
-        return name;
+        return Xinco.getInstance().getResource().getString(name);
     }
 
     /**
@@ -140,7 +140,7 @@ public class XincoMenuItem {
      * @return the groupName
      */
     public String getGroupName() {
-        return groupName;
+        return Xinco.getInstance().getResource().getString(groupName);
     }
 
     /**
