@@ -19,7 +19,7 @@
  * 
  * Name: XincoCoreUserHasXincoCoreGroupJpaController
  * 
- * Description: //TODO: Add description
+ * Description: JPA Controller
  * 
  * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
  * 

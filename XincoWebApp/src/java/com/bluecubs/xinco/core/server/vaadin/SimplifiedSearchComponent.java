@@ -19,7 +19,7 @@
  * 
  * Name: SimplifiedSearchComponent
  * 
- * Description: //TODO: Add description
+ * Description: Simplified Search Component
  * 
  * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Jan 26, 2012
  * 
