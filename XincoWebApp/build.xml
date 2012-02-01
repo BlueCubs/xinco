@@ -339,7 +339,6 @@
     </target>
 
     <target name="-pre-init" depends="check">
-        <mkdir dir="${lib}"/>
         <echo>Updating version in Xinco/src/com/bluecubs/xinco/settings/settings.properties to: ${version_high}.${version_mid}.${version_low} ${version_postfix}</echo>
         <echo>To change this, change file build.ant.properties in xinco/</echo>
         <!-- We update the version number (Xinco project)-->
