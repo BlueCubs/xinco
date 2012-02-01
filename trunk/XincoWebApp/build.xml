@@ -20,11 +20,6 @@
             <pathelement location="../Tools/ant-contrib-1.0b3.jar"/>
         </classpath>
     </taskdef>
-    <taskdef name="scp" classname="org.apache.tools.ant.taskdefs.optional.ssh.Scp">
-        <classpath>
-            <pathelement location="../Tools/scp/*.jar"/>
-        </classpath>
-    </taskdef>
     <!--
 
     There exist several targets which are by default empty and which can be 
@@ -483,18 +478,18 @@
         </pmd>
     </target>
     
-    <target name="publish" description="This will publish the release on Source Forge">
+    <target name="publish" description="This will publish the release on Source Forge" depends="release">
         <fail unless="sf.usr" message="Please define sf.usr in the nbproject/private/private.properties or pass as build parameter to ant"/>
         <fail unless="sf.pwd" message="Please define sf.pwd in the nbproject/private/private.properties or pass as build parameter to ant"/>
         <fail unless="sf.hst" message="Please define sf.pwd in the nbproject/private/private.properties or pass as build parameter to ant"/>
         <echo>Publishing ${dist.name}</echo>
-        <scp todir="${sf.usr},xinco:${sf.pwd}@${sf.hst}:/home/pfs/project/x/xi/xinco/xinco DMS Server/${dist.name}" 
+        <scp todir="${sf.usr},xinco:${sf.pwd}@${sf.hst}:/home/pfs/project/x/xi/xinco/xinco DMS Server/${dist.name}/" 
              trust="true" 
              sftp="true"
              file="dist/${dist.name}.zip"/>
         <echo>Done!</echo>
         <echo>Publishing ${dist.name}</echo>
-        <scp todir="${sf.usr},xinco:${sf.pwd}@${sf.hst}:/home/pfs/project/x/xi/xinco/XincoExplorer StandaloneClient/${standalone.dist.name}" 
+        <scp todir="${sf.usr},xinco:${sf.pwd}@${sf.hst}:/home/pfs/project/x/xi/xinco/XincoExplorer StandaloneClient/${standalone.dist.name}/" 
              trust="true" 
              sftp="true"
              file="dist/${standalone.dist.name}.zip"/>
