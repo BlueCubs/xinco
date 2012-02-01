@@ -20,6 +20,11 @@
             <pathelement location="../Tools/ant-contrib-1.0b3.jar"/>
         </classpath>
     </taskdef>
+    <taskdef name="scp" classname="org.apache.tools.ant.taskdefs.optional.ssh.Scp">
+        <classpath>
+            <pathelement location="../Tools/scp/*.jar"/>
+        </classpath>
+    </taskdef>
     <!--
 
     There exist several targets which are by default empty and which can be 
