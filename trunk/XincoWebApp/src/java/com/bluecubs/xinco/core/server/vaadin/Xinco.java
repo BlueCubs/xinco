@@ -115,6 +115,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     private com.vaadin.ui.Panel adminPanel;
     private Embedded icon;
     private static ThreadLocal<Xinco> threadLocal = new ThreadLocal<Xinco>();
+    private Locale locale = Locale.getDefault();
 
     @Override
     public String getVersion() {
@@ -189,7 +190,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     + XincoSettingServer.getSetting(new XincoCoreUserServer(1),
                     "version.postfix").getStringValue();
             icon = new Embedded("Xinco - "
-                    + getResource().getString("general.version") + " "
+                    + getInstance().getResource().getString("general.version") + " "
                     + version, new ThemeResource("img/blueCubsSmall.gif"));
             icon.setType(Embedded.TYPE_IMAGE);
             if (XincoDBManager.config.isGuessLanguage()) {
@@ -206,11 +207,16 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     @Override
+    public Locale getLocale() {
+        return locale;
+    }
+
+    @Override
     public void setLocale(Locale locale) {
-        super.setLocale(locale);
-        xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", getLocale());
+        this.locale = locale;
+        xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", getInstance().getLocale());
         login = new com.vaadin.ui.Button(
-                getResource().getString("general.login"),
+                getInstance().getResource().getString("general.login"),
                 new com.vaadin.ui.Button.ClickListener() {
 
                     @Override
@@ -219,7 +225,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     }
                 });
         logout = new com.vaadin.ui.Button(
-                getResource().getString("general.logout"),
+                getInstance().getResource().getString("general.logout"),
                 new com.vaadin.ui.Button.ClickListener() {
 
                     @Override
@@ -233,7 +239,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     }
                 });
         profile = new com.vaadin.ui.Button(
-                getResource().getString("message.admin.userProfile"),
+                getInstance().getResource().getString("message.admin.userProfile"),
                 new com.vaadin.ui.Button.ClickListener() {
 
                     @Override
@@ -244,14 +250,14 @@ public class Xinco extends Application implements HttpServletRequestListener {
         fileStep = new WizardStep() {
 
             final UploadManager um = new UploadManager();
-            final Upload upload = new Upload(getResource().getString("general.file.select"), um);
+            final Upload upload = new Upload(getInstance().getResource().getString("general.file.select"), um);
             final Upload.SucceededListener listener = new Upload.SucceededListener() {
 
                 @Override
                 public void uploadSucceeded(SucceededEvent event) {
                     if (upload != null) {
                         getMainWindow().showNotification(
-                                getResource().getString("datawizard.fileuploadsuccess"),
+                                getInstance().getResource().getString("datawizard.fileuploadsuccess"),
                                 Notification.TYPE_HUMANIZED_MESSAGE);
                     }
                 }
@@ -259,7 +265,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
             @Override
             public String getCaption() {
-                return getResource().getString("general.file.select");
+                return getInstance().getResource().getString("general.file.select");
             }
 
             @Override
@@ -274,7 +280,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             public boolean onAdvance() {
                 if (!um.isSuccess()) {
                     getMainWindow().showNotification(
-                            getResource().getString("message.missing.file"),
+                            getInstance().getResource().getString("message.missing.file"),
                             Notification.TYPE_ERROR_MESSAGE);
                 } else {
                     getXincoCoreData().setDesignation(getFileName());
@@ -324,12 +330,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     loc = Locale.getDefault();
                 }
                 setLocale(loc);
-                languages.setCaption(getResource().getString("general.language") + ":");
-                showMainWindow();
+                languages.setCaption(getInstance().getResource().getString("general.language") + ":");
                 ssc.refresh();
             }
         });
-        languages.setCaption(getResource().getString("general.language") + ":");
+        languages.setCaption(getInstance().getResource().getString("general.language") + ":");
         languages.setValue(getLocale().getLanguage());
         getMainWindow().addComponent(languages);
         getMainWindow().addComponent(ssc);
@@ -468,7 +473,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 xincoTreeContainer.addContainerProperty("caption", String.class, null);
                 //Add icon support
                 xincoTreeContainer.addContainerProperty("icon", Resource.class, null);
-                xincoTree = new Tree(getResource().getString("menu.repository"));
+                xincoTree = new Tree("menu.repository");
                 xincoTree.setContainerDataSource(xincoTreeContainer);
                 xincoTree.setDebugId("xinco_tree");
                 xincoTree.setItemIconPropertyId("icon");
@@ -604,9 +609,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
              * Define the names and data types of columns. The "default value"
              * parameter is meaningless here.
              */
-            xincoTable.addContainerProperty(getResource().getString("window.repository.table.attribute"),
+            xincoTable.addContainerProperty(getInstance().getResource().getString("window.repository.table.attribute"),
                     String.class, null);
-            xincoTable.addContainerProperty(getResource().getString("window.repository.table.details"),
+            xincoTable.addContainerProperty(getInstance().getResource().getString("window.repository.table.details"),
                     com.vaadin.ui.Component.class, null);
             // Send changes in selection immediately to server.
             xincoTable.setImmediate(true);
@@ -707,26 +712,26 @@ public class Xinco extends Application implements HttpServletRequestListener {
             final Form form = new Form();
             final XincoWizard wizard = new XincoWizard(getLocale());
             final UploadManager um = new UploadManager();
-            final Upload upload = new Upload(getResource().getString("general.file.select"), um);
+            final Upload upload = new Upload(getInstance().getResource().getString("general.file.select"), um);
             XincoCoreDataServer temp = new XincoCoreDataServer(
                     Integer.valueOf(xincoTree.getValue().toString().substring(
                     xincoTree.getValue().toString().indexOf('-') + 1)));
             //Check in file
             newlog.setOpCode(OPCode.CHECKIN.ordinal() + 1);
-            newlog.setOpDescription(xerb.getString(OPCode.getOPCode(newlog.getOpCode()).getName()));
+            newlog.setOpDescription(getInstance().getResource().getString(OPCode.getOPCode(newlog.getOpCode()).getName()));
             newlog.setXincoCoreUserId(loggedUser.getId());
             newlog.setXincoCoreDataId(temp.getId());
             newlog.setVersion(((XincoCoreLog) temp.getXincoCoreLogs().get(
                     temp.getXincoCoreLogs().size() - 1)).getVersion());
             newlog.setOpDescription(newlog.getOpDescription() + " ("
-                    + xerb.getString("general.user") + ": " + loggedUser.getUsername() + ")");
+                    + getInstance().getResource().getString("general.user") + ": " + loggedUser.getUsername() + ")");
             //save log to server
             XincoCoreLog tempLog = getService().setXincoCoreLog(newlog, loggedUser);
             if (tempLog != null) {
                 temp.getXincoCoreLogs().add(tempLog);
             }
             final int log_index = temp.getXincoCoreLogs().size() - 1;
-            final VersionSelector versionSelector = new VersionSelector(getResource().getString("general.version"),
+            final VersionSelector versionSelector = new VersionSelector(getInstance().getResource().getString("general.version"),
                     temp.getXincoCoreLogs().get(log_index).getVersion());
             versionSelector.increaseHigh();
             final Upload.SucceededListener listener = new Upload.SucceededListener() {
@@ -736,7 +741,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     if (upload != null) {
                         upload.setEnabled(false);
                         getMainWindow().showNotification(
-                                getResource().getString("datawizard.fileuploadsuccess"),
+                                getInstance().getResource().getString("datawizard.fileuploadsuccess"),
                                 Notification.TYPE_HUMANIZED_MESSAGE);
                     }
                 }
@@ -745,7 +750,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
                 @Override
                 public String getCaption() {
-                    return getResource().getString("window.loggingdetails");
+                    return getInstance().getResource().getString("window.loggingdetails");
                 }
 
                 @Override
@@ -779,7 +784,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
                 @Override
                 public String getCaption() {
-                    return getResource().getString("general.file.select");
+                    return getInstance().getResource().getString("general.file.select");
                 }
 
                 @Override
@@ -794,7 +799,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 public boolean onAdvance() {
                     if (!um.isSuccess()) {
                         getMainWindow().showNotification(
-                                getResource().getString("message.missing.file"),
+                                getInstance().getResource().getString("message.missing.file"),
                                 Notification.TYPE_ERROR_MESSAGE);
                     }
                     return um.isSuccess();
@@ -830,7 +835,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         //Check in file
                         if (getService().doXincoCoreDataCheckin(temp, loggedUser) == null) {
                             getMainWindow().showNotification(
-                                    getResource().getString("datawizard.unabletoloadfile"),
+                                    getInstance().getResource().getString("datawizard.unabletoloadfile"),
                                     Notification.TYPE_ERROR_MESSAGE);
                         }
                         try {
@@ -880,14 +885,14 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
     private void buildLogDialog(XincoCoreDataServer temp, Form form, VersionSelector versionSelector) throws XincoException {
         form.addField("action", new com.vaadin.ui.TextField(
-                getResource().getString("window.loggingdetails.action")
+                getInstance().getResource().getString("window.loggingdetails.action")
                 + ":"));
         final int log_index = temp.getXincoCoreLogs().size() - 1;
         form.getField("action").setValue(temp.getXincoCoreLogs().get(log_index).getOpDescription());
         form.getField("action").setEnabled(false);
         form.addField("reason", new com.vaadin.ui.TextArea());
         versionSelector.setMinorEnabled(false);
-        versionSelector.setCaption(getResource().getString("general.version"));
+        versionSelector.setCaption(getInstance().getResource().getString("general.version"));
         versionSelector.setVersion(temp.getXincoCoreLogs().get(log_index).getVersion());
         OPCode code = OPCode.getOPCode(temp.getXincoCoreLogs().get(log_index).getOpCode());
         switch (code) {
@@ -907,7 +912,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         }
         versionSelector.setEnabled(code != OPCode.DATA_MOVE);
         form.getField("reason").setRequired(form.getField("reason").isEnabled());
-        form.getField("reason").setRequiredError(getResource().getString("message.warning.reason"));
+        form.getField("reason").setRequiredError(getInstance().getResource().getString("message.warning.reason"));
         form.getLayout().addComponent(versionSelector);
     }
 
@@ -918,11 +923,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 //Undo check out
                 XincoCoreLog newlog = new XincoCoreLog();
                 newlog.setOpCode(OPCode.CHECKOUT_UNDONE.ordinal() + 1);
-                newlog.setOpDescription(xerb.getString(OPCode.getOPCode(newlog.getOpCode()).getName()));
+                newlog.setOpDescription(getInstance().getResource().getString(OPCode.getOPCode(newlog.getOpCode()).getName()));
                 newlog.setXincoCoreUserId(loggedUser.getId());
                 newlog.setXincoCoreDataId(temp.getId());
                 newlog.setVersion(((XincoCoreLog) temp.getXincoCoreLogs().get(temp.getXincoCoreLogs().size() - 1)).getVersion());
-                newlog.setOpDescription(newlog.getOpDescription() + " (" + xerb.getString("general.user") + ": " + loggedUser.getUsername() + ")");
+                newlog.setOpDescription(newlog.getOpDescription() + " (" + getInstance().getResource().getString("general.user") + ": " + loggedUser.getUsername() + ")");
                 //save log to server
                 newlog = getService().setXincoCoreLog(newlog, loggedUser);
                 if (newlog != null) {
@@ -944,11 +949,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 try {
                     XincoCoreLog newlog = new XincoCoreLog();
                     newlog.setOpCode(OPCode.CHECKOUT.ordinal() + 1);
-                    newlog.setOpDescription(xerb.getString(OPCode.getOPCode(newlog.getOpCode()).getName()));
+                    newlog.setOpDescription(getInstance().getResource().getString(OPCode.getOPCode(newlog.getOpCode()).getName()));
                     newlog.setXincoCoreUserId(loggedUser.getId());
                     newlog.setXincoCoreDataId(temp.getId());
                     newlog.setVersion(((XincoCoreLog) temp.getXincoCoreLogs().get(temp.getXincoCoreLogs().size() - 1)).getVersion());
-                    newlog.setOpDescription(newlog.getOpDescription() + " (" + xerb.getString("general.user") + ": " + loggedUser.getUsername() + ")");
+                    newlog.setOpDescription(newlog.getOpDescription() + " (" + getInstance().getResource().getString("general.user") + ": " + loggedUser.getUsername() + ")");
                     //save log to server
                     newlog = getService().setXincoCoreLog(newlog, loggedUser);
                     if (newlog != null) {
@@ -964,7 +969,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 "Unable to check out file: {0} with user: {1}",
                                 new Object[]{temp.getDesignation(), loggedUser});
                         getMainWindow().showNotification(
-                                getResource().getString("general.error"),
+                                getInstance().getResource().getString("general.error"),
                                 Notification.TYPE_WARNING_MESSAGE);
                     }
                 } catch (MalformedURLException ex) {
@@ -1073,14 +1078,14 @@ public class Xinco extends Application implements HttpServletRequestListener {
             } catch (Exception fe) {
                 Logger.getLogger(Xinco.class.getSimpleName()).log(Level.SEVERE, null, fe);
                 getMainWindow().showNotification(
-                        xerb.getString("datawizard.unabletoloadfile"),
+                        getInstance().getResource().getString("datawizard.unabletoloadfile"),
                         Notification.TYPE_ERROR_MESSAGE);
             }
             // save data to server
             data = getService().setXincoCoreData(getXincoCoreData(), loggedUser);
             if (getXincoCoreData() == null) {
                 getMainWindow().showNotification(
-                        xerb.getString("datawizard.unabletosavedatatoserver"),
+                        getInstance().getResource().getString("datawizard.unabletosavedatatoserver"),
                         Notification.TYPE_ERROR_MESSAGE);
             }
             // upload file
@@ -1088,7 +1093,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 cin.close();
                 removeDirectory(temp);
                 getMainWindow().showNotification(
-                        xerb.getString("datawizard.fileuploadfailed"),
+                        getInstance().getResource().getString("datawizard.fileuploadfailed"),
                         Notification.TYPE_ERROR_MESSAGE);
             }
             cin.close();
@@ -1096,12 +1101,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
         } catch (MalformedURLException ex) {
             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             getMainWindow().showNotification(
-                    xerb.getString("datawizard.fileuploadfailed"),
+                    getInstance().getResource().getString("datawizard.fileuploadfailed"),
                     Notification.TYPE_ERROR_MESSAGE);
         } catch (IOException ex) {
             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             getMainWindow().showNotification(
-                    xerb.getString("datawizard.fileuploadfailed"),
+                    getInstance().getResource().getString("datawizard.fileuploadfailed"),
                     Notification.TYPE_ERROR_MESSAGE);
         }
     }
@@ -1172,20 +1177,20 @@ public class Xinco extends Application implements HttpServletRequestListener {
         if (renderingSupportEnabled) {
             final Window renderWindow = new Window();
             final Form form = new Form();
-            form.setCaption(getResource().getString("general.data.type.rendering"));
+            form.setCaption(getInstance().getResource().getString("general.data.type.rendering"));
             final ArrayList<com.bluecubs.xinco.core.server.persistence.XincoCoreData> renderings =
                     (ArrayList<com.bluecubs.xinco.core.server.persistence.XincoCoreData>) XincoCoreDataHasDependencyServer.getRenderings(
                     Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
             final Table table = new Table();
             table.addStyleName("striped");
             table.addContainerProperty(
-                    getResource().getString("general.name"),
+                    getInstance().getResource().getString("general.name"),
                     com.vaadin.ui.Label.class, null);
             table.addContainerProperty(
-                    getResource().getString("general.version"),
+                    getInstance().getResource().getString("general.version"),
                     com.vaadin.ui.Label.class, null);
             table.addContainerProperty(
-                    getResource().getString("general.extension"),
+                    getInstance().getResource().getString("general.extension"),
                     com.vaadin.ui.Label.class, null);
             form.getLayout().addComponent(table);
             for (com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd : renderings) {
@@ -1201,9 +1206,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
             form.setFooter(new HorizontalLayout());
             //Used for validation purposes
             final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
-                    getResource().getString("general.add"), form, "commit");
+                    getInstance().getResource().getString("general.add"), form, "commit");
             final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
-                    getResource().getString("general.cancel"),
+                    getInstance().getResource().getString("general.cancel"),
                     new com.vaadin.ui.Button.ClickListener() {
 
                         @Override
@@ -1259,8 +1264,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                             new XincoDependencyTypeServer(5));//Rendering
                                     dep.write2DB();
                                 } catch (XincoException ex) {
-                                    getMainWindow().showNotification(getResource().getString("general.error"),
-                                            getResource().getString("message.error.association.exists"),
+                                    getMainWindow().showNotification(getInstance().getResource().getString("general.error"),
+                                            getInstance().getResource().getString("message.error.association.exists"),
                                             Notification.TYPE_ERROR_MESSAGE);
                                 }
                                 getMainWindow().removeWindow(addRenderingWindow);
@@ -1319,14 +1324,14 @@ public class Xinco extends Application implements HttpServletRequestListener {
             tempUrl = xdata.getDesignation();
         }
         getMainWindow().showNotification("",
-                xerb.getString("datawizard.updatesuccess.publisherinfo") + "\nhttp://[serverName]:[port]/xinco/XincoPublisher/" + xdata.getId() + "/" + tempUrl,
+                getInstance().getResource().getString("datawizard.updatesuccess.publisherinfo") + "\nhttp://[serverName]:[port]/xinco/XincoPublisher/" + xdata.getId() + "/" + tempUrl,
                 Notification.TYPE_TRAY_NOTIFICATION);
     }
 
     private void showACLDialog() {
         final Window aclWindow = new Window();
         final Form form = new Form();
-        form.setCaption(getResource().getString("window.acl"));
+        form.setCaption(getInstance().getResource().getString("window.acl"));
         final HashMap<String, XincoCoreACEServer> aceList = new HashMap<String, XincoCoreACEServer>();
         final Table table = new Table();
         final TwinColSelect acls = new TwinColSelect();
@@ -1335,8 +1340,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         acls.setNullSelectionAllowed(true);
         acls.setMultiSelect(true);
         acls.setNewItemsAllowed(false);
-        acls.setLeftColumnCaption(getResource().getString("general.notincluded"));
-        acls.setRightColumnCaption(getResource().getString("general.included"));
+        acls.setLeftColumnCaption(getInstance().getResource().getString("general.notincluded"));
+        acls.setRightColumnCaption(getInstance().getResource().getString("general.included"));
         table.addStyleName("striped");
         // Preselect values
         HashSet<String> preselected = new HashSet<String>();
@@ -1345,21 +1350,21 @@ public class Xinco extends Application implements HttpServletRequestListener {
          * parameter is meaningless here.
          */
         table.addContainerProperty(
-                getResource().getString("general.name"),
+                getInstance().getResource().getString("general.name"),
                 com.vaadin.ui.Label.class, null);
         table.addContainerProperty(
-                getResource().getString("general.type"), com.vaadin.ui.Label.class, null);
+                getInstance().getResource().getString("general.type"), com.vaadin.ui.Label.class, null);
         table.addContainerProperty(
-                getResource().getString("general.acl.adminpermission"),
+                getInstance().getResource().getString("general.acl.adminpermission"),
                 CheckBox.class, null);
         table.addContainerProperty(
-                getResource().getString("general.acl.readpermission"),
+                getInstance().getResource().getString("general.acl.readpermission"),
                 CheckBox.class, null);
         table.addContainerProperty(
-                getResource().getString("general.acl.writepermission"),
+                getInstance().getResource().getString("general.acl.writepermission"),
                 CheckBox.class, null);
         table.addContainerProperty(
-                getResource().getString("general.acl.executepermission"),
+                getInstance().getResource().getString("general.acl.executepermission"),
                 CheckBox.class, null);
         table.setPageLength(10);
         com.vaadin.ui.Label name;
@@ -1367,13 +1372,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
         //Add Groups
         for (Iterator it = XincoCoreGroupServer.getXincoCoreGroups().iterator(); it.hasNext();) {
             XincoCoreGroupServer group = (XincoCoreGroupServer) it.next();
-            String itemId = getResource().getString("general.group") + "-" + group.getId();
+            String itemId = getInstance().getResource().getString("general.group") + "-" + group.getId();
             String designation = ((XincoCoreGroupServer) group).getDesignation();
-            String value = getResource().containsKey(designation)
-                    ? getResource().getString(designation) : designation;
+            String value = getInstance().getResource().containsKey(designation)
+                    ? getInstance().getResource().getString(designation) : designation;
             name = new com.vaadin.ui.Label(value);
-            type = new com.vaadin.ui.Label(getResource().getString("general.group"));
-            final CheckBox admin = new CheckBox(getResource().getString("general.acl.adminpermission"));
+            type = new com.vaadin.ui.Label(getInstance().getResource().getString("general.group"));
+            final CheckBox admin = new CheckBox(getInstance().getResource().getString("general.acl.adminpermission"));
             admin.addListener(new ValueChangeListener() {
 
                 @Override
@@ -1384,7 +1389,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             admin.setImmediate(true);
-            final CheckBox execute = new CheckBox(getResource().getString("general.acl.executepermission"));
+            final CheckBox execute = new CheckBox(getInstance().getResource().getString("general.acl.executepermission"));
             execute.addListener(new ValueChangeListener() {
 
                 @Override
@@ -1395,7 +1400,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             execute.setImmediate(true);
-            final CheckBox read = new CheckBox(getResource().getString("general.acl.readpermission"));
+            final CheckBox read = new CheckBox(getInstance().getResource().getString("general.acl.readpermission"));
             read.addListener(new ValueChangeListener() {
 
                 @Override
@@ -1406,7 +1411,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             read.setImmediate(true);
-            final CheckBox write = new CheckBox(getResource().getString("general.acl.writepermission"));
+            final CheckBox write = new CheckBox(getInstance().getResource().getString("general.acl.writepermission"));
             write.addListener(new ValueChangeListener() {
 
                 @Override
@@ -1477,12 +1482,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
         //Add users
         for (Iterator it = XincoCoreUserServer.getXincoCoreUsers().iterator(); it.hasNext();) {
             XincoCoreUserServer user = (XincoCoreUserServer) it.next();
-            String itemId = getResource().getString("general.user") + "-" + user.getId();
+            String itemId = getInstance().getResource().getString("general.user") + "-" + user.getId();
             String userLabel = user.getFirstName() + " "
                     + user.getLastName() + " (" + user.getUsername() + ")";
             name = new com.vaadin.ui.Label(userLabel);
-            type = new com.vaadin.ui.Label(getResource().getString("general.user"));
-            final CheckBox admin = new CheckBox(getResource().getString("general.acl.adminpermission"));
+            type = new com.vaadin.ui.Label(getInstance().getResource().getString("general.user"));
+            final CheckBox admin = new CheckBox(getInstance().getResource().getString("general.acl.adminpermission"));
             admin.addListener(new ValueChangeListener() {
 
                 @Override
@@ -1493,7 +1498,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             admin.setImmediate(true);
-            final CheckBox execute = new CheckBox(getResource().getString("general.acl.executepermission"));
+            final CheckBox execute = new CheckBox(getInstance().getResource().getString("general.acl.executepermission"));
             execute.addListener(new ValueChangeListener() {
 
                 @Override
@@ -1504,7 +1509,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             execute.setImmediate(true);
-            final CheckBox read = new CheckBox(getResource().getString("general.acl.readpermission"));
+            final CheckBox read = new CheckBox(getInstance().getResource().getString("general.acl.readpermission"));
             read.addListener(new ValueChangeListener() {
 
                 @Override
@@ -1515,7 +1520,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             read.setImmediate(true);
-            final CheckBox write = new CheckBox(getResource().getString("general.acl.writepermission"));
+            final CheckBox write = new CheckBox(getInstance().getResource().getString("general.acl.writepermission"));
             write.addListener(new ValueChangeListener() {
 
                 @Override
@@ -1581,16 +1586,16 @@ public class Xinco extends Application implements HttpServletRequestListener {
             table.addItem(new Object[]{name, type, admin, read, write, execute},
                     itemId);
             aceList.put(itemId, acl);
-            acls.addItem(getResource().getString("general.user") + ":" + userLabel);
+            acls.addItem(getInstance().getResource().getString("general.user") + ":" + userLabel);
         }
         table.setSizeFull();
         form.getLayout().addComponent(table);
         form.setFooter(new HorizontalLayout());
         //Used for validation purposes
         final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
-                getResource().getString("general.save"), form, "commit");
+                getInstance().getResource().getString("general.save"), form, "commit");
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
-                getResource().getString("general.cancel"),
+                getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
 
                     @Override
@@ -1666,24 +1671,24 @@ public class Xinco extends Application implements HttpServletRequestListener {
     private void showLoginDialog() {
         final Window loginWindow = new Window();
         final Form form = new Form();
-        form.setCaption(getResource().getString("window.connection") + ":");
+        form.setCaption(getInstance().getResource().getString("window.connection") + ":");
         com.vaadin.ui.TextField username =
-                new com.vaadin.ui.TextField(getResource().getString("general.username") + ":");
+                new com.vaadin.ui.TextField(getInstance().getResource().getString("general.username") + ":");
         PasswordField password =
-                new PasswordField(getResource().getString("general.password") + ":");
+                new PasswordField(getInstance().getResource().getString("general.password") + ":");
         form.addField("username", username);
         form.addField("password", password);
         form.getField("username").setRequired(true);
         form.getField("username").focus();
-        form.getField("username").setRequiredError(getResource().getString("message.missing.username"));
+        form.getField("username").setRequiredError(getInstance().getResource().getString("message.missing.username"));
         form.getField("password").setRequired(true);
-        form.getField("password").setRequiredError(getResource().getString("message.missing.password"));
+        form.getField("password").setRequiredError(getInstance().getResource().getString("message.missing.password"));
         form.setFooter(new HorizontalLayout());
         //Used for validation purposes
         final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
-                getResource().getString("general.login"), form, "commit");
+                getInstance().getResource().getString("general.login"), form, "commit");
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
-                getResource().getString("general.cancel"),
+                getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
 
                     @Override
@@ -1715,7 +1720,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         ((PasswordField) form.getField("password")).getValue().toString(),
                         true)) {
                     getMainWindow().showNotification(
-                            getResource().getString("menu.connection.error.user"),
+                            getInstance().getResource().getString("menu.connection.error.user"),
                             Notification.TYPE_WARNING_MESSAGE);
                     String username = ((com.vaadin.ui.TextField) form.getField("username")).getValue().toString();
                     //Wrong password or username
@@ -1725,7 +1730,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     //Check if the username is correct if not just throw the wrong login message
                     if (result.isEmpty()) {
                         getMainWindow().showNotification("Login "
-                                + xerb.getString("general.fail")
+                                + getInstance().getResource().getString("general.fail")
                                 + " Username and/or Password may be incorrect!",
                                 Notification.TYPE_WARNING_MESSAGE);
                     } else {
@@ -1744,15 +1749,15 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 //Register change in audit trail
                                 temp_user.setChange(true);
                                 //Reason for change
-                                temp_user.setReason(xerb.getString("password.attempt.limitReached"));
+                                temp_user.setReason(getInstance().getResource().getString("password.attempt.limitReached"));
                                 //the password retrieved when you logon is already hashed...
                                 temp_user.setHashPassword(false);
                                 temp_user.setIncreaseAttempts(true);
                                 temp_user.write2DB();
-                                getMainWindow().showNotification(xerb.getString("password.attempt.limitReached"),
+                                getMainWindow().showNotification(getInstance().getResource().getString("password.attempt.limitReached"),
                                         Notification.TYPE_WARNING_MESSAGE);
                             } else {
-                                getMainWindow().showNotification(xerb.getString("password.login.fail"),
+                                getMainWindow().showNotification(getInstance().getResource().getString("password.login.fail"),
                                         Notification.TYPE_WARNING_MESSAGE);
                             }
                         }
@@ -1796,7 +1801,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         table.removeAllItems();
         for (Iterator<XincoCoreGroupServer> it = allgroups.iterator(); it.hasNext();) {
             XincoCoreGroupServer group = it.next();
-            final com.vaadin.ui.Button edit = new com.vaadin.ui.Button(getResource().getString("general.edit"));
+            final com.vaadin.ui.Button edit = new com.vaadin.ui.Button(getInstance().getResource().getString("general.edit"));
             edit.setData(group.getId());
             edit.addStyleName("link");
             edit.addListener(new com.vaadin.ui.Button.ClickListener() {
@@ -1807,8 +1812,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             table.addItem(new Object[]{group.getId(),
-                        getResource().containsKey(group.getDesignation())
-                        ? getResource().getString(group.getDesignation())
+                        getInstance().getResource().containsKey(group.getDesignation())
+                        ? getInstance().getResource().getString(group.getDesignation())
                         : group.getDesignation(),
                         edit}, group.getId());
         }
@@ -1820,7 +1825,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final Form form = new Form();
         refreshGroupContentsTables(form, groupId);
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
-                getResource().getString("general.cancel"),
+                getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
 
                     @Override
@@ -1842,23 +1847,23 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final Form form = new Form();
         final Table table = new Table();
         table.addStyleName("striped");
-        table.addContainerProperty(getResource().getString("general.id"),
+        table.addContainerProperty(getInstance().getResource().getString("general.id"),
                 Integer.class, null);
-        table.addContainerProperty(getResource().getString("general.name"),
+        table.addContainerProperty(getInstance().getResource().getString("general.name"),
                 String.class, null);
-        table.addContainerProperty(getResource().getString("general.edit"),
+        table.addContainerProperty(getInstance().getResource().getString("general.edit"),
                 com.vaadin.ui.Component.class, null);
-        table.setSortContainerPropertyId(getResource().getString("general.id"));
+        table.setSortContainerPropertyId(getInstance().getResource().getString("general.id"));
         form.getLayout().addComponent(table);
         refreshGroupTable(table);
-        form.addField("name", new com.vaadin.ui.TextField(getResource().getString("general.name") + ":"));
+        form.addField("name", new com.vaadin.ui.TextField(getInstance().getResource().getString("general.name") + ":"));
         form.getField("name").setRequired(true);
-        form.getField("name").setRequiredError(getResource().getString("message.missing.groupname"));
+        form.getField("name").setRequiredError(getInstance().getResource().getString("message.missing.groupname"));
         //Used for validation purposes
         final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
-                getResource().getString("general.add.group"), form, "commit");
+                getInstance().getResource().getString("general.add.group"), form, "commit");
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
-                getResource().getString("general.cancel"),
+                getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
 
                     @Override
@@ -1898,25 +1903,25 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final Form form = new Form();
         final Table table = new Table();
         table.addStyleName("striped");
-        table.addContainerProperty(getResource().getString("general.position"),
+        table.addContainerProperty(getInstance().getResource().getString("general.position"),
                 Integer.class, null);
-        table.addContainerProperty(getResource().getString("general.designation"),
+        table.addContainerProperty(getInstance().getResource().getString("general.designation"),
                 String.class, null);
-        table.addContainerProperty(getResource().getString("general.datatype"),
+        table.addContainerProperty(getInstance().getResource().getString("general.datatype"),
                 String.class, null);
-        table.addContainerProperty(getResource().getString("general.size"),
+        table.addContainerProperty(getInstance().getResource().getString("general.size"),
                 String.class, null);
         table.addContainerProperty("", com.vaadin.ui.Component.class, null);
-        table.setSortContainerPropertyId(getResource().getString("general.position"));
+        table.setSortContainerPropertyId(getInstance().getResource().getString("general.position"));
         form.getLayout().addComponent(table);
         refreshFileTypeAttrTable(table, dataTypeId);
-        form.addField("position", new com.vaadin.ui.TextField(getResource().getString("general.position") + ":"));
+        form.addField("position", new com.vaadin.ui.TextField(getInstance().getResource().getString("general.position") + ":"));
         form.getField("position").setRequired(true);
-        form.getField("position").setRequiredError(getResource().getString("message.missing.position"));
-        form.addField("designation", new com.vaadin.ui.TextField(getResource().getString("general.designation") + ":"));
+        form.getField("position").setRequiredError(getInstance().getResource().getString("message.missing.position"));
+        form.addField("designation", new com.vaadin.ui.TextField(getInstance().getResource().getString("general.designation") + ":"));
         form.getField("designation").setRequired(true);
-        form.getField("designation").setRequiredError(getResource().getString("message.missing.designation"));
-        Select types = new Select(getResource().getString("general.datatype") + ":");
+        form.getField("designation").setRequiredError(getInstance().getResource().getString("message.missing.designation"));
+        Select types = new Select(getInstance().getResource().getString("general.datatype") + ":");
         HashMap<String, String> typeDefs = new HashMap<String, String>();
         typeDefs.put("int", "int (Integer)");
         typeDefs.put("unsignedint", "unsignedint (Unsigned Integer)");
@@ -1930,16 +1935,16 @@ public class Xinco extends Application implements HttpServletRequestListener {
         }
         form.addField("type", types);
         form.getField("type").setRequired(true);
-        form.getField("type").setRequiredError(getResource().getString("message.missing.datatype"));
-        form.addField("size", new com.vaadin.ui.TextField(getResource().getString("general.size") + ":"));
+        form.getField("type").setRequiredError(getInstance().getResource().getString("message.missing.datatype"));
+        form.addField("size", new com.vaadin.ui.TextField(getInstance().getResource().getString("general.size") + ":"));
         form.getField("size").setRequired(true);
-        form.getField("size").setRequiredError(getResource().getString("message.missing.size"));
-        form.getField("size").setDescription(getResource().getString("message.admin.attribute.req4string"));
+        form.getField("size").setRequiredError(getInstance().getResource().getString("message.missing.size"));
+        form.getField("size").setDescription(getInstance().getResource().getString("message.admin.attribute.req4string"));
         //Used for validation purposes
         final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
-                getResource().getString("general.add.attribute"), form, "commit");
+                getInstance().getResource().getString("general.add.attribute"), form, "commit");
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
-                getResource().getString("general.cancel"),
+                getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
 
                     @Override
@@ -1980,7 +1985,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         });
 
         form.getLayout().addComponent(new com.vaadin.ui.Label(
-                getResource().getString("message.warning.attribute.remove")));
+                getInstance().getResource().getString("message.warning.attribute.remove")));
         form.getFooter().setSizeUndefined();
         form.getFooter().addComponent(commit);
         form.getFooter().addComponent(cancel);
@@ -1994,13 +1999,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
     private void showChangePasswordDialog() {
         final Window pass = new Window();
         final Form form = new Form();
-        form.getLayout().addComponent(new com.vaadin.ui.Label(xerb.getString("password.aged")));
-        form.addField("password", new PasswordField(getResource().getString("general.password")));
-        form.addField("confirm", new PasswordField(getResource().getString("general.verifypassword")));
+        form.getLayout().addComponent(new com.vaadin.ui.Label(getInstance().getResource().getString("password.aged")));
+        form.addField("password", new PasswordField(getInstance().getResource().getString("general.password")));
+        form.addField("confirm", new PasswordField(getInstance().getResource().getString("general.verifypassword")));
         form.getField("password").setRequired(true);
-        form.getField("password").setRequiredError(getResource().getString("message.missing.password"));
+        form.getField("password").setRequiredError(getInstance().getResource().getString("message.missing.password"));
         form.getField("confirm").setRequired(true);
-        form.getField("confirm").setRequiredError(getResource().getString("message.missing.designation"));
+        form.getField("confirm").setRequiredError(getInstance().getResource().getString("message.missing.designation"));
         final com.vaadin.ui.Button commit = new com.vaadin.ui.Button("Submit",
                 form, "commit");
         commit.addListener(new com.vaadin.ui.Button.ClickListener() {
@@ -2009,7 +2014,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 if (!form.getField("password").getValue().equals(form.getField("confirm").getValue())) {
                     getMainWindow().showNotification(
-                            getResource().getString("window.userinfo.passwordmismatch"),
+                            getInstance().getResource().getString("window.userinfo.passwordmismatch"),
                             Notification.TYPE_WARNING_MESSAGE);
                 } else {
                     boolean passwordIsUsable = loggedUser.isPasswordUsable(form.getField("password").getValue().toString());
@@ -2026,14 +2031,14 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             temp_user.setReason("audit.user.account.password.change");
                             temp_user.setHashPassword(true);
                             temp_user.write2DB();
-                            getMainWindow().showNotification(xerb.getString("password.changed"),
+                            getMainWindow().showNotification(getInstance().getResource().getString("password.changed"),
                                     Notification.TYPE_TRAY_NOTIFICATION);
                             getMainWindow().removeWindow(pass);
                         } catch (XincoException ex) {
                             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else {
-                        getMainWindow().showNotification(xerb.getString("password.unusable"),
+                        getMainWindow().showNotification(getInstance().getResource().getString("password.unusable"),
                                 Notification.TYPE_WARNING_MESSAGE);
                     }
                 }
@@ -2055,12 +2060,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 "com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
         locales.addAll(Arrays.asList(lrb.getString("AvailableLocales").split(",")));
         for (Iterator<String> it = locales.iterator(); it.hasNext();) {
-            String locale = it.next();
-            languages.addItem(locale);
-            languages.setItemCaption(locale, lrb.getString("Locale." + locale));
+            String tempLocale = it.next();
+            languages.addItem(tempLocale);
+            languages.setItemCaption(tempLocale, lrb.getString("Locale." + tempLocale));
             try {
-                FileResource flagIcon = getFlagIcon(locale.isEmpty() ? "us" : locale);
-                languages.setItemIcon(locale, flagIcon);
+                FileResource flagIcon = getFlagIcon(tempLocale.isEmpty() ? "us" : tempLocale);
+                languages.setItemIcon(tempLocale, flagIcon);
             } catch (IOException ex) {
                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -2138,11 +2143,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final Window audit = new Window();
         final Table table = new Table();
         table.addStyleName("striped");
-        table.addContainerProperty(getResource().getString("general.table"),
+        table.addContainerProperty(getInstance().getResource().getString("general.table"),
                 String.class, null);
-        table.addContainerProperty(getResource().getString("general.audit.action"),
+        table.addContainerProperty(getInstance().getResource().getString("general.audit.action"),
                 com.vaadin.ui.Component.class, null);
-        table.setSortContainerPropertyId(getResource().getString("general.table"));
+        table.setSortContainerPropertyId(getInstance().getResource().getString("general.table"));
         Set<EntityType<?>> entities = XincoDBManager.getEntityManagerFactory().getMetamodel().getEntities();
         for (EntityType type : entities) {
             String name = type.getName();
@@ -2150,7 +2155,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 java.util.List<Object> result = XincoDBManager.createdQuery("select distinct x from "
                         + type.getJavaType().getSimpleName() + "T x");
                 if (!result.isEmpty()) {
-                    final com.vaadin.ui.Button cont = new com.vaadin.ui.Button(xerb.getString("general.continue"));
+                    final com.vaadin.ui.Button cont = new com.vaadin.ui.Button(getInstance().getResource().getString("general.continue"));
                     cont.setData(type);
                     cont.addListener(new com.vaadin.ui.Button.ClickListener() {
 
@@ -2188,9 +2193,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 typeMap.put(attr.getName(), attr.getPersistentAttributeType());
             }
             //Now add the audit fields
-            table.addContainerProperty(getResource().getString("general.reason"), com.vaadin.ui.Component.class, null);
-            table.addContainerProperty(getResource().getString("general.audit.modtime"), com.vaadin.ui.Component.class, null);
-            table.addContainerProperty(getResource().getString("general.user"), com.vaadin.ui.Component.class, null);
+            table.addContainerProperty(getInstance().getResource().getString("general.reason"), com.vaadin.ui.Component.class, null);
+            table.addContainerProperty(getInstance().getResource().getString("general.audit.modtime"), com.vaadin.ui.Component.class, null);
+            table.addContainerProperty(getInstance().getResource().getString("general.user"), com.vaadin.ui.Component.class, null);
             int index = 0;
             for (Iterator it = entities.iterator(); it.hasNext();) {
                 int recordId = 0;
@@ -2210,8 +2215,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         switch (entry.getValue()) {
                             case BASIC:
                                 values.add(new com.vaadin.ui.Label(entry.getKey().contains("password")
-                                        ? "**********" : (getResource().containsKey(value)
-                                        ? getResource().getString(value) : value)));
+                                        ? "**********" : (getInstance().getResource().containsKey(value)
+                                        ? getInstance().getResource().getString(value) : value)));
                                 break;
                             default:
                                 throw new XincoException(entry.getValue().name() + " not supported yet!");
@@ -2238,8 +2243,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 HashMap parameters = new HashMap();
                 parameters.put("recordId", recordId);
                 XincoCoreUserModifiedRecord record = (XincoCoreUserModifiedRecord) XincoDBManager.namedQuery("XincoCoreUserModifiedRecord.findByRecordId", parameters).get(0);
-                values.add(new com.vaadin.ui.Label(getResource().containsKey(record.getModReason())
-                        ? getResource().getString(record.getModReason())
+                values.add(new com.vaadin.ui.Label(getInstance().getResource().containsKey(record.getModReason())
+                        ? getInstance().getResource().getString(record.getModReason())
                         : record.getModReason()));
                 values.add(new com.vaadin.ui.Label(record.getModTime().toString()));
                 values.add(new com.vaadin.ui.Label(record.getXincoCoreUser().getFirstName()
@@ -2297,18 +2302,18 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final Form form = new Form();
         final Table table = new Table();
         table.addStyleName("striped");
-        table.addContainerProperty(getResource().getString("general.id"),
+        table.addContainerProperty(getInstance().getResource().getString("general.id"),
                 Integer.class, null);
-        table.addContainerProperty(getResource().getString("general.designation"),
+        table.addContainerProperty(getInstance().getResource().getString("general.designation"),
                 String.class, null);
-        table.addContainerProperty(getResource().getString("general.description"),
+        table.addContainerProperty(getInstance().getResource().getString("general.description"),
                 String.class, null);
         table.addContainerProperty("", com.vaadin.ui.Component.class, null);
-        table.setSortContainerPropertyId(getResource().getString("general.id"));
+        table.setSortContainerPropertyId(getInstance().getResource().getString("general.id"));
         form.getLayout().addComponent(table);
         refreshFileTypeTable(table);
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
-                getResource().getString("general.cancel"),
+                getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
 
                     @Override
@@ -2330,27 +2335,27 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final Form form = new Form();
         final Table table = new Table();
         table.addStyleName("striped");
-        table.addContainerProperty(getResource().getString("general.id"),
+        table.addContainerProperty(getInstance().getResource().getString("general.id"),
                 Integer.class, null);
-        table.addContainerProperty(getResource().getString("general.name"),
+        table.addContainerProperty(getInstance().getResource().getString("general.name"),
                 String.class, null);
-        table.addContainerProperty(getResource().getString("general.designation"),
+        table.addContainerProperty(getInstance().getResource().getString("general.designation"),
                 String.class, null);
         table.addContainerProperty("", com.vaadin.ui.Component.class, null);
-        table.setSortContainerPropertyId(getResource().getString("general.id"));
+        table.setSortContainerPropertyId(getInstance().getResource().getString("general.id"));
         form.getLayout().addComponent(table);
         refreshLanguageTable(table);
-        form.addField("designation", new com.vaadin.ui.TextField(getResource().getString("general.designation") + ":"));
+        form.addField("designation", new com.vaadin.ui.TextField(getInstance().getResource().getString("general.designation") + ":"));
         form.getField("designation").setRequired(true);
-        form.getField("designation").setRequiredError(getResource().getString("message.missing.designation"));
-        form.addField("sign", new com.vaadin.ui.TextField(getResource().getString("general.sign") + ":"));
+        form.getField("designation").setRequiredError(getInstance().getResource().getString("message.missing.designation"));
+        form.addField("sign", new com.vaadin.ui.TextField(getInstance().getResource().getString("general.sign") + ":"));
         form.getField("sign").setRequired(true);
-        form.getField("sign").setRequiredError(getResource().getString("message.missing.sign"));
+        form.getField("sign").setRequiredError(getInstance().getResource().getString("message.missing.sign"));
         //Used for validation purposes
         final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
-                getResource().getString("general.add.language"), form, "commit");
+                getInstance().getResource().getString("general.add.language"), form, "commit");
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
-                getResource().getString("general.cancel"),
+                getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
 
                     @Override
@@ -2373,8 +2378,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                      * translated.
                      */
                     for (XincoCoreLanguageServer lang : XincoCoreLanguageServer.getXincoCoreLanguages()) {
-                        if (getResource().containsKey(lang.getDesignation())
-                                && getResource().getString(lang.getDesignation()).equals(form.getField("designation").getValue().toString())) {
+                        if (getInstance().getResource().containsKey(lang.getDesignation())
+                                && getInstance().getResource().getString(lang.getDesignation()).equals(form.getField("designation").getValue().toString())) {
                             //Duplicate designation
                             throw new XincoException();
                         }
@@ -2386,8 +2391,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     lang.setChangerID(loggedUser.getId());
                     lang.write2DB();
                 } catch (XincoException ex) {
-                    getMainWindow().showNotification(getResource().getString("general.error"),
-                            getResource().getString("error.language.add.duplicate"),
+                    getMainWindow().showNotification(getInstance().getResource().getString("general.error"),
+                            getInstance().getResource().getString("error.language.add.duplicate"),
                             Notification.TYPE_WARNING_MESSAGE);
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 } finally {
@@ -2402,7 +2407,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
         });
         form.getLayout().addComponent(new com.vaadin.ui.Label(
-                getResource().getString("error.language.delete.referenced")));
+                getInstance().getResource().getString("error.language.delete.referenced")));
         form.getFooter().setSizeUndefined();
         form.getFooter().addComponent(commit);
         form.getFooter().addComponent(cancel);
@@ -2420,7 +2425,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         for (Iterator<XincoCoreLanguageServer> it = allLanguages.iterator(); it.hasNext();) {
             XincoCoreLanguageServer lang = it.next();
             is_used = XincoCoreLanguageServer.isLanguageUsed(lang);
-            final com.vaadin.ui.Button delete = new com.vaadin.ui.Button(getResource().getString("general.delete"));
+            final com.vaadin.ui.Button delete = new com.vaadin.ui.Button(getInstance().getResource().getString("general.delete"));
             delete.setData(lang.getId());
             delete.addStyleName("link");
             delete.addListener(new com.vaadin.ui.Button.ClickListener() {
@@ -2436,8 +2441,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             table.addItem(new Object[]{lang.getId(),
-                        getResource().containsKey(lang.getDesignation())
-                        ? getResource().getString(lang.getDesignation())
+                        getInstance().getResource().containsKey(lang.getDesignation())
+                        ? getInstance().getResource().getString(lang.getDesignation())
                         : lang.getDesignation(),
                         lang.getSign(),
                         is_used ? null : delete}, lang.getId());
@@ -2451,63 +2456,63 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final Table table = new Table();
         if (userAdmin) {
             table.addStyleName("striped");
-            table.addContainerProperty(getResource().getString("general.id"),
+            table.addContainerProperty(getInstance().getResource().getString("general.id"),
                     Integer.class, null);
-            table.addContainerProperty(getResource().getString("general.username"),
+            table.addContainerProperty(getInstance().getResource().getString("general.username"),
                     String.class, null);
-            table.addContainerProperty(getResource().getString("general.firstname"),
+            table.addContainerProperty(getInstance().getResource().getString("general.firstname"),
                     String.class, null);
-            table.addContainerProperty(getResource().getString("general.lastname"),
+            table.addContainerProperty(getInstance().getResource().getString("general.lastname"),
                     String.class, null);
-            table.addContainerProperty(getResource().getString("general.email"),
+            table.addContainerProperty(getInstance().getResource().getString("general.email"),
                     String.class, null);
-            table.addContainerProperty(getResource().getString("general.lock") + "/"
-                    + getResource().getString("general.unlock"),
+            table.addContainerProperty(getInstance().getResource().getString("general.lock") + "/"
+                    + getInstance().getResource().getString("general.unlock"),
                     com.vaadin.ui.Component.class, null);
-            table.addContainerProperty(getResource().getString("general.password.reset") + "*",
+            table.addContainerProperty(getInstance().getResource().getString("general.password.reset") + "*",
                     com.vaadin.ui.Component.class, null);
             refreshUserTable(table);
-            table.setSortContainerPropertyId(getResource().getString("general.id"));
+            table.setSortContainerPropertyId(getInstance().getResource().getString("general.id"));
             form.getLayout().addComponent(table);
         }
-        form.addField("username", new com.vaadin.ui.TextField(getResource().getString("general.username") + ":"));
+        form.addField("username", new com.vaadin.ui.TextField(getInstance().getResource().getString("general.username") + ":"));
         form.getField("username").setRequired(userAdmin);
-        form.getField("username").setRequiredError(getResource().getString("message.missing.username"));
+        form.getField("username").setRequiredError(getInstance().getResource().getString("message.missing.username"));
         if (!userAdmin) {
             form.getField("username").setValue(loggedUser.getUsername());
         }
-        form.addField("pass", new com.vaadin.ui.PasswordField(getResource().getString("general.password") + ":"));
+        form.addField("pass", new com.vaadin.ui.PasswordField(getInstance().getResource().getString("general.password") + ":"));
         form.getField("pass").setRequired(userAdmin);
-        form.getField("pass").setRequiredError(getResource().getString("message.missing.password"));
+        form.getField("pass").setRequiredError(getInstance().getResource().getString("message.missing.password"));
         if (!userAdmin) {
-            form.addField("verify", new com.vaadin.ui.PasswordField(getResource().getString("general.verifypassword") + ":"));
+            form.addField("verify", new com.vaadin.ui.PasswordField(getInstance().getResource().getString("general.verifypassword") + ":"));
             form.getField("verify").setRequired(userAdmin);
-            form.getField("verify").setRequiredError(getResource().getString("message.missing.password"));
+            form.getField("verify").setRequiredError(getInstance().getResource().getString("message.missing.password"));
         }
-        form.addField("firstname", new com.vaadin.ui.TextField(getResource().getString("general.firstname") + ":"));
+        form.addField("firstname", new com.vaadin.ui.TextField(getInstance().getResource().getString("general.firstname") + ":"));
         form.getField("firstname").setRequired(userAdmin);
-        form.getField("firstname").setRequiredError(getResource().getString("message.missing.firstname"));
+        form.getField("firstname").setRequiredError(getInstance().getResource().getString("message.missing.firstname"));
         if (!userAdmin) {
             form.getField("firstname").setValue(loggedUser.getFirstName());
         }
-        form.addField("lastname", new com.vaadin.ui.TextField(getResource().getString("general.lastname") + ":"));
+        form.addField("lastname", new com.vaadin.ui.TextField(getInstance().getResource().getString("general.lastname") + ":"));
         form.getField("lastname").setRequired(userAdmin);
-        form.getField("lastname").setRequiredError(getResource().getString("message.missing.lastname"));
+        form.getField("lastname").setRequiredError(getInstance().getResource().getString("message.missing.lastname"));
         if (!userAdmin) {
             form.getField("lastname").setValue(loggedUser.getLastName());
         }
-        form.addField("email", new com.vaadin.ui.TextField(getResource().getString("general.email") + ":"));
+        form.addField("email", new com.vaadin.ui.TextField(getInstance().getResource().getString("general.email") + ":"));
         form.getField("email").setRequired(userAdmin);
-        form.getField("email").setRequiredError(getResource().getString("message.missing.email"));
+        form.getField("email").setRequiredError(getInstance().getResource().getString("message.missing.email"));
         if (!userAdmin) {
             form.getField("email").setValue(loggedUser.getEmail());
         }
         //Used for validation purposes
         final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
-                userAdmin ? getResource().getString("general.add.user")
-                : getResource().getString("general.save"), form, "commit");
+                userAdmin ? getInstance().getResource().getString("general.add.user")
+                : getInstance().getResource().getString("general.save"), form, "commit");
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
-                getResource().getString("general.cancel"),
+                getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
 
                     @Override
@@ -2578,7 +2583,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     temp_user.setChange(true);
                     boolean passwordIsUsable = loggedUser.isPasswordUsable(form.getField("pass").getValue().toString());
                     if (!passwordIsUsable) {
-                        getMainWindow().showNotification(xerb.getString("password.unusable"),
+                        getMainWindow().showNotification(getInstance().getResource().getString("password.unusable"),
                                 Notification.TYPE_WARNING_MESSAGE);
                         changed = false;
                     }
@@ -2619,9 +2624,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
         login.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         profile.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         logout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
-        menu.addTab(accountPanel, getResource().getString("window.connection.profile"), null);
+        menu.addTab(accountPanel, getInstance().getResource().getString("window.connection.profile"), null);
         adminPanel = new com.vaadin.ui.Panel();
-        com.vaadin.ui.Button userAdmin = new com.vaadin.ui.Button(xerb.getString("message.admin.userAdmin"));
+        com.vaadin.ui.Button userAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.userAdmin"));
         userAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         userAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
 
@@ -2631,7 +2636,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
         });
         adminPanel.addComponent(userAdmin);
-        com.vaadin.ui.Button groupAdmin = new com.vaadin.ui.Button(xerb.getString("message.admin.groupAdmin"));
+        com.vaadin.ui.Button groupAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.groupAdmin"));
         groupAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         groupAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
 
@@ -2641,7 +2646,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
         });
         adminPanel.addComponent(groupAdmin);
-        com.vaadin.ui.Button langAdmin = new com.vaadin.ui.Button(xerb.getString("message.admin.language"));
+        com.vaadin.ui.Button langAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.language"));
         langAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         langAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
 
@@ -2651,7 +2656,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
         });
         adminPanel.addComponent(langAdmin);
-        com.vaadin.ui.Button attrAdmin = new com.vaadin.ui.Button(xerb.getString("message.admin.attribute"));
+        com.vaadin.ui.Button attrAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.attribute"));
         attrAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         attrAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
 
@@ -2661,7 +2666,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
         });
         adminPanel.addComponent(attrAdmin);
-        com.vaadin.ui.Button trashAdmin = new com.vaadin.ui.Button(xerb.getString("message.admin.trash"));
+        com.vaadin.ui.Button trashAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.trash"));
         trashAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         trashAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
 
@@ -2676,13 +2681,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
         });
         adminPanel.addComponent(trashAdmin);
-        com.vaadin.ui.Button indexAdmin = new com.vaadin.ui.Button(xerb.getString("message.admin.index"));
+        com.vaadin.ui.Button indexAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.index"));
         indexAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         indexAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
 
             Table table = new Table();
             final ProgressIndicator indicator = new ProgressIndicator(new Float(0.0));
-            com.vaadin.ui.Button ok = new com.vaadin.ui.Button(xerb.getString("general.ok"));
+            com.vaadin.ui.Button ok = new com.vaadin.ui.Button(getInstance().getResource().getString("general.ok"));
 
             class IndexRebuilder extends Thread {
 
@@ -2709,9 +2714,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         boolean indexDirectoryDeleted = indexDirectory.delete();
                         count++;
                         table.addItem(new Object[]{new com.vaadin.ui.Label(
-                                    xerb.getString("message.index.delete")),
+                                    getInstance().getResource().getString("message.index.delete")),
                                     new com.vaadin.ui.Label(indexDirectoryDeleted
-                                    ? xerb.getString("general.ok") + "!" : xerb.getString("general.fail"))}, index++);
+                                    ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail"))}, index++);
                     }
                     XincoCoreDataServer xdataTemp;
                     boolean index_result;
@@ -2721,16 +2726,16 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             index_result = XincoIndexer.indexXincoCoreData(xdataTemp, true);
                             table.addItem(new Object[]{new com.vaadin.ui.Label(xdataTemp.getDesignation()),
                                         new com.vaadin.ui.Label(index_result
-                                        ? xerb.getString("general.ok") + "!" : xerb.getString("general.fail"))}, index++);
+                                        ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail"))}, index++);
                             count++;
                             indicator.setValue(new Float(count) / new Float(work_units));
                         }
                     }
                     index_result = XincoIndexer.optimizeIndex();
                     //Optimize index
-                    table.addItem(new Object[]{new com.vaadin.ui.Label(xerb.getString("message.index.optimize")),
+                    table.addItem(new Object[]{new com.vaadin.ui.Label(getInstance().getResource().getString("message.index.optimize")),
                                 new com.vaadin.ui.Label(index_result
-                                ? xerb.getString("general.ok") + "!" : xerb.getString("general.fail"))}, index++);
+                                ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail"))}, index++);
                     count++;
                     indicator.setValue(new Float(1.0));
                     ok.setEnabled(true);
@@ -2744,12 +2749,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     progress.addComponent(indicator);
                     // Set polling frequency to 0.5 seconds.
                     indicator.setPollingInterval(500);
-                    progress.addComponent(new com.vaadin.ui.Label(xerb.getString("message.index.rebuild")));
-                    progress.addComponent(new com.vaadin.ui.Label(xerb.getString("message.warning.index.rebuild")));
+                    progress.addComponent(new com.vaadin.ui.Label(getInstance().getResource().getString("message.index.rebuild")));
+                    progress.addComponent(new com.vaadin.ui.Label(getInstance().getResource().getString("message.warning.index.rebuild")));
                     table.addStyleName("striped");
-                    table.addContainerProperty(xerb.getString("message.data.sort.designation"),
+                    table.addContainerProperty(getInstance().getResource().getString("message.data.sort.designation"),
                             com.vaadin.ui.Label.class, null);
-                    table.addContainerProperty(xerb.getString("message.indexing.status"),
+                    table.addContainerProperty(getInstance().getResource().getString("message.indexing.status"),
                             com.vaadin.ui.Label.class, null);
                     progress.addComponent(table);
                     ok.addListener(new com.vaadin.ui.Button.ClickListener() {
@@ -2772,7 +2777,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
         });
         adminPanel.addComponent(indexAdmin);
-        com.vaadin.ui.Button auditAdmin = new com.vaadin.ui.Button(xerb.getString("general.audit.menu"));
+        com.vaadin.ui.Button auditAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("general.audit.menu"));
         auditAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         auditAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
 
@@ -2786,7 +2791,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
         });
         adminPanel.addComponent(auditAdmin);
-        com.vaadin.ui.Button settingAdmin = new com.vaadin.ui.Button(xerb.getString("message.admin.settingAdmin"));
+        com.vaadin.ui.Button settingAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.settingAdmin"));
         settingAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         settingAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
 
@@ -2822,7 +2827,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         ArrayList<XincoCoreUserServer> allusers = XincoCoreUserServer.getXincoCoreUsers();
         for (Iterator<XincoCoreUserServer> it = allusers.iterator(); it.hasNext();) {
             XincoCoreUserServer tempUser = it.next();
-            com.vaadin.ui.Button lock = new com.vaadin.ui.Button(getResource().getString("general.lock"));
+            com.vaadin.ui.Button lock = new com.vaadin.ui.Button(getInstance().getResource().getString("general.lock"));
             lock.setData(tempUser.getId());
             lock.addStyleName("link");
             lock.addListener(new com.vaadin.ui.Button.ClickListener() {
@@ -2846,7 +2851,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     }
                 }
             });
-            com.vaadin.ui.Button unlock = new com.vaadin.ui.Button(getResource().getString("general.unlock"));
+            com.vaadin.ui.Button unlock = new com.vaadin.ui.Button(getInstance().getResource().getString("general.unlock"));
             unlock.setData(tempUser.getId());
             unlock.addStyleName("link");
             unlock.addListener(new com.vaadin.ui.Button.ClickListener() {
@@ -2872,7 +2877,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     }
                 }
             });
-            com.vaadin.ui.Button reset = new com.vaadin.ui.Button(getResource().getString("general.password.reset"));
+            com.vaadin.ui.Button reset = new com.vaadin.ui.Button(getInstance().getResource().getString("general.password.reset"));
             reset.setData(tempUser.getId());
             reset.addStyleName("link");
             reset.addListener(new com.vaadin.ui.Button.ClickListener() {
@@ -2910,33 +2915,33 @@ public class Xinco extends Application implements HttpServletRequestListener {
     private void refreshGroupContentsTables(final Form form, final int groupId) {
         final Table table1 = new Table();
         table1.addStyleName("striped");
-        table1.addContainerProperty(getResource().getString("general.id"),
+        table1.addContainerProperty(getInstance().getResource().getString("general.id"),
                 Integer.class, null);
-        table1.addContainerProperty(getResource().getString("general.username"),
+        table1.addContainerProperty(getInstance().getResource().getString("general.username"),
                 String.class, null);
-        table1.addContainerProperty(getResource().getString("general.firstname"),
+        table1.addContainerProperty(getInstance().getResource().getString("general.firstname"),
                 String.class, null);
-        table1.addContainerProperty(getResource().getString("general.lastname"),
+        table1.addContainerProperty(getInstance().getResource().getString("general.lastname"),
                 String.class, null);
-        table1.addContainerProperty(getResource().getString("general.email"),
+        table1.addContainerProperty(getInstance().getResource().getString("general.email"),
                 String.class, null);
         table1.addContainerProperty("", com.vaadin.ui.Component.class, null);
-        table1.setSortContainerPropertyId(getResource().getString("general.id"));
+        table1.setSortContainerPropertyId(getInstance().getResource().getString("general.id"));
         table1.setPageLength(10);
         final Table table2 = new Table();
         table2.addStyleName("striped");
-        table2.addContainerProperty(getResource().getString("general.id"),
+        table2.addContainerProperty(getInstance().getResource().getString("general.id"),
                 Integer.class, null);
-        table2.addContainerProperty(getResource().getString("general.username"),
+        table2.addContainerProperty(getInstance().getResource().getString("general.username"),
                 String.class, null);
-        table2.addContainerProperty(getResource().getString("general.firstname"),
+        table2.addContainerProperty(getInstance().getResource().getString("general.firstname"),
                 String.class, null);
-        table2.addContainerProperty(getResource().getString("general.lastname"),
+        table2.addContainerProperty(getInstance().getResource().getString("general.lastname"),
                 String.class, null);
-        table2.addContainerProperty(getResource().getString("general.email"),
+        table2.addContainerProperty(getInstance().getResource().getString("general.email"),
                 String.class, null);
         table2.addContainerProperty("", com.vaadin.ui.Component.class, null);
-        table2.setSortContainerPropertyId(getResource().getString("general.id"));
+        table2.setSortContainerPropertyId(getInstance().getResource().getString("general.id"));
         table1.setPageLength(2);
         ArrayList<XincoCoreUserServer> allusers = XincoCoreUserServer.getXincoCoreUsers();
         boolean member_ofGroup;
@@ -2950,7 +2955,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     break;
                 }
             }
-            final com.vaadin.ui.Button remove = new com.vaadin.ui.Button(getResource().getString("general.group.removeuser"));
+            final com.vaadin.ui.Button remove = new com.vaadin.ui.Button(getInstance().getResource().getString("general.group.removeuser"));
             remove.setData(tempUser.getId());
             remove.addStyleName("link");
             remove.addListener(new com.vaadin.ui.Button.ClickListener() {
@@ -2970,13 +2975,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else {
-                        getMainWindow().showNotification(getResource().getString("error.user.remove.mainUserGroup"),
+                        getMainWindow().showNotification(getInstance().getResource().getString("error.user.remove.mainUserGroup"),
                                 Notification.TYPE_WARNING_MESSAGE);
                     }
                     refreshGroupContentsTables(form, groupId);
                 }
             });
-            final com.vaadin.ui.Button add = new com.vaadin.ui.Button(getResource().getString("general.group.adduser"));
+            final com.vaadin.ui.Button add = new com.vaadin.ui.Button(getInstance().getResource().getString("general.group.adduser"));
             add.setData(tempUser.getId());
             add.addStyleName("link");
             add.addListener(new com.vaadin.ui.Button.ClickListener() {
@@ -3011,9 +3016,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             add}, tempUser.getId());
             }
         }
-        form.getLayout().addComponent(new com.vaadin.ui.Label(getResource().getString("general.group.member")));
+        form.getLayout().addComponent(new com.vaadin.ui.Label(getInstance().getResource().getString("general.group.member")));
         form.getLayout().addComponent(table1);
-        form.getLayout().addComponent(new com.vaadin.ui.Label(getResource().getString("general.group.notmember")));
+        form.getLayout().addComponent(new com.vaadin.ui.Label(getInstance().getResource().getString("general.group.notmember")));
         form.getLayout().addComponent(table2);
     }
 
@@ -3022,7 +3027,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         table.removeAllItems();
         for (Iterator<XincoCoreDataTypeAttribute> it = alldatatypes.iterator(); it.hasNext();) {
             XincoCoreDataTypeAttribute type = it.next();
-            final com.vaadin.ui.Button delete = new com.vaadin.ui.Button(getResource().getString("general.delete") + "*");
+            final com.vaadin.ui.Button delete = new com.vaadin.ui.Button(getInstance().getResource().getString("general.delete") + "*");
             delete.setData(type.getAttributeId());
             delete.addStyleName("link");
             delete.addListener(new com.vaadin.ui.Button.ClickListener() {
@@ -3039,8 +3044,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             table.addItem(new Object[]{type.getAttributeId(),
-                        getResource().containsKey(type.getDesignation())
-                        ? getResource().getString(type.getDesignation())
+                        getInstance().getResource().containsKey(type.getDesignation())
+                        ? getInstance().getResource().getString(type.getDesignation())
                         : type.getDesignation(),
                         type.getDataType(),
                         type.getSize(),
@@ -3060,7 +3065,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         table.removeAllItems();
         for (Iterator<XincoCoreDataTypeServer> it = alldatatypes.iterator(); it.hasNext();) {
             XincoCoreDataTypeServer type = it.next();
-            final com.vaadin.ui.Button edit = new com.vaadin.ui.Button(getResource().getString("general.edit"));
+            final com.vaadin.ui.Button edit = new com.vaadin.ui.Button(getInstance().getResource().getString("general.edit"));
             edit.setData(type.getId());
             edit.addStyleName("link");
             edit.addListener(new com.vaadin.ui.Button.ClickListener() {
@@ -3075,11 +3080,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             table.addItem(new Object[]{type.getId(),
-                        getResource().containsKey(type.getDesignation())
-                        ? getResource().getString(type.getDesignation())
+                        getInstance().getResource().containsKey(type.getDesignation())
+                        ? getInstance().getResource().getString(type.getDesignation())
                         : type.getDesignation(),
-                        getResource().containsKey(type.getDescription())
-                        ? getResource().getString(type.getDescription())
+                        getInstance().getResource().containsKey(type.getDescription())
+                        ? getInstance().getResource().getString(type.getDescription())
                         : type.getDescription(),
                         edit}, type.getId());
         }
@@ -3090,8 +3095,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         XincoMenuItem item;
         int i = 0;
         item = new XincoMenuItem(i += 1000,
-                getResource().getString("menu.repository"),
-                getResource().getString("menu.repository.refresh"),
+                "menu.repository",
+                "menu.repository.refresh",
                 smallIcon,
                 new com.vaadin.ui.MenuBar.Command() {
 
@@ -3110,8 +3115,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 false);
         XincoMenuItemManager.addItem(item);
         item = new XincoMenuItem(i += 1000,
-                getResource().getString("menu.repository"),
-                getResource().getString("menu.repository.addfolder"),
+                "menu.repository",
+                "menu.repository.addfolder",
                 smallIcon,
                 new com.vaadin.ui.MenuBar.Command() {
 
@@ -3128,8 +3133,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 );
         XincoMenuItemManager.addItem(item);
         item = new XincoMenuItem(i += 1000,
-                getResource().getString("menu.repository"),
-                getResource().getString("menu.repository.adddata"),
+                "menu.repository",
+                "menu.repository.adddata",
                 smallIcon,
                 new com.vaadin.ui.MenuBar.Command() {
 
@@ -3146,8 +3151,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 );
         XincoMenuItemManager.addItem(item);
         item = new XincoMenuItem(i += 1000,
-                getResource().getString("menu.repository"),
-                getResource().getString("menu.repository.adddatastructure"),
+                "menu.repository",
+                "menu.repository.adddatastructure",
                 smallIcon,
                 new com.vaadin.ui.MenuBar.Command() {
 
@@ -3165,7 +3170,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 if (length == 0) {
                                     //Empty file or folder
                                     if (sb.toString().isEmpty()) {
-                                        sb.append(getResource().getString("window.massiveimport.notsupported"));
+                                        sb.append(getInstance().getResource().getString("window.massiveimport.notsupported"));
                                     }
                                     sb.append("\n").append(fileName);
                                     getMainWindow().showNotification(
@@ -3173,7 +3178,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                             Notification.TYPE_TRAY_NOTIFICATION);
                                 } else {
                                     getMainWindow().showNotification(
-                                            getResource().getString("window.massiveimport.progress"),
+                                            getInstance().getResource().getString("window.massiveimport.progress"),
                                             Notification.TYPE_TRAY_NOTIFICATION);
                                     data = new XincoCoreData();
                                     getXincoCoreData().setXincoCoreDataType(new XincoCoreDataTypeServer(1));
@@ -3199,8 +3204,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 );
         XincoMenuItemManager.addItem(item);
         item = new XincoMenuItem(i += 1000,
-                getResource().getString("menu.repository"),
-                getResource().getString("menu.edit.folderdata"),
+                "menu.repository",
+                "menu.edit.folderdata",
                 smallIcon,
                 new com.vaadin.ui.MenuBar.Command() {
 
@@ -3221,8 +3226,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         item.setStatuses(new int[]{1, 4});
         XincoMenuItemManager.addItem(item);
         item = new XincoMenuItem(i += 1000,
-                getResource().getString("menu.repository"),
-                getResource().getString("menu.repository.vieweditaddattributes"),
+                "menu.repository",
+                "menu.repository.vieweditaddattributes",
                 smallIcon,
                 new com.vaadin.ui.MenuBar.Command() {
 
@@ -3240,8 +3245,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         item.setStatuses(new int[]{1, 4});
         XincoMenuItemManager.addItem(item);
         item = new XincoMenuItem(i += 1000,
-                getResource().getString("menu.repository"),
-                getResource().getString("menu.edit.acl"),
+                "menu.repository",
+                "menu.edit.acl",
                 smallIcon,
                 new com.vaadin.ui.MenuBar.Command() {
 
@@ -3258,8 +3263,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         item.setStatuses(new int[]{1, 4});
         XincoMenuItemManager.addItem(item);
         item = new XincoMenuItem(i += 1000,
-                getResource().getString("menu.repository"),
-                getResource().getString("menu.repository.downloadfile"),
+                "menu.repository",
+                "menu.repository.downloadfile",
                 smallIcon,
                 new com.vaadin.ui.MenuBar.Command() {
 
@@ -3285,8 +3290,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         if (renderingSupportEnabled) {
             XincoMenuItemManager.addItem(item);
             item = new XincoMenuItem(i += 1000,
-                    getResource().getString("menu.repository"),
-                    getResource().getString("menu.repository.addrendering"),
+                    "menu.repository",
+                    "menu.repository.addrendering",
                     smallIcon,
                     new com.vaadin.ui.MenuBar.Command() {
 
@@ -3308,8 +3313,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
             XincoMenuItemManager.addItem(item);
         }
         item = new XincoMenuItem(i += 1000,
-                getResource().getString("menu.repository"),
-                getResource().getString("menu.edit.checkoutfile"),
+                "menu.repository",
+                "menu.edit.checkoutfile",
                 smallIcon,
                 new com.vaadin.ui.MenuBar.Command() {
 
@@ -3326,8 +3331,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         item.setStatuses(new int[]{1});
         XincoMenuItemManager.addItem(item);
         item = new XincoMenuItem(i += 1000,
-                getResource().getString("menu.repository"),
-                getResource().getString("menu.edit.undocheckout"),
+                "menu.repository",
+                "menu.edit.undocheckout",
                 smallIcon,
                 new com.vaadin.ui.MenuBar.Command() {
 
@@ -3344,8 +3349,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         item.setStatuses(new int[]{4});
         XincoMenuItemManager.addItem(item);
         item = new XincoMenuItem(i += 1000,
-                getResource().getString("menu.repository"),
-                getResource().getString("menu.edit.checkinfile"),
+                "menu.repository",
+                "menu.edit.checkinfile",
                 smallIcon,
                 new com.vaadin.ui.MenuBar.Command() {
 
@@ -3362,8 +3367,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         item.setStatuses(new int[]{4});
         XincoMenuItemManager.addItem(item);
         item = new XincoMenuItem(i += 1000,
-                getResource().getString("menu.repository"),
-                getResource().getString("menu.edit.publishdata"),
+                "menu.repository",
+                "menu.edit.publishdata",
                 smallIcon,
                 new com.vaadin.ui.MenuBar.Command() {
 
@@ -3386,8 +3391,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         item.setStatuses(new int[]{1});
         XincoMenuItemManager.addItem(item);
         item = new XincoMenuItem(i += 1000,
-                getResource().getString("menu.repository"),
-                getResource().getString("menu.edit.lockdata"),
+                "menu.repository",
+                "menu.edit.lockdata",
                 smallIcon,
                 new com.vaadin.ui.MenuBar.Command() {
 
@@ -3410,8 +3415,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         item.setStatuses(new int[]{1});
         XincoMenuItemManager.addItem(item);
         item = new XincoMenuItem(i += 1000,
-                getResource().getString("menu.repository"),
-                getResource().getString("menu.edit.downloadrevision"),
+                "menu.repository",
+                "menu.edit.downloadrevision",
                 smallIcon,
                 new com.vaadin.ui.MenuBar.Command() {
 
@@ -3428,8 +3433,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         item.setStatuses(new int[]{1});
         XincoMenuItemManager.addItem(item);
         item = new XincoMenuItem(i += 1000,
-                getResource().getString("menu.repository"),
-                getResource().getString("menu.edit.commentdata"),
+                "menu.repository",
+                "menu.edit.commentdata",
                 smallIcon,
                 new com.vaadin.ui.MenuBar.Command() {
 
@@ -3453,8 +3458,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         item.setStatuses(new int[]{1});
         XincoMenuItemManager.addItem(item);
         item = new XincoMenuItem(i += 1000,
-                getResource().getString("menu.search"),
-                getResource().getString("menu.search.search_repository"),
+                "menu.search",
+                "menu.search.search_repository",
                 smallIcon,
                 new com.vaadin.ui.MenuBar.Command() {
 
@@ -3508,9 +3513,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final Window comment = new Window();
         //Used for validation purposes
         final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
-                getResource().getString("general.continue"), form, "commit");
+                getInstance().getResource().getString("general.continue"), form, "commit");
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
-                getResource().getString("general.cancel"),
+                getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
 
                     @Override
@@ -3533,7 +3538,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     XincoCoreLogServer newLog = new XincoCoreLogServer(((XincoCoreLog) data.getXincoCoreLogs().get(log_index)).getId());
                     //Reason really needed only for checkin
                     text = newLog.getOpDescription() + " "
-                            + (((XincoCoreLog) data.getXincoCoreLogs().get(log_index)).getOpCode() == 3 ? getResource().getString("general.status.checkedout") : form.getField("reason").getValue());
+                            + (((XincoCoreLog) data.getXincoCoreLogs().get(log_index)).getOpCode() == 3 ? getInstance().getResource().getString("general.status.checkedout") : form.getField("reason").getValue());
                     newLog.setOpDescription(text);
                     text = "" + versionSelector.getVersion().getVersionHigh();
                     try {
@@ -3578,9 +3583,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
     private void showDownloadRevDialog() {
         try {
-            final Window revWindow = new Window(xerb.getString("window.revision"));
+            final Window revWindow = new Window(getInstance().getResource().getString("window.revision"));
             final Form form = new Form();
-            form.getLayout().addComponent(new com.vaadin.ui.Label(xerb.getString("window.revision")));
+            form.getLayout().addComponent(new com.vaadin.ui.Label(getInstance().getResource().getString("window.revision")));
             Select rev = new Select();
             int i;
             String text;
@@ -3601,7 +3606,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             - (ngc.get(Calendar.DST_OFFSET)
                             + realcal.toGregorianCalendar().get(Calendar.DST_OFFSET)));
                     text = "" + cal.get(Calendar.YEAR) + "/" + (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DAY_OF_MONTH);
-                    text = text + " - " + xerb.getString("general.version") + " " + ((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getVersion().getVersionHigh()
+                    text = text + " - " + getInstance().getResource().getString("general.version") + " " + ((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getVersion().getVersionHigh()
                             + "." + ((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getVersion().getVersionMid() + "."
                             + ((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getVersion().getVersionLow() + " "
                             + ((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getVersion().getVersionPostfix();
@@ -3613,13 +3618,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
             form.addField("rev", rev);
             form.getField("rev").setRequired(true);
-            form.getField("rev").setRequiredError(getResource().getString("message.missing.rev"));
+            form.getField("rev").setRequiredError(getInstance().getResource().getString("message.missing.rev"));
             form.setFooter(new HorizontalLayout());
             //Used for validation purposes
             final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
-                    getResource().getString("general.continue"), form, "commit");
+                    getInstance().getResource().getString("general.continue"), form, "commit");
             final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
-                    getResource().getString("general.cancel"),
+                    getInstance().getResource().getString("general.cancel"),
                     new com.vaadin.ui.Button.ClickListener() {
 
                         @Override
@@ -3685,7 +3690,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
             @Override
             public String getCaption() {
-                return getResource().getString("window.datadetails");
+                return getInstance().getResource().getString("window.datadetails");
             }
 
             @Override
@@ -3702,13 +3707,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 boolean value = true;
                 if (dataDialog.getDesignationField().getValue().toString().isEmpty()) {
                     getMainWindow().showNotification(
-                            getResource().getString("message.missing.designation"),
+                            getInstance().getResource().getString("message.missing.designation"),
                             Notification.TYPE_ERROR_MESSAGE);
                     value = false;
                 }
                 if (dataDialog.getLanguages().getValue() == null) {
                     getMainWindow().showNotification(
-                            getResource().getString("message.missing.language"),
+                            getInstance().getResource().getString("message.missing.language"),
                             Notification.TYPE_ERROR_MESSAGE);
                     value = false;
                 } else {
@@ -3734,7 +3739,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
                 @Override
                 public String getCaption() {
-                    return getResource().getString("window.addattributesuniversal");
+                    return getInstance().getResource().getString("window.addattributesuniversal");
                 }
 
                 @Override
@@ -3768,7 +3773,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
                 @Override
                 public String getCaption() {
-                    return getResource().getString("window.datatype");
+                    return getInstance().getResource().getString("window.datatype");
                 }
 
                 @Override
@@ -3814,7 +3819,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
                                             @Override
                                             public String getCaption() {
-                                                return getResource().getString("window.archive");
+                                                return getInstance().getResource().getString("window.archive");
                                             }
 
                                             @Override
@@ -3853,7 +3858,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
                                             @Override
                                             public String getCaption() {
-                                                return getResource().getString("window.addattributestext");
+                                                return getInstance().getResource().getString("window.addattributestext");
                                             }
 
                                             @Override
@@ -3865,8 +3870,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                             public boolean onAdvance() {
                                                 if (tArea.getValue().toString().isEmpty()) {
                                                     getMainWindow().showNotification(
-                                                            getResource().getString("general.error"),
-                                                            getResource().getString("message.missing.text"),
+                                                            getInstance().getResource().getString("general.error"),
+                                                            getInstance().getResource().getString("message.missing.text"),
                                                             Notification.TYPE_WARNING_MESSAGE);
                                                     return false;
                                                 } else {
@@ -3924,7 +3929,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     boolean value = true;
                     if (dataTypeDialog.getTypes().getValue() == null) {
                         getMainWindow().showNotification(
-                                getResource().getString("message.missing.datatype"),
+                                getInstance().getResource().getString("message.missing.datatype"),
                                 Notification.TYPE_ERROR_MESSAGE);
                         value = false;
                     }
@@ -4062,7 +4067,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             // save data to server
                             data = getService().setXincoCoreData(getXincoCoreData(), loggedUser);
                             if (getXincoCoreData() == null) {
-                                throw new XincoException(xerb.getString("datawizard.unabletosavedatatoserver"));
+                                throw new XincoException(getInstance().getResource().getString("datawizard.unabletosavedatatoserver"));
                             }
                             break;
                     }
@@ -4109,9 +4114,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
         //Add log
         XincoCoreLog newlog = new XincoCoreLog();
         newlog.setOpCode(code.ordinal() + 1);
-        newlog.setOpDescription(xerb.getString(OPCode.getOPCode(newlog.getOpCode()).getName())
+        newlog.setOpDescription(getInstance().getResource().getString(OPCode.getOPCode(newlog.getOpCode()).getName())
                 + "!" + " ("
-                + xerb.getString("general.user") + ": "
+                + getInstance().getResource().getString("general.user") + ": "
                 + loggedUser.getUsername()
                 + ")");
         newlog.setXincoCoreUserId(loggedUser.getId());
@@ -4147,9 +4152,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
             final XincoCoreNode node = new XincoCoreNodeServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
             final Window dataFolderDialog = new Window();
             final Form form = new Form();
-            form.setCaption(getResource().getString("window.datadetails"));
+            form.setCaption(getInstance().getResource().getString("window.datadetails"));
             //ID
-            com.vaadin.ui.TextField idField = new com.vaadin.ui.TextField(getResource().getString("general.id") + ":");
+            com.vaadin.ui.TextField idField = new com.vaadin.ui.TextField(getInstance().getResource().getString("general.id") + ":");
             form.addField("id", idField);
             if (newFolder) {
                 idField.setValue("0");
@@ -4159,20 +4164,20 @@ public class Xinco extends Application implements HttpServletRequestListener {
             //Not editable
             idField.setEnabled(false);
             //Designation
-            com.vaadin.ui.TextField designationField = new com.vaadin.ui.TextField(getResource().getString("general.designation") + ":");
+            com.vaadin.ui.TextField designationField = new com.vaadin.ui.TextField(getInstance().getResource().getString("general.designation") + ":");
             form.addField("designation", designationField);
             form.getField("designation").setRequired(true);
-            form.getField("designation").setRequiredError(getResource().getString("message.missing.designation"));
+            form.getField("designation").setRequiredError(getInstance().getResource().getString("message.missing.designation"));
             if (!newFolder) {
                 designationField.setValue(node.getDesignation());
             }
             //Language selection
-            final Select languages = new Select(getResource().getString("general.language") + ":");
+            final Select languages = new Select(getInstance().getResource().getString("general.language") + ":");
             int i = 0;
             for (Object language : XincoCoreLanguageServer.getXincoCoreLanguages()) {
                 String designation = ((XincoCoreLanguageServer) language).getDesignation();
-                if (getResource().containsKey(designation)) {
-                    String value = getResource().getString(designation);
+                if (getInstance().getResource().containsKey(designation)) {
+                    String value = getInstance().getResource().getString(designation);
                     languages.addItem(i);
                     languages.setItemCaption(i, value);
                     if ((newFolder && ((XincoCoreLanguageServer) language).getSign().equals("en"))
@@ -4190,22 +4195,22 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
             form.addField("lang", languages);
             form.getField("lang").setRequired(true);
-            form.getField("lang").setRequiredError(getResource().getString("message.missing.language"));
+            form.getField("lang").setRequiredError(getInstance().getResource().getString("message.missing.language"));
             //Status
-            com.vaadin.ui.TextField statusField = new com.vaadin.ui.TextField(getResource().getString("general.status") + ":");
+            com.vaadin.ui.TextField statusField = new com.vaadin.ui.TextField(getInstance().getResource().getString("general.status") + ":");
             //Not editable
             statusField.setEnabled(false);
             String text = "";
             int status = 1;
             if (newFolder || node.getStatusNumber() == 1) {
-                text = getResource().getString("general.status.open");
+                text = getInstance().getResource().getString("general.status.open");
             }
             if (node.getStatusNumber() == 2) {
-                text = getResource().getString("general.status.locked") + " (-)";
+                text = getInstance().getResource().getString("general.status.locked") + " (-)";
                 status = node.getStatusNumber();
             }
             if (node.getStatusNumber() == 3) {
-                text = getResource().getString("general.status.archived") + " (->)";
+                text = getInstance().getResource().getString("general.status.archived") + " (->)";
                 status = node.getStatusNumber();
             }
             statusField.setValue(text);
@@ -4213,9 +4218,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
             form.setFooter(new HorizontalLayout());
             //Used for validation purposes
             final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
-                    getResource().getString("general.save"), form, "commit");
+                    getInstance().getResource().getString("general.save"), form, "commit");
             final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
-                    getResource().getString("general.cancel"),
+                    getInstance().getResource().getString("general.cancel"),
                     new com.vaadin.ui.Button.ClickListener() {
 
                         @Override
@@ -4253,8 +4258,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         tempNode.setChangerID(getLoggedUser().getId());
                         //Call the web service
                         if (getService().setXincoCoreNode(tempNode, loggedUser) == null) {
-                            getMainWindow().showNotification(getResource().getString("error.accessdenied"),
-                                    getResource().getString("error.folder.sufficientrights"),
+                            getMainWindow().showNotification(getInstance().getResource().getString("error.accessdenied"),
+                                    getInstance().getResource().getString("error.folder.sufficientrights"),
                                     Window.Notification.TYPE_ERROR_MESSAGE);
                         }
                         getMainWindow().removeWindow(dataFolderDialog);
@@ -4345,18 +4350,18 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else if (!tempAce.isReadPermission()) {
-                    getMainWindow().showNotification(getResource().getString("error.accessdenied"),
-                            getResource().getString("error.folder.sufficientrights"),
+                    getMainWindow().showNotification(getInstance().getResource().getString("error.accessdenied"),
+                            getInstance().getResource().getString("error.folder.sufficientrights"),
                             Window.Notification.TYPE_WARNING_MESSAGE);
                 }
                 // update details table
                 xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
-                xincoTable.addItem(new Object[]{getResource().getString("general.id"),
+                xincoTable.addItem(new Object[]{getInstance().getResource().getString("general.id"),
                             new com.vaadin.ui.Label("" + xcns.getId())}, i++);
-                xincoTable.addItem(new Object[]{getResource().getString("general.designation"),
+                xincoTable.addItem(new Object[]{getInstance().getResource().getString("general.designation"),
                             new com.vaadin.ui.Label(xcns.getDesignation())}, i++);
-                xincoTable.addItem(new Object[]{getResource().getString("general.language"),
-                            new com.vaadin.ui.Label(getResource().getString(xcns.getXincoCoreLanguage().getDesignation()) + " ("
+                xincoTable.addItem(new Object[]{getInstance().getResource().getString("general.language"),
+                            new com.vaadin.ui.Label(getInstance().getResource().getString(xcns.getXincoCoreLanguage().getDesignation()) + " ("
                             + xcns.getXincoCoreLanguage().getSign()
                             + ")")}, i++);
                 xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
@@ -4383,22 +4388,22 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
                 value += "]";
                 xincoTable.addItem(new Object[]{
-                            getResource().getString("general.accessrights"),
+                            getInstance().getResource().getString("general.accessrights"),
                             new com.vaadin.ui.Label(value)}, i++);
                 xincoTable.addItem(new Object[]{"\u00a0",
                             new com.vaadin.ui.Label()}, i++);
                 value = "";
                 if (xcns.getStatusNumber() == 1) {
-                    value = getResource().getString("general.status.open") + "";
+                    value = getInstance().getResource().getString("general.status.open") + "";
                 }
                 if (xcns.getStatusNumber() == 2) {
-                    value = getResource().getString("general.status.locked") + " (-)";
+                    value = getInstance().getResource().getString("general.status.locked") + " (-)";
                 }
                 if (xcns.getStatusNumber() == 3) {
-                    value = getResource().getString("general.status.archived") + " (->)";
+                    value = getInstance().getResource().getString("general.status.archived") + " (->)";
                 }
                 xincoTable.addItem(new Object[]{
-                            getResource().getString("general.status"),
+                            getInstance().getResource().getString("general.status"),
                             new com.vaadin.ui.Label(value)}, i++);
             } else if (source != null && source.startsWith("data")) {
                 // get ace
@@ -4411,22 +4416,22 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 xincoTable.addItem(new Object[]{
-                            getResource().getString("general.id"),
+                            getInstance().getResource().getString("general.id"),
                             new com.vaadin.ui.Label("" + temp.getId())}, i++);
                 xincoTable.addItem(new Object[]{
-                            getResource().getString("general.designation"),
+                            getInstance().getResource().getString("general.designation"),
                             new com.vaadin.ui.Label(temp.getDesignation())}, i++);
                 xincoTable.addItem(new Object[]{
-                            getResource().getString("general.language"),
-                            new com.vaadin.ui.Label(getResource().getString(temp.getXincoCoreLanguage().getDesignation())
+                            getInstance().getResource().getString("general.language"),
+                            new com.vaadin.ui.Label(getInstance().getResource().getString(temp.getXincoCoreLanguage().getDesignation())
                             + " ("
                             + temp.getXincoCoreLanguage().getSign()
                             + ")")}, i++);
                 xincoTable.addItem(new Object[]{
-                            getResource().getString("general.datatype"),
-                            new com.vaadin.ui.Label(getResource().getString(temp.getXincoCoreDataType().getDesignation())
+                            getInstance().getResource().getString("general.datatype"),
+                            new com.vaadin.ui.Label(getInstance().getResource().getString(temp.getXincoCoreDataType().getDesignation())
                             + " ("
-                            + getResource().getString(temp.getXincoCoreDataType().getDescription())
+                            + getInstance().getResource().getString(temp.getXincoCoreDataType().getDescription())
                             + ")")}, i++);
                 xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
                 xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
@@ -4451,34 +4456,34 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     value += "-";
                 }
                 xincoTable.addItem(new Object[]{
-                            getResource().getString("general.accessrights"),
+                            getInstance().getResource().getString("general.accessrights"),
                             new com.vaadin.ui.Label("[" + value + "]")}, i++);
                 xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
                 xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
                 switch (temp.getStatusNumber()) {
                     case 1:
-                        value = getResource().getString("general.status.open");
+                        value = getInstance().getResource().getString("general.status.open");
                         break;
                     case 2:
-                        value = getResource().getString("general.status.locked");
+                        value = getInstance().getResource().getString("general.status.locked");
                         break;
                     case 3:
-                        value = getResource().getString("general.status.archived");
+                        value = getInstance().getResource().getString("general.status.archived");
                         break;
                     case 4:
-                        value = getResource().getString("general.status.checkedout");
+                        value = getInstance().getResource().getString("general.status.checkedout");
                         break;
                     case 5:
-                        value = getResource().getString("general.status.published");
+                        value = getInstance().getResource().getString("general.status.published");
                         break;
                 }
                 xincoTable.addItem(new Object[]{
-                            getResource().getString("general.status"),
+                            getInstance().getResource().getString("general.status"),
                             new com.vaadin.ui.Label(value)}, i++);
                 xincoTable.addItem(new Object[]{"\u00a0",
                             new com.vaadin.ui.Label()}, i++);
                 xincoTable.addItem(new Object[]{
-                            getResource().getString("general.typespecificattributes"),
+                            getInstance().getResource().getString("general.typespecificattributes"),
                             new com.vaadin.ui.Label()}, i++);
                 // get add attributes of Core Data, if access granted
                 java.util.List<XincoAddAttribute> attributes =
@@ -4487,8 +4492,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         temp.getXincoCoreDataType().getXincoCoreDataTypeAttributes();
                 if (!attributes.isEmpty()) {
                     for (int j = 0; j < attributes.size(); j++) {
-                        header = getResource().containsKey(dataTypeAttributes.get(j).getDesignation())
-                                ? getResource().getString(dataTypeAttributes.get(j).getDesignation())
+                        header = getInstance().getResource().containsKey(dataTypeAttributes.get(j).getDesignation())
+                                ? getInstance().getResource().getString(dataTypeAttributes.get(j).getDesignation())
                                 : dataTypeAttributes.get(j).getDesignation();
                         if (dataTypeAttributes.get(j).getDataType().equalsIgnoreCase("int")) {
                             value = ""
@@ -4530,13 +4535,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         }
                     }
                 } else {
-                    header = getResource().getString("error.accessdenied");
-                    value = getResource().getString("error.content.sufficientrights");
+                    header = getInstance().getResource().getString("error.accessdenied");
+                    value = getInstance().getResource().getString("error.content.sufficientrights");
                     xincoTable.addItem(new Object[]{header, new com.vaadin.ui.Label(value)}, i++);
                 }
                 xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
                 xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
-                header = getResource().getString("general.logslastfirst");
+                header = getInstance().getResource().getString("general.logslastfirst");
                 value = "";
                 xincoTable.addItem(new Object[]{header, new com.vaadin.ui.Label(value)}, i++);
                 Calendar cal;
@@ -4589,7 +4594,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     xincoTable.addItem(new Object[]{header, new com.vaadin.ui.Label(value)}, i++);
                     header = "";
                     try {
-                        value = getResource().getString("general.version")
+                        value = getInstance().getResource().getString("general.version")
                                 + " "
                                 + ((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getVersion().getVersionHigh()
                                 + "."
