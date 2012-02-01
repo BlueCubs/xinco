@@ -9,11 +9,11 @@
 <!-- in the project's Project Properties dialog box.-->
 <project name="xinco" default="default" basedir=".">
     <description>Builds, tests, and runs the project xinco.</description>
-    <import file="nbproject/build-impl.xml"/>
-    <import file="build-widgetset.xml"/>
     <property file="build.ant.properties"/>
     <property file="nbproject/project.properties"/>
     <property name="widget.dir" value="web/VAADIN/widgetsets"/>
+    <import file="nbproject/build-impl.xml"/>
+    <import file="build-widgetset.xml"/>
     <taskdef resource="net/sf/antcontrib/antcontrib.properties">
         <classpath>
             <pathelement location="../tools/ant-contrib-1.0b3.jar"/>
