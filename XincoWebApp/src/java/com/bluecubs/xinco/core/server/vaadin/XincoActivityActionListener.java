@@ -18,7 +18,9 @@ public class XincoActivityActionListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            Xinco.getInstance().setLock();
+            if (Xinco.getInstance() != null) {
+                Xinco.getInstance().setLock();
+            }
         } catch (Throwable ex) {
             Logger.getLogger(XincoActivityActionListener.class.getName()).log(Level.SEVERE, null, ex);
         }
