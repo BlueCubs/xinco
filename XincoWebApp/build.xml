@@ -482,7 +482,7 @@
         </pmd>
     </target>
     
-    <target name="publish" description="This will publish the release on Source Forge"><!-- depends="release">-->
+    <target name="publish" description="This will publish the release on Source Forge" depends="release">
         <fail unless="sf.usr" message="Please define sf.usr in the nbproject/private/private.properties or pass as build parameter to ant"/>
         <fail unless="sf.pwd" message="Please define sf.pwd in the nbproject/private/private.properties or pass as build parameter to ant"/>
         <fail unless="sf.hst" message="Please define sf.pwd in the nbproject/private/private.properties or pass as build parameter to ant"/>
