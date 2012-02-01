@@ -20,6 +20,14 @@
             <pathelement location="../Tools/ant-contrib-1.0b3.jar"/>
         </classpath>
     </taskdef>
+    
+    <path id="catalina.lib.path">
+        <fileset dir="${j2ee.server.home}/lib" includes="*.jar"/>
+        <fileset dir="${j2ee.server.home}/bin" includes="*.jar"/>
+    </path>
+    
+    <taskdef name="start" classname="org.apache.catalina.ant.StartTask" classpathref="catalina.lib.path"/>
+    <taskdef name="stop" classname="org.apache.catalina.ant.StopTask" classpathref="catalina.lib.path"/>
     <!--
 
     There exist several targets which are by default empty and which can be 
@@ -445,19 +453,16 @@
         <copy todir="web/META-INF" file="${demo.context.path}" failonerror="false"/>
         <!--Copy the demo persistence file (if present)-->
         <copy todir="src/conf" file="${demo.persistence.path}" failonerror="false"/>
-        <!--Display build number as postfix-->
-        <replaceregexp file="build.ant.properties"
-                       match="version.postfix?=?(.*)"
-                       replace="version.postfix = ${demo_version_postfix}"
-                       byline="true"/>
         <!--Build with the demo context file-->
         <antcall target="dist"/>
+        <antcall target="stopTomcatApp"/>
         <!--Delete the war-->
         <delete file="${j2ee.server.home}/webapps/${war.name}" quiet="true"/>
         <!--Delete the folder-->
         <delete dir="${j2ee.server.home}/webapps/xinco" quiet="true"/>
         <!--Now copy the new one-->
-        <copy todir="${j2ee.server.home}/webapps" file="${dist.war}"/>
+        <copy todir="${j2ee.server.home}/webapps/" file="${dist.war}"/>
+        <antcall target="startTomcatApp"/>
     </target>
     
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
@@ -608,5 +613,20 @@
              username="${svn.username}" password="${svn.password}">
             <copy srcUrl="${src.url}" destUrl="${dest.url}" message="${svn.branch.message}"/>                       
         </svn>
+    </target>
+   
+    <target name="startTomcatApp" description="Start Tomcat application">
+        <start url="${tomcat.manager.url}"
+               username="${tomcat.manager.username}"
+               password="${tomcat.manager.password}"
+               path="/${tomcat.app.name}"/>
+    </target>
+
+    <target name="stopTomcatApp" description="Stop Tomcat application">
+        <stop url="${tomcat.manager.url}"
+              username="${ tomcat.manager.username}"
+              password="${tomcat.manager.password}"
+              failOnError="false"
+              path="/${tomcat.app.name}"/>
     </target>
 </project>
