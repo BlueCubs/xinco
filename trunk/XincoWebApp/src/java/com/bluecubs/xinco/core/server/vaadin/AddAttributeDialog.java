@@ -17,9 +17,9 @@
  * exchange for free software! More information on: http://www.bluecubs.org
  * ************************************************************
  * 
- * Name: Class
+ * Name: AddAttributeDialog
  * 
- * Description: //TODO: Add description
+ * Description: AddAttributeDialog
  * 
  * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Jan 26, 2012
  * 
