@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns1="urn:Xinco">
-  <soapenv:Body>
-    <ns1:getCurrentXincoCoreUser soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-      <in0 xsi:type="xsd:string">USERNAME</in0>
-      <in1 xsi:type="xsd:string">PASSWORD</in1>
-    </ns1:getCurrentXincoCoreUser>
-  </soapenv:Body>
-</soapenv:Envelope>
