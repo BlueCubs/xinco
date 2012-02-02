@@ -2692,79 +2692,27 @@ public class Xinco extends Application implements HttpServletRequestListener {
         adminPanel.addComponent(trashAdmin);
         com.vaadin.ui.Button indexAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.index"));
         indexAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        final Table table = new Table();
+        table.addStyleName("striped");
+        table.addContainerProperty(getInstance().getResource().getString("message.data.sort.designation"),
+                com.vaadin.ui.Label.class, null);
+        table.addContainerProperty(getInstance().getResource().getString("message.indexing.status"),
+                com.vaadin.ui.Label.class, null);
         indexAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
 
-            Table table = new Table();
             final ProgressIndicator indicator = new ProgressIndicator(new Float(0.0));
             com.vaadin.ui.Button ok = new com.vaadin.ui.Button(getInstance().getResource().getString("general.ok"));
-
-            class IndexRebuilder extends Thread {
-
-                java.util.List result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreData x ORDER BY x.designation");
-
-                @Override
-                public void run() {
-                    //Delete existing index
-                    File indexDirectory;
-                    File indexDirectoryFile;
-                    String[] indexDirectoryFileList;
-                    indexDirectory = new File(XincoDBManager.config.fileIndexPath);
-                    int work_units = result.size() + (indexDirectory.exists()
-                            ? indexDirectory.list().length + 1 : 0) + 1;
-                    int index = 0;
-                    int count = 0;
-                    if (indexDirectory.exists()) {
-                        indexDirectoryFileList = indexDirectory.list();
-                        for (int i = 0; i < indexDirectoryFileList.length; i++) {
-                            indexDirectoryFile = new File(XincoDBManager.config.fileIndexPath + indexDirectoryFileList[i]);
-                            indexDirectoryFile.delete();
-                            count++;
-                        }
-                        boolean indexDirectoryDeleted = indexDirectory.delete();
-                        count++;
-                        table.addItem(new Object[]{new com.vaadin.ui.Label(
-                                    getInstance().getResource().getString("message.index.delete")),
-                                    new com.vaadin.ui.Label(indexDirectoryDeleted
-                                    ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail"))}, index++);
-                    }
-                    XincoCoreDataServer xdataTemp;
-                    boolean index_result;
-                    for (Object o : result) {
-                        xdataTemp = new XincoCoreDataServer((com.bluecubs.xinco.core.server.persistence.XincoCoreData) o);
-                        if (!XincoCoreDataHasDependencyServer.isRendering(xdataTemp.getId())) {
-                            index_result = XincoIndexer.indexXincoCoreData(xdataTemp, true);
-                            table.addItem(new Object[]{new com.vaadin.ui.Label(xdataTemp.getDesignation()),
-                                        new com.vaadin.ui.Label(index_result
-                                        ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail"))}, index++);
-                            count++;
-                            indicator.setValue(new Float(count) / new Float(work_units));
-                        }
-                    }
-                    index_result = XincoIndexer.optimizeIndex();
-                    //Optimize index
-                    table.addItem(new Object[]{new com.vaadin.ui.Label(getInstance().getResource().getString("message.index.optimize")),
-                                new com.vaadin.ui.Label(index_result
-                                ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail"))}, index++);
-                    count++;
-                    indicator.setValue(new Float(1.0));
-                    ok.setEnabled(true);
-                }
-            }
 
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 try {
+                    java.util.List result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreData x ORDER BY x.designation");
                     final Window progress = new Window();
                     progress.addComponent(indicator);
                     // Set polling frequency to 0.5 seconds.
                     indicator.setPollingInterval(500);
                     progress.addComponent(new com.vaadin.ui.Label(getInstance().getResource().getString("message.index.rebuild")));
                     progress.addComponent(new com.vaadin.ui.Label(getInstance().getResource().getString("message.warning.index.rebuild")));
-                    table.addStyleName("striped");
-                    table.addContainerProperty(getInstance().getResource().getString("message.data.sort.designation"),
-                            com.vaadin.ui.Label.class, null);
-                    table.addContainerProperty(getInstance().getResource().getString("message.indexing.status"),
-                            com.vaadin.ui.Label.class, null);
                     progress.addComponent(table);
                     ok.addListener(new com.vaadin.ui.Button.ClickListener() {
 
@@ -2778,7 +2726,54 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     ok.setEnabled(false);
                     getMainWindow().addWindow(progress);
                     progress.center();
-                    new IndexRebuilder().start();
+                    try {
+                        //Delete existing index
+                        File indexDirectory;
+                        File indexDirectoryFile;
+                        String[] indexDirectoryFileList;
+                        indexDirectory = new File(XincoDBManager.config.fileIndexPath);
+                        int work_units = result.size() + (indexDirectory.exists()
+                                ? indexDirectory.list().length + 1 : 0) + 1;
+                        int index = 0;
+                        int count = 0;
+                        if (indexDirectory.exists()) {
+                            indexDirectoryFileList = indexDirectory.list();
+                            for (int i = 0; i < indexDirectoryFileList.length; i++) {
+                                indexDirectoryFile = new File(XincoDBManager.config.fileIndexPath + indexDirectoryFileList[i]);
+                                indexDirectoryFile.delete();
+                                count++;
+                            }
+                            boolean indexDirectoryDeleted = indexDirectory.delete();
+                            count++;
+                            table.addItem(new Object[]{new com.vaadin.ui.Label(
+                                        getInstance().getResource().getString("message.index.delete")),
+                                        new com.vaadin.ui.Label(indexDirectoryDeleted
+                                        ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail") + "!")}, index++);
+                            XincoCoreDataServer xdataTemp;
+                            boolean index_result;
+                            for (Object o : result) {
+                                xdataTemp = new XincoCoreDataServer((com.bluecubs.xinco.core.server.persistence.XincoCoreData) o);
+                                if (!XincoCoreDataHasDependencyServer.isRendering(xdataTemp.getId())) {
+                                    index_result = XincoIndexer.indexXincoCoreData(xdataTemp, true);
+                                    table.addItem(new Object[]{new com.vaadin.ui.Label(xdataTemp.getDesignation()),
+                                                new com.vaadin.ui.Label(index_result
+                                                ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail"))}, index++);
+                                    count++;
+                                    indicator.setValue(new Float(count) / new Float(work_units));
+                                }
+                            }
+                            index_result = XincoIndexer.optimizeIndex();
+                            //Optimize index
+                            table.addItem(new Object[]{new com.vaadin.ui.Label(getInstance().getResource().getString("message.index.optimize")),
+                                        new com.vaadin.ui.Label(index_result
+                                        ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail"))}, index++);
+                            count++;
+                        }
+                        indicator.setValue(new Float(1.0));
+                        ok.setEnabled(true);
+                    } catch (Exception ex) {
+                        Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 } catch (XincoException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                     ok.setEnabled(true);
