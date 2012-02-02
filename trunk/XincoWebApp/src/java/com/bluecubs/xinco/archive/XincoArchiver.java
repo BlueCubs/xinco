@@ -50,7 +50,7 @@ import org.apache.log4j.Logger;
  * This class handles document archiving for Xinco. Edit configuration values in
  * database
  */
-public class XincoArchiver {
+public final class XincoArchiver {
 
     static XincoCoreDataServer xdataTemp = null;
     static XincoCoreLogServer xlogTemp = null;
