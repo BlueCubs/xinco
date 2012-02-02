@@ -902,7 +902,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         form.addField("reason", new com.vaadin.ui.TextArea());
         versionSelector.setMinorEnabled(false);
         versionSelector.setCaption(getInstance().getResource().getString("general.version"));
-        versionSelector.setVersion(temp.getXincoCoreLogs().get(log_index).getVersion());
+        versionSelector.setVersion(versionSelector.getVersion());//temp.getXincoCoreLogs().get(log_index).getVersion());
         OPCode code = OPCode.getOPCode(temp.getXincoCoreLogs().get(log_index).getOpCode());
         switch (code) {
             case COMMENT:
