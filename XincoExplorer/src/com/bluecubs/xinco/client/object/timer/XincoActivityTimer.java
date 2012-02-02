@@ -57,14 +57,14 @@ public class XincoActivityTimer {
         ActionListener lockExplorer = new XincoActivityActionListener(this.explorer, this);
         //Use delay as minute value
         this.activityTimer = new Timer(delay * 1000 * 60, lockExplorer);
-        this.getActivityTimer().start();
+        getActivityTimer().start();
     }
 
     /**
      * 
-     * @return
+     * @return ActivityTimer
      */
-    public Timer getActivityTimer() {
+    public final Timer getActivityTimer() {
         return activityTimer;
     }
 }

@@ -76,7 +76,7 @@ public final class XincoCoreDataServer extends XincoCoreData {
                 //load acl for this object
                 loadACL();
             } else {
-                throw new XincoException();
+                throw new XincoException("Unable to find XincoCoreData with id: " + attrID);
             }
         } catch (Exception e) {
             getXincoCoreAcl().clear();

@@ -48,7 +48,7 @@ import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.persistence.*;
 
-public class XincoDBManager {
+public final class XincoDBManager {
 
     private static EntityManagerFactory emf;
     //load compiled configuartion
@@ -201,13 +201,10 @@ public class XincoDBManager {
     }
 
     public void setLoc(Locale loc) {
-        if (loc == null) {
-            loc = Locale.getDefault();
-        }
         try {
             lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getLocalizedMessage());
+            lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", Locale.getDefault());
         }
     }
 
@@ -434,7 +431,7 @@ public class XincoDBManager {
                         demoResetPeriod = 0;
                     }
                     if (demoResetPeriod > 0) {
-                        logger.log(Level.WARNING, 
+                        logger.log(Level.WARNING,
                                 "Instance configured as demo, database will reset"
                                 + " each " + demoResetPeriod + " milliseconds");
                     }

@@ -48,7 +48,7 @@ import java.util.logging.Logger;
  * This class runs document archiving in a separate thread (only one archiving
  * thread is allowed)
  */
-public class XincoArchiveThread extends Thread {
+public final class XincoArchiveThread extends Thread {
 
     public static XincoArchiveThread instance = null;
     public Calendar firstRun = null;
