@@ -1,0 +1,78 @@
+ 
+License 
+General SQL Parser Components Developer Licensing Agreement
+Copyright 2003-2007, http://www.sqlparser.com. All Rights Reserved
+---------------------------------------------------------------
+
+PLEASE READ THIS LICENSE AGREEMENT CAREFULLY. BY INSTALLING OR USING THIS SOFTWARE, 
+YOU INDICATE ACCEPTANCE OF AND AGREE TO BECOME BOUND BY THE TERMS AND CONDITIONS OF 
+THIS LICENSE. IF YOU DO NOT AGREE TO THE TERMS OF THIS LICENSE, DO NOT INSTALL OR USE
+THIS SOFTWARE AND PROMPTLY RETURN IT TO CORE LAB.
+
+INTRODUCTION
+
+This is a legal agreement between you (either an individual
+or an entity), the end-user, and sqlparser.com. 
+
+LICENSE
+
+1. GRANT OF LICENSE
+
+This License Agreement grants you the next:
+Software may be used by a single developer(single license) who uses the software
+personally on one or more computers.
+General sql parser is  priced per developer. 
+"Priced per developer" means that all developers working with a GSQLParser license 
+at any given time need to have one license each. 
+
+So if you're a one-man company and have 2 computers you only need one license per product in use.
+If you decide to hire a second developer,who will be developing with the GSQLParser as you, 
+at the same time, then you will need to purchase a second license. 
+
+Or, if you buy a site license, then all developers in your corporation can use general sql parser.
+
+2. COPYRIGHT
+
+The Software is owned by sqlparser.com and is protected by
+international copyright laws and treaty provisions.
+You may not remove the copyright notice from any copy of the
+Software or any copy of the written materials, if any,
+accompanying the Software. 
+
+3. RESTRICTIONS
+
+The license grants using general sql parser for a single person(single user license)
+or all persons in one organization(site license). 
+The license grants you a non-exclusive right to compile,reproduce, 
+and distribute any new software programs created using general sql parser. 
+You can distribute general sql parser only in compiled executable programs.
+
+You may not:
+
+ - Distribute and sell any portion of the Software without
+   integrating it into your Applications as Executable Code.
+ - Use any part of the source code of the Software (original or
+   modified) to build any other components for public distribution
+   or commercial sale;
+ - Build any other components through inheritance for public
+   distribution or commercial sale;
+ - Remove or alter any  copyright, trademark,
+   or other proprietary rights notice contained in any portion of 
+   units, source code, or other files that bear such 
+   a notice;
+
+All  units, source code, and other files remain sqlparser.com
+exclusive property.
+
+
+4. SUPPORT
+
+Sqlparser.com makes no representation or warranty that the software or
+documentation are "error-free," or meet any user's particular
+standards, requirements, or needs. In all events, Sqlparser.com will
+exercise tech support of the Software.
+
+
+
+COPYRIGHT (C) 2001-2010 sqlparser.com , privacy policy ALL RIGHT RESERVED 	 
+
