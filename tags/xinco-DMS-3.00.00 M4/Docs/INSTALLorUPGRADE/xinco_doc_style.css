@@ -1,8 +1,0 @@
-a:link { color: #336699; text-decoration:none }
-a:visited { color: #336699; text-decoration:none }
-a:hover { color: #336699; text-decoration:underline }
-a:active { color: #336699; text-decoration:underline }
-a:focus { color: #336699; text-decoration:underline }
-.link { font-family: Verdana, Arial, Helvetica, sans-serif; font-weight: normal; color: #336699; text-decoration: underline }
-.text { font-family: Verdana, Arial, Helvetica, sans-serif; }
-.bigtext { font-family: Verdana, Arial, Helvetica, sans-serif; font-weight: bold }

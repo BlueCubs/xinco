@@ -1,5 +1,0 @@
-==========================================
-=  xinco DMS Server Installation Guide   =
-==========================================
-
-Please see ./docs/INSTALLorUPGRADE/ for a rich text installation guide...!
