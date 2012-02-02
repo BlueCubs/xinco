@@ -125,7 +125,7 @@ INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (1, 'version.high', 3, NULL, 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (2, 'version.mid', 0, NULL, 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (3, 'version.low', 0, NULL, 0, 0);
-INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (4, 'version.postfix', '0', 'M4', '0', '0');
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (4, 'version.postfix', '0', 'M5', '0', '0');
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (37, 'import.path', NULL, 'C:\\\\Temp\\\\xinco\\\\file_repository\\\\import', 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (38, 'import.period', NULL, NULL, 0, 14400000);
 INSERT INTO `xinco_dependency_behavior` (`id`, `designation`, `description`) VALUES (1, 'dependency.behavior.one-way', 'dependency.behavior.one-way.desc');
