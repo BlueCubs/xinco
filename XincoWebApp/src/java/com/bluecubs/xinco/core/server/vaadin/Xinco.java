@@ -193,6 +193,38 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     + getInstance().getResource().getString("general.version") + " "
                     + version, new ThemeResource("img/blueCubsSmall.gif"));
             icon.setType(Embedded.TYPE_IMAGE);
+            login = new com.vaadin.ui.Button(
+                    getInstance().getResource().getString("general.login"),
+                    new com.vaadin.ui.Button.ClickListener() {
+
+                        @Override
+                        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                            showLoginDialog();
+                        }
+                    });
+            logout = new com.vaadin.ui.Button(
+                    getInstance().getResource().getString("general.logout"),
+                    new com.vaadin.ui.Button.ClickListener() {
+
+                        @Override
+                        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                            loggedUser = null;
+                            try {
+                                updateMenu();
+                            } catch (XincoException ex) {
+                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    });
+            profile = new com.vaadin.ui.Button(
+                    getInstance().getResource().getString("message.admin.userProfile"),
+                    new com.vaadin.ui.Button.ClickListener() {
+
+                        @Override
+                        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                            showUserAdminWindow(false);
+                        }
+                    });
             if (XincoDBManager.config.isGuessLanguage()) {
                 // Use the locale from the request as default.
                 // Login uses this setting later.
@@ -215,38 +247,15 @@ public class Xinco extends Application implements HttpServletRequestListener {
     public void setLocale(Locale locale) {
         this.locale = locale;
         xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", getInstance().getLocale());
-        login = new com.vaadin.ui.Button(
-                getInstance().getResource().getString("general.login"),
-                new com.vaadin.ui.Button.ClickListener() {
-
-                    @Override
-                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                        showLoginDialog();
-                    }
-                });
-        logout = new com.vaadin.ui.Button(
-                getInstance().getResource().getString("general.logout"),
-                new com.vaadin.ui.Button.ClickListener() {
-
-                    @Override
-                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                        loggedUser = null;
-                        try {
-                            updateMenu();
-                        } catch (XincoException ex) {
-                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                });
-        profile = new com.vaadin.ui.Button(
-                getInstance().getResource().getString("message.admin.userProfile"),
-                new com.vaadin.ui.Button.ClickListener() {
-
-                    @Override
-                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                        showUserAdminWindow(false);
-                    }
-                });
+        if (login != null) {
+            login.setCaption(getInstance().getResource().getString("general.login"));
+        }
+        if (logout != null) {
+            logout.setCaption(getInstance().getResource().getString("general.logout"));
+        }
+        if (profile != null) {
+            profile.setCaption(getInstance().getResource().getString("message.admin.userProfile"));
+        }
         fileStep = new WizardStep() {
 
             final UploadManager um = new UploadManager();
