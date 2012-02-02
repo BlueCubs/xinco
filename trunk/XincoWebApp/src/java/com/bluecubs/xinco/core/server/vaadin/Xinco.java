@@ -4156,7 +4156,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             final XincoCoreNode node = new XincoCoreNodeServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
             final Window dataFolderDialog = new Window();
             final Form form = new Form();
-            form.setCaption(getInstance().getResource().getString("window.datadetails"));
+            form.setCaption(getInstance().getResource().getString("window.folder"));
             //ID
             com.vaadin.ui.TextField idField = new com.vaadin.ui.TextField(getInstance().getResource().getString("general.id") + ":");
             form.addField("id", idField);
