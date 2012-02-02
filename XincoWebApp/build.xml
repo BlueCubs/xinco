@@ -28,8 +28,6 @@
     
     <taskdef name="start" classname="org.apache.catalina.ant.StartTask" classpathref="catalina.lib.path"/>
     <taskdef name="stop" classname="org.apache.catalina.ant.StopTask" classpathref="catalina.lib.path"/>
-    <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask" classpathref="catalina.lib.path"/>
-    <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask" classpathref="catalina.lib.path"/>
     <!--
 
     There exist several targets which are by default empty and which can be 
@@ -659,30 +657,5 @@
               password="${tomcat.manager.password}"
               failOnError="false"
               path="/${tomcat.app.name}"/>
-    </target>
-    
-    <target name="-undeploy">
-        <fail unless="tomcat.manager.url" message="Please define tomcat.manager.url in the nbproject/private/private.properties or pass as build parameter to ant"/>
-        <fail unless="tomcat.manager.username" message="Please define tomcat.manager.username in the nbproject/private/private.properties or pass as build parameter to ant"/>
-        <fail unless="tomcat.manager.password" message="Please define tomcat.manager.password in the nbproject/private/private.properties or pass as build parameter to ant"/>
-        <fail unless="tomcat.app.name" message="Please define tomcat.app.name in the nbproject/private/private.properties or pass as build parameter to ant"/>
-        <undeploy url="${tomcat.manager.url}"
-                  username="${tomcat.manager.username}"
-                  password="${tomcat.manager.password}"
-                  failOnError="false"
-                  path="/${tomcat.app.name}" />
-    </target>
-    
-    <target name="-deploy">
-        <fail unless="tomcat.manager.url" message="Please define tomcat.manager.url in the nbproject/private/private.properties or pass as build parameter to ant"/>
-        <fail unless="tomcat.manager.username" message="Please define tomcat.manager.username in the nbproject/private/private.properties or pass as build parameter to ant"/>
-        <fail unless="tomcat.manager.password" message="Please define tomcat.manager.password in the nbproject/private/private.properties or pass as build parameter to ant"/>
-        <fail unless="tomcat.app.name" message="Please define tomcat.app.name in the nbproject/private/private.properties or pass as build parameter to ant"/>
-        <deploy url="${tomcat.manager.url}"
-                username="${tomcat.manager.username}"
-                password="${tomcat.manager.password}"
-                path="/${tomcat.app.name}"
-                update="true"
-                localWar="${dist.war}" />
     </target>
 </project>
