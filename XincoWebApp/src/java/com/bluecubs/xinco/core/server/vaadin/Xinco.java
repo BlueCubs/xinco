@@ -970,7 +970,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     }
                     if (getService().doXincoCoreDataCheckout(temp, loggedUser) != null) {
                         //Download the file
-                        downloadFile(false);
+                        downloadFile(false, data);
                         xincoTree.setValue("node-1");
                         refresh();
                     } else {
@@ -1015,12 +1015,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     private void downloadFile() throws XincoException, MalformedURLException {
-        downloadFile(true);
+        downloadFile(true, data);
     }
 
-    private void downloadFile(boolean useRendering) throws XincoException, MalformedURLException {
-        XincoCoreDataServer temp = new XincoCoreDataServer(Integer.valueOf(
-                xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+    private void downloadFile(boolean useRendering, XincoCoreData xdata) throws XincoException, MalformedURLException {
+        XincoCoreDataServer temp = new XincoCoreDataServer(xdata.getId());
         //Check for available renderings
         java.util.List<com.bluecubs.xinco.core.server.persistence.XincoCoreData> renderings =
                 XincoCoreDataHasDependencyServer.getRenderings(temp.getId());
@@ -3662,7 +3661,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         xdata.getXincoCoreLogs().addAll(revLogArrayList);
                         //Download file
                         try {
-                            downloadFile(xdata);
+                            //Use rendering if available and enabled
+                            downloadFile(true, xdata);
                         } catch (MalformedURLException ex) {
                             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (XincoException ex) {
