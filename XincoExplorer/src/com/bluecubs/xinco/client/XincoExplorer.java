@@ -1053,9 +1053,9 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                 }
                 temp.setUserpassword(xincoClientSession.getUser().getUserpassword());
                 newuser.setEmail(temp.getEmail());
-                newuser.setFirstname(temp.getFirstname());
+                newuser.setFirstName(temp.getFirstName());
                 newuser.setId(temp.getId());
-                newuser.setName(temp.getName());
+                newuser.setLastName(temp.getLastName());
                 newuser.setStatusNumber(temp.getStatusNumber());
                 newuser.setUsername(temp.getUsername());
                 newuser.setUserpassword(temp.getUserpassword());
@@ -1216,7 +1216,7 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                 status_string.append(xincoClientSession.getServerVersion().getVersionLow()).append(" ");
                 status_string.append(xincoClientSession.getServerVersion().getVersionPostfix()).append("\n");
                 status_string.append("\n");
-                status_string.append(xerb.getString("general.user")).append(": ").append(xincoClientSession.getUser().getFirstname()).append(" ").append(xincoClientSession.getUser().getName()).append(" <").append(xincoClientSession.getUser().getEmail()).append(">\n");
+                status_string.append(xerb.getString("general.user")).append(": ").append(xincoClientSession.getUser().getFirstName()).append(" ").append(xincoClientSession.getUser().getLastName()).append(" <").append(xincoClientSession.getUser().getEmail()).append(">\n");
                 status_string.append(xerb.getString("general.memberof")).append(":\n");
                 status_string.append(status_string_1).append("\n");
                 status_string.append(xerb.getString("general.groupsonserver")).append(": ").append(xincoClientSession.getServerGroups().size()).append("\n");

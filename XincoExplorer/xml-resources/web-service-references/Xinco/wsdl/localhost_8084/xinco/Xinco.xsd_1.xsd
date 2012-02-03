@@ -107,6 +107,14 @@
     <xs:element name="uploadXincoCoreData" type="tns:uploadXincoCoreData" />
 
     <xs:element name="uploadXincoCoreDataResponse" type="tns:uploadXincoCoreDataResponse" />
+    
+    <xs:element name="getRenderings" type="tns:getRenderings" />
+
+    <xs:element name="getRenderingsResponse" type="tns:getRenderingsResponse" />
+    
+    <xs:element name="isRendering" type="tns:isRendering" />
+
+    <xs:element name="isRenderingResponse" type="tns:isRenderingResponse" />
 
     <xs:complexType name="getXincoAddAttributes">
         <xs:sequence>
@@ -180,9 +188,9 @@
             <xs:element name="change" type="xs:boolean" />
             <xs:element name="changerID" type="xs:int" />
             <xs:element name="email" type="xs:string" minOccurs="0" />
-            <xs:element name="firstname" type="xs:string" minOccurs="0" />
+            <xs:element name="first_name" type="xs:string" minOccurs="0" />
             <xs:element name="id" type="xs:int" />
-            <xs:element name="name" type="xs:string" minOccurs="0" />
+            <xs:element name="last_name" type="xs:string" minOccurs="0" />
             <xs:element name="reason" type="xs:string" minOccurs="0" />
             <xs:element name="status_number" type="xs:int" />
             <xs:element name="username" type="xs:string" minOccurs="0" />
@@ -602,6 +610,32 @@
     <xs:complexType name="getCurrentXincoCoreUserResponse">
         <xs:sequence>
             <xs:element name="return" type="tns:XincoCoreUser" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="getRenderings">
+        <xs:sequence>
+            <xs:element name="in0" type="tns:XincoCoreData" minOccurs="0" />
+            <xs:element name="in1" type="tns:XincoCoreUser" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="getRenderingsResponse">
+        <xs:sequence>
+            <xs:element name="return" type="tns:XincoCoreData" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="isRendering">
+        <xs:sequence>
+            <xs:element name="in0" type="tns:XincoCoreData" minOccurs="0" />
+            <xs:element name="in1" type="tns:XincoCoreUser" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="isRenderingResponse">
+        <xs:sequence>
+            <xs:element name="return" type="xs:boolean" />
         </xs:sequence>
     </xs:complexType>
 </xs:schema>

@@ -5,7 +5,7 @@
     </wsp:Policy>
     <types>
         <xsd:schema xmlns:tns1="service.server.core.xinco.bluecubs.com" targetNamespace="service.server.core.xinco.bluecubs.com">
-            <xsd:import namespace="http://service.server.core.xinco.bluecubs.com/" schemaLocation="http://localhost:8084/xinco/Xinco?xsd=1" /><!--http://localhost:8084/xinco/services/Xinco?xsd=1-->
+            <xsd:import namespace="http://service.server.core.xinco.bluecubs.com/" schemaLocation="http://localhost:8084/xinco/Xinco?xsd=1" />
         </xsd:schema>
     </types>
     <message name="getXincoCoreDataType">
@@ -170,6 +170,18 @@
     <message name="getXincoCoreDataTypeAttributeResponse">
         <part name="parameters" element="tns:getXincoCoreDataTypeAttributeResponse" />
     </message>
+    <message name="getRenderings">
+        <part name="parameters" element="tns:getRenderings" />
+    </message>
+    <message name="getRenderingsResponse">
+        <part name="parameters" element="tns:getRenderingsResponse" />
+    </message>
+    <message name="isRendering">
+        <part name="parameters" element="tns:isRendering" />
+    </message>
+    <message name="isRenderingResponse">
+        <part name="parameters" element="tns:isRenderingResponse" />
+    </message>
     <portType name="Xinco">
         <operation name="getXincoCoreDataType">
             <input wsam:Action="http://service.server.core.xinco.bluecubs.com/Xinco/getXincoCoreDataTypeRequest" message="tns:getXincoCoreDataType" />
@@ -278,6 +290,14 @@
         <operation name="getXincoCoreDataTypeAttribute">
             <input wsam:Action="http://service.server.core.xinco.bluecubs.com/Xinco/getXincoCoreDataTypeAttributeRequest" message="tns:getXincoCoreDataTypeAttribute" />
             <output wsam:Action="http://service.server.core.xinco.bluecubs.com/Xinco/getXincoCoreDataTypeAttributeResponse" message="tns:getXincoCoreDataTypeAttributeResponse" />
+        </operation>
+        <operation name="getRenderings">
+            <input wsam:Action="http://service.server.core.xinco.bluecubs.com/Xinco/getRenderingsRequest" message="tns:getRenderings" />
+            <output wsam:Action="http://service.server.core.xinco.bluecubs.com/Xinco/getRenderingsResponse" message="tns:getRenderingsResponse" />
+        </operation>
+        <operation name="isRendering">
+            <input wsam:Action="http://service.server.core.xinco.bluecubs.com/Xinco/isRenderingRequest" message="tns:isRendering" />
+            <output wsam:Action="http://service.server.core.xinco.bluecubs.com/Xinco/isRenderingResponse" message="tns:isRenderingResponse" />
         </operation>
     </portType>
     <binding name="XincoPortBinding" type="tns:Xinco">
@@ -519,6 +539,22 @@
         </operation>
         <operation name="getXincoCoreDataTypeAttribute">
             <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="getRenderings">
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="isRendering">
             <input>
                 <soap:body use="literal" />
             </input>
