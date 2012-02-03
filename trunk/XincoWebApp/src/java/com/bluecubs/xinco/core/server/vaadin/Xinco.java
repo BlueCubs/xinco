@@ -116,6 +116,16 @@ public class Xinco extends Application implements HttpServletRequestListener {
     private Embedded icon;
     private static ThreadLocal<Xinco> threadLocal = new ThreadLocal<Xinco>();
     private Locale locale = Locale.getDefault();
+    private com.vaadin.ui.Button userAdmin;
+    private com.vaadin.ui.Button groupAdmin;
+    private com.vaadin.ui.Button langAdmin;
+    private com.vaadin.ui.Button attrAdmin;
+    private com.vaadin.ui.Button trashAdmin;
+    private com.vaadin.ui.Button indexAdmin;
+    private com.vaadin.ui.Button auditAdmin;
+    private com.vaadin.ui.Button settingAdmin;
+    private com.vaadin.ui.Panel accountPanel;
+    private Accordion menu;
 
     @Override
     public String getVersion() {
@@ -308,6 +318,34 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
         };
         initMenuItems();
+        //Update Side Menu
+        if (userAdmin != null) {
+            userAdmin.setCaption(getInstance().getResource().getString("message.admin.userAdmin"));
+        }
+        if (groupAdmin != null) {
+            groupAdmin.setCaption(getInstance().getResource().getString("message.admin.groupAdmin"));
+        }
+        if (langAdmin != null) {
+            langAdmin.setCaption(getInstance().getResource().getString("message.admin.language"));
+        }
+        if (attrAdmin != null) {
+            attrAdmin.setCaption(getInstance().getResource().getString("message.admin.attribute"));
+        }
+        if (trashAdmin != null) {
+            trashAdmin.setCaption(getInstance().getResource().getString("message.admin.trash"));
+        }
+        if (indexAdmin != null) {
+            indexAdmin.setCaption(getInstance().getResource().getString("general.audit.menu"));
+        }
+        if (auditAdmin != null) {
+            auditAdmin.setCaption(getInstance().getResource().getString("general.audit.menu"));
+        }
+        if (settingAdmin != null) {
+            settingAdmin.setCaption(getInstance().getResource().getString("message.admin.settingAdmin"));
+        }
+        if (menu != null && accountPanel != null) {
+            menu.getTab(accountPanel).setCaption(getInstance().getResource().getString("window.connection.profile"));
+        }
     }
 
     private void addHeader() {
@@ -2615,16 +2653,16 @@ public class Xinco extends Application implements HttpServletRequestListener {
         user.addComponent(form);
         user.setModal(true);
         user.center();
-        user.setWidth(25, Sizeable.UNITS_PERCENTAGE);
+        user.setWidth(75, Sizeable.UNITS_PERCENTAGE);
         getMainWindow().addWindow(user);
     }
 
     private com.vaadin.ui.Component getSideMenu() throws XincoException {
         com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel();
         panel.addComponent(icon);
-        Accordion menu = new Accordion();
+        menu = new Accordion();
         menu.setSizeFull();
-        com.vaadin.ui.Panel accountPanel = new com.vaadin.ui.Panel();
+        accountPanel = new com.vaadin.ui.Panel();
         accountPanel.setContent(new VerticalLayout());
         accountPanel.addComponent(login);
         accountPanel.addComponent(profile);
@@ -2634,7 +2672,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         logout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         menu.addTab(accountPanel, getInstance().getResource().getString("window.connection.profile"), null);
         adminPanel = new com.vaadin.ui.Panel();
-        com.vaadin.ui.Button userAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.userAdmin"));
+        userAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.userAdmin"));
         userAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         userAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
 
@@ -2644,7 +2682,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
         });
         adminPanel.addComponent(userAdmin);
-        com.vaadin.ui.Button groupAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.groupAdmin"));
+        groupAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.groupAdmin"));
         groupAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         groupAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
 
@@ -2654,7 +2692,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
         });
         adminPanel.addComponent(groupAdmin);
-        com.vaadin.ui.Button langAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.language"));
+        langAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.language"));
         langAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         langAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
 
@@ -2664,7 +2702,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
         });
         adminPanel.addComponent(langAdmin);
-        com.vaadin.ui.Button attrAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.attribute"));
+        attrAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.attribute"));
         attrAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         attrAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
 
@@ -2674,7 +2712,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
         });
         adminPanel.addComponent(attrAdmin);
-        com.vaadin.ui.Button trashAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.trash"));
+        trashAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.trash"));
         trashAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         trashAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
 
@@ -2689,7 +2727,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
         });
         adminPanel.addComponent(trashAdmin);
-        com.vaadin.ui.Button indexAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.index"));
+        indexAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.index"));
         indexAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         final Table table = new Table();
         table.addStyleName("striped");
@@ -2780,7 +2818,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
         });
         adminPanel.addComponent(indexAdmin);
-        com.vaadin.ui.Button auditAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("general.audit.menu"));
+        auditAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("general.audit.menu"));
         auditAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         auditAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
 
@@ -2794,7 +2832,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
         });
         adminPanel.addComponent(auditAdmin);
-        com.vaadin.ui.Button settingAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.settingAdmin"));
+        settingAdmin = new com.vaadin.ui.Button(getInstance().getResource().getString("message.admin.settingAdmin"));
         settingAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         settingAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
 
