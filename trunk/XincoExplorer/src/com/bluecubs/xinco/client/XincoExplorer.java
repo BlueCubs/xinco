@@ -213,7 +213,6 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
             loc = Locale.getDefault();
         }
         xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
-        xerb.getLocale();
         progressBar = new XincoProgressBarThread(this);
         initialize();
         //Windows-Listener
@@ -1486,7 +1485,9 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                 if ((((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(i)).getOpCode() == 1)
                         || (((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(i)).getOpCode() == 5)) {
                     //convert clone from remote time to local time
-                    cal = (Calendar) ((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(i)).getOpDatetime().clone();
+                    Date time = ((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(i)).getOpDatetime().toGregorianCalendar().getTime();
+                    cal = new GregorianCalendar();
+                    cal.setTime(time);
                     realcal = (((XincoCoreLog) ((XincoCoreData) xincoClientSession.getCurrentTreeNodeSelection().getUserObject()).getXincoCoreLogs().get(i)).getOpDatetime());
                     cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET)
                             - realcal.toGregorianCalendar().get(Calendar.ZONE_OFFSET))
