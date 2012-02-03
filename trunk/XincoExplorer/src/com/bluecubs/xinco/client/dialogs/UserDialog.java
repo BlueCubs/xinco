@@ -101,9 +101,9 @@ public class UserDialog extends AbstractDialog {
             this.verification.setText("" + explorer.getSession().getUser().getUserpassword());
         }
         this.verificationLabel.setText(explorer.getResourceBundle().getString("general.verifypassword") + ":");
-        this.name.setText("" + explorer.getSession().getUser().getFirstname());
+        this.name.setText("" + explorer.getSession().getUser().getFirstName());
         this.nameLabel.setText(explorer.getResourceBundle().getString("window.userinfo.firstname") + ":");
-        this.lastname.setText("" + explorer.getSession().getUser().getName());
+        this.lastname.setText("" + explorer.getSession().getUser().getLastName());
         this.lastnameLabel.setText(explorer.getResourceBundle().getString("window.userinfo.lastname") + ":");
         this.email.setText("" + explorer.getSession().getUser().getEmail());
         this.emailLabel.setText(explorer.getResourceBundle().getString("window.userinfo.email") + ":");
@@ -303,8 +303,8 @@ public class UserDialog extends AbstractDialog {
                 explorer.getUser().setId(explorer.getSession().getUser().getId());
                 explorer.getUser().setUsername(explorer.getSession().getUser().getUsername());
                 explorer.getUser().setUserpassword(new String(password.getPassword()));
-                explorer.getUser().setFirstname(name.getText());
-                explorer.getUser().setName(lastname.getText());
+                explorer.getUser().setFirstName(name.getText());
+                explorer.getUser().setLastName(lastname.getText());
                 explorer.getUser().setEmail(email.getText());
                 explorer.getUser().getXincoCoreGroups().clear();
                 explorer.getUser().getXincoCoreGroups().addAll(explorer.getSession().getUser().getXincoCoreGroups());

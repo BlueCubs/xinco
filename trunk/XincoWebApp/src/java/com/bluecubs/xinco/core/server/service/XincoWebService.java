@@ -675,7 +675,10 @@ public class XincoWebService {
         }
     }
 
-    public java.util.List<com.bluecubs.xinco.core.server.persistence.XincoCoreData> getRenderings(XincoCoreDataType in0, XincoCoreUser in1) {
+    /**
+     * Web service operation
+     */
+    public java.util.List<com.bluecubs.xinco.core.server.persistence.XincoCoreData> getRenderings(final XincoCoreData in0, final XincoCoreUser in1) {
         try {
             XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
             return XincoCoreDataHasDependencyServer.getRenderings(in0.getId());
@@ -683,8 +686,11 @@ public class XincoWebService {
             return new ArrayList<com.bluecubs.xinco.core.server.persistence.XincoCoreData>();
         }
     }
-
-    public boolean isRendering(XincoCoreDataType in0, XincoCoreUser in1) {
+    
+/**
+     * Web service operation
+     */
+    public Boolean isRendering(final XincoCoreData in0, final XincoCoreUser in1) {
         try {
             XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
             return XincoCoreDataHasDependencyServer.isRendering(in0.getId());

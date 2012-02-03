@@ -124,16 +124,6 @@ public final class XincoJTree extends JTree {
                 }
             }
         });
-        addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
-
-            @Override
-            public void treeExpanded(javax.swing.event.TreeExpansionEvent e) {
-            }
-
-            @Override
-            public void treeCollapsed(javax.swing.event.TreeExpansionEvent e) {
-            }
-        });
         addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
 
             @Override
@@ -279,7 +269,7 @@ public final class XincoJTree extends JTree {
                             && (((XincoCoreNode) node.getUserObject()).getXincoCoreData().isEmpty())) {
                         try {
                             XincoCoreNode xnode = getExplorer().getSession().getXinco().getXincoCoreNode((XincoCoreNode) node.getUserObject(), getExplorer().getSession().getUser());
-
+                            
                             if (xnode != null) {
                                 getExplorer().getSession().getXincoClientRepository().assignObject2TreeNode(node,
                                         xnode,
