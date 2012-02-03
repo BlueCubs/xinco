@@ -112,7 +112,10 @@ public class AddAttributeUniversalDialog extends AbstractDialog {
         List<XincoCoreDataTypeAttribute> dataTypeAttributes = explorer.getSession().getXinco().getXincoCoreDataTypeAttribute(data.getXincoCoreDataType(),
                 explorer.getSession().getUser());
         for (i = start; i < attributes.size(); i++) {
-            rdata[0] = dataTypeAttributes.get(i).getDesignation();
+            String designation = dataTypeAttributes.get(i).getDesignation();
+            rdata[0] = (explorer.getResourceBundle().containsKey(designation)
+                        ? explorer.getResourceBundle().getString(designation)
+                        : designation);
             rdata[1] = "";
             if (dataTypeAttributes.get(i).getDataType().equals("datetime")) {
                 rdata[1] = "" + ((XMLGregorianCalendar) (attributes.get(i)).getAttribDatetime()).toGregorianCalendar().getTime().toString();
