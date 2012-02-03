@@ -15,6 +15,7 @@ import java.util.zip.CheckedInputStream;
 import java.util.zip.CheckedOutputStream;
 import javax.jws.WebService;
 import javax.xml.ws.BindingType;
+import javax.xml.ws.soap.SOAPBinding;
 
 /**
  *
@@ -24,7 +25,7 @@ import javax.xml.ws.BindingType;
 endpointInterface = "com.bluecubs.xinco.core.server.service.Xinco",
 targetNamespace = "http://service.server.core.xinco.bluecubs.com/",
 wsdlLocation = "WEB-INF/wsdl/XincoWebService/Xinco.wsdl")
-@BindingType(value = "http://java.sun.com/xml/ns/jaxws/2003/05/soap/bindings/HTTP/")
+@BindingType(SOAPBinding.SOAP11HTTP_BINDING)
 public class XincoWebService {
 
     public XincoCoreDataType getXincoCoreDataType(XincoCoreDataType in0, XincoCoreUser in1) {
@@ -196,8 +197,7 @@ public class XincoWebService {
                 if ((data.getXincoCoreLogs().size() > 1) && (in0.getXincoCoreLogs().size() == 1)) {
                     //find id of log
                     int LogId = 0;
-                    if ((((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CREATION.ordinal() + 1)
-                            || (((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CHECKIN.ordinal() + 1)) {
+                    if ((((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CHECKIN.ordinal() + 1)) {
                         LogId = ((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getId();
                     }
                     if (LogId > 0) {

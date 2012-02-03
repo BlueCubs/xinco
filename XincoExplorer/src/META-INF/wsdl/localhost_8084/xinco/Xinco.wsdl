@@ -5,7 +5,7 @@
     </wsp:Policy>
     <types>
         <xsd:schema xmlns:tns1="service.server.core.xinco.bluecubs.com" targetNamespace="service.server.core.xinco.bluecubs.com">
-            <xsd:import namespace="http://service.server.core.xinco.bluecubs.com/" schemaLocation="http://localhost:8084/xinco/Xinco?xsd=1" /><!--http://localhost:8084/xinco/services/Xinco?xsd=1-->
+            <xsd:import namespace="http://service.server.core.xinco.bluecubs.com/" schemaLocation="http://localhost:8084/xinco/Xinco?xsd=1" />
         </xsd:schema>
     </types>
     <message name="getXincoCoreDataType">
