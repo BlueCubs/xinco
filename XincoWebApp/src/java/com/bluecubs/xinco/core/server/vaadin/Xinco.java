@@ -24,6 +24,8 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.filter.SimpleStringFilter;
+import com.vaadin.event.FieldEvents.FocusEvent;
+import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.ItemClickEvent;
@@ -1688,13 +1690,22 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         stored.setExecutePermission(e.getValue().isExecutePermission());
                         stored.setWritePermission(e.getValue().isWritePermission());
                     }
+                    if(stored.getXincoCoreUserId()>0){
+                        getMainWindow().showNotification(
+                                getInstance().getResource().getString("general.warning"), 
+                                getInstance().getResource().getString("error.noadminpermission"), 
+                                Notification.TYPE_WARNING_MESSAGE);
+                        return;
+                    }
                     try {
                         if (stored.isAdminPermission()
                                 || stored.isExecutePermission()
                                 || stored.isReadPermission()
                                 || stored.isWritePermission()) {
                             stored.write2DB();
-                            showCommentDataDialog(new XincoCoreDataServer(getXincoCoreData().getId()), OPCode.MODIFICATION);
+                            if (xincoTree.getValue() != null && xincoTree.getValue().toString().startsWith("data")) {
+                                showCommentDataDialog(new XincoCoreDataServer(getXincoCoreData().getId()), OPCode.MODIFICATION);
+                            }
                         }
                     } catch (XincoException ex) {
                         Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
@@ -1837,7 +1848,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         loginWindow.addComponent(form);
         loginWindow.center();
         loginWindow.setModal(true);
-        loginWindow.setWidth(30, Sizeable.UNITS_PERCENTAGE);
+        loginWindow.setWidth(300, Sizeable.UNITS_PIXELS);
         loginWindow.setReadOnly(true);
         getMainWindow().addWindow(loginWindow);
     }
@@ -1869,7 +1880,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
     private void showEditSingleGroupWindow(final Integer groupId) {
         final Window group = new Window();
         final Form form = new Form();
+        final XincoCoreGroupServer groupS = new XincoCoreGroupServer(groupId);
         refreshGroupContentsTables(form, groupId);
+        form.addField("name", new com.vaadin.ui.TextField());
+        form.getField("name").setCaption(getInstance().getResource().getString("general.name"));
+        form.getField("name").setValue(getInstance().getResource().containsKey(groupS.getDesignation())
+                ? getInstance().getResource().getString(groupS.getDesignation())
+                : groupS.getDesignation());
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
                 getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
@@ -1879,12 +1896,34 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         getMainWindow().removeWindow(group);
                     }
                 });
+        final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
+                getInstance().getResource().getString("general.save"), form, "commit");
+        commit.addListener(
+                new com.vaadin.ui.Button.ClickListener() {
+
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        try {
+                            if (!form.getField("name").getValue().equals(
+                                    getInstance().getResource().containsKey(groupS.getDesignation())
+                                    ? getInstance().getResource().getString(groupS.getDesignation())
+                                    : groupS.getDesignation())) {
+                                groupS.setDesignation(form.getField("name").getValue().toString());
+                                groupS.write2DB();
+                            }
+                        } catch (XincoException ex) {
+                            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        getMainWindow().removeWindow(group);
+                    }
+                });
         form.getFooter().setSizeUndefined();
+        form.getFooter().addComponent(commit);
         form.getFooter().addComponent(cancel);
         group.addComponent(form);
         group.setModal(true);
         group.center();
-        group.setWidth(70, Sizeable.UNITS_PERCENTAGE);
+        group.setWidth(600, Sizeable.UNITS_PIXELS);
         getMainWindow().addWindow(group);
     }
 
@@ -1934,13 +1973,19 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             }
         });
+        group.addListener(new FocusListener() {
+
+            public void focus(FocusEvent event) {
+                refreshGroupTable(table);
+            }
+        });
         form.getFooter().setSizeUndefined();
         form.getFooter().addComponent(commit);
         form.getFooter().addComponent(cancel);
         group.addComponent(form);
         group.setModal(true);
         group.center();
-        group.setWidth(25, Sizeable.UNITS_PERCENTAGE);
+        group.setWidth(300, Sizeable.UNITS_PIXELS);
         getMainWindow().addWindow(group);
     }
 
@@ -2653,7 +2698,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         user.addComponent(form);
         user.setModal(true);
         user.center();
-        user.setWidth(75, Sizeable.UNITS_PERCENTAGE);
+        user.setWidth(150, Sizeable.UNITS_PIXELS);
         getMainWindow().addWindow(user);
     }
 
@@ -3683,8 +3728,6 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         commit.setEnabled(false);
                         cancel.setEnabled(false);
                         //Process the data
-                        ArrayList dataLogArrayList = new ArrayList();
-                        dataLogArrayList.addAll(xdata.getXincoCoreLogs());
                         XincoCoreLog revLog = null;
                         for (int i = 0; i < xdata.getXincoCoreLogs().size(); i++) {
                             if (((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getId()
