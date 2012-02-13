@@ -35,8 +35,8 @@ package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.db.DBState;
-import com.bluecubs.xinco.tools.MD5;
 import com.bluecubs.xinco.core.server.tools.Tool;
+import com.bluecubs.xinco.tools.MD5;
 import gudusoft.gsqlparser.EDbVendor;
 import gudusoft.gsqlparser.ESqlStatementType;
 import gudusoft.gsqlparser.TGSqlParser;
@@ -466,7 +466,7 @@ public final class XincoDBManager {
     protected static EntityManager getProtectedEntityManager() {
         EntityManager em = null;
         try {
-            em = getEntityManagerFactory().createEntityManager();
+                em = getEntityManagerFactory().createEntityManager();
         } catch (XincoException ex) {
             logger.log(Level.SEVERE, null, ex);
         }
