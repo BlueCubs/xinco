@@ -55,4 +55,15 @@ public class OPCodeTest {
         System.out.println("getName");
         assertTrue(OPCode.getOPCode(1).getName()!=null);
     }
+
+    /**
+     * Test of valueOf method, of class OPCode.
+     */
+    @Test
+    public void testValueOf() {
+        System.out.println("valueOf");
+        OPCode expResult = OPCode.CHECKIN;
+        OPCode result = OPCode.valueOf(OPCode.CHECKIN.name());
+        assertTrue(expResult==result);
+    }
 }

@@ -38,7 +38,7 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreAceJpaCont
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLanguageJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreNodeJpaController;
 import com.bluecubs.xinco.core.server.service.XincoCoreNode;
-import com.bluecubs.xinco.index.XincoIndexer;
+import com.bluecubs.xinco.core.server.index.XincoIndexer;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;

@@ -30,7 +30,7 @@
  *
  *************************************************************
  */
-package com.bluecubs.xinco.index;
+package com.bluecubs.xinco.core.server.index;
 
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;

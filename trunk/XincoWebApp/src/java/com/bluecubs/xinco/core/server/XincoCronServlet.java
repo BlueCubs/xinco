@@ -30,11 +30,11 @@
  *
  *************************************************************
  */
-package com.bluecubs.xinco.server;
+package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.archive.XincoArchiveThread;
 import com.bluecubs.xinco.core.server.XincoDBManager;
-import com.bluecubs.xinco.index.XincoIndexOptimizeThread;
+import com.bluecubs.xinco.core.server.index.XincoIndexOptimizeThread;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Locale;

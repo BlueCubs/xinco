@@ -12,7 +12,7 @@
     </context-param>
     <context-param>
         <param-name>db.password</param-name>
-        <param-value></param-value>
+        <param-value/>
     </context-param>
     <listener>
         <listener-class>org.h2.server.web.DbStarter</listener-class>
@@ -37,7 +37,7 @@
     <servlet>
         <display-name>XincoCronServlet</display-name>
         <servlet-name>XincoCronServlet</servlet-name>
-        <servlet-class>com.bluecubs.xinco.server.XincoCronServlet</servlet-class>
+        <servlet-class>com.bluecubs.xinco.core.server.XincoCronServlet</servlet-class>
         <load-on-startup>10</load-on-startup>
     </servlet>
     <servlet>

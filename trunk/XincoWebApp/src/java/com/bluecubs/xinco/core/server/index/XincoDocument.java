@@ -30,16 +30,16 @@
  *
  *************************************************************
  */
-package com.bluecubs.xinco.index;
+package com.bluecubs.xinco.core.server.index;
 
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.service.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
-import com.bluecubs.xinco.index.filetypes.XincoIndexFileType;
-import com.bluecubs.xinco.index.filetypes.XincoIndexGenericFile;
-import com.bluecubs.xinco.index.filetypes.XincoIndexText;
+import com.bluecubs.xinco.core.server.index.filetypes.XincoIndexFileType;
+import com.bluecubs.xinco.core.server.index.filetypes.XincoIndexGenericFile;
+import com.bluecubs.xinco.core.server.index.filetypes.XincoIndexText;
 import java.io.File;
 import java.io.Reader;
 import java.util.ArrayList;
