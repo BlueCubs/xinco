@@ -1,5 +1,6 @@
 package com.bluecubs.xinco.tools;
 
+import com.bluecubs.xinco.core.server.tools.Tool;
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;

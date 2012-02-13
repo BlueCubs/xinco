@@ -1,4 +1,4 @@
-package com.bluecubs.xinco.tools;
+package com.bluecubs.xinco.core.server.tools;
 
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;

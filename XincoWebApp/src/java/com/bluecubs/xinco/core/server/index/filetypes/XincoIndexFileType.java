@@ -33,7 +33,7 @@
  *
  *************************************************************
  */
-package com.bluecubs.xinco.index.filetypes;
+package com.bluecubs.xinco.core.server.index.filetypes;
 
 import java.io.File;
 import java.io.Reader;

@@ -25,7 +25,7 @@
  * 
  * ************************************************************
  */
-package com.bluecubs.xinco.rendering;
+package com.bluecubs.xinco.core.server.rendering;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.*;
@@ -34,7 +34,7 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoDependencyType
 import com.bluecubs.xinco.core.server.service.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoCoreUser;
 import com.bluecubs.xinco.core.server.service.XincoWebService;
-import com.bluecubs.xinco.tools.Tool;
+import com.bluecubs.xinco.core.server.tools.Tool;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.logging.Level;
