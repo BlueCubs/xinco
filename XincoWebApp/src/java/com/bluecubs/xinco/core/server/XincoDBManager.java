@@ -41,14 +41,16 @@ import gudusoft.gsqlparser.EDbVendor;
 import gudusoft.gsqlparser.ESqlStatementType;
 import gudusoft.gsqlparser.TGSqlParser;
 import java.io.*;
-import java.util.Map.Entry;
+import java.lang.reflect.Field;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.persistence.*;
+import javax.persistence.metamodel.EntityType;
 
-public final class XincoDBManager {
+public class XincoDBManager {
 
     private static EntityManagerFactory emf;
     //load compiled configuartion
@@ -64,26 +66,8 @@ public final class XincoDBManager {
     private static XincoDBManager instance;
     private static DBState state = DBState.START_UP;
     private static final Logger logger = Logger.getLogger(XincoDBManager.class.getName());
-    private static final HashMap<String, Integer> ids = new HashMap<String, Integer>();
     private static boolean demo = false;
     private static long demoResetPeriod = 0;
-
-    static {
-        //TODO: remove when bug is fixed: https://bugs.eclipse.org/bugs/show_bug.cgi?id=366852
-        ids.put("xinco_dependency_behavior", 999);
-        ids.put("xinco_dependency_behavior", 999);
-        ids.put("xinco_core_group", 999);
-        ids.put("xinco_core_data_type", 999);
-        ids.put("xinco_core_ace", 999);
-        ids.put("xinco_core_log", 999);
-        ids.put("xinco_dependency_type", 999);
-        ids.put("xinco_core_language", 999);
-        ids.put("xinco_setting", 999);
-        ids.put("xinco_core_user", 999);
-        ids.put("xinco_core_node", 999);
-        ids.put("xinco_core_data", 999);
-        ids.put("xinco_core_user_modified_record", 0);
-    }
 
     /**
      * @return the demo
@@ -128,21 +112,8 @@ public final class XincoDBManager {
         }
         getEntityManagerFactory();
         updateDBState();
-        checkIdTables();
+        generateIDs();
         config.loadSettings();
-    }
-
-    private static void checkIdTables() {
-        try {
-            List<XincoIdServer> idList = XincoIdServer.getIds();
-            if (idList.isEmpty() || idList.size() != ids.size()) {
-                generateIDs();
-            } else {
-                Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO, "Xinco ID's present...");
-            }
-        } catch (XincoException ex) {
-            generateIDs();
-        }
     }
 
     private static void generateIDs() {
@@ -151,13 +122,20 @@ public final class XincoDBManager {
                     "Creating ids to work around eclipse issue "
                     + "(https://bugs.eclipse.org/bugs/show_bug.cgi?id=366852)...");
             XincoIdServer temp;
-            for (Iterator<Entry<String, Integer>> it = ids.entrySet().iterator(); it.hasNext();) {
-                Entry<String, Integer> entry = it.next();
-                HashMap parameters = new HashMap();
-                parameters.put("tablename", entry.getKey());
-                if (XincoDBManager.namedQuery("XincoId.findByTablename", parameters).isEmpty()) {
-                    temp = new XincoIdServer(entry.getKey(), entry.getValue());
-                    temp.write2DB();
+            for (EntityType et : getEntityManager().getMetamodel().getEntities()) {
+                for (Field field : et.getBindableJavaType().getDeclaredFields()) {
+                    if (field.isAnnotationPresent(TableGenerator.class)) {
+                        field.setAccessible(true);
+                        TableGenerator annotation = field.getAnnotation(TableGenerator.class);
+                        field.setAccessible(false);
+                        HashMap parameters = new HashMap();
+                        String tableName = annotation.pkColumnValue();
+                        parameters.put("tableName", tableName);
+                        if (XincoDBManager.namedQuery("XincoId.findByTablename", parameters).isEmpty()) {
+                            temp = new XincoIdServer(tableName, annotation.initialValue() - 1);
+                            temp.write2DB();
+                        }
+                    }
                 }
             }
             Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO, "Done!");
@@ -204,12 +182,14 @@ public final class XincoDBManager {
         try {
             lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
         } catch (Exception e) {
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.FINE, null, e);
             lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", Locale.getDefault());
         }
     }
 
     /**
      * @param aPU the Persistence Unit to set
+     * @throws XincoException
      */
     public static void setPU(String aPU) throws XincoException {
         puName = aPU;
@@ -285,8 +265,10 @@ public final class XincoDBManager {
             version.append(XincoSettingServer.getSetting("version.low").getIntValue());
             return version.toString();
         } catch (XincoException ex) {
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.FINE, null, ex);
             return null;
         } catch (Exception ex) {
+            Logger.getLogger(XincoDBManager.class.getName()).log(Level.FINE, null, ex);
             return null;
         }
     }
@@ -307,7 +289,6 @@ public final class XincoDBManager {
     private static void runInitSQL() throws XincoException {
         if (!isInitDone() && state != DBState.UPDATING) {
             new Thread(new Runnable() {
-
                 @Override
                 public void run() {
                     if (!isInitDone() && state != DBState.UPDATING) {
@@ -363,7 +344,8 @@ public final class XincoDBManager {
     protected static ArrayList<String> readFileAsString(String filePath, Class relativeTo) throws java.io.IOException, XincoException {
         InputStream in = relativeTo == null ? new FileInputStream(new File(filePath))
                 : relativeTo.getResourceAsStream(filePath);
-        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        InputStreamReader is = new InputStreamReader(in);
+        BufferedReader br = new BufferedReader(is);
         String line;
         ArrayList<String> statements = new ArrayList<String>();
         StringBuilder sql = new StringBuilder();
@@ -394,6 +376,9 @@ public final class XincoDBManager {
                 }
             }
         }
+        br.close();
+        is.close();
+        in.close();
         return statements;
     }
 
@@ -433,7 +418,7 @@ public final class XincoDBManager {
                     if (demoResetPeriod > 0) {
                         logger.log(Level.WARNING,
                                 "Instance configured as demo, database will reset"
-                                + " each " + demoResetPeriod + " milliseconds");
+                                + " each {0} milliseconds", demoResetPeriod);
                     }
                 }
                 emf = Persistence.createEntityManagerFactory(config.getJNDIDB());
@@ -466,7 +451,7 @@ public final class XincoDBManager {
     protected static EntityManager getProtectedEntityManager() {
         EntityManager em = null;
         try {
-                em = getEntityManagerFactory().createEntityManager();
+            em = getEntityManagerFactory().createEntityManager();
         } catch (XincoException ex) {
             logger.log(Level.SEVERE, null, ex);
         }
@@ -494,7 +479,7 @@ public final class XincoDBManager {
             Iterator<Map.Entry<String, Object>> entries = parameters.entrySet().iterator();
             while (entries.hasNext()) {
                 Entry<String, Object> e = entries.next();
-                q.setParameter(e.getKey().toString(), e.getValue());
+                q.setParameter(e.getKey(), e.getValue());
             }
         }
         List result = q.getResultList();
@@ -525,7 +510,7 @@ public final class XincoDBManager {
             Iterator<Map.Entry<String, Object>> entries = parameters.entrySet().iterator();
             while (entries.hasNext()) {
                 Entry<String, Object> e = entries.next();
-                q.setParameter(e.getKey().toString(), e.getValue());
+                q.setParameter(e.getKey(), e.getValue());
             }
         }
         List result = q.getResultList();
@@ -542,7 +527,7 @@ public final class XincoDBManager {
         } else {
             em = getEntityManager();
         }
-        while (query.toLowerCase().contains("md5")) {
+        while (query.toLowerCase(Locale.getDefault()).contains("md5")) {
             int start = query.toLowerCase().indexOf("md5");
             int end = query.toLowerCase().indexOf(')', start);
             String toEncrypt = query.substring(start, end);
@@ -634,6 +619,7 @@ public final class XincoDBManager {
      * This style of implementation throws all exceptions to the caller.
      *
      * @param aFile is an existing file which can be written to.
+     * @param aContents contents to set
      * @throws IllegalArgumentException if param does not comply.
      * @throws FileNotFoundException if the file does not exist.
      * @throws IOException if problem encountered during write.
@@ -652,9 +638,9 @@ public final class XincoDBManager {
         if (!aFile.canWrite()) {
             throw new IllegalArgumentException("File cannot be written: " + aFile);
         }
-
+        FileWriter fw = new FileWriter(aFile);
         //use buffering
-        Writer output = new BufferedWriter(new FileWriter(aFile));
+        Writer output = new BufferedWriter(fw);
         try {
             //FileWriter always assumes default encoding is OK!
             for (String line : aContents) {
@@ -663,6 +649,7 @@ public final class XincoDBManager {
             }
         } finally {
             output.close();
+            fw.close();
         }
     }
 
@@ -688,7 +675,6 @@ public final class XincoDBManager {
         if (state != DBState.UPDATING) {
             //TODO: Look for the proper update script(s) and run them
             new Thread(new Runnable() {
-
                 @Override
                 public void run() {
                     if (state != DBState.UPDATING) {
