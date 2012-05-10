@@ -130,7 +130,7 @@ public class XincoDBManager {
                         field.setAccessible(false);
                         HashMap parameters = new HashMap();
                         String tableName = annotation.pkColumnValue();
-                        parameters.put("tableName", tableName);
+                        parameters.put("tablename", tableName);
                         if (XincoDBManager.namedQuery("XincoId.findByTablename", parameters).isEmpty()) {
                             temp = new XincoIdServer(tableName, annotation.initialValue() - 1);
                             temp.write2DB();
