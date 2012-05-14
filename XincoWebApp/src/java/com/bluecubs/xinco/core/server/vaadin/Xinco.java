@@ -3,18 +3,18 @@ package com.bluecubs.xinco.core.server.vaadin;
 import com.bluecubs.xinco.core.OPCode;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.*;
+import com.bluecubs.xinco.core.server.index.XincoIndexer;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecord;
 import com.bluecubs.xinco.core.server.persistence.controller.*;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.service.*;
+import com.bluecubs.xinco.core.server.tools.Tool;
 import com.bluecubs.xinco.core.server.vaadin.custom.VersionSelector;
 import com.bluecubs.xinco.core.server.vaadin.setting.SettingAdminWindow;
 import com.bluecubs.xinco.core.server.vaadin.wizard.WizardStep;
 import com.bluecubs.xinco.core.server.vaadin.wizard.XincoWizard;
 import com.bluecubs.xinco.core.server.vaadin.wizard.event.*;
-import com.bluecubs.xinco.core.server.index.XincoIndexer;
-import com.bluecubs.xinco.core.server.tools.Tool;
 import com.bluecubs.xinco.tools.XincoFileIconManager;
 import com.vaadin.Application;
 import com.vaadin.data.Container.Filterable;
@@ -30,6 +30,7 @@ import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.event.MouseEvents;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.event.Transferable;
@@ -214,6 +215,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             showLoginDialog();
                         }
                     });
+            login.setDebugId("login");
             logout = new com.vaadin.ui.Button(
                     getInstance().getResource().getString("general.logout"),
                     new com.vaadin.ui.Button.ClickListener() {
@@ -391,6 +393,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
     private void showMainWindow() {
         getMainWindow().removeAllComponents();
+        getMainWindow().addListener(new MouseEvents.ClickListener() {
+
+            public void click(ClickEvent event) {
+                //Do nothing. Based on https://vaadin.com/es/forum/-/message_boards/view_message/359139
+            }
+        });
         HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
         // Put two components in the container.
         splitPanel.setFirstComponent(getSideMenu());
