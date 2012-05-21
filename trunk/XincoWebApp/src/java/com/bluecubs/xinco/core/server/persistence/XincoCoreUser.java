@@ -21,7 +21,7 @@
  * 
  * Description: XincoCoreUser JPA class
  * 
- * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
  * 
  * ************************************************************
  */
@@ -40,7 +40,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 @Entity
 @Table(name = "xinco_core_user", uniqueConstraints = {
@@ -69,14 +69,14 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
     valueColumnName = "last_id",
     pkColumnValue = "xinco_core_user",
     allocationSize = 1,
-    initialValue=1000)
+    initialValue = 1000)
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "username")
-    @Pattern(regexp="^[a-z0-9_-]{3,15}$", message="Invalid user name")
+    @Pattern(regexp = "^[a-z0-9_-]{3,15}$", message = "Invalid user name")
     private String username;
     @Basic(optional = false)
     @NotNull
@@ -93,7 +93,7 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "first_name")
     private String firstName;
-    @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message = "Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)

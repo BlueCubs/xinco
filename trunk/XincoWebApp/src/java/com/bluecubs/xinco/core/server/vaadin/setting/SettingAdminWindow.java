@@ -21,7 +21,7 @@
  * 
  * Description: Admin window for managing settings
  * 
- * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Dec 14, 2011
+ * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Dec 14, 2011
  * 
  * ************************************************************
  */
@@ -38,7 +38,7 @@ import java.util.ResourceBundle;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public class SettingAdminWindow extends Panel implements ComponentContainer {
 
@@ -60,7 +60,6 @@ public class SettingAdminWindow extends Panel implements ComponentContainer {
         com.vaadin.ui.Button newButton =
                 new com.vaadin.ui.Button(getResource().getString("general.add"));
         newButton.addListener(new com.vaadin.ui.Button.ClickListener() {
-
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 final BeanItem<com.bluecubs.xinco.core.server.persistence.XincoSetting> newSettingItem =
@@ -68,7 +67,6 @@ public class SettingAdminWindow extends Panel implements ComponentContainer {
                 SettingEditor settingEditor =
                         new SettingEditor(newSettingItem);
                 settingEditor.addListener(new SettingEditor.EditorSavedListener() {
-
                     @Override
                     public void editorSaved(SettingEditor.EditorSavedEvent event) {
                         container.addEntity(newSettingItem.getBean());
@@ -78,7 +76,6 @@ public class SettingAdminWindow extends Panel implements ComponentContainer {
         });
         final com.vaadin.ui.Button editButton = new com.vaadin.ui.Button(getResource().getString("general.edit"));
         editButton.addListener(new com.vaadin.ui.Button.ClickListener() {
-
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 if (table.getValue() != null) {
@@ -91,7 +88,6 @@ public class SettingAdminWindow extends Panel implements ComponentContainer {
             }
         });
         table.addListener(new Property.ValueChangeListener() {
-
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
                 setModificationsEnabled(event.getProperty().getValue() != null);

@@ -93,7 +93,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
         try {
             result = XincoDBManager.createdQuery("SELECT xcdt FROM XincoCoreDataType xcdt ORDER BY xcdt.id");
             for (Iterator it = result.iterator(); it.hasNext();) {
-                com.bluecubs.xinco.core.server.persistence.XincoCoreDataType xcdt = 
+                com.bluecubs.xinco.core.server.persistence.XincoCoreDataType xcdt =
                         (com.bluecubs.xinco.core.server.persistence.XincoCoreDataType) it.next();
                 coreDataTypes.add(new XincoCoreDataTypeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreDataType) xcdt));
             }

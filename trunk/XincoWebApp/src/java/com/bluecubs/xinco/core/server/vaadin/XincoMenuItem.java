@@ -4,7 +4,7 @@ import com.vaadin.terminal.ThemeResource;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron<javier.ortiz.78@gmail.com>
  */
 public class XincoMenuItem {
 
@@ -30,8 +30,8 @@ public class XincoMenuItem {
      * @param dataOnly Only for data objects
      * @param nodeOnly Only for node objects
      */
-    protected XincoMenuItem(int index, String groupName, String name, 
-            ThemeResource icon, com.vaadin.ui.MenuBar.Command command, 
+    protected XincoMenuItem(int index, String groupName, String name,
+            ThemeResource icon, com.vaadin.ui.MenuBar.Command command,
             boolean loggedIn, boolean dataOnly, boolean nodeOnly,
             boolean selected) {
         this.index = index;

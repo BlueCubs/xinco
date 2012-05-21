@@ -1,43 +1,38 @@
 /**
- *Copyright 2011 blueCubs.com
+ * Copyright 2011 blueCubs.com
  *
- *Licensed under the Apache License, Version 2.0 (the "License");
- *you may not use this file except in compliance with the License.
- *You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *Unless required by applicable law or agreed to in writing, software
- *distributed under the License is distributed on an "AS IS" BASIS,
- *WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *See the License for the specific language governing permissions and
- *limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *
  *************************************************************
- * This project supports the blueCubs vision of giving back
- * to the community in exchange for free software!
- * More information on: http://www.bluecubs.org
- *************************************************************
+ * This project supports the blueCubs vision of giving back to the community in
+ * exchange for free software! More information on: http://www.bluecubs.org
+ * ************************************************************
  *
- * Name:            XincoIndexThread
+ * Name: XincoIndexThread
  *
- * Description:     handle document indexing in thread 
+ * Description: handle document indexing in thread
  *
- * Original Author: Alexander Manes
- * Date:            2004/12/18
+ * Original Author: Alexander Manes Date: 2004/12/18
  *
  * Modifications:
- * 
- * Who?             When?             What?
- * -                -                 -
+ *
+ * Who? When? What? - - -
  *
  *************************************************************
  */
 package com.bluecubs.xinco.core.server.index;
 
 import com.bluecubs.xinco.core.server.service.XincoCoreData;
-
-
 
 /**
  * This class starts document indexing in a separate thread

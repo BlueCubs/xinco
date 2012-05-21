@@ -21,7 +21,7 @@
  * 
  * Description: JPA Controller
  * 
- * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
  * 
  * ************************************************************
  */
@@ -44,7 +44,7 @@ import javax.persistence.criteria.Root;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public class XincoCoreUserHasXincoCoreGroupJpaController implements Serializable {
 
@@ -229,5 +229,4 @@ public class XincoCoreUserHasXincoCoreGroupJpaController implements Serializable
             em.close();
         }
     }
-    
 }

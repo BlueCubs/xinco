@@ -589,10 +589,10 @@
     </target>
 
 
-<!-- ****************************************************************** -->
-<!-- svnexport: performs export using properties from                            -->
-<!--            build.properties and uses SVNANT tasks                           -->
-<!-- ****************************************************************** -->
+    <!-- ****************************************************************** -->
+    <!-- svnexport: performs export using properties from                            -->
+    <!--            build.properties and uses SVNANT tasks                           -->
+    <!-- ****************************************************************** -->
     <target name="svnexport" description="exports individual project using svnant task" depends="does-svnant-exist">    
         <fail unless="tag.name"/>
         <fail unless="project.name"/>
@@ -610,10 +610,10 @@
         </svn>
     </target>
 
-<!-- ****************************************************************** -->
-<!-- svnbranch: creates a new branch using properties from                       -->
-<!--            build.properties and uses SVNANT tasks                           -->
-<!-- ****************************************************************** -->
+    <!-- ****************************************************************** -->
+    <!-- svnbranch: creates a new branch using properties from                       -->
+    <!--            build.properties and uses SVNANT tasks                           -->
+    <!-- ****************************************************************** -->
     <target name="svnbranch" description="creates a new branch for individual project using svnant task">    
         <fail unless="new.branch.name"/>
         <fail unless="project.name"/>

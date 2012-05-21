@@ -20,15 +20,15 @@ import java.util.*;
  * override these with your own identifiers, you can add the steps using the
  * overloaded {@link #addStep(WizardStep, String)} method. </p>
  *
- * <p> To react on the progress, cancellation or completion of this {@code XincoWizard}
- * you should add one or more listeners that implement the
+ * <p> To react on the progress, cancellation or completion of this
+ * {@code XincoWizard} you should add one or more listeners that implement the
  * {@link WizardProgressListener} interface. These listeners are added using the
  * {@link #addListener(WizardProgressListener)} method and removed with the
  * {@link #removeListener(WizardProgressListener)}. </p>
  *
  * Based on code from Teemu PÃ¶ntelin / Vaadin Ltd
  *
- * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron<javier.ortiz.78@gmail.com>
  */
 public final class XincoWizard extends CustomComponent {
 
@@ -90,7 +90,6 @@ public final class XincoWizard extends CustomComponent {
     private void initControlButtons() {
         nextButton = new Button(xerb.getString("general.next"));
         nextButton.addListener(new Button.ClickListener() {
-
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 next();
@@ -99,7 +98,6 @@ public final class XincoWizard extends CustomComponent {
 
         backButton = new Button(xerb.getString("general.back"));
         backButton.addListener(new Button.ClickListener() {
-
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 back();
@@ -108,7 +106,6 @@ public final class XincoWizard extends CustomComponent {
 
         finishButton = new Button(xerb.getString("general.finish"));
         finishButton.addListener(new Button.ClickListener() {
-
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 finish();
@@ -118,14 +115,13 @@ public final class XincoWizard extends CustomComponent {
 
         cancelButton = new Button(xerb.getString("general.cancel"));
         cancelButton.addListener(new Button.ClickListener() {
-
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 cancel();
             }
         });
     }
-    
+
     /**
      * Cancels this XincoWizard triggering a {@link WizardCancelledEvent}. This
      * method is called when user clicks the cancel button.
@@ -189,9 +185,8 @@ public final class XincoWizard extends CustomComponent {
      * Sets a {@link Component} that is displayed on top of the actual content.
      * Set to {@code null} to remove the header altogether.
      *
-     * @param newHeader
-     *            {@link Component} to be displayed on top of the actual content or {@code null}
-     * to remove the header.
+     * @param newHeader {@link Component} to be displayed on top of the actual
+     * content or {@code null} to remove the header.
      */
     public void setHeader(Component newHeader) {
         if (header != null) {

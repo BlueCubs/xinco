@@ -21,7 +21,7 @@
  * 
  * Description: XincoCoreGroup JPA Class
  * 
- * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
  * 
  * ************************************************************
  */
@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 @Entity
 @EntityListeners(AuditedEntityListener.class)
@@ -63,7 +63,7 @@ public class XincoCoreGroup extends XincoAuditedObject implements Serializable {
     valueColumnName = "last_id",
     pkColumnValue = "xinco_core_group",
     allocationSize = 1,
-    initialValue=1000)
+    initialValue = 1000)
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)

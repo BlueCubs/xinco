@@ -21,7 +21,7 @@
  * 
  * Description: XincoCoreNode JPA class
  * 
- * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
  * 
  * ************************************************************
  */
@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 @Entity
 @Table(name = "xinco_core_node")
@@ -61,7 +61,7 @@ public class XincoCoreNode extends XincoAuditedObject implements Serializable {
     pkColumnName = "tablename",
     valueColumnName = "last_id",
     pkColumnValue = "xinco_core_node",
-    initialValue=1000,
+    initialValue = 1000,
     allocationSize = 1)
     @Column(name = "id")
     private Integer id;

@@ -21,7 +21,7 @@
  * 
  * Description: Upload Manager
  * 
- * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Jan 26, 2012
+ * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Jan 26, 2012
  * 
  * ************************************************************
  */
@@ -40,7 +40,7 @@ import java.io.OutputStream;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 class UploadManager extends CustomComponent implements Upload.SucceededListener, Upload.FailedListener, Upload.Receiver {
 

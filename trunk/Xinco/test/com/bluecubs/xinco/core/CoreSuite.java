@@ -3,6 +3,7 @@
  * and open the template in the editor.
  */
 package com.bluecubs.xinco.core;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -33,5 +34,4 @@ public class CoreSuite {
     @After
     public void tearDown() throws Exception {
     }
-    
 }

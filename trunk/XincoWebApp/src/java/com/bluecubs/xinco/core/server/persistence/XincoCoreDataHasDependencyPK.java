@@ -21,7 +21,7 @@
  * 
  * Description: Table entity
  * 
- * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
  * 
  * ************************************************************
  */
@@ -35,10 +35,11 @@ import javax.validation.constraints.NotNull;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 @Embeddable
 public class XincoCoreDataHasDependencyPK implements Serializable {
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "xinco_core_data_parent_id")
@@ -116,5 +117,4 @@ public class XincoCoreDataHasDependencyPK implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreDataHasDependencyPK[ xincoCoreDataParentId=" + xincoCoreDataParentId + ", xincoCoreDataChildrenId=" + xincoCoreDataChildrenId + ", dependencyTypeId=" + dependencyTypeId + " ]";
     }
-    
 }

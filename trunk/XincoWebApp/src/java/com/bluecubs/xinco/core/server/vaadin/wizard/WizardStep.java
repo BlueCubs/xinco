@@ -4,7 +4,8 @@ import com.vaadin.ui.Component;
 
 /**
  * Based on code from Teemu PÃ¶ntelin / Vaadin Ltd
- * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
+ *
+ * @author Javier A. Ortiz Bultron<javier.ortiz.78@gmail.com>
  */
 public interface WizardStep {
 

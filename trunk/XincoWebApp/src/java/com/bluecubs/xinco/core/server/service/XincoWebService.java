@@ -686,8 +686,8 @@ public class XincoWebService {
             return new ArrayList<com.bluecubs.xinco.core.server.persistence.XincoCoreData>();
         }
     }
-    
-/**
+
+    /**
      * Web service operation
      */
     public Boolean isRendering(final XincoCoreData in0, final XincoCoreUser in1) {

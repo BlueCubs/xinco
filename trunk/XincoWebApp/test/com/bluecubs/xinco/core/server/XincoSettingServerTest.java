@@ -5,16 +5,17 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public class XincoSettingServerTest extends XincoTestCase {
 
     public XincoSettingServerTest(String testName) {
         super(testName);
     }
-    
+
     /**
      * Test of write2DB method, of class XincoSettingServer.
+     *
      * @throws Exception
      */
     public void testWrite2DB() throws Exception {
@@ -37,16 +38,18 @@ public class XincoSettingServerTest extends XincoTestCase {
 
     /**
      * Test of getSetting method, of class XincoSettingServer.
+     *
      * @throws Exception
      */
     public void testGetSetting() throws Exception {
         String desc = "password.aging";
-        assertTrue(XincoSettingServer.getSetting(new XincoCoreUserServer(1),desc) != null);
+        assertTrue(XincoSettingServer.getSetting(new XincoCoreUserServer(1), desc) != null);
     }
 
     /**
      * Test of getSettings method, of class XincoSettingServer.
-     * @throws Exception 
+     *
+     * @throws Exception
      */
     public void testGetSettings() throws Exception {
         assertTrue(XincoSettingServer.getSettings(new XincoCoreUserServer(1)).size() > 0);

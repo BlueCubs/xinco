@@ -21,7 +21,7 @@
  * 
  * Description: Generic file extractor
  * 
- * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Jan 3, 2012
+ * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Jan 3, 2012
  * 
  * ************************************************************
  */
@@ -40,7 +40,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public class XincoIndexGenericFile implements XincoIndexFileType {
 
