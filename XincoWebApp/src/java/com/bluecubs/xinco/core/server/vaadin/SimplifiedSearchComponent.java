@@ -21,7 +21,7 @@
  * 
  * Description: Simplified Search Component
  * 
- * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Jan 26, 2012
+ * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Jan 26, 2012
  * 
  * ************************************************************
  */
@@ -45,7 +45,7 @@ import org.vaadin.lucenecontainer.LuceneContainer;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public class SimplifiedSearchComponent extends CustomComponent {
 
@@ -66,7 +66,6 @@ public class SimplifiedSearchComponent extends CustomComponent {
         final TextField criteria = new TextField();
         panel.addComponent(criteria);
         search = new Button(Xinco.getInstance().getResource().getString("menu.search"), new com.vaadin.ui.Button.ClickListener() {
-
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 String query = criteria.getValue().toString();
@@ -94,14 +93,12 @@ public class SimplifiedSearchComponent extends CustomComponent {
             }
         });
         table.addListener(new ItemClickListener() {
-
             public void itemClick(ItemClickEvent event) {
                 goToSelection.setEnabled(table.getValue() != null);
             }
         });
         goToSelection.setEnabled(false);
         goToSelection.addListener(new ClickListener() {
-
             public void buttonClick(ClickEvent event) {
                 boolean haveAccess;
                 boolean loggedIn = Xinco.getInstance().getLoggedUser() != null;

@@ -9,7 +9,7 @@ import org.vaadin.risto.stepper.IntStepper;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón<javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron<javier.ortiz.78@gmail.com>
  */
 public class VersionSelector extends CustomComponent {
 
@@ -63,7 +63,6 @@ public class VersionSelector extends CustomComponent {
         postfix.setValue(version.getVersionPostfix() == null ? "" : version.getVersionPostfix());
         panel.addComponent(postfix);
         minor.addListener(new ValueChangeListener() {
-
             @Override
             public void valueChange(ValueChangeEvent event) {
                 if ((Boolean) minor.getValue()) {

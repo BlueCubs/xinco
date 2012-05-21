@@ -43,8 +43,8 @@ public class OPCodeTest {
     @Test
     public void testGetOPCode() {
         System.out.println("getOPCode");
-        assertTrue(OPCode.getOPCode(1)!=null);
-        assertTrue(OPCode.getOPCode(0)==null);
+        assertTrue(OPCode.getOPCode(1) != null);
+        assertTrue(OPCode.getOPCode(0) == null);
     }
 
     /**
@@ -53,7 +53,7 @@ public class OPCodeTest {
     @Test
     public void testGetName() {
         System.out.println("getName");
-        assertTrue(OPCode.getOPCode(1).getName()!=null);
+        assertTrue(OPCode.getOPCode(1).getName() != null);
     }
 
     /**
@@ -64,6 +64,6 @@ public class OPCodeTest {
         System.out.println("valueOf");
         OPCode expResult = OPCode.CHECKIN;
         OPCode result = OPCode.valueOf(OPCode.CHECKIN.name());
-        assertTrue(expResult==result);
+        assertTrue(expResult == result);
     }
 }

@@ -21,7 +21,7 @@
  * 
  * Description: XincoDependencyType JPA class
  * 
- * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
  * 
  * ************************************************************
  */
@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 @Entity
 @Table(name = "xinco_dependency_type", uniqueConstraints = {
@@ -49,6 +49,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "XincoDependencyType.findByDesignation", query = "SELECT x FROM XincoDependencyType x WHERE x.designation = :designation"),
     @NamedQuery(name = "XincoDependencyType.findByDescription", query = "SELECT x FROM XincoDependencyType x WHERE x.description = :description")})
 public class XincoDependencyType implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -59,7 +60,7 @@ public class XincoDependencyType implements Serializable {
     valueColumnName = "last_id",
     pkColumnValue = "xinco_dependency_type",
     allocationSize = 1,
-    initialValue=1000)
+    initialValue = 1000)
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
@@ -152,5 +153,4 @@ public class XincoDependencyType implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoDependencyType[ id=" + id + " ]";
     }
-    
 }

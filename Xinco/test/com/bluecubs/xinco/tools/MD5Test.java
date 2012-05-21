@@ -8,7 +8,7 @@ import org.junit.*;
  * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
  */
 public class MD5Test {
-    
+
     public MD5Test() {
     }
 
@@ -19,11 +19,11 @@ public class MD5Test {
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }

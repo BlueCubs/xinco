@@ -21,7 +21,7 @@
  * 
  * Description: AddAttributeDialog
  * 
- * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Jan 26, 2012
+ * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Jan 26, 2012
  * 
  * ************************************************************
  */
@@ -37,7 +37,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 class AddAttributeDialog extends CustomComponent {
 
@@ -99,7 +99,6 @@ class AddAttributeDialog extends CustomComponent {
             attrTable.addItem(new Object[]{type, value}, count++);
         }
         attrTable.setTableFieldFactory(new TableFieldFactory() {
-
             @Override
             public Field createField(com.vaadin.data.Container container, Object itemId, Object propertyId, com.vaadin.ui.Component uiContext) {
                 if (propertyId.equals(Xinco.getInstance().getResource().getString("general.attribute"))) {

@@ -21,7 +21,7 @@
  * 
  * Description: Custom field factory for the setting form
  * 
- * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Dec 19, 2011
+ * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Dec 19, 2011
  * 
  * ************************************************************
  */
@@ -32,7 +32,7 @@ import com.vaadin.ui.DefaultFieldFactory;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public class XincoSettingFieldFactory extends DefaultFieldFactory {
 

@@ -18,9 +18,9 @@
         <property name="widgetset" value="Xinco"/>
 
         <!-- Path to the widgetset directory. Required only for -->
-    	<!-- generated widget sets. Must be relative to         -->
-    	<!-- $src.dir, that is, under the first entry in        -->
-    	<!-- classpath.                                         -->
+        <!-- generated widget sets. Must be relative to         -->
+        <!-- $src.dir, that is, under the first entry in        -->
+        <!-- classpath.                                         -->
         <property name="widgetset-path" value="com/bluecubs/xinco/core/server/vaadin"/>
 
         <!-- Target where to compile the widget set -->

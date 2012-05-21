@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 @Entity
 @Table(name = "xinco_core_ace_t")
@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "XincoCoreAceT.findByExecutePermission", query = "SELECT x FROM XincoCoreAceT x WHERE x.executePermission = :executePermission"),
     @NamedQuery(name = "XincoCoreAceT.findByAdminPermission", query = "SELECT x FROM XincoCoreAceT x WHERE x.adminPermission = :adminPermission")})
 public class XincoCoreAceT implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -63,14 +64,14 @@ public class XincoCoreAceT implements Serializable {
     @NotNull
     @Column(name = "admin_permission")
     private boolean adminPermission;
-    
+
     public XincoCoreAceT() {
     }
-    
+
     public XincoCoreAceT(Integer recordId) {
         this.recordId = recordId;
     }
-    
+
     public XincoCoreAceT(Integer recordId, int id, boolean readPermission, boolean writePermission, boolean executePermission, boolean adminPermission) {
         this.recordId = recordId;
         this.id = id;
@@ -79,97 +80,97 @@ public class XincoCoreAceT implements Serializable {
         this.executePermission = executePermission;
         this.adminPermission = adminPermission;
     }
-    
+
     public Integer getRecordId() {
         return recordId;
     }
-    
+
     public void setRecordId(Integer recordId) {
         this.recordId = recordId;
     }
-    
+
     public int getId() {
         return id;
     }
-    
+
     public void setId(int id) {
         this.id = id;
     }
-    
+
     public Integer getXincoCoreUserId() {
         return xincoCoreUserId;
     }
-    
+
     public void setXincoCoreUserId(Integer xincoCoreUserId) {
         this.xincoCoreUserId = xincoCoreUserId;
     }
-    
+
     public Integer getXincoCoreGroupId() {
         return xincoCoreGroupId;
     }
-    
+
     public void setXincoCoreGroupId(Integer xincoCoreGroupId) {
         this.xincoCoreGroupId = xincoCoreGroupId;
     }
-    
+
     public Integer getXincoCoreNodeId() {
         return xincoCoreNodeId;
     }
-    
+
     public void setXincoCoreNodeId(Integer xincoCoreNodeId) {
         this.xincoCoreNodeId = xincoCoreNodeId;
     }
-    
+
     public Integer getXincoCoreDataId() {
         return xincoCoreDataId;
     }
-    
+
     public void setXincoCoreDataId(Integer xincoCoreDataId) {
         this.xincoCoreDataId = xincoCoreDataId;
     }
-    
+
     public boolean getReadPermission() {
         return readPermission;
     }
-    
+
     public void setReadPermission(boolean readPermission) {
         this.readPermission = readPermission;
     }
-    
+
     public boolean getWritePermission() {
         return writePermission;
     }
-    
+
     public void setWritePermission(boolean writePermission) {
         this.writePermission = writePermission;
     }
-    
+
     public boolean getExecutePermission() {
         return executePermission;
     }
-    
+
     public void setExecutePermission(boolean executePermission) {
         this.executePermission = executePermission;
     }
-    
+
     public boolean getAdminPermission() {
         return adminPermission;
     }
-    
+
     public void setAdminPermission(boolean adminPermission) {
         this.adminPermission = adminPermission;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (recordId != null ? recordId.hashCode() : 0);
         return hash;
     }
-    
+
     @Override
     public boolean equals(Object object) {
-        
+
         if (!(object instanceof XincoCoreAceT)) {
             return false;
         }
@@ -179,7 +180,7 @@ public class XincoCoreAceT implements Serializable {
         }
         return true;
     }
-    
+
     @Override
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreAceT[recordId=" + recordId + "]";

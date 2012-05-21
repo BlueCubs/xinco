@@ -34,7 +34,7 @@ public class XincoFileIconManagerTest {
      * Test of getIcon method, of class XincoFileIconManager.
      */
     @Test
-    public void testGetIcon() throws IOException{
+    public void testGetIcon() throws IOException {
 //        try {
 //            System.out.println("getIcon");
 //            String extension = ".txt";

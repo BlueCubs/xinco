@@ -27,7 +27,7 @@ import javax.xml.datatype.DatatypeFactory;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public class Tool {
 
@@ -141,10 +141,11 @@ public class Tool {
      * Validate the form of an email address.
      *
      * <P>Return <tt>true</tt> only if <ul> <li> <tt>aEmailAddress</tt> can
-     * successfully construct an
-     * {@link javax.mail.internet.InternetAddress} <li> when parsed with "@" as
-     * delimiter, <tt>aEmailAddress</tt> contains two tokens which satisfy {@link hirondelle.web4j.util.Util#textHasContent}.
-     * </ul>
+     * successfully construct an {@link javax.mail.internet.InternetAddress}
+     * <li> when parsed with "
+     *
+     * @" as delimiter, <tt>aEmailAddress</tt> contains two tokens which satisfy
+     * {@link hirondelle.web4j.util.Util#textHasContent}. </ul>
      *
      * <P> The second condition arises since local email addresses, simply of
      * the form "<tt>albert</tt>", for example, are valid for

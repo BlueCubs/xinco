@@ -9,7 +9,7 @@ import junit.framework.TestSuite;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public class XincoCoreACEServerTest extends XincoTestCase {
 
@@ -43,7 +43,7 @@ public class XincoCoreACEServerTest extends XincoTestCase {
         try {
             XincoCoreUserServer user = new XincoCoreUserServer(1);
             XincoCoreNodeServer node = new XincoCoreNodeServer(2);
-            assertTrue(XincoCoreACEServer.checkAccess(user, (ArrayList)node.getXincoCoreAcl()).isReadPermission());
+            assertTrue(XincoCoreACEServer.checkAccess(user, (ArrayList) node.getXincoCoreAcl()).isReadPermission());
         } catch (XincoException ex) {
             Logger.getLogger(XincoCoreACEServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
             fail();

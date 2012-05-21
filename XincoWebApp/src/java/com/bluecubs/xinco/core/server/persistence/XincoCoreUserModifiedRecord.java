@@ -21,7 +21,7 @@
  * 
  * Description: Audot Trail Table
  * 
- * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
  * 
  * ************************************************************
  */
@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 @Entity
 @Table(name = "xinco_core_user_modified_record")
@@ -48,6 +48,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "XincoCoreUserModifiedRecord.findByModTime", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.modTime = :modTime"),
     @NamedQuery(name = "XincoCoreUserModifiedRecord.findByModReason", query = "SELECT x FROM XincoCoreUserModifiedRecord x WHERE x.modReason = :modReason")})
 public class XincoCoreUserModifiedRecord implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected XincoCoreUserModifiedRecordPK xincoCoreUserModifiedRecordPK;
@@ -137,5 +138,4 @@ public class XincoCoreUserModifiedRecord implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecord[ xincoCoreUserModifiedRecordPK=" + xincoCoreUserModifiedRecordPK + " ]";
     }
-    
 }

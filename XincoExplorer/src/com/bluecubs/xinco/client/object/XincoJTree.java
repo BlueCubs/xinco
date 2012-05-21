@@ -56,7 +56,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  *
- * @author Javier A. ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public final class XincoJTree extends JTree {
 

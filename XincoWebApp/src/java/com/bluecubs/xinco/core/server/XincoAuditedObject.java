@@ -4,14 +4,14 @@ import java.sql.Timestamp;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public class XincoAuditedObject implements AuditedObject {
 
     private boolean auditable = true;
     private String reason;
     //Default to Admin
-    private int modifierId=1;
+    private int modifierId = 1;
     private Timestamp modDate;
 
     @Override
@@ -26,7 +26,7 @@ public class XincoAuditedObject implements AuditedObject {
 
     @Override
     public void setModifierId(int id) {
-        this.modifierId=id;
+        this.modifierId = id;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class XincoAuditedObject implements AuditedObject {
 
     @Override
     public void setModificationTime(Timestamp d) {
-        this.modDate=d;
+        this.modDate = d;
     }
 
     /**

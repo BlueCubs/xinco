@@ -8,7 +8,7 @@ import junit.framework.TestSuite;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public class XincoCoreLanguageServerTest extends XincoTestCase {
 
@@ -20,7 +20,7 @@ public class XincoCoreLanguageServerTest extends XincoTestCase {
         TestSuite suite = new TestSuite(XincoCoreLanguageServerTest.class);
         return suite;
     }
-    
+
     /**
      * Test of write2DB method, of class XincoCoreLanguageServer.
      */

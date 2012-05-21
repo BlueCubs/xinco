@@ -13,7 +13,7 @@ import org.vaadin.lucenecontainer.LuceneContainer;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public class LuceneSearchWindow extends Window {
 
@@ -35,7 +35,6 @@ public class LuceneSearchWindow extends Window {
 
     public LuceneSearchWindow() {
         allLanguages = new CheckBox(Xinco.getInstance().getResource().getString("window.search.alllanguages"), new com.vaadin.ui.Button.ClickListener() {
-
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 lang.setEnabled(!(Boolean) allLanguages.getValue());
@@ -45,7 +44,6 @@ public class LuceneSearchWindow extends Window {
         table.setWidth(50, Sizeable.UNITS_PERCENTAGE);
         setContent(new VerticalLayout());
         com.vaadin.ui.Button addToQuery = new com.vaadin.ui.Button(Xinco.getInstance().getResource().getString("window.search.addtoquery"), new com.vaadin.ui.Button.ClickListener() {
-
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 String field;
@@ -61,14 +59,12 @@ public class LuceneSearchWindow extends Window {
             }
         });
         com.vaadin.ui.Button reset = new com.vaadin.ui.Button(Xinco.getInstance().getResource().getString("general.reset"), new com.vaadin.ui.Button.ClickListener() {
-
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 queryField.setValue("");
             }
         });
         com.vaadin.ui.Button searchButton = new com.vaadin.ui.Button(Xinco.getInstance().getResource().getString("window.search"), new com.vaadin.ui.Button.ClickListener() {
-
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 String query = queryField.getValue().toString();
@@ -94,7 +90,6 @@ public class LuceneSearchWindow extends Window {
         table.setImmediate(true);
         table.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(Xinco.getInstance().getResource().getString("general.cancel"), new com.vaadin.ui.Button.ClickListener() {
-
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 getApplication().getMainWindow().removeWindow(LuceneSearchWindow.this);
@@ -102,7 +97,6 @@ public class LuceneSearchWindow extends Window {
         });
         final com.vaadin.ui.Button goToSelection = getToSelectionButton();
         table.addListener(new ValueChangeListener() {
-
             @Override
             public void valueChange(ValueChangeEvent event) {
                 goToSelection.setEnabled(table.getValue() != null);
@@ -164,7 +158,6 @@ public class LuceneSearchWindow extends Window {
 
     protected final com.vaadin.ui.Button getToSelectionButton() {
         return new com.vaadin.ui.Button(Xinco.getInstance().getResource().getString("window.search.gotoselection"), new com.vaadin.ui.Button.ClickListener() {
-
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 boolean haveAccess;

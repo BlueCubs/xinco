@@ -21,7 +21,7 @@
  * 
  * Description: Table entity
  * 
- * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
+ * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Nov 29, 2011
  * 
  * ************************************************************
  */
@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 @Entity
 @Table(name = "xinco_core_ace")
@@ -50,6 +50,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "XincoCoreAce.findByExecutePermission", query = "SELECT x FROM XincoCoreAce x WHERE x.executePermission = :executePermission"),
     @NamedQuery(name = "XincoCoreAce.findByAdminPermission", query = "SELECT x FROM XincoCoreAce x WHERE x.adminPermission = :adminPermission")})
 public class XincoCoreAce extends XincoAuditedObject implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -60,7 +61,7 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
     valueColumnName = "last_id",
     pkColumnValue = "xinco_core_ace",
     allocationSize = 1,
-    initialValue=1000)
+    initialValue = 1000)
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
@@ -202,5 +203,4 @@ public class XincoCoreAce extends XincoAuditedObject implements Serializable {
     public String toString() {
         return "com.bluecubs.xinco.core.server.persistence.XincoCoreAce[ id=" + id + " ]";
     }
-    
 }

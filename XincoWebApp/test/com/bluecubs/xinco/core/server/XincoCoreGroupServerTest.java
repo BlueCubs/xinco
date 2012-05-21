@@ -8,10 +8,10 @@ import junit.framework.TestSuite;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public class XincoCoreGroupServerTest extends XincoTestCase {
-    
+
     public XincoCoreGroupServerTest(String testName) {
         super(testName);
     }
@@ -20,14 +20,14 @@ public class XincoCoreGroupServerTest extends XincoTestCase {
         TestSuite suite = new TestSuite(XincoCoreGroupServerTest.class);
         return suite;
     }
-    
+
     /**
      * Test of write2DB method, of class XincoCoreGroupServer.
      */
-    public void testWrite2DB(){
+    public void testWrite2DB() {
         try {
-            XincoCoreGroupServer instance = new XincoCoreGroupServer(0,"Test",1);
-            assertTrue(instance.write2DB()>0);
+            XincoCoreGroupServer instance = new XincoCoreGroupServer(0, "Test", 1);
+            assertTrue(instance.write2DB() > 0);
             XincoCoreGroupServer.deleteFromDB(instance);
         } catch (XincoException ex) {
             Logger.getLogger(XincoCoreGroupServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
@@ -39,6 +39,6 @@ public class XincoCoreGroupServerTest extends XincoTestCase {
      * Test of getXincoCoreGroups method, of class XincoCoreGroupServer.
      */
     public void testGetXincoCoreGroups() {
-        assertTrue(XincoCoreGroupServer.getXincoCoreGroups().size()>0);
+        assertTrue(XincoCoreGroupServer.getXincoCoreGroups().size() > 0);
     }
 }

@@ -11,7 +11,8 @@ public class AbstractWizardEvent extends Component.Event {
     }
 
     /**
-     * Returns the {@link XincoWizard} component that was the source of this event.
+     * Returns the {@link XincoWizard} component that was the source of this
+     * event.
      *
      * @return the source {@link XincoWizard} of this event.
      */

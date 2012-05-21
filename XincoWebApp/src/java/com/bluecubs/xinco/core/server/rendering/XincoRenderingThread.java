@@ -21,7 +21,7 @@
  * 
  * Description: Thread in charge of generating pdf rendering of files when uploaded (if needed)
  * 
- * Original Author: Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com> Date: Dec 21, 2011
+ * Original Author: Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com> Date: Dec 21, 2011
  * 
  * ************************************************************
  */
@@ -48,7 +48,7 @@ import org.artofsolving.jodconverter.office.OfficeManager;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public class XincoRenderingThread extends Thread {
 
@@ -69,7 +69,7 @@ public class XincoRenderingThread extends Thread {
     @Override
     public void run() {
         port = XincoSettingServer.getSetting(new XincoCoreUserServer(1),
-            "setting.OOPort").getIntValue();
+                "setting.OOPort").getIntValue();
         if (port >= 0 && !original.getXincoAddAttributes().isEmpty()
                 && !original.getXincoAddAttributes().get(0).getAttribVarchar().toLowerCase().endsWith(".pdf")) {
             try {
@@ -82,7 +82,7 @@ public class XincoRenderingThread extends Thread {
                         original.getXincoCoreLanguage().getId(),
                         original.getXincoCoreDataType().getId(),
                         original.getDesignation(), original.getStatusNumber());
-                rendering.setDesignation(original.getDesignation().substring(0, 
+                rendering.setDesignation(original.getDesignation().substring(0,
                         original.getDesignation().lastIndexOf(".")) + ".pdf");
                 rendering.setStatusNumber(original.getStatusNumber());
                 rendering.setXincoCoreDataType(original.getXincoCoreDataType());

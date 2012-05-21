@@ -51,9 +51,9 @@
     </target>
 
     <target name="-post-test-run">
-      <!-- You can disable the html portion if you are using the hudson plugin and rely on the xml -->
+        <!-- You can disable the html portion if you are using the hudson plugin and rely on the xml -->
         <cobertura-report format="html" srcdir="${src.dir}" destdir="${build.report.cobertura.dir}"/>
-      <!-- Used by the hudson plug-in -->
+        <!-- Used by the hudson plug-in -->
         <cobertura-report format="xml" srcdir="${src.dir}" destdir="${build.report.cobertura.dir}"/>
         <delete file="cobertura.ser" />
     </target>

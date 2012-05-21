@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Replaces the MD5 encryption available in MySQL and makes it universal for all
  * databases.
+ *
  * @author Javier A. Ortiz <javier.ortiz.78@gmail.com>
  */
 public class MD5 {

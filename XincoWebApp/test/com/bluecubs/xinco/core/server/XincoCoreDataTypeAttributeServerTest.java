@@ -12,7 +12,7 @@ import junit.framework.TestSuite;
 
 /**
  *
- * @author Javier A. Ortiz Bultrón <javier.ortiz.78@gmail.com>
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
 public class XincoCoreDataTypeAttributeServerTest extends XincoTestCase {
 
@@ -48,7 +48,8 @@ public class XincoCoreDataTypeAttributeServerTest extends XincoTestCase {
     }
 
     /**
-     * Test of getXincoCoreDataTypeAttributes method, of class XincoCoreDataTypeAttributeServer.
+     * Test of getXincoCoreDataTypeAttributes method, of class
+     * XincoCoreDataTypeAttributeServer.
      */
     public void testGetXincoCoreDataTypeAttributes() {
         assertTrue(XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(1).size() > 0);
