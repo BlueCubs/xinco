@@ -1375,7 +1375,6 @@ public final class XincoExplorer extends JFrame implements ActionListener, Mouse
                     }
                 }
             }
-            //TODO: Convert to forms
             if (JDialogLocale != null) {
                 SwingUtilities.updateComponentTreeUI(JDialogLocale);
             }
