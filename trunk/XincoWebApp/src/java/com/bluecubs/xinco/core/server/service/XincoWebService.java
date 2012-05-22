@@ -8,6 +8,7 @@ import com.bluecubs.xinco.core.server.index.XincoIndexer;
 import com.bluecubs.xinco.core.server.rendering.XincoRenderingThread;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.CRC32;
@@ -290,7 +291,7 @@ public class XincoWebService {
                     Logger.getLogger(XincoWebService.class.getName()).log(Level.SEVERE, null, xite);
                 }
                 //Create PDF rendering of the file
-                if (!data.getAttribute(1).getAttribVarchar().toLowerCase().endsWith(".pdf")) {
+                if (!data.getAttribute(1).getAttribVarchar().toLowerCase(Locale.getDefault()).endsWith(".pdf")) {
                     XincoRenderingThread xrt = new XincoRenderingThread(data, in2);
                     xrt.start();
                 }
@@ -313,10 +314,10 @@ public class XincoWebService {
             if (data != null) {
                 data.deleteFromDB();
             }
-            if (rendition == null && rendition.exists()) {
+            if (rendition != null && rendition.exists()) {
                 rendition.delete();
             }
-            if (xincoFile == null && xincoFile.exists()) {
+            if (xincoFile != null && xincoFile.exists()) {
                 xincoFile.delete();
             }
             return 0;
