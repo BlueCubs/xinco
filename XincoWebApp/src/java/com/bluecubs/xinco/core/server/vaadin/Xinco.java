@@ -126,7 +126,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     private com.vaadin.ui.MenuBar menuBar = new com.vaadin.ui.MenuBar();
     private Item root;
     private XincoWebService service;
-    private Window wizardWindow = new Window();
+    private com.vaadin.ui.Window wizardWindow = new com.vaadin.ui.Window();
     private DataDialog dataDialog;
     private DataTypeDialog dataTypeDialog;
     private AddAttributeDialog attrDialog;
@@ -194,7 +194,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             XincoDBManager.updateDBState();
             //Switch to Xinco theme
             setTheme("xinco");
-            setMainWindow(new Window("Xinco"));
+            setMainWindow(new com.vaadin.ui.Window("Xinco"));
             //Build the window
             getMainWindow().removeAllComponents();
             if (xat == null) {
@@ -1235,7 +1235,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     public void windowResized(ResizeEvent e) {
-        for (Window w : getMainWindow().getChildWindows()) {
+        for (com.vaadin.ui.Window w : getMainWindow().getChildWindows()) {
             //Center sub window in new screen size
             w.center();
         }
@@ -1244,7 +1244,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
     private void showRenderingDialog() throws XincoException {
         if (renderingSupportEnabled) {
-            final Window renderWindow = new Window();
+            final com.vaadin.ui.Window renderWindow = new com.vaadin.ui.Window();
             final Form form = new Form();
             form.setCaption(getInstance().getResource().getString("general.data.type.rendering"));
             final ArrayList<com.bluecubs.xinco.core.server.persistence.XincoCoreData> renderings =
@@ -1301,7 +1301,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         XincoWizard wizard = new XincoWizard(getLocale());
                         wizard.addStep(fileStep);
                         getMainWindow().removeWindow(renderWindow);
-                        final Window addRenderingWindow = new Window();
+                        final com.vaadin.ui.Window addRenderingWindow = new com.vaadin.ui.Window();
                         addRenderingWindow.addComponent(wizard);
                         //Add the DataDialog manager to handle the adding data part
                         ddManager = new DataDialogManager(true);
@@ -1395,7 +1395,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     private void showACLDialog() {
-        final Window aclWindow = new Window();
+        final com.vaadin.ui.Window aclWindow = new com.vaadin.ui.Window();
         final Form form = new Form();
         form.setCaption(getInstance().getResource().getString("window.acl"));
         final HashMap<String, XincoCoreACEServer> aceList = new HashMap<String, XincoCoreACEServer>();
@@ -1734,7 +1734,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     private void showLoginDialog() {
-        final Window loginWindow = new Window();
+        final com.vaadin.ui.Window loginWindow = new com.vaadin.ui.Window();
         final Form form = new Form();
         form.setCaption(getInstance().getResource().getString("window.connection") + ":");
         com.vaadin.ui.TextField username =
@@ -1883,7 +1883,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     private void showEditSingleGroupWindow(final Integer groupId) {
-        final Window group = new Window();
+        final com.vaadin.ui.Window group = new com.vaadin.ui.Window();
         final Form form = new Form();
         final XincoCoreGroupServer groupS = new XincoCoreGroupServer(groupId);
         refreshGroupContentsTables(form, groupId);
@@ -1931,7 +1931,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     private void showGroupAdminWindow() {
-        final Window group = new Window();
+        final com.vaadin.ui.Window group = new com.vaadin.ui.Window();
         final Form form = new Form();
         final Table table = new Table();
         table.addStyleName("striped");
@@ -1990,7 +1990,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     private void showDataTypeAttrAdminWindow(final int dataTypeId) {
-        final Window attr = new Window();
+        final com.vaadin.ui.Window attr = new com.vaadin.ui.Window();
         final Form form = new Form();
         final Table table = new Table();
         table.addStyleName("striped");
@@ -2086,7 +2086,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     private void showChangePasswordDialog() {
-        final Window pass = new Window();
+        final com.vaadin.ui.Window pass = new com.vaadin.ui.Window();
         final Form form = new Form();
         form.getLayout().addComponent(new com.vaadin.ui.Label(getInstance().getResource().getString("password.aged")));
         form.addField("password", new PasswordField(getInstance().getResource().getString("general.password")));
@@ -2162,7 +2162,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     private void showLanguageSelection() {
-        final Window lang = new Window();
+        final com.vaadin.ui.Window lang = new com.vaadin.ui.Window();
         lang.setReadOnly(true);
         final Form form = new Form();
         Embedded logo = new Embedded("", new ThemeResource("img/xinco_logo.gif"));
@@ -2218,7 +2218,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     private void showSettingAdminWindow() {
-        Window setting = new Window();
+        com.vaadin.ui.Window setting = new com.vaadin.ui.Window();
         setting.setContent(new SettingAdminWindow());
         setting.setWidth(100, Sizeable.UNITS_PERCENTAGE);
         setting.center();
@@ -2227,7 +2227,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     private void showAuditWindow() throws XincoException {
-        final Window audit = new Window();
+        final com.vaadin.ui.Window audit = new com.vaadin.ui.Window();
         final Table table = new Table();
         table.addStyleName("striped");
         table.addContainerProperty(getInstance().getResource().getString("general.table"),
@@ -2343,7 +2343,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
     private void showAuditDetails(final EntityType entity) {
         try {
-            final Window audit = new Window();
+            final com.vaadin.ui.Window audit = new com.vaadin.ui.Window();
             final com.vaadin.ui.TextField tf = new com.vaadin.ui.TextField(
                     entity.getId(entity.getIdType().getJavaType()).getName());
             tf.focus();
@@ -2383,7 +2383,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     private void showAttrAdminWindow() {
-        final Window attr = new Window();
+        final com.vaadin.ui.Window attr = new com.vaadin.ui.Window();
         final Form form = new Form();
         final Table table = new Table();
         table.addStyleName("striped");
@@ -2415,7 +2415,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     private void showLangAdminWindow() {
-        final Window lang = new Window();
+        final com.vaadin.ui.Window lang = new com.vaadin.ui.Window();
         final Form form = new Form();
         final Table table = new Table();
         table.addStyleName("striped");
@@ -2532,7 +2532,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     private void showUserAdminWindow(final boolean userAdmin) {
-        final Window user = new Window();
+        final com.vaadin.ui.Window user = new com.vaadin.ui.Window();
         final Form form = new Form();
         final Table table = new Table();
         if (userAdmin) {
@@ -2771,7 +2771,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 try {
                     java.util.List result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreData x ORDER BY x.designation");
-                    final Window progress = new Window();
+                    final com.vaadin.ui.Window progress = new com.vaadin.ui.Window();
                     progress.addComponent(indicator);
                     // Set polling frequency to 0.5 seconds.
                     indicator.setPollingInterval(500);
@@ -3215,7 +3215,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     @Override
                     public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
                         //Show the Data Structure Dialog window
-                        final Window w = new Window("Mass import");
+                        final com.vaadin.ui.Window w = new com.vaadin.ui.Window("Mass import");
                         MultiFileUpload fileUpload = new MultiFileUpload() {
                             @Override
                             protected void handleFile(File file, String fileName,
@@ -3550,7 +3550,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final Form form = new Form();
         final VersionSelector versionSelector = new VersionSelector();
         buildLogDialog(data, form, versionSelector);
-        final Window comment = new Window();
+        final com.vaadin.ui.Window comment = new com.vaadin.ui.Window();
         //Used for validation purposes
         final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
                 getInstance().getResource().getString("general.continue"), form, "commit");
@@ -3621,7 +3621,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
     private void showDownloadRevDialog() {
         try {
-            final Window revWindow = new Window(getInstance().getResource().getString("window.revision"));
+            final com.vaadin.ui.Window revWindow = new com.vaadin.ui.Window(getInstance().getResource().getString("window.revision"));
             final Form form = new Form();
             form.getLayout().addComponent(new com.vaadin.ui.Label(getInstance().getResource().getString("window.revision")));
             Select rev = new Select();
@@ -4179,7 +4179,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     private void showDataFolderDialog(final boolean newFolder) {
         try {
             final XincoCoreNode node = new XincoCoreNodeServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-            final Window dataFolderDialog = new Window();
+            final com.vaadin.ui.Window dataFolderDialog = new com.vaadin.ui.Window();
             final Form form = new Form();
             form.setCaption(getInstance().getResource().getString("window.folder"));
             //ID
@@ -4287,7 +4287,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         if (getService().setXincoCoreNode(tempNode, loggedUser) == null) {
                             getMainWindow().showNotification(getInstance().getResource().getString("error.accessdenied"),
                                     getInstance().getResource().getString("error.folder.sufficientrights"),
-                                    Window.Notification.TYPE_ERROR_MESSAGE);
+                                    com.vaadin.ui.Window.Notification.TYPE_ERROR_MESSAGE);
                         }
                         getMainWindow().removeWindow(dataFolderDialog);
                         refresh();
@@ -4379,7 +4379,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 } else if (!tempAce.isReadPermission()) {
                     getMainWindow().showNotification(getInstance().getResource().getString("error.accessdenied"),
                             getInstance().getResource().getString("error.folder.sufficientrights"),
-                            Window.Notification.TYPE_WARNING_MESSAGE);
+                            com.vaadin.ui.Window.Notification.TYPE_WARNING_MESSAGE);
                 }
                 // update details table
                 xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
