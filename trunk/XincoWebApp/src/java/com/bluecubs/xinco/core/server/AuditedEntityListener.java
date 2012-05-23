@@ -17,7 +17,6 @@ import javax.persistence.PreUpdate;
  */
 public class AuditedEntityListener {
 
-    private int record_ID;
     private XincoCoreUser modifier;
 
     @PrePersist
@@ -79,6 +78,7 @@ public class AuditedEntityListener {
                     //Get an id from database
                     boolean used = true;
                     HashMap parameters = new HashMap();
+                    int record_ID = -1;
                     while (used) {
                         record_ID = XincoIdServer.getNextId("xinco_core_user_modified_record");
                         parameters.clear();
