@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 blueCubs.com
+ * Copyright 2012 blueCubs.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -48,6 +48,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.persistence.*;
+import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.EntityType;
 
 public class XincoDBManager {
@@ -116,30 +117,26 @@ public class XincoDBManager {
         config.loadSettings();
     }
 
-    private static void generateIDs() {
+    private static void processFields(Field[] fields) {
         try {
-            Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO,
-                    "Creating ids to work around eclipse issue "
-                    + "(https://bugs.eclipse.org/bugs/show_bug.cgi?id=366852)...");
             XincoIdServer temp;
-            for (EntityType et : getEntityManager().getMetamodel().getEntities()) {
-                for (Field field : et.getBindableJavaType().getDeclaredFields()) {
-                    if (field.isAnnotationPresent(TableGenerator.class)) {
-                        field.setAccessible(true);
-                        TableGenerator annotation = field.getAnnotation(TableGenerator.class);
-                        field.setAccessible(false);
-                        HashMap parameters = new HashMap();
-                        String tableName = annotation.pkColumnValue();
-                        parameters.put("tablename", tableName);
-                        if (XincoDBManager.namedQuery("XincoId.findByTablename", parameters).isEmpty()) {
-                            temp = new XincoIdServer(tableName, annotation.initialValue() - 1);
-                            temp.write2DB();
-                        }
+            for (Field field : fields) {
+                if (field.isAnnotationPresent(TableGenerator.class)) {
+                    field.setAccessible(true);
+                    TableGenerator annotation = field.getAnnotation(TableGenerator.class);
+                    field.setAccessible(false);
+                    HashMap parameters = new HashMap();
+                    String tableName = annotation.pkColumnValue();
+                    parameters.put("tablename", tableName);
+                    if (XincoDBManager.namedQuery("XincoId.findByTablename", parameters).isEmpty()) {
+                        temp = new XincoIdServer(tableName, annotation.initialValue() - 1);
+                        temp.write2DB();
+                    } else {
+                        Logger.getLogger(XincoDBManager.class.getName()).info("Already defined!");
                     }
                 }
             }
-            Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO, "Done!");
-        } catch (XincoException ex1) {
+        } catch (Exception ex1) {
             Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex1);
         } finally {
             try {
@@ -153,6 +150,22 @@ public class XincoDBManager {
                 Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex1);
             }
         }
+    }
+
+    private static void generateIDs() {
+        Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO,
+                "Creating ids to work around eclipse issue "
+                + "(https://bugs.eclipse.org/bugs/show_bug.cgi?id=366852)...");
+        Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO, "Embeddables:");
+        for (Iterator<EmbeddableType<?>> it = getEntityManager().getMetamodel().getEmbeddables().iterator(); it.hasNext();) {
+            EmbeddableType et = it.next();
+            processFields(et.getJavaType().getDeclaredFields());
+        }
+        for (Iterator<EntityType<?>> it = getEntityManager().getMetamodel().getEntities().iterator(); it.hasNext();) {
+            EntityType et = it.next();
+            processFields(et.getBindableJavaType().getDeclaredFields());
+        }
+        Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO, "Done!");
     }
 
     public static XincoDBManager get() throws Exception {
@@ -382,16 +395,6 @@ public class XincoDBManager {
         return statements;
     }
 
-    private static void setDBSystemDir() {
-        // Decide on the db system directory: <userhome>/.xinco/
-        String userHomeDir = System.getProperty("user.home", ".");
-        String systemDir = userHomeDir
-                + System.getProperty("file.separator", "/") + ".xinco";
-
-        // Set the db system directory.
-        System.setProperty("derby.system.home", systemDir);
-    }
-
     /**
      * @return the Entity Manager Factory
      * @throws XincoException
@@ -399,7 +402,6 @@ public class XincoDBManager {
     public static EntityManagerFactory getEntityManagerFactory() throws XincoException {
         if (emf == null) {
             try {
-                setDBSystemDir();
                 //Use the context defined Database connection
                 (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
                 try {
