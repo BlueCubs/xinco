@@ -93,18 +93,23 @@ public class XincoDBManager {
     }
 
     public static void waitForDB() {
-        while (XincoDBManager.getState() != DBState.VALID
-                && XincoDBManager.getState() != DBState.UPDATED
-                && XincoDBManager.getState() != DBState.ERROR) {
-            Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO,
-                    "Waiting for DB initialization. Current state: {0}",
-                    (XincoDBManager.getState() != null ? XincoDBManager.getState().name() : null));
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+        new Thread(new Runnable() {
+            public void run() {
+                while (XincoDBManager.getState() != DBState.VALID
+                        && XincoDBManager.getState() != DBState.UPDATED
+                        && XincoDBManager.getState() != DBState.ERROR) {
+                    Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO,
+                            "Waiting for DB initialization. Current state: {0}",
+                            (XincoDBManager.getState() != null ? XincoDBManager.getState().name() : null));
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                Logger.getLogger(XincoDBManager.class.getName()).log(Level.INFO, "DB ready, resuming...");
             }
-        }
+        }, "Waiting for DB").start();
     }
 
     public static void reload(boolean close) throws XincoException {
@@ -323,7 +328,7 @@ public class XincoDBManager {
                         }
                     }
                 }
-            }).start();
+            }, DBState.UPDATING.getMessage()).start();
         }
     }
 
