@@ -48,12 +48,6 @@ public class XincoFileIconManager {
 
     private File file = null;
 
-    /**
-     * Creates a new instance of XincoFileIconManager
-     */
-    public XincoFileIconManager() {
-    }
-
     public Icon getIcon(final String extension) {
         if (extension == null) {
             return null;

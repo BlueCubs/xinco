@@ -10,7 +10,7 @@ import java.security.NoSuchAlgorithmException;
  *
  * @author Javier A. Ortiz <javier.ortiz.78@gmail.com>
  */
-public class MD5 {
+public final class MD5 {
 
     private static String md5val = "";
     private static MessageDigest algorithm = null;
