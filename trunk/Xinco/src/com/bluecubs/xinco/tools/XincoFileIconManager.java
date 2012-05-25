@@ -34,6 +34,8 @@
 package com.bluecubs.xinco.tools;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
@@ -52,24 +54,24 @@ public class XincoFileIconManager {
     public XincoFileIconManager() {
     }
 
-    public Icon getIcon(String extension) {
+    public Icon getIcon(final String extension) {
         if (extension == null) {
             return null;
         }
+        String ext = extension;
         if (extension.indexOf('.') > -1) {
-            extension = extension.substring(extension.lastIndexOf('.') + 1, extension.length());
+            ext = extension.substring(extension.lastIndexOf('.') + 1, extension.length());
         }
-        if (extension.length() < 3) {
+        if (ext.length() < 3) {
             return null;
         }
         Icon icon;
         try {
-            if (extension.length() < 3) {
+            if (FileSystemView.getFileSystemView() == null) {
                 return null;
-            }
-            if (FileSystemView.getFileSystemView() != null) {
+            } else {
                 //Create a temporary file with the specified extension
-                file = File.createTempFile("icon", "." + extension);
+                file = File.createTempFile("icon", "." + ext);
                 if (System.getProperty("os.name").toLowerCase().contains("mac")) {
                     //For some reason the method above doesn't work on Mac. 
                     //Use alternate method.
@@ -77,13 +79,11 @@ public class XincoFileIconManager {
                 } else {
                     icon = FileSystemView.getFileSystemView().getSystemIcon(file);
                 }
-
                 //Delete the temporary file
                 file.delete();
-            } else {
-                return null;
             }
         } catch (Exception ioe) {
+            Logger.getLogger(XincoFileIconManager.class.getSimpleName()).log(Level.SEVERE, null, ioe);
             return null;
         }
         return icon;

@@ -15,11 +15,14 @@ public class MD5 {
     private static String md5val = "";
     private static MessageDigest algorithm = null;
 
+    private MD5() {
+    }
+
     public static String encrypt(String text) throws XincoException {
         try {
             algorithm = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException nsae) {
-            throw new XincoException("Cannot find digest algorithm");
+            throw new XincoException(nsae);
         }
         byte[] defaultBytes = text.getBytes();
         algorithm.reset();
