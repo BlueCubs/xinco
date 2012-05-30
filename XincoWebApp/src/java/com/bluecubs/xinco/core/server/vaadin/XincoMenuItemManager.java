@@ -147,7 +147,6 @@ public class XincoMenuItemManager {
                 add = false;
             }
         }
-
         return add;
     }
 
