@@ -31,19 +31,11 @@
         <filter-name>SetCharacterEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    <listener>
-        <listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
-    </listener>
     <servlet>
         <display-name>XincoCronServlet</display-name>
         <servlet-name>XincoCronServlet</servlet-name>
         <servlet-class>com.bluecubs.xinco.core.server.XincoCronServlet</servlet-class>
         <load-on-startup>10</load-on-startup>
-    </servlet>
-    <servlet>
-        <servlet-name>Xinco</servlet-name>
-        <servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>VaadinApplication</servlet-name>
@@ -57,10 +49,6 @@
             <param-value>Xinco</param-value>
         </init-param>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>Xinco</servlet-name>
-        <url-pattern>/Xinco</url-pattern>
-    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>XincoCronServlet</servlet-name>
         <url-pattern>/XincoCron</url-pattern>
