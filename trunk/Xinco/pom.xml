@@ -250,6 +250,11 @@
             <name>project</name>
             <url>file:${project.basedir}/repo</url>
         </repository>
+        <repository>
+            <id>OW2 Repository</id>
+            <name>OW2 Repository</name>
+            <url>http://maven.ow2.org/maven2/</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -390,6 +395,20 @@
             <version>1.2.0</version>
         </dependency>
         <!--End Vaadin plugins-->
+        <!--TODO Bonita
+        <dependency>
+            <groupId>org.ow2.bonita</groupId>
+            <artifactId>bonita-server</artifactId>
+            <version>5.6.1</version>
+        </dependency>
+        -->
+        <!--TODO Flyway, Database update
+        <dependency>
+            <groupId>com.googlecode.flyway</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+        -->
     </dependencies>
     
     <profiles>
