@@ -10,12 +10,11 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <vaadin.version>6.7.9</vaadin.version>
+        <vaadin.version>6.8.1</vaadin.version>
         <gwt.version>2.4.0</gwt.version>
         <gwt.plugin.version>2.4.0</gwt.plugin.version>
         <skipTests>true</skipTests>
         <widgetset.path>src/main/webapp</widgetset.path>
-        <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
     </properties>
 
     <build>
@@ -65,7 +64,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <!-- Compiles your custom GWT components with the GWT compiler -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -102,7 +101,7 @@
                 </dependencies>
             </plugin>
 
-            <!-- A simple Jetty test server at http://localhost:8084/Validation-Manager-Web can be launched with the Maven goal jetty:run 
+            <!-- A simple Jetty test server at http://localhost:8084/Validation-Manager-Web can be launched with the Maven goal jetty:run
             and stopped with jetty:stop -->
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
@@ -154,7 +153,7 @@
                     <!-- The name of your generated source package -->
                     <packageName>com.bluecubs.xinco.core.server.service</packageName>
                 </configuration>
-                <!-- if you want to use a specific version of JAX-WS, you can do so like this 
+                <!-- if you want to use a specific version of JAX-WS, you can do so like this
                 <dependencies>
                     <dependency>
                         <groupId>com.sun.xml.ws</groupId>
@@ -180,7 +179,7 @@
                     </dependency>
                 </dependencies>-->
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -219,7 +218,7 @@
         <repository>
             <id>maven2-repository.dev.java.net</id>
             <name>Java.net Repository for Maven 2</name>
-            <url>http://download.java.net/maven/2/</url>  
+            <url>http://download.java.net/maven/2/</url>
         </repository>
         <repository>
             <id>vaadin-snapshots</id>
@@ -238,7 +237,7 @@
         <repository>
             <id>EclipseLink Repo</id>
             <!-- note that ampersands in this URL are escaped because this is in an xml file -
-                   un-escape them to use in browser 
+                   un-escape them to use in browser
             -->
             <url>http://www.eclipse.org/downloads/download.php?r=1&amp;nf=1&amp;file=/rt/eclipselink/maven.repo</url>
             <snapshots>
@@ -311,10 +310,10 @@
             <artifactId>eclipselink</artifactId>
             <version>2.3.2</version>
         </dependency>
-        <dependency> 
-            <groupId>org.eclipse.persistence</groupId> 
-            <artifactId>javax.persistence</artifactId> 
-            <version>2.0.3</version> 
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>javax.persistence</artifactId>
+            <version>2.0.3</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -363,9 +362,9 @@
             <artifactId>jodconverter-core</artifactId>
             <version>3.0-beta-4</version>
         </dependency>
-        <dependency> 
-            <groupId>gudosoft.gsqlparser</groupId> 
-            <artifactId>gsp</artifactId> 
+        <dependency>
+            <groupId>gudosoft.gsqlparser</groupId>
+            <artifactId>gsp</artifactId>
             <version>4.2</version>
         </dependency>
         <!--Vaadin plugins-->
@@ -410,7 +409,7 @@
         </dependency>
         -->
     </dependencies>
-    
+
     <profiles>
         <profile>
             <id>default-tools.jar</id>
