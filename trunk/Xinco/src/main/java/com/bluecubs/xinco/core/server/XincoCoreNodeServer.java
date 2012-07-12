@@ -33,11 +33,11 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import com.bluecubs.xinco.core.server.index.XincoIndexer;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreAceJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLanguageJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreNodeJpaController;
 import com.bluecubs.xinco.core.server.service.XincoCoreNode;
-import com.bluecubs.xinco.core.server.index.XincoIndexer;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -210,7 +210,6 @@ public final class XincoCoreNodeServer extends XincoCoreNode {
             logger.log(Level.SEVERE, null, e);
             getXincoCoreNodes().clear();
         }
-
     }
 
     public void fillXincoCoreData() {
