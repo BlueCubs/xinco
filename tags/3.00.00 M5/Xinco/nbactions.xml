@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>build</actionName>
+            <goals>
+                <goal>install</goal>
+                
+                
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-Generate Webservice</actionName>
+            <displayName>Generate Webservice</displayName>
+            <goals>
+                <goal>jaxws:wsimport</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>test</actionName>
+            <goals>
+                <goal>cobertura:clean</goal>
+                <goal>cobertura:cobertura</goal>
+            </goals>
+            <properties>
+                <skipTests>false</skipTests>
+                
+            </properties>
+        </action>
+    </actions>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+  <head>
+    <meta name="author" content="Georg Wittberger" />
+    <meta name="description" content="SOAP templates for xincoDMS documentation and user manual" />
+    <meta name="keywords" content="xinco, xincoDMS, DMS, XML, SOAP, document, management, system, Java, open, source" />
+    <meta name="robots" content="index,follow" />
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+    <meta http-equiv="content-style-type" content="text/css" />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <title>SOAP templates for xincoDMS - remove_ace.xml</title>
+  </head>
+  <body>
+    <h1>remove_ace.xml</h1>
+    <p>This SOAP request allows you to remove permissions on certain folders or data objects.</p>
+    <p>The response contains the boolean value &quot;true&quot; if the ACE has been removed successfully or
+    &quot;false&quot; in a case of failure.</p>
+    <h2>Basic parameters</h2>
+    <p>The text content of the following element nodes has to be adjusted:</p>
+    <table cellspacing="0">
+      <colgroup>
+        <col width="50%" />
+        <col width="50%" />
+      </colgroup>
+      <thead>
+        <tr><th>XPath query</th><th>Value</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:removeXincoCoreACE/in0/id</td>
+          <td>Internal <b>ID</b> of the ACE to be removed (e.g. 1001). This can be obtained by the
+          <a href="get_file_info.html">get_file_info.xml</a> or
+          <a href="get_folder_content.html">get_folder_content.xml</a> request.</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:removeXincoCoreACE/in1/username</td>
+          <td><b>Username</b> of the user performing the operation</td>
+        </tr>
+        <tr>
+          <td>/soapenv:Envelope/soapenv:Body/ns1:removeXincoCoreACE/in1/userpassword</td>
+          <td><b>Password</b> of the user performing the operation</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><b>Hint:</b> Each of the XPath queries above will return an element node. To modify its content you will
+    have to go down to its text node which is typically the first child.</p>
+    <p><a href="index.html">Back to the table of contents</a></p>
+  </body>
+</html>
