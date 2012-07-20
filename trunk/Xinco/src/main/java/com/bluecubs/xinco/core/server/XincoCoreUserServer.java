@@ -385,8 +385,15 @@ public final class XincoCoreUserServer extends XincoCoreUser {
                 //Create audit trail record
                 createAuditTrail(xcu);
             } else {
+                //Sometimes password got re-hashed
+                String password;
+                if (isHashPassword()) {
+                    password = MD5.encrypt(getUserpassword().replaceAll("'", "\\\\'"));
+                } else {
+                    password = getUserpassword().replaceAll("'", "\\\\'");
+                }
                 xcu = new com.bluecubs.xinco.core.server.persistence.XincoCoreUser(getId(),
-                        getUsername().replaceAll("'", "\\\\'"), getUserpassword(), getLastName().replaceAll("'", "\\\\'"),
+                        getUsername().replaceAll("'", "\\\\'"), password, getLastName().replaceAll("'", "\\\\'"),
                         getFirstName().replaceAll("'", "\\\\'"), getEmail().replaceAll("'", "\\\\'"),
                         getStatusNumber(), getAttempts(), getLastModified());
                 xcu.setModificationReason(getReason());
