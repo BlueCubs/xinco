@@ -5,7 +5,7 @@
     <groupId>com.bluecubs.xinco</groupId>
     <artifactId>Xinco</artifactId>
     <packaging>war</packaging>
-    <version>3.0.0.M4</version>
+    <version>3.0.0.M5</version>
     <name>Xinco DMS</name>
 
     <properties>
