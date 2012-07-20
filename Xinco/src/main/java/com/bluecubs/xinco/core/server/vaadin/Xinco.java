@@ -251,7 +251,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                             loggedUser = null;
                             try {
-                                updateMenu();
+                                showMainWindow();
                             } catch (XincoException ex) {
                                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -809,7 +809,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
             final int log_index = temp.getXincoCoreLogs().size() - 1;
             final VersionSelector versionSelector = new VersionSelector(getInstance().getResource().getString("general.version"),
-                    ((XincoCoreLog)temp.getXincoCoreLogs().get(log_index)).getVersion());
+                    ((XincoCoreLog) temp.getXincoCoreLogs().get(log_index)).getVersion());
             versionSelector.increaseHigh();
             final Upload.SucceededListener listener = new Upload.SucceededListener() {
                 @Override
@@ -916,7 +916,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             //Now load the file
                             loadFile(getFileToLoad(), getFileName());
                             //Update log version
-                            XincoCoreLogServer log = new XincoCoreLogServer(((XincoCoreLog)getXincoCoreData().getXincoCoreLogs().get(getXincoCoreData().getXincoCoreLogs().size() - 1)).getId());
+                            XincoCoreLogServer log = new XincoCoreLogServer(
+                                    ((XincoCoreLog) getXincoCoreData().getXincoCoreLogs().get(
+                                    getXincoCoreData().getXincoCoreLogs().size() - 1)).getId());
                             log.setVersion(versionSelector.getVersion());
                             log.setChangerID(1);
                             log.write2DB();
@@ -961,13 +963,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 getInstance().getResource().getString("window.loggingdetails.action")
                 + ":"));
         final int log_index = temp.getXincoCoreLogs().size() - 1;
-        form.getField("action").setValue(((XincoCoreLog)temp.getXincoCoreLogs().get(log_index)).getOpDescription());
+        form.getField("action").setValue(((XincoCoreLog) temp.getXincoCoreLogs().get(log_index)).getOpDescription());
         form.getField("action").setEnabled(false);
         form.addField("reason", new com.vaadin.ui.TextArea());
         versionSelector.setMinorEnabled(false);
         versionSelector.setCaption(getInstance().getResource().getString("general.version"));
         versionSelector.setVersion(versionSelector.getVersion());//temp.getXincoCoreLogs().get(log_index).getVersion());
-        OPCode code = OPCode.getOPCode(((XincoCoreLog)temp.getXincoCoreLogs().get(log_index)).getOpCode());
+        OPCode code = OPCode.getOPCode(((XincoCoreLog) temp.getXincoCoreLogs().get(log_index)).getOpCode());
         switch (code) {
             case COMMENT:
             case CHECKIN:
@@ -2568,11 +2570,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
         form.addField("pass", new com.vaadin.ui.PasswordField(getInstance().getResource().getString("general.password") + ":"));
         form.getField("pass").setRequired(userAdmin);
         form.getField("pass").setRequiredError(getInstance().getResource().getString("message.missing.password"));
-        if (!userAdmin) {
-            form.addField("verify", new com.vaadin.ui.PasswordField(getInstance().getResource().getString("general.verifypassword") + ":"));
-            form.getField("verify").setRequired(userAdmin);
-            form.getField("verify").setRequiredError(getInstance().getResource().getString("message.missing.password"));
-        }
+        form.addField("verify", new com.vaadin.ui.PasswordField(getInstance().getResource().getString("general.verifypassword") + ":"));
+        form.getField("verify").setRequired(userAdmin);
+        form.getField("verify").setRequiredError(getInstance().getResource().getString("message.missing.password"));
         form.addField("firstname", new com.vaadin.ui.TextField(getInstance().getResource().getString("general.firstname") + ":"));
         form.getField("firstname").setRequired(userAdmin);
         form.getField("firstname").setRequiredError(getInstance().getResource().getString("message.missing.firstname"));
@@ -2613,6 +2613,14 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     boolean changed = false;
                     XincoCoreUserServer temp_user;
                     if (userAdmin) {
+                        if (!form.getField("pass").getValue().toString().equals(form.getField("verify").getValue().toString())) {
+                            getMainWindow().showNotification(
+                                    getInstance().getResource().getString("window.userinfo.passwordmismatch"),
+                                    Notification.TYPE_WARNING_MESSAGE);
+                            commit.setEnabled(true);
+                            cancel.setEnabled(true);
+                            return;
+                        }
                         temp_user = new XincoCoreUserServer(0,
                                 form.getField("username").getValue().toString(),
                                 form.getField("pass").getValue().toString(),
@@ -2675,11 +2683,20 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     }
                     if (userAdmin) {
                         refreshUserTable(table);
+                        commit.setEnabled(true);
+                        cancel.setEnabled(true);
                     } else {
                         getMainWindow().removeWindow(user);
                     }
+                    clearForm();
                 } catch (XincoException ex) {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            private void clearForm(){
+                for (Iterator<?> it = form.getItemPropertyIds().iterator(); it.hasNext();) {
+                    String field = (String) it.next();
+                    form.getField(field).setValue("");
                 }
             }
         });
@@ -2689,7 +2706,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         user.addComponent(form);
         user.setModal(true);
         user.center();
-        user.setWidth(150, Sizeable.UNITS_PIXELS);
+        user.setWidth(50, Sizeable.UNITS_PERCENTAGE);
         getMainWindow().addWindow(user);
     }
 
@@ -2881,7 +2898,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         boolean isAdmin = false;
         if (loggedUser != null) {
             for (Iterator<Object> it = loggedUser.getXincoCoreGroups().iterator(); it.hasNext();) {
-                XincoCoreGroup xcg = (XincoCoreGroup)it.next();
+                XincoCoreGroup xcg = (XincoCoreGroup) it.next();
                 if (xcg.getId() == 1) {
                     isAdmin = true;
                     break;
@@ -3016,7 +3033,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             XincoCoreUserServer tempUser = it.next();
             member_ofGroup = false;
             for (Iterator<Object> it2 = tempUser.getXincoCoreGroups().iterator(); it2.hasNext();) {
-                if (((XincoCoreGroup)it2.next()).getId() == groupId) {
+                if (((XincoCoreGroup) it2.next()).getId() == groupId) {
                     member_ofGroup = true;
                     break;
                 }
