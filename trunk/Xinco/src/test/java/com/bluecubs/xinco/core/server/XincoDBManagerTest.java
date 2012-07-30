@@ -27,7 +27,7 @@ public class XincoDBManagerTest extends XincoTestCase {
     public void testReadFileAsString() {
         try {
             ArrayList<String> statements =
-                    XincoDBManager.readFileAsString("script/init.sql", DBState.class);
+                    XincoDBManager.readFileAsString("script/V1__Base_version.sql", DBState.class);
             assertTrue(!statements.isEmpty());
         } catch (IOException ex) {
             Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);

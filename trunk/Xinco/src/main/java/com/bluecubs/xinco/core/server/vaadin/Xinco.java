@@ -191,7 +191,6 @@ public class Xinco extends Application implements HttpServletRequestListener {
         try {
             XincoDBManager.reload();
             XincoDBManager.getEntityManagerFactory();
-            XincoDBManager.updateDBState();
             //Switch to Xinco theme
             setTheme("xinco");
             setMainWindow(new com.vaadin.ui.Window("Xinco"));
