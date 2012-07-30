@@ -1,6 +1,6 @@
-INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `last_name`, `first_name`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (1, 'admin', MD5('admin'), 'Administrator', 'Xinco', 'admin@xinco.org', 1, 0, now());
-INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `last_name`, `first_name`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (2, 'user', MD5('user'), 'User', 'Default', 'user@xinco.org', 1, 0, now());
-INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `last_name`, `first_name`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (3, 'bluecubs', MD5('system'), 'System', 'User', 'info@bluecubs.com', 1, 0, now());
+INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `last_name`, `first_name`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Administrator', 'Xinco', 'admin@xinco.org', 1, 0, now());
+INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `last_name`, `first_name`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (2, 'user', 'ee11cbb19052e40b07aac0ca060c23ee', 'User', 'Default', 'user@xinco.org', 1, 0, now());
+INSERT INTO `xinco_core_user` (`id`, `username`, `userpassword`, `last_name`, `first_name`, `email`, `status_number`, `attempts`, `last_modified`) VALUES (3, 'bluecubs', '54b53072540eeeb8f8e9343e71f28176', 'System', 'User', 'info@bluecubs.com', 1, 0, now());
 INSERT INTO `xinco_core_language` (`id`, `sign`, `designation`) VALUES (1, 'n/a', 'language.unknonw');
 INSERT INTO `xinco_core_language` (`id`, `sign`, `designation`) VALUES (2, 'en', 'language.en');
 INSERT INTO `xinco_core_language` (`id`, `sign`, `designation`) VALUES (3, 'de', 'language.de');
