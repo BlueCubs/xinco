@@ -16,10 +16,30 @@
         <skipTests>false</skipTests>
         <widgetset.path>src/main/webapp</widgetset.path>
         <flyway.version>1.7</flyway.version>
+        <xinco.version>${project.version}</xinco.version>
+        <!--Database connection settings defaults. Can be overwritten by passing arguments to Maven-->
+        <db.url>jdbc:h2:file:~/Xinco/data/xinco;CREATE=TRUE;LOCK_TIMEOUT=10000</db.url>
+        <db.password></db.password>
+        <db.driver>org.h2.Driver</db.driver>
+        <db.username>root</db.username>
     </properties>
 
     <build>
+        <finalName>Xinco-${xinco.version}</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>src/main/webapp</directory>
+                            <filtering>true</filtering>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -37,12 +57,12 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>native2ascii-maven-plugin</artifactId>
-                <version>1.0-alpha-1</version>
+                <version>1.0-beta-1</version>
                 <configuration>
                     <dest>target/resources</dest>
                     <src>src/main/resources</src>
                     <encoding>UTF8</encoding>
-                    <includes>*.properties, settings.properties</includes>
+                    <include>*.properties</include>
                 </configuration>
                 <executions>
                     <execution>
@@ -347,6 +367,13 @@
             <artifactId>vaadin</artifactId>
             <version>${vaadin.version}</version>
         </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.21</version>
+            <scope>runtime</scope>
+        </dependency>
+            
         <!-- This is also used by gwt-maven-plugin to deduce GWT version number. -->
         <dependency>
             <groupId>com.google.gwt</groupId>
