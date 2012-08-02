@@ -51,6 +51,10 @@
             <param-name>widgetset</param-name>
             <param-value>Xinco</param-value>
         </init-param>
+        <init-param>
+            <param-name>log4j-properties-location</param-name>
+            <param-value>WEB-INF/classes/log4j.properties</param-value>
+        </init-param>
     </servlet>
     <servlet>
         <servlet-name>Xinco</servlet-name>
