@@ -13,7 +13,7 @@
         <vaadin.version>6.8.1</vaadin.version>
         <gwt.version>2.4.0</gwt.version>
         <gwt.plugin.version>2.4.0</gwt.plugin.version>
-        <skipTests>false</skipTests>
+        <skipTests>true</skipTests>
         <widgetset.path>src/main/webapp</widgetset.path>
         <flyway.version>1.7</flyway.version>
         <xinco.version>${project.version}</xinco.version>
@@ -321,7 +321,7 @@
             <!-- note that ampersands in this URL are escaped because this is in an xml file -
                    un-escape them to use in browser
             -->
-            <url>http://www.eclipse.org/downloads/download.php?r=1&amp;nf=1&amp;file=/rt/eclipselink/maven.repo</url>
+            <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
@@ -483,7 +483,7 @@
             <version>1.2.0</version>
         </dependency>
         <!--End Vaadin plugins-->
-        <!--TODO Bonita
+        <!--TODO Bonita for workflows
         <dependency>
             <groupId>org.ow2.bonita</groupId>
             <artifactId>bonita-server</artifactId>

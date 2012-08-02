@@ -6,6 +6,7 @@
                 <goal>install</goal>
                 
                 
+                
             </goals>
         </action>
         <action>
@@ -25,5 +26,14 @@
                 <skipTests>false</skipTests>
                 
             </properties>
+        </action>
+        <action>
+            <actionName>CUSTOM-Get Sources and Javadoc</actionName>
+            <displayName>Get Sources and Javadoc</displayName>
+            <goals>
+                <goal>dependency:sources</goal>
+                <goal>dependency:resolve</goal>
+                <goal>-Dclassifier=javadoc</goal>
+            </goals>
         </action>
     </actions>

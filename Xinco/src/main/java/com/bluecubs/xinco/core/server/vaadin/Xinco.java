@@ -190,7 +190,6 @@ public class Xinco extends Application implements HttpServletRequestListener {
         setInstance(this);
         try {
             XincoDBManager.reload();
-            XincoDBManager.getEntityManagerFactory();
             //Switch to Xinco theme
             setTheme("xinco");
             setMainWindow(new com.vaadin.ui.Window("Xinco"));
@@ -274,6 +273,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
         } catch (XincoException ex) {
             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            setMainWindow(new com.vaadin.ui.Window("Error"));
+            getMainWindow().addComponent(new com.vaadin.ui.Label(
+                    "Unable to start application, please contact your administrator!"));
+            Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE,
+                    "An uncaught exception occurred: ",
+                    ex);
         }
     }
 
@@ -2162,6 +2167,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        languages.setValue(getLocale().getLanguage());
         return languages;
     }
 
@@ -2692,7 +2698,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            private void clearForm(){
+
+            private void clearForm() {
                 for (Iterator<?> it = form.getItemPropertyIds().iterator(); it.hasNext();) {
                     String field = (String) it.next();
                     form.getField(field).setValue("");
