@@ -13,7 +13,7 @@
         <vaadin.version>6.8.1</vaadin.version>
         <gwt.version>2.4.0</gwt.version>
         <gwt.plugin.version>2.4.0</gwt.plugin.version>
-        <skipTests>true</skipTests>
+        <skipTests>false</skipTests>
         <widgetset.path>src/main/webapp</widgetset.path>
         <flyway.version>1.7</flyway.version>
         <xinco.version>${project.version}</xinco.version>
