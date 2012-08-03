@@ -289,7 +289,8 @@ public final class XincoCoreDataServer extends XincoCoreData {
                 }
                 //Related renderings
                 for (Iterator it = XincoCoreDataHasDependencyServer.getRenderings(id).iterator(); it.hasNext();) {
-                    XincoCoreData next = (XincoCoreData) it.next();
+                    com.bluecubs.xinco.core.server.persistence.XincoCoreData next =
+                            (com.bluecubs.xinco.core.server.persistence.XincoCoreData) it.next();
                     removeFromDB(userID, next.getId());
                 }
                 //Data itself

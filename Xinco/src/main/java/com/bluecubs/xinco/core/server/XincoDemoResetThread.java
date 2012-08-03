@@ -27,7 +27,6 @@
  */
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import java.util.logging.Logger;
 
 /**

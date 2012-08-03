@@ -1189,15 +1189,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     public static boolean removeDirectory(File directory) {
-
+        boolean result = false;
         if (directory == null) {
-            return false;
-        }
-        if (!directory.exists()) {
-            return true;
-        }
-        if (!directory.isDirectory()) {
-            return false;
+            result = false;
+        } else if (!directory.exists()) {
+            result = true;
+        } else if (!directory.isDirectory()) {
+            result = false;
         }
 
         String[] list = directory.list();
@@ -1207,21 +1205,20 @@ public class Xinco extends Application implements HttpServletRequestListener {
         if (list != null) {
             for (int i = 0; i < list.length; i++) {
                 File entry = new File(directory, list[i]);
-
-                //        System.out.println("\tremoving entry " + entry);
-
                 if (entry.isDirectory()) {
                     if (!removeDirectory(entry)) {
-                        return false;
+                        result = false;
+                        break;
                     }
                 } else {
                     if (!entry.delete()) {
-                        return false;
+                        result = false;
+                        break;
                     }
                 }
             }
         }
-        return directory.delete();
+        return result && directory.delete();
     }
 
     public void setLock() {
@@ -2235,7 +2232,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         setting.setModal(true);
         getMainWindow().addWindow(setting);
     }
-
+    
     private void showAuditWindow() throws XincoException {
         final com.vaadin.ui.Window audit = new com.vaadin.ui.Window();
         final Table table = new Table();

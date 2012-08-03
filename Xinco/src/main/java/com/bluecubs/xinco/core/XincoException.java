@@ -34,7 +34,12 @@ package com.bluecubs.xinco.core;
 
 import java.util.List;
 
-public class XincoException extends Error {
+/**
+ * Xinco exception
+ *
+ * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
+ */
+public class XincoException extends Exception {
 
     String xinco_message = "";
 
