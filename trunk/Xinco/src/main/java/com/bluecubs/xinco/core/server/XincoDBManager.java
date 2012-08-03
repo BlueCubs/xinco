@@ -35,7 +35,6 @@ package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.db.DBState;
-import com.bluecubs.xinco.core.server.tools.Tool;
 import com.bluecubs.xinco.tools.MD5;
 import com.googlecode.flyway.core.Flyway;
 import com.googlecode.flyway.core.exception.FlywayException;

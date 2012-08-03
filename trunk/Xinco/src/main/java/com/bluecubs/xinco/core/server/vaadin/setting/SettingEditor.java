@@ -33,8 +33,8 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoSettingJpaCont
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.vaadin.Xinco;
 import com.vaadin.data.Item;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -105,7 +105,7 @@ class SettingEditor extends Window implements Button.ClickListener {
                 modified = true;
                 setting.setLongValue((Long) editorForm.getField("longValue").getValue());
             }
-            if (setting.getIntValue() != (Integer) editorForm.getField("intValue").getValue()) {
+            if (setting.getIntValue().equals((Integer) editorForm.getField("intValue").getValue())) {
                 modified = true;
                 setting.setIntValue((Integer) editorForm.getField("intValue").getValue());
             }
