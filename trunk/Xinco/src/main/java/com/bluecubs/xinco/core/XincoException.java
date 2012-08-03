@@ -39,7 +39,7 @@ import java.util.List;
  *
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public class XincoException extends Exception {
+public class XincoException extends Error {
 
     String xinco_message = "";
 
