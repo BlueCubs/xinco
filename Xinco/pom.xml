@@ -265,6 +265,13 @@
                                     <format>xml</format>
                                     <format>html</format>
                                 </formats>
+                                <excludeRoots>
+                                    <excludeRoot>crc/main/java/com/bluecubs/xinco/core/server/service</excludeRoot>
+                                    <!--Hopefully with Selenium-->
+                                    <excludeRoot>crc/main/java/com/bluecubs/xinco/core/server/vaadin</excludeRoot>
+                                    <excludeRoot>target/generated-sources</excludeRoot>
+                                    <excludeRoot>target/generated-test-sources</excludeRoot>
+                                </excludeRoots>
                             </configuration>
                         </plugin>
                         <plugin>
@@ -280,7 +287,21 @@
                                 <linkXref>true</linkXref>
                                 <sourceEncoding>utf-8</sourceEncoding>
                                 <minimumTokens>100</minimumTokens>
-                                <targetJdk>1.5</targetJdk>
+                                <targetJdk>${compileSource}</targetJdk>
+                                <excludes>
+                                    <exclude>**/server/service/*.java</exclude>
+                                </excludes>
+                                <excludeRoots>
+                                    <excludeRoot>target/generated-sources</excludeRoot>
+                                    <excludeRoot>target/generated-test-sources</excludeRoot>
+                                </excludeRoots>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>findbugs-maven-plugin</artifactId>
+                            <version>2.5.2</version>
+                            <configuration>
                                 <excludes>
                                     <exclude>**/server/service/*.java</exclude>
                                 </excludes>
