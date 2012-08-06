@@ -224,6 +224,15 @@ public final class XincoCoreDataServer extends XincoCoreData {
                 xcd.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.create(xcd);
                 setId(xcd.getId());
+                //Add creation log
+                GregorianCalendar c = new GregorianCalendar();
+                c.setTime(new Date());
+                XincoCoreLogServer log = new XincoCoreLogServer(xcd.getId(), 1,
+                        OPCode.CREATION.ordinal() + 1, c, "", 1, 0, 0, "");
+                log.write2DB();
+                xcd.getXincoCoreLogList().add(
+                        new XincoCoreLogJpaController(
+                        XincoDBManager.getEntityManagerFactory()).findXincoCoreLog(log.getId()));
             }
             //Update add attributes
             for (Iterator<XincoAddAttribute> it = getXincoAddAttributes().iterator(); it.hasNext();) {
@@ -408,36 +417,35 @@ public final class XincoCoreDataServer extends XincoCoreData {
     }
 
     public XincoAddAttributeServer getAttribute(int id) {
-        for (XincoAddAttribute attr : getXincoAddAttributes()) {
+        XincoAddAttributeServer xaas = null;
+        for (Iterator<XincoAddAttribute> it = getXincoAddAttributes().iterator(); it.hasNext();) {
+            XincoAddAttribute attr = it.next();
             if (attr.getAttributeId() == id) {
                 try {
-                    return new XincoAddAttributeServer(attr.getXincoCoreDataId(), attr.getAttributeId());
+                    xaas = new XincoAddAttributeServer(attr.getXincoCoreDataId(), attr.getAttributeId());
+                    break;
                 } catch (XincoException ex) {
                     Logger.getLogger(XincoAddAttributeServer.class.getName()).log(Level.SEVERE, null, ex);
-                    return null;
                 }
             }
         }
-        return null;
+        return xaas;
     }
 
     public static boolean isArchived(int id) {
-        try {
-            return isArchived(new XincoCoreDataServer(id));
-        } catch (XincoException ex) {
-            logger.log(Level.SEVERE, null, ex);
-            return false;
-        }
+        return isArchived(new XincoCoreDataServer(id));
     }
 
     public static boolean isArchived(XincoCoreDataServer xcds) {
+        boolean res = false;
         //Make sure the logs are filled
         for (Iterator<Object> it = xcds.getXincoCoreLogs().iterator(); it.hasNext();) {
             XincoCoreLog log = (XincoCoreLog) it.next();
             if (log.getOpCode() == OPCode.ARCHIVED.ordinal() + 1) {
-                return true;
+                res = true;
+                break;
             }
         }
-        return false;
+        return res;
     }
 }
