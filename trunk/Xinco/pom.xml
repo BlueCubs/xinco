@@ -316,7 +316,6 @@
                                     <excludeRoot>target/generated-sources</excludeRoot>
                                     <excludeRoot>target/generated-test-sources</excludeRoot>
                                 </excludeRoots>
-                                <excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
                             </configuration>
                         </plugin>
                     </reportPlugins>
