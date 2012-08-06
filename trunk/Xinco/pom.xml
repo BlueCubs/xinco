@@ -266,9 +266,9 @@
                                     <format>html</format>
                                 </formats>
                                 <excludeRoots>
-                                    <excludeRoot>crc/main/java/com/bluecubs/xinco/core/server/service</excludeRoot>
+                                    <excludeRoot>src/main/java/com/bluecubs/xinco/core/server/service</excludeRoot>
                                     <!--Hopefully with Selenium-->
-                                    <excludeRoot>crc/main/java/com/bluecubs/xinco/core/server/vaadin</excludeRoot>
+                                    <excludeRoot>src/main/java/com/bluecubs/xinco/core/server/vaadin</excludeRoot>
                                     <excludeRoot>target/generated-sources</excludeRoot>
                                     <excludeRoot>target/generated-test-sources</excludeRoot>
                                 </excludeRoots>

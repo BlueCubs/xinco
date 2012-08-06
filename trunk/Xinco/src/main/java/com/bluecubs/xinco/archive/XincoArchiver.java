@@ -24,10 +24,6 @@
  *
  * Original Author: Alexander Manes Date: 2005/01/16
  *
- * Modifications:
- *
- * Who? When? What? - - -
- *
  *************************************************************
  */
 package com.bluecubs.xinco.archive;
@@ -44,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
-import org.apache.log4j.Logger;
 
 /**
  * This class handles document archiving for Xinco. Edit configuration values in
@@ -75,20 +70,24 @@ public final class XincoArchiver {
 
     @SuppressWarnings("unchecked")
     public static boolean archiveData(XincoCoreDataServer d, ArrayList v) throws FileNotFoundException, IOException, XincoException {
-        xdataTemp = d;
-        xnodeTempArrayList = v;
-        boolean result = true;
-        Calendar ngc = new GregorianCalendar();
-        archiveName = ngc.get(Calendar.YEAR) + "-" + (ngc.get(Calendar.MONTH) + 1)
-                + "-" + ngc.get(Calendar.DAY_OF_MONTH);
-        archiveBaseDir = XincoDBManager.config.fileArchivePath + archiveName;
-        //archive data
-        archiveFileDir = "";
-        for (i = xnodeTempArrayList.size() - 1; i >= 0; i--) {
-            archiveFileDir = archiveFileDir + System.getProperty("file.separator")
-                    + ((XincoCoreNodeServer) xnodeTempArrayList.get(i)).getDesignation();
-        }
-        if ((new File(archiveBaseDir + archiveFileDir)).mkdirs()) {
+        boolean result = false;
+        try {
+            xdataTemp = d;
+            xnodeTempArrayList = v;
+            Calendar ngc = new GregorianCalendar();
+            archiveName = ngc.get(Calendar.YEAR) + "-" + (ngc.get(Calendar.MONTH) + 1)
+                    + "-" + ngc.get(Calendar.DAY_OF_MONTH);
+            archiveBaseDir = XincoDBManager.config.fileArchivePath + archiveName;
+            //archive data
+            archiveFileDir = "";
+            for (i = xnodeTempArrayList.size() - 1; i >= 0; i--) {
+                archiveFileDir = archiveFileDir + System.getProperty("file.separator")
+                        + ((XincoCoreNodeServer) xnodeTempArrayList.get(i)).getDesignation();
+            }
+            File archive = new File(archiveBaseDir + archiveFileDir);
+            if (!archive.exists()) {
+                archive.mkdirs();
+            }
             //copy file + revisions
             //build file list
             orgFileNames.add(("" + xdataTemp.getId()));
@@ -102,8 +101,8 @@ public final class XincoArchiver {
             }
             //copy + delete files
             for (k = 0; k < orgFileNames.size(); k++) {
-                fileName = ((String) orgFileNames.get(k)) + "_"
-                        + ((XincoAddAttribute) ((ArrayList) xdataTemp.getXincoAddAttributes()).get(0)).getAttribVarchar();
+                fileName = ((String) orgFileNames.get(k)) + (xdataTemp.getXincoAddAttributes().isEmpty() ? "" : "_"
+                        + ((XincoAddAttribute) ((ArrayList) xdataTemp.getXincoAddAttributes()).get(0)).getAttribVarchar());
                 if ((new File(XincoCoreDataServer.getXincoCoreDataPath(
                         XincoDBManager.config.fileRepositoryPath, ((Integer) orgFileIDs.get(k)).intValue(),
                         ((String) orgFileNames.get(k))))).exists()) {
@@ -126,28 +125,35 @@ public final class XincoArchiver {
                             ((String) orgFileNames.get(k))))).delete();
                 }
             }
-            //update data + log
-            xdataTemp.setStatusNumber(3);
-            ((XincoAddAttribute) ((ArrayList) xdataTemp.getXincoAddAttributes()).get(7)).setAttribText(
-                    "[" + archiveName + "]" + archiveFileDir.replace('\\', '/') + "/" + fileName);
-            xdataTemp.write2DB();
-            if (((ArrayList) xdataTemp.getXincoCoreLogs()).size() > 0) {
-                xlogTemp = ((XincoCoreLogServer) ((ArrayList) xdataTemp.getXincoCoreLogs()).get(
-                        ((ArrayList) xdataTemp.getXincoCoreLogs()).size() - 1));
-                if (xlogTemp != null) {
-                    xlogTemp.setOpCode(OPCode.ARCHIVED.ordinal() + 1);
-                    xlogTemp.setOpDescription(rb.getString(OPCode.getOPCode(
-                            xlogTemp.getOpCode()).getName()));
-                    xlogTemp.setXincoCoreUserId(1);
-                    xlogTemp.write2DB();
+            if (!xdataTemp.getXincoAddAttributes().isEmpty()) {
+                //update data + log
+                xdataTemp.setStatusNumber(3);
+                ((XincoAddAttribute) ((ArrayList) xdataTemp.getXincoAddAttributes()).get(7)).setAttribText(
+                        "[" + archiveName + "]" + archiveFileDir.replace('\\', '/') + "/" + fileName);
+                xdataTemp.write2DB();
+                if (((ArrayList) xdataTemp.getXincoCoreLogs()).size() > 0) {
+                    xlogTemp = ((XincoCoreLogServer) ((ArrayList) xdataTemp.getXincoCoreLogs()).get(
+                            ((ArrayList) xdataTemp.getXincoCoreLogs()).size() - 1));
+                    if (xlogTemp != null) {
+                        xlogTemp.setOpCode(OPCode.ARCHIVED.ordinal() + 1);
+                        xlogTemp.setOpDescription(rb.getString(OPCode.getOPCode(
+                                xlogTemp.getOpCode()).getName()));
+                        xlogTemp.setXincoCoreUserId(1);
+                        xlogTemp.write2DB();
+                        xdataTemp.getXincoCoreLogs().add(xlogTemp);
+                        xdataTemp.write2DB();
+                        result = true;
+                    } else {
+                        throw new XincoException(
+                                "XincoCoreData (" + xdataTemp + ") had no logs!");
+                    }
                 } else {
-                    Logger.getLogger(XincoArchiver.class.getSimpleName()).error(
-                            "XincoCoreData (" + xdataTemp + ") had no logs!");
+                    throw new XincoException("Not the expected amount of log entries. "
+                            + "At least should have " + OPCode.CREATION.name() + " log entry present");
                 }
             }
-            result = true;
-        } else {
-            result = false;
+        } catch (Exception e) {
+            //Do nothing, false by default
         }
         return result;
     }
