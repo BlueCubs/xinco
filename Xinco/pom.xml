@@ -14,6 +14,7 @@
         <gwt.version>2.4.0</gwt.version>
         <gwt.plugin.version>2.4.0</gwt.plugin.version>
         <skipTests>false</skipTests>
+        <filter>true</filter>
         <widgetset.path>src/main/webapp</widgetset.path>
         <flyway.version>1.7</flyway.version>
         <xinco.version>${project.version}</xinco.version>
@@ -35,7 +36,7 @@
                     <webResources>
                         <resource>
                             <directory>src/main/webapp</directory>
-                            <filtering>true</filtering>
+                            <filtering>${filter}</filtering>
                         </resource>
                     </webResources>
                 </configuration>
