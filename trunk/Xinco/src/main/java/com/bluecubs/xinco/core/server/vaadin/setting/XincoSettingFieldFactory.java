@@ -36,8 +36,6 @@ import com.vaadin.ui.DefaultFieldFactory;
  */
 public class XincoSettingFieldFactory extends DefaultFieldFactory {
 
-    private static final XincoSettingFieldFactory instance = new XincoSettingFieldFactory();
-
     /**
      * If name follows method naming conventions, convert the name to spaced
      * upper case text. For example, convert "firstName" to "First Name"
@@ -47,10 +45,8 @@ public class XincoSettingFieldFactory extends DefaultFieldFactory {
      */
     public static String createCaptionByPropertyId(Object propertyId) {
         String name = propertyId.toString();
-        if (name.length() > 0) {
-            if ("description".equals(name)) {
-                name = Xinco.getInstance().getResource().getString("general.description");
-            }
+        if (name.length() > 0 && "description".equals(name)) {
+            name = Xinco.getInstance().getResource().getString("general.description");
         }
         return name;
     }
