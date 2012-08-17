@@ -14,7 +14,7 @@ import junit.framework.TestSuite;
  *
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public class XincoCoreDataTypeAttributeServerTest extends XincoTestCase {
+public class XincoCoreDataTypeAttributeServerTest extends AbstractXincoTestCase {
 
     public XincoCoreDataTypeAttributeServerTest(String testName) {
         super(testName);

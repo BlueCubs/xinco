@@ -6,9 +6,9 @@ import junit.framework.TestCase;
  *
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public abstract class XincoTestCase extends TestCase {
+public abstract class AbstractXincoTestCase extends TestCase {
 
-    public XincoTestCase(String name) {
+    public AbstractXincoTestCase(String name) {
         super(name);
     }
 

@@ -10,7 +10,7 @@ import junit.framework.TestSuite;
  *
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public class XincoCoreLanguageServerTest extends XincoTestCase {
+public class XincoCoreLanguageServerTest extends AbstractXincoTestCase {
 
     public XincoCoreLanguageServerTest(String testName) {
         super(testName);

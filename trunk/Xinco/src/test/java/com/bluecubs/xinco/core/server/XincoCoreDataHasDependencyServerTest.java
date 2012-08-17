@@ -13,7 +13,7 @@ import org.junit.Test;
  *
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public class XincoCoreDataHasDependencyServerTest extends XincoTestCase {
+public class XincoCoreDataHasDependencyServerTest extends AbstractXincoTestCase {
 
     private static HashMap parameters = new HashMap();
     private static List result;

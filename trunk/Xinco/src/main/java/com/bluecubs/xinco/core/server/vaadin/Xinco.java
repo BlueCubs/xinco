@@ -1198,27 +1198,30 @@ public class Xinco extends Application implements HttpServletRequestListener {
             result = false;
         }
 
-        String[] list = directory.list();
+        if (directory != null) {
+            String[] list = directory.list();
 
-        // Some JVMs return null for File.list() when the
-        // directory is empty.
-        if (list != null) {
-            for (int i = 0; i < list.length; i++) {
-                File entry = new File(directory, list[i]);
-                if (entry.isDirectory()) {
-                    if (!removeDirectory(entry)) {
-                        result = false;
-                        break;
-                    }
-                } else {
-                    if (!entry.delete()) {
-                        result = false;
-                        break;
+            // Some JVMs return null for File.list() when the
+            // directory is empty.
+            if (list != null) {
+                for (int i = 0; i < list.length; i++) {
+                    File entry = new File(directory, list[i]);
+                    if (entry.isDirectory()) {
+                        if (!removeDirectory(entry)) {
+                            result = false;
+                            break;
+                        }
+                    } else {
+                        if (!entry.delete()) {
+                            result = false;
+                            break;
+                        }
                     }
                 }
             }
+            result = result && directory.delete();
         }
-        return result && directory.delete();
+        return result;
     }
 
     public void setLock() {
@@ -2232,7 +2235,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         setting.setModal(true);
         getMainWindow().addWindow(setting);
     }
-    
+
     private void showAuditWindow() throws XincoException {
         final com.vaadin.ui.Window audit = new com.vaadin.ui.Window();
         final Table table = new Table();

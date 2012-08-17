@@ -13,7 +13,7 @@ import junit.framework.TestSuite;
  *
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public class XincoDBManagerTest extends XincoTestCase {
+public class XincoDBManagerTest extends AbstractXincoTestCase {
 
     public XincoDBManagerTest(String testName) {
         super(testName);

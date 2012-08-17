@@ -50,21 +50,26 @@ public class XincoIndexGenericFile implements XincoIndexFileType {
 
     @Override
     public String getFileContentString(File f) {
+        String result;
         try {
             Parser parser = new AutoDetectParser();
             Metadata metadata = new Metadata();
             StringWriter writer = new StringWriter();
-            parser.parse(new FileInputStream(f),
-                    new WriteOutContentHandler(writer),
-                    metadata);
-            return writer.toString();
+            FileInputStream fis = new FileInputStream(f);
+            WriteOutContentHandler woch = new WriteOutContentHandler(writer);
+            parser.parse(fis, woch, metadata);
+            result = writer.toString();
+            fis.close();
         } catch (IOException ex) {
             Logger.getLogger(XincoIndexGenericFile.class.getName()).log(Level.SEVERE, null, ex);
+            result = null;
         } catch (SAXException ex) {
             Logger.getLogger(XincoIndexGenericFile.class.getName()).log(Level.SEVERE, null, ex);
+            result = null;
         } catch (TikaException ex) {
             Logger.getLogger(XincoIndexGenericFile.class.getName()).log(Level.SEVERE, null, ex);
+            result = null;
         }
-        return null;
+        return result;
     }
 }
