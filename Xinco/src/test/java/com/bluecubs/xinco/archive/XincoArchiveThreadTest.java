@@ -24,7 +24,7 @@ import org.junit.Test;
  *
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public class XincoArchiveThreadTest extends XincoTestCase {
+public class XincoArchiveThreadTest extends AbstractXincoTestCase {
 
     public XincoArchiveThreadTest(String testName) {
         super(testName);

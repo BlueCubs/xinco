@@ -233,6 +233,8 @@ public class XincoWebService {
         File xincoFile = null;
         XincoCoreDataServer rendering = null;
         XincoCoreDataHasDependencyServer dependency = null;
+        FileInputStream fcis = null;
+        FileOutputStream fcos = null;
         try {
             XincoCoreACE ace;
             int i;
@@ -271,14 +273,12 @@ public class XincoWebService {
                     }
                     if (MaxLogId > 0) {
                         //copy file
-                        FileInputStream fcis = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, data.getId(), "" + data.getId())));
-                        FileOutputStream fcos = new FileOutputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, data.getId(), data.getId() + "-" + MaxLogId)));
+                        fcis = new FileInputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, data.getId(), "" + data.getId())));
+                        fcos = new FileOutputStream(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, data.getId(), data.getId() + "-" + MaxLogId)));
                         byte[] fcbuf = new byte[4096];
                         while ((len = fcis.read(fcbuf)) != -1) {
                             fcos.write(fcbuf, 0, len);
                         }
-                        fcis.close();
-                        fcos.close();
                     } else {
                         Logger.getLogger(XincoWebService.class.getName()).log(Level.FINE,
                                 "Didn't find default version log. Not creating copy of: {0}", in0.getDesignation());
@@ -321,6 +321,21 @@ public class XincoWebService {
                 xincoFile.delete();
             }
             return 0;
+        } finally {
+            if (fcis != null) {
+                try {
+                    fcis.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(XincoWebService.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (fcos != null) {
+                try {
+                    fcos.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(XincoWebService.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
 
@@ -669,23 +684,21 @@ public class XincoWebService {
     }
 
     public java.util.List<XincoCoreDataTypeAttribute> getXincoCoreDataTypeAttribute(XincoCoreDataType in0, XincoCoreUser in1) {
-        if (XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword(), true)) {
-            return XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(in0.getId());
-        } else {
-            return null;
-        }
+        return XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword(), true)
+                ? XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(in0.getId()) : null;
     }
 
     /**
      * Web service operation
+     *
      * @param in0
      * @param in1
-     * @return  
+     * @return
      */
     public java.util.List<com.bluecubs.xinco.core.server.persistence.XincoCoreData> getRenderings(final XincoCoreData in0, final XincoCoreUser in1) {
         try {
-            XincoCoreUserServer user = new XincoCoreUserServer(in1.getUsername(), in1.getUserpassword());
-            return XincoCoreDataHasDependencyServer.getRenderings(in0.getId());
+            return XincoCoreUserServer.validCredentials(in1.getUsername(), in1.getUserpassword(), true)?
+                    XincoCoreDataHasDependencyServer.getRenderings(in0.getId()):new ArrayList<com.bluecubs.xinco.core.server.persistence.XincoCoreData>();
         } catch (XincoException e) {
             return new ArrayList<com.bluecubs.xinco.core.server.persistence.XincoCoreData>();
         }
@@ -693,9 +706,10 @@ public class XincoWebService {
 
     /**
      * Web service operation
+     *
      * @param in0
      * @param in1
-     * @return  
+     * @return
      */
     public Boolean isRendering(final XincoCoreData in0, final XincoCoreUser in1) {
         try {

@@ -9,7 +9,7 @@ import org.junit.Test;
  *
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public class XincoDependencyTypeServerTest extends XincoTestCase {
+public class XincoDependencyTypeServerTest extends AbstractXincoTestCase {
 
     public XincoDependencyTypeServerTest(String testName) {
         super(testName);

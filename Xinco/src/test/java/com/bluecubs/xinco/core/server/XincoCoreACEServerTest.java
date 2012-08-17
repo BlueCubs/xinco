@@ -11,7 +11,7 @@ import junit.framework.TestSuite;
  *
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public class XincoCoreACEServerTest extends XincoTestCase {
+public class XincoCoreACEServerTest extends AbstractXincoTestCase {
 
     public XincoCoreACEServerTest(String testName) {
         super(testName);

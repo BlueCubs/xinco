@@ -297,6 +297,10 @@
                                 <targetJdk>${compileSource}</targetJdk>
                                 <excludes>
                                     <exclude>**/server/service/*.java</exclude>
+                                    <exclude>**/generated-sources/**/*</exclude>
+                                    <exclude>**/generated-test-sources/**/*</exclude>
+                                    <exclude>**/service/**/*</exclude>
+                                    <exclude>**/persistence/**/*</exclude>
                                 </excludes>
                                 <excludeRoots>
                                     <excludeRoot>target/generated-sources</excludeRoot>
@@ -310,8 +314,10 @@
                             <version>2.5.2</version>
                             <configuration>
                                 <excludes>
-                                    <exclude>**/server/service/*.java</exclude>
-                                    <exclude>**/server/persistence/*.java</exclude>
+                                    <exclude>**/generated-sources/**/*</exclude>
+                                    <exclude>**/generated-test-sources/**/*</exclude>
+                                    <exclude>**/service/**/*</exclude>
+                                    <exclude>**/persistence/**/*</exclude>
                                 </excludes>
                                 <excludeRoots>
                                     <excludeRoot>target/generated-sources</excludeRoot>
