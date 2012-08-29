@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<resource name="jdbc/xincodemo" auth="Container" type="javax.sql.DataSource">
+ <param name="username" value="bluecubs" />
+ <param name="password" value="xinco" />
+ <param name="url" value="jdbc:cloudbees://xincodemo" />
+</resource>
