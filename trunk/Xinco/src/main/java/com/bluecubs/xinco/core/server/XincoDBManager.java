@@ -439,14 +439,13 @@ public class XincoDBManager {
     public static EntityManagerFactory getEntityManagerFactory() throws XincoException {
         if (emf == null) {
             try {
-                //Use the context defined Database connection
-                (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
                 try {
                     demo = (Boolean) (new InitialContext()).lookup("java:comp/env/xinco/demo");
                 } catch (Exception e) {
-                    LOG.log(Level.SEVERE, null, e);
                     demo = false;
                 }
+                //Use the context defined Database connection
+                (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
                 if (isDemo()) {
                     try {
                         demoResetPeriod = (Long) (new InitialContext()).lookup("java:comp/env/xinco/demo-period");
@@ -460,7 +459,7 @@ public class XincoDBManager {
                                 + " each {0} milliseconds", demoResetPeriod);
                     }
                 }
-                emf = Persistence.createEntityManagerFactory(config.getJNDIDB());
+                emf = Persistence.createEntityManagerFactory(isDemo() ? "XincoDemo" : config.getJNDIDB());
                 LOG.log(Level.INFO, "Using context defined database connection: {0}", config.getJNDIDB());
                 usingContext = true;
             } catch (Exception e) {

@@ -23,11 +23,11 @@
     <!-- ### Note: For H2, make sure this values match the contents of   ###-->
     <!-- ### web.xml for proper shutdown of H2 database!                 ###-->
     <!-- ###################################################################-->
-    <Resource auth="Container" driverClassName="${db.driver}"
+    <Resource auth="Container" driverClassName="org.h2.Driver"
               maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB"
-              password="${db.password}" type="javax.sql.DataSource"
-              url="${db.url}"
-              username="${db.username}"/>
+              password="" type="javax.sql.DataSource"
+              url="jdbc:h2:file:~/Xinco/data/xinco;CREATE=TRUE;LOCK_TIMEOUT=10000"
+              username="root"/>
     <!-- Turn off session serialization -->
     <Manager pathname=""/>
     <!-- ################# Optional Configuration #################-->

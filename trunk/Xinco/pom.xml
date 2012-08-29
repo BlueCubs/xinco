@@ -5,12 +5,12 @@
     <groupId>com.bluecubs.xinco</groupId>
     <artifactId>Xinco</artifactId>
     <packaging>war</packaging>
-    <version>3.0.0.M5</version>
+    <version>3.0.0.M6-SNAPSHOT</version>
     <name>Xinco DMS</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <vaadin.version>6.8.1</vaadin.version>
+        <vaadin.version>6.8.2</vaadin.version>
         <gwt.version>2.4.0</gwt.version>
         <gwt.plugin.version>2.4.0</gwt.plugin.version>
         <skipTests>false</skipTests>
@@ -18,11 +18,7 @@
         <widgetset.path>src/main/webapp</widgetset.path>
         <flyway.version>1.7</flyway.version>
         <xinco.version>${project.version}</xinco.version>
-        <!--Database connection settings defaults. Can be overwritten by passing arguments to Maven-->
-        <db.url>jdbc:h2:file:~/Xinco/data/xinco;CREATE=TRUE;LOCK_TIMEOUT=10000</db.url>
-        <db.password></db.password>
-        <db.driver>org.h2.Driver</db.driver>
-        <db.username>root</db.username>
+        <context.xml.file>src/main/webapp/META-INF/context.xml</context.xml.file>
     </properties>
 
     <build>
@@ -39,6 +35,7 @@
                             <filtering>${filter}</filtering>
                         </resource>
                     </webResources>
+                    <containerConfigXML>${context.xml.file}</containerConfigXML>
                 </configuration>
             </plugin>
             <plugin>
@@ -531,25 +528,4 @@
             <version>${flyway.version}</version>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>default-tools.jar</id>
-            <activation>
-                <property>
-                    <name>java.vendor</name>
-                    <value>Sun Microsystems Inc.</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>com.sun</groupId>
-                    <artifactId>tools</artifactId>
-                    <version>1.4.2</version>
-                    <scope>system</scope>
-                    <systemPath>${JAVA.HOME}/../lib/tools.jar</systemPath>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
 </project>
