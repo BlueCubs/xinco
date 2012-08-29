@@ -73,7 +73,7 @@ public class XincoDBManager {
     private static XincoDBManager instance;
     private static DBState state = DBState.START_UP;
     private static final Logger LOG = Logger.getLogger(XincoDBManager.class.getName());
-    private static boolean demo = false;
+    private static boolean demo = false, cloudbees = false;
     private static long demoResetPeriod = 0;
 
     /**
@@ -448,6 +448,7 @@ public class XincoDBManager {
                 (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
                 if (isDemo()) {
                     try {
+                        cloudbees = (Boolean) (new InitialContext()).lookup("java:comp/env/xinco/cloudbees");
                         demoResetPeriod = (Long) (new InitialContext()).lookup("java:comp/env/xinco/demo-period");
                     } catch (Exception e) {
                         LOG.log(Level.SEVERE, null, e);

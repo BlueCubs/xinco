@@ -13,12 +13,11 @@
         <vaadin.version>6.8.2</vaadin.version>
         <gwt.version>2.4.0</gwt.version>
         <gwt.plugin.version>2.4.0</gwt.plugin.version>
-        <skipTests>false</skipTests>
         <filter>true</filter>
         <widgetset.path>src/main/webapp</widgetset.path>
         <flyway.version>1.7</flyway.version>
         <xinco.version>${project.version}</xinco.version>
-        <context.xml.file>src/main/webapp/META-INF/context.xml</context.xml.file>
+        <context.xml.file>${basedir}/src/main/webapp/META-INF/context.xml</context.xml.file>
     </properties>
 
     <build>
@@ -29,12 +28,6 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                    <webResources>
-                        <resource>
-                            <directory>src/main/webapp</directory>
-                            <filtering>${filter}</filtering>
-                        </resource>
-                    </webResources>
                     <containerConfigXML>${context.xml.file}</containerConfigXML>
                 </configuration>
             </plugin>
@@ -528,4 +521,10 @@
             <version>${flyway.version}</version>
         </dependency>
     </dependencies>
+    
+    <profiles>
+        <profile>
+            <id>cloudbees</id>
+        </profile>
+    </profiles>
 </project>
