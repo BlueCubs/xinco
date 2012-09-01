@@ -18,6 +18,7 @@
         <flyway.version>1.7</flyway.version>
         <xinco.version>${project.version}</xinco.version>
         <context.xml.file>${basedir}/src/main/webapp/META-INF/context.xml</context.xml.file>
+        <eclipselink.version>2.4.0</eclipselink.version>
     </properties>
 
     <build>
@@ -343,13 +344,7 @@
         </repository>
         <repository>
             <id>EclipseLink Repo</id>
-            <!-- note that ampersands in this URL are escaped because this is in an xml file -
-                   un-escape them to use in browser
-            -->
             <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
         </repository>
         <repository>
             <id>project.local</id>
@@ -422,7 +417,13 @@
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
-            <version>2.3.2</version>
+            <version>${eclipselink.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commonj.sdo</artifactId>
+                    <groupId>commonj.sdo</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
