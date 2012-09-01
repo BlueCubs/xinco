@@ -7,7 +7,7 @@ import java.util.logging.Logger;
  *
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public class XincoSettingServerTest extends AbstractXincoTestCase {
+public class XincoSettingServerTest extends AbstractXincoDataBaseTestCase {
 
     public XincoSettingServerTest(String testName) {
         super(testName);
