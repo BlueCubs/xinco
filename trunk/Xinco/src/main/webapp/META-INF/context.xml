@@ -6,18 +6,18 @@
     <!-- ###################################################################-->
     <!-- H2 Embedded Database, not for production. 
          Note: For H2, make sure this values match the contents of
-         web.xml for proper shutdown of H2 database!
+         web.xml for proper shutdown of H2 database!-->
     <Resource auth="Container" driverClassName="org.h2.Driver"
               maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB"
               password="" type="javax.sql.DataSource"
               url="jdbc:h2:file:~/Xinco/data/xinco;CREATE=TRUE;LOCK_TIMEOUT=10000"
-              username="root"/>-->
-    <!-- MySQL Database -->
+              username="root"/>
+    <!-- MySQL Database 
     <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver"
               maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB"
-              password="arthrocare" type="javax.sql.DataSource"
+              password="" type="javax.sql.DataSource"
               url="jdbc:mysql://localhost:3306/xinco?autoReconnect=true"
-              username="root"/>
+              username="root"/>-->
     <!-- Oracle Database 
     <Resource auth="Container" driverClassName="oracle.jdbc.driver.OracleDriver"
               maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/XincoDB"
