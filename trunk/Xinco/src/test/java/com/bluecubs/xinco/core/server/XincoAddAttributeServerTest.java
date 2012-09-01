@@ -9,7 +9,7 @@ import org.junit.Test;
  *
  * @author Javier A. Ortiz Bultron <javier.ortiz.78@gmail.com>
  */
-public class XincoAddAttributeServerTest extends AbstractXincoTestCase {
+public class XincoAddAttributeServerTest extends AbstractXincoDataBaseTestCase {
 
     private static XincoCoreDataServer xcds;
 
