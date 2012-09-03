@@ -128,6 +128,7 @@ INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (4, 'version.postfix', 0, 'M5', 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (37, 'import.path', NULL, 'C:\\\\Temp\\\\xinco\\\\file_repository\\\\import', 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (38, 'import.period', NULL, NULL, 0, 14400000);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (39, 'general.title', NULL, 'xinco DMS - the Core of Information and Document Management', 0, 0);
 INSERT INTO `xinco_dependency_behavior` (`id`, `designation`, `description`) VALUES (1, 'dependency.behavior.one-way', 'dependency.behavior.one-way.desc');
 INSERT INTO `xinco_dependency_behavior` (`id`, `designation`, `description`) VALUES (2, 'dependency.behavior.two-way', 'dependency.behavior.two-way.desc');
 INSERT INTO `xinco_dependency_type` (`id`, `xinco_dependency_behavior_id`, `designation`, `description`) VALUES (1, 2, 'dependency.related', 'dependency.related.desc');
