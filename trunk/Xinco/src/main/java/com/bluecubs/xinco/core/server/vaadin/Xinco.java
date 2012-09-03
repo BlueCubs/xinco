@@ -16,6 +16,7 @@ import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.server.XincoDependencyTypeServer;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
+import com.bluecubs.xinco.core.server.db.DBState;
 import com.bluecubs.xinco.core.server.index.XincoIndexer;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecord;
@@ -115,7 +116,7 @@ import org.vaadin.hene.expandingtextarea.ExpandingTextArea;
 public class Xinco extends Application implements HttpServletRequestListener {
 
     //client version
-    private XincoVersion xincoClientVersion = null;
+    private XincoVersion xincoVersion = null;
     private ResourceBundle xerb =
             ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", Locale.getDefault());
     private XincoCoreUserServer loggedUser = null;
@@ -208,77 +209,82 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     resetTimer();
                 }
             });
-            xincoClientVersion = new XincoVersion();
-            try {
-                xincoClientVersion.setVersionHigh(XincoSettingServer.getSetting(
-                        new XincoCoreUserServer(1), "version.high").getIntValue());
-                xincoClientVersion.setVersionMid(XincoSettingServer.getSetting(
-                        new XincoCoreUserServer(1), "version.mid").getIntValue());
-                xincoClientVersion.setVersionLow(XincoSettingServer.getSetting(
-                        new XincoCoreUserServer(1), "version.low").getIntValue());
-                xincoClientVersion.setVersionPostfix(XincoSettingServer.getSetting(
-                        new XincoCoreUserServer(1), "version.postfix").getStringValue());
-            } catch (com.bluecubs.xinco.core.XincoException ex) {
-                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            version = XincoSettingServer.getSetting(new XincoCoreUserServer(1),
-                    "version.high").getIntValue() + "."
-                    + XincoSettingServer.getSetting(new XincoCoreUserServer(1),
-                    "version.mid").getIntValue() + "."
-                    + XincoSettingServer.getSetting(new XincoCoreUserServer(1),
-                    "version.low").getIntValue() + " "
-                    + XincoSettingServer.getSetting(new XincoCoreUserServer(1),
-                    "version.postfix").getStringValue();
-            icon = new Embedded("Xinco - "
-                    + getInstance().getResource().getString("general.version") + " "
-                    + version, new ThemeResource("img/blueCubsSmall.gif"));
-            icon.setType(Embedded.TYPE_IMAGE);
-            login = new com.vaadin.ui.Button(
-                    getInstance().getResource().getString("general.login"),
-                    new com.vaadin.ui.Button.ClickListener() {
-                        @Override
-                        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                            showLoginDialog();
-                        }
-                    });
-            login.setDebugId("login");
-            logout = new com.vaadin.ui.Button(
-                    getInstance().getResource().getString("general.logout"),
-                    new com.vaadin.ui.Button.ClickListener() {
-                        @Override
-                        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                            loggedUser = null;
-                            try {
-                                showMainWindow();
-                            } catch (XincoException ex) {
-                                Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+            xincoVersion = new XincoVersion();
+            if (XincoDBManager.getState().equals(DBState.VALID)) {
+                try {
+                    xincoVersion.setVersionHigh(XincoSettingServer.getSetting(
+                            new XincoCoreUserServer(1), "version.high").getIntValue());
+                    xincoVersion.setVersionMid(XincoSettingServer.getSetting(
+                            new XincoCoreUserServer(1), "version.mid").getIntValue());
+                    xincoVersion.setVersionLow(XincoSettingServer.getSetting(
+                            new XincoCoreUserServer(1), "version.low").getIntValue());
+                    xincoVersion.setVersionPostfix(XincoSettingServer.getSetting(
+                            new XincoCoreUserServer(1), "version.postfix").getStringValue());
+                } catch (com.bluecubs.xinco.core.XincoException ex) {
+                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                version = XincoSettingServer.getSetting(new XincoCoreUserServer(1),
+                        "version.high").getIntValue() + "."
+                        + XincoSettingServer.getSetting(new XincoCoreUserServer(1),
+                        "version.mid").getIntValue() + "."
+                        + XincoSettingServer.getSetting(new XincoCoreUserServer(1),
+                        "version.low").getIntValue() + " "
+                        + XincoSettingServer.getSetting(new XincoCoreUserServer(1),
+                        "version.postfix").getStringValue();
+                icon = new Embedded("Xinco - "
+                        + getInstance().getResource().getString("general.version") + " "
+                        + version, new ThemeResource("img/blueCubsSmall.gif"));
+                icon.setType(Embedded.TYPE_IMAGE);
+                login = new com.vaadin.ui.Button(
+                        getInstance().getResource().getString("general.login"),
+                        new com.vaadin.ui.Button.ClickListener() {
+                            @Override
+                            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                                showLoginDialog();
                             }
-                        }
-                    });
-            profile = new com.vaadin.ui.Button(
-                    getInstance().getResource().getString("message.admin.userProfile"),
-                    new com.vaadin.ui.Button.ClickListener() {
-                        @Override
-                        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                            showUserAdminWindow(false);
-                        }
-                    });
-            if (XincoDBManager.config.isGuessLanguage()) {
-                // Use the locale from the request as default.
-                // Login uses this setting later.
-                setLocale(((WebApplicationContext) getContext()).getBrowser().getLocale());
-                showMainWindow();
-            } else {
-                showLanguageSelection();
+                        });
+                login.setDebugId("login");
+                logout = new com.vaadin.ui.Button(
+                        getInstance().getResource().getString("general.logout"),
+                        new com.vaadin.ui.Button.ClickListener() {
+                            @Override
+                            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                                loggedUser = null;
+                                try {
+                                    showMainWindow();
+                                } catch (XincoException ex) {
+                                    Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        });
+                profile = new com.vaadin.ui.Button(
+                        getInstance().getResource().getString("message.admin.userProfile"),
+                        new com.vaadin.ui.Button.ClickListener() {
+                            @Override
+                            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                                showUserAdminWindow(false);
+                            }
+                        });
+                if (XincoDBManager.config.isGuessLanguage()) {
+                    // Use the locale from the request as default.
+                    // Login uses this setting later.
+                    setLocale(((WebApplicationContext) getContext()).getBrowser().getLocale());
+                    showMainWindow();
+                } else {
+                    showLanguageSelection();
+                }
+            }else{
+                //Trigger the error window below
+                throw new XincoException("Database is not in valid state! Unable to proceed.");
             }
         } catch (XincoException ex) {
             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE, null, ex);
             setMainWindow(new com.vaadin.ui.Window("Error"));
             getMainWindow().addComponent(new com.vaadin.ui.Label(
-                    "Unable to start application, please contact your administrator!"));
+                    "Unable to start application, please contact your administrator!\n"
+                    + XincoDBManager.displayDBStatus()));
             Logger.getLogger(Xinco.class.getName()).log(Level.SEVERE,
-                    "An uncaught exception occurred: ",
-                    ex);
+                    "An uncaught exception occurred: ", ex);
         }
     }
 
@@ -415,6 +421,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
         });
         languages.setCaption(getInstance().getResource().getString("general.language") + ":");
         languages.setValue(getLocale().getLanguage());
+        com.vaadin.ui.Label title = new com.vaadin.ui.Label(XincoSettingServer.getSetting(new XincoCoreUserServer(1), 
+                "general.title").getStringValue());
+        getMainWindow().addComponent(title);
         getMainWindow().addComponent(languages);
         getMainWindow().addComponent(ssc);
     }
