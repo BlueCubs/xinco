@@ -1,5 +1,6 @@
 package com.bluecubs.xinco.core.server;
 
+import com.bluecubs.xinco.core.server.db.DBState;
 import junit.framework.TestCase;
 
 /**
@@ -15,5 +16,6 @@ public abstract class AbstractXincoDataBaseTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         XincoDBManager.setPU("XincoTest");
+        assertTrue(XincoDBManager.getState().equals(DBState.VALID));
     }
 }

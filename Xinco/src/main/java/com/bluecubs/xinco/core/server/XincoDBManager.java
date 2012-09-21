@@ -35,7 +35,7 @@ package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.db.DBState;
-import com.bluecubs.xinco.core.server.service.XincoVersion;
+import com.bluecubs.xinco.core.server.tools.Tool;
 import com.bluecubs.xinco.tools.MD5;
 import com.googlecode.flyway.core.Flyway;
 import com.googlecode.flyway.core.exception.FlywayException;
@@ -46,11 +46,6 @@ import gudusoft.gsqlparser.ESqlStatementType;
 import gudusoft.gsqlparser.TGSqlParser;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -61,7 +56,6 @@ import javax.persistence.*;
 import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.EntityType;
 import javax.sql.DataSource;
-import org.h2.jdbcx.JdbcDataSource;
 
 public class XincoDBManager {
 
@@ -104,12 +98,30 @@ public class XincoDBManager {
         reload(false);
     }
 
+    public static void waitForDB() {
+        while (XincoDBManager.getState() != DBState.VALID
+                && XincoDBManager.getState() != DBState.UPDATED
+                && XincoDBManager.getState() != DBState.ERROR) {
+            LOG.log(Level.INFO,
+                    "Waiting for DB initialization. Current state: {0}",
+                    (XincoDBManager.getState() != null ? XincoDBManager.getState().name() : null));
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException ex) {
+                LOG.log(Level.SEVERE, null, ex);
+            }
+        }
+        LOG.log(Level.INFO, "DB ready, resuming...");
+    }
+
     public static void reload(boolean close) throws XincoException {
         if (close) {
             close();
         }
-        //Update the database with flyway
+        getEntityManagerFactory();
         updateDBState();
+        generateIDs();
+        config.loadSettings();
     }
 
     private static void processFields(Field[] fields) {
@@ -216,139 +228,38 @@ public class XincoDBManager {
         return state.getMessage();
     }
 
-    public static void processDBState(DataSource ds) {
-        switch (getState()) {
-            case NEED_INIT:
-                //Initialize database
-                if (ds != null) {
-                    initializeFlyway(ds);
-                    //Connect to database and create the tables
-                    getEntityManagerFactory();
-                } else {
-                    setState(DBState.ERROR);
-                }
-                break;
-            case NEED_UPDATE:
-                if (ds != null) {
-                    //Check to see if we have Flyway metadata
-                    Flyway flyway = new Flyway();
-                    flyway.setDataSource(ds);
-                    MetaDataTableRow status = flyway.status();
-                    if (status == null) {
-                        //Check the version of the database
-                        XincoVersion xincoVersion = new XincoVersion();
-                        try {
-                            xincoVersion.setVersionHigh(XincoSettingServer.getSetting(
-                                    new XincoCoreUserServer(1), "version.high").getIntValue());
-                            xincoVersion.setVersionMid(XincoSettingServer.getSetting(
-                                    new XincoCoreUserServer(1), "version.mid").getIntValue());
-                            xincoVersion.setVersionLow(XincoSettingServer.getSetting(
-                                    new XincoCoreUserServer(1), "version.low").getIntValue());
-                            xincoVersion.setVersionPostfix(XincoSettingServer.getSetting(
-                                    new XincoCoreUserServer(1), "version.postfix").getStringValue());
-                            if(xincoVersion.getVersionHigh()>=3
-                                    &&xincoVersion.getVersionMid()>=0
-                                    &&xincoVersion.getVersionLow()>=0){
-                                
-                            }
-                        } catch (com.bluecubs.xinco.core.XincoException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
-                            setState(DBState.ERROR);
-                        }
-                        //Tables there and no Flyway? Not safe to update
-                        setState(DBState.NEED_MANUAL_UPDATE);
-                    } else {
-                        //Database has Flyway metadata already
-                        //Update the database
-                        updateDatabase(ds);
-                    }
-                } else {
-                    setState(DBState.ERROR);
-                }
-                break;
-            case VALID:
-                generateIDs();
-                //Load settings
-                config.loadSettings();
-                break;
-            case ERROR:
-            //Fall thruogh, nothing to do
-            default:
-        }
-        if (getState() != DBState.VALID
-                && getState() != DBState.ERROR
-                && getState() != DBState.NEED_MANUAL_UPDATE) {
-            processDBState(ds);
-        }
-    }
-
     public static void updateDBState() {
         try {
             DataSource ds = null;
-            Connection conn = null;
             try {
                 ds = (javax.sql.DataSource) new InitialContext().lookup("java:comp/env/jdbc/XincoDB");
-                conn = ds.getConnection();
             } catch (NamingException ne) {
-                //It might be the tests, use an H2 Database
-                ds = new JdbcDataSource();
-                ((JdbcDataSource) ds).setPassword("");
-                ((JdbcDataSource) ds).setUser("root");
-                ((JdbcDataSource) ds).setURL("jdbc:h2:file:data/xinco-test;MODE=MySQL");
-                try {
-                    //Load the H2 driver
-                    Class.forName("org.h2.Driver");
-                    conn = DriverManager.getConnection(((JdbcDataSource) ds).getURL(),
-                            ((JdbcDataSource) ds).getUser(), ((JdbcDataSource) ds).getPassword());
-                } catch (ClassNotFoundException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
-                    setState(DBState.ERROR);
-                } catch (SQLException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
-                    setState(DBState.ERROR);
-                }
-            } catch (SQLException ex) {
-                LOG.log(Level.SEVERE, null, ex);
-                setState(DBState.ERROR);
+                LOG.log(Level.SEVERE, null, ne);
             }
-            if (ds != null) {
-                ResultSet rs = null;
-                try {
-                    //Will throw a SQLException if the database is empty
-                    Statement stmt = conn.createStatement();
-                    String query = "select * from xinco_core_node;";
-                    rs = stmt.executeQuery(query);
-                    if (rs.next()) {
-                        //There's data there, try to update
-                        setState(DBState.NEED_UPDATE);
-                    } else {
-                        //Database present but not populated? Too risky to go automated
-                        setState(DBState.NEED_MANUAL_UPDATE);
-                    }
-                } catch (SQLException ex) {
-                    ///Tables not even there, initialize
-                    setState(DBState.NEED_INIT);
-                } finally {
-                    if (rs != null) {
-                        try {
-                            rs.close();
-                        } catch (SQLException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
-                        }
-                    }
-                    if (conn != null) {
-                        try {
-                            conn.close();
-                        } catch (SQLException ex) {
-                            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
+            if (namedQuery("XincoCoreNode.findAll").isEmpty()) {
+                //Database empty
+                state = DBState.NEED_INIT;
+                LOG.warning(state.getMessage());
+                //Initialize database
+                if (ds != null) {
+                    initializeFlyway(ds);
+                } else {
+                    state = DBState.ERROR;
                 }
-                processDBState(ds);
+            }
+            
+            if (ds != null) {
+                updateDatabase(ds);
+            } else {
+                state = DBState.ERROR;
+            }
+            
+            if (state != DBState.VALID) {
+                waitForDB();
             }
         } catch (XincoException ex) {
             LOG.log(Level.SEVERE, null, ex);
-            setState(DBState.ERROR);
+            state = DBState.ERROR;
         }
     }
 
@@ -417,14 +328,11 @@ public class XincoDBManager {
             }
         } else {
             LOG.info("Database has Flyway metadata already...");
+            displayDBStatus(status);
         }
-        displayDBStatus(status);
-        //Ready for the update phase
-        setState(DBState.NEED_UPDATE);
     }
 
     private static void updateDatabase(DataSource dataSource) {
-        //At this point the database is there with data present
         Flyway flyway = new Flyway();
         try {
             flyway.setDataSource(dataSource);
@@ -448,10 +356,8 @@ public class XincoDBManager {
     }
 
     private static void displayDBStatus(MetaDataTableRow status) {
-        if (status != null) {
-            LOG.log(Level.INFO, "Description: {0}\nState: {1}\nVersion: {2}",
-                    new Object[]{status.getDescription(), status.getState(), status.getVersion()});
-        }
+        LOG.log(Level.INFO, "Description: {0}\nState: {1}\nVersion: {2}",
+                new Object[]{status.getDescription(), status.getState(), status.getVersion()});
     }
 
     protected static void executeSQL(String filePath, Class relativeTo) throws XincoException, java.io.IOException {
@@ -529,13 +435,14 @@ public class XincoDBManager {
     public static EntityManagerFactory getEntityManagerFactory() throws XincoException {
         if (emf == null) {
             try {
+                //Use the context defined Database connection
+                (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
                 try {
                     demo = (Boolean) (new InitialContext()).lookup("java:comp/env/xinco/demo");
                 } catch (Exception e) {
+                    LOG.log(Level.SEVERE, null, e);
                     demo = false;
                 }
-                //Use the context defined Database connection
-                (new InitialContext()).lookup("java:comp/env/xinco/JNDIDB");
                 if (isDemo()) {
                     try {
                         demoResetPeriod = (Long) (new InitialContext()).lookup("java:comp/env/xinco/demo-period");
@@ -549,7 +456,7 @@ public class XincoDBManager {
                                 + " each {0} milliseconds", demoResetPeriod);
                     }
                 }
-                emf = Persistence.createEntityManagerFactory(isDemo() ? "XincoDemo" : config.getJNDIDB());
+                emf = Persistence.createEntityManagerFactory(config.getJNDIDB());
                 LOG.log(Level.INFO, "Using context defined database connection: {0}", config.getJNDIDB());
                 usingContext = true;
             } catch (Exception e) {
@@ -791,7 +698,56 @@ public class XincoDBManager {
 
     protected static void setState(DBState newState) {
         state = newState;
-        LOG.warning(state.getMessage());
+    }
+
+    //TODO: Update system. Won't be really needed until next DB change after 2.1.0
+    /**
+     * Update database to current version
+     *
+     * @param dbVersion Current DB version
+     * @param configVersion Latest version
+     */
+    private static void updateDatabase(String dbVersion, final String configVersion) {
+        if (state != DBState.UPDATING) {
+            //TODO: Look for the proper update script(s) and run them
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if (state != DBState.UPDATING) {
+                        try {
+                            state = DBState.UPDATING;
+                            //Lock Database
+                            setLocked(true);
+                            //TODO: Create back up
+                            //Set to current version (this should be the last step)
+                            XincoSettingServer setting = XincoSettingServer.getSetting("version.high");
+                            setting.setIntValue(Integer.valueOf(settings.getString("version.high")));
+                            setting.write2DB();
+                            setting = XincoSettingServer.getSetting("version.mid");
+                            setting.setIntValue(Integer.valueOf(settings.getString("version.mid")));
+                            setting.write2DB();
+                            setting = XincoSettingServer.getSetting("version.low");
+                            setting.setIntValue(Integer.valueOf(settings.getString("version.low")));
+                            setting.write2DB();
+                            setting = XincoSettingServer.getSetting("version.mid");
+                            setting.setIntValue(Integer.valueOf(settings.getString("version.mid")));
+                            setting.write2DB();
+                            setting = XincoSettingServer.getSetting("version.postfix");
+                            setting.setStringValue(settings.getString("version.postfix"));
+                            setting.write2DB();
+                            state = DBState.UPDATED;
+                            LOG.info(state.getMessage().replaceAll("%v", configVersion));
+                            //Unlock
+                            setLocked(false);
+                        } catch (XincoException ex) {
+                            LOG.log(Level.SEVERE, null, ex);
+                            //Unlock
+                            setLocked(false);
+                        }
+                    }
+                }
+            }).start();
+        }
     }
 
     /**

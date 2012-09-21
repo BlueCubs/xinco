@@ -39,7 +39,7 @@
             <property name="javax.persistence.jdbc.password" value=""/>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
             <property name="javax.persistence.jdbc.user" value="root"/>
-            <property name="eclipselink.ddl-generation" value="create-tables"/>
+            <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
             <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.DefaultSessionLog"/>
             <property name="eclipselink.logging.level" value="SEVERE"/>
         </properties>
@@ -83,7 +83,7 @@
             <property name="javax.persistence.jdbc.password" value=""/>
             <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
             <property name="javax.persistence.jdbc.user" value="root"/>
-            <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+            <property name="eclipselink.ddl-generation" value="drop-and-create-or-extend-tables"/>
             <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.DefaultSessionLog"/>
             <property name="eclipselink.logging.level" value="SEVERE"/>
         </properties>
@@ -130,7 +130,7 @@
             <property name="javax.persistence.jdbc.password" value=""/>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="javax.persistence.jdbc.user" value="root"/>
-            <property name="eclipselink.ddl-generation" value="create-tables"/>
+            <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
         </properties>
     </persistence-unit>
     <persistence-unit name="XincoPUJNDI" transaction-type="JTA">
@@ -169,7 +169,7 @@
         <class>com.bluecubs.xinco.core.server.persistence.XincoSettingT</class>
         <shared-cache-mode>ALL</shared-cache-mode>
         <properties>
-            <property name="eclipselink.ddl-generation" value="create-tables"/>
+            <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
             <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.DefaultSessionLog"/>
             <property name="eclipselink.logging.level" value="SEVERE"/>
             <property name="eclipselink.weaving" value="false"/>
@@ -221,7 +221,7 @@
         <class>com.bluecubs.xinco.core.server.persistence.XincoSettingT</class>
         <shared-cache-mode>ALL</shared-cache-mode>
         <properties>
-            <property name="eclipselink.ddl-generation" value="create-tables"/>
+            <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
             <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.DefaultSessionLog"/>
             <property name="eclipselink.logging.level" value="SEVERE"/>
             <property name="eclipselink.weaving" value="false"/>
