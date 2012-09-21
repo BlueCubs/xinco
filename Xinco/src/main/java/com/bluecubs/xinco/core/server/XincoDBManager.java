@@ -35,7 +35,6 @@ package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.db.DBState;
-import com.bluecubs.xinco.core.server.tools.Tool;
 import com.bluecubs.xinco.tools.MD5;
 import com.googlecode.flyway.core.Flyway;
 import com.googlecode.flyway.core.exception.FlywayException;
@@ -143,8 +142,6 @@ public class XincoDBManager {
                     }
                 }
             }
-        } catch (Exception ex1) {
-            LOG.log(Level.SEVERE, null, ex1);
         } finally {
             try {
                 if (LOG.isLoggable(Level.CONFIG)) {
@@ -202,12 +199,8 @@ public class XincoDBManager {
     }
 
     public void setLoc(Locale loc) {
-        try {
-            lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", loc);
-        } catch (Exception e) {
-            LOG.log(Level.FINE, null, e);
-            lrb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", Locale.getDefault());
-        }
+        lrb = ResourceBundle.getBundle(
+                "com.bluecubs.xinco.messages.XincoMessages", loc);
     }
 
     /**
@@ -247,13 +240,13 @@ public class XincoDBManager {
                     state = DBState.ERROR;
                 }
             }
-            
+
             if (ds != null) {
                 updateDatabase(ds);
             } else {
                 state = DBState.ERROR;
             }
-            
+
             if (state != DBState.VALID) {
                 waitForDB();
             }
@@ -290,9 +283,6 @@ public class XincoDBManager {
         } catch (XincoException ex) {
             LOG.log(Level.FINE, null, ex);
             return null;
-        } catch (Exception ex) {
-            LOG.log(Level.FINE, null, ex);
-            return null;
         }
     }
 
@@ -301,9 +291,6 @@ public class XincoDBManager {
             return getDBVersionNumber() + (XincoSettingServer.getSetting("version.postfix").getStringValue().isEmpty()
                     ? "" : " " + XincoSettingServer.getSetting("version.postfix").getStringValue());
         } catch (XincoException ex) {
-            LOG.log(Level.SEVERE, null, ex);
-            return null;
-        } catch (Exception ex) {
             LOG.log(Level.SEVERE, null, ex);
             return null;
         }
@@ -459,6 +446,7 @@ public class XincoDBManager {
                 emf = Persistence.createEntityManagerFactory(config.getJNDIDB());
                 LOG.log(Level.INFO, "Using context defined database connection: {0}", config.getJNDIDB());
                 usingContext = true;
+                
             } catch (Exception e) {
                 demo = false;
                 if (!usingContext) {
@@ -563,7 +551,7 @@ public class XincoDBManager {
             em = getEntityManager();
         }
         while (query.toLowerCase(Locale.getDefault()).contains("md5")) {
-            int start = query.toLowerCase().indexOf("md5");
+            int start = query.toLowerCase(Locale.getDefault()).indexOf("md5");
             int end = query.toLowerCase().indexOf(')', start);
             String toEncrypt = query.substring(start, end);
             toEncrypt = toEncrypt.substring(toEncrypt.indexOf('\'') + 1,
@@ -698,56 +686,6 @@ public class XincoDBManager {
 
     protected static void setState(DBState newState) {
         state = newState;
-    }
-
-    //TODO: Update system. Won't be really needed until next DB change after 2.1.0
-    /**
-     * Update database to current version
-     *
-     * @param dbVersion Current DB version
-     * @param configVersion Latest version
-     */
-    private static void updateDatabase(String dbVersion, final String configVersion) {
-        if (state != DBState.UPDATING) {
-            //TODO: Look for the proper update script(s) and run them
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (state != DBState.UPDATING) {
-                        try {
-                            state = DBState.UPDATING;
-                            //Lock Database
-                            setLocked(true);
-                            //TODO: Create back up
-                            //Set to current version (this should be the last step)
-                            XincoSettingServer setting = XincoSettingServer.getSetting("version.high");
-                            setting.setIntValue(Integer.valueOf(settings.getString("version.high")));
-                            setting.write2DB();
-                            setting = XincoSettingServer.getSetting("version.mid");
-                            setting.setIntValue(Integer.valueOf(settings.getString("version.mid")));
-                            setting.write2DB();
-                            setting = XincoSettingServer.getSetting("version.low");
-                            setting.setIntValue(Integer.valueOf(settings.getString("version.low")));
-                            setting.write2DB();
-                            setting = XincoSettingServer.getSetting("version.mid");
-                            setting.setIntValue(Integer.valueOf(settings.getString("version.mid")));
-                            setting.write2DB();
-                            setting = XincoSettingServer.getSetting("version.postfix");
-                            setting.setStringValue(settings.getString("version.postfix"));
-                            setting.write2DB();
-                            state = DBState.UPDATED;
-                            LOG.info(state.getMessage().replaceAll("%v", configVersion));
-                            //Unlock
-                            setLocked(false);
-                        } catch (XincoException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
-                            //Unlock
-                            setLocked(false);
-                        }
-                    }
-                }
-            }).start();
-        }
     }
 
     /**
