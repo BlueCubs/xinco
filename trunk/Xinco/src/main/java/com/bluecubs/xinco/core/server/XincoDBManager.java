@@ -55,6 +55,7 @@ import javax.persistence.*;
 import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.EntityType;
 import javax.sql.DataSource;
+import org.h2.jdbcx.JdbcDataSource;
 
 public class XincoDBManager {
 
@@ -233,12 +234,18 @@ public class XincoDBManager {
 
     public static void updateDBState() {
         try {
-            DataSource ds = null;
+            DataSource ds;
             try {
                 ds = (javax.sql.DataSource) new InitialContext()
                         .lookup("java:comp/env/jdbc/XincoDB");
             } catch (NamingException ne) {
-                LOG.log(Level.SEVERE, null, ne);
+                LOG.log(Level.FINE, null, ne);
+                //It might be the tests, use an H2 Database
+                ds = new JdbcDataSource();
+                ((JdbcDataSource) ds).setPassword("");
+                ((JdbcDataSource) ds).setUser("root");
+                ((JdbcDataSource) ds).setURL(
+                        "jdbc:h2:file:data/xinco-test;MODE=MySQL");
             }
             if (namedQuery("XincoCoreNode.findAll").isEmpty()) {
                 //Database empty
