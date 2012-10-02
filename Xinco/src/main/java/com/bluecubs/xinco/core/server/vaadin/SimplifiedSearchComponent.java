@@ -56,46 +56,52 @@ public class SimplifiedSearchComponent extends CustomComponent {
     private com.vaadin.ui.Panel panel;
 
     public SimplifiedSearchComponent() {
-        goToSelection = new Button(Xinco.getInstance().getResource().getString("window.search.gotoselection"));
+        goToSelection = new Button(Xinco.getInstance().getResource()
+                .getString("window.search.gotoselection"));
         dataSource = new LuceneContainer(XincoDBManager.config.fileIndexPath);
         table.setWidth(50, Sizeable.UNITS_PERCENTAGE);
         table.setColumnCollapsingAllowed(true);
         table.setSelectable(true);
-        panel = new com.vaadin.ui.Panel(Xinco.getInstance().getResource().getString("menu.search"));
+        panel = new com.vaadin.ui.Panel(Xinco.getInstance().getResource()
+                .getString("menu.search"));
         panel.setContent(new HorizontalLayout());
         final TextField criteria = new TextField();
         panel.addComponent(criteria);
-        search = new Button(Xinco.getInstance().getResource().getString("menu.search"), new com.vaadin.ui.Button.ClickListener() {
-            @Override
-            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                String query = criteria.getValue().toString();
-                if (query == null || query.length() == 0) {
-                    query = "*";
-                } else {
-                    //Search file name and content
-                    query = "general.filename:" + query + "  OR file:" + query + " ";
-                }
-                table.setContainerDataSource(null);
-                long st = System.currentTimeMillis();
-                dataSource.search(query, null, false);
-                long time = System.currentTimeMillis() - st;
-                int hits = dataSource.size();
-                table.setContainerDataSource(dataSource);
-                fixTable();
-                if (hits > 0) {
-                    results = new Window();
-                    results.addComponent(table);
-                    results.addComponent(goToSelection);
-                    results.setWidth(table.getWidth(), table.getWidthUnits());
-                    Xinco.getInstance().getMainWindow().addWindow(results);
-                    results.center();
-                }
-            }
-        });
+        search = new Button(Xinco.getInstance().getResource()
+                .getString("menu.search"),
+                new com.vaadin.ui.Button.ClickListener() {
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        String query = criteria.getValue().toString();
+                        if (query == null || query.length() == 0) {
+                            query = "*";
+                        } else {
+                            //Search file name and content
+                            query = "general.filename:" + query + "  OR file:"
+                                    + query + " ";
+                        }
+                        table.setContainerDataSource(null);
+                        long st = System.currentTimeMillis();
+                        dataSource.search(query, null, false);
+                        long time = System.currentTimeMillis() - st;
+                        int hits = dataSource.size();
+                        table.setContainerDataSource(dataSource);
+                        fixTable();
+                        if (hits > 0) {
+                            results = new Window();
+                            results.addComponent(table);
+                            results.addComponent(goToSelection);
+                            results.setWidth(table.getWidth(), table.getWidthUnits());
+                            Xinco.getInstance().getMainWindow().addWindow(results);
+                            results.center();
+                        }
+                    }
+                });
         table.addListener(new ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent event) {
-                goToSelection.setEnabled(table.getValue() != null);
+                goToSelection.setEnabled(
+                        table.getValue() != null);
             }
         });
         goToSelection.setEnabled(false);
@@ -105,11 +111,15 @@ public class SimplifiedSearchComponent extends CustomComponent {
                 boolean haveAccess;
                 boolean loggedIn = Xinco.getInstance().getLoggedUser() != null;
                 //Get selected data
-                XincoCoreDataServer data = new XincoCoreDataServer(Integer.valueOf(table.getItem(table.getValue()).getItemProperty("id").toString()));
+                XincoCoreDataServer data = new XincoCoreDataServer(
+                        Integer.valueOf(table.getItem(table.getValue())
+                        .getItemProperty("id").toString()));
                 //Now check permissions on the file for the user
                 data.loadACL();
                 if (loggedIn) {
-                    XincoCoreACE ace = XincoCoreACEServer.checkAccess(Xinco.getInstance().getLoggedUser(), (ArrayList) data.getXincoCoreAcl());
+                    XincoCoreACE ace = XincoCoreACEServer.checkAccess(
+                            Xinco.getInstance().getLoggedUser(),
+                            (ArrayList) data.getXincoCoreAcl());
                     haveAccess = ace.isReadPermission();
                 } else {
                     haveAccess = canRead(data.getXincoCoreAcl());
@@ -120,14 +130,20 @@ public class SimplifiedSearchComponent extends CustomComponent {
                     //Now have to make sure there is access to all parent folders of data
                     XincoCoreNodeServer parent = null;
                     if (data.getXincoCoreNodeId() > 0) {
-                        parent = new XincoCoreNodeServer(data.getXincoCoreNodeId());
+                        parent = new XincoCoreNodeServer(
+                                data.getXincoCoreNodeId());
                     }
                     while (parent != null) {
-                        if ((loggedIn && XincoCoreACEServer.checkAccess(Xinco.getInstance().getLoggedUser(), (ArrayList) data.getXincoCoreAcl()).isReadPermission()) || canRead(parent.getXincoCoreAcl())) {
+                        if ((loggedIn && XincoCoreACEServer.checkAccess(
+                                Xinco.getInstance().getLoggedUser(),
+                                (ArrayList) data.getXincoCoreAcl())
+                                .isReadPermission())
+                                || canRead(parent.getXincoCoreAcl())) {
                             parents.add(parent.getId());
                         }
                         if (parent.getXincoCoreNodeId() > 0) {
-                            parent = new XincoCoreNodeServer(parent.getXincoCoreNodeId());
+                            parent = new XincoCoreNodeServer(
+                                    parent.getXincoCoreNodeId());
                         } else {
                             parent = null;
                         }
@@ -135,11 +151,16 @@ public class SimplifiedSearchComponent extends CustomComponent {
                     //If the last in the list is the root (1) we can access it!
                     haveAccess = parents.getLast() == 1;
                 }
-                if (!(haveAccess && Xinco.getInstance().expandTreeNodes(parents))) {
+                if (!(haveAccess && Xinco.getInstance()
+                        .expandTreeNodes(parents))) {
                     //Able to expand nodes
-                    getApplication().getMainWindow().showNotification(Xinco.getInstance().getResource().getString("error.data.sufficientrights"), Window.Notification.TYPE_WARNING_MESSAGE);
+                    getApplication().getMainWindow().showNotification(
+                            Xinco.getInstance().getResource()
+                            .getString("error.data.sufficientrights"),
+                            Window.Notification.TYPE_WARNING_MESSAGE);
                 } else {
-                    Xinco.getInstance().getXincoTree().setValue("data-" + data.getId());
+                    Xinco.getInstance().getXincoTree().setValue("data-"
+                            + data.getId());
                 }
                 Xinco.getInstance().getMainWindow().removeWindow(results);
             }
@@ -155,9 +176,13 @@ public class SimplifiedSearchComponent extends CustomComponent {
 
     private void fixTable() {
         for (Object id : table.getContainerPropertyIds()) {
-            table.setColumnCollapsed(id, !id.equals("id") && !id.equals("designation"));
+            table.setColumnCollapsed(id, !id.equals("id")
+                    && !id.equals("designation"));
             //Fix headers
-            table.setColumnHeader(id, Xinco.getInstance().getResource().containsKey(id.toString()) ? Xinco.getInstance().getResource().getString(id.toString()) : id.toString());
+            table.setColumnHeader(id, Xinco.getInstance().getResource()
+                    .containsKey(id.toString())
+                    ? Xinco.getInstance().getResource()
+                    .getString(id.toString()) : id.toString());
         }
     }
 
@@ -175,7 +200,9 @@ public class SimplifiedSearchComponent extends CustomComponent {
     }
 
     void refresh() {
-        panel.setCaption(Xinco.getInstance().getResource().getString("menu.search"));
-        search.setCaption(Xinco.getInstance().getResource().getString("menu.search"));
+        panel.setCaption(Xinco.getInstance().getResource()
+                .getString("menu.search"));
+        search.setCaption(Xinco.getInstance().getResource()
+                .getString("menu.search"));
     }
 }

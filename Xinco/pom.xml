@@ -9,7 +9,7 @@
     <name>Xinco DMS</name>
     
     <prerequisites>
-      <maven>3.0</maven>
+      <maven>2.2.1</maven>
     </prerequisites>
 
     <properties>
@@ -165,7 +165,7 @@
                     <!-- The name of your generated source package -->
                     <packageName>com.bluecubs.xinco.core.server.service</packageName>
                 </configuration>
-                <!-- if you want to use a specific version of JAX-WS, you can do so like this-->
+                <!-- if you want to use a specific version of JAX-WS, you can do so like this
                 <dependencies>
                     <dependency>
                         <groupId>com.sun.xml.ws</groupId>
@@ -189,7 +189,7 @@
                             </exclusion>
                         </exclusions>
                     </dependency>
-                </dependencies>
+                </dependencies>-->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -461,7 +461,7 @@
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
-            <version>3.6.1</version>
+            <version>3.4.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.lucene</groupId>
@@ -487,7 +487,7 @@
         <dependency>
             <groupId>org.vaadin.addons</groupId>
             <artifactId>lucenecontainer</artifactId>
-            <version>1.2.0</version>
+            <version>1.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.vaadin.addons</groupId>
@@ -497,7 +497,7 @@
         <dependency>
             <groupId>org.vaadin.addons</groupId>
             <artifactId>expandingtextarea</artifactId>
-            <version>1.0.0</version>
+            <version>0.1</version>
         </dependency>
         <dependency>
             <groupId>com.vaadin.addon</groupId>
@@ -507,7 +507,7 @@
         <dependency>
             <groupId>org.vaadin.addons</groupId>
             <artifactId>stepper</artifactId>
-            <version>2.0</version>
+            <version>1.2.0</version>
         </dependency>
         <!--End Vaadin plugins-->
         <!--TODO Bonita for workflows

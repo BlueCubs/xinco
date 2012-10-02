@@ -7,29 +7,27 @@
             <goal>clean:clean</goal>
             <goal>gwt:clean</goal>
             <goal>vaadin:update-widgetset</goal>
-            <goal>gwt:compile</goal>
-            
-            
+            <goal>gwt:compile</goal>  
         </goals>
     </action>
     <action>
-            <actionName>test</actionName>
-            <goals>
-                <goal>test</goal>
-            </goals>
-            <properties>
-                <skipTest>false</skipTest>
-            </properties>
-        </action>
+        <actionName>test</actionName>
+        <goals>
+            <goal>test</goal>
+        </goals>
+        <properties>
+            <skipTest>false</skipTest>
+        </properties>
+    </action>
     <action>
-            <actionName>test.single</actionName>
-            <goals>
-                <goal>test-compile</goal>
-                <goal>surefire:test</goal>
-            </goals>
-            <properties>
-                <test>${packageClassName}</test>
-                <skipTest>false</skipTest>
-            </properties>
-        </action>
+        <actionName>test.single</actionName>
+        <goals>
+            <goal>test-compile</goal>
+            <goal>surefire:test</goal>
+        </goals>
+        <properties>
+            <test>${packageClassName}</test>
+            <skipTest>false</skipTest>
+        </properties>
+    </action>
 </actions>

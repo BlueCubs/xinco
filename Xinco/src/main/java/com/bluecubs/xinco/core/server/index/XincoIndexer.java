@@ -62,6 +62,7 @@ import org.apache.lucene.util.Version;
 public class XincoIndexer {
 
     private static final Logger logger = Logger.getLogger(XincoIndexer.class.getSimpleName());
+    private static final Version version = Version.LUCENE_34;
 
     public static synchronized boolean indexXincoCoreData(XincoCoreData d, boolean index_content) {
         IndexWriter writer = null;
@@ -69,7 +70,10 @@ public class XincoIndexer {
             //check if document exists in index and delete
             XincoIndexer.removeXincoCoreData(d);
             //add document to index
-            writer = new IndexWriter(FSDirectory.open(new File(XincoDBManager.config.fileIndexPath)), new IndexWriterConfig(Version.LUCENE_34, new StandardAnalyzer(Version.LUCENE_34)));
+            writer = new IndexWriter(
+                    FSDirectory.open(new File(XincoDBManager.config.fileIndexPath)),
+                    new IndexWriterConfig(version,
+                    new StandardAnalyzer(version)));
             writer.addDocument(XincoDocument.getXincoDocument(d, index_content));
             //writer.optimize();
             writer.close();
@@ -89,18 +93,32 @@ public class XincoIndexer {
 
     public static synchronized boolean removeXincoCoreData(XincoCoreData d) {
         IndexReader reader = null;
+        IndexWriter writer = null;
         File indexDirectory = new File(XincoDBManager.config.fileIndexPath);
         if (indexDirectory.exists()) {
             //check if document exists in index and delete
             try {
-                reader = IndexReader.open(FSDirectory.open(new File(XincoDBManager.config.fileIndexPath)), false);
-                reader.deleteDocuments(new Term("id", "" + d.getId()));
+                reader = IndexReader.open(
+                        FSDirectory.open(new File(XincoDBManager.config.fileIndexPath)));
+                writer = new IndexWriter(
+                        FSDirectory.open(new File(XincoDBManager.config.fileIndexPath)),
+                        new IndexWriterConfig(version,
+                        new StandardAnalyzer(version)));
+                writer.deleteDocuments(new Term("id", "" + d.getId()));
                 reader.close();
+                writer.close();
             } catch (Exception re) {
                 logger.log(Level.SEVERE, null, re);
                 if (reader != null) {
                     try {
                         reader.close();
+                    } catch (Exception re2) {
+                        logger.log(Level.SEVERE, null, re2);
+                    }
+                }
+                if (writer != null) {
+                    try {
+                        writer.close();
                     } catch (Exception re2) {
                         logger.log(Level.SEVERE, null, re2);
                     }
@@ -116,8 +134,11 @@ public class XincoIndexer {
         boolean result = false;
         try {
             //optimize index
-            writer = new IndexWriter(FSDirectory.open(new File(XincoDBManager.config.fileIndexPath)), new IndexWriterConfig(Version.LUCENE_34, new StandardAnalyzer(Version.LUCENE_34)));
-            writer.optimize();
+            writer = new IndexWriter(
+                    FSDirectory.open(
+                    new File(XincoDBManager.config.fileIndexPath)),
+                    new IndexWriterConfig(version,
+                    new StandardAnalyzer(version)));
             writer.close();
             result = true;
         } catch (FileNotFoundException e) {
@@ -137,19 +158,25 @@ public class XincoIndexer {
         return result;
     }
 
-    public static synchronized ArrayList findXincoCoreData(String queryString, int l) {
+    public static synchronized ArrayList findXincoCoreData(String queryString,
+            int l) {
         int i;
         ArrayList<XincoCoreData> v = new ArrayList<XincoCoreData>();
         IndexSearcher searcher = null;
+        IndexReader reader = null;
         try {
-            searcher = new IndexSearcher(FSDirectory.open(new File(XincoDBManager.config.fileIndexPath)));
-            Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_34);
+            reader = IndexReader.open(
+                    FSDirectory.open(
+                    new File(XincoDBManager.config.fileIndexPath)));
+            searcher = new IndexSearcher(reader);
+            Analyzer analyzer = new StandardAnalyzer(version);
 
             //add language to query
             if (l != 0) {
                 queryString = queryString + " AND language:" + l;
             }
-            QueryParser parser = new QueryParser(Version.LUCENE_34, "designation", analyzer);
+            QueryParser parser = new QueryParser(version, "designation",
+                    analyzer);
 
             Query query = parser.parse(queryString);
 
@@ -174,6 +201,13 @@ public class XincoIndexer {
 
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (Exception re2) {
+                    logger.log(Level.SEVERE, null, re2);
+                }
+            }
             if (searcher != null) {
                 try {
                     searcher.close();
