@@ -359,29 +359,6 @@ public class XincoDBManager {
             LOG.log(Level.SEVERE, "Unable to validate", fe);
             setState(DBState.ERROR);
         }
-        if (getState().equals(DBState.VALID)) {
-            //Set to current version (this should be the last step)
-            XincoSettingServer setting =
-                    XincoSettingServer.getSetting("version.high");
-            setting.setIntValue(Integer.valueOf(
-                    settings.getString("version.high")));
-            setting.write2DB();
-            setting = XincoSettingServer.getSetting("version.mid");
-            setting.setIntValue(Integer.valueOf(
-                    settings.getString("version.mid")));
-            setting.write2DB();
-            setting = XincoSettingServer.getSetting("version.low");
-            setting.setIntValue(Integer.valueOf(
-                    settings.getString("version.low")));
-            setting.write2DB();
-            setting = XincoSettingServer.getSetting("version.mid");
-            setting.setIntValue(Integer.valueOf(
-                    settings.getString("version.mid")));
-            setting.write2DB();
-            setting = XincoSettingServer.getSetting("version.postfix");
-            setting.setStringValue(settings.getString("version.postfix"));
-            setting.write2DB();
-        }
     }
 
     private static void displayDBStatus(MetaDataTableRow status) {
@@ -424,42 +401,53 @@ public class XincoDBManager {
         InputStream in = relativeTo == null
                 ? new FileInputStream(new File(filePath))
                 : relativeTo.getResourceAsStream(filePath);
-        InputStreamReader is = new InputStreamReader(in);
+        InputStreamReader is = new InputStreamReader(in, "utf8");
         BufferedReader br = new BufferedReader(is);
         String line;
         ArrayList<String> statements = new ArrayList<String>();
         StringBuilder sql = new StringBuilder();
-        while ((line = br.readLine()) != null) {
-            line = line.trim();
-            sql.append(line).append("\n");
-        }
-        //The list of statement types to ignore
-        ArrayList<String> ignore = new ArrayList<String>();
-        ignore.add(ESqlStatementType.sstmysqlset.toString());
-        ignore.add(ESqlStatementType.sstinvalid.toString());
-        ignore.add(ESqlStatementType.sstmysqluse.toString());
-        ignore.add(ESqlStatementType.sstmysqldroptable.toString());
-        ignore.add(ESqlStatementType.sstcreatetable.toString());
-        ignore.add(ESqlStatementType.sstmysqlsetautocommit.toString());
-        ignore.add(ESqlStatementType.sstmysqlcommit.toString());
-        ignore.add(ESqlStatementType.sstmysqlstarttransaction.toString());
-        //-------------------------------------
-        if (!sql.toString().isEmpty()) {
-            TGSqlParser sqlparser = new TGSqlParser(EDbVendor.dbvmysql);
-            sqlparser.sqltext = sql.toString();
-            //Check statements for correctness first
-            sqlparser.parse();
-            //Everything fine, keep going
-            for (int i = 0; i < sqlparser.sqlstatements.size(); i++) {
-                if (!ignore.contains(sqlparser.sqlstatements.get(i).sqlstatementtype.toString())) {
-                    statements.add(sqlparser.sqlstatements.get(i).toString()
-                            .replaceAll("`xinco`.", ""));
+        try {
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                sql.append(line).append("\n");
+            }
+            //The list of statement types to ignore
+            ArrayList<String> ignore = new ArrayList<String>();
+            ignore.add(ESqlStatementType.sstmysqlset.toString());
+            ignore.add(ESqlStatementType.sstinvalid.toString());
+            ignore.add(ESqlStatementType.sstmysqluse.toString());
+            ignore.add(ESqlStatementType.sstmysqldroptable.toString());
+            ignore.add(ESqlStatementType.sstcreatetable.toString());
+            ignore.add(ESqlStatementType.sstmysqlsetautocommit.toString());
+            ignore.add(ESqlStatementType.sstmysqlcommit.toString());
+            ignore.add(ESqlStatementType.sstmysqlstarttransaction.toString());
+            //-------------------------------------
+            if (!sql.toString().isEmpty()) {
+                TGSqlParser sqlparser = new TGSqlParser(EDbVendor.dbvmysql);
+                sqlparser.sqltext = sql.toString();
+                //Check statements for correctness first
+                sqlparser.parse();
+                //Everything fine, keep going
+                for (int i = 0; i < sqlparser.sqlstatements.size(); i++) {
+                    if (!ignore.contains(
+                            sqlparser.sqlstatements.get(i).sqlstatementtype
+                            .toString())) {
+                        statements.add(sqlparser.sqlstatements.get(i).toString()
+                                .replaceAll("`xinco`.", ""));
+                    }
                 }
             }
+        } finally {
+            if (br != null) {
+                br.close();
+            }
+            if (is != null) {
+                is.close();
+            }
+            if (in != null) {
+                in.close();
+            }
         }
-        br.close();
-        is.close();
-        in.close();
         return statements;
     }
 
@@ -476,7 +464,7 @@ public class XincoDBManager {
                 try {
                     demo = (Boolean) (new InitialContext())
                             .lookup("java:comp/env/xinco/demo");
-                } catch (Exception e) {
+                } catch (NamingException e) {
                     LOG.log(Level.SEVERE, null, e);
                     demo = false;
                 }
@@ -502,7 +490,7 @@ public class XincoDBManager {
                         config.getJNDIDB());
                 usingContext = true;
 
-            } catch (Exception e) {
+            } catch (NamingException e) {
                 demo = false;
                 if (!usingContext) {
                     LOG.log(Level.WARNING,
@@ -618,7 +606,7 @@ public class XincoDBManager {
         }
         while (query.toLowerCase(Locale.getDefault()).contains("md5")) {
             int start = query.toLowerCase(Locale.getDefault()).indexOf("md5");
-            int end = query.toLowerCase().indexOf(')', start);
+            int end = query.toLowerCase(Locale.getDefault()).indexOf(')', start);
             String toEncrypt = query.substring(start, end);
             toEncrypt = toEncrypt.substring(toEncrypt.indexOf('\'') + 1,
                     toEncrypt.lastIndexOf('\''));
