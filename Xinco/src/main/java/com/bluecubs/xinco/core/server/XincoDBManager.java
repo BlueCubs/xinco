@@ -45,11 +45,6 @@ import gudusoft.gsqlparser.ESqlStatementType;
 import gudusoft.gsqlparser.TGSqlParser;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -109,8 +104,7 @@ public class XincoDBManager {
                 && XincoDBManager.getState() != DBState.ERROR) {
             LOG.log(Level.INFO,
                     "Waiting for DB initialization. Current state: {0}",
-                    (XincoDBManager.getState() != null
-                    ? XincoDBManager.getState().name() : null));
+                    (XincoDBManager.getState() != null ? XincoDBManager.getState().name() : null));
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException ex) {
@@ -155,7 +149,7 @@ public class XincoDBManager {
         } finally {
             try {
                 if (LOG.isLoggable(Level.CONFIG)) {
-                    for (Iterator<XincoIdServer> it =
+                    for (Iterator<XincoIdServer> it = 
                             XincoIdServer.getIds().iterator(); it.hasNext();) {
                         XincoIdServer next = it.next();
                         LOG.log(Level.CONFIG,
@@ -244,66 +238,28 @@ public class XincoDBManager {
 
     public static void updateDBState() {
         try {
-            DataSource ds = null;
-            Connection conn = null;
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
+            DataSource ds;
             try {
                 ds = (javax.sql.DataSource) new InitialContext()
                         .lookup("java:comp/env/jdbc/XincoDB");
             } catch (NamingException ne) {
-                try {
-                    LOG.log(Level.FINE, null, ne);
-                    //It might be the tests, use an H2 Database
-                    ds = new JdbcDataSource();
-                    ((JdbcDataSource) ds).setPassword("");
-                    ((JdbcDataSource) ds).setUser("root");
-                    ((JdbcDataSource) ds).setURL(
-                            "jdbc:h2:file:data/xinco-test;MODE=MySQL");
-                    //Load the H2 driver
-                    Class.forName("org.h2.Driver");
-                } catch (ClassNotFoundException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
-                }
+                LOG.log(Level.FINE, null, ne);
+                //It might be the tests, use an H2 Database
+                ds = new JdbcDataSource();
+                ((JdbcDataSource) ds).setPassword("");
+                ((JdbcDataSource) ds).setUser("root");
+                ((JdbcDataSource) ds).setURL(
+                        "jdbc:h2:file:data/xinco-test;MODE=MySQL");
             }
-            try {
-                conn = ds.getConnection();
-                stmt = conn.prepareStatement("select * from xinco_core_node");
-                rs = stmt.executeQuery();
-                if (!rs.next()) {
-                    //Database empty
-                    state = DBState.NEED_INIT;
-                    LOG.warning(state.getMessage());
-                    //Initialize database
-                    if (ds != null) {
-                        initializeFlyway(ds);
-                    } else {
-                        state = DBState.ERROR;
-                    }
-                }
-            } catch (SQLException ex) {
-                LOG.log(Level.SEVERE, null, ex);
-            } finally {
-                try {
-                    if (conn != null) {
-                        conn.close();
-                    }
-                } catch (SQLException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
-                }
-                try {
-                    if (stmt != null) {
-                        stmt.close();
-                    }
-                } catch (SQLException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
-                }
-                try {
-                    if (rs != null) {
-                        rs.close();
-                    }
-                } catch (SQLException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+            if (namedQuery("XincoCoreNode.findAll").isEmpty()) {
+                //Database empty
+                state = DBState.NEED_INIT;
+                LOG.warning(state.getMessage());
+                //Initialize database
+                if (ds != null) {
+                    initializeFlyway(ds);
+                } else {
+                    state = DBState.ERROR;
                 }
             }
 
