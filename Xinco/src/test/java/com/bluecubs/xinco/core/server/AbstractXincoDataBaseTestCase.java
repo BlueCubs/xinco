@@ -22,6 +22,12 @@ public abstract class AbstractXincoDataBaseTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
+        XincoDBManager.setPU("XincoTest");
+        assertTrue(XincoDBManager.getState().equals(DBState.VALID));
+    }
+    
+    @Override
+    protected void tearDown() throws Exception {
         if (deleteDatabase) {
             Connection conn = null;
             Statement stmt = null;
@@ -53,7 +59,8 @@ public abstract class AbstractXincoDataBaseTestCase extends TestCase {
                 }
             }
         }
-        XincoDBManager.setPU("XincoTest");
-        assertTrue(XincoDBManager.getState().equals(DBState.VALID));
+        XincoDBManager.close();
+        //Restore to default to make it atomic.
+        deleteDatabase=true;
     }
 }
