@@ -14,17 +14,6 @@
         </goals>
     </action>
     <action>
-        <actionName>test</actionName>
-        <goals>
-            <goal>cobertura:clean</goal>
-            <goal>cobertura:cobertura</goal>
-        </goals>
-        <properties>
-            <skipTests>false</skipTests>
-                
-        </properties>
-    </action>
-    <action>
         <actionName>CUSTOM-Get Sources and Javadoc</actionName>
         <displayName>Get Sources and Javadoc</displayName>
         <goals>
@@ -39,6 +28,8 @@
         <goals>
             <goal>clean</goal>
             <goal>site</goal>
+            
         </goals>
     </action>
+    
 </actions>
