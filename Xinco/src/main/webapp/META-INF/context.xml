@@ -40,7 +40,7 @@
     <!-- Warning! This will reset your database on 'demo-period' intervals so use with care
     Precautions have been put in place to check the database is an H2 embedded database before proceeding
     Please set value to false for use in production.-->
-    <Environment name="xinco/demo" override="false" type="java.lang.Boolean" value="false"/>
+    <Environment name="xinco/demo" override="false" type="java.lang.Boolean" value="true"/>
     <Environment name="xinco/demo-period" override="false" type="java.lang.Long" value="86400000"/>
     <!-- ################# ###################### #################-->
 </Context>
