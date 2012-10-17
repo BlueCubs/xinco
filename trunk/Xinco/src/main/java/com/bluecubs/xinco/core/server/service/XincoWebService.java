@@ -266,8 +266,8 @@ public class XincoWebService {
                     //find id of latest log
                     int MaxLogId = 0;
                     for (i = 0; i < data.getXincoCoreLogs().size(); i++) {
-                        if ((((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CREATION.ordinal() + 1)
-                                || (((XincoCoreLog) in0.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CHECKIN.ordinal() + 1)) {
+                        if ((((XincoCoreLog) data.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CREATION.ordinal() + 1)
+                                || (((XincoCoreLog) data.getXincoCoreLogs().get(0)).getOpCode() == OPCode.CHECKIN.ordinal() + 1)) {
                             MaxLogId = ((XincoCoreLog) data.getXincoCoreLogs().get(i)).getId();
                         }
                     }
