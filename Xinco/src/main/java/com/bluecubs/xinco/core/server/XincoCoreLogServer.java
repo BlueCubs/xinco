@@ -135,6 +135,9 @@ public class XincoCoreLogServer extends XincoCoreLog {
         try {
             XincoCoreLogJpaController controller = new XincoCoreLogJpaController(XincoDBManager.getEntityManagerFactory());
             com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl;
+            if (getOpCode() <= 0) {
+                throw new RuntimeException("Trying to write Log with invalid OpCode!");
+            }
             if (getId() > 0) {
                 xcl = controller.findXincoCoreLog(getId());
                 xcl.setXincoCoreData(new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreData(getXincoCoreDataId()));
@@ -179,7 +182,8 @@ public class XincoCoreLogServer extends XincoCoreLog {
                     "SELECT xcl FROM XincoCoreLog xcl WHERE "
                     + "xcl.xincoCoreData.id=" + attrID + " order by xcl.id");
             for (Iterator it = result.iterator(); it.hasNext();) {
-                com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl = (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) it.next();
+                com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl =
+                        (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) it.next();
                 cal = new GregorianCalendar();
                 cal.setTime(xcl.getOpDatetime());
                 coreLog.add(new XincoCoreLogServer(xcl));
