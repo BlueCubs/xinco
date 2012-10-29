@@ -29,6 +29,7 @@ public class XincoMenuItem {
      * @param loggedIn User needs to be logged in to use
      * @param dataOnly Only for data objects
      * @param nodeOnly Only for node objects
+     * @param selected Does something needs to be selected to enable this item? 
      */
     protected XincoMenuItem(int index, String groupName, String name,
             ThemeResource icon, com.vaadin.ui.MenuBar.Command command,

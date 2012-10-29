@@ -80,7 +80,8 @@ class DataDialog extends CustomComponent {
             } else {
                 Logger.getLogger(DataDialog.class.getName()).log(Level.WARNING, "{0} not defined in com.bluecubs.xinco.messages.XincoMessagesLocale", "Locale." + designation);
             }
-            if (Xinco.getInstance().getXincoCoreData() != null && Xinco.getInstance().getXincoCoreData().getXincoCoreLanguage() != null && Xinco.getInstance().getXincoCoreData().getXincoCoreLanguage().getSign().equals(designation)) {
+            if (Xinco.getInstance().getXincoCoreData() != null 
+                    && Xinco.getInstance().getXincoCoreData().getXincoCoreLanguage() != null && Xinco.getInstance().getXincoCoreData().getXincoCoreLanguage().getSign().equals(designation)) {
                 languages.setValue("Locale." + designation);
             }
         }

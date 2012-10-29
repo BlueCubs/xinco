@@ -161,16 +161,16 @@ public final class XincoCoreDataServer extends XincoCoreData {
         throw new XincoException("No major log history for XincoCoreData with id: " + xincoCoreDataId);
     }
 
-    public static XincoVersion getCurrentVersion(int xincoCoreDataId){
-        try{
-        XincoCoreDataServer temp = new XincoCoreDataServer(xincoCoreDataId);
-        temp.loadLogs();
-        if (!temp.getXincoCoreLogs().isEmpty()) {
-            return ((XincoCoreLog) temp.getXincoCoreLogs().get(temp.getXincoCoreLogs().size() - 1)).getVersion();
-        } else {
-            return null;
-        }
-        }catch (XincoException e){
+    public static XincoVersion getCurrentVersion(int xincoCoreDataId) {
+        try {
+            XincoCoreDataServer temp = new XincoCoreDataServer(xincoCoreDataId);
+            temp.loadLogs();
+            if (!temp.getXincoCoreLogs().isEmpty()) {
+                return ((XincoCoreLog) temp.getXincoCoreLogs().get(temp.getXincoCoreLogs().size() - 1)).getVersion();
+            } else {
+                return null;
+            }
+        } catch (XincoException e) {
             logger.log(Level.SEVERE, null, e);
             return null;
         }

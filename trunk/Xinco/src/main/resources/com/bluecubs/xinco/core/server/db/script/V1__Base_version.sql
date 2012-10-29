@@ -88,8 +88,8 @@ INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attrib
 INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 17, 'general.company_name', 'varchar', 255);
 INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 18, 'general.position', 'varchar', 255);
 INSERT INTO `xinco_core_data_type_attribute` (`xinco_core_data_type_id`, `attribute_id`, `designation`, `data_type`, `attr_size`) VALUES (4, 19, 'general.notes', 'text', 0);
-INSERT INTO `xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES (1, 1, 1, 1, now(), 'Creation!', 1, 0, 0, '');
-INSERT INTO `xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES (2, 2, 1, 1, now(), 'Creation!', 1, 0, 0, '');
+INSERT INTO `xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES (1, 1, 1, 1, now(), 'datawizard.logging.creation', 1, 0, 0, '');
+INSERT INTO `xinco_core_log` (`id`, `xinco_core_data_id`, `xinco_core_user_id`, `op_code`, `op_datetime`, `op_description`, `version_high`, `version_mid`, `version_low`, `version_postfix`) VALUES (2, 2, 1, 1, now(), 'datawizard.logging.creation', 1, 0, 0, '');
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (5, 'password.aging', 120, NULL, 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (6, 'password.attempts', 3, NULL, 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (7, 'password.unusable_period', 365, NULL, 0, 0);
