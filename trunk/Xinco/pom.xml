@@ -23,10 +23,73 @@
     <build>
         <finalName>Xinco-${xinco.version}</finalName>
         <plugins>
+            <!--Install the local dependencies-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>install-gsp</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>mvn</executable>
+                            <arguments>
+                                <argument>install:install-file</argument>
+                                <argument>-Dfile=repo/gudosoft/gsqlparser/gsp/4.2/gsp-4.2.jar</argument>
+                                <argument>-DgroupId=gudosoft.gsqlparser</argument>
+                                <argument>-DartifactId=gsp</argument>
+                                <argument>-Dversion=4.2</argument>
+                                <argument>-Dpackaging=jar</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install-jodconverter</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>mvn</executable>
+                            <arguments>
+                                <argument>install:install-file</argument>
+                                <argument>-Dfile=repo/org/artofsolving/jodconverter-core/3.0-beta-4/jodconverter-core-3.0-beta-4.jar</argument>
+                                <argument>-DgroupId=org.artofsolving</argument>
+                                <argument>-DartifactId=jod</argument>
+                                <argument>-Dversion=3.0-beta-4</argument>
+                                <argument>-Dpackaging=jar</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install-vaadin-chameleon-theme</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>mvn</executable>
+                            <arguments>
+                                <argument>install:install-file</argument>
+                                <argument>-Dfile=repo/org/vaadin/addons/vaadin-chameleon-theme/1.1.0/vaadin-chameleon-theme-1.1.0.jar</argument>
+                                <argument>-DgroupId=org.vaadin.addons</argument>
+                                <argument>-DartifactId=vaadin-chameleon-theme</argument>
+                                <argument>-Dversion=1.1.0</argument>
+                                <argument>-Dpackaging=jar</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.2</version>
+                <version>2.3</version>
                 <configuration>
                     <containerConfigXML>${context.xml.file}</containerConfigXML>
                 </configuration>
@@ -225,7 +288,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.2</version>
                 <configuration>
                     <reportPlugins>
                         <plugin>
@@ -523,10 +586,4 @@
             <version>1.7</version>
         </dependency>
     </dependencies>
-    
-    <profiles>
-        <profile>
-            <id>cloudbees</id>
-        </profile>
-    </profiles>
 </project>
