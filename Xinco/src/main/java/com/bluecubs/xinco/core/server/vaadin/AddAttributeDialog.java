@@ -53,9 +53,6 @@ class AddAttributeDialog extends CustomComponent {
         attrTable.addContainerProperty(Xinco.getInstance().getResource().getString("general.attribute"), String.class, null);
         attrTable.addContainerProperty(Xinco.getInstance().getResource().getString("general.details"), String.class, null);
         //prevent editing of fixed attributes for certain data types
-        //prevent editing of fixed attributes for certain data types
-        //prevent editing of fixed attributes for certain data types
-        //prevent editing of fixed attributes for certain data types
         int start = 0;
         //file = 1
         if (data.getXincoCoreDataType().getId() == 1) {
