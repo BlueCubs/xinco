@@ -52,10 +52,33 @@ import java.util.logging.Logger;
 
 public final class XincoCoreDataServer extends XincoCoreData {
 
-    private static HashMap parameters = new HashMap();
-    private static List result;
-    private static final Logger logger = Logger.getLogger(XincoCoreDataServer.class.getName());
+    private static HashMap<String, Object> parameters =
+            new HashMap<String, Object>();
+    private static List<Object> result;
+    private static final Logger LOG = 
+            Logger.getLogger(XincoCoreDataServer.class.getName());
     //create data object for data structures
+
+    /**
+     * This will get the latest major revision. Basically the last version with
+     * a '0' as a mid version
+     *
+     * @param xincoCoreDataId
+     * @return Path to last major version
+     * @throws SQLException
+     * @throws XincoException
+     */
+    public static String getLastMajorVersionDataPath(int xincoCoreDataId) throws SQLException, XincoException {
+        XincoCoreDataServer temp = new XincoCoreDataServer(xincoCoreDataId);
+        temp.loadLogs();
+        for (Iterator<Object> it = temp.getXincoCoreLogs().iterator(); it.hasNext();) {
+            XincoCoreLog log = (XincoCoreLog) it.next();
+            if (log.getVersion().getVersionMid() == 0) {
+                return XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, xincoCoreDataId, xincoCoreDataId + "-" + log.getId());
+            }
+        }
+        throw new XincoException("No major log history for XincoCoreData with id: " + xincoCoreDataId);
+    }
 
     public XincoCoreDataServer(int attrID) throws XincoException {
         try {
@@ -83,20 +106,19 @@ public final class XincoCoreDataServer extends XincoCoreData {
             throw new XincoException();
         }
     }
-
-    public void loadAddAttributes() {
-        getXincoAddAttributes().clear();
-        getXincoAddAttributes().addAll(XincoAddAttributeServer.getXincoAddAttributes(getId()));
-    }
-
-    public void loadLogs() {
-        getXincoCoreLogs().clear();
-        getXincoCoreLogs().addAll(XincoCoreLogServer.getXincoCoreLogs(getId()));
-    }
-
-    public void loadACL() {
-        getXincoCoreAcl().clear();
-        getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreData.id"));
+    public static XincoVersion getCurrentVersion(int xincoCoreDataId) {
+        try {
+            XincoCoreDataServer temp = new XincoCoreDataServer(xincoCoreDataId);
+            temp.loadLogs();
+            if (!temp.getXincoCoreLogs().isEmpty()) {
+                return ((XincoCoreLog) temp.getXincoCoreLogs().get(temp.getXincoCoreLogs().size() - 1)).getVersion();
+            } else {
+                return null;
+            }
+        } catch (XincoException e) {
+            LOG.log(Level.SEVERE, null, e);
+            return null;
+        }
     }
 
     //create data object for data structures
@@ -116,7 +138,22 @@ public final class XincoCoreDataServer extends XincoCoreData {
         getXincoCoreAcl().clear();
         getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreData.id"));
     }
+    public void loadAddAttributes() {
+        getXincoAddAttributes().clear();
+        getXincoAddAttributes().addAll(XincoAddAttributeServer.getXincoAddAttributes(getId()));
+    }
 
+    public static XincoVersion getLastMajorVersion(int xincoCoreDataId) throws XincoException {
+        XincoCoreDataServer temp = new XincoCoreDataServer(xincoCoreDataId);
+        temp.loadLogs();
+        for (Iterator<Object> it = temp.getXincoCoreLogs().iterator(); it.hasNext();) {
+            XincoCoreLog log = (XincoCoreLog) it.next();
+            if (log.getVersion().getVersionMid() == 0) {
+                return log.getVersion();
+            }
+        }
+        return null;
+    }
     public XincoCoreDataServer(com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd) throws XincoException {
         try {
             setId(xcd.getId());
@@ -140,55 +177,84 @@ public final class XincoCoreDataServer extends XincoCoreData {
         }
     }
 
-    /**
-     * This will get the latest major revision. Basically the last version with
-     * a '0' as a mid version
-     *
-     * @param xincoCoreDataId
-     * @return Path to last major version
-     * @throws SQLException
-     * @throws XincoException
-     */
-    public static String getLastMajorVersionDataPath(int xincoCoreDataId) throws SQLException, XincoException {
-        XincoCoreDataServer temp = new XincoCoreDataServer(xincoCoreDataId);
-        temp.loadLogs();
-        for (Iterator<Object> it = temp.getXincoCoreLogs().iterator(); it.hasNext();) {
-            XincoCoreLog log = (XincoCoreLog) it.next();
-            if (log.getVersion().getVersionMid() == 0) {
-                return XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, xincoCoreDataId, xincoCoreDataId + "-" + log.getId());
-            }
-        }
-        throw new XincoException("No major log history for XincoCoreData with id: " + xincoCoreDataId);
+    public void loadLogs() {
+        getXincoCoreLogs().clear();
+        getXincoCoreLogs().addAll(XincoCoreLogServer.getXincoCoreLogs(getId()));
     }
 
-    public static XincoVersion getCurrentVersion(int xincoCoreDataId) {
+    public static void removeFromDB(int userID, int id) throws XincoException {
+        if (!XincoDBManager.createdQuery("SELECT x FROM XincoCoreData x WHERE x.id = " + id).isEmpty()) {
+            try {
+                //Related logs
+                result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreLog x WHERE x.xincoCoreData.id=" + id);
+                for (Iterator it = result.iterator(); it.hasNext();) {
+                    com.bluecubs.xinco.core.server.persistence.XincoCoreLog log =
+                            (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) it.next();
+                    new XincoCoreLogJpaController(XincoDBManager.getEntityManagerFactory()).destroy(log.getId());
+                }
+                //Related ACEs
+                result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreAce x WHERE x.xincoCoreData.id=" + id);
+                for (Iterator it = result.iterator(); it.hasNext();) {
+                    com.bluecubs.xinco.core.server.persistence.XincoCoreAce ace =
+                            (com.bluecubs.xinco.core.server.persistence.XincoCoreAce) it.next();
+                    new XincoCoreAceJpaController(XincoDBManager.getEntityManagerFactory()).destroy(ace.getId());
+                }
+                //Related attributes
+                result = XincoDBManager.createdQuery("SELECT x FROM XincoAddAttribute x WHERE x.xincoCoreData.id=" + id);
+                for (Iterator it = result.iterator(); it.hasNext();) {
+                    com.bluecubs.xinco.core.server.persistence.XincoAddAttribute attr =
+                            (com.bluecubs.xinco.core.server.persistence.XincoAddAttribute) it.next();
+                    new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).destroy(attr.getXincoAddAttributePK());
+                }
+                for (com.bluecubs.xinco.core.server.persistence.XincoCoreData next : 
+                        XincoCoreDataHasDependencyServer.getRenderings(id)) {
+                    removeFromDB(userID, next.getId());
+                }
+                //Data itself
+                new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).destroy(id);
+            } catch (Exception e) {
+                Logger.getLogger(XincoCoreDataServer.class.getSimpleName()).log(Level.SEVERE, null, e);
+                throw new XincoException(e.getLocalizedMessage());
+            }
+        }
+    }
+    public void loadACL() {
+        getXincoCoreAcl().clear();
+        getXincoCoreAcl().addAll(XincoCoreACEServer.getXincoCoreACL(getId(), "xincoCoreData.id"));
+    }
+
+    public static List<XincoCoreData> findXincoCoreData(String attrS, int attrLID, boolean attrSA, boolean attrSFD) {
+        ArrayList<XincoCoreData> data = new ArrayList<XincoCoreData>();
         try {
-            XincoCoreDataServer temp = new XincoCoreDataServer(xincoCoreDataId);
-            temp.loadLogs();
-            if (!temp.getXincoCoreLogs().isEmpty()) {
-                return ((XincoCoreLog) temp.getXincoCoreLogs().get(temp.getXincoCoreLogs().size() - 1)).getVersion();
+            String lang = "";
+            if (attrLID != 0) {
+                lang = "AND (x.xincoCoreData.xincoCoreLanguage.id = " + attrLID + ")";
+            }
+            if (attrSA) {
+                result = XincoDBManager.createdQuery("SELECT x FROM XincoAddAttribute x WHERE (x.xincoCoreData.designation LIKE '"
+                        + attrS + "%' or " + "x.attribVarchar  LIKE '" + attrS + "%' or x.attribText LIKE '" + attrS + "') "
+                        + lang + "order by x.xincoCoreData.designation, x.xincoCoreData.xincoCoreLanguage.id");
             } else {
-                return null;
+                result = XincoDBManager.createdQuery("SELECT x FROM XincoAddAttribute x WHERE x.xincoCoreData.designation LIKE '"
+                        + attrS + "%' " + lang + "order by x.xincoCoreData.designation, x.xincoCoreData.xincoCoreLanguage.id");
             }
-        } catch (XincoException e) {
-            logger.log(Level.SEVERE, null, e);
-            return null;
-        }
-    }
-
-    public static XincoVersion getLastMajorVersion(int xincoCoreDataId) throws XincoException {
-        XincoCoreDataServer temp = new XincoCoreDataServer(xincoCoreDataId);
-        temp.loadLogs();
-        for (Iterator<Object> it = temp.getXincoCoreLogs().iterator(); it.hasNext();) {
-            XincoCoreLog log = (XincoCoreLog) it.next();
-            if (log.getVersion().getVersionMid() == 0) {
-                return log.getVersion();
+            int i = 0;
+            for (Object o : result) {
+                data.add(new XincoCoreDataServer(((com.bluecubs.xinco.core.server.persistence.XincoAddAttribute) o).getXincoCoreData().getId()));
+                i++;
+                if (i >= XincoDBManager.config.getMaxSearchResult()) {
+                    break;
+                }
             }
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, null, e);
+            data.clear();
         }
-        return null;
+        return data;
     }
 
     //write to db
+    @SuppressWarnings("unchecked")
     public int write2DB() throws XincoException {
         boolean create;
         com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd;
@@ -229,15 +295,6 @@ public final class XincoCoreDataServer extends XincoCoreData {
                 xcd.setModificationTime(new Timestamp(new Date().getTime()));
                 controller.create(xcd);
                 setId(xcd.getId());
-                //Add creation log
-                GregorianCalendar c = new GregorianCalendar();
-                c.setTime(new Date());
-                XincoCoreLogServer log = new XincoCoreLogServer(xcd.getId(), 1,
-                        OPCode.CREATION.ordinal() + 1, c, "", 1, 0, 0, "");
-                log.write2DB();
-                xcd.getXincoCoreLogList().add(
-                        new XincoCoreLogJpaController(
-                        XincoDBManager.getEntityManagerFactory()).findXincoCoreLog(log.getId()));
             }
             //Update add attributes
             for (Iterator<XincoAddAttribute> it = getXincoAddAttributes().iterator(); it.hasNext();) {
@@ -271,52 +328,44 @@ public final class XincoCoreDataServer extends XincoCoreData {
                 }
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
             throw new XincoException(e.getMessage());
         }
         return getId();
     }
 
-    public static void removeFromDB(int userID, int id) throws XincoException {
-        if (!XincoDBManager.createdQuery("SELECT x FROM XincoCoreData x WHERE x.id = " + id).isEmpty()) {
-            try {
-                //Related logs
-                result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreLog x WHERE x.xincoCoreData.id=" + id);
-                for (Iterator it = result.iterator(); it.hasNext();) {
-                    com.bluecubs.xinco.core.server.persistence.XincoCoreLog log =
-                            (com.bluecubs.xinco.core.server.persistence.XincoCoreLog) it.next();
-                    new XincoCoreLogJpaController(XincoDBManager.getEntityManagerFactory()).destroy(log.getId());
-                }
-                //Related ACEs
-                result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreAce x WHERE x.xincoCoreData.id=" + id);
-                for (Iterator it = result.iterator(); it.hasNext();) {
-                    com.bluecubs.xinco.core.server.persistence.XincoCoreAce ace =
-                            (com.bluecubs.xinco.core.server.persistence.XincoCoreAce) it.next();
-                    new XincoCoreAceJpaController(XincoDBManager.getEntityManagerFactory()).destroy(ace.getId());
-                }
-                //Related attributes
-                result = XincoDBManager.createdQuery("SELECT x FROM XincoAddAttribute x WHERE x.xincoCoreData.id=" + id);
-                for (Iterator it = result.iterator(); it.hasNext();) {
-                    com.bluecubs.xinco.core.server.persistence.XincoAddAttribute attr =
-                            (com.bluecubs.xinco.core.server.persistence.XincoAddAttribute) it.next();
-                    new XincoAddAttributeJpaController(XincoDBManager.getEntityManagerFactory()).destroy(attr.getXincoAddAttributePK());
-                }
-                //Related renderings
-                for (Iterator it = XincoCoreDataHasDependencyServer.getRenderings(id).iterator(); it.hasNext();) {
-                    com.bluecubs.xinco.core.server.persistence.XincoCoreData next =
-                            (com.bluecubs.xinco.core.server.persistence.XincoCoreData) it.next();
-                    removeFromDB(userID, next.getId());
-                }
-                //Data itself
-                new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).destroy(id);
-            } catch (Exception e) {
-                Logger.getLogger(XincoCoreDataServer.class.getSimpleName()).log(Level.SEVERE, null, e);
-                throw new XincoException(e.getLocalizedMessage());
+    public static String getXincoCoreDataPath(String attrRP, int attrID, String attrFN) {
+        String path;
+        // convert ID to String
+        String path4Id = "" + attrID;
+        // fill ID String with zeros
+        while (path4Id.length() < 10) {
+            path4Id = "0" + path4Id;
+        }
+        // shorten to 7 chars
+        path4Id = path4Id.substring(0, 7);
+        // add seperator
+        for (int i = 0; i < 7; i++) {
+            path4Id = path4Id.substring(0, (i * 2 + 1)) + System.getProperty("file.separator") + path4Id.substring((i * 2 + 1));
+        }
+        // create path if neccessary
+        (new File(attrRP + path4Id)).mkdirs();
+        // check if file exists at NEW location (>= xinco DMS 2.0)
+        if ((new File(attrRP + path4Id + attrFN)).exists()) {
+            // output NEW location
+            path = attrRP + path4Id + attrFN;
+        } else {
+            // check if file exists at OLD location (pre xinco DMS 2.0)
+            if ((new File(attrRP + attrFN)).exists()) {
+                // output OLD location
+                path = attrRP + attrFN;
+            } else {
+                // output NEW location for NEW file
+                path = attrRP + path4Id + attrFN;
             }
         }
+        return path;
     }
-
-    //delete from db
     public int deleteFromDB() throws XincoException {
         try {
             //delete file / file = 1
@@ -352,73 +401,14 @@ public final class XincoCoreDataServer extends XincoCoreData {
             }
             new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).destroy(getId());
         } catch (Exception e) {
-            logger.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
             throw new XincoException(e.getLocalizedMessage());
         }
         return 0;
     }
 
-    public static ArrayList findXincoCoreData(String attrS, int attrLID, boolean attrSA, boolean attrSFD) {
-        ArrayList data = new ArrayList();
-        try {
-            String lang = "";
-            if (attrLID != 0) {
-                lang = "AND (x.xincoCoreData.xincoCoreLanguage.id = " + attrLID + ")";
-            }
-            if (attrSA) {
-                result = XincoDBManager.createdQuery("SELECT x FROM XincoAddAttribute x WHERE (x.xincoCoreData.designation LIKE '"
-                        + attrS + "%' or " + "x.attribVarchar  LIKE '" + attrS + "%' or x.attribText LIKE '" + attrS + "') "
-                        + lang + "order by x.xincoCoreData.designation, x.xincoCoreData.xincoCoreLanguage.id");
-            } else {
-                result = XincoDBManager.createdQuery("SELECT x FROM XincoAddAttribute x WHERE x.xincoCoreData.designation LIKE '"
-                        + attrS + "%' " + lang + "order by x.xincoCoreData.designation, x.xincoCoreData.xincoCoreLanguage.id");
-            }
-            int i = 0;
-            for (Object o : result) {
-                data.add(new XincoCoreDataServer(((com.bluecubs.xinco.core.server.persistence.XincoAddAttribute) o).getXincoCoreData().getId()));
-                i++;
-                if (i >= XincoDBManager.config.getMaxSearchResult()) {
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, null, e);
-            data.clear();
-        }
-        return data;
-    }
-
-    public static String getXincoCoreDataPath(String attrRP, int attrID, String attrFN) {
-        String path;
-        // convert ID to String
-        String path4Id = "" + attrID;
-        // fill ID String with zeros
-        while (path4Id.length() < 10) {
-            path4Id = "0" + path4Id;
-        }
-        // shorten to 7 chars
-        path4Id = path4Id.substring(0, 7);
-        // add seperator
-        for (int i = 0; i < 7; i++) {
-            path4Id = path4Id.substring(0, (i * 2 + 1)) + System.getProperty("file.separator") + path4Id.substring((i * 2 + 1));
-        }
-        // create path if neccessary
-        (new File(attrRP + path4Id)).mkdirs();
-        // check if file exists at NEW location (>= xinco DMS 2.0)
-        if ((new File(attrRP + path4Id + attrFN)).exists()) {
-            // output NEW location
-            path = attrRP + path4Id + attrFN;
-        } else {
-            // check if file exists at OLD location (pre xinco DMS 2.0)
-            if ((new File(attrRP + attrFN)).exists()) {
-                // output OLD location
-                path = attrRP + attrFN;
-            } else {
-                // output NEW location for NEW file
-                path = attrRP + path4Id + attrFN;
-            }
-        }
-        return path;
+    public static boolean isArchived(int id) {
+        return isArchived(new XincoCoreDataServer(id));
     }
 
     public XincoAddAttributeServer getAttribute(int id) {
@@ -435,10 +425,6 @@ public final class XincoCoreDataServer extends XincoCoreData {
             }
         }
         return xaas;
-    }
-
-    public static boolean isArchived(int id) {
-        return isArchived(new XincoCoreDataServer(id));
     }
 
     public static boolean isArchived(XincoCoreDataServer xcds) {
