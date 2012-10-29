@@ -147,7 +147,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
     private com.vaadin.ui.Button logout;
     private com.vaadin.ui.Button profile;
     private WizardStep fileStep;
-    private ThemeResource smallIcon = new ThemeResource("img/blueCubsIcon16x16.GIF");
+    private ThemeResource smallIcon = 
+            new ThemeResource("img/blueCubsIcon16x16.GIF");
     private HierarchicalContainer xincoTreeContainer;
     private com.vaadin.ui.Panel adminPanel;
     private Embedded icon;
@@ -324,30 +325,35 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             }
                         });
                 profile = new com.vaadin.ui.Button(
-                        getInstance().getResource().getString("message.admin.userProfile"),
+                        getInstance().getResource().getString(
+                        "message.admin.userProfile"),
                         new com.vaadin.ui.Button.ClickListener() {
                             @Override
-                            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                            public void buttonClick(
+                                    com.vaadin.ui.Button.ClickEvent event) {
                                 showUserAdminWindow(false);
                             }
                         });
                 if (XincoDBManager.config.isGuessLanguage()) {
                     // Use the locale from the request as default.
                     // Login uses this setting later.
-                    setLocale(((WebApplicationContext) getContext()).getBrowser().getLocale());
+                    setLocale(((WebApplicationContext) getContext())
+                            .getBrowser().getLocale());
                     showMainWindow();
                 } else {
                     showLanguageSelection();
                 }
             } else {
                 //Trigger the error window below
-                throw new XincoException("Database is not in valid state! Unable to proceed.");
+                throw new XincoException("Database is not in valid state! "
+                        + "Unable to proceed.");
             }
         } catch (XincoException ex) {
             LOG.log(Level.SEVERE, null, ex);
             setMainWindow(new com.vaadin.ui.Window("Error"));
             getMainWindow().addComponent(new com.vaadin.ui.Label(
-                    "Unable to start application, please contact your administrator!\n"
+                    "Unable to start application, please contact your "
+                    + "administrator!\n"
                     + XincoDBManager.displayDBStatus()));
             LOG.log(Level.SEVERE,
                     "An uncaught exception occurred: ", ex);
@@ -362,25 +368,33 @@ public class Xinco extends Application implements HttpServletRequestListener {
     @Override
     public void setLocale(Locale locale) {
         this.locale = locale;
-        xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", getInstance().getLocale());
+        xerb = ResourceBundle.getBundle(
+                "com.bluecubs.xinco.messages.XincoMessages", 
+                getInstance().getLocale());
         if (login != null) {
-            login.setCaption(getInstance().getResource().getString("general.login"));
+            login.setCaption(getInstance().getResource()
+                    .getString("general.login"));
         }
         if (logout != null) {
-            logout.setCaption(getInstance().getResource().getString("general.logout"));
+            logout.setCaption(getInstance().getResource()
+                    .getString("general.logout"));
         }
         if (profile != null) {
-            profile.setCaption(getInstance().getResource().getString("message.admin.userProfile"));
+            profile.setCaption(getInstance().getResource()
+                    .getString("message.admin.userProfile"));
         }
         fileStep = new WizardStep() {
             final UploadManager um = new UploadManager();
-            final Upload upload = new Upload(getInstance().getResource().getString("general.file.select"), um);
-            final Upload.SucceededListener listener = new Upload.SucceededListener() {
+            final Upload upload = new Upload(getInstance().getResource()
+                    .getString("general.file.select"), um);
+            final Upload.SucceededListener listener = 
+                    new Upload.SucceededListener() {
                 @Override
                 public void uploadSucceeded(SucceededEvent event) {
                     if (upload != null) {
                         getMainWindow().showNotification(
-                                getInstance().getResource().getString("datawizard.fileuploadsuccess"),
+                                getInstance().getResource().getString(
+                                "datawizard.fileuploadsuccess"),
                                 Notification.TYPE_HUMANIZED_MESSAGE);
                     }
                 }
@@ -388,13 +402,14 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
             @Override
             public String getCaption() {
-                return getInstance().getResource().getString("general.file.select");
+                return getInstance().getResource()
+                        .getString("general.file.select");
             }
 
             @Override
             public com.vaadin.ui.Component getContent() {
                 upload.addListener((Upload.SucceededListener) um);
-                upload.addListener((Upload.SucceededListener) listener);
+                upload.addListener(listener);
                 upload.addListener((Upload.FailedListener) um);
                 return upload;
             }
@@ -403,7 +418,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
             public boolean onAdvance() {
                 if (!um.isSuccess()) {
                     getMainWindow().showNotification(
-                            getInstance().getResource().getString("message.missing.file"),
+                            getInstance().getResource()
+                            .getString("message.missing.file"),
                             Notification.TYPE_ERROR_MESSAGE);
                 } else {
                     getXincoCoreData().setDesignation(getFileName());
@@ -474,7 +490,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             loc = new Locale(locales[0], locales[1]);
                             break;
                         case 3:
-                            loc = new Locale(locales[0], locales[1], locales[2]);
+                            loc = new Locale(locales[0], locales[1], 
+                                    locales[2]);
                             break;
                         default:
                             loc = Locale.getDefault();
@@ -483,13 +500,17 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     loc = Locale.getDefault();
                 }
                 setLocale(loc);
-                languages.setCaption(getInstance().getResource().getString("general.language") + ":");
+                languages.setCaption(getInstance().getResource()
+                        .getString("general.language") + ":");
                 ssc.refresh();
             }
         });
-        languages.setCaption(getInstance().getResource().getString("general.language") + ":");
+        languages.setCaption(getInstance().getResource()
+                .getString("general.language") + ":");
         languages.setValue(getLocale().getLanguage());
-        com.vaadin.ui.Label title = new com.vaadin.ui.Label(XincoSettingServer.getSetting(new XincoCoreUserServer(1),
+        com.vaadin.ui.Label title = 
+                new com.vaadin.ui.Label(XincoSettingServer.getSetting(
+                new XincoCoreUserServer(1),
                 "general.title").getStringValue());
         getMainWindow().addComponent(title);
         getMainWindow().addComponent(languages);
@@ -522,17 +543,21 @@ public class Xinco extends Application implements HttpServletRequestListener {
         if (code.contains("_")) {
             String newCode = code.substring(code.lastIndexOf('_') + 1);
             LOG.log(Level.FINE,
-                    "Converting code from: {0} to {1}!", new Object[]{code, newCode});
+                    "Converting code from: {0} to {1}!", 
+                    new Object[]{code, newCode});
             code = newCode;
         }
         LOG.log(Level.FINE,
                 "Requested icon for code: {0}", code);
         WebApplicationContext context = (WebApplicationContext) getContext();
-        File iconsFolder = new File(context.getHttpSession().getServletContext().getRealPath(
-                "/VAADIN/themes/xinco") + System.getProperty("file.separator") + "icons"
+        File iconsFolder = new File(context.getHttpSession().getServletContext()
+                .getRealPath(
+                "/VAADIN/themes/xinco") + System.getProperty("file.separator") 
+                + "icons"
                 + System.getProperty("file.separator") + "flags");
         File tempIcon = new File(iconsFolder.getAbsolutePath()
-                + System.getProperty("file.separator") + code.toLowerCase() + ".png");
+                + System.getProperty("file.separator") + code.toLowerCase() 
+                + ".png");
         FileResource resource = null;
         if (tempIcon.exists()) {
             LOG.log(Level.FINE,
@@ -547,8 +572,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
     protected FileResource getIcon(String extension) throws IOException {
         WebApplicationContext context = (WebApplicationContext) getContext();
-        File iconsFolder = new File(context.getHttpSession().getServletContext().getRealPath(
-                "/VAADIN/themes/xinco") + System.getProperty("file.separator") + "icons");
+        File iconsFolder = 
+                new File(context.getHttpSession().getServletContext()
+                .getRealPath(
+                "/VAADIN/themes/xinco") + System.getProperty("file.separator") 
+                + "icons");
         if (!iconsFolder.exists()) {
             //Create it
             iconsFolder.mkdirs();
@@ -618,9 +646,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
         if (xincoTree == null) {
             try {
                 xincoTreeContainer = new HierarchicalContainer();
-                xincoTreeContainer.addContainerProperty("caption", String.class, null);
+                xincoTreeContainer.addContainerProperty("caption", 
+                        String.class, null);
                 //Add icon support
-                xincoTreeContainer.addContainerProperty("icon", Resource.class, null);
+                xincoTreeContainer.addContainerProperty("icon", 
+                        Resource.class, null);
                 xincoTree = new Tree("menu.repository");
                 xincoTree.setContainerDataSource(xincoTreeContainer);
                 xincoTree.setDebugId("xinco_tree");
@@ -647,7 +677,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         if (event.getButton() == ItemClickEvent.BUTTON_LEFT
                                 && event.isDoubleClick()
                                 && xincoTree.getValue() != null
-                                && xincoTree.getValue().toString().startsWith("data")) {
+                                && xincoTree.getValue().toString()
+                                .startsWith("data")) {
                             try {
                                 downloadFile();
                             } catch (MalformedURLException ex) {
@@ -663,7 +694,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 });
                 xincoTree.setImmediate(true);
                 xincoTree.setItemCaptionPropertyId("caption");
-                xincoTree.setItemCaptionMode(AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
+                xincoTree.setItemCaptionMode(
+                        AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
                 //Dra and drop support
                 // Set the tree in drag source mode
                 xincoTree.setDragMode(TreeDragMode.NODE);
@@ -682,7 +714,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             return;
                         }
 
-                        TreeTargetDetails target = (TreeTargetDetails) event.getTargetDetails();
+                        TreeTargetDetails target = 
+                                (TreeTargetDetails) event.getTargetDetails();
 
                         // Get ids of the dragged item and the target item
                         Object sourceItemId = t.getData("itemId");
@@ -698,14 +731,20 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
                         // Drop right on an item -> make it a child
                         if (XincoCoreACEServer.checkAccess(loggedUser,
-                                (ArrayList) (targetN).getXincoCoreAcl()).isWritePermission()
+                                (ArrayList) (targetN).getXincoCoreAcl())
+                                .isWritePermission()
                                 && location == VerticalDropLocation.MIDDLE) {
                             try {
                                 //Now update things in the database
                                 if (sourceItemId.toString().startsWith("data")
-                                        && targetItemId.toString().startsWith("node")) {
+                                        && targetItemId.toString()
+                                        .startsWith("node")) {
                                     XincoCoreDataServer source =
-                                            new XincoCoreDataServer(Integer.valueOf(sourceItemId.toString().substring(sourceItemId.toString().indexOf('-') + 1)));
+                                            new XincoCoreDataServer(
+                                            Integer.valueOf(sourceItemId
+                                            .toString().substring(
+                                            sourceItemId.toString().indexOf('-') 
+                                            + 1)));
                                     // Get a reason for the move:
                                     source.setXincoCoreNodeId(targetN.getId());
                                     showCommentDataDialog(source, OPCode.DATA_MOVE);
@@ -713,7 +752,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 if (sourceItemId.toString().startsWith("node")
                                         && targetItemId.toString().startsWith("node")) {
                                     XincoCoreNodeServer source =
-                                            new XincoCoreNodeServer(Integer.valueOf(sourceItemId.toString().substring(sourceItemId.toString().indexOf('-') + 1)));
+                                            new XincoCoreNodeServer(
+                                            Integer.valueOf(sourceItemId
+                                            .toString().substring(
+                                            sourceItemId.toString().indexOf('-')
+                                            + 1)));
                                     source.setXincoCoreNodeId(targetN.getId());
                                     source.write2DB();
                                 }
@@ -731,7 +774,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
                     @Override
                     public AcceptCriterion getAcceptCriterion() {
-                        //Accepts drops only on nodes that allow children, but between all nodes
+                        //Accepts drops only on nodes that allow children, 
+                        //but between all nodes
                         return new Or(Tree.TargetItemAllowsChildren.get(),
                                 new Not(VerticalLocationIs.MIDDLE));
                     }
@@ -753,9 +797,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
              * Define the names and data types of columns. The "default value"
              * parameter is meaningless here.
              */
-            xincoTable.addContainerProperty(getInstance().getResource().getString("window.repository.table.attribute"),
+            xincoTable.addContainerProperty(getInstance().getResource()
+                    .getString("window.repository.table.attribute"),
                     String.class, null);
-            xincoTable.addContainerProperty(getInstance().getResource().getString("window.repository.table.details"),
+            xincoTable.addContainerProperty(getInstance().getResource()
+                    .getString("window.repository.table.details"),
                     com.vaadin.ui.Component.class, null);
             // Send changes in selection immediately to server.
             xincoTable.setImmediate(true);
@@ -860,19 +906,22 @@ public class Xinco extends Application implements HttpServletRequestListener {
             final Form form = new Form();
             final XincoWizard wizard = new XincoWizard(getLocale());
             final UploadManager um = new UploadManager();
-            final Upload upload = new Upload(getInstance().getResource().getString("general.file.select"), um);
+            final Upload upload = new Upload(getInstance().getResource()
+                    .getString("general.file.select"), um);
             XincoCoreDataServer temp = new XincoCoreDataServer(
                     Integer.valueOf(xincoTree.getValue().toString().substring(
                     xincoTree.getValue().toString().indexOf('-') + 1)));
             //Check in file
             newlog.setOpCode(OPCode.CHECKIN.ordinal() + 1);
-            newlog.setOpDescription(getInstance().getResource().getString(OPCode.getOPCode(newlog.getOpCode()).getName()));
+            newlog.setOpDescription(getInstance().getResource().getString(
+                    OPCode.getOPCode(newlog.getOpCode()).getName()));
             newlog.setXincoCoreUserId(loggedUser.getId());
             newlog.setXincoCoreDataId(temp.getId());
             newlog.setVersion(((XincoCoreLog) temp.getXincoCoreLogs().get(
                     temp.getXincoCoreLogs().size() - 1)).getVersion());
             newlog.setOpDescription(newlog.getOpDescription() + " ("
-                    + getInstance().getResource().getString("general.user") + ": " + loggedUser.getUsername() + ")");
+                    + getInstance().getResource().getString("general.user") 
+                    + ": " + loggedUser.getUsername() + ")");
             //save log to server
             XincoCoreLog tempLog = getService().setXincoCoreLog(newlog, loggedUser);
             if (tempLog != null) {
@@ -880,16 +929,20 @@ public class Xinco extends Application implements HttpServletRequestListener {
             }
             final int log_index = temp.getXincoCoreLogs().size() - 1;
             final VersionSelector versionSelector =
-                    new VersionSelector(getInstance().getResource().getString("general.version"),
-                    ((XincoCoreLog) temp.getXincoCoreLogs().get(log_index)).getVersion());
+                    new VersionSelector(getInstance().getResource()
+                    .getString("general.version"),
+                    ((XincoCoreLog) temp.getXincoCoreLogs().get(log_index))
+                    .getVersion());
             versionSelector.increaseHigh();
-            final Upload.SucceededListener listener = new Upload.SucceededListener() {
+            final Upload.SucceededListener listener = 
+                    new Upload.SucceededListener() {
                 @Override
                 public void uploadSucceeded(SucceededEvent event) {
                     if (upload != null) {
                         upload.setEnabled(false);
                         getMainWindow().showNotification(
-                                getInstance().getResource().getString("datawizard.fileuploadsuccess"),
+                                getInstance().getResource().getString(
+                                "datawizard.fileuploadsuccess"),
                                 Notification.TYPE_HUMANIZED_MESSAGE);
                     }
                 }
@@ -897,7 +950,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
             wizard.addStep(new WizardStep() {
                 @Override
                 public String getCaption() {
-                    return getInstance().getResource().getString("window.loggingdetails");
+                    return getInstance().getResource().getString(
+                            "window.loggingdetails");
                 }
 
                 @Override
@@ -919,7 +973,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 @Override
                 public boolean onAdvance() {
                     if (form.getField("reason").isEnabled()
-                            && form.getField("reason").getValue().toString().isEmpty()) {
+                            && form.getField("reason").getValue().toString()
+                            .isEmpty()) {
                         return false;
                     } else {
                         return true;
@@ -940,7 +995,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 @Override
                 public com.vaadin.ui.Component getContent() {
                     upload.addListener((Upload.SucceededListener) um);
-                    upload.addListener((Upload.SucceededListener) listener);
+                    upload.addListener(listener);
                     upload.addListener((Upload.FailedListener) um);
                     return upload;
                 }
@@ -997,7 +1052,6 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             //Now load the file
                             loadFile(getFileToLoad(), getFileName());
                             //Update log version
-                            //TODO: For some reason this is creating a new log instead of updating it.
                             XincoCoreLogServer log = new XincoCoreLogServer(
                                     ((XincoCoreLog) getXincoCoreData()
                                     .getXincoCoreLogs().get(
@@ -1373,9 +1427,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 String name = xcds.getXincoAddAttributes().get(0).getAttribVarchar();
                 XincoVersion xVersion = XincoCoreDataServer.getCurrentVersion(xcds.getId());
                 table.addItem(new Object[]{new com.vaadin.ui.Label(xcds.getDesignation()),
-                            new com.vaadin.ui.Label(xVersion.getVersionHigh() + "." + xVersion.getVersionMid()
-                            + "." + xVersion.getVersionLow() + " " + xVersion.getVersionPostfix()),
-                            new com.vaadin.ui.Label(name.substring(name.lastIndexOf(".") + 1, name.length()))},
+                            new com.vaadin.ui.Label(xVersion.getVersionHigh() 
+                        + "." + xVersion.getVersionMid()
+                            + "." + xVersion.getVersionLow() + " " 
+                        + xVersion.getVersionPostfix()),
+                            new com.vaadin.ui.Label(
+                        name.substring(name.lastIndexOf('.') 
+                        + 1, name.length()))},
                         xcds.getId());
             }
             form.setFooter(new HorizontalLayout());
@@ -1545,7 +1603,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         for (Iterator it = XincoCoreGroupServer.getXincoCoreGroups().iterator(); it.hasNext();) {
             XincoCoreGroupServer group = (XincoCoreGroupServer) it.next();
             String itemId = getInstance().getResource().getString("general.group") + "-" + group.getId();
-            String designation = ((XincoCoreGroupServer) group).getDesignation();
+            String designation = group.getDesignation();
             String value = getInstance().getResource().containsKey(designation)
                     ? getInstance().getResource().getString(designation) : designation;
             name = new com.vaadin.ui.Label(value);
@@ -1647,9 +1705,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     itemId);
             acls.addItem(value);
         }
-        //Add users
-        for (Iterator it = XincoCoreUserServer.getXincoCoreUsers().iterator(); it.hasNext();) {
-            XincoCoreUserServer user = (XincoCoreUserServer) it.next();
+        for (XincoCoreUserServer user : XincoCoreUserServer.getXincoCoreUsers()) {
             String itemId = getInstance().getResource().getString("general.user") + "-" + user.getId();
             String userLabel = user.getFirstName() + " "
                     + user.getLastName() + " (" + user.getUsername() + ")";
@@ -2395,7 +2451,6 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 int recordId = 0;
                 Object o = it.next();
                 ArrayList values = new ArrayList();
-                int i = 0;
                 for (Iterator<Entry<String, PersistentAttributeType>> it2 = typeMap.entrySet().iterator(); it2.hasNext();) {
                     Entry<String, PersistentAttributeType> entry = it2.next();
                     try {
@@ -2415,7 +2470,6 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             default:
                                 throw new XincoException(entry.getValue().name() + " not supported yet!");
                         }
-                        i++;
                     } catch (IllegalAccessException ex) {
                         LOG.log(Level.SEVERE, null, ex);
                         throw new XincoException(ex.getLocalizedMessage());
@@ -3851,7 +3905,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final WizardStep dataDetails = new WizardStep() {
             @Override
             public String getCaption() {
-                return getInstance().getResource().getString("window.datadetails");
+                return getInstance().getResource().getString(
+                        "window.datadetails");
             }
 
             @Override
@@ -3866,21 +3921,30 @@ public class Xinco extends Application implements HttpServletRequestListener {
             @Override
             public boolean onAdvance() {
                 boolean value = true;
-                if (dataDialog.getDesignationField().getValue().toString().isEmpty()) {
+                if (dataDialog.getDesignationField().getValue()
+                        .toString().isEmpty()) {
                     getMainWindow().showNotification(
-                            getInstance().getResource().getString("message.missing.designation"),
+                            getInstance().getResource().getString(
+                            "message.missing.designation"),
                             Notification.TYPE_ERROR_MESSAGE);
                     value = false;
                 }
                 if (dataDialog.getLanguages().getValue() == null) {
                     getMainWindow().showNotification(
-                            getInstance().getResource().getString("message.missing.language"),
+                            getInstance().getResource().getString(
+                            "message.missing.language"),
                             Notification.TYPE_ERROR_MESSAGE);
                     value = false;
                 } else {
                     //Process data
-                    getXincoCoreData().setDesignation(dataDialog.getDesignationField().getValue().toString());
-                    getXincoCoreData().setXincoCoreLanguage((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(Integer.valueOf(dataDialog.getLanguages().getValue().toString())));
+                    getXincoCoreData().setDesignation(
+                            dataDialog.getDesignationField().getValue()
+                            .toString());
+                    getXincoCoreData().setXincoCoreLanguage(
+                            (XincoCoreLanguage) XincoCoreLanguageServer
+                            .getXincoCoreLanguages().get(
+                            Integer.valueOf(dataDialog.getLanguages()
+                            .getValue().toString())));
                 }
                 return value;
             }
@@ -3899,7 +3963,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
             final WizardStep attrStep = new WizardStep() {
                 @Override
                 public String getCaption() {
-                    return getInstance().getResource().getString("window.addattributesuniversal");
+                    return getInstance().getResource().getString(
+                            "window.addattributesuniversal");
                 }
 
                 @Override
@@ -3916,7 +3981,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     //Process the data
                     attrDialog.updateAttributes();
                     //True if there are more steps after this one
-                    return wizard.getSteps().size() > wizard.getLastCompleted() + 1;
+                    return wizard.getSteps().size() > 
+                            wizard.getLastCompleted() + 1;
                 }
 
                 @Override
@@ -3932,7 +3998,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
             wizard.addStep(new WizardStep() {
                 @Override
                 public String getCaption() {
-                    return getInstance().getResource().getString("window.datatype");
+                    return getInstance().getResource()
+                            .getString("window.datatype");
                 }
 
                 @Override
@@ -3945,38 +4012,59 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     if (dataTypeDialog == null) {
                         dataTypeDialog = new DataTypeDialog();
                         dataTypeDialog.setSizeFull();
-                        dataTypeDialog.getTypes().addListener(new ValueChangeListener() {
-                            ArrayList<WizardStep> temp = new ArrayList<WizardStep>();
+                        dataTypeDialog.getTypes().addListener(
+                                new ValueChangeListener() {
+                            ArrayList<WizardStep> temp = 
+                                    new ArrayList<WizardStep>();
 
                             @Override
                             public void valueChange(ValueChangeEvent event) {
                                 data = new XincoCoreData();
                                 try {
                                     //Process data
-                                    getXincoCoreData().setXincoCoreDataType(new XincoCoreDataTypeServer(Integer.valueOf(dataTypeDialog.getTypes().getValue().toString())));
+                                    getXincoCoreData().setXincoCoreDataType(
+                                            new XincoCoreDataTypeServer(
+                                            Integer.valueOf(dataTypeDialog
+                                            .getTypes().getValue().toString())));
                                 } catch (XincoException ex) {
                                     LOG.log(Level.SEVERE, null, ex);
                                 }
                                 //Set the parent id to the current selected node
-                                getXincoCoreData().setXincoCoreNodeId(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
-                                Tool.addDefaultAddAttributes(getXincoCoreData());
+                                getXincoCoreData().setXincoCoreNodeId(
+                                        Integer.valueOf(xincoTree.getValue()
+                                        .toString().substring(xincoTree
+                                        .getValue().toString().indexOf('-') 
+                                        + 1)));
+                                Tool.addDefaultAddAttributes(
+                                        getXincoCoreData());
                                 //wizard.getLastCompleted() is the previous step, 
                                 //the current is wizard.getLastCompleted() + 1, 
                                 //the next step wizard.getLastCompleted() + 2
-                                switch (getXincoCoreData().getXincoCoreDataType().getId()) {
+                                switch (getXincoCoreData()
+                                        .getXincoCoreDataType().getId()) {
                                     //File = 1
                                     case 1:
                                         clearTempSteps();
                                         addAttributeStep();
                                         temp.add(fileStep);
-                                        wizard.addStep(temp.get(temp.size() - 1), wizard.getLastCompleted() + 1);
-                                        getXincoCoreData().getXincoAddAttributes().get(3).setAttribUnsignedint(1); //revision model
-                                        getXincoCoreData().getXincoAddAttributes().get(4).setAttribUnsignedint(0); //archiving model
+                                        wizard.addStep(temp.get(temp.size() - 1), 
+                                                wizard.getLastCompleted() + 1);
+                                        //revision model
+                                        getXincoCoreData()
+                                                .getXincoAddAttributes().get(3)
+                                                .setAttribUnsignedint(1); 
+                                        //archiving model
+                                        getXincoCoreData()
+                                                .getXincoAddAttributes().get(4)
+                                                .setAttribUnsignedint(0); 
                                         //Is a file, show archiving dialog
                                         temp.add(new WizardStep() {
                                             @Override
                                             public String getCaption() {
-                                                return getInstance().getResource().getString("window.archive");
+                                                return getInstance()
+                                                        .getResource()
+                                                        .getString(
+                                                        "window.archive");
                                             }
 
                                             @Override
@@ -3991,7 +4079,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                             @Override
                                             public boolean onAdvance() {
                                                 //True if there are more steps after this one
-                                                return wizard.getSteps().size() > wizard.getLastCompleted() + 1;
+                                                return wizard.getSteps().size() > 
+                                                        wizard.getLastCompleted() + 1;
                                             }
 
                                             @Override
@@ -4010,11 +4099,15 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                     case 2:
                                         clearTempSteps();
                                         addAttributeStep();
-                                        final ExpandingTextArea tArea = new ExpandingTextArea();
+                                        final ExpandingTextArea tArea = 
+                                                new ExpandingTextArea();
                                         temp.add(new WizardStep() {
                                             @Override
                                             public String getCaption() {
-                                                return getInstance().getResource().getString("window.addattributestext");
+                                                return getInstance()
+                                                        .getResource()
+                                                        .getString(
+                                                        "window.addattributestext");
                                             }
 
                                             @Override
@@ -4026,13 +4119,23 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                             public boolean onAdvance() {
                                                 if (tArea.getValue().toString().isEmpty()) {
                                                     getMainWindow().showNotification(
-                                                            getInstance().getResource().getString("general.error"),
-                                                            getInstance().getResource().getString("message.missing.text"),
+                                                            getInstance()
+                                                            .getResource()
+                                                            .getString(
+                                                            "general.error"),
+                                                            getInstance()
+                                                            .getResource()
+                                                            .getString(
+                                                            "message.missing.text"),
                                                             Notification.TYPE_WARNING_MESSAGE);
                                                     return false;
                                                 } else {
                                                     //Process the data
-                                                    getXincoCoreData().getXincoAddAttributes().get(0).setAttribText(tArea.getValue().toString());
+                                                    getXincoCoreData()
+                                                            .getXincoAddAttributes()
+                                                            .get(0).setAttribText(
+                                                            tArea.getValue()
+                                                            .toString());
                                                     return true;
                                                 }
                                             }
@@ -4047,7 +4150,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                                 return getCaption();
                                             }
                                         });
-                                        wizard.addStep(temp.get(temp.size() - 1), wizard.getLastCompleted() + 1);
+                                        wizard.addStep(temp.get(temp.size() - 1), 
+                                                wizard.getLastCompleted() + 1);
                                         break;
                                     default:
                                         clearTempSteps();
@@ -4085,7 +4189,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     boolean value = true;
                     if (dataTypeDialog.getTypes().getValue() == null) {
                         getMainWindow().showNotification(
-                                getInstance().getResource().getString("message.missing.datatype"),
+                                getInstance().getResource().getString(
+                                "message.missing.datatype"),
                                 Notification.TYPE_ERROR_MESSAGE);
                         value = false;
                     }

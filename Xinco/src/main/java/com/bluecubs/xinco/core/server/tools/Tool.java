@@ -33,6 +33,8 @@ public class Tool {
 
     public static int MIN_PORT_NUMBER = 1;
     public static int MAX_PORT_NUMBER = 65535;
+    private static final Logger LOG =
+            Logger.getLogger(Tool.class.getName());
 
     private Tool() {
     }
@@ -86,7 +88,6 @@ public class Tool {
         if (port < MIN_PORT_NUMBER || port > MAX_PORT_NUMBER) {
             throw new IllegalArgumentException("Invalid start port: " + port);
         }
-
         ServerSocket ss = null;
         DatagramSocket ds = null;
         try {
@@ -96,6 +97,7 @@ public class Tool {
             ds.setReuseAddress(true);
             return true;
         } catch (IOException e) {
+            LOG.log(Level.WARNING, null, e);
         } finally {
             if (ds != null) {
                 ds.close();
@@ -108,6 +110,7 @@ public class Tool {
                     /*
                      * should not be thrown
                      */
+                    LOG.log(Level.SEVERE, null, e);
                 }
             }
         }
@@ -128,12 +131,8 @@ public class Tool {
             destination = new FileOutputStream(destFile).getChannel();
             destination.transferFrom(source, 0, source.size());
         } finally {
-            if (source != null) {
                 source.close();
-            }
-            if (destination != null) {
                 destination.close();
-            }
         }
     }
 
@@ -151,7 +150,7 @@ public class Tool {
      * the form "<tt>albert</tt>", for example, are valid for
      * {@link javax.mail.internet.InternetAddress}, but almost always undesired.
      * @param aEmailAddress
-     * @return  
+     * @return
      */
     public static boolean isValidEmailAddress(String aEmailAddress) {
         if (aEmailAddress == null) {
@@ -159,11 +158,12 @@ public class Tool {
         }
         boolean result = true;
         try {
-            InternetAddress emailAddr = new InternetAddress(aEmailAddress);
+            InternetAddress internetAddress = new InternetAddress(aEmailAddress);
             if (!hasNameAndDomain(aEmailAddress)) {
                 result = false;
             }
         } catch (AddressException ex) {
+            LOG.log(Level.WARNING, null, ex);
             result = false;
         }
         return result;
@@ -188,7 +188,7 @@ public class Tool {
      * required.
      *
      * @param aText possibly-null.
-     * @return true if has content 
+     * @return true if has content
      */
     public static boolean textHasContent(String aText) {
         return (aText != null) && (aText.trim().length() > 0);
@@ -201,12 +201,14 @@ public class Tool {
         if (iter.hasNext()) {
             ImageReader reader = iter.next();
             try {
-                ImageInputStream stream = new FileImageInputStream(new File(path));
+                ImageInputStream stream = 
+                        new FileImageInputStream(new File(path));
                 reader.setInput(stream);
                 int width = reader.getWidth(reader.getMinIndex());
                 int height = reader.getHeight(reader.getMinIndex());
                 result = new Dimension(width, height);
             } catch (Exception e) {
+                LOG.log(Level.SEVERE, null, e);
             } finally {
                 reader.dispose();
             }
@@ -228,11 +230,14 @@ public class Tool {
         return result;
     }
 
-    public static void addDefaultAddAttributes(com.bluecubs.xinco.core.server.service.XincoCoreData data) {
+    public static void addDefaultAddAttributes(
+            com.bluecubs.xinco.core.server.service.XincoCoreData data) {
         //add specific attributes
         data.getXincoAddAttributes().clear();
         XincoAddAttribute xaa;
-        for (Iterator<XincoCoreDataTypeAttribute> it = data.getXincoCoreDataType().getXincoCoreDataTypeAttributes().iterator(); it.hasNext();) {
+        for (Iterator<XincoCoreDataTypeAttribute> it =
+                data.getXincoCoreDataType().getXincoCoreDataTypeAttributes()
+                .iterator(); it.hasNext();) {
             XincoCoreDataTypeAttribute attr = it.next();
             try {
                 xaa = new XincoAddAttribute();
@@ -242,13 +247,14 @@ public class Tool {
                 GregorianCalendar calendar = new GregorianCalendar();
                 calendar.setTime(new Date());
                 DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
-                xaa.setAttribDatetime(DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
+                xaa.setAttribDatetime(DatatypeFactory.newInstance()
+                        .newXMLGregorianCalendar(calendar));
                 data.getXincoAddAttributes().add(xaa);
             } catch (DatatypeConfigurationException ex) {
-                Logger.getLogger(Tool.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.log(Level.SEVERE, null, ex);
             }
         }
-        Logger.getLogger(Tool.class.getName()).log(Level.FINE,
+        LOG.log(Level.FINE,
                 "Added {0} attributes!", data.getXincoAddAttributes().size());
     }
 }
