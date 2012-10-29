@@ -46,31 +46,40 @@ class ArchiveDialog extends CustomComponent {
     private final Select archiveModel;
 
     ArchiveDialog() {
-        archiveModel = new Select(Xinco.getInstance().getResource().getString("window.archive.archivingmodel") + ":");
-        com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(Xinco.getInstance().getResource().getString("window.datatype"));
+        archiveModel = new Select(Xinco.getInstance().getResource()
+                .getString("window.archive.archivingmodel") + ":");
+        com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(Xinco
+                .getInstance().getResource().getString("window.datatype"));
         panel.setContent(new VerticalLayout());
-        CheckBox revisionModelCheckbox = new CheckBox(Xinco.getInstance().getResource().getString("window.archive.revisionmodel"));
+        CheckBox revisionModelCheckbox = new CheckBox(Xinco.getInstance()
+                .getResource().getString("window.archive.revisionmodel"));
         revisionModelCheckbox.setValue(true);
         panel.addComponent(revisionModelCheckbox);
         java.util.List<XincoAddAttribute> attributes;
         if (Xinco.getInstance().getXincoCoreData().getId() == 0) {
             // Is a new data, there's nothing yet in the database.
             // Load local values.
-            attributes = Xinco.getInstance().getXincoCoreData().getXincoAddAttributes();
+            attributes = 
+                    Xinco.getInstance().getXincoCoreData()
+                    .getXincoAddAttributes();
         } else {
-            attributes = XincoAddAttributeServer.getXincoAddAttributes(Xinco.getInstance().getXincoCoreData().getId());
+            attributes = XincoAddAttributeServer.getXincoAddAttributes(
+                    Xinco.getInstance().getXincoCoreData().getId());
         }
         int i = 0;
         archiveModel.addItem(i);
-        archiveModel.setItemCaption(i, Xinco.getInstance().getResource().getString("window.archive.archivingmodel.none"));
+        archiveModel.setItemCaption(i, Xinco.getInstance().getResource()
+                .getString("window.archive.archivingmodel.none"));
         //Set as default
         archiveModel.setValue(i);
         i++;
         archiveModel.addItem(i);
-        archiveModel.setItemCaption(i, Xinco.getInstance().getResource().getString("window.archive.archivingmodel.archivedate"));
+        archiveModel.setItemCaption(i, Xinco.getInstance().getResource()
+                .getString("window.archive.archivingmodel.archivedate"));
         i++;
         archiveModel.addItem(i);
-        archiveModel.setItemCaption(i, Xinco.getInstance().getResource().getString("window.archive.archivingmodel.archivedays"));
+        archiveModel.setItemCaption(i, Xinco.getInstance().getResource()
+                .getString("window.archive.archivingmodel.archivedays"));
         i++;
         panel.addComponent(archiveModel);
         //processing independent of creation
@@ -78,18 +87,28 @@ class ArchiveDialog extends CustomComponent {
         // Set the date and time to present
         date.setValue(new Date());
         date.setDateFormat("dd-MM-yyyy");
-        date.setCaption(Xinco.getInstance().getResource().getString("window.archive.archivedate") + ":");
+        date.setCaption(Xinco.getInstance().getResource()
+                .getString("window.archive.archivedate") + ":");
         panel.addComponent(date);
         //Disabled by default
         date.setEnabled(false);
         //set date / days
         //convert clone from remote time to local time
-        Calendar cal = (Calendar) ((XMLGregorianCalendar) (attributes.get(5)).getAttribDatetime()).toGregorianCalendar().clone();
-        Calendar realcal = ((XMLGregorianCalendar) (attributes.get(5)).getAttribDatetime()).toGregorianCalendar();
+        Calendar cal = 
+                (Calendar) (attributes.get(5))
+                .getAttribDatetime().toGregorianCalendar().clone();
+        Calendar realcal = (attributes.get(5))
+                .getAttribDatetime().toGregorianCalendar();
         Calendar ngc = new GregorianCalendar();
-        cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - realcal.get(Calendar.ZONE_OFFSET)) - (ngc.get(Calendar.DST_OFFSET) + realcal.get(Calendar.DST_OFFSET)));
+        cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - 
+                realcal.get(Calendar.ZONE_OFFSET)) - 
+                (ngc.get(Calendar.DST_OFFSET) 
+                + realcal.get(Calendar.DST_OFFSET)));
         date.setValue(cal.getTime());
-        final com.vaadin.ui.TextField days = new com.vaadin.ui.TextField(Xinco.getInstance().getResource().getString("window.archive.archivedays") + ":");
+        final com.vaadin.ui.TextField days = 
+                new com.vaadin.ui.TextField(
+                Xinco.getInstance().getResource()
+                .getString("window.archive.archivedays") + ":");
         panel.addComponent(days);
         //Disabled by default
         days.setEnabled(false);

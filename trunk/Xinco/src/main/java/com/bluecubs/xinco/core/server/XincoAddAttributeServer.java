@@ -173,7 +173,7 @@ public class XincoAddAttributeServer extends XincoAddAttribute {
     }
     //create complete list of add attributes
 
-    public static ArrayList getXincoAddAttributes(int attrID) {
+    public static List<XincoAddAttribute> getXincoAddAttributes(int attrID) {
         ArrayList<XincoAddAttribute> addAttributes =
                 new ArrayList<XincoAddAttribute>();
         try {

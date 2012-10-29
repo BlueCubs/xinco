@@ -44,14 +44,18 @@ class AddAttributeDialog extends CustomComponent {
     private Table attrTable = new Table("attributes");
 
     AddAttributeDialog(XincoCoreData data) {
-        com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(Xinco.getInstance().getResource().getString("window.addattributesuniversal"));
+        com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(
+                Xinco.getInstance().getResource()
+                .getString("window.addattributesuniversal"));
         panel.setContent(new VerticalLayout());
         /*
          * Define the names and data types of columns. The "default value"
          * parameter is meaningless here.
          */
-        attrTable.addContainerProperty(Xinco.getInstance().getResource().getString("general.attribute"), String.class, null);
-        attrTable.addContainerProperty(Xinco.getInstance().getResource().getString("general.details"), String.class, null);
+        attrTable.addContainerProperty(Xinco.getInstance().getResource()
+                .getString("general.attribute"), String.class, null);
+        attrTable.addContainerProperty(Xinco.getInstance().getResource()
+                .getString("general.details"), String.class, null);
         //prevent editing of fixed attributes for certain data types
         int start = 0;
         //file = 1
@@ -68,14 +72,19 @@ class AddAttributeDialog extends CustomComponent {
             // Load local values.
             attributes = data.getXincoAddAttributes();
         } else {
-            attributes = XincoAddAttributeServer.getXincoAddAttributes(data.getId());
+            attributes = 
+                    XincoAddAttributeServer.getXincoAddAttributes(data.getId());
         }
-        java.util.List<XincoCoreDataTypeAttribute> dataTypeAttributes = data.getXincoCoreDataType().getXincoCoreDataTypeAttributes();
+        java.util.List<XincoCoreDataTypeAttribute> dataTypeAttributes = 
+                data.getXincoCoreDataType().getXincoCoreDataTypeAttributes();
         int count = 0;
         for (int i = start; i < attributes.size(); i++) {
             String value = "";
             if (dataTypeAttributes.get(i).getDataType().equals("datetime")) {
-                value = "" + ((XMLGregorianCalendar) (attributes.get(i)).getAttribDatetime()).toGregorianCalendar().getTime().toString();
+                value = "" 
+                        + ((XMLGregorianCalendar) (attributes.get(i))
+                        .getAttribDatetime()).toGregorianCalendar()
+                        .getTime().toString();
             }
             if (dataTypeAttributes.get(i).getDataType().equals("double")) {
                 value = "" + (attributes.get(i)).getAttribDouble();
@@ -90,16 +99,29 @@ class AddAttributeDialog extends CustomComponent {
                 value = "" + (attributes.get(i)).getAttribUnsignedint();
             }
             if (dataTypeAttributes.get(i).getDataType().equals("varchar")) {
-                value = "" + (Xinco.getInstance().getResource().containsKey((attributes.get(i)).getAttribVarchar()) ? Xinco.getInstance().getResource().getString((attributes.get(i)).getAttribVarchar()) : (attributes.get(i)).getAttribVarchar());
+                value = "" + (Xinco.getInstance().getResource()
+                        .containsKey((attributes.get(i)).getAttribVarchar()) ? 
+                        Xinco.getInstance().getResource()
+                        .getString((attributes.get(i)).getAttribVarchar()) : 
+                        (attributes.get(i)).getAttribVarchar());
             }
-            String type = Xinco.getInstance().getResource().containsKey(dataTypeAttributes.get(i).getDesignation()) ? Xinco.getInstance().getResource().getString(dataTypeAttributes.get(i).getDesignation()) : dataTypeAttributes.get(i).getDesignation();
+            String type = Xinco.getInstance().getResource()
+                    .containsKey(dataTypeAttributes.get(i).getDesignation()) ? 
+                    Xinco.getInstance().getResource()
+                    .getString(dataTypeAttributes.get(i).getDesignation()) : 
+                    dataTypeAttributes.get(i).getDesignation();
             attrTable.addItem(new Object[]{type, value}, count++);
         }
         attrTable.setTableFieldFactory(new TableFieldFactory() {
             @Override
-            public Field createField(com.vaadin.data.Container container, Object itemId, Object propertyId, com.vaadin.ui.Component uiContext) {
-                if (propertyId.equals(Xinco.getInstance().getResource().getString("general.attribute"))) {
-                    com.vaadin.ui.TextField textField = new com.vaadin.ui.TextField();
+            public Field createField(com.vaadin.data.Container container, 
+            Object itemId, Object propertyId, 
+            com.vaadin.ui.Component uiContext) {
+                if (propertyId.equals(
+                        Xinco.getInstance().getResource()
+                        .getString("general.attribute"))) {
+                    com.vaadin.ui.TextField textField =
+                            new com.vaadin.ui.TextField();
                     textField.setEnabled(false);
                     return textField;
                 } else {
@@ -121,7 +143,10 @@ class AddAttributeDialog extends CustomComponent {
         for (Iterator<?> it = attrTable.getItemIds().iterator(); it.hasNext();) {
             int id = (Integer) it.next();
             Item item = attrTable.getItem(id);
-            Xinco.getInstance().getXincoCoreData().getXincoAddAttributes().get(id).setAttribVarchar(item.getItemProperty(Xinco.getInstance().getResource().getString("general.details")).getValue().toString());
+            Xinco.getInstance().getXincoCoreData().getXincoAddAttributes()
+                    .get(id).setAttribVarchar(item.getItemProperty(
+                    Xinco.getInstance().getResource()
+                    .getString("general.details")).getValue().toString());
         }
     }
 }

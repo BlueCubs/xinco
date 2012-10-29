@@ -169,9 +169,10 @@ public class XincoCoreLogServer extends XincoCoreLog {
     }
 
     //create complete log list for data
-    public static ArrayList getXincoCoreLogs(int attrID) {
+    public static List<XincoCoreLogServer> getXincoCoreLogs(int attrID) {
 
-        ArrayList coreLog = new ArrayList();
+        ArrayList<XincoCoreLogServer> coreLog = 
+                new ArrayList<XincoCoreLogServer>();
         GregorianCalendar cal;
 
         try {
