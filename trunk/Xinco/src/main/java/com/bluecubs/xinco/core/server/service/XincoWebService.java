@@ -3,6 +3,7 @@ package com.bluecubs.xinco.core.server.service;
 import com.bluecubs.xinco.core.OPCode;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.*;
+import com.bluecubs.xinco.core.server.XincoCoreLogServerBuilder;
 import com.bluecubs.xinco.core.server.index.XincoIndexThread;
 import com.bluecubs.xinco.core.server.index.XincoIndexer;
 import com.bluecubs.xinco.core.server.rendering.XincoRenderingThread;
@@ -700,7 +701,13 @@ public class XincoWebService {
             if (in0.getId() > 0) {
                 log = new XincoCoreLogServer(in0.getId());
             } else {
-                log = new XincoCoreLogServer(0, 0, 0, null, "", 0, 0, 0, "");
+                log = new XincoCoreLogServerBuilder().setXincoCoreDataId(0)
+                        .setXincoCoreUserId(0).setOpCode(0)
+                        .setOperationDate(null)
+                        .setOperationDescription("")
+                        .setVersionHigh(0).setVersionMid(0)
+                        .setVersionLow(0).setVersionPostFix("")
+                        .createXincoCoreLogServer();
             }
             //update log
             log.setXincoCoreDataId(in0.getXincoCoreDataId());
