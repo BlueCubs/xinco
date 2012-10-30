@@ -1,4 +1,4 @@
-package com.bluecubs.xinco.core.server.tools;
+package com.bluecubs.xinco.tools;
 
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
@@ -97,7 +97,7 @@ public class Tool {
             ds.setReuseAddress(true);
             return true;
         } catch (IOException e) {
-            LOG.log(Level.WARNING, null, e);
+            LOG.log(Level.FINE, null, e);
         } finally {
             if (ds != null) {
                 ds.close();
@@ -163,7 +163,7 @@ public class Tool {
                 result = false;
             }
         } catch (AddressException ex) {
-            LOG.log(Level.WARNING, null, ex);
+            LOG.log(Level.FINE, null, ex);
             result = false;
         }
         return result;

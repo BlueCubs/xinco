@@ -1,9 +1,9 @@
 package com.bluecubs.xinco.tools;
 
-import com.bluecubs.xinco.core.server.tools.Tool;
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.*;
@@ -16,22 +16,6 @@ import static org.junit.Assert.*;
 public class ToolTest {
 
     public ToolTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**
@@ -85,17 +69,30 @@ public class ToolTest {
      */
     @Test
     public void testIsPortAvaialble() {
+        ServerSocket ss = null;
+        int port = 0;
         try {
             System.out.println("isPortAvaialble");
-            int port = 9019;
+            Random random = new Random();
+            while (port == 0 || !Tool.isPortAvaialble(port)) {
+                port = random.nextInt(Tool.MAX_PORT_NUMBER);
+            }
+            System.out.println("Using port: " + port + " for test...");
             assertTrue(Tool.isPortAvaialble(port));
-            ServerSocket ss = new ServerSocket(port);
+            ss = new ServerSocket(port);
             assertFalse(Tool.isPortAvaialble(port));
-            ss.close();
-            assertTrue(Tool.isPortAvaialble(port));
         } catch (IOException ex) {
             Logger.getLogger(ToolTest.class.getName()).log(Level.SEVERE, null, ex);
             fail();
+        } finally {
+            try {
+                if (ss != null) {
+                    ss.close();
+                    assertTrue(Tool.isPortAvaialble(port));
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(ToolTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 

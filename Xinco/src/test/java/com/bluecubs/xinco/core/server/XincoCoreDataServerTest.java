@@ -75,8 +75,13 @@ public class XincoCoreDataServerTest extends AbstractXincoDataBaseTestCase {
             }
             //Need to add at least one log (should be there by default (creation)
             c.setTimeInMillis(System.currentTimeMillis());
-            XincoCoreLogServer log = new XincoCoreLogServer(instance.getId(), 1,
-                    OPCode.CREATION.ordinal() + 1, c, "", 1, 0, 0, "");
+            XincoCoreLogServer log = new XincoCoreLogServerBuilder()
+                    .setXincoCoreDataId(instance.getId())
+                    .setXincoCoreUserId(1)
+                    .setOpCode(OPCode.CREATION.ordinal() + 1)
+                    .setOperationDate(c).setOperationDescription("")
+                    .setVersionHigh(1).setVersionMid(0).setVersionLow(0)
+                    .setVersionPostFix("").createXincoCoreLogServer();
             log.write2DB();
             instance.getXincoCoreLogs().add(log);
             instance.write2DB();

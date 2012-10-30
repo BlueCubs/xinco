@@ -93,13 +93,37 @@ public class XincoArchiveThreadTest extends AbstractXincoDataBaseTestCase {
             assertTrue(xcds.write2DB() > 0);
             System.out.println("Archiving");
             assertFalse(XincoArchiver.archiveData(new XincoCoreDataServer(xcds.getId()),
-                                        XincoCoreNodeServer.getXincoCoreNodeParents(xcds.getXincoCoreNodeId())));
+                    XincoCoreNodeServer.getXincoCoreNodeParents(xcds.getXincoCoreNodeId())));
             System.out.println("Done!");
             assertFalse(XincoCoreDataServer.isArchived(xcds));
             addAttributes(xcds);
             System.out.println("Archiving");
+            try {
+                XincoArchiver.archiveData(new XincoCoreDataServer(xcds.getId()),
+                        XincoCoreNodeServer.getXincoCoreNodeParents(xcds.getXincoCoreNodeId()));
+                fail();
+            } catch (XincoException ex) {
+                //This should happen
+            }
+            //Add the missing log
+            GregorianCalendar c = new GregorianCalendar();
+            c.setTime(new Date());
+            XincoCoreLogServer xcls =
+                    new XincoCoreLogServerBuilder().setXincoCoreDataId(xcds.getId())
+                    .setOpCode(OPCode.CREATION.ordinal() + 1)
+                    .setOperationDate(c)
+                    .setOperationDescription("")
+                    .setVersionHigh(1)
+                    .setVersionMid(0)
+                    .setVersionLow(0)
+                    .setVersionPostFix("")
+                    .setXincoCoreUserId(1)
+                    .createXincoCoreLogServer();
+            xcls.write2DB();
+            xcds.getXincoCoreLogs().add((XincoCoreLog) xcls);
+            xcds.write2DB();
             assertTrue(XincoArchiver.archiveData(new XincoCoreDataServer(xcds.getId()),
-                                        XincoCoreNodeServer.getXincoCoreNodeParents(xcds.getXincoCoreNodeId())));
+                    XincoCoreNodeServer.getXincoCoreNodeParents(xcds.getXincoCoreNodeId())));
             System.out.println("Done!");
             xcds.loadLogs();
             show(xcds);
