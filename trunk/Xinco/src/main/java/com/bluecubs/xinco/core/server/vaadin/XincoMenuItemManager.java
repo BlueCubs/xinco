@@ -116,10 +116,12 @@ public class XincoMenuItemManager {
                 add = false;
             }
             boolean found = false;
-            for (int x : item.getDataTypes()) {
-                if (x == temp.getXincoCoreDataType().getId()) {
-                    found = true;
-                    break;
+            if (item.getDataTypes() != null) {
+                for (int x : item.getDataTypes()) {
+                    if (x == temp.getXincoCoreDataType().getId()) {
+                        found = true;
+                        break;
+                    }
                 }
             }
             if (!found) {
