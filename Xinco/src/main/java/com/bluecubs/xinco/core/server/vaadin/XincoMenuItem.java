@@ -29,12 +29,12 @@ public class XincoMenuItem {
      * @param loggedIn User needs to be logged in to use
      * @param dataOnly Only for data objects
      * @param nodeOnly Only for node objects
-     * @param selected Does something needs to be selected to enable this item? 
+     * @param selected Does something needs to be selected to enable this item?
      */
     protected XincoMenuItem(int index, String groupName, String name,
             ThemeResource icon, com.vaadin.ui.MenuBar.Command command,
             boolean loggedIn, boolean dataOnly, boolean nodeOnly,
-            boolean selected) {
+            boolean selected, int... validDataTypes) {
         this.index = index;
         this.groupName = groupName;
         this.name = name;
@@ -44,6 +44,7 @@ public class XincoMenuItem {
         this.dataOnly = dataOnly;
         this.nodeOnly = nodeOnly;
         this.selected = selected;
+        this.dataTypes = validDataTypes;
     }
 
     /**

@@ -18,6 +18,7 @@ public class XincoMenuItemBuilder {
     private boolean dataOnly;
     private boolean nodeOnly;
     private boolean selected;
+    private int[] validDataTypes = null;
 
     public XincoMenuItemBuilder() {
     }
@@ -67,7 +68,13 @@ public class XincoMenuItemBuilder {
         return this;
     }
 
+    public XincoMenuItemBuilder setValidDataTypes(int[] validDataTypes) {
+        this.validDataTypes = validDataTypes;
+        return this;
+    }
+
     public XincoMenuItem createXincoMenuItem() {
-        return new XincoMenuItem(index, groupName, name, icon, command, loggedIn, dataOnly, nodeOnly, selected);
+        return new XincoMenuItem(index, groupName, name, icon, command,
+                loggedIn, dataOnly, nodeOnly, selected, validDataTypes);
     }
 }

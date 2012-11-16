@@ -1195,43 +1195,46 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         Integer.valueOf(xincoTree.getValue().toString()
                         .substring(xincoTree.getValue().toString().indexOf('-')
                         + 1)));
-                //Set as checked out
-                try {
-                    XincoCoreLog newlog = new XincoCoreLog();
-                    newlog.setOpCode(OPCode.CHECKOUT.ordinal() + 1);
-                    newlog.setOpDescription(getInstance().getResource()
-                            .getString(OPCode.getOPCode(newlog.getOpCode())
-                            .getName()));
-                    newlog.setXincoCoreUserId(loggedUser.getId());
-                    newlog.setXincoCoreDataId(temp.getId());
-                    newlog.setVersion(((XincoCoreLog) temp.getXincoCoreLogs()
-                            .get(temp.getXincoCoreLogs().size() - 1)).getVersion());
-                    newlog.setOpDescription(newlog.getOpDescription() + " ("
-                            + getInstance().getResource()
-                            .getString("general.user") + ": "
-                            + loggedUser.getUsername() + ")");
-                    //save log to server
-                    newlog = getService().setXincoCoreLog(newlog, loggedUser);
-                    if (newlog != null) {
-                        temp.getXincoCoreLogs().add(newlog);
+                //Only makes sense for data
+                if (temp.getXincoCoreDataType().getId() == 1) {
+                    //Set as checked out
+                    try {
+                        XincoCoreLog newlog = new XincoCoreLog();
+                        newlog.setOpCode(OPCode.CHECKOUT.ordinal() + 1);
+                        newlog.setOpDescription(getInstance().getResource()
+                                .getString(OPCode.getOPCode(newlog.getOpCode())
+                                .getName()));
+                        newlog.setXincoCoreUserId(loggedUser.getId());
+                        newlog.setXincoCoreDataId(temp.getId());
+                        newlog.setVersion(((XincoCoreLog) temp.getXincoCoreLogs()
+                                .get(temp.getXincoCoreLogs().size() - 1)).getVersion());
+                        newlog.setOpDescription(newlog.getOpDescription() + " ("
+                                + getInstance().getResource()
+                                .getString("general.user") + ": "
+                                + loggedUser.getUsername() + ")");
+                        //save log to server
+                        newlog = getService().setXincoCoreLog(newlog, loggedUser);
+                        if (newlog != null) {
+                            temp.getXincoCoreLogs().add(newlog);
+                        }
+                        if (getService().doXincoCoreDataCheckout(temp, loggedUser)
+                                != null) {
+                            //Download the file
+                            downloadFile(false, data);
+                            xincoTree.setValue("node-1");
+                            refresh();
+                        } else {
+                            LOG.log(Level.SEVERE,
+                                    "Unable to check out file: {0} with user: {1}",
+                                    new Object[]{temp.getDesignation(), loggedUser});
+                            getMainWindow().showNotification(
+                                    getInstance().getResource().getString(
+                                    "general.error"),
+                                    Notification.TYPE_WARNING_MESSAGE);
+                        }
+                    } catch (MalformedURLException ex) {
+                        LOG.log(Level.SEVERE, null, ex);
                     }
-                    if (getService().doXincoCoreDataCheckout(temp, loggedUser)
-                            != null) {
-                        //Download the file
-                        downloadFile(false, data);
-                        xincoTree.setValue("node-1");
-                        refresh();
-                    } else {
-                        LOG.log(Level.SEVERE,
-                                "Unable to check out file: {0} with user: {1}",
-                                new Object[]{temp.getDesignation(), loggedUser});
-                        getMainWindow().showNotification(
-                                getInstance().getResource().getString(
-                                "general.error"),
-                                Notification.TYPE_WARNING_MESSAGE);
-                    }
-                } catch (MalformedURLException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
                 }
             }
         } catch (XincoException ex) {
@@ -3561,11 +3564,14 @@ public class Xinco extends Application implements HttpServletRequestListener {
             public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
                 checkoutFile();
             }
-        }).setLoggedIn(true)
-                .setDataOnly(true).
-                setNodeOnly(false).
-                setSelected(true).
-                createXincoMenuItem();
+        })
+                .setLoggedIn(true)
+                .setDataOnly(true)
+                .setNodeOnly(false)
+                .setSelected(true)
+                //Only valid for files
+                .setValidDataTypes(new int[]{1})
+                .createXincoMenuItem();
         item.setStatuses(new int[]{1});
         XincoMenuItemManager.addItem(item);
         item = new XincoMenuItemBuilder()
