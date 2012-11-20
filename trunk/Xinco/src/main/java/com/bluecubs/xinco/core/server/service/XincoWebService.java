@@ -256,8 +256,11 @@ public class XincoWebService {
                 out.close();
             }
             return byteArray;
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
             LOG.log(Level.SEVERE, null, e);
+            return null;
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
             return null;
         }
     }
