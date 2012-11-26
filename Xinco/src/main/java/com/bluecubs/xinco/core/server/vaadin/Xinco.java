@@ -822,74 +822,70 @@ public class Xinco extends Application implements HttpServletRequestListener {
     private void addChildrenNodes(String parent) throws XincoException {
         XincoCoreNodeServer xcns =
                 new XincoCoreNodeServer(Integer.valueOf(parent.substring(parent.indexOf('-') + 1)));
-        if (xcns != null) {
-            for (Iterator<XincoCoreNode> it = xcns.getXincoCoreNodes().iterator(); it.hasNext();) {
-                XincoCoreNode subnode = it.next();
-                String id = "node-" + subnode.getId();
-                Item item = xincoTreeContainer.addItem(id);
-                item.getItemProperty("caption").setValue(subnode.getDesignation());
-                // Set it to be a child.
-                xincoTreeContainer.setParent(id, parent);
-                //Allow to have children
-                xincoTreeContainer.setChildrenAllowed(id, true);
-            }
+        for (Iterator<XincoCoreNode> it = xcns.getXincoCoreNodes().iterator(); it.hasNext();) {
+            XincoCoreNode subnode = it.next();
+            String id = "node-" + subnode.getId();
+            Item item = xincoTreeContainer.addItem(id);
+            item.getItemProperty("caption").setValue(subnode.getDesignation());
+            // Set it to be a child.
+            xincoTreeContainer.setParent(id, parent);
+            //Allow to have children
+            xincoTreeContainer.setChildrenAllowed(id, true);
         }
     }
 
     private void addChildrenData(String parent) throws XincoException {
         XincoCoreNodeServer xcns = new XincoCoreNodeServer(Integer.valueOf(
                 parent.substring(parent.indexOf('-') + 1)));
-        if (xcns != null) {
-            for (Iterator<XincoCoreData> it = xcns.getXincoCoreData().iterator(); it.hasNext();) {
-                XincoCoreData temp = it.next();
-                //Only show files that are not renderings
-                if (!XincoCoreDataHasDependencyServer.isRendering(temp.getId())) {
-                    //Add childen data
-                    String id = "data-" + temp.getId();
-                    Item item = xincoTreeContainer.addItem(id);
-                    item.getItemProperty("caption").setValue(temp.getDesignation());
-                    // Set it to be a child.
-                    xincoTreeContainer.setParent(id, parent);
-                    // Set as leaves
-                    xincoTreeContainer.setChildrenAllowed(id, false);
-                    if (!temp.getXincoAddAttributes().isEmpty()) {
-                        String name = temp.getXincoAddAttributes().get(0).getAttribVarchar();
-                        try {
-                            FileResource icon1 = null;
-                            //Set Icon
-                            switch (temp.getXincoCoreDataType().getId()) {
-                                case 1://File
-                                //Fall through
-                                case 5://Rendering
-                                    if (name != null
-                                            && name.contains(".")
-                                            && name.substring(name.lastIndexOf('.') + 1,
-                                            name.length()).length() >= 3) {
-                                        icon1 = getIcon(name.substring(name.lastIndexOf('.') + 1,
-                                                name.length()));
-                                    }
-                                    break;
-                                case 2://Text
-                                    icon1 = getIcon("txt");
+        for (Iterator<XincoCoreData> it = xcns.getXincoCoreData().iterator(); it.hasNext();) {
+            XincoCoreData temp = it.next();
+            //Only show files that are not renderings
+            if (!XincoCoreDataHasDependencyServer.isRendering(temp.getId())) {
+                //Add childen data
+                String id = "data-" + temp.getId();
+                Item item = xincoTreeContainer.addItem(id);
+                item.getItemProperty("caption").setValue(temp.getDesignation());
+                // Set it to be a child.
+                xincoTreeContainer.setParent(id, parent);
+                // Set as leaves
+                xincoTreeContainer.setChildrenAllowed(id, false);
+                if (!temp.getXincoAddAttributes().isEmpty()) {
+                    String name = temp.getXincoAddAttributes().get(0).getAttribVarchar();
+                    try {
+                        FileResource icon1 = null;
+                        //Set Icon
+                        switch (temp.getXincoCoreDataType().getId()) {
+                            case 1://File
+                            //Fall through
+                            case 5://Rendering
+                                if (name != null
+                                        && name.contains(".")
+                                        && name.substring(name.lastIndexOf('.') + 1,
+                                        name.length()).length() >= 3) {
+                                    icon1 = getIcon(name.substring(name.lastIndexOf('.') + 1,
+                                            name.length()));
+                                }
+                                break;
+                            case 2://Text
+                                icon1 = getIcon("txt");
 
-                                    break;
-                                case 3://URL
-                                    icon1 = getIcon("html");
-                                    break;
-                                case 4://Contact
-                                    item.getItemProperty("icon").setValue(
-                                            new ThemeResource("icons/contact.gif"));
-                                    break;
-                                default:
-                                    throw new RuntimeException("Invalid Data Type: "
-                                            + temp.getXincoCoreDataType().getId());
-                            }
-                            if (icon1 != null) {
-                                item.getItemProperty("icon").setValue(icon1);
-                            }
-                        } catch (IOException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                                break;
+                            case 3://URL
+                                icon1 = getIcon("html");
+                                break;
+                            case 4://Contact
+                                item.getItemProperty("icon").setValue(
+                                        new ThemeResource("icons/contact.gif"));
+                                break;
+                            default:
+                                throw new RuntimeException("Invalid Data Type: "
+                                        + temp.getXincoCoreDataType().getId());
                         }
+                        if (icon1 != null) {
+                            item.getItemProperty("icon").setValue(icon1);
+                        }
+                    } catch (IOException ex) {
+                        LOG.log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -1089,11 +1085,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 try {
                     XincoCoreLogServer log =
                             new XincoCoreLogServer(newlog.getId());
-                    if (log != null) {
-                        new XincoCoreLogJpaController(
-                                XincoDBManager.getEntityManagerFactory())
-                                .destroy(log.getId());
-                    }
+                    new XincoCoreLogJpaController(
+                            XincoDBManager.getEntityManagerFactory())
+                            .destroy(log.getId());
                 } catch (NonexistentEntityException ex1) {
                     LOG.log(Level.SEVERE, null, ex1);
                 } catch (XincoException ex1) {
