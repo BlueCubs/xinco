@@ -184,7 +184,7 @@ public final class XincoCoreNodeServer extends XincoCoreNode {
                 fillXincoCoreData();
                 //start recursive deletion
                 for (i = 0; i < ((ArrayList) getXincoCoreNodes()).size(); i++) {
-                    new XincoCoreNodeServer(((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) ((ArrayList) getXincoCoreNodes()).get(i))).deleteFromDB(true, userID);
+                    ((XincoCoreNodeServer) ((ArrayList) getXincoCoreNodes()).get(i)).deleteFromDB(true, userID);
                 }
                 for (i = 0; i < ((ArrayList) getXincoCoreData()).size(); i++) {
                     XincoIndexer.removeXincoCoreData((XincoCoreDataServer) ((ArrayList) getXincoCoreData()).get(i));
@@ -204,7 +204,7 @@ public final class XincoCoreNodeServer extends XincoCoreNode {
             result = XincoDBManager.createdQuery("SELECT xcn FROM XincoCoreNode xcn "
                     + "WHERE xcn.xincoCoreNode.id = " + getId() + " ORDER BY xcn.designation");
             for (Object o : result) {
-                ((ArrayList) getXincoCoreNodes()).add((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o);
+                ((ArrayList) getXincoCoreNodes()).add(new XincoCoreNodeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreNode) o));
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
