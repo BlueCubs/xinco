@@ -4,7 +4,7 @@
     <!--Comment if not using H2 database-->
     <context-param>
         <param-name>db.url</param-name>
-        <param-value>jdbc:h2:file:~/Xinco/data/xinco;CREATE=TRUE;LOCK_TIMEOUT=10000</param-value>
+        <param-value>jdbc:h2:file:Xinco/data/xinco;CREATE=TRUE;LOCK_TIMEOUT=10000</param-value>
     </context-param>
     <context-param>
         <param-name>db.user</param-name>
