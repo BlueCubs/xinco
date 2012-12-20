@@ -35,7 +35,6 @@ import com.vaadin.ui.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  *
@@ -49,7 +48,7 @@ class ArchiveDialog extends CustomComponent {
         archiveModel = new Select(Xinco.getInstance().getResource()
                 .getString("window.archive.archivingmodel") + ":");
         com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(Xinco
-                .getInstance().getResource().getString("window.datatype"));
+                .getInstance().getResource().getString("window.archive"));
         panel.setContent(new VerticalLayout());
         CheckBox revisionModelCheckbox = new CheckBox(Xinco.getInstance()
                 .getResource().getString("window.archive.revisionmodel"));
