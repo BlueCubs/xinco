@@ -1825,7 +1825,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
             XincoCoreACEServer acl = null;
             if (xincoTree.getValue() != null && xincoTree.getValue().toString().startsWith("node")) {
                 try {
-                    XincoCoreNodeServer tempNode = new XincoCoreNodeServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                    XincoCoreNodeServer tempNode =
+                            new XincoCoreNodeServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
                     try {
                         acl = new XincoCoreACEServer(0, loggedUser.getId(), 0, tempNode.getId(), 0, false, false, false, false);
                     } catch (XincoException ex) {
@@ -1902,54 +1903,69 @@ public class Xinco extends Application implements HttpServletRequestListener {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 for (Iterator<Entry<String, XincoCoreACEServer>> it = aceList.entrySet().iterator(); it.hasNext();) {
+                    boolean skip = false;
                     Entry<String, XincoCoreACEServer> e = it.next();
                     XincoCoreACEServer stored = null;
                     XincoCoreACEServer value = e.getValue();
-                    try {
-                        stored = new XincoCoreACEServer(e.getValue().getId());
-                    } catch (XincoException ex) {
-                        try {
-                            //Doesn't exist, create a new one
-                            stored = new XincoCoreACEServer(0,
-                                    value.getXincoCoreUserId(),
-                                    value.getXincoCoreGroupId(),
-                                    value.getXincoCoreNodeId(),
-                                    value.getXincoCoreDataId(),
-                                    false, false,
-                                    false, false);
-                        } catch (XincoException ex1) {
-                            LOG.log(Level.SEVERE, null, ex1);
-                        }
-                    }
-                    if (stored != null && stored.isAdminPermission() != e.getValue().isAdminPermission()
-                            || stored.isExecutePermission() != e.getValue().isExecutePermission()
-                            || stored.isReadPermission() != e.getValue().isReadPermission()
-                            || stored.isWritePermission() != e.getValue().isWritePermission()) {
-                        //Is different so update
-                        stored.setReadPermission(e.getValue().isReadPermission());
-                        stored.setAdminPermission(e.getValue().isAdminPermission());
-                        stored.setExecutePermission(e.getValue().isExecutePermission());
-                        stored.setWritePermission(e.getValue().isWritePermission());
-                    }
-                    if (stored != null && stored.getXincoCoreUserId() > 0) {
+                    int ownerID = XincoCoreDataServer.getOwnerID(new XincoCoreDataServer(data.getId()));
+                    Integer thisOwner = Integer.valueOf(e.getKey().substring(e.getKey().lastIndexOf("-") + 1));
+                    //Owner cannot be removed
+                    if (e.getKey().startsWith("User-") && thisOwner == ownerID
+                            && (!e.getValue().isReadPermission()
+                            || !e.getValue().isAdminPermission()
+                            || !e.getValue().isExecutePermission()
+                            || !e.getValue().isWritePermission())) {
                         getMainWindow().showNotification(
-                                getInstance().getResource().getString("general.warning"),
-                                getInstance().getResource().getString("error.noadminpermission"),
+                                getInstance().getResource().getString("window.acl.removefailed"),
+                                getInstance().getResource().getString("window.acl.cannotremoveowner"),
                                 Notification.TYPE_WARNING_MESSAGE);
-                        return;
+                        skip = true;
+                        continue;
                     }
-                    try {
-                        if (stored != null && stored.isAdminPermission()
-                                || stored.isExecutePermission()
-                                || stored.isReadPermission()
-                                || stored.isWritePermission()) {
-                            stored.write2DB();
-                            if (xincoTree.getValue() != null && xincoTree.getValue().toString().startsWith("data")) {
-                                showCommentDataDialog(new XincoCoreDataServer(getXincoCoreData().getId()), OPCode.MODIFICATION);
+                    if (!skip) {
+                        try {
+                            stored = new XincoCoreACEServer(e.getValue().getId());
+                        } catch (XincoException ex) {
+                            try {
+                                //Doesn't exist, create a new one
+                                stored = new XincoCoreACEServer(0,
+                                        value.getXincoCoreUserId(),
+                                        value.getXincoCoreGroupId(),
+                                        value.getXincoCoreNodeId(),
+                                        value.getXincoCoreDataId(),
+                                        false, false,
+                                        false, false);
+                            } catch (XincoException ex1) {
+                                LOG.log(Level.SEVERE, null, ex1);
                             }
                         }
-                    } catch (XincoException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        if (stored != null && stored.isAdminPermission() != e.getValue().isAdminPermission()
+                                || stored.isExecutePermission() != e.getValue().isExecutePermission()
+                                || stored.isReadPermission() != e.getValue().isReadPermission()
+                                || stored.isWritePermission() != e.getValue().isWritePermission()) {
+                            //Is different so update
+                            stored.setReadPermission(e.getValue().isReadPermission());
+                            stored.setAdminPermission(e.getValue().isAdminPermission());
+                            stored.setExecutePermission(e.getValue().isExecutePermission());
+                            stored.setWritePermission(e.getValue().isWritePermission());
+                        }
+                        if (stored != null && stored.getXincoCoreUserId() > 0) {
+                            getMainWindow().showNotification(
+                                    getInstance().getResource().getString("general.warning"),
+                                    getInstance().getResource().getString("error.noadminpermission"),
+                                    Notification.TYPE_WARNING_MESSAGE);
+                            return;
+                        }
+                        try {
+                            if (stored != null && (stored.isAdminPermission()
+                                    || stored.isExecutePermission()
+                                    || stored.isReadPermission()
+                                    || stored.isWritePermission())) {
+                                stored.write2DB();
+                            }
+                        } catch (XincoException ex) {
+                            LOG.log(Level.SEVERE, null, ex);
+                        }
                     }
                 }
                 getMainWindow().removeWindow(aclWindow);
