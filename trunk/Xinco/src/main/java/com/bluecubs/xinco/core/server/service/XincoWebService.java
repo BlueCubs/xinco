@@ -3,7 +3,6 @@ package com.bluecubs.xinco.core.server.service;
 import com.bluecubs.xinco.core.OPCode;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.*;
-import com.bluecubs.xinco.core.server.XincoCoreLogServerBuilder;
 import com.bluecubs.xinco.core.server.index.XincoIndexThread;
 import com.bluecubs.xinco.core.server.index.XincoIndexer;
 import com.bluecubs.xinco.core.server.rendering.XincoRenderingThread;
@@ -229,16 +228,10 @@ public class XincoWebService {
                 if ((data.getXincoCoreLogs().size() > 1)
                         && (in0.getXincoCoreLogs().size() == 1)) {
                     //find id of log
-                    int LogId = 0;
                     if ((((XincoCoreLog) in0.getXincoCoreLogs().get(0))
-                            .getOpCode() == OPCode.CHECKIN.ordinal() + 1)
-                            || (((XincoCoreLog) in0.getXincoCoreLogs().get(0))
-                            .getOpCode() == OPCode.CREATION.ordinal() + 1)) {
-                        LogId = ((XincoCoreLog) in0.getXincoCoreLogs().get(0))
+                            .getOpCode() == OPCode.CHECKIN.ordinal() + 1)) {
+                        revision = "-" + ((XincoCoreLog) in0.getXincoCoreLogs().get(0))
                                 .getId();
-                    }
-                    if (LogId > 0) {
-                        revision = "-" + LogId;
                     }
                 }
                 in = new CheckedInputStream(new FileInputStream(
