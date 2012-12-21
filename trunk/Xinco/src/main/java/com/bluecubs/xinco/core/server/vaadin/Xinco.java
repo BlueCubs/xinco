@@ -1617,12 +1617,6 @@ public class Xinco extends Application implements HttpServletRequestListener {
         addLog(xdata, OPCode.PUBLISH_COMMENT);
         xdata.write2DB();
         refresh();
-        String tempUrl;
-        if (xdata.getXincoCoreDataType().getId() == 1) {
-            tempUrl = ((XincoAddAttribute) xdata.getXincoAddAttributes().get(0)).getAttribVarchar();
-        } else {
-            tempUrl = xdata.getDesignation();
-        }
     }
 
     private void showACLDialog() {
