@@ -177,12 +177,12 @@ class ArchiveDialog extends CustomComponent {
     public void updateAttributes() throws DatatypeConfigurationException {
         //Archive model
         String model = getArchiveModel().getValue().toString();
-        LOG.log(Level.INFO, "Archive model: {0}", model);
+        LOG.log(Level.FINE, "Archive model: {0}", model);
         Xinco.getInstance().getXincoCoreData().getXincoAddAttributes().get(4)
                 .setAttribUnsignedint(Integer.valueOf(model));
         //Archieve date
         Date archiveDate = getDate();
-        LOG.log(Level.INFO, "Archive date: {0}", archiveDate);
+        LOG.log(Level.FINE, "Archive date: {0}", archiveDate);
         GregorianCalendar c = new GregorianCalendar();
         c.setTime(archiveDate);
         Xinco.getInstance().getXincoCoreData().getXincoAddAttributes()
@@ -190,7 +190,7 @@ class ArchiveDialog extends CustomComponent {
                 .newXMLGregorianCalendar(c));
         //Archieve dayss 
         int tempDays = getDays();
-        LOG.log(Level.INFO, "Archive days: {0}", tempDays);
+        LOG.log(Level.FINE, "Archive days: {0}", tempDays);
         Xinco.getInstance().getXincoCoreData().getXincoAddAttributes().get(6)
                 .setAttribUnsignedint(Integer.valueOf(tempDays));
     }
