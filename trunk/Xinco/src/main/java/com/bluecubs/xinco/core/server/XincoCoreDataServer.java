@@ -304,7 +304,7 @@ public final class XincoCoreDataServer extends XincoCoreData {
             for (Iterator<XincoAddAttribute> it = getXincoAddAttributes().iterator(); it.hasNext();) {
                 /**
                  * Copy fields from XincoAddAttribute to XincoAddAttribute
-                 * (Persistence) The delete and create approach doesn't go well
+                 * (Persistence). The delete and create approach doesn't go well
                  * with persistence.
                  */
                 com.bluecubs.xinco.core.server.service.XincoAddAttribute temp = it.next();

@@ -9,7 +9,7 @@
     <name>Xinco DMS</name>
     
     <prerequisites>
-      <maven>2.2.1</maven>
+        <maven>2.2.1</maven>
     </prerequisites>
 
     <properties>
@@ -502,7 +502,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
+            <version>4.11</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -571,6 +571,11 @@
             <groupId>org.vaadin.addons</groupId>
             <artifactId>stepper</artifactId>
             <version>1.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>numberfield</artifactId>
+            <version>0.5.1</version>
         </dependency>
         <!--End Vaadin plugins-->
         <!--TODO Bonita for workflows

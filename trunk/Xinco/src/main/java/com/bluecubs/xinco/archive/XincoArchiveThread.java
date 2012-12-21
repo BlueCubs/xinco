@@ -56,7 +56,8 @@ public final class XincoArchiveThread extends Thread {
     static FileInputStream fcis = null;
     static FileOutputStream fcos = null;
     private static List result;
-    private static final Logger logger = Logger.getLogger(XincoArchiveThread.class.getSimpleName());
+    private static final Logger LOG = 
+            Logger.getLogger(XincoArchiveThread.class.getSimpleName());
 
     @Override
     public void run() {
@@ -72,14 +73,14 @@ public final class XincoArchiveThread extends Thread {
                 archiveData();
                 lastRun = new GregorianCalendar();
             } catch (Exception e) {
-                logger.log(Level.SEVERE, null, e);
+                LOG.log(Level.SEVERE, null, e);
                 //continue, wait and try again...
                 archive_period = 14400000;
             }
             try {
                 sleep(archive_period);
             } catch (Exception se) {
-                logger.log(Level.SEVERE, null, se);
+                LOG.log(Level.SEVERE, null, se);
                 break;
             }
         }
@@ -161,7 +162,7 @@ public final class XincoArchiveThread extends Thread {
             }
             return true;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
             try {
                 if (fcis != null) {
                     fcis.close();
@@ -170,7 +171,7 @@ public final class XincoArchiveThread extends Thread {
                     fcos.close();
                 }
             } catch (IOException fe) {
-                logger.log(Level.SEVERE, null, fe);
+                LOG.log(Level.SEVERE, null, fe);
             }
             return false;
         }
