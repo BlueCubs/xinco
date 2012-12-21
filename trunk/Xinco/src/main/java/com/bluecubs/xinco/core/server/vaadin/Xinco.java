@@ -320,6 +320,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 loggedUser = null;
                                 try {
                                     showMainWindow();
+                                    refresh();
                                 } catch (XincoException ex) {
                                     LOG.log(Level.SEVERE, null, ex);
                                 }
@@ -2095,6 +2096,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         loginWindow.setWidth(300, Sizeable.UNITS_PIXELS);
         loginWindow.setReadOnly(true);
         getMainWindow().addWindow(loginWindow);
+        refresh();
     }
 
     private void refreshGroupTable(final Table table) {
@@ -4649,6 +4651,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         if (xcns != null) {
             //Clear tree and start over
             xincoTreeContainer.removeAllItems();
+            xincoTree.collapseItemsRecursively("node-1");
             String id = "node-" + xcns.getId();
             root = xincoTreeContainer.addItem(id);
             root.getItemProperty("caption").setValue(xcns.getDesignation() == null
