@@ -1623,9 +1623,6 @@ public class Xinco extends Application implements HttpServletRequestListener {
         } else {
             tempUrl = xdata.getDesignation();
         }
-        getMainWindow().showNotification("",
-                getInstance().getResource().getString("datawizard.updatesuccess.publisherinfo") + "\nhttp://[serverName]:[port]/xinco/XincoPublisher/" + xdata.getId() + "/" + tempUrl,
-                Notification.TYPE_TRAY_NOTIFICATION);
     }
 
     private void showACLDialog() {
