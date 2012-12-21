@@ -4683,8 +4683,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         XincoCoreACE tempAce = new XincoCoreACE();
         getXincoTable().setVisible(getLoggedUser() != null);
         getXincoTable().requestRepaint();
-        xeSplitPanel.setSplitPosition(getLoggedUser() != null ? 25 : 
-                100, Sizeable.UNITS_PERCENTAGE);
+        xeSplitPanel.setSplitPosition(getLoggedUser() != null ? 25
+                : 100, Sizeable.UNITS_PERCENTAGE);
         if (getXincoTable().isVisible()) {
             //Clear table
             xincoTable.removeAllItems();
@@ -4910,16 +4910,19 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         value = getInstance().getResource().getString("error.content.sufficientrights");
                         xincoTable.addItem(new Object[]{header, new com.vaadin.ui.Label(value)}, i++);
                     }
-                    //Add permanent link
-                    value = getInstance().getURL().toString() + "?dataId=" + temp.getId();
-                    Link link = new Link(value, new ExternalResource(value));
-                    link.setTargetName("_blank");
-                    link.setTargetBorder(Link.TARGET_BORDER_NONE);
-                    try {
-                        header = getInstance().getResource().getString("general.data.type.URL");
-                        xincoTable.addItem(new Object[]{header, link}, i++);
-                    } catch (XincoException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                    //Only for files
+                    if (temp.getXincoCoreDataType().getId() == 1) {
+                        //Add permanent link
+                        value = getInstance().getURL().toString() + "?dataId=" + temp.getId();
+                        Link link = new Link(value, new ExternalResource(value));
+                        link.setTargetName("_blank");
+                        link.setTargetBorder(Link.TARGET_BORDER_NONE);
+                        try {
+                            header = getInstance().getResource().getString("general.data.type.URL");
+                            xincoTable.addItem(new Object[]{header, link}, i++);
+                        } catch (XincoException ex) {
+                            LOG.log(Level.SEVERE, null, ex);
+                        }
                     }
                     xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
                     xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
