@@ -3695,7 +3695,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 .setNodeOnly(false)
                 .setSelected(true)
                 .createXincoMenuItem();
-        item.setStatuses(new int[]{1});
+        item.setStatuses(new int[]{1, 2});
         XincoMenuItemManager.addItem(item);
         item = new XincoMenuItemBuilder()
                 .setIndex(i += 1000)
