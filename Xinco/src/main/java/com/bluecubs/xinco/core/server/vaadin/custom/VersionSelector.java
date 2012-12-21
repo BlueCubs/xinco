@@ -91,6 +91,14 @@ public class VersionSelector extends CustomComponent {
     public void increaseHigh() {
         high.setValue((Integer) high.getValue() + 1);
     }
+    
+    public void increaseMid() {
+        mid.setValue((Integer) mid.getValue() + 1);
+    }
+    
+    public void increaseLow() {
+        low.setValue((Integer) low.getValue() + 1);
+    }
 
     /**
      * Get the version currently displayed in the component
@@ -121,6 +129,7 @@ public class VersionSelector extends CustomComponent {
         this.version.setVersionHigh(version.getVersionHigh());
         this.version.setVersionMid(version.getVersionMid());
         this.version.setVersionLow(version.getVersionLow());
+        this.version.setVersionPostfix(version.getVersionPostfix());
         update();
     }
 
@@ -137,6 +146,7 @@ public class VersionSelector extends CustomComponent {
         low.setMaxValue(Integer.MAX_VALUE);
         low.setMinValue(version.getVersionLow());
         low.setStepAmount(1);
-        postfix.setValue(version.getVersionPostfix());
+        postfix.setValue(version.getVersionPostfix() == null ? ""
+                : version.getVersionPostfix());
     }
 }
