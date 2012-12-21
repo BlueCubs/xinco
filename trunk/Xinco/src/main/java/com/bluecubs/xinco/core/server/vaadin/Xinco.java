@@ -1170,10 +1170,6 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 .getOpDescription());
         form.getField("action").setEnabled(false);
         form.addField("reason", new com.vaadin.ui.TextArea());
-        versionSelector.setMinorEnabled(false);
-        versionSelector.setCaption(getInstance().getResource()
-                .getString("general.version"));
-        versionSelector.setVersion(versionSelector.getVersion());
         OPCode code;
         if (opcode == null) {
             code = OPCode.getOPCode(
@@ -1184,6 +1180,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         }
         switch (code) {
             case COMMENT:
+                versionSelector.increaseLow();
             case CHECKIN:
                 versionSelector.setMinorEnabled(code == OPCode.CHECKIN);
                 versionSelector.setVersionEnabled(false);
@@ -1197,6 +1194,10 @@ public class Xinco extends Application implements HttpServletRequestListener {
             default:
                 form.getField("reason").setEnabled(false);
         }
+        versionSelector.setMinorEnabled(false);
+        versionSelector.setCaption(getInstance().getResource()
+                .getString("general.version"));
+        versionSelector.setVersion(versionSelector.getVersion());
         versionSelector.setEnabled(code != OPCode.DATA_MOVE);
         form.getField("reason").setRequired(form.getField("reason").isEnabled());
         form.getField("reason").setRequiredError(getInstance().getResource()
