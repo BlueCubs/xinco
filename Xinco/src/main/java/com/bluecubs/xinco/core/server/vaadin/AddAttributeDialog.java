@@ -77,7 +77,6 @@ class AddAttributeDialog extends CustomComponent {
         }
         java.util.List<XincoCoreDataTypeAttribute> dataTypeAttributes = 
                 data.getXincoCoreDataType().getXincoCoreDataTypeAttributes();
-        int count = 0;
         for (int i = start; i < attributes.size(); i++) {
             String value = "";
             if (dataTypeAttributes.get(i).getDataType().equals("datetime")) {
@@ -110,7 +109,7 @@ class AddAttributeDialog extends CustomComponent {
                     Xinco.getInstance().getResource()
                     .getString(dataTypeAttributes.get(i).getDesignation()) : 
                     dataTypeAttributes.get(i).getDesignation();
-            attrTable.addItem(new Object[]{type, value}, count++);
+            attrTable.addItem(new Object[]{type, value}, i);
         }
         attrTable.setTableFieldFactory(new TableFieldFactory() {
             @Override
