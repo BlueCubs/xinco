@@ -32,4 +32,6 @@
     <inherits name="org.vaadin.hene.expandingtextarea.widgetset.ExpandingtextareaWidgetset" />
 
     
+
+    <inherits name="de.essendi.vaadin.ui.component.numberfield.widgetset.NumberFieldWidgetset" />
 </module>

@@ -1398,8 +1398,6 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         + cin.getChecksum().getValue());
                 ((XincoAddAttribute) getXincoCoreData().getXincoAddAttributes()
                         .get(3)).setAttribUnsignedint(1);
-                ((XincoAddAttribute) getXincoCoreData().getXincoAddAttributes()
-                        .get(4)).setAttribUnsignedint(0);
             } catch (Exception fe) {
                 LOG.log(Level.SEVERE, null, fe);
                 getMainWindow().showNotification(
@@ -1920,7 +1918,6 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 getInstance().getResource().getString("window.acl.cannotremoveowner"),
                                 Notification.TYPE_WARNING_MESSAGE);
                         skip = true;
-                        continue;
                     }
                     if (!skip) {
                         try {
@@ -4168,6 +4165,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
                                                     @Override
                                                     public boolean onAdvance() {
+                                                        try {
+                                                            //Save values from wizard
+                                                            archDialog.updateAttributes();
+                                                        } catch (DatatypeConfigurationException ex) {
+                                                            LOG.log(Level.SEVERE, null, ex);
+                                                            throw new XincoException(ex);
+                                                        }
                                                         //True if there are more steps after this one
                                                         return wizard.getSteps().size()
                                                                 > wizard.getLastCompleted() + 1;
@@ -4679,7 +4683,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         XincoCoreACE tempAce = new XincoCoreACE();
         getXincoTable().setVisible(getLoggedUser() != null);
         getXincoTable().requestRepaint();
-        xeSplitPanel.setSplitPosition(getLoggedUser() != null ? 25 : 100, Sizeable.UNITS_PERCENTAGE);
+        xeSplitPanel.setSplitPosition(getLoggedUser() != null ? 25 : 
+                100, Sizeable.UNITS_PERCENTAGE);
         if (getXincoTable().isVisible()) {
             //Clear table
             xincoTable.removeAllItems();

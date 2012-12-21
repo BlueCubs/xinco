@@ -32,9 +32,14 @@ import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.*;
+import de.essendi.vaadin.ui.component.numberfield.NumberField;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 
 /**
  *
@@ -43,8 +48,19 @@ import java.util.GregorianCalendar;
 class ArchiveDialog extends CustomComponent {
 
     private final Select archiveModel;
+    private final DateField date = new DateField();
+    private final NumberField days = new NumberField();
+    private static final Logger LOG =
+            Logger.getLogger(ArchiveDialog.class.getName());
 
     ArchiveDialog() {
+        days.setCaption(
+                Xinco.getInstance().getResource()
+                .getString("window.archive.archivedays") + ":");
+        days.setDecimalAllowed(false);
+        days.setGroupingUsed(false);
+        days.setMinValue(1);
+        days.setMaxValue(Integer.MAX_VALUE);
         archiveModel = new Select(Xinco.getInstance().getResource()
                 .getString("window.archive.archivingmodel") + ":");
         com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(Xinco
@@ -58,7 +74,7 @@ class ArchiveDialog extends CustomComponent {
         if (Xinco.getInstance().getXincoCoreData().getId() == 0) {
             // Is a new data, there's nothing yet in the database.
             // Load local values.
-            attributes = 
+            attributes =
                     Xinco.getInstance().getXincoCoreData()
                     .getXincoAddAttributes();
         } else {
@@ -82,7 +98,6 @@ class ArchiveDialog extends CustomComponent {
         i++;
         panel.addComponent(archiveModel);
         //processing independent of creation
-        final DateField date = new DateField();
         // Set the date and time to present
         date.setValue(new Date());
         date.setDateFormat("dd-MM-yyyy");
@@ -93,21 +108,18 @@ class ArchiveDialog extends CustomComponent {
         date.setEnabled(false);
         //set date / days
         //convert clone from remote time to local time
-        Calendar cal = 
+        Calendar cal =
                 (Calendar) (attributes.get(5))
                 .getAttribDatetime().toGregorianCalendar().clone();
         Calendar realcal = (attributes.get(5))
                 .getAttribDatetime().toGregorianCalendar();
         Calendar ngc = new GregorianCalendar();
-        cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET) - 
-                realcal.get(Calendar.ZONE_OFFSET)) - 
-                (ngc.get(Calendar.DST_OFFSET) 
+        cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET)
+                - realcal.get(Calendar.ZONE_OFFSET))
+                - (ngc.get(Calendar.DST_OFFSET)
                 + realcal.get(Calendar.DST_OFFSET)));
         date.setValue(cal.getTime());
-        final com.vaadin.ui.TextField days = 
-                new com.vaadin.ui.TextField(
-                Xinco.getInstance().getResource()
-                .getString("window.archive.archivedays") + ":");
+
         panel.addComponent(days);
         //Disabled by default
         days.setEnabled(false);
@@ -144,7 +156,42 @@ class ArchiveDialog extends CustomComponent {
     /**
      * @return the archiveModel
      */
-    public Select getArchiveModel() {
+    private Select getArchiveModel() {
         return archiveModel;
+    }
+
+    /**
+     * @return the date
+     */
+    private Date getDate() {
+        return (Date) date.getValue();
+    }
+
+    private int getDays() {
+        return days.isEnabled()
+                && !days.getValue().toString().isEmpty()
+                ? Integer.valueOf(days.getValue().toString())
+                : 0;
+    }
+
+    public void updateAttributes() throws DatatypeConfigurationException {
+        //Archive model
+        String model = getArchiveModel().getValue().toString();
+        LOG.log(Level.INFO, "Archive model: {0}", model);
+        Xinco.getInstance().getXincoCoreData().getXincoAddAttributes().get(4)
+                .setAttribUnsignedint(Integer.valueOf(model));
+        //Archieve date
+        Date archiveDate = getDate();
+        LOG.log(Level.INFO, "Archive date: {0}", archiveDate);
+        GregorianCalendar c = new GregorianCalendar();
+        c.setTime(archiveDate);
+        Xinco.getInstance().getXincoCoreData().getXincoAddAttributes()
+                .get(5).setAttribDatetime(DatatypeFactory.newInstance()
+                .newXMLGregorianCalendar(c));
+        //Archieve dayss 
+        int tempDays = getDays();
+        LOG.log(Level.INFO, "Archive days: {0}", tempDays);
+        Xinco.getInstance().getXincoCoreData().getXincoAddAttributes().get(6)
+                .setAttribUnsignedint(Integer.valueOf(tempDays));
     }
 }
