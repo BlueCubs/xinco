@@ -31,5 +31,19 @@
             
         </goals>
     </action>
+    <action>
+            <actionName>CUSTOM-Prepare Release</actionName>
+            <displayName>Prepare Release</displayName>
+            <goals>
+                <goal>release:prepare</goal>
+            </goals>
+        </action>
+    <action>
+            <actionName>CUSTOM-Perform Release</actionName>
+            <displayName>Perform Release</displayName>
+            <goals>
+                <goal>release:perform</goal>
+            </goals>
+        </action>
     
 </actions>
