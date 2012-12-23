@@ -360,9 +360,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 parameters.entrySet().iterator();
                                 it.hasNext();) {
                             Entry<String, String[]> e = it.next();
-                            LOG.log(Level.INFO, "Name: {0}, Values:", e.getKey());
+                            LOG.log(Level.FINE, "Name: {0}, Values:", e.getKey());
                             for (String val : e.getValue()) {
-                                LOG.log(Level.INFO, "{0}", val);
+                                LOG.log(Level.FINE, "{0}", val);
                             }
                             if (e.getKey().equals("dataId")) {
                                 //A link to a specific data was requested. 
@@ -881,13 +881,17 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 new XincoCoreNodeServer(Integer.valueOf(parent.substring(parent.indexOf('-') + 1)));
         for (Iterator<XincoCoreNode> it = xcns.getXincoCoreNodes().iterator(); it.hasNext();) {
             XincoCoreNode subnode = it.next();
-            String id = "node-" + subnode.getId();
-            Item item = xincoTreeContainer.addItem(id);
-            item.getItemProperty("caption").setValue(subnode.getDesignation());
-            // Set it to be a child.
-            xincoTreeContainer.setParent(id, parent);
-            //Allow to have children
-            xincoTreeContainer.setChildrenAllowed(id, true);
+            LOG.log(Level.FINE, "Checking permissions for: {0}", subnode.getDesignation());
+            XincoCoreACE access = XincoCoreACEServer.checkAccess(loggedUser, subnode.getXincoCoreAcl());
+            if (access.isAdminPermission() || access.isReadPermission()) {
+                String id = "node-" + subnode.getId();
+                Item item = xincoTreeContainer.addItem(id);
+                item.getItemProperty("caption").setValue(subnode.getDesignation());
+                // Set it to be a child.
+                xincoTreeContainer.setParent(id, parent);
+                //Allow to have children
+                xincoTreeContainer.setChildrenAllowed(id, true);
+            }
         }
     }
 
@@ -896,53 +900,57 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 parent.substring(parent.indexOf('-') + 1)));
         for (Iterator<XincoCoreData> it = xcns.getXincoCoreData().iterator(); it.hasNext();) {
             XincoCoreData temp = it.next();
-            //Only show files that are not renderings
-            if (!XincoCoreDataHasDependencyServer.isRendering(temp.getId())) {
-                //Add childen data
-                String id = "data-" + temp.getId();
-                Item item = xincoTreeContainer.addItem(id);
-                item.getItemProperty("caption").setValue(temp.getDesignation());
-                // Set it to be a child.
-                xincoTreeContainer.setParent(id, parent);
-                // Set as leaves
-                xincoTreeContainer.setChildrenAllowed(id, false);
-                if (!temp.getXincoAddAttributes().isEmpty()) {
-                    String name = temp.getXincoAddAttributes().get(0).getAttribVarchar();
-                    try {
-                        FileResource icon1 = null;
-                        //Set Icon
-                        switch (temp.getXincoCoreDataType().getId()) {
-                            case 1://File
-                            //Fall through
-                            case 5://Rendering
-                                if (name != null
-                                        && name.contains(".")
-                                        && name.substring(name.lastIndexOf('.') + 1,
-                                        name.length()).length() >= 3) {
-                                    icon1 = getIcon(name.substring(name.lastIndexOf('.') + 1,
-                                            name.length()));
-                                }
-                                break;
-                            case 2://Text
-                                icon1 = getIcon("txt");
+            LOG.log(Level.FINE, "Checking permissions for: {0}", temp.getDesignation());
+            XincoCoreACE access = XincoCoreACEServer.checkAccess(loggedUser, temp.getXincoCoreAcl());
+            if (access.isAdminPermission() || access.isReadPermission()) {
+                //Only show files that are not renderings
+                if (!XincoCoreDataHasDependencyServer.isRendering(temp.getId())) {
+                    //Add childen data
+                    String id = "data-" + temp.getId();
+                    Item item = xincoTreeContainer.addItem(id);
+                    item.getItemProperty("caption").setValue(temp.getDesignation());
+                    // Set it to be a child.
+                    xincoTreeContainer.setParent(id, parent);
+                    // Set as leaves
+                    xincoTreeContainer.setChildrenAllowed(id, false);
+                    if (!temp.getXincoAddAttributes().isEmpty()) {
+                        String name = temp.getXincoAddAttributes().get(0).getAttribVarchar();
+                        try {
+                            FileResource icon1 = null;
+                            //Set Icon
+                            switch (temp.getXincoCoreDataType().getId()) {
+                                case 1://File
+                                //Fall through
+                                case 5://Rendering
+                                    if (name != null
+                                            && name.contains(".")
+                                            && name.substring(name.lastIndexOf('.') + 1,
+                                            name.length()).length() >= 3) {
+                                        icon1 = getIcon(name.substring(name.lastIndexOf('.') + 1,
+                                                name.length()));
+                                    }
+                                    break;
+                                case 2://Text
+                                    icon1 = getIcon("txt");
 
-                                break;
-                            case 3://URL
-                                icon1 = getIcon("html");
-                                break;
-                            case 4://Contact
-                                item.getItemProperty("icon").setValue(
-                                        new ThemeResource("icons/contact.gif"));
-                                break;
-                            default:
-                                throw new RuntimeException("Invalid Data Type: "
-                                        + temp.getXincoCoreDataType().getId());
+                                    break;
+                                case 3://URL
+                                    icon1 = getIcon("html");
+                                    break;
+                                case 4://Contact
+                                    item.getItemProperty("icon").setValue(
+                                            new ThemeResource("icons/contact.gif"));
+                                    break;
+                                default:
+                                    throw new RuntimeException("Invalid Data Type: "
+                                            + temp.getXincoCoreDataType().getId());
+                            }
+                            if (icon1 != null) {
+                                item.getItemProperty("icon").setValue(icon1);
+                            }
+                        } catch (IOException ex) {
+                            LOG.log(Level.SEVERE, null, ex);
                         }
-                        if (icon1 != null) {
-                            item.getItemProperty("icon").setValue(icon1);
-                        }
-                    } catch (IOException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -1621,6 +1629,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     private void showACLDialog() {
+        //TODO: Ugly workaround for issue XDMS-38
+        final ArrayList<Integer> processed = new ArrayList<Integer>();
         final com.vaadin.ui.Window aclWindow = new com.vaadin.ui.Window();
         final Form form = new Form();
         form.setCaption(getInstance().getResource().getString("window.acl"));
@@ -1645,7 +1655,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 getInstance().getResource().getString("general.name"),
                 com.vaadin.ui.Label.class, null);
         table.addContainerProperty(
-                getInstance().getResource().getString("general.type"), com.vaadin.ui.Label.class, null);
+                getInstance().getResource().getString("general.type"),
+                com.vaadin.ui.Label.class, null);
         table.addContainerProperty(
                 getInstance().getResource().getString("general.acl.adminpermission"),
                 CheckBox.class, null);
@@ -1713,9 +1724,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
             XincoCoreACEServer acl = null;
             if (xincoTree.getValue() != null && xincoTree.getValue().toString().startsWith("node")) {
                 try {
-                    XincoCoreNodeServer tempNode = new XincoCoreNodeServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                    XincoCoreNodeServer tempNode =
+                            new XincoCoreNodeServer(Integer.valueOf(xincoTree.getValue().toString()
+                            .substring(xincoTree.getValue().toString().indexOf('-') + 1)));
                     try {
-                        acl = new XincoCoreACEServer(0, 0, group.getId(), tempNode.getId(), 0, false, false, false, false);
+                        acl = new XincoCoreACEServer(0, 0, group.getId(),
+                                tempNode.getId(), 0, false, false, false, false);
                     } catch (XincoException ex) {
                         LOG.log(Level.SEVERE, null, ex);
                     }
@@ -1898,10 +1912,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     Entry<String, XincoCoreACEServer> e = it.next();
                     XincoCoreACEServer stored = null;
                     XincoCoreACEServer value = e.getValue();
-                    int ownerID = XincoCoreDataServer.getOwnerID(new XincoCoreDataServer(data.getId()));
+                    int ownerID = -1;
+                    if (getXincoTree().getValue().toString().startsWith("data")) {
+                        ownerID = XincoCoreDataServer.getOwnerID(new XincoCoreDataServer(data.getId()));
+                    }
                     Integer thisOwner = Integer.valueOf(e.getKey().substring(e.getKey().lastIndexOf("-") + 1));
                     //Owner cannot be removed
-                    if (e.getKey().startsWith("User-") && thisOwner == ownerID
+                    if (ownerID != -1 && e.getKey().startsWith("User-") && thisOwner == ownerID
                             && (!e.getValue().isReadPermission()
                             || !e.getValue().isAdminPermission()
                             || !e.getValue().isExecutePermission()
@@ -1914,7 +1931,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     }
                     if (!skip) {
                         try {
-                            stored = new XincoCoreACEServer(e.getValue().getId());
+                            stored = new XincoCoreACEServer(value.getId());
                         } catch (XincoException ex) {
                             try {
                                 //Doesn't exist, create a new one
@@ -1929,15 +1946,18 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 LOG.log(Level.SEVERE, null, ex1);
                             }
                         }
-                        if (stored != null && stored.isAdminPermission() != e.getValue().isAdminPermission()
+                        boolean modified = false;
+                        if (stored != null && (stored.isAdminPermission() != e.getValue().isAdminPermission()
                                 || stored.isExecutePermission() != e.getValue().isExecutePermission()
                                 || stored.isReadPermission() != e.getValue().isReadPermission()
-                                || stored.isWritePermission() != e.getValue().isWritePermission()) {
+                                || stored.isWritePermission() != e.getValue().isWritePermission())) {
                             //Is different so update
                             stored.setReadPermission(e.getValue().isReadPermission());
                             stored.setAdminPermission(e.getValue().isAdminPermission());
                             stored.setExecutePermission(e.getValue().isExecutePermission());
                             stored.setWritePermission(e.getValue().isWritePermission());
+                            modified = true;
+                            LOG.info("ACL change detected!");
                         }
                         if (stored != null && stored.getXincoCoreUserId() > 0) {
                             getMainWindow().showNotification(
@@ -1947,11 +1967,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             return;
                         }
                         try {
-                            if (stored != null && (stored.isAdminPermission()
-                                    || stored.isExecutePermission()
-                                    || stored.isReadPermission()
-                                    || stored.isWritePermission())) {
-                                stored.write2DB();
+                            if (stored != null && modified 
+                                    && !processed.contains(e.getValue().getId())) {
+                                LOG.info("Writing ACL into database...");
+                                LOG.info(e.getValue().toString());
+                                processed.add(e.getValue().getId());
+                                e.getValue().write2DB();
                             }
                         } catch (XincoException ex) {
                             LOG.log(Level.SEVERE, null, ex);
@@ -2079,6 +2100,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             showChangePasswordDialog();
                         }
                         updateMenu();
+                        refresh();
                     } catch (XincoException ex) {
                         LOG.log(Level.SEVERE, null, ex);
                     }
