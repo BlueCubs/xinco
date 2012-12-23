@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.bluecubs.xinco</groupId>
     <artifactId>Xinco</artifactId>
     <packaging>war</packaging>
-    <version>3.0.0.M6-SNAPSHOT</version>
+    <version>3.0.0.M6</version>
     <name>Xinco DMS</name>
     
     <description>The Core of Information and Document Management
@@ -35,9 +34,9 @@
         </license>
     </licenses>
     <scm>
-        <url>https://xinco.svn.sourceforge.net/svnroot/xinco/trunk/Xinco</url>
-        <connection>scm:svn:https://xinco.svn.sourceforge.net/svnroot/xinco/trunk/Xinco</connection>
-        <developerConnection>scm:svn:https://xinco.svn.sourceforge.net/svnroot/xinco/trunk/Xinco</developerConnection>
+        <url>https://xinco.svn.sourceforge.net/svnroot/xinco/tags/Xinco-3.0.0.M6</url>
+        <connection>scm:svn:https://xinco.svn.sourceforge.net/svnroot/xinco/tags/Xinco-3.0.0.M6</connection>
+        <developerConnection>scm:svn:https://xinco.svn.sourceforge.net/svnroot/xinco/tags/Xinco-3.0.0.M6</developerConnection>
         <tag>HEAD</tag>
     </scm>
     <ciManagement>
