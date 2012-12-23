@@ -47,6 +47,8 @@ public class XincoCoreACEServer extends XincoCoreACE {
 
     private HashMap parameters = new HashMap();
     private static List result;
+    private static final Logger LOG =
+            Logger.getLogger(XincoCoreACEServer.class.getSimpleName());
     //create single ace object for data structures
 
     public XincoCoreACEServer(int attrID) throws XincoException {
@@ -194,7 +196,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
     }
 
     //check access by comparing user / user groups to ACL and return permissions
-    public static XincoCoreACE checkAccess(XincoCoreUser attrU, ArrayList attrACL) {
+    public static XincoCoreACE checkAccess(XincoCoreUser attrU, List attrACL) {
 
         int i;
         int j;
@@ -205,18 +207,29 @@ public class XincoCoreACEServer extends XincoCoreACE {
             //reset match_ace
             match_ace = false;
             //check if user is mentioned in ACE
-            if (((XincoCoreACE) attrACL.get(i)).getXincoCoreUserId() == attrU.getId()) {
+            if (attrU != null && ((XincoCoreACE) attrACL.get(i)).getXincoCoreUserId() == attrU.getId()) {
+                LOG.fine("User has permission!");
                 match_ace = true;
             }
             //check if group of user is mentioned in ACE
-            if (!match_ace) {
+            if (!match_ace && attrU != null) {
                 for (j = 0; j < attrU.getXincoCoreGroups().size(); j++) {
-                    if (((XincoCoreACE) attrACL.get(i)).getXincoCoreGroupId() == ((XincoCoreGroup) attrU.getXincoCoreGroups().get(j)).getId()) {
+                    if (((XincoCoreACE) attrACL.get(i)).getXincoCoreGroupId()
+                            == ((XincoCoreGroup) attrU.getXincoCoreGroups().get(j)).getId()) {
                         match_ace = true;
+                        LOG.log(Level.FINE,
+                                "User has permission as member of group: {0}",
+                                ((XincoCoreGroup) attrU.getXincoCoreGroups().get(j)).getDesignation());
                         break;
                     }
                 }
             }
+            //Check to see its public permissions
+            if (!match_ace && ((XincoCoreACE) attrACL.get(i)).getXincoCoreGroupId() == 3) {
+                LOG.fine("Data/Folder has public permission!");
+                match_ace = true;
+            }
+
             //add to rights
             if (match_ace) {
                 //modify read permission
@@ -238,5 +251,12 @@ public class XincoCoreACEServer extends XincoCoreACE {
             }
         }
         return core_ace;
+    }
+
+    @Override
+    public String toString() {
+        return "XincoCoreACE{id =" + getId() + ", admin= " + isAdminPermission()
+                + ", execute= " + isExecutePermission() + ", read= "
+                + isReadPermission() + ", write= " + isWritePermission() + "}";
     }
 }
