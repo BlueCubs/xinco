@@ -1629,7 +1629,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     private void showACLDialog() {
-        //TODO: Ugly workaround for issue XDMS-38
+        //TODO: Ugly workaround for issue XDMS-38. See XDMS-39
+        //For some reason the ACL is updated twice, once with the new values
+        //and once with the old values, leaving them as they were.
         final ArrayList<Integer> processed = new ArrayList<Integer>();
         final com.vaadin.ui.Window aclWindow = new com.vaadin.ui.Window();
         final Form form = new Form();
