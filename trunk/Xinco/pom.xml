@@ -7,6 +7,12 @@
     <version>3.0.0-SNAPSHOT</version>
     <name>Xinco DMS</name>
     
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+    
     <description>The Core of Information and Document Management
         xinco DMS™ is a powerful Web-based Information and Document Management 
         System (DMS) for files, text, URLs and contacts, featuring ACLs, 
