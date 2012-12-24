@@ -4,14 +4,8 @@
     <groupId>com.bluecubs.xinco</groupId>
     <artifactId>Xinco</artifactId>
     <packaging>war</packaging>
-    <version>3.0.0-M6-SNAPSHOT</version>
+    <version>3.0.0-M6</version>
     <name>Xinco DMS</name>
-    
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>
     
     <description>The Core of Information and Document Management
         xinco DMS™ is a powerful Web-based Information and Document Management 
