@@ -4,7 +4,7 @@
     <groupId>com.bluecubs.xinco</groupId>
     <artifactId>Xinco</artifactId>
     <packaging>war</packaging>
-    <version>3.0.0-M6</version>
+    <version>3.0.0-M7</version>
     <name>Xinco DMS</name>
     
     <description>The Core of Information and Document Management
