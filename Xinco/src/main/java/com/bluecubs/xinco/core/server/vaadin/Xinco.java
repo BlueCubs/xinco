@@ -4934,6 +4934,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         //Add permanent link
                         value = getInstance().getURL().toString() + "?dataId=" + temp.getId();
                         Link link = new Link(value, new ExternalResource(value));
+                        //TODO: Link opening on different window.
                         link.setTargetName("_blank");
                         link.setTargetBorder(Link.TARGET_BORDER_NONE);
                         try {
