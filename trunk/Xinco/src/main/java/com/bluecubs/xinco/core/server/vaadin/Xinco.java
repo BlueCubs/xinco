@@ -304,38 +304,38 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 login = new com.vaadin.ui.Button(
                         getInstance().getResource().getString("general.login"),
                         new com.vaadin.ui.Button.ClickListener() {
-                    @Override
-                    public void buttonClick(
-                            com.vaadin.ui.Button.ClickEvent event) {
-                        showLoginDialog();
-                    }
-                });
+                            @Override
+                            public void buttonClick(
+                                    com.vaadin.ui.Button.ClickEvent event) {
+                                showLoginDialog();
+                            }
+                        });
                 login.setDebugId("login");
                 logout = new com.vaadin.ui.Button(
                         getInstance().getResource().getString("general.logout"),
                         new com.vaadin.ui.Button.ClickListener() {
-                    @Override
-                    public void buttonClick(
-                            com.vaadin.ui.Button.ClickEvent event) {
-                        loggedUser = null;
-                        try {
-                            showMainWindow();
-                            refresh();
-                        } catch (XincoException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
-                        }
-                    }
-                });
+                            @Override
+                            public void buttonClick(
+                                    com.vaadin.ui.Button.ClickEvent event) {
+                                loggedUser = null;
+                                try {
+                                    showMainWindow();
+                                    refresh();
+                                } catch (XincoException ex) {
+                                    LOG.log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        });
                 profile = new com.vaadin.ui.Button(
                         getInstance().getResource().getString(
                         "message.admin.userProfile"),
                         new com.vaadin.ui.Button.ClickListener() {
-                    @Override
-                    public void buttonClick(
-                            com.vaadin.ui.Button.ClickEvent event) {
-                        showUserAdminWindow(false);
-                    }
-                });
+                            @Override
+                            public void buttonClick(
+                                    com.vaadin.ui.Button.ClickEvent event) {
+                                showUserAdminWindow(false);
+                            }
+                        });
                 if (XincoDBManager.config.isGuessLanguage()) {
                     // Use the locale from the request as default.
                     // Login uses this setting later.
@@ -446,16 +446,16 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     .getString("general.file.select"), um);
             final Upload.SucceededListener listener =
                     new Upload.SucceededListener() {
-                @Override
-                public void uploadSucceeded(SucceededEvent event) {
-                    if (upload != null) {
-                        getMainWindow().showNotification(
-                                getInstance().getResource().getString(
-                                "datawizard.fileuploadsuccess"),
-                                Notification.TYPE_HUMANIZED_MESSAGE);
-                    }
-                }
-            };
+                        @Override
+                        public void uploadSucceeded(SucceededEvent event) {
+                            if (upload != null) {
+                                getMainWindow().showNotification(
+                                        getInstance().getResource().getString(
+                                        "datawizard.fileuploadsuccess"),
+                                        Notification.TYPE_HUMANIZED_MESSAGE);
+                            }
+                        }
+                    };
 
             @Override
             public String getCaption() {
@@ -1001,17 +1001,17 @@ public class Xinco extends Application implements HttpServletRequestListener {
             versionSelector.increaseHigh();
             final Upload.SucceededListener listener =
                     new Upload.SucceededListener() {
-                @Override
-                public void uploadSucceeded(SucceededEvent event) {
-                    if (upload != null) {
-                        upload.setEnabled(false);
-                        getMainWindow().showNotification(
-                                getInstance().getResource().getString(
-                                "datawizard.fileuploadsuccess"),
-                                Notification.TYPE_HUMANIZED_MESSAGE);
-                    }
-                }
-            };
+                        @Override
+                        public void uploadSucceeded(SucceededEvent event) {
+                            if (upload != null) {
+                                upload.setEnabled(false);
+                                getMainWindow().showNotification(
+                                        getInstance().getResource().getString(
+                                        "datawizard.fileuploadsuccess"),
+                                        Notification.TYPE_HUMANIZED_MESSAGE);
+                            }
+                        }
+                    };
             wizard.addStep(new WizardStep() {
                 @Override
                 public String getCaption() {
@@ -1506,13 +1506,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 String name = xcds.getXincoAddAttributes().get(0).getAttribVarchar();
                 XincoVersion xVersion = XincoCoreDataServer.getCurrentVersion(xcds.getId());
                 table.addItem(new Object[]{new com.vaadin.ui.Label(xcds.getDesignation()),
-                    new com.vaadin.ui.Label(xVersion.getVersionHigh()
-                    + "." + xVersion.getVersionMid()
-                    + "." + xVersion.getVersionLow() + " "
-                    + xVersion.getVersionPostfix()),
-                    new com.vaadin.ui.Label(
-                    name.substring(name.lastIndexOf('.')
-                    + 1, name.length()))},
+                            new com.vaadin.ui.Label(xVersion.getVersionHigh()
+                            + "." + xVersion.getVersionMid()
+                            + "." + xVersion.getVersionLow() + " "
+                            + xVersion.getVersionPostfix()),
+                            new com.vaadin.ui.Label(
+                            name.substring(name.lastIndexOf('.')
+                            + 1, name.length()))},
                         xcds.getId());
             }
             form.setFooter(new HorizontalLayout());
@@ -1522,11 +1522,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
             final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
                     getInstance().getResource().getString("general.cancel"),
                     new com.vaadin.ui.Button.ClickListener() {
-                @Override
-                public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                    getMainWindow().removeWindow(renderWindow);
-                }
-            });
+                        @Override
+                        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                            getMainWindow().removeWindow(renderWindow);
+                        }
+                    });
             commit.addListener(new com.vaadin.ui.Button.ClickListener() {
                 @Override
                 public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -1896,16 +1896,16 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
                 getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
-            @Override
-            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                try {
-                    updateMenu();
-                } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
-                }
-                getMainWindow().removeWindow(aclWindow);
-            }
-        });
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        try {
+                            updateMenu();
+                        } catch (XincoException ex) {
+                            LOG.log(Level.SEVERE, null, ex);
+                        }
+                        getMainWindow().removeWindow(aclWindow);
+                    }
+                });
         commit.addListener(new com.vaadin.ui.Button.ClickListener() {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -1969,7 +1969,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             return;
                         }
                         try {
-                            if (stored != null && modified
+                            if (stored != null && modified 
                                     && !processed.contains(e.getValue().getId())) {
                                 LOG.info("Writing ACL into database...");
                                 LOG.info(e.getValue().toString());
@@ -2017,21 +2017,21 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
                 getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
-            @Override
-            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                try {
-                    //Make sure to log out anyone previously logged in
-                    loggedUser = null;
-                    updateMenu();
-                    //Select root node
-                    xincoTree.setValue("node-1");
-                    getMainWindow().removeWindow(loginWindow);
-                } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
-                }
-                getMainWindow().removeWindow(loginWindow);
-            }
-        });
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        try {
+                            //Make sure to log out anyone previously logged in
+                            loggedUser = null;
+                            updateMenu();
+                            //Select root node
+                            xincoTree.setValue("node-1");
+                            getMainWindow().removeWindow(loginWindow);
+                        } catch (XincoException ex) {
+                            LOG.log(Level.SEVERE, null, ex);
+                        }
+                        getMainWindow().removeWindow(loginWindow);
+                    }
+                });
         commit.addListener(new com.vaadin.ui.Button.ClickListener() {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -2138,10 +2138,10 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             table.addItem(new Object[]{group.getId(),
-                getInstance().getResource().containsKey(group.getDesignation())
-                ? getInstance().getResource().getString(group.getDesignation())
-                : group.getDesignation(),
-                edit}, group.getId());
+                        getInstance().getResource().containsKey(group.getDesignation())
+                        ? getInstance().getResource().getString(group.getDesignation())
+                        : group.getDesignation(),
+                        edit}, group.getId());
         }
         table.sort();
     }
@@ -2159,31 +2159,31 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
                 getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
-            @Override
-            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                getMainWindow().removeWindow(group);
-            }
-        });
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        getMainWindow().removeWindow(group);
+                    }
+                });
         final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
                 getInstance().getResource().getString("general.save"), form, "commit");
         commit.addListener(
                 new com.vaadin.ui.Button.ClickListener() {
-            @Override
-            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                try {
-                    if (!form.getField("name").getValue().equals(
-                            getInstance().getResource().containsKey(groupS.getDesignation())
-                            ? getInstance().getResource().getString(groupS.getDesignation())
-                            : groupS.getDesignation())) {
-                        groupS.setDesignation(form.getField("name").getValue().toString());
-                        groupS.write2DB();
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        try {
+                            if (!form.getField("name").getValue().equals(
+                                    getInstance().getResource().containsKey(groupS.getDesignation())
+                                    ? getInstance().getResource().getString(groupS.getDesignation())
+                                    : groupS.getDesignation())) {
+                                groupS.setDesignation(form.getField("name").getValue().toString());
+                                groupS.write2DB();
+                            }
+                        } catch (XincoException ex) {
+                            LOG.log(Level.SEVERE, null, ex);
+                        }
+                        getMainWindow().removeWindow(group);
                     }
-                } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
-                }
-                getMainWindow().removeWindow(group);
-            }
-        });
+                });
         form.getFooter().setSizeUndefined();
         form.getFooter().addComponent(commit);
         form.getFooter().addComponent(cancel);
@@ -2217,11 +2217,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
                 getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
-            @Override
-            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                getMainWindow().removeWindow(group);
-            }
-        });
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        getMainWindow().removeWindow(group);
+                    }
+                });
         commit.addListener(new com.vaadin.ui.Button.ClickListener() {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -2302,11 +2302,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
                 getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
-            @Override
-            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                getMainWindow().removeWindow(attr);
-            }
-        });
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        getMainWindow().removeWindow(attr);
+                    }
+                });
         commit.addListener(new com.vaadin.ui.Button.ClickListener() {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -2664,11 +2664,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
                 getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
-            @Override
-            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                getMainWindow().removeWindow(attr);
-            }
-        });
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        getMainWindow().removeWindow(attr);
+                    }
+                });
         form.getFooter().setSizeUndefined();
         form.getFooter().addComponent(cancel);
         attr.addComponent(form);
@@ -2705,11 +2705,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
                 getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
-            @Override
-            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                getMainWindow().removeWindow(lang);
-            }
-        });
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        getMainWindow().removeWindow(lang);
+                    }
+                });
         commit.addListener(new com.vaadin.ui.Button.ClickListener() {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -2786,11 +2786,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             table.addItem(new Object[]{lang.getId(),
-                getInstance().getResource().containsKey(lang.getDesignation())
-                ? getInstance().getResource().getString(lang.getDesignation())
-                : lang.getDesignation(),
-                lang.getSign(),
-                is_used ? null : delete}, lang.getId());
+                        getInstance().getResource().containsKey(lang.getDesignation())
+                        ? getInstance().getResource().getString(lang.getDesignation())
+                        : lang.getDesignation(),
+                        lang.getSign(),
+                        is_used ? null : delete}, lang.getId());
         }
         table.sort();
     }
@@ -2857,11 +2857,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
                 getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
-            @Override
-            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                getMainWindow().removeWindow(user);
-            }
-        });
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        getMainWindow().removeWindow(user);
+                    }
+                });
         commit.addListener(new com.vaadin.ui.Button.ClickListener() {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -3095,9 +3095,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             boolean indexDirectoryDeleted = indexDirectory.delete();
                             count++;
                             table.addItem(new Object[]{new com.vaadin.ui.Label(
-                                getInstance().getResource().getString("message.index.delete")),
-                                new com.vaadin.ui.Label(indexDirectoryDeleted
-                                ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail") + "!")}, index++);
+                                        getInstance().getResource().getString("message.index.delete")),
+                                        new com.vaadin.ui.Label(indexDirectoryDeleted
+                                        ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail") + "!")}, index++);
                             XincoCoreDataServer xdataTemp;
                             boolean index_result;
                             for (Object o : result) {
@@ -3105,8 +3105,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 if (!XincoCoreDataHasDependencyServer.isRendering(xdataTemp.getId())) {
                                     index_result = XincoIndexer.indexXincoCoreData(xdataTemp, true);
                                     table.addItem(new Object[]{new com.vaadin.ui.Label(xdataTemp.getDesignation()),
-                                        new com.vaadin.ui.Label(index_result
-                                        ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail"))}, index++);
+                                                new com.vaadin.ui.Label(index_result
+                                                ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail"))}, index++);
                                     count++;
                                     indicator.setValue(new Float(count) / new Float(work_units));
                                 }
@@ -3114,8 +3114,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             index_result = XincoIndexer.optimizeIndex();
                             //Optimize index
                             table.addItem(new Object[]{new com.vaadin.ui.Label(getInstance().getResource().getString("message.index.optimize")),
-                                new com.vaadin.ui.Label(index_result
-                                ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail"))}, index++);
+                                        new com.vaadin.ui.Label(index_result
+                                        ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail"))}, index++);
                             count++;
                         }
                         indicator.setValue(new Float(1.0));
@@ -3251,12 +3251,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             table.addItem(new Object[]{tempUser.getId(),
-                tempUser.getUsername(),
-                tempUser.getFirstName(),
-                tempUser.getLastName(),
-                tempUser.getEmail(),
-                tempUser.getStatusNumber() == 1 ? lock : unlock,
-                reset}, tempUser.getId());
+                        tempUser.getUsername(),
+                        tempUser.getFirstName(),
+                        tempUser.getLastName(),
+                        tempUser.getEmail(),
+                        tempUser.getStatusNumber() == 1 ? lock : unlock,
+                        reset}, tempUser.getId());
         }
         table.sort();
     }
@@ -3349,18 +3349,18 @@ public class Xinco extends Application implements HttpServletRequestListener {
             });
             if (member_ofGroup) {
                 table1.addItem(new Object[]{tempUser.getId(),
-                    tempUser.getUsername(),
-                    tempUser.getFirstName(),
-                    tempUser.getLastName(),
-                    tempUser.getEmail(),
-                    remove}, tempUser.getId());
+                            tempUser.getUsername(),
+                            tempUser.getFirstName(),
+                            tempUser.getLastName(),
+                            tempUser.getEmail(),
+                            remove}, tempUser.getId());
             } else {
                 table2.addItem(new Object[]{tempUser.getId(),
-                    tempUser.getUsername(),
-                    tempUser.getFirstName(),
-                    tempUser.getLastName(),
-                    tempUser.getEmail(),
-                    add}, tempUser.getId());
+                            tempUser.getUsername(),
+                            tempUser.getFirstName(),
+                            tempUser.getLastName(),
+                            tempUser.getEmail(),
+                            add}, tempUser.getId());
             }
         }
         form.getLayout().addComponent(new com.vaadin.ui.Label(getInstance().getResource().getString("general.group.member")));
@@ -3390,17 +3390,17 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             table.addItem(new Object[]{type.getAttributeId(),
-                getInstance().getResource().containsKey(type.getDesignation())
-                ? getInstance().getResource().getString(type.getDesignation())
-                : type.getDesignation(),
-                type.getDataType(),
-                type.getSize(),
-                ((dataTypeId == 1)
-                && (type.getAttributeId() <= 8))
-                || ((dataTypeId == 2)
-                && (type.getAttributeId() <= 1))
-                || ((dataTypeId == 3)
-                && (type.getAttributeId() <= 1)) ? null : delete},
+                        getInstance().getResource().containsKey(type.getDesignation())
+                        ? getInstance().getResource().getString(type.getDesignation())
+                        : type.getDesignation(),
+                        type.getDataType(),
+                        type.getSize(),
+                        ((dataTypeId == 1)
+                        && (type.getAttributeId() <= 8))
+                        || ((dataTypeId == 2)
+                        && (type.getAttributeId() <= 1))
+                        || ((dataTypeId == 3)
+                        && (type.getAttributeId() <= 1)) ? null : delete},
                     type.getAttributeId());
         }
         table.sort();
@@ -3425,13 +3425,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             table.addItem(new Object[]{type.getId(),
-                getInstance().getResource().containsKey(type.getDesignation())
-                ? getInstance().getResource().getString(type.getDesignation())
-                : type.getDesignation(),
-                getInstance().getResource().containsKey(type.getDescription())
-                ? getInstance().getResource().getString(type.getDescription())
-                : type.getDescription(),
-                edit}, type.getId());
+                        getInstance().getResource().containsKey(type.getDesignation())
+                        ? getInstance().getResource().getString(type.getDesignation())
+                        : type.getDesignation(),
+                        getInstance().getResource().containsKey(type.getDescription())
+                        ? getInstance().getResource().getString(type.getDescription())
+                        : type.getDescription(),
+                        edit}, type.getId());
         }
         table.sort();
     }
@@ -3839,11 +3839,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
         final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
                 getInstance().getResource().getString("general.cancel"),
                 new com.vaadin.ui.Button.ClickListener() {
-            @Override
-            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                getMainWindow().removeWindow(comment);
-            }
-        });
+                    @Override
+                    public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                        getMainWindow().removeWindow(comment);
+                    }
+                });
         commit.addListener(new com.vaadin.ui.Button.ClickListener() {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -3948,11 +3948,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
             final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
                     getInstance().getResource().getString("general.cancel"),
                     new com.vaadin.ui.Button.ClickListener() {
-                @Override
-                public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                    getMainWindow().removeWindow(revWindow);
-                }
-            });
+                        @Override
+                        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                            getMainWindow().removeWindow(revWindow);
+                        }
+                    });
             commit.addListener(new com.vaadin.ui.Button.ClickListener() {
                 @Override
                 public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -4119,179 +4119,179 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         dataTypeDialog.setSizeFull();
                         dataTypeDialog.getTypes().addListener(
                                 new ValueChangeListener() {
-                            ArrayList<WizardStep> temp =
-                                    new ArrayList<WizardStep>();
+                                    ArrayList<WizardStep> temp =
+                                            new ArrayList<WizardStep>();
 
-                            @Override
-                            public void valueChange(ValueChangeEvent event) {
-                                data = new XincoCoreData();
-                                try {
-                                    //Process data
-                                    getXincoCoreData().setXincoCoreDataType(
-                                            new XincoCoreDataTypeServer(
-                                            Integer.valueOf(dataTypeDialog
-                                            .getTypes().getValue().toString())));
-                                } catch (XincoException ex) {
-                                    LOG.log(Level.SEVERE, null, ex);
-                                }
-                                //Set the parent id to the current selected node
-                                getXincoCoreData().setXincoCoreNodeId(
-                                        Integer.valueOf(xincoTree.getValue()
-                                        .toString().substring(xincoTree
-                                        .getValue().toString().indexOf('-')
-                                        + 1)));
-                                Tool.addDefaultAddAttributes(
-                                        getXincoCoreData());
-                                //wizard.getLastCompleted() is the previous step, 
-                                //the current is wizard.getLastCompleted() + 1, 
-                                //the next step wizard.getLastCompleted() + 2
-                                switch (getXincoCoreData()
-                                        .getXincoCoreDataType().getId()) {
-                                    //File = 1
-                                    case 1:
-                                        clearTempSteps();
-                                        addAttributeStep();
-                                        temp.add(fileStep);
-                                        wizard.addStep(temp.get(temp.size() - 1),
-                                                wizard.getLastCompleted() + 1);
-                                        //revision model
-                                        getXincoCoreData()
-                                                .getXincoAddAttributes().get(3)
-                                                .setAttribUnsignedint(1);
-                                        //archiving model
-                                        getXincoCoreData()
-                                                .getXincoAddAttributes().get(4)
-                                                .setAttribUnsignedint(0);
-                                        //Is a file, show archiving dialog
-                                        temp.add(new WizardStep() {
-                                            @Override
-                                            public String getCaption() {
-                                                return getInstance()
-                                                        .getResource()
-                                                        .getString(
-                                                        "window.archive");
-                                            }
+                                    @Override
+                                    public void valueChange(ValueChangeEvent event) {
+                                        data = new XincoCoreData();
+                                        try {
+                                            //Process data
+                                            getXincoCoreData().setXincoCoreDataType(
+                                                    new XincoCoreDataTypeServer(
+                                                    Integer.valueOf(dataTypeDialog
+                                                    .getTypes().getValue().toString())));
+                                        } catch (XincoException ex) {
+                                            LOG.log(Level.SEVERE, null, ex);
+                                        }
+                                        //Set the parent id to the current selected node
+                                        getXincoCoreData().setXincoCoreNodeId(
+                                                Integer.valueOf(xincoTree.getValue()
+                                                .toString().substring(xincoTree
+                                                .getValue().toString().indexOf('-')
+                                                + 1)));
+                                        Tool.addDefaultAddAttributes(
+                                                getXincoCoreData());
+                                        //wizard.getLastCompleted() is the previous step, 
+                                        //the current is wizard.getLastCompleted() + 1, 
+                                        //the next step wizard.getLastCompleted() + 2
+                                        switch (getXincoCoreData()
+                                                .getXincoCoreDataType().getId()) {
+                                            //File = 1
+                                            case 1:
+                                                clearTempSteps();
+                                                addAttributeStep();
+                                                temp.add(fileStep);
+                                                wizard.addStep(temp.get(temp.size() - 1),
+                                                        wizard.getLastCompleted() + 1);
+                                                //revision model
+                                                getXincoCoreData()
+                                                        .getXincoAddAttributes().get(3)
+                                                        .setAttribUnsignedint(1);
+                                                //archiving model
+                                                getXincoCoreData()
+                                                        .getXincoAddAttributes().get(4)
+                                                        .setAttribUnsignedint(0);
+                                                //Is a file, show archiving dialog
+                                                temp.add(new WizardStep() {
+                                                    @Override
+                                                    public String getCaption() {
+                                                        return getInstance()
+                                                                .getResource()
+                                                                .getString(
+                                                                "window.archive");
+                                                    }
 
-                                            @Override
-                                            public com.vaadin.ui.Component getContent() {
-                                                if (archDialog == null) {
-                                                    archDialog = new ArchiveDialog();
-                                                    archDialog.setSizeFull();
-                                                }
-                                                return archDialog;
-                                            }
+                                                    @Override
+                                                    public com.vaadin.ui.Component getContent() {
+                                                        if (archDialog == null) {
+                                                            archDialog = new ArchiveDialog();
+                                                            archDialog.setSizeFull();
+                                                        }
+                                                        return archDialog;
+                                                    }
 
-                                            @Override
-                                            public boolean onAdvance() {
-                                                try {
-                                                    //Save values from wizard
-                                                    archDialog.updateAttributes();
-                                                } catch (DatatypeConfigurationException ex) {
-                                                    LOG.log(Level.SEVERE, null, ex);
-                                                    throw new XincoException(ex);
-                                                }
-                                                //True if there are more steps after this one
-                                                return wizard.getSteps().size()
-                                                        > wizard.getLastCompleted() + 1;
-                                            }
+                                                    @Override
+                                                    public boolean onAdvance() {
+                                                        try {
+                                                            //Save values from wizard
+                                                            archDialog.updateAttributes();
+                                                        } catch (DatatypeConfigurationException ex) {
+                                                            LOG.log(Level.SEVERE, null, ex);
+                                                            throw new XincoException(ex);
+                                                        }
+                                                        //True if there are more steps after this one
+                                                        return wizard.getSteps().size()
+                                                                > wizard.getLastCompleted() + 1;
+                                                    }
 
-                                            @Override
-                                            public boolean onBack() {
-                                                return true;
-                                            }
+                                                    @Override
+                                                    public boolean onBack() {
+                                                        return true;
+                                                    }
 
-                                            @Override
-                                            public String toString() {
-                                                return getCaption();
-                                            }
-                                        });
-                                        wizard.addStep(temp.get(temp.size() - 1));
-                                        break;
-                                    //Text data
-                                    case 2:
-                                        clearTempSteps();
-                                        addAttributeStep();
-                                        final ExpandingTextArea tArea =
-                                                new ExpandingTextArea();
-                                        temp.add(new WizardStep() {
-                                            @Override
-                                            public String getCaption() {
-                                                return getInstance()
-                                                        .getResource()
-                                                        .getString(
-                                                        "window.addattributestext");
-                                            }
+                                                    @Override
+                                                    public String toString() {
+                                                        return getCaption();
+                                                    }
+                                                });
+                                                wizard.addStep(temp.get(temp.size() - 1));
+                                                break;
+                                            //Text data
+                                            case 2:
+                                                clearTempSteps();
+                                                addAttributeStep();
+                                                final ExpandingTextArea tArea =
+                                                        new ExpandingTextArea();
+                                                temp.add(new WizardStep() {
+                                                    @Override
+                                                    public String getCaption() {
+                                                        return getInstance()
+                                                                .getResource()
+                                                                .getString(
+                                                                "window.addattributestext");
+                                                    }
 
-                                            @Override
-                                            public com.vaadin.ui.Component getContent() {
-                                                return tArea;
-                                            }
+                                                    @Override
+                                                    public com.vaadin.ui.Component getContent() {
+                                                        return tArea;
+                                                    }
 
-                                            @Override
-                                            public boolean onAdvance() {
-                                                if (tArea.getValue().toString().isEmpty()) {
-                                                    getMainWindow().showNotification(
-                                                            getInstance()
-                                                            .getResource()
-                                                            .getString(
-                                                            "general.error"),
-                                                            getInstance()
-                                                            .getResource()
-                                                            .getString(
-                                                            "message.missing.text"),
-                                                            Notification.TYPE_WARNING_MESSAGE);
-                                                    return false;
-                                                } else {
-                                                    //Process the data
-                                                    getXincoCoreData()
-                                                            .getXincoAddAttributes()
-                                                            .get(0).setAttribText(
-                                                            tArea.getValue()
-                                                            .toString());
-                                                    return true;
-                                                }
-                                            }
+                                                    @Override
+                                                    public boolean onAdvance() {
+                                                        if (tArea.getValue().toString().isEmpty()) {
+                                                            getMainWindow().showNotification(
+                                                                    getInstance()
+                                                                    .getResource()
+                                                                    .getString(
+                                                                    "general.error"),
+                                                                    getInstance()
+                                                                    .getResource()
+                                                                    .getString(
+                                                                    "message.missing.text"),
+                                                                    Notification.TYPE_WARNING_MESSAGE);
+                                                            return false;
+                                                        } else {
+                                                            //Process the data
+                                                            getXincoCoreData()
+                                                                    .getXincoAddAttributes()
+                                                                    .get(0).setAttribText(
+                                                                    tArea.getValue()
+                                                                    .toString());
+                                                            return true;
+                                                        }
+                                                    }
 
-                                            @Override
-                                            public boolean onBack() {
-                                                return true;
-                                            }
+                                                    @Override
+                                                    public boolean onBack() {
+                                                        return true;
+                                                    }
 
-                                            @Override
-                                            public String toString() {
-                                                return getCaption();
-                                            }
-                                        });
-                                        wizard.addStep(temp.get(temp.size() - 1),
-                                                wizard.getLastCompleted() + 1);
-                                        break;
-                                    default:
-                                        clearTempSteps();
-                                        //Only show the attribute screen
-                                        addAttributeStep();
-                                        break;
-                                }
-                            }
-
-                            private void addAttributeStep() {
-                                if ((getXincoCoreData().getXincoCoreDataType().getId() != 1
-                                        || getXincoCoreData().getXincoAddAttributes().size() > 8)
-                                        && (getXincoCoreData().getXincoCoreDataType().getId() != 2
-                                        || getXincoCoreData().getXincoAddAttributes().size() > 1)) {
-                                    temp.add(attrStep);
-                                    wizard.addStep(temp.get(temp.size() - 1), wizard.getLastCompleted() + 1);
-                                }
-                            }
-
-                            private void clearTempSteps() {
-                                for (WizardStep ws : temp) {
-                                    if (wizard.getSteps().contains(ws)) {
-                                        wizard.removeStep(ws);
+                                                    @Override
+                                                    public String toString() {
+                                                        return getCaption();
+                                                    }
+                                                });
+                                                wizard.addStep(temp.get(temp.size() - 1),
+                                                        wizard.getLastCompleted() + 1);
+                                                break;
+                                            default:
+                                                clearTempSteps();
+                                                //Only show the attribute screen
+                                                addAttributeStep();
+                                                break;
+                                        }
                                     }
-                                }
-                                temp.clear();
-                            }
-                        });
+
+                                    private void addAttributeStep() {
+                                        if ((getXincoCoreData().getXincoCoreDataType().getId() != 1
+                                                || getXincoCoreData().getXincoAddAttributes().size() > 8)
+                                                && (getXincoCoreData().getXincoCoreDataType().getId() != 2
+                                                || getXincoCoreData().getXincoAddAttributes().size() > 1)) {
+                                            temp.add(attrStep);
+                                            wizard.addStep(temp.get(temp.size() - 1), wizard.getLastCompleted() + 1);
+                                        }
+                                    }
+
+                                    private void clearTempSteps() {
+                                        for (WizardStep ws : temp) {
+                                            if (wizard.getSteps().contains(ws)) {
+                                                wizard.removeStep(ws);
+                                            }
+                                        }
+                                        temp.clear();
+                                    }
+                                });
                     }
                     return dataTypeDialog;
                 }
@@ -4483,11 +4483,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
             final com.vaadin.ui.Button cancel = new com.vaadin.ui.Button(
                     getInstance().getResource().getString("general.cancel"),
                     new com.vaadin.ui.Button.ClickListener() {
-                @Override
-                public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                    getMainWindow().removeWindow(dataFolderDialog);
-                }
-            });
+                        @Override
+                        public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+                            getMainWindow().removeWindow(dataFolderDialog);
+                        }
+                    });
             final int finalStatus = status;
             commit.addListener(new com.vaadin.ui.Button.ClickListener() {
                 @Override
@@ -4743,13 +4743,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     // update details table
                     xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
                     xincoTable.addItem(new Object[]{getInstance().getResource().getString("general.id"),
-                        new com.vaadin.ui.Label("" + xcns.getId())}, i++);
+                                new com.vaadin.ui.Label("" + xcns.getId())}, i++);
                     xincoTable.addItem(new Object[]{getInstance().getResource().getString("general.designation"),
-                        new com.vaadin.ui.Label(xcns.getDesignation())}, i++);
+                                new com.vaadin.ui.Label(xcns.getDesignation())}, i++);
                     xincoTable.addItem(new Object[]{getInstance().getResource().getString("general.language"),
-                        new com.vaadin.ui.Label(getInstance().getResource().getString(xcns.getXincoCoreLanguage().getDesignation()) + " ("
-                        + xcns.getXincoCoreLanguage().getSign()
-                        + ")")}, i++);
+                                new com.vaadin.ui.Label(getInstance().getResource().getString(xcns.getXincoCoreLanguage().getDesignation()) + " ("
+                                + xcns.getXincoCoreLanguage().getSign()
+                                + ")")}, i++);
                     xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
                     value = "[";
                     if (tempAce.isReadPermission()) {
@@ -4774,10 +4774,10 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     }
                     value += "]";
                     xincoTable.addItem(new Object[]{
-                        getInstance().getResource().getString("general.accessrights"),
-                        new com.vaadin.ui.Label(value)}, i++);
+                                getInstance().getResource().getString("general.accessrights"),
+                                new com.vaadin.ui.Label(value)}, i++);
                     xincoTable.addItem(new Object[]{"\u00a0",
-                        new com.vaadin.ui.Label()}, i++);
+                                new com.vaadin.ui.Label()}, i++);
                     value = "";
                     if (xcns.getStatusNumber() == 1) {
                         value = getInstance().getResource().getString("general.status.open") + "";
@@ -4789,8 +4789,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         value = getInstance().getResource().getString("general.status.archived") + " (->)";
                     }
                     xincoTable.addItem(new Object[]{
-                        getInstance().getResource().getString("general.status"),
-                        new com.vaadin.ui.Label(value)}, i++);
+                                getInstance().getResource().getString("general.status"),
+                                new com.vaadin.ui.Label(value)}, i++);
                 }
             } else if (source != null && source.startsWith("data")) {
                 // get ace
@@ -4804,23 +4804,23 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
                 if (temp != null) {
                     xincoTable.addItem(new Object[]{
-                        getInstance().getResource().getString("general.id"),
-                        new com.vaadin.ui.Label("" + temp.getId())}, i++);
+                                getInstance().getResource().getString("general.id"),
+                                new com.vaadin.ui.Label("" + temp.getId())}, i++);
                     xincoTable.addItem(new Object[]{
-                        getInstance().getResource().getString("general.designation"),
-                        new com.vaadin.ui.Label(temp.getDesignation())}, i++);
+                                getInstance().getResource().getString("general.designation"),
+                                new com.vaadin.ui.Label(temp.getDesignation())}, i++);
                     xincoTable.addItem(new Object[]{
-                        getInstance().getResource().getString("general.language"),
-                        new com.vaadin.ui.Label(getInstance().getResource().getString(temp.getXincoCoreLanguage().getDesignation())
-                        + " ("
-                        + temp.getXincoCoreLanguage().getSign()
-                        + ")")}, i++);
+                                getInstance().getResource().getString("general.language"),
+                                new com.vaadin.ui.Label(getInstance().getResource().getString(temp.getXincoCoreLanguage().getDesignation())
+                                + " ("
+                                + temp.getXincoCoreLanguage().getSign()
+                                + ")")}, i++);
                     xincoTable.addItem(new Object[]{
-                        getInstance().getResource().getString("general.datatype"),
-                        new com.vaadin.ui.Label(getInstance().getResource().getString(temp.getXincoCoreDataType().getDesignation())
-                        + " ("
-                        + getInstance().getResource().getString(temp.getXincoCoreDataType().getDescription())
-                        + ")")}, i++);
+                                getInstance().getResource().getString("general.datatype"),
+                                new com.vaadin.ui.Label(getInstance().getResource().getString(temp.getXincoCoreDataType().getDesignation())
+                                + " ("
+                                + getInstance().getResource().getString(temp.getXincoCoreDataType().getDescription())
+                                + ")")}, i++);
                     xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
                     xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
                     if (tempAce.isReadPermission()) {
@@ -4844,8 +4844,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         value += "-";
                     }
                     xincoTable.addItem(new Object[]{
-                        getInstance().getResource().getString("general.accessrights"),
-                        new com.vaadin.ui.Label("[" + value + "]")}, i++);
+                                getInstance().getResource().getString("general.accessrights"),
+                                new com.vaadin.ui.Label("[" + value + "]")}, i++);
                     xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
                     xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
                     switch (temp.getStatusNumber()) {
@@ -4868,13 +4868,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             throw new XincoException("Invalid status: " + temp.getStatusNumber());
                     }
                     xincoTable.addItem(new Object[]{
-                        getInstance().getResource().getString("general.status"),
-                        new com.vaadin.ui.Label(value)}, i++);
+                                getInstance().getResource().getString("general.status"),
+                                new com.vaadin.ui.Label(value)}, i++);
                     xincoTable.addItem(new Object[]{"\u00a0",
-                        new com.vaadin.ui.Label()}, i++);
+                                new com.vaadin.ui.Label()}, i++);
                     xincoTable.addItem(new Object[]{
-                        getInstance().getResource().getString("general.typespecificattributes"),
-                        new com.vaadin.ui.Label()}, i++);
+                                getInstance().getResource().getString("general.typespecificattributes"),
+                                new com.vaadin.ui.Label()}, i++);
                     // get add attributes of Core Data, if access granted
                     java.util.List<XincoAddAttribute> attributes =
                             temp.getXincoAddAttributes();
@@ -4918,8 +4918,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             link.setTargetBorder(Link.TARGET_BORDER_NONE);
                             try {
                                 xincoTable.addItem(new Object[]{header, header.equals("URL")
-                                    && XincoSettingServer.getSetting(loggedUser, "setting.allowoutsidelinks", true).isBoolValue()
-                                    ? link : new com.vaadin.ui.Label(value)}, i++);
+                                            && XincoSettingServer.getSetting(loggedUser, "setting.allowoutsidelinks", true).isBoolValue()
+                                            ? link : new com.vaadin.ui.Label(value)}, i++);
                             } catch (XincoException ex) {
                                 LOG.log(Level.SEVERE, null, ex);
                             }
@@ -4934,7 +4934,6 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         //Add permanent link
                         value = getInstance().getURL().toString() + "?dataId=" + temp.getId();
                         Link link = new Link(value, new ExternalResource(value));
-                        //TODO: Link opening on different window.
                         link.setTargetName("_blank");
                         link.setTargetBorder(Link.TARGET_BORDER_NONE);
                         try {
@@ -4992,12 +4991,10 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 LOG.log(Level.SEVERE, null, ce);
                             }
                         }
-                        String description = ((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getOpDescription();
                         value = "("
                                 + ((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getOpCode()
                                 + ") "
-                                + (getInstance().getResource().containsKey(description)
-                                ? getInstance().getResource().getString(description) : description);
+                                + ((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getOpDescription();
                         xincoTable.addItem(new Object[]{header, new com.vaadin.ui.Label(value)}, i++);
                         header = "";
                         try {

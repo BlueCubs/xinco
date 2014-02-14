@@ -37,9 +37,9 @@ import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.db.DBState;
 import com.bluecubs.xinco.tools.MD5;
 import com.googlecode.flyway.core.Flyway;
-import com.googlecode.flyway.core.exception.FlywayException;
-import com.googlecode.flyway.core.metadatatable.MetaDataTableRow;
-import com.googlecode.flyway.core.migration.MigrationState;
+import com.googlecode.flyway.core.api.FlywayException;
+import com.googlecode.flyway.core.api.MigrationInfo;
+import com.googlecode.flyway.core.api.MigrationState;
 import gudusoft.gsqlparser.EDbVendor;
 import gudusoft.gsqlparser.ESqlStatementType;
 import gudusoft.gsqlparser.TGSqlParser;
@@ -158,7 +158,7 @@ public class XincoDBManager {
                         XincoIdServer next = it.next();
                         LOG.log(Level.CONFIG,
                                 "{0}, {1}, {2}", new Object[]{next.getId(),
-                                    next.getTablename(), next.getLastId()});
+                            next.getTablename(), next.getLastId()});
                     }
                 }
             } catch (XincoException ex1) {
@@ -372,7 +372,7 @@ public class XincoDBManager {
         Flyway flyway = new Flyway();
         flyway.setDataSource(dataSource);
         flyway.setLocations("com.bluecubs.xinco.core.server.db.script");
-        MetaDataTableRow status = flyway.status();
+        MigrationInfo status = flyway.info().current();
         if (status == null) {
             setState(DBState.NEED_INIT);
             LOG.info("Initialize the metadata...");
@@ -405,7 +405,7 @@ public class XincoDBManager {
             LOG.info("Validating migration...");
             flyway.validate();
             LOG.info("Done!");
-            setState(flyway.status().getState() == MigrationState.SUCCESS
+            setState(flyway.info().current().getState() == MigrationState.SUCCESS
                     ? DBState.VALID : DBState.ERROR);
         } catch (FlywayException fe) {
             LOG.log(Level.SEVERE, "Unable to validate", fe);
@@ -413,10 +413,10 @@ public class XincoDBManager {
         }
     }
 
-    private static void displayDBStatus(MetaDataTableRow status) {
+    private static void displayDBStatus(MigrationInfo status) {
         LOG.log(Level.INFO, "Description: {0}\nState: {1}\nVersion: {2}",
                 new Object[]{status.getDescription(), status.getState(),
-                    status.getVersion()});
+            status.getVersion()});
     }
 
     protected static void executeSQL(String filePath, Class relativeTo)
