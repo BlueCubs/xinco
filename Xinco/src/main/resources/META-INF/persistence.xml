@@ -42,6 +42,7 @@
             <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
             <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.DefaultSessionLog"/>
             <property name="eclipselink.logging.level" value="SEVERE"/>
+            <property name="validationQuery" value="SELECT 1"/>
         </properties>
     </persistence-unit>
     <persistence-unit name="XincoBackup" transaction-type="RESOURCE_LOCAL">
@@ -86,6 +87,7 @@
             <property name="eclipselink.ddl-generation" value="drop-and-create-or-extend-tables"/>
             <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.DefaultSessionLog"/>
             <property name="eclipselink.logging.level" value="SEVERE"/>
+            <property name="validationQuery" value="SELECT 1"/>
         </properties>
     </persistence-unit>
     <persistence-unit name="XincoTest" transaction-type="RESOURCE_LOCAL">
@@ -131,6 +133,7 @@
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="javax.persistence.jdbc.user" value="root"/>
             <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
+            <property name="validationQuery" value="SELECT 1"/>
         </properties>
     </persistence-unit>
     <persistence-unit name="XincoPUJNDI" transaction-type="JTA">
@@ -174,20 +177,16 @@
             <property name="eclipselink.logging.level" value="SEVERE"/>
             <property name="eclipselink.weaving" value="false"/>
             <property name="eclipselink.session-name" value="default-session"/>
+            <property name="validationQuery" value="SELECT 1"/>
             <!--The client will require an implementation of SessionCustomizer
             that will set the lookupType on the JNDI connector to STRING_LOOKUP
             instead of Composite-->
             <property name="eclipselink.session.customizer" value="com.bluecubs.xinco.core.server.JPAEclipseLinkSessionCustomizer"/>
-            <!-- Properties for create and drop sql file generation-->
-            <property name="eclipselink.create-ddl-jdbc-file-name" value="create.sql"/>
-            <property name="eclipselink.drop-ddl-jdbc-file-name" value="drop.sql"/>
-            <property name="eclipselink.application-location" value="./"/>
-            <property name="eclipselink.ddl-generation.output-mode" value="both"/>
         </properties>
     </persistence-unit>
     <persistence-unit name="XincoDemo" transaction-type="JTA">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>java:comp/env/jdbc/xincodemo</jta-data-source>
+        <jta-data-source>java:comp/env/jdbc/XincoDB</jta-data-source>
         <class>com.bluecubs.xinco.core.server.persistence.XincoAddAttribute</class>
         <class>com.bluecubs.xinco.core.server.persistence.XincoAddAttributeT</class>
         <class>com.bluecubs.xinco.core.server.persistence.XincoCoreAce</class>
@@ -226,15 +225,12 @@
             <property name="eclipselink.logging.level" value="SEVERE"/>
             <property name="eclipselink.weaving" value="false"/>
             <property name="eclipselink.session-name" value="default-session"/>
+            <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
+            <property name="validationQuery" value="SELECT 1"/>
             <!--The client will require an implementation of SessionCustomizer
             that will set the lookupType on the JNDI connector to STRING_LOOKUP
             instead of Composite-->
             <property name="eclipselink.session.customizer" value="com.bluecubs.xinco.core.server.JPAEclipseLinkSessionCustomizer"/>
-            <!-- Properties for create and drop sql file generation-->
-            <property name="eclipselink.create-ddl-jdbc-file-name" value="create.sql"/>
-            <property name="eclipselink.drop-ddl-jdbc-file-name" value="drop.sql"/>
-            <property name="eclipselink.application-location" value="./"/>
-            <property name="eclipselink.ddl-generation.output-mode" value="both"/>
         </properties>
     </persistence-unit>
 </persistence>
