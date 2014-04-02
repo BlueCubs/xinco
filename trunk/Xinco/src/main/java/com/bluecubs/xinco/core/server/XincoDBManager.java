@@ -66,10 +66,10 @@ public class XincoDBManager {
     private static EntityManagerFactory emf;
     //load compiled configuartion
     public final static XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
-    private static ResourceBundle lrb =
-            ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
-    private static ResourceBundle settings =
-            ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
+    private static ResourceBundle lrb
+            = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+    private static final ResourceBundle settings
+            = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
     protected static String puName = "XincoPU";
     private static boolean locked = false;
     private static boolean usingContext = false;
@@ -134,8 +134,8 @@ public class XincoDBManager {
             for (Field field : fields) {
                 if (field.isAnnotationPresent(TableGenerator.class)) {
                     field.setAccessible(true);
-                    TableGenerator annotation =
-                            field.getAnnotation(TableGenerator.class);
+                    TableGenerator annotation
+                            = field.getAnnotation(TableGenerator.class);
                     field.setAccessible(false);
                     HashMap parameters = new HashMap();
                     String tableName = annotation.pkColumnValue();
@@ -153,12 +153,10 @@ public class XincoDBManager {
         } finally {
             try {
                 if (LOG.isLoggable(Level.CONFIG)) {
-                    for (Iterator<XincoIdServer> it =
-                            XincoIdServer.getIds().iterator(); it.hasNext();) {
-                        XincoIdServer next = it.next();
+                    for (XincoIdServer next : XincoIdServer.getIds()) {
                         LOG.log(Level.CONFIG,
                                 "{0}, {1}, {2}", new Object[]{next.getId(),
-                            next.getTablename(), next.getLastId()});
+                                    next.getTablename(), next.getLastId()});
                     }
                 }
             } catch (XincoException ex1) {
@@ -172,15 +170,13 @@ public class XincoDBManager {
                 "Creating ids to work around eclipse issue "
                 + "(https://bugs.eclipse.org/bugs/show_bug.cgi?id=366852)...");
         LOG.log(Level.FINE, "Embeddables:");
-        for (Iterator<EmbeddableType<?>> it = getEntityManager().getMetamodel()
-                .getEmbeddables().iterator(); it.hasNext();) {
-            EmbeddableType et = it.next();
+        for (EmbeddableType et : getEntityManager().getMetamodel()
+                .getEmbeddables()) {
             processFields(et.getJavaType().getDeclaredFields());
         }
         LOG.log(Level.FINE, "Entities:");
-        for (Iterator<EntityType<?>> it = getEntityManager().getMetamodel()
-                .getEntities().iterator(); it.hasNext();) {
-            EntityType et = it.next();
+        for (EntityType et : getEntityManager().getMetamodel()
+                .getEntities()) {
             processFields(et.getBindableJavaType().getDeclaredFields());
         }
         LOG.log(Level.FINE, "Done!");
@@ -254,10 +250,10 @@ public class XincoDBManager {
                     LOG.log(Level.FINE, null, ne);
                     //It might be the tests, use an H2 Database
                     ds = new JdbcDataSource();
-                    ((JdbcDataSource) ds).setPassword("");
+                    ((JdbcDataSource) ds).setPassword("xinco");
                     ((JdbcDataSource) ds).setUser("root");
                     ((JdbcDataSource) ds).setURL(
-                            "jdbc:h2:file:data/xinco-test;AUTO_SERVER=TRUE");
+                            "jdbc:h2:file:target/data/xinco-test;AUTO_SERVER=TRUE");
                     //Load the H2 driver
                     Class.forName("org.h2.Driver");
                 } catch (ClassNotFoundException ex) {
@@ -416,7 +412,7 @@ public class XincoDBManager {
     private static void displayDBStatus(MigrationInfo status) {
         LOG.log(Level.INFO, "Description: {0}\nState: {1}\nVersion: {2}",
                 new Object[]{status.getDescription(), status.getState(),
-            status.getVersion()});
+                    status.getVersion()});
     }
 
     protected static void executeSQL(String filePath, Class relativeTo)
@@ -490,12 +486,8 @@ public class XincoDBManager {
                 }
             }
         } finally {
-            if (br != null) {
-                br.close();
-            }
-            if (is != null) {
-                is.close();
-            }
+            br.close();
+            is.close();
             if (in != null) {
                 in.close();
             }
@@ -600,8 +592,8 @@ public class XincoDBManager {
             q = getEntityManager().createQuery(query);
         }
         if (parameters != null) {
-            Iterator<Map.Entry<String, Object>> entries =
-                    parameters.entrySet().iterator();
+            Iterator<Map.Entry<String, Object>> entries
+                    = parameters.entrySet().iterator();
             while (entries.hasNext()) {
                 Entry<String, Object> e = entries.next();
                 q.setParameter(e.getKey(), e.getValue());
@@ -635,8 +627,8 @@ public class XincoDBManager {
             q = getEntityManager().createNamedQuery(query);
         }
         if (parameters != null) {
-            Iterator<Map.Entry<String, Object>> entries =
-                    parameters.entrySet().iterator();
+            Iterator<Map.Entry<String, Object>> entries
+                    = parameters.entrySet().iterator();
             while (entries.hasNext()) {
                 Entry<String, Object> e = entries.next();
                 q.setParameter(e.getKey(), e.getValue());
@@ -714,8 +706,8 @@ public class XincoDBManager {
                 + "xinco_MySQL.sql");
         if (script.exists()) {
             try {
-                ArrayList<String> contents =
-                        readFileAsString(script.getAbsolutePath(), null);
+                ArrayList<String> contents
+                        = readFileAsString(script.getAbsolutePath(), null);
                 if (!contents.isEmpty()) {
                     //Create the init.sql file 
                     //src\java\com\bluecubs\xinco\core\server\db\script
