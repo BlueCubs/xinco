@@ -44,7 +44,6 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.Map.Entry;
@@ -254,7 +253,7 @@ public class XincoDBManager {
                     ((JdbcDataSource) ds).setPassword("xinco");
                     ((JdbcDataSource) ds).setUser("root");
                     ((JdbcDataSource) ds).setURL(
-                            "jdbc:h2:file:target/data/xinco-test;AUTO_SERVER=TRUE");
+                            "jdbc:h2:file:./target/data/xinco-test;AUTO_SERVER=TRUE");
                     //Load the H2 driver
                     Class.forName("org.h2.Driver");
                 } catch (ClassNotFoundException ex) {
