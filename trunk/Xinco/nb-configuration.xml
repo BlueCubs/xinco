@@ -25,5 +25,6 @@
         <org-zeroturnaround-jrebel-netbeans.remoting_2e_public>30818902818100c73bb025a037e8d127f6c185c87650e0e4624a9eb053915d54f4bf6bee6ee0166e9f3d35f0a9e4371cfb38d96232fcb2dcd9cd7bd317a9cb36d4037d8f21a6c348c960f39184eee236c81f6bfecfa69d5382d3a2238bc97f8fe3e1cd9c503b041976e06b79ced3edd0e8107d5a9dff9d35cb08f0c085a1eff3bbbbd8721085c70203010001</org-zeroturnaround-jrebel-netbeans.remoting_2e_public>
         <org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_deploy_2e_server>Tomcat</org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_deploy_2e_server>
         <org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_j2eeVersion>1.7-web</org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_j2eeVersion>
+        <org-netbeans-modules-maven-jaxws.generate_5f_nonjsr109>true</org-netbeans-modules-maven-jaxws.generate_5f_nonjsr109>
     </properties>
 </project-shared-configuration>
