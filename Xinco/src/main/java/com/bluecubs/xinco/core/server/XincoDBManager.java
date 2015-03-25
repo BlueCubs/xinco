@@ -36,10 +36,6 @@ package com.bluecubs.xinco.core.server;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.db.DBState;
 import com.bluecubs.xinco.tools.MD5;
-import com.googlecode.flyway.core.Flyway;
-import com.googlecode.flyway.core.api.FlywayException;
-import com.googlecode.flyway.core.api.MigrationInfo;
-import com.googlecode.flyway.core.api.MigrationState;
 import gudusoft.gsqlparser.EDbVendor;
 import gudusoft.gsqlparser.ESqlStatementType;
 import gudusoft.gsqlparser.TGSqlParser;
@@ -48,6 +44,7 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.Map.Entry;
@@ -59,6 +56,10 @@ import javax.persistence.*;
 import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.EntityType;
 import javax.sql.DataSource;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.FlywayException;
+import org.flywaydb.core.api.MigrationInfo;
+import org.flywaydb.core.api.MigrationState;
 import org.h2.jdbcx.JdbcDataSource;
 
 public class XincoDBManager {
@@ -262,11 +263,15 @@ public class XincoDBManager {
             }
             try {
                 conn = ds.getConnection();
-                stmt = conn.prepareStatement("select * from xinco_core_node");
+                stmt = conn.prepareStatement("select * from xinco_setting");
                 rs = stmt.executeQuery();
                 if (!rs.next()) {
                     //Tables there but empty? Not safe to proceed
                     setState(DBState.NEED_MANUAL_UPDATE);
+                } else {
+                    ResultSetMetaData metadata = rs.getMetaData();
+                    LOG.log(Level.INFO, "Amount of settings: {0}", 
+                            metadata.getColumnCount());
                 }
             } catch (SQLException ex) {
                 LOG.log(Level.FINE, null, ex);
@@ -274,8 +279,6 @@ public class XincoDBManager {
                 setState(DBState.NEED_INIT);
                 //Create the database
                 getEntityManager();
-                //Initialize database
-                initializeFlyway(ds);
             } finally {
                 try {
                     if (conn != null) {
@@ -328,7 +331,7 @@ public class XincoDBManager {
     public static String getVersion() {
         return getVersionNumber()
                 + ((settings.getString("version.postfix").isEmpty()
-                ? "" : " " + settings.getString("version.postfix")));
+                        ? "" : " " + settings.getString("version.postfix")));
     }
 
     private static String getDBVersionNumber() {
@@ -354,42 +357,19 @@ public class XincoDBManager {
             return getDBVersionNumber()
                     + (XincoSettingServer.getSetting("version.postfix")
                     .getStringValue().isEmpty()
-                    ? "" : " " + XincoSettingServer
-                    .getSetting("version.postfix").getStringValue());
+                            ? "" : " " + XincoSettingServer
+                            .getSetting("version.postfix").getStringValue());
         } catch (XincoException ex) {
             LOG.log(Level.SEVERE, null, ex);
             return null;
         }
     }
 
-    private static void initializeFlyway(DataSource dataSource) {
-        assert dataSource != null;
-        setState(DBState.START_UP);
-        Flyway flyway = new Flyway();
-        flyway.setDataSource(dataSource);
-        flyway.setLocations("com.bluecubs.xinco.core.server.db.script");
-        MigrationInfo status = flyway.info().current();
-        if (status == null) {
-            setState(DBState.NEED_INIT);
-            LOG.info("Initialize the metadata...");
-            try {
-                flyway.init();
-                LOG.info("Done!");
-            } catch (FlywayException fe) {
-                LOG.log(Level.SEVERE, "Unable to initialize database", fe);
-                setState(DBState.ERROR);
-            }
-        } else {
-            LOG.info("Database has Flyway metadata already...");
-            displayDBStatus(status);
-        }
-    }
-
     private static void updateDatabase(DataSource dataSource) {
         Flyway flyway = new Flyway();
         try {
+            flyway.setInitOnMigrate(true);
             flyway.setDataSource(dataSource);
-            flyway.setLocations("com.bluecubs.xinco.core.server.db.script");
             LOG.info("Starting migration...");
             flyway.migrate();
             LOG.info("Done!");
