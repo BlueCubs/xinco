@@ -262,16 +262,20 @@ public class XincoDBManager {
                 }
             }
             try {
-                conn = ds.getConnection();
-                stmt = conn.prepareStatement("select * from xinco_setting");
-                rs = stmt.executeQuery();
-                if (!rs.next()) {
-                    //Tables there but empty? Not safe to proceed
-                    setState(DBState.NEED_MANUAL_UPDATE);
+                if (ds != null) {
+                    conn = ds.getConnection();
+                    stmt = conn.prepareStatement("select * from xinco_setting");
+                    rs = stmt.executeQuery();
+                    if (!rs.next()) {
+                        //Tables there but empty? Not safe to proceed
+                        setState(DBState.NEED_MANUAL_UPDATE);
+                    } else {
+                        ResultSetMetaData metadata = rs.getMetaData();
+                        LOG.log(Level.INFO, "Amount of settings: {0}",
+                                metadata.getColumnCount());
+                    }
                 } else {
-                    ResultSetMetaData metadata = rs.getMetaData();
-                    LOG.log(Level.INFO, "Amount of settings: {0}", 
-                            metadata.getColumnCount());
+                    throw new RuntimeException("Null Datasource!");
                 }
             } catch (SQLException ex) {
                 LOG.log(Level.FINE, null, ex);
