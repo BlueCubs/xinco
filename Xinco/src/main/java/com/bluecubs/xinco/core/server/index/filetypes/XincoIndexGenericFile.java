@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.WriteOutContentHandler;
 import org.xml.sax.SAXException;
@@ -57,7 +58,7 @@ public class XincoIndexGenericFile implements XincoIndexFileType {
             StringWriter writer = new StringWriter();
             FileInputStream fis = new FileInputStream(f);
             WriteOutContentHandler woch = new WriteOutContentHandler(writer);
-            parser.parse(fis, woch, metadata);
+            parser.parse(fis, woch, metadata, new ParseContext());
             result = writer.toString();
             fis.close();
         } catch (IOException ex) {
