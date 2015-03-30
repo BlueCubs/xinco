@@ -36,10 +36,6 @@ package com.bluecubs.xinco.core.server;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.db.DBState;
 import com.bluecubs.xinco.tools.MD5;
-import com.googlecode.flyway.core.Flyway;
-import com.googlecode.flyway.core.api.FlywayException;
-import com.googlecode.flyway.core.api.MigrationInfo;
-import com.googlecode.flyway.core.api.MigrationState;
 import gudusoft.gsqlparser.EDbVendor;
 import gudusoft.gsqlparser.ESqlStatementType;
 import gudusoft.gsqlparser.TGSqlParser;
@@ -60,6 +56,10 @@ import javax.persistence.*;
 import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.EntityType;
 import javax.sql.DataSource;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.FlywayException;
+import org.flywaydb.core.api.MigrationInfo;
+import org.flywaydb.core.api.MigrationState;
 import org.h2.jdbcx.JdbcDataSource;
 
 public class XincoDBManager {
