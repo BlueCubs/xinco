@@ -372,8 +372,9 @@ public class XincoDBManager {
     private static void updateDatabase(DataSource dataSource) {
         Flyway flyway = new Flyway();
         try {
-            flyway.setInitOnMigrate(true);
+            flyway.setBaselineOnMigrate(true);
             flyway.setDataSource(dataSource);
+            flyway.setLocations("db.migration");
             LOG.info("Starting migration...");
             flyway.migrate();
             LOG.info("Done!");
@@ -436,7 +437,7 @@ public class XincoDBManager {
         InputStreamReader is = new InputStreamReader(in, "utf8");
         BufferedReader br = new BufferedReader(is);
         String line;
-        ArrayList<String> statements = new ArrayList<String>();
+        ArrayList<String> statements = new ArrayList<>();
         StringBuilder sql = new StringBuilder();
         try {
             while ((line = br.readLine()) != null) {
@@ -444,7 +445,7 @@ public class XincoDBManager {
                 sql.append(line).append("\n");
             }
             //The list of statement types to ignore
-            ArrayList<String> ignore = new ArrayList<String>();
+            ArrayList<String> ignore = new ArrayList<>();
             ignore.add(ESqlStatementType.sstmysqlset.toString());
             ignore.add(ESqlStatementType.sstinvalid.toString());
             ignore.add(ESqlStatementType.sstmysqluse.toString());
@@ -721,10 +722,8 @@ public class XincoDBManager {
                                 "Unable to create/update DB script");
                     }
                 }
-            } catch (IOException ex) {
-                LOG.log(Level.SEVERE, null, ex);
-            } catch (XincoException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+            } catch (IOException | XincoException ex) {
+                LOG.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
     }
@@ -758,16 +757,14 @@ public class XincoDBManager {
                     + aFile);
         }
         FileWriter fw = new FileWriter(aFile);
-        //use buffering
-        Writer output = new BufferedWriter(fw);
-        try {
+        try ( //use buffering
+                Writer output = new BufferedWriter(fw)) {
             //FileWriter always assumes default encoding is OK!
             for (String line : aContents) {
                 output.write(line);
                 output.write("\n");
             }
         } finally {
-            output.close();
             fw.close();
         }
     }

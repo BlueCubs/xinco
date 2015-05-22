@@ -117,17 +117,17 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
     private static final Logger LOG = Logger.getLogger(Xinco.class.getName());
     private static final long serialVersionUID = 1L;
-    private static ThreadLocal<Xinco> threadLocal = new ThreadLocal<Xinco>();
+    private static final ThreadLocal<Xinco> threadLocal = new ThreadLocal<Xinco>();
     private XincoVersion xincoVersion = null;
     private ResourceBundle xerb =
             ResourceBundle.getBundle(
             "com.bluecubs.xinco.messages.XincoMessages", Locale.getDefault());
     private XincoCoreUserServer loggedUser = null;
-    private XincoFileIconManager xfm = new XincoFileIconManager();
+    private final XincoFileIconManager xfm = new XincoFileIconManager();
     //Table linking displayed item with it's id
     private Tree xincoTree = null;
     private Table xincoTable = null;
-    private com.vaadin.ui.MenuBar menuBar = new com.vaadin.ui.MenuBar();
+    private final com.vaadin.ui.MenuBar menuBar = new com.vaadin.ui.MenuBar();
     private Item root;
     private XincoWebService service;
     private com.vaadin.ui.Window wizardWindow = new com.vaadin.ui.Window();
@@ -140,14 +140,14 @@ public class Xinco extends Application implements HttpServletRequestListener {
     private XincoActivityTimer xat = null;
     private File fileToLoad;
     private String fileName;                    // Original file name
-    private boolean renderingSupportEnabled = false;
+    private final boolean renderingSupportEnabled = false;
     private String version;
     private HorizontalSplitPanel xeSplitPanel;
     private com.vaadin.ui.Button login;
     private com.vaadin.ui.Button logout;
     private com.vaadin.ui.Button profile;
     private WizardStep fileStep;
-    private ThemeResource smallIcon =
+    private final ThemeResource smallIcon =
             new ThemeResource("img/blueCubsIcon16x16.GIF");
     private HierarchicalContainer xincoTreeContainer;
     private com.vaadin.ui.Panel adminPanel;

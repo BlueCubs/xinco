@@ -33,10 +33,10 @@ public abstract class AbstractXincoDataBaseTestCase extends TestCase {
             Statement stmt = null;
             try {
                 DataSource ds = new JdbcDataSource();
-                ((JdbcDataSource) ds).setPassword("");
+                ((JdbcDataSource) ds).setPassword("xinco");
                 ((JdbcDataSource) ds).setUser("root");
                 ((JdbcDataSource) ds).setURL(
-                        "jdbc:h2:file:data/xinco-test;AUTO_SERVER=TRUE");
+                        "jdbc:h2:file:./target/data/xinco-test;AUTO_SERVER=TRUE");
                 //Load the H2 driver
                 Class.forName("org.h2.Driver");
                 conn = ds.getConnection();

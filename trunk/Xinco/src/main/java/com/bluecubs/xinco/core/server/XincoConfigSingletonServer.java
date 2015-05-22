@@ -80,9 +80,9 @@ public final class XincoConfigSingletonServer {
     }
 
     public void loadSettings() {
-        ArrayList<Exception> exceptions = new ArrayList<Exception>();
+        ArrayList<Exception> exceptions = new ArrayList<>();
         try {
-            fileRepositoryPath = XincoSettingServer.getSetting("FileRepositoryPath").getStringValue();
+            fileRepositoryPath = XincoSettingServer.getSetting("xinco/FileRepositoryPath").getStringValue();
             if (!fileRepositoryPath.isEmpty()
                     && !(fileRepositoryPath.substring(fileRepositoryPath.length() - 1).equals(System.getProperty("file.separator")))) {
                 fileRepositoryPath += System.getProperty("file.separator");
@@ -95,7 +95,7 @@ public final class XincoConfigSingletonServer {
         }
         //optional: fileIndexPath
         try {
-            fileIndexPath = XincoSettingServer.getSetting("FileIndexPath").getStringValue();
+            fileIndexPath = XincoSettingServer.getSetting("xinco/FileIndexPath").getStringValue();
         } catch (Exception e) {
             fileIndexPath = fileRepositoryPath + "index";
         }
@@ -103,7 +103,7 @@ public final class XincoConfigSingletonServer {
             fileIndexPath += System.getProperty("file.separator");
         }
         try {
-            fileArchivePath = XincoSettingServer.getSetting("FileArchivePath").getStringValue();
+            fileArchivePath = XincoSettingServer.getSetting("xinco/FileArchivePath").getStringValue();
             if (!fileArchivePath.isEmpty()
                     && !(fileArchivePath.substring(fileArchivePath.length() - 1).equals(System.getProperty("file.separator")))) {
                 fileArchivePath += System.getProperty("file.separator");
@@ -115,7 +115,7 @@ public final class XincoConfigSingletonServer {
             loadDefault = true;
         }
         try {
-            fileArchivePeriod = XincoSettingServer.getSetting("FileArchivePeriod").getLongValue();
+            fileArchivePeriod = XincoSettingServer.getSetting("xinco/FileArchivePeriod").getLongValue();
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
             fileArchivePeriod = 14400000;
@@ -124,7 +124,7 @@ public final class XincoConfigSingletonServer {
         }
 
         try {
-            fileIndexOptimizerPeriod = XincoSettingServer.getSetting("FileIndexOptimizerPeriod").getLongValue();
+            fileIndexOptimizerPeriod = XincoSettingServer.getSetting("xinco/FileIndexOptimizerPeriod").getLongValue();
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
             fileIndexOptimizerPeriod = 14400000;
@@ -173,7 +173,7 @@ public final class XincoConfigSingletonServer {
             loadDefault = true;
         }
         try {
-            indexNoIndex = XincoSettingServer.getSetting("IndexNoIndex").getStringValue().split(";");
+            indexNoIndex = XincoSettingServer.getSetting("xinco/IndexNoIndex").getStringValue().split(";");
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
             indexNoIndex = new String[3];
@@ -208,7 +208,7 @@ public final class XincoConfigSingletonServer {
             loadDefault = true;
         }
         try {
-            maxSearchResult = XincoSettingServer.getSetting("MaxSearchResult").getIntValue();
+            maxSearchResult = XincoSettingServer.getSetting("xinco/MaxSearchResult").getIntValue();
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
             maxSearchResult = 30;

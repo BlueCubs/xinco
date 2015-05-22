@@ -1,7 +1,7 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.server.db.DBState;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -26,13 +26,18 @@ public class XincoDBManagerTest extends AbstractXincoDataBaseTestCase {
 
     public void testReadFileAsString() {
         try {
-            ArrayList<String> statements =
-                    XincoDBManager.readFileAsString("script/V1__Base_version.sql", DBState.class);
+            File initFile = new File(System.getProperty("user.dir")
+                    + System.getProperty("file.separator") + "src"
+                    + System.getProperty("file.separator") + "main"
+                    + System.getProperty("file.separator") + "resources"
+                    + System.getProperty("file.separator") + "db"
+                    + System.getProperty("file.separator") + "migration"
+                    + System.getProperty("file.separator")
+                    + "V1_1__Base_Version.sql");
+            ArrayList<String> statements
+                    = XincoDBManager.readFileAsString(initFile.getAbsolutePath(), null);
             assertTrue(!statements.isEmpty());
-        } catch (IOException ex) {
-            Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
-            fail();
-        } catch (XincoException ex) {
+        } catch (IOException | XincoException ex) {
             Logger.getLogger(XincoDBManager.class.getName()).log(Level.SEVERE, null, ex);
             fail();
         }
