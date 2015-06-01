@@ -97,7 +97,7 @@ public final class XincoArchiver {
             //copy file + revisions
             //build file list
             orgFileNames.add(("" + xdataTemp.getId()));
-            orgFileIDs.add(new Integer(xdataTemp.getId()));
+            orgFileIDs.add(xdataTemp.getId());
             for (i = 0; i
                     < ((ArrayList) xdataTemp.getXincoCoreLogs()).size(); i++) {
                 xlogTemp =
@@ -106,7 +106,7 @@ public final class XincoArchiver {
                         || (xlogTemp.getOpCode() == 5)) {
                     orgFileNames.add(("" + xdataTemp.getId() + "-"
                             + xlogTemp.getId()));
-                    orgFileIDs.add(new Integer(xdataTemp.getId()));
+                    orgFileIDs.add(xdataTemp.getId());
                 }
             }
             //copy + delete files
@@ -115,14 +115,12 @@ public final class XincoArchiver {
                         + (xdataTemp.getXincoAddAttributes().isEmpty() ? "" : "_"
                         + ((XincoAddAttribute) ((ArrayList) xdataTemp.getXincoAddAttributes()).get(0))
                         .getAttribVarchar());
-                if ((new File(XincoCoreDataServer.getXincoCoreDataPath(
-                        XincoDBManager.config.fileRepositoryPath,
-                        ((Integer) orgFileIDs.get(k)).intValue(),
+                if ((new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, 
+                        ((Integer) orgFileIDs.get(k)),
                         ((String) orgFileNames.get(k))))).exists()) {
                     fcis = new FileInputStream(
-                            new File(XincoCoreDataServer.getXincoCoreDataPath(
-                            XincoDBManager.config.fileRepositoryPath,
-                            ((Integer) orgFileIDs.get(k)).intValue(),
+                            new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, 
+                                    ((Integer) orgFileIDs.get(k)),
                             ((String) orgFileNames.get(k)))));
                     fcos = new FileOutputStream(new File(archiveBaseDir
                             + archiveFileDir
@@ -135,9 +133,8 @@ public final class XincoArchiver {
                     fcis.close();
                     fcos.close();
                     //delete
-                    (new File(XincoCoreDataServer.getXincoCoreDataPath(
-                            XincoDBManager.config.fileRepositoryPath,
-                            ((Integer) orgFileIDs.get(k)).intValue(),
+                    (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, 
+                            ((Integer) orgFileIDs.get(k)),
                             ((String) orgFileNames.get(k))))).delete();
                 }
             }
@@ -172,7 +169,7 @@ public final class XincoArchiver {
                             + " log entry present");
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             //Do nothing, false by default
         }
         return result;
