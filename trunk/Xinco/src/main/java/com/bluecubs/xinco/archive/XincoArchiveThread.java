@@ -56,8 +56,8 @@ public final class XincoArchiveThread extends Thread {
     static FileInputStream fcis = null;
     static FileOutputStream fcos = null;
     private static List result;
-    private static final Logger LOG = 
-            Logger.getLogger(XincoArchiveThread.class.getSimpleName());
+    private static final Logger LOG
+            = Logger.getLogger(XincoArchiveThread.class.getSimpleName());
 
     @Override
     public void run() {
@@ -156,13 +156,14 @@ public final class XincoArchiveThread extends Thread {
                                 break;
                             }
                         }
-                        sleep(10000);
                     }
                 }
             }
             return true;
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.log(Level.SEVERE, null, e);
+            return false;
+        } finally {
             try {
                 if (fcis != null) {
                     fcis.close();
@@ -173,7 +174,6 @@ public final class XincoArchiveThread extends Thread {
             } catch (IOException fe) {
                 LOG.log(Level.SEVERE, null, fe);
             }
-            return false;
         }
     }
 }
