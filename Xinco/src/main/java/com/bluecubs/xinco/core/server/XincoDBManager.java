@@ -66,10 +66,11 @@ public class XincoDBManager {
 
     private static EntityManagerFactory emf;
     //load compiled configuartion
-    public final static XincoConfigSingletonServer config = XincoConfigSingletonServer.getInstance();
+    public final static XincoConfigSingletonServer CONFIG
+            = XincoConfigSingletonServer.getInstance();
     private static ResourceBundle lrb
             = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
-    private static final ResourceBundle settings
+    private static final ResourceBundle SETTINGS
             = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
     protected static String puName = "XincoPU";
     private static boolean locked = false;
@@ -109,7 +110,8 @@ public class XincoDBManager {
                 && XincoDBManager.getState() != DBState.ERROR) {
             LOG.log(Level.INFO,
                     "Waiting for DB initialization. Current state: {0}",
-                    (XincoDBManager.getState() != null ? XincoDBManager.getState().name() : null));
+                    (XincoDBManager.getState() != null
+                    ? XincoDBManager.getState().name() : null));
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException ex) {
@@ -126,7 +128,7 @@ public class XincoDBManager {
         updateDBState();
         getEntityManager();
         generateIDs();
-        config.loadSettings();
+        CONFIG.loadSettings();
     }
 
     private static void processFields(Field[] fields) {
@@ -226,7 +228,7 @@ public class XincoDBManager {
         puName = aPU;
         LOG.log(Level.INFO,
                 "Changed persistence unit name to: {0}", puName);
-        //Set it to null so it's recreated with new Persistence Unit 
+        //Set it to null so it's recreated with new Persistence Unit
         //next time is requested.
         emf = null;
         initDone = false;
@@ -324,18 +326,18 @@ public class XincoDBManager {
 
     public static String getVersionNumber() {
         StringBuilder version = new StringBuilder();
-        version.append(settings.getString("version.high"));
+        version.append(SETTINGS.getString("version.high"));
         version.append(".");
-        version.append(settings.getString("version.mid"));
+        version.append(SETTINGS.getString("version.mid"));
         version.append(".");
-        version.append(settings.getString("version.low"));
+        version.append(SETTINGS.getString("version.low"));
         return version.toString();
     }
 
     public static String getVersion() {
         return getVersionNumber()
-                + ((settings.getString("version.postfix").isEmpty()
-                        ? "" : " " + settings.getString("version.postfix")));
+                + ((SETTINGS.getString("version.postfix").isEmpty()
+                ? "" : " " + SETTINGS.getString("version.postfix")));
     }
 
     private static String getDBVersionNumber() {
@@ -360,9 +362,9 @@ public class XincoDBManager {
         try {
             return getDBVersionNumber()
                     + (XincoSettingServer.getSetting("version.postfix")
-                    .getStringValue().isEmpty()
+                            .getStringValue().isEmpty()
                             ? "" : " " + XincoSettingServer
-                            .getSetting("version.postfix").getStringValue());
+                                    .getSetting("version.postfix").getStringValue());
         } catch (XincoException ex) {
             LOG.log(Level.SEVERE, null, ex);
             return null;
@@ -464,7 +466,7 @@ public class XincoDBManager {
                 for (int i = 0; i < sqlparser.sqlstatements.size(); i++) {
                     if (!ignore.contains(
                             sqlparser.sqlstatements.get(i).sqlstatementtype
-                            .toString())) {
+                                    .toString())) {
                         statements.add(sqlparser.sqlstatements.get(i).toString()
                                 .replaceAll("`xinco`.", ""));
                     }
@@ -512,11 +514,10 @@ public class XincoDBManager {
                                 + " each {0} milliseconds", demoResetPeriod);
                     }
                 }
-                emf = Persistence.createEntityManagerFactory(
-                        config.getJNDIDB());
+                emf = Persistence.createEntityManagerFactory(CONFIG.getJNDIDB());
                 LOG.log(Level.INFO,
                         "Using context defined database connection: {0}",
-                        config.getJNDIDB());
+                        CONFIG.getJNDIDB());
                 usingContext = true;
 
             } catch (NamingException e) {
@@ -694,7 +695,7 @@ public class XincoDBManager {
                 ArrayList<String> contents
                         = readFileAsString(script.getAbsolutePath(), null);
                 if (!contents.isEmpty()) {
-                    //Create the init.sql file 
+                    //Create the init.sql file
                     //src\java\com\bluecubs\xinco\core\server\db\script
                     File initFile = new File(System.getProperty("user.dir")
                             + System.getProperty("file.separator") + "src"
