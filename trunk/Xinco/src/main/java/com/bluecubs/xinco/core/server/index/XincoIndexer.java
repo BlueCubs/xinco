@@ -26,7 +26,8 @@
  *
  * Modifications:
  *
- * Who? When? What? - - -
+ * $Author:$
+ * $Date:$
  *
  *************************************************************
  */
@@ -37,6 +38,7 @@ import com.bluecubs.xinco.core.server.XincoDBManager;
 import com.bluecubs.xinco.core.server.service.XincoCoreData;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,6 +49,7 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -61,10 +64,12 @@ import org.apache.lucene.util.Version;
  */
 public class XincoIndexer {
 
-    private static final Logger logger = Logger.getLogger(XincoIndexer.class.getSimpleName());
-    private static final Version version = Version.LUCENE_34;
+    private static final Logger LOG
+            = Logger.getLogger(XincoIndexer.class.getSimpleName());
+    private static final Version VERSION = Version.LUCENE_34;
 
-    public static synchronized boolean indexXincoCoreData(XincoCoreData d, boolean index_content) {
+    public static synchronized boolean indexXincoCoreData(XincoCoreData d,
+            boolean index_content) {
         IndexWriter writer = null;
         try {
             //check if document exists in index and delete
@@ -72,18 +77,18 @@ public class XincoIndexer {
             //add document to index
             writer = new IndexWriter(
                     FSDirectory.open(new File(XincoDBManager.CONFIG.fileIndexPath)),
-                    new IndexWriterConfig(version,
-                    new StandardAnalyzer(version)));
+                    new IndexWriterConfig(VERSION,
+                            new StandardAnalyzer(VERSION)));
             writer.addDocument(XincoDocument.getXincoDocument(d, index_content));
             //writer.optimize();
             writer.close();
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, null, e);
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, null, e);
             if (writer != null) {
                 try {
                     writer.close();
-                } catch (Exception we) {
-                    logger.log(Level.SEVERE, null, we);
+                } catch (IOException we) {
+                    LOG.log(Level.SEVERE, null, we);
                 }
             }
             return false;
@@ -102,25 +107,25 @@ public class XincoIndexer {
                         FSDirectory.open(new File(XincoDBManager.CONFIG.fileIndexPath)));
                 writer = new IndexWriter(
                         FSDirectory.open(new File(XincoDBManager.CONFIG.fileIndexPath)),
-                        new IndexWriterConfig(version,
-                        new StandardAnalyzer(version)));
+                        new IndexWriterConfig(VERSION,
+                                new StandardAnalyzer(VERSION)));
                 writer.deleteDocuments(new Term("id", "" + d.getId()));
                 reader.close();
                 writer.close();
-            } catch (Exception re) {
-                logger.log(Level.SEVERE, null, re);
+            } catch (IOException re) {
+                LOG.log(Level.SEVERE, null, re);
                 if (reader != null) {
                     try {
                         reader.close();
-                    } catch (Exception re2) {
-                        logger.log(Level.SEVERE, null, re2);
+                    } catch (IOException re2) {
+                        LOG.log(Level.SEVERE, null, re2);
                     }
                 }
                 if (writer != null) {
                     try {
                         writer.close();
-                    } catch (Exception re2) {
-                        logger.log(Level.SEVERE, null, re2);
+                    } catch (IOException re2) {
+                        LOG.log(Level.SEVERE, null, re2);
                     }
                 }
                 return false;
@@ -136,22 +141,22 @@ public class XincoIndexer {
             //optimize index
             writer = new IndexWriter(
                     FSDirectory.open(
-                    new File(XincoDBManager.CONFIG.fileIndexPath)),
-                    new IndexWriterConfig(version,
-                    new StandardAnalyzer(version)));
+                            new File(XincoDBManager.CONFIG.fileIndexPath)),
+                    new IndexWriterConfig(VERSION,
+                            new StandardAnalyzer(VERSION)));
             writer.close();
             result = true;
         } catch (FileNotFoundException e) {
-            logger.log(Level.INFO, "No index found at: {0}. Nothing to index.",
+            LOG.log(Level.INFO, "No index found at: {0}. Nothing to index.",
                     XincoDBManager.CONFIG.fileIndexPath);
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, null, e);
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, null, e);
         } finally {
             if (writer != null) {
                 try {
                     writer.close();
-                } catch (Exception we) {
-                    logger.log(Level.SEVERE, null, we);
+                } catch (IOException we) {
+                    LOG.log(Level.SEVERE, null, we);
                 }
             }
         }
@@ -161,21 +166,21 @@ public class XincoIndexer {
     public static synchronized ArrayList findXincoCoreData(String queryString,
             int l) {
         int i;
-        ArrayList<XincoCoreData> v = new ArrayList<XincoCoreData>();
+        ArrayList<XincoCoreData> v = new ArrayList<>();
         IndexSearcher searcher = null;
         IndexReader reader = null;
         try {
             reader = IndexReader.open(
                     FSDirectory.open(
-                    new File(XincoDBManager.CONFIG.fileIndexPath)));
+                            new File(XincoDBManager.CONFIG.fileIndexPath)));
             searcher = new IndexSearcher(reader);
-            Analyzer analyzer = new StandardAnalyzer(version);
+            Analyzer analyzer = new StandardAnalyzer(VERSION);
 
             //add language to query
             if (l != 0) {
                 queryString = queryString + " AND language:" + l;
             }
-            QueryParser parser = new QueryParser(version, "designation",
+            QueryParser parser = new QueryParser(VERSION, "designation",
                     analyzer);
 
             Query query = parser.parse(queryString);
@@ -189,9 +194,9 @@ public class XincoIndexer {
                 try {
                     Document doc = searcher.doc(hits[i].doc);
                     v.add(new XincoCoreDataServer(Integer.parseInt(doc.get("id"))));
-                } catch (Exception xcde) {
+                } catch (IOException | NumberFormatException xcde) {
                     // don't add non-existing data
-                    logger.log(Level.WARNING, null, xcde);
+                    LOG.log(Level.WARNING, null, xcde);
                 }
                 if (i >= XincoDBManager.CONFIG.getMaxSearchResult()) {
                     break;
@@ -199,20 +204,20 @@ public class XincoIndexer {
             }
             searcher.close();
 
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, null, e);
+        } catch (IOException | ParseException e) {
+            LOG.log(Level.SEVERE, null, e);
             if (reader != null) {
                 try {
                     reader.close();
-                } catch (Exception re2) {
-                    logger.log(Level.SEVERE, null, re2);
+                } catch (IOException re2) {
+                    LOG.log(Level.SEVERE, null, re2);
                 }
             }
             if (searcher != null) {
                 try {
                     searcher.close();
-                } catch (Exception se) {
-                    logger.log(Level.SEVERE, null, se);
+                } catch (IOException se) {
+                    LOG.log(Level.SEVERE, null, se);
                 }
             }
             return null;
