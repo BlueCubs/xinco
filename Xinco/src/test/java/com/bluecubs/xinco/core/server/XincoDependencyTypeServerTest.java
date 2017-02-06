@@ -1,8 +1,11 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import static com.bluecubs.xinco.core.server.XincoDependencyTypeServer.deleteFromDB;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import org.junit.Test;
 
 /**
@@ -24,9 +27,9 @@ public class XincoDependencyTypeServerTest extends AbstractXincoDataBaseTestCase
         try {
             XincoDependencyTypeServer instance = new XincoDependencyTypeServer(0, 1, "test");
             assertTrue(instance.write2DB() > 0);
-            assertEquals(XincoDependencyTypeServer.deleteFromDB(instance.getId()), 0);
+            assertEquals(deleteFromDB(instance.getId()), 0);
         } catch (XincoException ex) {
-            Logger.getLogger(XincoDependencyTypeServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoDependencyTypeServerTest.class.getName()).log(SEVERE, null, ex);
         }
     }
 }

@@ -1,23 +1,59 @@
 package com.bluecubs.xinco.core.server.vaadin;
 
 import com.bluecubs.xinco.core.OPCode;
+import static com.bluecubs.xinco.core.OPCode.CHECKIN;
+import static com.bluecubs.xinco.core.OPCode.CHECKOUT;
+import static com.bluecubs.xinco.core.OPCode.CHECKOUT_UNDONE;
+import static com.bluecubs.xinco.core.OPCode.COMMENT;
+import static com.bluecubs.xinco.core.OPCode.CREATION;
+import static com.bluecubs.xinco.core.OPCode.DATA_MOVE;
+import static com.bluecubs.xinco.core.OPCode.LOCK_COMMENT;
+import static com.bluecubs.xinco.core.OPCode.PUBLISH_COMMENT;
+import static com.bluecubs.xinco.core.OPCode.getOPCode;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import com.bluecubs.xinco.core.server.XincoCoreACEServer;
+import static com.bluecubs.xinco.core.server.XincoCoreACEServer.checkAccess;
 import com.bluecubs.xinco.core.server.XincoCoreDataHasDependencyServer;
+import static com.bluecubs.xinco.core.server.XincoCoreDataHasDependencyServer.getRenderings;
+import static com.bluecubs.xinco.core.server.XincoCoreDataHasDependencyServer.isRendering;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import static com.bluecubs.xinco.core.server.XincoCoreDataServer.getCurrentVersion;
+import static com.bluecubs.xinco.core.server.XincoCoreDataServer.getOwnerID;
+import static com.bluecubs.xinco.core.server.XincoCoreDataServer.removeFromDB;
 import com.bluecubs.xinco.core.server.XincoCoreDataTypeAttributeServer;
+import static com.bluecubs.xinco.core.server.XincoCoreDataTypeAttributeServer.deleteFromDB;
 import com.bluecubs.xinco.core.server.XincoCoreDataTypeServer;
+import static com.bluecubs.xinco.core.server.XincoCoreDataTypeServer.getXincoCoreDataType;
+import static com.bluecubs.xinco.core.server.XincoCoreDataTypeServer.getXincoCoreDataTypes;
 import com.bluecubs.xinco.core.server.XincoCoreGroupServer;
+import static com.bluecubs.xinco.core.server.XincoCoreGroupServer.getXincoCoreGroups;
 import com.bluecubs.xinco.core.server.XincoCoreLanguageServer;
+import static com.bluecubs.xinco.core.server.XincoCoreLanguageServer.deleteFromDB;
+import static com.bluecubs.xinco.core.server.XincoCoreLanguageServer.getXincoCoreLanguages;
+import static com.bluecubs.xinco.core.server.XincoCoreLanguageServer.isLanguageUsed;
 import com.bluecubs.xinco.core.server.XincoCoreLogServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
+import static com.bluecubs.xinco.core.server.XincoCoreUserServer.getXincoCoreUsers;
+import static com.bluecubs.xinco.core.server.XincoCoreUserServer.validCredentials;
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
+import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
+import static com.bluecubs.xinco.core.server.XincoDBManager.displayDBStatus;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getState;
+import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
+import static com.bluecubs.xinco.core.server.XincoDBManager.reload;
 import com.bluecubs.xinco.core.server.XincoDependencyTypeServer;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
 import com.bluecubs.xinco.core.server.db.DBState;
+import static com.bluecubs.xinco.core.server.db.DBState.VALID;
 import com.bluecubs.xinco.core.server.index.XincoIndexer;
+import static com.bluecubs.xinco.core.server.index.XincoIndexer.indexXincoCoreData;
+import static com.bluecubs.xinco.core.server.index.XincoIndexer.optimizeIndex;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserModifiedRecord;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaController;
@@ -37,6 +73,8 @@ import com.bluecubs.xinco.core.server.service.XincoCoreNode;
 import com.bluecubs.xinco.core.server.service.XincoCoreUser;
 import com.bluecubs.xinco.core.server.service.XincoVersion;
 import com.bluecubs.xinco.core.server.service.XincoWebService;
+import static com.bluecubs.xinco.core.server.vaadin.XincoMenuItemManager.addItem;
+import static com.bluecubs.xinco.core.server.vaadin.XincoMenuItemManager.updateMenuBar;
 import com.bluecubs.xinco.core.server.vaadin.custom.VersionSelector;
 import com.bluecubs.xinco.core.server.vaadin.setting.SettingAdminWindow;
 import com.bluecubs.xinco.core.server.vaadin.wizard.WizardStep;
@@ -47,6 +85,8 @@ import com.bluecubs.xinco.core.server.vaadin.wizard.event.WizardProgressListener
 import com.bluecubs.xinco.core.server.vaadin.wizard.event.WizardStepActivationEvent;
 import com.bluecubs.xinco.core.server.vaadin.wizard.event.WizardStepSetChangedEvent;
 import com.bluecubs.xinco.tools.Tool;
+import static com.bluecubs.xinco.tools.Tool.addDefaultAddAttributes;
+import static com.bluecubs.xinco.tools.Tool.getImageDim;
 import com.bluecubs.xinco.tools.XincoFileIconManager;
 import com.vaadin.Application;
 import com.vaadin.data.Container.Filterable;
@@ -64,6 +104,7 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.event.MouseEvents.ClickEvent;
+import static com.vaadin.event.MouseEvents.ClickEvent.BUTTON_LEFT;
 import com.vaadin.event.MouseEvents.ClickListener;
 import com.vaadin.event.Transferable;
 import com.vaadin.event.dd.DragAndDropEvent;
@@ -72,39 +113,120 @@ import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.event.dd.acceptcriteria.Not;
 import com.vaadin.event.dd.acceptcriteria.Or;
 import com.vaadin.terminal.*;
+import static com.vaadin.terminal.Sizeable.UNITS_INCH;
+import static com.vaadin.terminal.Sizeable.UNITS_PERCENTAGE;
+import static com.vaadin.terminal.Sizeable.UNITS_PIXELS;
 import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation;
+import static com.vaadin.terminal.gwt.client.ui.dd.VerticalDropLocation.MIDDLE;
 import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.*;
+import static com.vaadin.ui.AbstractSelect.ITEM_CAPTION_MODE_PROPERTY;
 import com.vaadin.ui.AbstractSelect.VerticalLocationIs;
+import static com.vaadin.ui.AbstractSelect.VerticalLocationIs.MIDDLE;
+import static com.vaadin.ui.Embedded.TYPE_IMAGE;
+import static com.vaadin.ui.Link.TARGET_BORDER_NONE;
 import com.vaadin.ui.Tree.ExpandEvent;
+import static com.vaadin.ui.Tree.TargetItemAllowsChildren.get;
 import com.vaadin.ui.Tree.TreeDragMode;
+import static com.vaadin.ui.Tree.TreeDragMode.NODE;
 import com.vaadin.ui.Tree.TreeTargetDetails;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Window.Notification;
+import static com.vaadin.ui.Window.Notification.TYPE_ERROR_MESSAGE;
+import static com.vaadin.ui.Window.Notification.TYPE_HUMANIZED_MESSAGE;
+import static com.vaadin.ui.Window.Notification.TYPE_TRAY_NOTIFICATION;
+import static com.vaadin.ui.Window.Notification.TYPE_WARNING_MESSAGE;
 import com.vaadin.ui.Window.ResizeEvent;
 import java.awt.*;
+import static java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment;
 import java.awt.image.BufferedImage;
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import java.io.*;
+import static java.lang.Integer.parseInt;
+import static java.lang.Integer.parseInt;
+import static java.lang.Integer.parseInt;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.System.currentTimeMillis;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.sql.Timestamp;
 import java.util.*;
+import static java.util.Arrays.asList;
+import static java.util.Calendar.DAY_OF_MONTH;
+import static java.util.Calendar.DST_OFFSET;
+import static java.util.Calendar.HOUR_OF_DAY;
+import static java.util.Calendar.MILLISECOND;
+import static java.util.Calendar.MINUTE;
+import static java.util.Calendar.MONTH;
+import static java.util.Calendar.SECOND;
+import static java.util.Calendar.YEAR;
+import static java.util.Calendar.ZONE_OFFSET;
+import static java.util.Collections.addAll;
+import static java.util.Locale.getDefault;
 import java.util.Map.Entry;
+import static java.util.ResourceBundle.getBundle;
+import static java.util.ResourceBundle.getBundle;
+import static java.util.ResourceBundle.getBundle;
+import static java.util.UUID.randomUUID;
 import java.util.logging.Level;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import javax.imageio.ImageIO;
+import static javax.imageio.ImageIO.write;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.Attribute.PersistentAttributeType;
+import static javax.persistence.metamodel.Attribute.PersistentAttributeType.BASIC;
 import javax.persistence.metamodel.EntityType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.Icon;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import static javax.xml.datatype.DatatypeFactory.newInstance;
 import javax.xml.datatype.XMLGregorianCalendar;
 import org.vaadin.easyuploads.MultiFileUpload;
 import org.vaadin.hene.expandingtextarea.ExpandingTextArea;
@@ -115,13 +237,12 @@ import org.vaadin.hene.expandingtextarea.ExpandingTextArea;
  */
 public class Xinco extends Application implements HttpServletRequestListener {
 
-    private static final Logger LOG = Logger.getLogger(Xinco.class.getName());
+    private static final Logger LOG = getLogger(Xinco.class.getName());
     private static final long serialVersionUID = 1L;
     private static final ThreadLocal<Xinco> threadLocal = new ThreadLocal<Xinco>();
     private XincoVersion xincoVersion = null;
     private ResourceBundle xerb
-            = ResourceBundle.getBundle(
-                    "com.bluecubs.xinco.messages.XincoMessages", Locale.getDefault());
+            = getBundle("com.bluecubs.xinco.messages.XincoMessages", getDefault());
     private XincoCoreUserServer loggedUser = null;
     private final XincoFileIconManager xfm = new XincoFileIconManager();
     //Table linking displayed item with it's id
@@ -152,7 +273,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     private HierarchicalContainer xincoTreeContainer;
     private com.vaadin.ui.Panel adminPanel;
     private Embedded icon;
-    private Locale locale = Locale.getDefault();
+    private Locale locale = getDefault();
     private com.vaadin.ui.Button userAdmin;
     private com.vaadin.ui.Button groupAdmin;
     private com.vaadin.ui.Button langAdmin;
@@ -183,7 +304,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         int w = icon.getIconWidth();
         int h = icon.getIconHeight();
         GraphicsEnvironment ge
-                = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                = getLocalGraphicsEnvironment();
         GraphicsDevice gd = ge.getDefaultScreenDevice();
         GraphicsConfiguration gc = gd.getDefaultConfiguration();
         BufferedImage image = gc.createCompatibleImage(w, h);
@@ -232,7 +353,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     @Override
     public void onRequestStart(HttpServletRequest request,
             HttpServletResponse response) {
-        Xinco.setInstance(this);
+        setInstance(this);
     }
 
     @Override
@@ -245,7 +366,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     public void init() {
         setInstance(this);
         try {
-            XincoDBManager.reload();
+            reload();
             //Switch to Xinco theme
             setTheme("xinco");
             com.vaadin.ui.Window window = new com.vaadin.ui.Window("Xinco");
@@ -266,41 +387,40 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             xincoVersion = new XincoVersion();
-            if (XincoDBManager.getState().equals(DBState.VALID)) {
+            if (getState().equals(VALID)) {
                 try {
-                    xincoVersion.setVersionHigh(XincoSettingServer.getSetting(
+                    xincoVersion.setVersionHigh(getSetting(
                             new XincoCoreUserServer(1),
                             "version.high").getIntValue());
-                    xincoVersion.setVersionMid(XincoSettingServer.getSetting(
+                    xincoVersion.setVersionMid(getSetting(
                             new XincoCoreUserServer(1),
                             "version.mid").getIntValue());
-                    xincoVersion.setVersionLow(XincoSettingServer.getSetting(
+                    xincoVersion.setVersionLow(getSetting(
                             new XincoCoreUserServer(1),
                             "version.low").getIntValue());
-                    xincoVersion.setVersionPostfix(
-                            XincoSettingServer.getSetting(
+                    xincoVersion.setVersionPostfix(getSetting(
                                     new XincoCoreUserServer(1),
                                     "version.postfix").getStringValue());
                 } catch (com.bluecubs.xinco.core.XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.log(SEVERE, null, ex);
                 }
-                version = XincoSettingServer.getSetting(
+                version = getSetting(
                         new XincoCoreUserServer(1),
                         "version.high").getIntValue() + "."
-                        + XincoSettingServer.getSetting(
+                        + getSetting(
                                 new XincoCoreUserServer(1),
                                 "version.mid").getIntValue() + "."
-                        + XincoSettingServer.getSetting(
+                        + getSetting(
                                 new XincoCoreUserServer(1),
                                 "version.low").getIntValue() + " "
-                        + XincoSettingServer.getSetting(
+                        + getSetting(
                                 new XincoCoreUserServer(1),
                                 "version.postfix").getStringValue();
                 icon = new Embedded("Xinco - "
                         + getInstance().getResource()
                                 .getString("general.version") + " "
                         + version, new ThemeResource("img/blueCubsSmall.gif"));
-                icon.setType(Embedded.TYPE_IMAGE);
+                icon.setType(TYPE_IMAGE);
                 login = new com.vaadin.ui.Button(
                         getInstance().getResource().getString("general.login"),
                         new com.vaadin.ui.Button.ClickListener() {
@@ -322,7 +442,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             showMainWindow();
                             refresh();
                         } catch (XincoException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                            LOG.log(SEVERE, null, ex);
                         }
                     }
                 });
@@ -336,7 +456,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         showUserAdminWindow(false);
                     }
                 });
-                if (XincoDBManager.CONFIG.isGuessLanguage()) {
+                if (CONFIG.isGuessLanguage()) {
                     // Use the locale from the request as default.
                     // Login uses this setting later.
                     setLocale(((WebApplicationContext) getContext())
@@ -357,14 +477,14 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     if (!parameters.isEmpty()) {
                         LOG.info("Parameters:");
                         for (Entry<String, String[]> e : parameters.entrySet()) {
-                            LOG.log(Level.FINE, "Name: {0}, Values:", e.getKey());
+                            LOG.log(FINE, "Name: {0}, Values:", e.getKey());
                             for (String val : e.getValue()) {
-                                LOG.log(Level.FINE, "{0}", val);
+                                LOG.log(FINE, "{0}", val);
                             }
                             if (e.getKey().equals("dataId")) {
                                 //A link to a specific data was requested.
                                 //Download the file.
-                                Integer dataId = Integer.valueOf(e.getValue()[0]);
+                                Integer dataId = valueOf(e.getValue()[0]);
                                 XincoCoreDataServer data;
                                 try {
                                     data = new XincoCoreDataServer(dataId);
@@ -379,22 +499,16 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                             }
                                             break;
                                         default:
-                                            getMainWindow().showNotification(
-                                                    getInstance().getResource().getString(
-                                                            "general.error") + " Not a file!",
-                                                    Notification.TYPE_ERROR_MESSAGE);
+                                            getMainWindow().showNotification(getInstance().getResource().getString(
+                                                            "general.error") + " Not a file!", TYPE_ERROR_MESSAGE);
                                     }
                                 } catch (XincoException xe) {
-                                    getMainWindow().showNotification(
-                                            getInstance().getResource().getString(
-                                                    "general.error") + xe,
-                                            Notification.TYPE_ERROR_MESSAGE);
+                                    getMainWindow().showNotification(getInstance().getResource().getString(
+                                                    "general.error") + xe, TYPE_ERROR_MESSAGE);
                                 }
                             } else if (e.getKey().equals("folderId")) {
                                 //TODO: Show the path on the tree
-                                getMainWindow().showNotification(
-                                        "We should search the folder here!",
-                                        Notification.TYPE_HUMANIZED_MESSAGE);
+                                getMainWindow().showNotification("We should search the folder here!", TYPE_HUMANIZED_MESSAGE);
                             }
                         }
                     } else {
@@ -403,13 +517,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
         } catch (XincoException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.log(SEVERE, null, ex);
             setMainWindow(new com.vaadin.ui.Window("Error"));
             getMainWindow().addComponent(new com.vaadin.ui.Label(
                     "Unable to start application, please contact your "
                     + "administrator!\n"
-                    + XincoDBManager.displayDBStatus()));
-            LOG.log(Level.SEVERE,
+                    + displayDBStatus()));
+            LOG.log(SEVERE,
                     "An uncaught exception occurred: ", ex);
         }
     }
@@ -422,7 +536,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     @Override
     public void setLocale(Locale locale) {
         this.locale = locale;
-        xerb = ResourceBundle.getBundle(
+        xerb = getBundle(
                 "com.bluecubs.xinco.messages.XincoMessages",
                 getInstance().getLocale());
         if (login != null) {
@@ -446,10 +560,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 @Override
                 public void uploadSucceeded(SucceededEvent event) {
                     if (upload != null) {
-                        getMainWindow().showNotification(
-                                getInstance().getResource().getString(
-                                        "datawizard.fileuploadsuccess"),
-                                Notification.TYPE_HUMANIZED_MESSAGE);
+                        getMainWindow().showNotification(getInstance().getResource().getString(
+                                        "datawizard.fileuploadsuccess"), TYPE_HUMANIZED_MESSAGE);
                     }
                 }
             };
@@ -471,10 +583,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
             @Override
             public boolean onAdvance() {
                 if (!um.isSuccess()) {
-                    getMainWindow().showNotification(
-                            getInstance().getResource()
-                                    .getString("message.missing.file"),
-                            Notification.TYPE_ERROR_MESSAGE);
+                    getMainWindow().showNotification(getInstance().getResource()
+                                    .getString("message.missing.file"), TYPE_ERROR_MESSAGE);
                 } else {
                     getXincoCoreData().setDesignation(getFileName());
                 }
@@ -548,10 +658,10 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                     locales[2]);
                             break;
                         default:
-                            loc = Locale.getDefault();
+                            loc = getDefault();
                     }
                 } catch (Exception e) {
-                    loc = Locale.getDefault();
+                    loc = getDefault();
                 }
                 setLocale(loc);
                 languages.setCaption(getInstance().getResource()
@@ -563,7 +673,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 .getString("general.language") + ":");
         languages.setValue(getLocale().getLanguage());
         com.vaadin.ui.Label title
-                = new com.vaadin.ui.Label(XincoSettingServer.getSetting(
+                = new com.vaadin.ui.Label(getSetting(
                         new XincoCoreUserServer(1),
                         "general.title").getStringValue());
         getMainWindow().addComponent(title);
@@ -583,8 +693,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         // Put two components in the container.
         splitPanel.setFirstComponent(getSideMenu());
         splitPanel.setSecondComponent(getXincoExplorer());
-        splitPanel.setHeight(700, Sizeable.UNITS_PIXELS);
-        splitPanel.setSplitPosition(20, Sizeable.UNITS_PERCENTAGE);
+        splitPanel.setHeight(700, UNITS_PIXELS);
+        splitPanel.setSplitPosition(20, UNITS_PERCENTAGE);
         addHeader();
         getMainWindow().addComponent(splitPanel);
     }
@@ -596,12 +706,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
         //Format if it has '_' underscore
         if (code.contains("_")) {
             String newCode = code.substring(code.lastIndexOf('_') + 1);
-            LOG.log(Level.FINE,
+            LOG.log(FINE,
                     "Converting code from: {0} to {1}!",
                     new Object[]{code, newCode});
             code = newCode;
         }
-        LOG.log(Level.FINE,
+        LOG.log(FINE,
                 "Requested icon for code: {0}", code);
         WebApplicationContext context = (WebApplicationContext) getContext();
         File iconsFolder = new File(context.getHttpSession().getServletContext()
@@ -614,11 +724,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 + ".png");
         FileResource resource = null;
         if (tempIcon.exists()) {
-            LOG.log(Level.FINE,
+            LOG.log(FINE,
                     "Found icon for code: {0}!", code);
             resource = new FileResource(tempIcon, Xinco.this);
         } else {
-            LOG.log(Level.FINE,
+            LOG.log(FINE,
                     "Unable to find icon for: {0}", code);
         }
         return resource;
@@ -643,12 +753,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 Image image = iconToImage(tempIcon);
                 BufferedImage buffered = new BufferedImage(
                         image.getWidth(null),
-                        image.getHeight(null),
-                        BufferedImage.TYPE_INT_RGB);
+                        image.getHeight(null), TYPE_INT_RGB);
                 Graphics2D g = buffered.createGraphics();
                 g.drawImage(image, 0, 0, null);
                 g.dispose();
-                ImageIO.write(buffered, "PNG", tempIconFile);
+                write(buffered, "PNG", tempIconFile);
             } else {
                 return null;
             }
@@ -681,8 +790,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
         getXincoTable().setSizeFull();
         xeSplitPanel.setFirstComponent(getXincoTree());
         xeSplitPanel.setSecondComponent(getXincoTable());
-        xeSplitPanel.setHeight(700, Sizeable.UNITS_PIXELS);
-        xeSplitPanel.setSplitPosition(100, Sizeable.UNITS_PERCENTAGE);
+        xeSplitPanel.setHeight(700, UNITS_PIXELS);
+        xeSplitPanel.setSplitPosition(100, UNITS_PERCENTAGE);
         //Hide details by default, user needs to log in for some features.
         getXincoTable().setVisible(false);
         panel.addComponent(menuBar);
@@ -691,7 +800,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         try {
             updateMenu();
         } catch (XincoException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.log(SEVERE, null, ex);
         }
         return panel;
     }
@@ -728,7 +837,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 xincoTree.addListener(new ItemClickListener() {
                     @Override
                     public void itemClick(ItemClickEvent event) {
-                        if (event.getButton() == ItemClickEvent.BUTTON_LEFT
+                        if (event.getButton() == BUTTON_LEFT
                                 && event.isDoubleClick()
                                 && xincoTree.getValue() != null
                                 && xincoTree.getValue().toString()
@@ -736,7 +845,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             try {
                                 downloadFile();
                             } catch (MalformedURLException | XincoException ex) {
-                                LOG.log(Level.SEVERE, null, ex);
+                                LOG.log(SEVERE, null, ex);
                             }
                         }
                         if (xincoTree.getValue() != null) {
@@ -746,11 +855,10 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 });
                 xincoTree.setImmediate(true);
                 xincoTree.setItemCaptionPropertyId("caption");
-                xincoTree.setItemCaptionMode(
-                        AbstractSelect.ITEM_CAPTION_MODE_PROPERTY);
+                xincoTree.setItemCaptionMode(ITEM_CAPTION_MODE_PROPERTY);
                 //Dra and drop support
                 //Set the tree in drag source mode
-                xincoTree.setDragMode(TreeDragMode.NODE);
+                xincoTree.setDragMode(NODE);
                 xincoTree.setDropHandler(new DropHandler() {
                     @Override
                     public void drop(DragAndDropEvent event) {
@@ -774,7 +882,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         Object targetItemId = target.getItemIdOver();
 
                         XincoCoreNodeServer targetN
-                                = new XincoCoreNodeServer(Integer.valueOf(
+                                = new XincoCoreNodeServer(valueOf(
                                         targetItemId.toString().substring(
                                                 targetItemId.toString().indexOf('-') + 1)));
 
@@ -782,10 +890,10 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         VerticalDropLocation location = target.getDropLocation();
 
                         // Drop right on an item -> make it a child
-                        if (XincoCoreACEServer.checkAccess(loggedUser,
+                        if (checkAccess(loggedUser,
                                 (ArrayList) (targetN).getXincoCoreAcl())
                                 .isWritePermission()
-                                && location == VerticalDropLocation.MIDDLE) {
+                                && location == MIDDLE) {
                             try {
                                 //Now update things in the database
                                 if (sourceItemId.toString().startsWith("data")
@@ -793,19 +901,19 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                                 .startsWith("node")) {
                                     XincoCoreDataServer source
                                             = new XincoCoreDataServer(
-                                                    Integer.valueOf(sourceItemId
+                                                    valueOf(sourceItemId
                                                             .toString().substring(
                                                                     sourceItemId.toString().indexOf('-')
                                                                     + 1)));
                                     // Get a reason for the move:
                                     source.setXincoCoreNodeId(targetN.getId());
-                                    showCommentDataDialog(source, OPCode.DATA_MOVE);
+                                    showCommentDataDialog(source, DATA_MOVE);
                                 }
                                 if (sourceItemId.toString().startsWith("node")
                                         && targetItemId.toString().startsWith("node")) {
                                     XincoCoreNodeServer source
                                             = new XincoCoreNodeServer(
-                                                    Integer.valueOf(sourceItemId
+                                                    valueOf(sourceItemId
                                                             .toString().substring(
                                                                     sourceItemId.toString().indexOf('-')
                                                                     + 1)));
@@ -816,10 +924,10 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 try {
                                     refresh();
                                 } catch (XincoException ex) {
-                                    LOG.log(Level.SEVERE, null, ex);
+                                    LOG.log(SEVERE, null, ex);
                                 }
                             } catch (XincoException ex) {
-                                LOG.log(Level.SEVERE, null, ex);
+                                LOG.log(SEVERE, null, ex);
                             }
                         }
                     }
@@ -828,12 +936,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     public AcceptCriterion getAcceptCriterion() {
                         //Accepts drops only on nodes that allow children,
                         //but between all nodes
-                        return new Or(Tree.TargetItemAllowsChildren.get(),
-                                new Not(VerticalLocationIs.MIDDLE));
+                        return new Or(get(),
+                                new Not(MIDDLE));
                     }
                 });
             } catch (XincoException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.log(SEVERE, null, ex);
             }
         }
         return xincoTree;
@@ -860,7 +968,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             //Disable sorting
             xincoTable.setSortDisabled(true);
             xincoTable.setPageLength(20);
-            xincoTable.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+            xincoTable.setWidth(100, UNITS_PERCENTAGE);
             xincoTable.addStyleName("striped");
         }
         return xincoTable;
@@ -873,12 +981,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
     private void addChildrenNodes(String parent) throws XincoException {
         XincoCoreNodeServer xcns
-                = new XincoCoreNodeServer(Integer.valueOf(parent
+                = new XincoCoreNodeServer(valueOf(parent
                         .substring(parent.indexOf('-') + 1)));
         for (XincoCoreNode subnode : xcns.getXincoCoreNodes()) {
-            LOG.log(Level.FINE, "Checking permissions for: {0}",
+            LOG.log(FINE, "Checking permissions for: {0}",
                     subnode.getDesignation());
-            XincoCoreACE access = XincoCoreACEServer.checkAccess(loggedUser,
+            XincoCoreACE access = checkAccess(loggedUser,
                     subnode.getXincoCoreAcl());
             if (access.isAdminPermission() || access.isReadPermission()) {
                 String id = "node-" + subnode.getId();
@@ -893,16 +1001,16 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     private void addChildrenData(String parent) throws XincoException {
-        XincoCoreNodeServer xcns = new XincoCoreNodeServer(Integer.valueOf(
+        XincoCoreNodeServer xcns = new XincoCoreNodeServer(valueOf(
                 parent.substring(parent.indexOf('-') + 1)));
         for (XincoCoreData temp : xcns.getXincoCoreData()) {
-            LOG.log(Level.FINE, "Checking permissions for: {0}",
+            LOG.log(FINE, "Checking permissions for: {0}",
                     temp.getDesignation());
-            XincoCoreACE access = XincoCoreACEServer.checkAccess(loggedUser,
+            XincoCoreACE access = checkAccess(loggedUser,
                     temp.getXincoCoreAcl());
             if (access.isAdminPermission() || access.isReadPermission()) {
                 //Only show files that are not renderings
-                if (!XincoCoreDataHasDependencyServer.isRendering(temp.getId())) {
+                if (!isRendering(temp.getId())) {
                     //Add childen data
                     String id = "data-" + temp.getId();
                     Item item = xincoTreeContainer.addItem(id);
@@ -948,7 +1056,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 item.getItemProperty("icon").setValue(icon1);
                             }
                         } catch (IOException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                            LOG.log(SEVERE, null, ex);
                         }
                     }
                 }
@@ -957,7 +1065,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     protected void updateMenu() throws XincoException {
-        XincoMenuItemManager.updateMenuBar(menuBar);
+        updateMenuBar(menuBar);
         //Hide it if empty
         menuBar.setVisible(!menuBar.getItems().isEmpty());
         //Update the side menu
@@ -973,12 +1081,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
             final Upload upload = new Upload(getInstance().getResource()
                     .getString("general.file.select"), um);
             XincoCoreDataServer temp = new XincoCoreDataServer(
-                    Integer.valueOf(xincoTree.getValue().toString().substring(
+                    valueOf(xincoTree.getValue().toString().substring(
                             xincoTree.getValue().toString().indexOf('-') + 1)));
             //Check in file
-            newlog.setOpCode(OPCode.CHECKIN.ordinal() + 1);
-            newlog.setOpDescription(getInstance().getResource().getString(
-                    OPCode.getOPCode(newlog.getOpCode()).getName()));
+            newlog.setOpCode(CHECKIN.ordinal() + 1);
+            newlog.setOpDescription(getInstance().getResource().getString(getOPCode(newlog.getOpCode()).getName()));
             newlog.setXincoCoreUserId(loggedUser.getId());
             newlog.setXincoCoreDataId(temp.getId());
             newlog.setVersion(((XincoCoreLog) temp.getXincoCoreLogs().get(
@@ -1004,10 +1111,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 public void uploadSucceeded(SucceededEvent event) {
                     if (upload != null) {
                         upload.setEnabled(false);
-                        getMainWindow().showNotification(
-                                getInstance().getResource().getString(
-                                        "datawizard.fileuploadsuccess"),
-                                Notification.TYPE_HUMANIZED_MESSAGE);
+                        getMainWindow().showNotification(getInstance().getResource().getString(
+                                        "datawizard.fileuploadsuccess"), TYPE_HUMANIZED_MESSAGE);
                     }
                 }
             };
@@ -1023,13 +1128,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     try {
                         XincoCoreDataServer temp
                                 = new XincoCoreDataServer(
-                                        Integer.valueOf(xincoTree.getValue().toString()
+                                        valueOf(xincoTree.getValue().toString()
                                                 .substring(xincoTree.getValue().toString()
                                                         .indexOf('-') + 1)));
                         buildLogDialog(temp, form, versionSelector);
                         return form;
                     } catch (XincoException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                         return null;
                     }
                 }
@@ -1063,9 +1168,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 @Override
                 public boolean onAdvance() {
                     if (!um.isSuccess()) {
-                        getMainWindow().showNotification(
-                                getInstance().getResource().getString("message.missing.file"),
-                                Notification.TYPE_ERROR_MESSAGE);
+                        getMainWindow().showNotification(getInstance().getResource().getString("message.missing.file"), TYPE_ERROR_MESSAGE);
                     }
                     return um.isSuccess();
                 }
@@ -1096,16 +1199,14 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 public void wizardCompleted(WizardCompletedEvent event) {
                     try {
                         XincoCoreDataServer temp = new XincoCoreDataServer(
-                                Integer.valueOf(xincoTree.getValue()
+                                valueOf(xincoTree.getValue()
                                         .toString().substring(xincoTree.getValue()
                                                 .toString().indexOf('-') + 1)));
                         //Check in file
                         if (getService().doXincoCoreDataCheckin(temp,
                                 loggedUser) == null) {
-                            getMainWindow().showNotification(
-                                    getInstance().getResource()
-                                            .getString("datawizard.unabletoloadfile"),
-                                    Notification.TYPE_ERROR_MESSAGE);
+                            getMainWindow().showNotification(getInstance().getResource()
+                                            .getString("datawizard.unabletoloadfile"), TYPE_ERROR_MESSAGE);
                         }
                         try {
                             data = new XincoCoreDataServer(temp.getId());
@@ -1122,10 +1223,10 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             log.write2DB();
                             refresh();
                         } catch (XincoException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                            LOG.log(SEVERE, null, ex);
                         }
                     } catch (XincoException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                     }
                     getMainWindow().removeWindow(wizardWindow);
                 }
@@ -1136,19 +1237,19 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             wizardWindow.setModal(true);
-            wizardWindow.setWidth(40, Sizeable.UNITS_PERCENTAGE);
+            wizardWindow.setWidth(40, UNITS_PERCENTAGE);
             // add the wizard to a layout
             getMainWindow().addWindow(wizardWindow);
         } catch (XincoException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.log(SEVERE, null, ex);
             try {
                 XincoCoreLogServer log
                         = new XincoCoreLogServer(newlog.getId());
                 new XincoCoreLogJpaController(
-                        XincoDBManager.getEntityManagerFactory())
+                        getEntityManagerFactory())
                         .destroy(log.getId());
             } catch (NonexistentEntityException | XincoException ex1) {
-                LOG.log(Level.SEVERE, null, ex1);
+                LOG.log(SEVERE, null, ex1);
             }
         }
     }
@@ -1174,7 +1275,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         form.addField("reason", new com.vaadin.ui.TextArea());
         OPCode code;
         if (opcode == null) {
-            code = OPCode.getOPCode(
+            code = getOPCode(
                     ((XincoCoreLog) temp.getXincoCoreLogs()
                             .get(log_index)).getOpCode());
         } else {
@@ -1184,7 +1285,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             case COMMENT:
                 versionSelector.increaseLow();
             case CHECKIN:
-                versionSelector.setMinorEnabled(code == OPCode.CHECKIN);
+                versionSelector.setMinorEnabled(code == CHECKIN);
                 versionSelector.setVersionEnabled(false);
             case MODIFICATION:
             case LOCK_COMMENT:
@@ -1200,7 +1301,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         versionSelector.setCaption(getInstance().getResource()
                 .getString("general.version"));
         versionSelector.setVersion(versionSelector.getVersion());
-        versionSelector.setEnabled(code != OPCode.DATA_MOVE);
+        versionSelector.setEnabled(code != DATA_MOVE);
         form.getField("reason").setRequired(form.getField("reason").isEnabled());
         form.getField("reason").setRequiredError(getInstance().getResource()
                 .getString("message.warning.reason"));
@@ -1213,14 +1314,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
             try {
                 XincoCoreDataServer temp
                         = new XincoCoreDataServer(
-                                Integer.valueOf(xincoTree.getValue().toString()
+                                valueOf(xincoTree.getValue().toString()
                                         .substring(xincoTree.getValue().toString().indexOf('-')
                                                 + 1)));
                 //Undo check out
                 XincoCoreLog newlog = new XincoCoreLog();
-                newlog.setOpCode(OPCode.CHECKOUT_UNDONE.ordinal() + 1);
-                newlog.setOpDescription(getInstance().getResource().getString(
-                        OPCode.getOPCode(newlog.getOpCode()).getName()));
+                newlog.setOpCode(CHECKOUT_UNDONE.ordinal() + 1);
+                newlog.setOpDescription(getInstance().getResource().getString(getOPCode(newlog.getOpCode()).getName()));
                 newlog.setXincoCoreUserId(loggedUser.getId());
                 newlog.setXincoCoreDataId(temp.getId());
                 newlog.setVersion(((XincoCoreLog) temp.getXincoCoreLogs().get(
@@ -1236,7 +1336,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 getService().undoXincoCoreDataCheckout(temp, loggedUser);
                 refresh();
             } catch (XincoException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.log(SEVERE, null, ex);
             }
         }
     }
@@ -1247,7 +1347,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     .startsWith("data")) {
                 XincoCoreDataServer temp
                         = new XincoCoreDataServer(
-                                Integer.valueOf(xincoTree.getValue().toString()
+                                valueOf(xincoTree.getValue().toString()
                                         .substring(xincoTree.getValue().toString().indexOf('-')
                                                 + 1)));
                 //Only makes sense for data
@@ -1255,9 +1355,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     //Set as checked out
                     try {
                         XincoCoreLog newlog = new XincoCoreLog();
-                        newlog.setOpCode(OPCode.CHECKOUT.ordinal() + 1);
+                        newlog.setOpCode(CHECKOUT.ordinal() + 1);
                         newlog.setOpDescription(getInstance().getResource()
-                                .getString(OPCode.getOPCode(newlog.getOpCode())
+                                .getString(getOPCode(newlog.getOpCode())
                                         .getName()));
                         newlog.setXincoCoreUserId(loggedUser.getId());
                         newlog.setXincoCoreDataId(temp.getId());
@@ -1279,21 +1379,19 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             xincoTree.setValue("node-1");
                             refresh();
                         } else {
-                            LOG.log(Level.SEVERE,
+                            LOG.log(SEVERE,
                                     "Unable to check out file: {0} with user: {1}",
                                     new Object[]{temp.getDesignation(), loggedUser});
-                            getMainWindow().showNotification(
-                                    getInstance().getResource().getString(
-                                            "general.error"),
-                                    Notification.TYPE_WARNING_MESSAGE);
+                            getMainWindow().showNotification(getInstance().getResource().getString(
+                                            "general.error"), TYPE_WARNING_MESSAGE);
                         }
                     } catch (MalformedURLException | XincoException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                     }
                 }
             }
         } catch (XincoException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.log(SEVERE, null, ex);
         }
     }
 
@@ -1331,7 +1429,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         XincoCoreData temp = xdata;
         //Check for available renderings
         java.util.List<com.bluecubs.xinco.core.server.persistence.XincoCoreData> renderings
-                = XincoCoreDataHasDependencyServer.getRenderings(temp.getId());
+                = getRenderings(temp.getId());
         if (useRendering && !renderings.isEmpty()) {
             for (com.bluecubs.xinco.core.server.persistence.XincoCoreData rendering
                     : renderings) {
@@ -1355,7 +1453,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 //Create a temp file to hide the transaction
                 temp = new File(file.getParentFile().getAbsolutePath()
                         + System.getProperty("file.separator")
-                        + UUID.randomUUID().toString());
+                        + randomUUID().toString());
                 temp.mkdirs();
                 path_to_file = temp.getAbsolutePath()
                         + System.getProperty("file.separator") + fileName;
@@ -1399,47 +1497,37 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 ((XincoAddAttribute) getXincoCoreData().getXincoAddAttributes()
                         .get(3)).setAttribUnsignedint(1);
             } catch (Exception fe) {
-                LOG.log(Level.SEVERE, null, fe);
-                getMainWindow().showNotification(
-                        getInstance().getResource().getString(
-                                "datawizard.unabletoloadfile"),
-                        Notification.TYPE_ERROR_MESSAGE);
+                LOG.log(SEVERE, null, fe);
+                getMainWindow().showNotification(getInstance().getResource().getString(
+                                "datawizard.unabletoloadfile"), TYPE_ERROR_MESSAGE);
             }
             if (cin != null) {
                 // save data to server
                 data = getService().setXincoCoreData(getXincoCoreData(),
                         loggedUser);
                 if (getXincoCoreData() == null) {
-                    getMainWindow().showNotification(
-                            getInstance().getResource().getString(
-                                    "datawizard.unabletosavedatatoserver"),
-                            Notification.TYPE_ERROR_MESSAGE);
+                    getMainWindow().showNotification(getInstance().getResource().getString(
+                                    "datawizard.unabletosavedatatoserver"), TYPE_ERROR_MESSAGE);
                 }
                 // upload file
                 if (getService().uploadXincoCoreData(getXincoCoreData(),
                         byteArray, loggedUser) != totalLen) {
                     cin.close();
                     removeDirectory(temp);
-                    getMainWindow().showNotification(
-                            getInstance().getResource().getString(
-                                    "datawizard.fileuploadfailed"),
-                            Notification.TYPE_ERROR_MESSAGE);
+                    getMainWindow().showNotification(getInstance().getResource().getString(
+                                    "datawizard.fileuploadfailed"), TYPE_ERROR_MESSAGE);
                 }
                 cin.close();
                 removeDirectory(temp);
             }
         } catch (MalformedURLException ex) {
-            LOG.log(Level.SEVERE, null, ex);
-            getMainWindow().showNotification(
-                    getInstance().getResource().getString(
-                            "datawizard.fileuploadfailed"),
-                    Notification.TYPE_ERROR_MESSAGE);
+            LOG.log(SEVERE, null, ex);
+            getMainWindow().showNotification(getInstance().getResource().getString(
+                            "datawizard.fileuploadfailed"), TYPE_ERROR_MESSAGE);
         } catch (IOException ex) {
-            LOG.log(Level.SEVERE, null, ex);
-            getMainWindow().showNotification(
-                    getInstance().getResource().getString(
-                            "datawizard.fileuploadfailed"),
-                    Notification.TYPE_ERROR_MESSAGE);
+            LOG.log(SEVERE, null, ex);
+            getMainWindow().showNotification(getInstance().getResource().getString(
+                            "datawizard.fileuploadfailed"), TYPE_ERROR_MESSAGE);
         }
     }
 
@@ -1477,8 +1565,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             form.setCaption(getInstance().getResource().getString(
                     "general.data.type.rendering"));
             final ArrayList<com.bluecubs.xinco.core.server.persistence.XincoCoreData> renderings
-                    = (ArrayList<com.bluecubs.xinco.core.server.persistence.XincoCoreData>) XincoCoreDataHasDependencyServer.getRenderings(
-                            Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                    = (ArrayList<com.bluecubs.xinco.core.server.persistence.XincoCoreData>) getRenderings(valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
             final Table table = new Table();
             table.addStyleName("striped");
             table.addContainerProperty(
@@ -1494,7 +1581,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             for (com.bluecubs.xinco.core.server.persistence.XincoCoreData xcd : renderings) {
                 XincoCoreDataServer xcds = new XincoCoreDataServer(xcd.getId());
                 String name = xcds.getXincoAddAttributes().get(0).getAttribVarchar();
-                XincoVersion xVersion = XincoCoreDataServer.getCurrentVersion(xcds.getId());
+                XincoVersion xVersion = getCurrentVersion(xcds.getId());
                 table.addItem(new Object[]{new com.vaadin.ui.Label(xcds.getDesignation()),
                     new com.vaadin.ui.Label(xVersion.getVersionHigh()
                     + "." + xVersion.getVersionMid()
@@ -1521,14 +1608,14 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 @Override
                 public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                     try {
-                        final XincoCoreDataServer parent = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                        final XincoCoreDataServer parent = new XincoCoreDataServer(valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
                         //initialize the data object
                         data = new XincoCoreData();
                         getXincoCoreData().setXincoCoreDataType(new XincoCoreDataTypeServer(parent.getXincoCoreDataType().getId()));
                         getXincoCoreData().setStatusNumber(parent.getStatusNumber());
                         getXincoCoreData().setXincoCoreLanguage(parent.getXincoCoreLanguage());
                         getXincoCoreData().setXincoCoreNodeId(parent.getXincoCoreNodeId());
-                        Tool.addDefaultAddAttributes(getXincoCoreData());
+                        addDefaultAddAttributes(getXincoCoreData());
                         commit.setEnabled(false);
                         cancel.setEnabled(false);
                         XincoWizard wizard = new XincoWizard(getLocale());
@@ -1556,7 +1643,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             public void wizardCompleted(WizardCompletedEvent event) {
                                 try {
                                     //The data is in the data variable, now link to this data as rendering
-                                    XincoCoreDataJpaController controller = new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory());
+                                    XincoCoreDataJpaController controller = new XincoCoreDataJpaController(getEntityManagerFactory());
                                     XincoCoreDataHasDependencyServer dep = new XincoCoreDataHasDependencyServer(
                                             controller.findXincoCoreData(parent.getId()),
                                             controller.findXincoCoreData(getXincoCoreData().getId()),
@@ -1564,14 +1651,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                     dep.write2DB();
                                 } catch (XincoException ex) {
                                     getMainWindow().showNotification(getInstance().getResource().getString("general.error"),
-                                            getInstance().getResource().getString("message.error.association.exists"),
-                                            Notification.TYPE_ERROR_MESSAGE);
+                                            getInstance().getResource().getString("message.error.association.exists"), TYPE_ERROR_MESSAGE);
                                 }
                                 getMainWindow().removeWindow(addRenderingWindow);
                                 try {
                                     showRenderingDialog();
                                 } catch (XincoException ex) {
-                                    LOG.log(Level.SEVERE, null, ex);
+                                    LOG.log(SEVERE, null, ex);
                                 }
                             }
 
@@ -1583,13 +1669,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         getMainWindow().addWindow(addRenderingWindow);
                         addRenderingWindow.center();
                         addRenderingWindow.setModal(true);
-                        addRenderingWindow.setWidth(35, Sizeable.UNITS_PERCENTAGE);
+                        addRenderingWindow.setWidth(35, UNITS_PERCENTAGE);
                     } catch (XincoException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                     }
                 }
             });
-            table.setWidth(100, Sizeable.UNITS_INCH);
+            table.setWidth(100, UNITS_INCH);
             renderWindow.addComponent(form);
             form.getFooter().setSizeUndefined();
             form.getFooter().addComponent(commit);
@@ -1597,23 +1683,23 @@ public class Xinco extends Application implements HttpServletRequestListener {
             form.setSizeFull();
             renderWindow.center();
             renderWindow.setModal(true);
-            renderWindow.setWidth(50, Sizeable.UNITS_PERCENTAGE);
+            renderWindow.setWidth(50, UNITS_PERCENTAGE);
             getMainWindow().addWindow(renderWindow);
         }
     }
 
     private void lockData() throws XincoException, MalformedURLException {
-        XincoCoreDataServer xdata = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+        XincoCoreDataServer xdata = new XincoCoreDataServer(valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
         xdata.setStatusNumber(2);
-        addLog(xdata, OPCode.LOCK_COMMENT);
+        addLog(xdata, LOCK_COMMENT);
         xdata.write2DB();
         refresh();
     }
 
     private void publishData() throws XincoException, MalformedURLException {
-        XincoCoreDataServer xdata = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+        XincoCoreDataServer xdata = new XincoCoreDataServer(valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
         xdata.setStatusNumber(5);
-        addLog(xdata, OPCode.PUBLISH_COMMENT);
+        addLog(xdata, PUBLISH_COMMENT);
         xdata.write2DB();
         refresh();
     }
@@ -1665,7 +1751,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         com.vaadin.ui.Label name;
         com.vaadin.ui.Label type;
         //Add Groups
-        for (Iterator it = XincoCoreGroupServer.getXincoCoreGroups().iterator(); it.hasNext();) {
+        for (Iterator it = getXincoCoreGroups().iterator(); it.hasNext();) {
             XincoCoreGroupServer group = (XincoCoreGroupServer) it.next();
             String itemId = getInstance().getResource().getString("general.group") + "-" + group.getId();
             String designation = group.getDesignation();
@@ -1717,13 +1803,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
             if (xincoTree.getValue() != null && xincoTree.getValue().toString().startsWith("node")) {
                 try {
                     XincoCoreNodeServer tempNode
-                            = new XincoCoreNodeServer(Integer.valueOf(xincoTree.getValue().toString()
+                            = new XincoCoreNodeServer(valueOf(xincoTree.getValue().toString()
                                     .substring(xincoTree.getValue().toString().indexOf('-') + 1)));
                     try {
                         acl = new XincoCoreACEServer(0, 0, group.getId(),
                                 tempNode.getId(), 0, false, false, false, false);
                     } catch (XincoException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                     }
                     for (Iterator<Object> it2 = tempNode.getXincoCoreAcl().iterator(); it2.hasNext();) {
                         XincoCoreACEServer temp = (XincoCoreACEServer) it2.next();
@@ -1737,15 +1823,15 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         }
                     }
                 } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.log(SEVERE, null, ex);
                 }
             } else if (xincoTree.getValue() != null && xincoTree.getValue().toString().startsWith("data")) {
                 try {
-                    XincoCoreDataServer tempData = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                    XincoCoreDataServer tempData = new XincoCoreDataServer(valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
                     try {
                         acl = new XincoCoreACEServer(0, 0, 0, 0, tempData.getId(), false, false, false, false);
                     } catch (XincoException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                     }
                     for (Iterator<Object> it2 = tempData.getXincoCoreAcl().iterator(); it2.hasNext();) {
                         XincoCoreACEServer temp = (XincoCoreACEServer) it2.next();
@@ -1759,10 +1845,10 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         }
                     }
                 } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.log(SEVERE, null, ex);
                 }
             }
-            Collections.addAll(preselected, value);
+            addAll(preselected, value);
             aceList.put(itemId, acl);
             // Create the table row.
             admin.setData(itemId);
@@ -1773,7 +1859,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     itemId);
             acls.addItem(value);
         }
-        for (XincoCoreUserServer user : XincoCoreUserServer.getXincoCoreUsers()) {
+        for (XincoCoreUserServer user : getXincoCoreUsers()) {
             String itemId = getInstance().getResource().getString("general.user") + "-" + user.getId();
             String userLabel = user.getFirstName() + " "
                     + user.getLastName() + " (" + user.getUsername() + ")";
@@ -1823,11 +1909,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
             if (xincoTree.getValue() != null && xincoTree.getValue().toString().startsWith("node")) {
                 try {
                     XincoCoreNodeServer tempNode
-                            = new XincoCoreNodeServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                            = new XincoCoreNodeServer(valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
                     try {
                         acl = new XincoCoreACEServer(0, loggedUser.getId(), 0, tempNode.getId(), 0, false, false, false, false);
                     } catch (XincoException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                     }
                     for (Iterator<Object> it2 = tempNode.getXincoCoreAcl().iterator(); it2.hasNext();) {
                         XincoCoreACEServer temp = (XincoCoreACEServer) it2.next();
@@ -1841,15 +1927,15 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         }
                     }
                 } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.log(SEVERE, null, ex);
                 }
             } else if (xincoTree.getValue() != null && xincoTree.getValue().toString().startsWith("data")) {
                 try {
-                    XincoCoreDataServer tempData = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+                    XincoCoreDataServer tempData = new XincoCoreDataServer(valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
                     try {
                         acl = new XincoCoreACEServer(0, 0, loggedUser.getId(), 0, tempData.getId(), false, false, false, false);
                     } catch (XincoException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                     }
                     for (Iterator<Object> it2 = tempData.getXincoCoreAcl().iterator(); it2.hasNext();) {
                         XincoCoreACEServer temp = (XincoCoreACEServer) it2.next();
@@ -1863,10 +1949,10 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         }
                     }
                 } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.log(SEVERE, null, ex);
                 }
             }
-            Collections.addAll(preselected, userLabel);
+            addAll(preselected, userLabel);
             admin.setData(itemId);
             read.setData(itemId);
             write.setData(itemId);
@@ -1891,7 +1977,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 try {
                     updateMenu();
                 } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.log(SEVERE, null, ex);
                 }
                 getMainWindow().removeWindow(aclWindow);
             }
@@ -1906,19 +1992,17 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     XincoCoreACEServer value = e.getValue();
                     int ownerID = -1;
                     if (getXincoTree().getValue().toString().startsWith("data")) {
-                        ownerID = XincoCoreDataServer.getOwnerID(new XincoCoreDataServer(data.getId()));
+                        ownerID = getOwnerID(new XincoCoreDataServer(data.getId()));
                     }
-                    Integer thisOwner = Integer.valueOf(e.getKey().substring(e.getKey().lastIndexOf("-") + 1));
+                    Integer thisOwner = valueOf(e.getKey().substring(e.getKey().lastIndexOf("-") + 1));
                     //Owner cannot be removed
                     if (ownerID != -1 && e.getKey().startsWith("User-") && thisOwner == ownerID
                             && (!e.getValue().isReadPermission()
                             || !e.getValue().isAdminPermission()
                             || !e.getValue().isExecutePermission()
                             || !e.getValue().isWritePermission())) {
-                        getMainWindow().showNotification(
-                                getInstance().getResource().getString("window.acl.removefailed"),
-                                getInstance().getResource().getString("window.acl.cannotremoveowner"),
-                                Notification.TYPE_WARNING_MESSAGE);
+                        getMainWindow().showNotification(getInstance().getResource().getString("window.acl.removefailed"),
+                                getInstance().getResource().getString("window.acl.cannotremoveowner"), TYPE_WARNING_MESSAGE);
                         skip = true;
                     }
                     if (!skip) {
@@ -1935,7 +2019,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                         false, false,
                                         false, false);
                             } catch (XincoException ex1) {
-                                LOG.log(Level.SEVERE, null, ex1);
+                                LOG.log(SEVERE, null, ex1);
                             }
                         }
                         boolean modified = false;
@@ -1952,10 +2036,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             LOG.info("ACL change detected!");
                         }
                         if (stored != null && stored.getXincoCoreUserId() > 0) {
-                            getMainWindow().showNotification(
-                                    getInstance().getResource().getString("general.warning"),
-                                    getInstance().getResource().getString("error.noadminpermission"),
-                                    Notification.TYPE_WARNING_MESSAGE);
+                            getMainWindow().showNotification(getInstance().getResource().getString("general.warning"),
+                                    getInstance().getResource().getString("error.noadminpermission"), TYPE_WARNING_MESSAGE);
                             return;
                         }
                         try {
@@ -1967,7 +2049,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 e.getValue().write2DB();
                             }
                         } catch (XincoException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                            LOG.log(SEVERE, null, ex);
                         }
                     }
                 }
@@ -1981,7 +2063,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         aclWindow.addComponent(form);
         aclWindow.center();
         aclWindow.setModal(true);
-        aclWindow.setWidth(80, Sizeable.UNITS_PERCENTAGE);
+        aclWindow.setWidth(80, UNITS_PERCENTAGE);
         getMainWindow().addWindow(aclWindow);
     }
 
@@ -2017,7 +2099,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     xincoTree.setValue("node-1");
                     getMainWindow().removeWindow(loginWindow);
                 } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.log(SEVERE, null, ex);
                 }
                 getMainWindow().removeWindow(loginWindow);
             }
@@ -2030,30 +2112,27 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 form.getField("password").setEnabled(false);
                 commit.setEnabled(false);
                 cancel.setEnabled(false);
-                if (!XincoCoreUserServer.validCredentials(
+                if (!validCredentials(
                         ((com.vaadin.ui.TextField) form.getField("username")).getValue().toString(),
                         ((PasswordField) form.getField("password")).getValue().toString(),
                         true)) {
-                    getMainWindow().showNotification(
-                            getInstance().getResource().getString("menu.connection.error.user"),
-                            Notification.TYPE_WARNING_MESSAGE);
+                    getMainWindow().showNotification(getInstance().getResource().getString("menu.connection.error.user"), TYPE_WARNING_MESSAGE);
                     String username = ((com.vaadin.ui.TextField) form.getField("username")).getValue().toString();
                     //Wrong password or username
-                    java.util.List result = XincoDBManager.createdQuery(
+                    java.util.List result = createdQuery(
                             "SELECT x FROM XincoCoreUser x WHERE x.username='"
                             + username + "' AND x.statusNumber <> 2");
                     //Check if the username is correct if not just throw the wrong login message
                     if (result.isEmpty()) {
                         getMainWindow().showNotification("Login "
                                 + getInstance().getResource().getString("general.fail")
-                                + " Username and/or Password may be incorrect!",
-                                Notification.TYPE_WARNING_MESSAGE);
+                                + " Username and/or Password may be incorrect!", TYPE_WARNING_MESSAGE);
                     } else {
-                        result = XincoDBManager.createdQuery("SELECT x FROM XincoCoreUser x WHERE x.username='"
+                        result = createdQuery("SELECT x FROM XincoCoreUser x WHERE x.username='"
                                 + username + "'");
                         if (result.size() > 0) {
                             XincoCoreUserServer temp_user = new XincoCoreUserServer((com.bluecubs.xinco.core.server.persistence.XincoCoreUser) result.get(0));
-                            long attempts = XincoSettingServer.getSetting(new XincoCoreUserServer(1),
+                            long attempts = getSetting(new XincoCoreUserServer(1),
                                     "password.attempts").getLongValue();
                             //If user exists increase the atempt tries in the db. If limit reached lock account
                             if (temp_user.getAttempts() >= attempts && temp_user.getId() != 1) {
@@ -2069,11 +2148,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 temp_user.setHashPassword(false);
                                 temp_user.setIncreaseAttempts(true);
                                 temp_user.write2DB();
-                                getMainWindow().showNotification(getInstance().getResource().getString("password.attempt.limitReached"),
-                                        Notification.TYPE_WARNING_MESSAGE);
+                                getMainWindow().showNotification(getInstance().getResource().getString("password.attempt.limitReached"), TYPE_WARNING_MESSAGE);
                             } else {
-                                getMainWindow().showNotification(getInstance().getResource().getString("password.login.fail"),
-                                        Notification.TYPE_WARNING_MESSAGE);
+                                getMainWindow().showNotification(getInstance().getResource().getString("password.login.fail"), TYPE_WARNING_MESSAGE);
                             }
                         }
                     }
@@ -2094,7 +2171,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         updateMenu();
                         refresh();
                     } catch (XincoException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                     }
                 }
                 getMainWindow().removeWindow(loginWindow);
@@ -2107,14 +2184,14 @@ public class Xinco extends Application implements HttpServletRequestListener {
         loginWindow.addComponent(form);
         loginWindow.center();
         loginWindow.setModal(true);
-        loginWindow.setWidth(300, Sizeable.UNITS_PIXELS);
+        loginWindow.setWidth(300, UNITS_PIXELS);
         loginWindow.setReadOnly(true);
         getMainWindow().addWindow(loginWindow);
         refresh();
     }
 
     private void refreshGroupTable(final Table table) {
-        ArrayList allgroups = XincoCoreGroupServer.getXincoCoreGroups();
+        ArrayList allgroups = getXincoCoreGroups();
         table.removeAllItems();
         for (Iterator<XincoCoreGroupServer> it = allgroups.iterator(); it.hasNext();) {
             XincoCoreGroupServer group = it.next();
@@ -2156,8 +2233,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         });
         final com.vaadin.ui.Button commit = new com.vaadin.ui.Button(
                 getInstance().getResource().getString("general.save"), form, "commit");
-        commit.addListener(
-                new com.vaadin.ui.Button.ClickListener() {
+        commit.addListener(new com.vaadin.ui.Button.ClickListener() {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 try {
@@ -2169,7 +2245,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         groupS.write2DB();
                     }
                 } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.log(SEVERE, null, ex);
                 }
                 getMainWindow().removeWindow(group);
             }
@@ -2180,7 +2256,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         group.addComponent(form);
         group.setModal(true);
         group.center();
-        group.setWidth(600, Sizeable.UNITS_PIXELS);
+        group.setWidth(600, UNITS_PIXELS);
         getMainWindow().addWindow(group);
     }
 
@@ -2224,7 +2300,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             1).write2DB();
                     refreshGroupTable(table);
                 } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.log(SEVERE, null, ex);
                 }
             }
         });
@@ -2240,7 +2316,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         group.addComponent(form);
         group.setModal(true);
         group.center();
-        group.setWidth(300, Sizeable.UNITS_PIXELS);
+        group.setWidth(300, UNITS_PIXELS);
         getMainWindow().addWindow(group);
     }
 
@@ -2321,16 +2397,16 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     form.getField("size").setEnabled(false);
                     XincoCoreDataTypeAttributeServer tempAttribute
                             = new XincoCoreDataTypeAttributeServer(dataTypeId,
-                                    Integer.valueOf(form.getField("position").getValue()
+                                    valueOf(form.getField("position").getValue()
                                             .toString()),
                                     form.getField("designation").getValue().toString(),
                                     form.getField("type").getValue().toString(),
-                                    Integer.valueOf(form.getField("size").getValue()
+                                    valueOf(form.getField("size").getValue()
                                             .toString()));
                     tempAttribute.setChangerID(loggedUser.getId());
                     tempAttribute.write2DB();
                 } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.log(SEVERE, null, ex);
                 } finally {
                     refreshFileTypeAttrTable(table, dataTypeId);
                     form.getField("position").setEnabled(true);
@@ -2352,7 +2428,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         attr.addComponent(form);
         attr.setModal(true);
         attr.center();
-        attr.setWidth(50, Sizeable.UNITS_PERCENTAGE);
+        attr.setWidth(50, UNITS_PERCENTAGE);
         getMainWindow().addWindow(attr);
     }
 
@@ -2378,10 +2454,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 if (!form.getField("password").getValue().equals(form
                         .getField("confirm").getValue())) {
-                    getMainWindow().showNotification(
-                            getInstance().getResource()
-                                    .getString("window.userinfo.passwordmismatch"),
-                            Notification.TYPE_WARNING_MESSAGE);
+                    getMainWindow().showNotification(getInstance().getResource()
+                                    .getString("window.userinfo.passwordmismatch"), TYPE_WARNING_MESSAGE);
                 } else {
                     boolean passwordIsUsable = loggedUser.isPasswordUsable(form
                             .getField("password").getValue().toString());
@@ -2391,8 +2465,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                     = new XincoCoreUserServer(loggedUser.getId());
                             temp_user.setUserpassword(form.getField("password")
                                     .getValue().toString());
-                            temp_user.setLastModified(new Timestamp(System
-                                    .currentTimeMillis()));
+                            temp_user.setLastModified(new Timestamp(currentTimeMillis()));
                             temp_user.setChangerID(loggedUser.getId());
                             temp_user.setWriteGroups(true);
                             //Register change in audit trail
@@ -2402,16 +2475,14 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             temp_user.setHashPassword(true);
                             temp_user.write2DB();
                             getMainWindow().showNotification(getInstance()
-                                    .getResource().getString("password.changed"),
-                                    Notification.TYPE_TRAY_NOTIFICATION);
+                                    .getResource().getString("password.changed"), TYPE_TRAY_NOTIFICATION);
                             getMainWindow().removeWindow(pass);
                         } catch (XincoException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                            LOG.log(SEVERE, null, ex);
                         }
                     } else {
                         getMainWindow().showNotification(getInstance()
-                                .getResource().getString("password.unusable"),
-                                Notification.TYPE_WARNING_MESSAGE);
+                                .getResource().getString("password.unusable"), TYPE_WARNING_MESSAGE);
                     }
                 }
             }
@@ -2421,17 +2492,16 @@ public class Xinco extends Application implements HttpServletRequestListener {
         pass.addComponent(form);
         pass.setModal(true);
         pass.center();
-        pass.setWidth(25, Sizeable.UNITS_PERCENTAGE);
+        pass.setWidth(25, UNITS_PERCENTAGE);
         getMainWindow().addWindow(pass);
     }
 
     private Select getLanguageOptions() {
         final Select languages = new Select();
         ArrayList<String> locales = new ArrayList<>();
-        ResourceBundle lrb = ResourceBundle.getBundle(
-                "com.bluecubs.xinco.messages.XincoMessagesLocale",
-                Locale.getDefault());
-        locales.addAll(Arrays.asList(lrb.getString("AvailableLocales").split(",")));
+        ResourceBundle lrb = getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale",
+                getDefault());
+        locales.addAll(asList(lrb.getString("AvailableLocales").split(",")));
         for (String tempLocale : locales) {
             languages.addItem(tempLocale);
             languages.setItemCaption(tempLocale, lrb.getString("Locale."
@@ -2441,7 +2511,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         : tempLocale);
                 languages.setItemIcon(tempLocale, flagIcon);
             } catch (IOException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.log(SEVERE, null, ex);
             }
         }
         languages.setValue(getLocale().getLanguage());
@@ -2453,7 +2523,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         lang.setReadOnly(true);
         final Form form = new Form();
         Embedded logo = new Embedded("", new ThemeResource("img/xinco_logo.gif"));
-        logo.setType(Embedded.TYPE_IMAGE);
+        logo.setType(TYPE_IMAGE);
         form.getLayout().addComponent(logo);
         form.getLayout().addComponent(new com.vaadin.ui.Label(
                 "Please choose a language:"));
@@ -2481,10 +2551,10 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             loc = new Locale(locales[0], locales[1], locales[2]);
                             break;
                         default:
-                            loc = Locale.getDefault();
+                            loc = getDefault();
                     }
                 } catch (Exception e) {
-                    loc = Locale.getDefault();
+                    loc = getDefault();
                 }
                 setLocale(loc);
                 getMainWindow().removeWindow(lang);
@@ -2497,7 +2567,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         lang.setModal(true);
         lang.center();
         WebApplicationContext context = (WebApplicationContext) getContext();
-        lang.setWidth(Tool.getImageDim(context.getHttpSession().getServletContext()
+        lang.setWidth(getImageDim(context.getHttpSession().getServletContext()
                 .getRealPath(
                         "/VAADIN/themes/xinco") + System.getProperty("file.separator")
                 + "img"
@@ -2510,7 +2580,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     private void showSettingAdminWindow() {
         com.vaadin.ui.Window setting = new com.vaadin.ui.Window();
         setting.setContent(new SettingAdminWindow());
-        setting.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        setting.setWidth(100, UNITS_PERCENTAGE);
         setting.center();
         setting.setModal(true);
         getMainWindow().addWindow(setting);
@@ -2528,13 +2598,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 com.vaadin.ui.Component.class, null);
         table.setSortContainerPropertyId(getInstance().getResource()
                 .getString("general.table"));
-        Set<EntityType<?>> entities = XincoDBManager.getEntityManagerFactory()
+        Set<EntityType<?>> entities = getEntityManagerFactory()
                 .getMetamodel().getEntities();
         for (EntityType type : entities) {
             String name = type.getName();
             if (type.getJavaType().getSuperclass() == XincoAuditedObject.class) {
-                java.util.List<Object> result = XincoDBManager
-                        .createdQuery("select distinct x from "
+                java.util.List<Object> result = createdQuery("select distinct x from "
                                 + type.getJavaType().getSimpleName() + "T x");
                 if (!result.isEmpty()) {
                     final com.vaadin.ui.Button cont
@@ -2556,7 +2625,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         audit.addComponent(table);
         audit.setModal(true);
         audit.center();
-        audit.setWidth(35, Sizeable.UNITS_PERCENTAGE);
+        audit.setWidth(35, UNITS_PERCENTAGE);
         getMainWindow().addWindow(audit);
     }
 
@@ -2568,7 +2637,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         if (!entities.isEmpty()) {
             Class<? extends Object> entityClass = entities.get(0).getClass();
             EntityType entityType
-                    = XincoDBManager.getEntityManagerFactory().getMetamodel()
+                    = getEntityManagerFactory().getMetamodel()
                             .entity(entityClass);
             LinkedHashMap<String, PersistentAttributeType> typeMap
                     = new LinkedHashMap<>();
@@ -2601,7 +2670,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 + entry.getKey().substring(0, 1).toUpperCase()
                                 + entry.getKey().substring(1));
                         if (entry.getKey().equals("recordId")) {
-                            recordId = Integer.valueOf(method.invoke(o).toString());
+                            recordId = valueOf(method.invoke(o).toString());
                         }
                         String value = method.invoke(o).toString();
                         switch (entry.getValue()) {
@@ -2618,7 +2687,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                         + " not supported yet!");
                         }
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                         throw new XincoException(ex.getLocalizedMessage());
                     }
                 }
@@ -2626,8 +2695,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 HashMap parameters = new HashMap();
                 parameters.put("recordId", recordId);
                 XincoCoreUserModifiedRecord record
-                        = (XincoCoreUserModifiedRecord) XincoDBManager
-                                .namedQuery("XincoCoreUserModifiedRecord.findByRecordId",
+                        = (XincoCoreUserModifiedRecord) namedQuery("XincoCoreUserModifiedRecord.findByRecordId",
                                         parameters).get(0);
                 values.add(new com.vaadin.ui.Label(getInstance().getResource()
                         .containsKey(record.getModReason())
@@ -2649,8 +2717,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             final com.vaadin.ui.TextField tf = new com.vaadin.ui.TextField(
                     entity.getId(entity.getIdType().getJavaType()).getName());
             tf.focus();
-            final Table table = showEntitiesInTable(XincoDBManager
-                    .createdQuery("select distinct x from "
+            final Table table = showEntitiesInTable(createdQuery("select distinct x from "
                             + entity.getJavaType().getSimpleName() + "T x"));
             table.setSortDisabled(false);
             tf.addListener(new TextChangeListener() {
@@ -2673,16 +2740,16 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 }
             });
             if (entity.getId(entity.getIdType().getJavaType())
-                    .getPersistentAttributeType() == PersistentAttributeType.BASIC) {
+                    .getPersistentAttributeType() == BASIC) {
                 audit.addComponent(tf);
             }
             audit.addComponent(table);
             audit.setModal(true);
             audit.center();
-            audit.setWidth(90, Sizeable.UNITS_PERCENTAGE);
+            audit.setWidth(90, UNITS_PERCENTAGE);
             getMainWindow().addWindow(audit);
         } catch (XincoException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.log(SEVERE, null, ex);
         }
     }
 
@@ -2718,7 +2785,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         attr.addComponent(form);
         attr.setModal(true);
         attr.center();
-        attr.setWidth(50, Sizeable.UNITS_PERCENTAGE);
+        attr.setWidth(50, UNITS_PERCENTAGE);
         getMainWindow().addWindow(attr);
     }
 
@@ -2777,7 +2844,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                      * translated.
                      */
                     for (XincoCoreLanguageServer lang
-                            : XincoCoreLanguageServer.getXincoCoreLanguages()) {
+                            : getXincoCoreLanguages()) {
                         if (getInstance().getResource()
                                 .containsKey(lang.getDesignation())
                                 && getInstance().getResource()
@@ -2798,9 +2865,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     getMainWindow().showNotification(getInstance()
                             .getResource().getString("general.error"),
                             getInstance().getResource()
-                                    .getString("error.language.add.duplicate"),
-                            Notification.TYPE_WARNING_MESSAGE);
-                    LOG.log(Level.SEVERE, null, ex);
+                                    .getString("error.language.add.duplicate"), TYPE_WARNING_MESSAGE);
+                    LOG.log(SEVERE, null, ex);
                 } finally {
                     refreshLanguageTable(table);
                     form.getField("sign").setValue("");
@@ -2821,18 +2887,18 @@ public class Xinco extends Application implements HttpServletRequestListener {
         lang.addComponent(form);
         lang.setModal(true);
         lang.center();
-        lang.setWidth(50, Sizeable.UNITS_PERCENTAGE);
+        lang.setWidth(50, UNITS_PERCENTAGE);
         getMainWindow().addWindow(lang);
     }
 
     private void refreshLanguageTable(final Table table) {
-        ArrayList allLanguages = XincoCoreLanguageServer.getXincoCoreLanguages();
+        ArrayList allLanguages = getXincoCoreLanguages();
         boolean is_used;
         table.removeAllItems();
         for (Iterator<XincoCoreLanguageServer> it
                 = allLanguages.iterator(); it.hasNext();) {
             XincoCoreLanguageServer lang = it.next();
-            is_used = XincoCoreLanguageServer.isLanguageUsed(lang);
+            is_used = isLanguageUsed(lang);
             final com.vaadin.ui.Button delete
                     = new com.vaadin.ui.Button(getInstance().getResource()
                             .getString("general.delete"));
@@ -2842,12 +2908,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 @Override
                 public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                     try {
-                        XincoCoreLanguageServer.deleteFromDB(
+                        deleteFromDB(
                                 new XincoCoreLanguageServer((Integer) delete
                                         .getData()), loggedUser.getId());
                         refreshLanguageTable(table);
                     } catch (Exception e) {
-                        LOG.log(Level.SEVERE, null, e);
+                        LOG.log(SEVERE, null, e);
                     }
                 }
             });
@@ -2961,10 +3027,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     if (userAdmin) {
                         if (!form.getField("pass").getValue().toString()
                                 .equals(form.getField("verify").getValue().toString())) {
-                            getMainWindow().showNotification(
-                                    getInstance().getResource()
-                                            .getString("window.userinfo.passwordmismatch"),
-                                    Notification.TYPE_WARNING_MESSAGE);
+                            getMainWindow().showNotification(getInstance().getResource()
+                                            .getString("window.userinfo.passwordmismatch"), TYPE_WARNING_MESSAGE);
                             commit.setEnabled(true);
                             cancel.setEnabled(true);
                             return;
@@ -2975,7 +3039,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 form.getField("lastname").getValue().toString(),
                                 form.getField("firstname").getValue().toString(),
                                 form.getField("email").getValue().toString(),
-                                1, 0, new Timestamp(System.currentTimeMillis()));
+                                1, 0, new Timestamp(currentTimeMillis()));
                         temp_user.getXincoCoreGroups().add(new XincoCoreGroupServer(2));
                         temp_user.setWriteGroups(true);
                         temp_user.setHashPassword(true);
@@ -2996,7 +3060,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             if (!form.getField("pass").getValue().toString()
                                     .equals(form.getField("verify").getValue()
                                             .toString())) {
-                                getMainWindow().showNotification("window.userinfo.passwordmismatch", Notification.TYPE_WARNING_MESSAGE);
+                                getMainWindow().showNotification("window.userinfo.passwordmismatch", TYPE_WARNING_MESSAGE);
                                 return;
                             } else {
                                 loggedUser.setUserpassword(form.getField("pass")
@@ -3035,8 +3099,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             .getField("pass").getValue().toString());
                     if (!passwordIsUsable) {
                         getMainWindow().showNotification(getInstance()
-                                .getResource().getString("password.unusable"),
-                                Notification.TYPE_WARNING_MESSAGE);
+                                .getResource().getString("password.unusable"), TYPE_WARNING_MESSAGE);
                         changed = false;
                     }
                     if (changed) {
@@ -3052,7 +3115,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     }
                     clearForm();
                 } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.log(SEVERE, null, ex);
                 }
             }
 
@@ -3070,7 +3133,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         user.addComponent(form);
         user.setModal(true);
         user.center();
-        user.setWidth(50, Sizeable.UNITS_PERCENTAGE);
+        user.setWidth(50, UNITS_PERCENTAGE);
         getMainWindow().addWindow(user);
     }
 
@@ -3085,20 +3148,20 @@ public class Xinco extends Application implements HttpServletRequestListener {
         accountPanel.addComponent(profile);
         accountPanel.addComponent(logout);
         if (login != null) {
-            login.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+            login.setWidth(100, UNITS_PERCENTAGE);
         }
         if (profile != null) {
-            profile.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+            profile.setWidth(100, UNITS_PERCENTAGE);
         }
         if (logout != null) {
-            logout.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+            logout.setWidth(100, UNITS_PERCENTAGE);
         }
         menu.addTab(accountPanel, getInstance().getResource()
                 .getString("window.connection.profile"), null);
         adminPanel = new com.vaadin.ui.Panel();
         userAdmin = new com.vaadin.ui.Button(getInstance().getResource()
                 .getString("message.admin.userAdmin"));
-        userAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        userAdmin.setWidth(100, UNITS_PERCENTAGE);
         userAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -3108,7 +3171,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         adminPanel.addComponent(userAdmin);
         groupAdmin = new com.vaadin.ui.Button(getInstance().getResource()
                 .getString("message.admin.groupAdmin"));
-        groupAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        groupAdmin.setWidth(100, UNITS_PERCENTAGE);
         groupAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -3118,7 +3181,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         adminPanel.addComponent(groupAdmin);
         langAdmin = new com.vaadin.ui.Button(getInstance().getResource()
                 .getString("message.admin.language"));
-        langAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        langAdmin.setWidth(100, UNITS_PERCENTAGE);
         langAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -3128,7 +3191,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         adminPanel.addComponent(langAdmin);
         attrAdmin = new com.vaadin.ui.Button(getInstance().getResource()
                 .getString("message.admin.attribute"));
-        attrAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        attrAdmin.setWidth(100, UNITS_PERCENTAGE);
         attrAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -3138,7 +3201,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         adminPanel.addComponent(attrAdmin);
         trashAdmin = new com.vaadin.ui.Button(getInstance().getResource()
                 .getString("message.admin.trash"));
-        trashAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        trashAdmin.setWidth(100, UNITS_PERCENTAGE);
         trashAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -3147,14 +3210,14 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             loggedUser.getId());
                     refresh();
                 } catch (Exception e) {
-                    LOG.log(Level.SEVERE, null, e);
+                    LOG.log(SEVERE, null, e);
                 }
             }
         });
         adminPanel.addComponent(trashAdmin);
         indexAdmin = new com.vaadin.ui.Button(getInstance().getResource()
                 .getString("message.admin.index"));
-        indexAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        indexAdmin.setWidth(100, UNITS_PERCENTAGE);
         final Table table = new Table();
         table.addStyleName("striped");
         table.addContainerProperty(getInstance().getResource()
@@ -3172,7 +3235,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 try {
                     java.util.List result
-                            = XincoDBManager.createdQuery("SELECT x FROM "
+                            = createdQuery("SELECT x FROM "
                                     + "XincoCoreData x ORDER BY x.designation");
                     final com.vaadin.ui.Window progress
                             = new com.vaadin.ui.Window();
@@ -3191,7 +3254,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         }
                     });
                     progress.addComponent(ok);
-                    progress.setWidth(50, Sizeable.UNITS_PERCENTAGE);
+                    progress.setWidth(50, UNITS_PERCENTAGE);
                     ok.setEnabled(false);
                     getMainWindow().addWindow(progress);
                     progress.center();
@@ -3200,7 +3263,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         File indexDirectory;
                         File indexDirectoryFile;
                         String[] indexDirectoryFileList;
-                        indexDirectory = new File(XincoDBManager.CONFIG.fileIndexPath);
+                        indexDirectory = new File(CONFIG.fileIndexPath);
                         int work_units = result.size() + (indexDirectory.exists()
                                 ? indexDirectory.list().length + 1 : 0) + 1;
                         int index = 0;
@@ -3209,7 +3272,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             indexDirectoryFileList = indexDirectory.list();
                             for (String indexDirectoryFileList1
                                     : indexDirectoryFileList) {
-                                indexDirectoryFile = new File(XincoDBManager.CONFIG.fileIndexPath + indexDirectoryFileList1);
+                                indexDirectoryFile = new File(CONFIG.fileIndexPath + indexDirectoryFileList1);
                                 indexDirectoryFile.delete();
                                 count++;
                             }
@@ -3224,8 +3287,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             boolean index_result;
                             for (Object o : result) {
                                 xdataTemp = new XincoCoreDataServer((com.bluecubs.xinco.core.server.persistence.XincoCoreData) o);
-                                if (!XincoCoreDataHasDependencyServer.isRendering(xdataTemp.getId())) {
-                                    index_result = XincoIndexer.indexXincoCoreData(xdataTemp, true);
+                                if (!isRendering(xdataTemp.getId())) {
+                                    index_result = indexXincoCoreData(xdataTemp, true);
                                     table.addItem(new Object[]{new com.vaadin.ui.Label(xdataTemp.getDesignation()),
                                         new com.vaadin.ui.Label(index_result
                                         ? getInstance().getResource().getString("general.ok") + "!" : getInstance().getResource().getString("general.fail"))}, index++);
@@ -3233,7 +3296,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                     indicator.setValue(new Float(count) / new Float(work_units));
                                 }
                             }
-                            index_result = XincoIndexer.optimizeIndex();
+                            index_result = optimizeIndex();
                             //Optimize index
                             table.addItem(new Object[]{new com.vaadin.ui.Label(getInstance().getResource().getString("message.index.optimize")),
                                 new com.vaadin.ui.Label(index_result
@@ -3243,10 +3306,10 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         indicator.setValue(new Float(1.0));
                         ok.setEnabled(true);
                     } catch (UnsupportedOperationException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                     }
                 } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.log(SEVERE, null, ex);
                     ok.setEnabled(true);
                 }
             }
@@ -3254,21 +3317,21 @@ public class Xinco extends Application implements HttpServletRequestListener {
         adminPanel.addComponent(indexAdmin);
         auditAdmin = new com.vaadin.ui.Button(getInstance().getResource()
                 .getString("general.audit.menu"));
-        auditAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        auditAdmin.setWidth(100, UNITS_PERCENTAGE);
         auditAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 try {
                     showAuditWindow();
                 } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.log(SEVERE, null, ex);
                 }
             }
         });
         adminPanel.addComponent(auditAdmin);
         settingAdmin = new com.vaadin.ui.Button(getInstance().getResource()
                 .getString("message.admin.settingAdmin"));
-        settingAdmin.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+        settingAdmin.setWidth(100, UNITS_PERCENTAGE);
         settingAdmin.addListener(new com.vaadin.ui.Button.ClickListener() {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
@@ -3301,7 +3364,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
     private void refreshUserTable(final Table table) {
         table.removeAllItems();
-        ArrayList<XincoCoreUserServer> allusers = XincoCoreUserServer.getXincoCoreUsers();
+        ArrayList<XincoCoreUserServer> allusers = getXincoCoreUsers();
         for (XincoCoreUserServer tempUser : allusers) {
             com.vaadin.ui.Button lock = new com.vaadin.ui.Button(getInstance()
                     .getResource().getString("general.lock"));
@@ -3325,7 +3388,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         temp_user.write2DB();
                         refreshUserTable(table);
                     } catch (XincoException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                     }
                 }
             });
@@ -3353,7 +3416,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         temp_user.write2DB();
                         refreshUserTable(table);
                     } catch (XincoException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                     }
                 }
             });
@@ -3379,7 +3442,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         temp_user.write2DB();
                         refreshUserTable(table);
                     } catch (XincoException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                     }
                 }
             });
@@ -3425,7 +3488,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         table2.addContainerProperty("", com.vaadin.ui.Component.class, null);
         table2.setSortContainerPropertyId(getInstance().getResource().getString("general.id"));
         table1.setPageLength(2);
-        ArrayList<XincoCoreUserServer> allusers = XincoCoreUserServer.getXincoCoreUsers();
+        ArrayList<XincoCoreUserServer> allusers = getXincoCoreUsers();
         boolean member_ofGroup;
         form.getLayout().removeAllComponents();
         for (XincoCoreUserServer tempUser : allusers) {
@@ -3445,18 +3508,17 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     //main admin always is admin and everyone is a regular user
                     if (!(((groupId == 1) && ((Integer) remove.getData() == 1)) || (groupId == 2))) {
                         try {
-                            java.util.List results = XincoDBManager.createdQuery("SELECT x FROM XincoCoreUserHasXincoCoreGroup x "
+                            java.util.List results = createdQuery("SELECT x FROM XincoCoreUserHasXincoCoreGroup x "
                                     + "WHERE x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreUserId = " + (Integer) remove.getData()
                                     + " and x.xincoCoreUserHasXincoCoreGroupPK.xincoCoreGroupId = " + groupId);
                             for (Object o : results) {
-                                new XincoCoreUserHasXincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).destroy(((XincoCoreUserHasXincoCoreGroup) o).getXincoCoreUserHasXincoCoreGroupPK());
+                                new XincoCoreUserHasXincoCoreGroupJpaController(getEntityManagerFactory()).destroy(((XincoCoreUserHasXincoCoreGroup) o).getXincoCoreUserHasXincoCoreGroupPK());
                             }
                         } catch (NonexistentEntityException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                            LOG.log(SEVERE, null, ex);
                         }
                     } else {
-                        getMainWindow().showNotification(getInstance().getResource().getString("error.user.remove.mainUserGroup"),
-                                Notification.TYPE_WARNING_MESSAGE);
+                        getMainWindow().showNotification(getInstance().getResource().getString("error.user.remove.mainUserGroup"), TYPE_WARNING_MESSAGE);
                     }
                     refreshGroupContentsTables(form, groupId);
                 }
@@ -3470,11 +3532,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     try {
                         XincoCoreUserHasXincoCoreGroup uhg = new XincoCoreUserHasXincoCoreGroup(
                                 (Integer) add.getData(), groupId);
-                        uhg.setXincoCoreGroup(new XincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreGroup(groupId));
-                        uhg.setXincoCoreUser(new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser((Integer) add.getData()));
-                        new XincoCoreUserHasXincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).create(uhg);
+                        uhg.setXincoCoreGroup(new XincoCoreGroupJpaController(getEntityManagerFactory()).findXincoCoreGroup(groupId));
+                        uhg.setXincoCoreUser(new XincoCoreUserJpaController(getEntityManagerFactory()).findXincoCoreUser((Integer) add.getData()));
+                        new XincoCoreUserHasXincoCoreGroupJpaController(getEntityManagerFactory()).create(uhg);
                     } catch (Exception ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                     }
                     refreshGroupContentsTables(form, groupId);
                 }
@@ -3505,8 +3567,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
     private void refreshFileTypeAttrTable(final Table table, final int dataTypeId) {
         ArrayList<XincoCoreDataTypeAttribute> alldatatypes
-                = (ArrayList<XincoCoreDataTypeAttribute>) XincoCoreDataTypeServer
-                        .getXincoCoreDataType(dataTypeId)
+                = (ArrayList<XincoCoreDataTypeAttribute>) getXincoCoreDataType(dataTypeId)
                         .getXincoCoreDataTypeAttributes();
         table.removeAllItems();
         for (XincoCoreDataTypeAttribute type : alldatatypes) {
@@ -3521,11 +3582,10 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     try {
                         XincoCoreDataTypeAttributeServer tempAttribute
                                 = new XincoCoreDataTypeAttributeServer(dataTypeId, (Integer) delete.getData());
-                        XincoCoreDataTypeAttributeServer
-                                .deleteFromDB(tempAttribute, loggedUser.getId());
+                        deleteFromDB(tempAttribute, loggedUser.getId());
                         refreshFileTypeAttrTable(table, dataTypeId);
                     } catch (Exception e) {
-                        LOG.log(Level.SEVERE, null, e);
+                        LOG.log(SEVERE, null, e);
                     }
                 }
             });
@@ -3547,7 +3607,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
     }
 
     private void refreshFileTypeTable(Table table) {
-        ArrayList alldatatypes = XincoCoreDataTypeServer.getXincoCoreDataTypes();
+        ArrayList alldatatypes = getXincoCoreDataTypes();
         table.removeAllItems();
         for (Iterator<XincoCoreDataTypeServer> it = alldatatypes.iterator(); it.hasNext();) {
             XincoCoreDataTypeServer type = it.next();
@@ -3560,7 +3620,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     try {
                         showDataTypeAttrAdminWindow((Integer) edit.getData());
                     } catch (Exception e) {
-                        LOG.log(Level.SEVERE, null, e);
+                        LOG.log(SEVERE, null, e);
                     }
                 }
             });
@@ -3589,12 +3649,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         try {
                             refresh();
                         } catch (XincoException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                            LOG.log(SEVERE, null, ex);
                         }
                     }
                 }).setLoggedIn(false).setDataOnly(false).setNodeOnly(false)
                 .setSelected(false).createXincoMenuItem();
-        XincoMenuItemManager.addItem(item);
+        addItem(item);
         item = new XincoMenuItemBuilder().setIndex(i += 1000)
                 .setGroupName("menu.repository")
                 .setName("menu.repository.addfolder")
@@ -3610,7 +3670,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 .setNodeOnly(true)
                 .setSelected(true)
                 .createXincoMenuItem();
-        XincoMenuItemManager.addItem(item);
+        addItem(item);
         item = new XincoMenuItemBuilder().setIndex(i += 1000)
                 .setGroupName("menu.repository")
                 .setName("menu.repository.adddata")
@@ -3625,7 +3685,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     }
                 }).setLoggedIn(true).setDataOnly(false).setNodeOnly(true)
                 .setSelected(true).createXincoMenuItem();
-        XincoMenuItemManager.addItem(item);
+        addItem(item);
         item = new XincoMenuItemBuilder().setIndex(i += 1000)
                 .setGroupName("menu.repository")
                 .setName("menu.repository.adddatastructure")
@@ -3647,24 +3707,19 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                         sb.append(getInstance().getResource().getString("window.massiveimport.notsupported"));
                                     }
                                     sb.append("\n").append(fileName);
-                                    getMainWindow().showNotification(
-                                            sb.toString(),
-                                            Notification.TYPE_TRAY_NOTIFICATION);
+                                    getMainWindow().showNotification(sb.toString(), TYPE_TRAY_NOTIFICATION);
                                 } else {
-                                    getMainWindow().showNotification(
-                                            getInstance().getResource().getString("window.massiveimport.progress"),
-                                            Notification.TYPE_TRAY_NOTIFICATION);
+                                    getMainWindow().showNotification(getInstance().getResource().getString("window.massiveimport.progress"), TYPE_TRAY_NOTIFICATION);
                                     data = new XincoCoreData();
                                     getXincoCoreData().setXincoCoreDataType(
                                             new XincoCoreDataTypeServer(1));
                                     getXincoCoreData().setStatusNumber(1);
                                     getXincoCoreData().setXincoCoreLanguage(
                                             new XincoCoreLanguageServer(2));
-                                    getXincoCoreData().setXincoCoreNodeId(
-                                            Integer.valueOf(xincoTree.getValue()
+                                    getXincoCoreData().setXincoCoreNodeId(valueOf(xincoTree.getValue()
                                                     .toString().substring(xincoTree.getValue()
                                                             .toString().indexOf('-') + 1)));
-                                    Tool.addDefaultAddAttributes(getXincoCoreData());
+                                    addDefaultAddAttributes(getXincoCoreData());
                                     loadFile(file, fileName);
                                 }
                             }
@@ -3676,7 +3731,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         getMainWindow().addWindow(w);
                     }
                 }).setLoggedIn(true).setDataOnly(false).setNodeOnly(true).setSelected(true).createXincoMenuItem();
-        XincoMenuItemManager.addItem(item);
+        addItem(item);
         item = new XincoMenuItemBuilder()
                 .setIndex(i += 1000)
                 .setGroupName("menu.repository")
@@ -3697,7 +3752,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 .setSelected(true)
                 .createXincoMenuItem();
         item.setStatuses(new int[]{1, 4});
-        XincoMenuItemManager.addItem(item);
+        addItem(item);
         item = new XincoMenuItemBuilder()
                 .setIndex(i += 1000)
                 .setGroupName("menu.repository")
@@ -3715,7 +3770,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 .setSelected(true)
                 .createXincoMenuItem();
         item.setStatuses(new int[]{1, 4});
-        XincoMenuItemManager.addItem(item);
+        addItem(item);
         item = new XincoMenuItemBuilder()
                 .setIndex(i += 1000)
                 .setGroupName("menu.repository")
@@ -3732,7 +3787,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 .setSelected(true)
                 .createXincoMenuItem();
         item.setStatuses(new int[]{1, 4});
-        XincoMenuItemManager.addItem(item);
+        addItem(item);
         item = new XincoMenuItemBuilder()
                 .setIndex(i += 1000)
                 .setGroupName("menu.repository")
@@ -3744,7 +3799,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         try {
                             downloadFile();
                         } catch (MalformedURLException | XincoException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                            LOG.log(SEVERE, null, ex);
                         }
                     }
                 }).setLoggedIn(false).
@@ -3753,10 +3808,10 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 setSelected(true).
                 createXincoMenuItem();
         item.setDataTypes(new int[]{1});
-        XincoMenuItemManager.addItem(item);
+        addItem(item);
         //TODO: Enable Rendering support
         if (renderingSupportEnabled) {
-            XincoMenuItemManager.addItem(item);
+            addItem(item);
             item = new XincoMenuItemBuilder()
                     .setIndex(i += 1000)
                     .setGroupName("menu.repository")
@@ -3768,7 +3823,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             try {
                                 showRenderingDialog();
                             } catch (XincoException ex) {
-                                LOG.log(Level.SEVERE, null, ex);
+                                LOG.log(SEVERE, null, ex);
                             }
                         }
                     }).setLoggedIn(true)
@@ -3777,7 +3832,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     .setSelected(true)
                     .createXincoMenuItem();
             item.setDataTypes(new int[]{1});
-            XincoMenuItemManager.addItem(item);
+            addItem(item);
         }
         item = new XincoMenuItemBuilder()
                 .setIndex(i += 1000)
@@ -3798,7 +3853,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 .setValidDataTypes(new int[]{1})
                 .createXincoMenuItem();
         item.setStatuses(new int[]{1});
-        XincoMenuItemManager.addItem(item);
+        addItem(item);
         item = new XincoMenuItemBuilder()
                 .setIndex(i += 1000)
                 .setGroupName("menu.repository")
@@ -3811,7 +3866,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     }
                 }).setLoggedIn(true).setDataOnly(true).setNodeOnly(false).setSelected(true).createXincoMenuItem();
         item.setStatuses(new int[]{4});
-        XincoMenuItemManager.addItem(item);
+        addItem(item);
         item = new XincoMenuItemBuilder()
                 .setIndex(i += 1000)
                 .setGroupName("menu.repository")
@@ -3828,7 +3883,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 .setSelected(true)
                 .createXincoMenuItem();
         item.setStatuses(new int[]{4});
-        XincoMenuItemManager.addItem(item);
+        addItem(item);
         item = new XincoMenuItemBuilder()
                 .setIndex(i += 1000)
                 .setGroupName("menu.repository")
@@ -3840,7 +3895,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         try {
                             publishData();
                         } catch (MalformedURLException | XincoException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                            LOG.log(SEVERE, null, ex);
                         }
                     }
                 }).setLoggedIn(true)
@@ -3849,7 +3904,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 .setSelected(true)
                 .createXincoMenuItem();
         item.setStatuses(new int[]{1, 2});
-        XincoMenuItemManager.addItem(item);
+        addItem(item);
         item = new XincoMenuItemBuilder()
                 .setIndex(i += 1000)
                 .setGroupName("menu.repository")
@@ -3861,7 +3916,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         try {
                             lockData();
                         } catch (MalformedURLException | XincoException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                            LOG.log(SEVERE, null, ex);
                         }
                     }
                 }).setLoggedIn(true)
@@ -3870,7 +3925,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 .setSelected(true)
                 .createXincoMenuItem();
         item.setStatuses(new int[]{1});
-        XincoMenuItemManager.addItem(item);
+        addItem(item);
         item = new XincoMenuItemBuilder()
                 .setIndex(i += 1000)
                 .setGroupName("menu.repository")
@@ -3886,7 +3941,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 .setSelected(true)
                 .createXincoMenuItem();
         item.setStatuses(new int[]{1});
-        XincoMenuItemManager.addItem(item);
+        addItem(item);
         item = new XincoMenuItemBuilder()
                 .setIndex(i += 1000)
                 .setGroupName("menu.repository")
@@ -3897,11 +3952,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     public void menuSelected(com.vaadin.ui.MenuBar.MenuItem selectedItem) {
                         try {
                             final XincoCoreDataServer xdata = new XincoCoreDataServer(
-                                    Integer.valueOf(xincoTree.getValue().toString().substring(
+                                    valueOf(xincoTree.getValue().toString().substring(
                                             xincoTree.getValue().toString().indexOf('-') + 1)));
-                            showCommentDataDialog(xdata, OPCode.COMMENT);
+                            showCommentDataDialog(xdata, COMMENT);
                         } catch (XincoException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                            LOG.log(SEVERE, null, ex);
                         }
                     }
                 }).setLoggedIn(true)
@@ -3910,7 +3965,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 .setSelected(true)
                 .createXincoMenuItem();
         item.setStatuses(new int[]{1});
-        XincoMenuItemManager.addItem(item);
+        addItem(item);
         item = new XincoMenuItemBuilder()
                 .setIndex(i += 1000)
                 .setGroupName("menu.search")
@@ -3922,7 +3977,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         try {
                             showLuceneSearchWindow();
                         } catch (XincoException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                            LOG.log(SEVERE, null, ex);
                         }
                     }
                 }).setLoggedIn(false)
@@ -3930,7 +3985,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 .setNodeOnly(false)
                 .setSelected(false)
                 .createXincoMenuItem();
-        XincoMenuItemManager.addItem(item);
+        addItem(item);
     }
 
     public boolean selectNode(String nodeId) {
@@ -3996,19 +4051,19 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     newLog.setOpDescription(text);
                     text = "" + versionSelector.getVersion().getVersionHigh();
                     try {
-                        newLog.getVersion().setVersionHigh(Integer.parseInt(text));
+                        newLog.getVersion().setVersionHigh(parseInt(text));
                     } catch (NumberFormatException nfe) {
                         newLog.getVersion().setVersionHigh(0);
                     }
                     text = "" + versionSelector.getVersion().getVersionMid();
                     try {
-                        newLog.getVersion().setVersionMid(Integer.parseInt(text));
+                        newLog.getVersion().setVersionMid(parseInt(text));
                     } catch (NumberFormatException nfe) {
                         newLog.getVersion().setVersionMid(0);
                     }
                     text = "" + versionSelector.getVersion().getVersionLow();
                     try {
-                        newLog.getVersion().setVersionLow(Integer.parseInt(text));
+                        newLog.getVersion().setVersionLow(parseInt(text));
                     } catch (NumberFormatException nfe) {
                         newLog.getVersion().setVersionLow(0);
                     }
@@ -4020,7 +4075,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     getMainWindow().removeWindow(comment);
                     refresh();
                 } catch (MalformedURLException | XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.log(SEVERE, null, ex);
                 }
             }
         });
@@ -4032,7 +4087,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         comment.addComponent(form);
         comment.setModal(true);
         comment.center();
-        comment.setWidth(35, Sizeable.UNITS_PERCENTAGE);
+        comment.setWidth(35, UNITS_PERCENTAGE);
         getMainWindow().addWindow(comment);
     }
 
@@ -4047,7 +4102,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             Calendar cal;
             XMLGregorianCalendar realcal;
             Calendar ngc = new GregorianCalendar();
-            final XincoCoreDataServer xdata = new XincoCoreDataServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+            final XincoCoreDataServer xdata = new XincoCoreDataServer(valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
             for (i = 0; i < xdata.getXincoCoreLogs().size(); i++) {
                 if ((((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getOpCode() == 1)
                         || (((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getOpCode() == 5)) {
@@ -4056,11 +4111,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     cal = new GregorianCalendar();
                     cal.setTime(time);
                     realcal = (((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getOpDatetime());
-                    cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET)
-                            - realcal.toGregorianCalendar().get(Calendar.ZONE_OFFSET))
-                            - (ngc.get(Calendar.DST_OFFSET)
-                            + realcal.toGregorianCalendar().get(Calendar.DST_OFFSET)));
-                    text = "" + cal.get(Calendar.YEAR) + "/" + (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DAY_OF_MONTH);
+                    cal.add(MILLISECOND, (ngc.get(ZONE_OFFSET)
+                            - realcal.toGregorianCalendar().get(ZONE_OFFSET))
+                            - (ngc.get(DST_OFFSET)
+                            + realcal.toGregorianCalendar().get(DST_OFFSET)));
+                    text = "" + cal.get(YEAR) + "/" + (cal.get(MONTH) + 1) + "/" + cal.get(DAY_OF_MONTH);
                     text = text + " - " + getInstance().getResource().getString("general.version") + " " + ((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getVersion().getVersionHigh()
                             + "." + ((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getVersion().getVersionMid() + "."
                             + ((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getVersion().getVersionLow() + " "
@@ -4096,7 +4151,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         cancel.setEnabled(false);
                         //Process the data
                         XincoCoreLog revLog = null;
-                        int idToLook = Integer.valueOf(
+                        int idToLook = valueOf(
                                 form.getField("rev").getValue().toString());
                         for (int i = 0; i < xdata.getXincoCoreLogs().size(); i++) {
                             if (((XincoCoreLog) xdata.getXincoCoreLogs().get(i)).getId()
@@ -4114,12 +4169,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             //Use rendering if available and enabled
                             downloadFile(true, xdata);
                         } catch (MalformedURLException | XincoException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                            LOG.log(SEVERE, null, ex);
                         }
                         getMainWindow().removeWindow(revWindow);
                         refresh();
                     } catch (XincoException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                     }
                 }
             });
@@ -4129,10 +4184,10 @@ public class Xinco extends Application implements HttpServletRequestListener {
             revWindow.addComponent(form);
             revWindow.setModal(true);
             revWindow.center();
-            revWindow.setWidth(35, Sizeable.UNITS_PERCENTAGE);
+            revWindow.setWidth(35, UNITS_PERCENTAGE);
             getMainWindow().addWindow(revWindow);
         } catch (XincoException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.log(SEVERE, null, ex);
         }
     }
 
@@ -4159,27 +4214,20 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 boolean value = true;
                 if (dataDialog.getDesignationField().getValue()
                         .toString().isEmpty()) {
-                    getMainWindow().showNotification(
-                            getInstance().getResource().getString(
-                                    "message.missing.designation"),
-                            Notification.TYPE_ERROR_MESSAGE);
+                    getMainWindow().showNotification(getInstance().getResource().getString(
+                                    "message.missing.designation"), TYPE_ERROR_MESSAGE);
                     value = false;
                 }
                 if (dataDialog.getLanguages().getValue() == null) {
-                    getMainWindow().showNotification(
-                            getInstance().getResource().getString(
-                                    "message.missing.language"),
-                            Notification.TYPE_ERROR_MESSAGE);
+                    getMainWindow().showNotification(getInstance().getResource().getString(
+                                    "message.missing.language"), TYPE_ERROR_MESSAGE);
                     value = false;
                 } else {
                     //Process data
                     getXincoCoreData().setDesignation(
                             dataDialog.getDesignationField().getValue()
                                     .toString());
-                    getXincoCoreData().setXincoCoreLanguage(
-                            (XincoCoreLanguage) XincoCoreLanguageServer
-                                    .getXincoCoreLanguages().get(
-                                            Integer.valueOf(dataDialog.getLanguages()
+                    getXincoCoreData().setXincoCoreLanguage((XincoCoreLanguage) getXincoCoreLanguages().get(valueOf(dataDialog.getLanguages()
                                                     .getValue().toString())));
                 }
                 return value;
@@ -4248,8 +4296,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     if (dataTypeDialog == null) {
                         dataTypeDialog = new DataTypeDialog();
                         dataTypeDialog.setSizeFull();
-                        dataTypeDialog.getTypes().addListener(
-                                new ValueChangeListener() {
+                        dataTypeDialog.getTypes().addListener(new ValueChangeListener() {
                             ArrayList<WizardStep> temp
                                     = new ArrayList<>();
 
@@ -4258,20 +4305,18 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 data = new XincoCoreData();
                                 try {
                                     //Process data
-                                    getXincoCoreData().setXincoCoreDataType(
-                                            new XincoCoreDataTypeServer(
-                                                    Integer.valueOf(dataTypeDialog
+                                    getXincoCoreData().setXincoCoreDataType(new XincoCoreDataTypeServer(
+                                                    valueOf(dataTypeDialog
                                                             .getTypes().getValue().toString())));
                                 } catch (XincoException ex) {
-                                    LOG.log(Level.SEVERE, null, ex);
+                                    LOG.log(SEVERE, null, ex);
                                 }
                                 //Set the parent id to the current selected node
-                                getXincoCoreData().setXincoCoreNodeId(
-                                        Integer.valueOf(xincoTree.getValue()
+                                getXincoCoreData().setXincoCoreNodeId(valueOf(xincoTree.getValue()
                                                 .toString().substring(xincoTree
                                                         .getValue().toString().indexOf('-')
                                                         + 1)));
-                                Tool.addDefaultAddAttributes(
+                                addDefaultAddAttributes(
                                         getXincoCoreData());
                                 //wizard.getLastCompleted() is the previous step,
                                 //the current is wizard.getLastCompleted() + 1,
@@ -4318,7 +4363,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                                     //Save values from wizard
                                                     archDialog.updateAttributes();
                                                 } catch (DatatypeConfigurationException ex) {
-                                                    LOG.log(Level.SEVERE, null, ex);
+                                                    LOG.log(SEVERE, null, ex);
                                                     throw new XincoException(ex);
                                                 }
                                                 //True if there are more steps after this one
@@ -4361,16 +4406,14 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                             @Override
                                             public boolean onAdvance() {
                                                 if (tArea.getValue().toString().isEmpty()) {
-                                                    getMainWindow().showNotification(
-                                                            getInstance()
+                                                    getMainWindow().showNotification(getInstance()
                                                                     .getResource()
                                                                     .getString(
                                                                             "general.error"),
                                                             getInstance()
                                                                     .getResource()
                                                                     .getString(
-                                                                            "message.missing.text"),
-                                                            Notification.TYPE_WARNING_MESSAGE);
+                                                                            "message.missing.text"), TYPE_WARNING_MESSAGE);
                                                     return false;
                                                 } else {
                                                     //Process the data
@@ -4431,10 +4474,8 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 public boolean onAdvance() {
                     boolean value = true;
                     if (dataTypeDialog.getTypes().getValue() == null) {
-                        getMainWindow().showNotification(
-                                getInstance().getResource().getString(
-                                        "message.missing.datatype"),
-                                Notification.TYPE_ERROR_MESSAGE);
+                        getMainWindow().showNotification(getInstance().getResource().getString(
+                                        "message.missing.datatype"), TYPE_ERROR_MESSAGE);
                         value = false;
                     }
                     return value;
@@ -4448,14 +4489,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
         } else {
             try {
                 //Load from database
-                data = getService().getXincoCoreData(
-                        new XincoCoreDataServer(
-                                Integer.valueOf(xincoTree.getValue().toString()
+                data = getService().getXincoCoreData(new XincoCoreDataServer(
+                                valueOf(xincoTree.getValue().toString()
                                         .substring(xincoTree.getValue().toString()
                                                 .indexOf('-') + 1))),
                         loggedUser);
             } catch (XincoException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.log(SEVERE, null, ex);
             }
         }
         wizard.addStep(dataDetails);
@@ -4467,7 +4507,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         wizard.setSizeFull();
         wizard.addListener(ddManager);
         wizardWindow.setModal(true);
-        wizardWindow.setWidth(40, Sizeable.UNITS_PERCENTAGE);
+        wizardWindow.setWidth(40, UNITS_PERCENTAGE);
         // add the wizard to a layout
         getMainWindow().addWindow(wizardWindow);
     }
@@ -4505,30 +4545,29 @@ public class Xinco extends Application implements HttpServletRequestListener {
         //Add log
         XincoCoreLog newlog = new XincoCoreLog();
         newlog.setOpCode(code.ordinal() + 1);
-        newlog.setOpDescription(getInstance().getResource().getString(
-                OPCode.getOPCode(newlog.getOpCode()).getName())
+        newlog.setOpDescription(getInstance().getResource().getString(getOPCode(newlog.getOpCode()).getName())
                 + "!" + " ("
                 + getInstance().getResource().getString("general.user") + ": "
                 + loggedUser.getUsername()
                 + ")");
         newlog.setXincoCoreUserId(loggedUser.getId());
         newlog.setXincoCoreDataId(data.getId());
-        if (XincoCoreDataServer.getCurrentVersion(data.getId()) == null) {
+        if (getCurrentVersion(data.getId()) == null) {
             newlog.setVersion(new XincoVersion());
             newlog.getVersion().setVersionHigh(1);
             newlog.getVersion().setVersionMid(0);
             newlog.getVersion().setVersionLow(0);
             newlog.getVersion().setVersionPostfix("");
         } else {
-            newlog.setVersion(XincoCoreDataServer.getCurrentVersion(data.getId()));
+            newlog.setVersion(getCurrentVersion(data.getId()));
         }
         try {
-            DatatypeFactory factory = DatatypeFactory.newInstance();
+            DatatypeFactory factory = newInstance();
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTime(new Date());
             newlog.setOpDatetime(factory.newXMLGregorianCalendar(cal));
         } catch (DatatypeConfigurationException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.log(SEVERE, null, ex);
         }
         // save log to server
         newlog = getService().setXincoCoreLog(newlog, loggedUser);
@@ -4541,7 +4580,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
 
     private void showDataFolderDialog(final boolean newFolder) {
         try {
-            final XincoCoreNode node = new XincoCoreNodeServer(Integer.valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
+            final XincoCoreNode node = new XincoCoreNodeServer(valueOf(xincoTree.getValue().toString().substring(xincoTree.getValue().toString().indexOf('-') + 1)));
             final com.vaadin.ui.Window dataFolderDialog = new com.vaadin.ui.Window();
             final Form form = new Form();
             form.setCaption(getInstance().getResource().getString("window.folder"));
@@ -4566,7 +4605,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
             //Language selection
             final Select languages = new Select(getInstance().getResource().getString("general.language") + ":");
             int i = 0;
-            for (Object language : XincoCoreLanguageServer.getXincoCoreLanguages()) {
+            for (Object language : getXincoCoreLanguages()) {
                 String designation = ((XincoCoreLanguageServer) language).getDesignation();
                 if (getInstance().getResource().containsKey(designation)) {
                     String value = getInstance().getResource().getString(designation);
@@ -4580,7 +4619,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     }
                     i++;
                 } else {
-                    LOG.log(Level.WARNING,
+                    LOG.log(WARNING,
                             "{0} not defined in com.bluecubs.xinco.messages.XincoMessagesLocale",
                             "Locale." + designation);
                 }
@@ -4633,29 +4672,28 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         XincoCoreNodeServer tempNode;
                         if (newFolder) {
                             tempNode = new XincoCoreNodeServer(
-                                    Integer.valueOf(form.getField("id").getValue().toString()),
+                                    valueOf(form.getField("id").getValue().toString()),
                                     node.getId(), //Use selected node's id as parent
-                                    ((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(Integer.valueOf(languages.getValue().toString()))).getId(),
+((XincoCoreLanguage)        getXincoCoreLanguages().get(valueOf(languages.getValue().toString()))).getId(),
                                     form.getField("designation").getValue().toString(),
                                     finalStatus);
                         } else {
                             tempNode = new XincoCoreNodeServer(
-                                    Integer.valueOf(form.getField("id").getValue().toString()));
+                                    valueOf(form.getField("id").getValue().toString()));
                             //Update with changes
                             tempNode.setDesignation(form.getField("designation").getValue().toString());
-                            tempNode.setXincoCoreLanguage(((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(Integer.valueOf(languages.getValue().toString()))));
+                            tempNode.setXincoCoreLanguage(((XincoCoreLanguage) getXincoCoreLanguages().get(valueOf(languages.getValue().toString()))));
                         }
                         tempNode.setChangerID(getLoggedUser().getId());
                         //Call the web service
                         if (getService().setXincoCoreNode(tempNode, loggedUser) == null) {
                             getMainWindow().showNotification(getInstance().getResource().getString("error.accessdenied"),
-                                    getInstance().getResource().getString("error.folder.sufficientrights"),
-                                    com.vaadin.ui.Window.Notification.TYPE_ERROR_MESSAGE);
+                                    getInstance().getResource().getString("error.folder.sufficientrights"), TYPE_ERROR_MESSAGE);
                         }
                         getMainWindow().removeWindow(dataFolderDialog);
                         refresh();
                     } catch (XincoException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                     }
                 }
             });
@@ -4665,10 +4703,10 @@ public class Xinco extends Application implements HttpServletRequestListener {
             dataFolderDialog.addComponent(form);
             dataFolderDialog.setModal(true);
             dataFolderDialog.center();
-            dataFolderDialog.setWidth(25, Sizeable.UNITS_PERCENTAGE);
+            dataFolderDialog.setWidth(25, UNITS_PERCENTAGE);
             getMainWindow().addWindow(dataFolderDialog);
         } catch (XincoException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.log(SEVERE, null, ex);
         }
     }
 
@@ -4702,13 +4740,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     //Cancelled so roll back everything done in database
                     HashMap parameters = new HashMap();
                     parameters.put("id", getXincoCoreData().getId());
-                    XincoCoreDataServer.removeFromDB(loggedUser.getId(),
+                    removeFromDB(loggedUser.getId(),
                             getXincoCoreData().getId());
                 }
                 //Remove the file from the repository as well
                 closeWizard();
             } catch (XincoException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.log(SEVERE, null, ex);
             }
         }
 
@@ -4720,19 +4758,19 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         XincoCoreLanguage xcl1;
                         int selection = -1;
                         int alt_selection = 0;
-                        for (int j = 0; j < XincoCoreLanguageServer.getXincoCoreLanguages().size(); j++) {
-                            if (((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(j)).getSign().toLowerCase().compareTo(Locale.getDefault().getLanguage().toLowerCase()) == 0) {
+                        for (int j = 0; j < getXincoCoreLanguages().size(); j++) {
+                            if (((XincoCoreLanguage) getXincoCoreLanguages().get(j)).getSign().toLowerCase().compareTo(getDefault().getLanguage().toLowerCase()) == 0) {
                                 selection = j;
                                 break;
                             }
-                            if (((XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(j)).getId() == 1) {
+                            if (((XincoCoreLanguage) getXincoCoreLanguages().get(j)).getId() == 1) {
                                 alt_selection = j;
                             }
                         }
                         if (selection == -1) {
                             selection = alt_selection;
                         }
-                        xcl1 = (XincoCoreLanguage) XincoCoreLanguageServer.getXincoCoreLanguages().get(selection);
+                        xcl1 = (XincoCoreLanguage) getXincoCoreLanguages().get(selection);
                         getXincoCoreData().setXincoCoreLanguage(xcl1);
                     }
                     getXincoCoreData().setId(0);
@@ -4755,9 +4793,9 @@ public class Xinco extends Application implements HttpServletRequestListener {
                     }
                     addLog(getXincoCoreData(),
                             getXincoCoreData().getXincoCoreLogs().isEmpty()
-                            ? OPCode.CREATION : OPCode.CHECKIN);
+                            ? CREATION : CHECKIN);
                 } catch (XincoException | IOException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.log(SEVERE, null, ex);
                 }
             } else {
                 //Update data only
@@ -4785,7 +4823,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 //Show changes in tree
                 refresh();
             } catch (XincoException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.log(SEVERE, null, ex);
             }
         }
     }
@@ -4797,7 +4835,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
         try {
             xcns = new XincoCoreNodeServer(1);
         } catch (XincoException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.log(SEVERE, null, ex);
         }
         if (xcns != null) {
             //Clear tree and start over
@@ -4824,13 +4862,13 @@ public class Xinco extends Application implements HttpServletRequestListener {
         try {
             updateMenu();
         } catch (XincoException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.log(SEVERE, null, ex);
         }
         XincoCoreACE tempAce = new XincoCoreACE();
         getXincoTable().setVisible(getLoggedUser() != null);
         getXincoTable().requestRepaint();
         xeSplitPanel.setSplitPosition(getLoggedUser() != null ? 25
-                : 100, Sizeable.UNITS_PERCENTAGE);
+                : 100, UNITS_PERCENTAGE);
         if (getXincoTable().isVisible()) {
             //Clear table
             xincoTable.removeAllItems();
@@ -4841,17 +4879,17 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 // check for children only if none have been found yet
                 XincoCoreNodeServer xcns = null;
                 try {
-                    xcns = new XincoCoreNodeServer(Integer.valueOf(source.substring(source.indexOf('-') + 1)));
+                    xcns = new XincoCoreNodeServer(valueOf(source.substring(source.indexOf('-') + 1)));
                 } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.log(SEVERE, null, ex);
                 }
                 if (xcns != null) {
                     // Get ACE
                     try {
-                        tempAce = XincoCoreACEServer.checkAccess(new XincoCoreUserServer(getLoggedUser().getId()),
+                        tempAce = checkAccess(new XincoCoreUserServer(getLoggedUser().getId()),
                                 (ArrayList) (xcns).getXincoCoreAcl());
                     } catch (XincoException ex) {
-                        LOG.log(Level.SEVERE, null, ex);
+                        LOG.log(SEVERE, null, ex);
                     }
                     if (!xincoTree.hasChildren(xincoTree.getValue()) && tempAce.isReadPermission()) {
                         try {
@@ -4860,12 +4898,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             xcns.fillXincoCoreNodes();
                             addChildren("node-" + xcns.getId());
                         } catch (XincoException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                            LOG.log(SEVERE, null, ex);
                         }
                     } else if (!tempAce.isReadPermission()) {
                         getMainWindow().showNotification(getInstance().getResource().getString("error.accessdenied"),
-                                getInstance().getResource().getString("error.folder.sufficientrights"),
-                                com.vaadin.ui.Window.Notification.TYPE_WARNING_MESSAGE);
+                                getInstance().getResource().getString("error.folder.sufficientrights"), TYPE_WARNING_MESSAGE);
                     }
                     // update details table
                     xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
@@ -4923,11 +4960,11 @@ public class Xinco extends Application implements HttpServletRequestListener {
                 // get ace
                 XincoCoreDataServer temp = null;
                 try {
-                    temp = new XincoCoreDataServer(Integer.valueOf(source.substring(source.indexOf('-') + 1)));
-                    tempAce = XincoCoreACEServer.checkAccess(new XincoCoreUserServer(1),
+                    temp = new XincoCoreDataServer(valueOf(source.substring(source.indexOf('-') + 1)));
+                    tempAce = checkAccess(new XincoCoreUserServer(1),
                             (ArrayList) (temp).getXincoCoreAcl());
                 } catch (XincoException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    LOG.log(SEVERE, null, ex);
                 }
                 if (temp != null) {
                     xincoTable.addItem(new Object[]{
@@ -5036,19 +5073,19 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 Date time = ((XincoAddAttribute) temp.getXincoAddAttributes().get(j)).getAttribDatetime().toGregorianCalendar().getTime();
                                 Calendar cal = new GregorianCalendar();
                                 cal.setTime(time);
-                                value = (cal.get(Calendar.MONTH) == 11
-                                        && cal.get(Calendar.YEAR) == 2
-                                        && cal.get(Calendar.DAY_OF_MONTH) == 31) ? "" : "" + time;
+                                value = (cal.get(MONTH) == 11
+                                        && cal.get(YEAR) == 2
+                                        && cal.get(DAY_OF_MONTH) == 31) ? "" : "" + time;
                             }
                             Link link = new Link(value, new ExternalResource(value));
                             link.setTargetName("_blank");
-                            link.setTargetBorder(Link.TARGET_BORDER_NONE);
+                            link.setTargetBorder(TARGET_BORDER_NONE);
                             try {
                                 xincoTable.addItem(new Object[]{header, header.equals("URL")
-                                    && XincoSettingServer.getSetting(loggedUser, "setting.allowoutsidelinks", true).isBoolValue()
+                                    && getSetting(loggedUser, "setting.allowoutsidelinks", true).isBoolValue()
                                     ? link : new com.vaadin.ui.Label(value)}, i++);
                             } catch (XincoException ex) {
-                                LOG.log(Level.SEVERE, null, ex);
+                                LOG.log(SEVERE, null, ex);
                             }
                         }
                     } else {
@@ -5062,12 +5099,12 @@ public class Xinco extends Application implements HttpServletRequestListener {
                         value = getInstance().getURL().toString() + "?dataId=" + temp.getId();
                         Link link = new Link(value, new ExternalResource(value));
                         link.setTargetName("_blank");
-                        link.setTargetBorder(Link.TARGET_BORDER_NONE);
+                        link.setTargetBorder(TARGET_BORDER_NONE);
                         try {
                             header = getInstance().getResource().getString("general.data.type.URL");
                             xincoTable.addItem(new Object[]{header, link}, i++);
                         } catch (XincoException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                            LOG.log(SEVERE, null, ex);
                         }
                     }
                     xincoTable.addItem(new Object[]{"\u00a0", new com.vaadin.ui.Label()}, i++);
@@ -5086,36 +5123,36 @@ public class Xinco extends Application implements HttpServletRequestListener {
                                 // convert clone from remote time to local time
                                 cal = ((XMLGregorianCalendar) ((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getOpDatetime().clone()).toGregorianCalendar();
                                 realcal = (((XincoCoreLog) temp.getXincoCoreLogs().get(j)).getOpDatetime());
-                                cal.add(Calendar.MILLISECOND,
-                                        (ngc.get(Calendar.ZONE_OFFSET)
-                                        - realcal.toGregorianCalendar().get(Calendar.ZONE_OFFSET))
-                                        - (ngc.get(Calendar.DST_OFFSET)
-                                        + realcal.toGregorianCalendar().get(Calendar.DST_OFFSET)));
+                                cal.add(MILLISECOND,
+                                        (ngc.get(ZONE_OFFSET)
+                                        - realcal.toGregorianCalendar().get(ZONE_OFFSET))
+                                        - (ngc.get(DST_OFFSET)
+                                        + realcal.toGregorianCalendar().get(DST_OFFSET)));
                                 header = ""
-                                        + (cal.get(Calendar.MONTH)
+                                        + (cal.get(MONTH)
                                         + 1)
                                         + " / "
-                                        + cal.get(Calendar.DAY_OF_MONTH)
+                                        + cal.get(DAY_OF_MONTH)
                                         + " / "
-                                        + cal.get(Calendar.YEAR)
+                                        + cal.get(YEAR)
                                         + " ";
-                                if (cal.get(Calendar.HOUR_OF_DAY) < 10) {
-                                    header += "0" + cal.get(Calendar.HOUR_OF_DAY) + ":";
+                                if (cal.get(HOUR_OF_DAY) < 10) {
+                                    header += "0" + cal.get(HOUR_OF_DAY) + ":";
                                 } else {
-                                    header += cal.get(Calendar.HOUR_OF_DAY) + ":";
+                                    header += cal.get(HOUR_OF_DAY) + ":";
                                 }
-                                if (cal.get(Calendar.MINUTE) < 10) {
-                                    header += "0" + cal.get(Calendar.MINUTE) + ":";
+                                if (cal.get(MINUTE) < 10) {
+                                    header += "0" + cal.get(MINUTE) + ":";
                                 } else {
-                                    header += cal.get(Calendar.MINUTE) + ":";
+                                    header += cal.get(MINUTE) + ":";
                                 }
-                                if (cal.get(Calendar.SECOND) < 10) {
-                                    header += "0" + cal.get(Calendar.SECOND);
+                                if (cal.get(SECOND) < 10) {
+                                    header += "0" + cal.get(SECOND);
                                 } else {
-                                    header += cal.get(Calendar.SECOND);
+                                    header += cal.get(SECOND);
                                 }
                             } catch (Exception ce) {
-                                LOG.log(Level.SEVERE, null, ce);
+                                LOG.log(SEVERE, null, ce);
                             }
                         }
                         value = "("
@@ -5145,7 +5182,7 @@ public class Xinco extends Application implements HttpServletRequestListener {
                             xincoTable.addItem(new Object[]{header,
                                 new com.vaadin.ui.Label(value)}, i++);
                         } catch (UnsupportedOperationException ex) {
-                            LOG.log(Level.SEVERE, null, ex);
+                            LOG.log(SEVERE, null, ex);
                         }
                     }
                     //Update selected data

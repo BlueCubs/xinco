@@ -1,6 +1,8 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
+import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
 import com.bluecubs.xinco.core.server.persistence.XincoId;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoIdJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
@@ -8,7 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  *
@@ -18,7 +22,7 @@ public class XincoIdServer extends XincoId {
 
     public XincoIdServer(Integer id) throws XincoException {
         XincoIdJpaController controller = new XincoIdJpaController(
-                XincoDBManager.getEntityManagerFactory());
+                getEntityManagerFactory());
         XincoId xincoId = controller.findXincoId(id);
         if (xincoId != null) {
             fill(xincoId);
@@ -42,7 +46,7 @@ public class XincoIdServer extends XincoId {
     public int write2DB() throws XincoException {
         try {
             XincoIdJpaController controller = new XincoIdJpaController(
-                    XincoDBManager.getEntityManagerFactory());
+                    getEntityManagerFactory());
             XincoId xincoId;
             if (getId() > 0) {
                 xincoId = controller.findXincoId(getId());
@@ -59,14 +63,14 @@ public class XincoIdServer extends XincoId {
             }
             return getId();
         } catch (Exception ex) {
-            Logger.getLogger(XincoIdServer.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoIdServer.class.getSimpleName()).log(SEVERE, null, ex);
             throw new XincoException(ex);
         }
     }
 
     public static int deleteFromDB(XincoId id) throws XincoException {
         XincoIdJpaController controller = new XincoIdJpaController(
-                XincoDBManager.getEntityManagerFactory());
+                getEntityManagerFactory());
         if (id != null) {
             try {
                 controller.destroy(id.getId());
@@ -80,7 +84,7 @@ public class XincoIdServer extends XincoId {
     public static XincoIdServer getXincoId(String table) throws XincoException {
         HashMap parameters = new HashMap();
         parameters.put("tablename", table);
-        List result = XincoDBManager.namedQuery("XincoId.findByTablename", parameters);
+        List result = namedQuery("XincoId.findByTablename", parameters);
         if (!result.isEmpty()) {
             return new XincoIdServer(((com.bluecubs.xinco.core.server.persistence.XincoId) result.get(0)).getId());
         } else {
@@ -96,8 +100,8 @@ public class XincoIdServer extends XincoId {
     }
 
     public static List<XincoIdServer> getIds() throws XincoException {
-        ArrayList<XincoIdServer> ids = new ArrayList<XincoIdServer>();
-        List result = XincoDBManager.namedQuery("XincoId.findAll");
+        ArrayList<XincoIdServer> ids = new ArrayList<>();
+        List result = namedQuery("XincoId.findAll");
         if (!result.isEmpty()) {
             for (Object o : result) {
                 ids.add(new XincoIdServer(((XincoId) o).getId()));

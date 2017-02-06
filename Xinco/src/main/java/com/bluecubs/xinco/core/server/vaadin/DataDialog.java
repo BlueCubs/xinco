@@ -28,11 +28,15 @@
 package com.bluecubs.xinco.core.server.vaadin;
 
 import com.bluecubs.xinco.core.server.XincoCoreLanguageServer;
+import static com.bluecubs.xinco.core.server.XincoCoreLanguageServer.getXincoCoreLanguages;
+import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
 import java.util.logging.Level;
+import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  *
@@ -46,35 +50,35 @@ class DataDialog extends CustomComponent {
     private final Select languages;
 
     DataDialog(boolean newData) {
-        languages = new Select(Xinco.getInstance().getResource().getString(
+        languages = new Select(getInstance().getResource().getString(
                 "general.language") + ":");
-        com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(Xinco.getInstance()
+        com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(getInstance()
                 .getResource().getString("window.datadetails"));
         panel.setContent(new VerticalLayout());
         //ID
-        idField = new com.vaadin.ui.TextField(Xinco.getInstance().getResource()
+        idField = new com.vaadin.ui.TextField(getInstance().getResource()
                 .getString("general.id") + ":");
         panel.addComponent(idField);
         if (newData) {
             idField.setValue("0");
         } else {
-            idField.setValue(Xinco.getInstance().getXincoCoreData().getId());
+            idField.setValue(getInstance().getXincoCoreData().getId());
         }
         //Not editable
         idField.setEnabled(false);
         //Designation
-        designationField = new com.vaadin.ui.TextField(Xinco.getInstance()
+        designationField = new com.vaadin.ui.TextField(getInstance()
                 .getResource().getString("general.designation") + ":");
         panel.addComponent(designationField);
-        designationField.setValue(Xinco.getInstance().getXincoCoreData()
+        designationField.setValue(getInstance().getXincoCoreData()
                 .getDesignation());
         //Language selection
-        for (Object language : XincoCoreLanguageServer.getXincoCoreLanguages()) {
+        for (Object language : getXincoCoreLanguages()) {
             String designation = 
                     ((XincoCoreLanguageServer) language).getDesignation();
-            if (Xinco.getInstance().getResource().containsKey(designation)) {
+            if (getInstance().getResource().containsKey(designation)) {
                 String value = 
-                        Xinco.getInstance().getResource()
+                        getInstance().getResource()
                         .getString(designation);
                 languages.addItem(((XincoCoreLanguageServer) language).getId());
                 languages.setItemCaption(((XincoCoreLanguageServer) language)
@@ -84,58 +88,58 @@ class DataDialog extends CustomComponent {
                     languages.setValue(((XincoCoreLanguageServer) language)
                             .getId());
                 } else if (!newData && ((XincoCoreLanguageServer) language)
-                        .getId() == Xinco.getInstance().getXincoCoreData()
+                        .getId() == getInstance().getXincoCoreData()
                         .getXincoCoreLanguage().getId()) {
                     languages.setValue(((XincoCoreLanguageServer) language)
                             .getId());
                 }
             } else {
-                Logger.getLogger(DataDialog.class.getName()).log(Level.WARNING, 
+                getLogger(DataDialog.class.getName()).log(WARNING, 
                         "{0} not defined in XincoMessagesLocale", "Locale." 
                         + designation);
             }
-            if (Xinco.getInstance().getXincoCoreData() != null 
-                    && Xinco.getInstance().getXincoCoreData()
+            if (getInstance().getXincoCoreData() != null 
+                    && getInstance().getXincoCoreData()
                     .getXincoCoreLanguage() != null 
-                    && Xinco.getInstance().getXincoCoreData()
+                    && getInstance().getXincoCoreData()
                     .getXincoCoreLanguage().getSign().equals(designation)) {
                 languages.setValue("Locale." + designation);
             }
         }
         panel.addComponent(languages);
         //Status
-        statusField = new com.vaadin.ui.TextField(Xinco.getInstance()
+        statusField = new com.vaadin.ui.TextField(getInstance()
                 .getResource().getString("general.status") + ":");
         //Not editable
         statusField.setEnabled(false);
         String text = "";
-        if (newData || Xinco.getInstance().getXincoCoreData()
+        if (newData || getInstance().getXincoCoreData()
                 .getStatusNumber() == 1) {
-            text = Xinco.getInstance().getResource()
+            text = getInstance().getResource()
                     .getString("general.status.open");
         }
-        if (Xinco.getInstance().getXincoCoreData() != null 
-                && Xinco.getInstance().getXincoCoreData()
+        if (getInstance().getXincoCoreData() != null 
+                && getInstance().getXincoCoreData()
                 .getStatusNumber() == 2) {
-            text = Xinco.getInstance().getResource()
+            text = getInstance().getResource()
                     .getString("general.status.locked") + " (-)";
         }
-        if (Xinco.getInstance().getXincoCoreData() != null 
-                && Xinco.getInstance().getXincoCoreData()
+        if (getInstance().getXincoCoreData() != null 
+                && getInstance().getXincoCoreData()
                 .getStatusNumber() == 3) {
-            text = Xinco.getInstance().getResource()
+            text = getInstance().getResource()
                     .getString("general.status.archived") + " (->)";
         }
-        if (Xinco.getInstance().getXincoCoreData() != null 
-                && Xinco.getInstance().getXincoCoreData()
+        if (getInstance().getXincoCoreData() != null 
+                && getInstance().getXincoCoreData()
                 .getStatusNumber() == 4) {
-            text = Xinco.getInstance().getResource()
+            text = getInstance().getResource()
                     .getString("general.status.checkedout") + " (X)";
         }
-        if (Xinco.getInstance().getXincoCoreData() != null 
-                && Xinco.getInstance().getXincoCoreData()
+        if (getInstance().getXincoCoreData() != null 
+                && getInstance().getXincoCoreData()
                 .getStatusNumber() == 5) {
-            text = Xinco.getInstance().getResource()
+            text = getInstance().getResource()
                     .getString("general.status.published") + " (WWW)";
         }
         statusField.setValue(text);

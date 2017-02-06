@@ -28,6 +28,7 @@
 package com.bluecubs.xinco.core.server.vaadin.setting;
 
 import com.bluecubs.xinco.core.server.vaadin.Xinco;
+import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import com.vaadin.ui.DefaultFieldFactory;
 
 /**
@@ -46,7 +47,7 @@ public class XincoSettingFieldFactory extends DefaultFieldFactory {
     public static String createCaptionByPropertyId(Object propertyId) {
         String name = propertyId.toString();
         if (name.length() > 0 && "description".equals(name)) {
-            name = Xinco.getInstance().getResource().getString("general.description");
+            name = getInstance().getResource().getString("general.description");
         }
         return name;
     }

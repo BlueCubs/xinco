@@ -34,12 +34,14 @@ package com.bluecubs.xinco.core.server.index.filetypes;
 
 import java.io.*;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 public class XincoIndexText implements XincoIndexFileType {
 
     private static final Logger logger =
-            Logger.getLogger(XincoIndexText.class.getSimpleName());
+            getLogger(XincoIndexText.class.getSimpleName());
 
     public XincoIndexText() {
         super();
@@ -53,19 +55,19 @@ public class XincoIndexText implements XincoIndexFileType {
             is = new FileInputStream(f);
             reader = new BufferedReader(new InputStreamReader(is));
         } catch (Exception fe) {
-            logger.log(Level.SEVERE, null, fe);
+            logger.log(SEVERE, null, fe);
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (Exception re) {
-                    logger.log(Level.SEVERE, null, re);
+                    logger.log(SEVERE, null, re);
                 }
             }
             if (is != null) {
                 try {
                     is.close();
                 } catch (Exception ise) {
-                    logger.log(Level.SEVERE, null, ise);
+                    logger.log(SEVERE, null, ise);
                 }
             }
             reader = null;

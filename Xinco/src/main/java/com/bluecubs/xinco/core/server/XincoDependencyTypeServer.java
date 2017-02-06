@@ -1,6 +1,8 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
+import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
 import com.bluecubs.xinco.core.server.persistence.XincoDependencyBehavior;
 import com.bluecubs.xinco.core.server.persistence.XincoDependencyType;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoDependencyBehaviorJpaController;
@@ -10,7 +12,9 @@ import com.bluecubs.xinco.core.server.persistence.controller.exceptions.Nonexist
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  *
@@ -25,7 +29,7 @@ public class XincoDependencyTypeServer extends XincoDependencyType {
     }
 
     public XincoDependencyTypeServer(int id, int behaviorId, String designation) throws XincoException {
-        XincoDependencyBehavior behavior = new XincoDependencyBehaviorJpaController(XincoDBManager.getEntityManagerFactory()).findXincoDependencyBehavior(behaviorId);
+        XincoDependencyBehavior behavior = new XincoDependencyBehaviorJpaController(getEntityManagerFactory()).findXincoDependencyBehavior(behaviorId);
         setDesignation(designation);
         setId(id);
         if (behavior != null) {
@@ -36,7 +40,7 @@ public class XincoDependencyTypeServer extends XincoDependencyType {
     }
 
     public XincoDependencyTypeServer(int behaviorId) throws XincoException {
-        XincoDependencyType dependency = new XincoDependencyTypeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoDependencyType(behaviorId);
+        XincoDependencyType dependency = new XincoDependencyTypeJpaController(getEntityManagerFactory()).findXincoDependencyType(behaviorId);
         if (dependency != null) {
             setDescription(dependency.getDescription());
             setDesignation(dependency.getDesignation());
@@ -54,7 +58,7 @@ public class XincoDependencyTypeServer extends XincoDependencyType {
             if (getId() > 0) {
                 parameters.clear();
                 parameters.put("id", getId());
-                result = XincoDBManager.namedQuery("XincoDependencyType.findById", parameters);
+                result = namedQuery("XincoDependencyType.findById", parameters);
                 dep = (com.bluecubs.xinco.core.server.persistence.XincoDependencyType) result.get(0);
             } else {
                 dep = new com.bluecubs.xinco.core.server.persistence.XincoDependencyType();
@@ -64,13 +68,13 @@ public class XincoDependencyTypeServer extends XincoDependencyType {
             dep.setDesignation(getDesignation());
             dep.setXincoDependencyBehavior(getXincoDependencyBehavior());
             if (create) {
-                new XincoDependencyTypeJpaController(XincoDBManager.getEntityManagerFactory()).create(dep);
+                new XincoDependencyTypeJpaController(getEntityManagerFactory()).create(dep);
                 setId(dep.getId());
             } else {
-                new XincoDependencyTypeJpaController(XincoDBManager.getEntityManagerFactory()).edit(dep);
+                new XincoDependencyTypeJpaController(getEntityManagerFactory()).edit(dep);
             }
         } catch (Exception e) {
-            Logger.getLogger(XincoDependencyTypeServer.class.getSimpleName()).log(Level.SEVERE, null, e);
+            getLogger(XincoDependencyTypeServer.class.getSimpleName()).log(SEVERE, null, e);
             throw new XincoException(e.getMessage());
         }
         return getId();
@@ -78,12 +82,9 @@ public class XincoDependencyTypeServer extends XincoDependencyType {
 
     public static int deleteFromDB(int id) throws XincoException {
         try {
-            new XincoDependencyTypeJpaController(XincoDBManager.getEntityManagerFactory()).destroy(id);
-        } catch (IllegalOrphanException ex) {
-            Logger.getLogger(XincoDependencyTypeServer.class.getName()).log(Level.SEVERE, null, ex);
-            return -1;
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(XincoDependencyTypeServer.class.getName()).log(Level.SEVERE, null, ex);
+            new XincoDependencyTypeJpaController(getEntityManagerFactory()).destroy(id);
+        } catch (IllegalOrphanException | NonexistentEntityException ex) {
+            getLogger(XincoDependencyTypeServer.class.getName()).log(SEVERE, null, ex);
             return -1;
         }
         return 0;

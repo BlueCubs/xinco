@@ -1,8 +1,12 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import static com.bluecubs.xinco.core.server.XincoCoreGroupServer.deleteFromDB;
+import static com.bluecubs.xinco.core.server.XincoCoreGroupServer.getXincoCoreGroups;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -28,9 +32,9 @@ public class XincoCoreGroupServerTest extends AbstractXincoDataBaseTestCase {
         try {
             XincoCoreGroupServer instance = new XincoCoreGroupServer(0, "Test", 1);
             assertTrue(instance.write2DB() > 0);
-            XincoCoreGroupServer.deleteFromDB(instance);
+            deleteFromDB(instance);
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreGroupServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreGroupServerTest.class.getSimpleName()).log(SEVERE, null, ex);
             fail();
         }
     }
@@ -39,6 +43,6 @@ public class XincoCoreGroupServerTest extends AbstractXincoDataBaseTestCase {
      * Test of getXincoCoreGroups method, of class XincoCoreGroupServer.
      */
     public void testGetXincoCoreGroups() {
-        assertTrue(XincoCoreGroupServer.getXincoCoreGroups().size() > 0);
+        assertTrue(getXincoCoreGroups().size() > 0);
     }
 }

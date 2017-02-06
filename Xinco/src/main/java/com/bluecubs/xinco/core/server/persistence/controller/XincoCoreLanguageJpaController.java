@@ -69,13 +69,13 @@ public class XincoCoreLanguageJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            List<XincoCoreNode> attachedXincoCoreNodeList = new ArrayList<XincoCoreNode>();
+            List<XincoCoreNode> attachedXincoCoreNodeList = new ArrayList<>();
             for (XincoCoreNode xincoCoreNodeListXincoCoreNodeToAttach : xincoCoreLanguage.getXincoCoreNodeList()) {
                 xincoCoreNodeListXincoCoreNodeToAttach = em.getReference(xincoCoreNodeListXincoCoreNodeToAttach.getClass(), xincoCoreNodeListXincoCoreNodeToAttach.getId());
                 attachedXincoCoreNodeList.add(xincoCoreNodeListXincoCoreNodeToAttach);
             }
             xincoCoreLanguage.setXincoCoreNodeList(attachedXincoCoreNodeList);
-            List<XincoCoreData> attachedXincoCoreDataList = new ArrayList<XincoCoreData>();
+            List<XincoCoreData> attachedXincoCoreDataList = new ArrayList<>();
             for (XincoCoreData xincoCoreDataListXincoCoreDataToAttach : xincoCoreLanguage.getXincoCoreDataList()) {
                 xincoCoreDataListXincoCoreDataToAttach = em.getReference(xincoCoreDataListXincoCoreDataToAttach.getClass(), xincoCoreDataListXincoCoreDataToAttach.getId());
                 attachedXincoCoreDataList.add(xincoCoreDataListXincoCoreDataToAttach);
@@ -127,7 +127,7 @@ public class XincoCoreLanguageJpaController implements Serializable {
             for (XincoCoreNode xincoCoreNodeListOldXincoCoreNode : xincoCoreNodeListOld) {
                 if (!xincoCoreNodeListNew.contains(xincoCoreNodeListOldXincoCoreNode)) {
                     if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
+                        illegalOrphanMessages = new ArrayList<>();
                     }
                     illegalOrphanMessages.add("You must retain XincoCoreNode " + xincoCoreNodeListOldXincoCoreNode + " since its xincoCoreLanguage field is not nullable.");
                 }
@@ -135,7 +135,7 @@ public class XincoCoreLanguageJpaController implements Serializable {
             for (XincoCoreData xincoCoreDataListOldXincoCoreData : xincoCoreDataListOld) {
                 if (!xincoCoreDataListNew.contains(xincoCoreDataListOldXincoCoreData)) {
                     if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
+                        illegalOrphanMessages = new ArrayList<>();
                     }
                     illegalOrphanMessages.add("You must retain XincoCoreData " + xincoCoreDataListOldXincoCoreData + " since its xincoCoreLanguage field is not nullable.");
                 }
@@ -143,14 +143,14 @@ public class XincoCoreLanguageJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            List<XincoCoreNode> attachedXincoCoreNodeListNew = new ArrayList<XincoCoreNode>();
+            List<XincoCoreNode> attachedXincoCoreNodeListNew = new ArrayList<>();
             for (XincoCoreNode xincoCoreNodeListNewXincoCoreNodeToAttach : xincoCoreNodeListNew) {
                 xincoCoreNodeListNewXincoCoreNodeToAttach = em.getReference(xincoCoreNodeListNewXincoCoreNodeToAttach.getClass(), xincoCoreNodeListNewXincoCoreNodeToAttach.getId());
                 attachedXincoCoreNodeListNew.add(xincoCoreNodeListNewXincoCoreNodeToAttach);
             }
             xincoCoreNodeListNew = attachedXincoCoreNodeListNew;
             xincoCoreLanguage.setXincoCoreNodeList(xincoCoreNodeListNew);
-            List<XincoCoreData> attachedXincoCoreDataListNew = new ArrayList<XincoCoreData>();
+            List<XincoCoreData> attachedXincoCoreDataListNew = new ArrayList<>();
             for (XincoCoreData xincoCoreDataListNewXincoCoreDataToAttach : xincoCoreDataListNew) {
                 xincoCoreDataListNewXincoCoreDataToAttach = em.getReference(xincoCoreDataListNewXincoCoreDataToAttach.getClass(), xincoCoreDataListNewXincoCoreDataToAttach.getId());
                 attachedXincoCoreDataListNew.add(xincoCoreDataListNewXincoCoreDataToAttach);
@@ -213,14 +213,14 @@ public class XincoCoreLanguageJpaController implements Serializable {
             List<XincoCoreNode> xincoCoreNodeListOrphanCheck = xincoCoreLanguage.getXincoCoreNodeList();
             for (XincoCoreNode xincoCoreNodeListOrphanCheckXincoCoreNode : xincoCoreNodeListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
+                    illegalOrphanMessages = new ArrayList<>();
                 }
                 illegalOrphanMessages.add("This XincoCoreLanguage (" + xincoCoreLanguage + ") cannot be destroyed since the XincoCoreNode " + xincoCoreNodeListOrphanCheckXincoCoreNode + " in its xincoCoreNodeList field has a non-nullable xincoCoreLanguage field.");
             }
             List<XincoCoreData> xincoCoreDataListOrphanCheck = xincoCoreLanguage.getXincoCoreDataList();
             for (XincoCoreData xincoCoreDataListOrphanCheckXincoCoreData : xincoCoreDataListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
+                    illegalOrphanMessages = new ArrayList<>();
                 }
                 illegalOrphanMessages.add("This XincoCoreLanguage (" + xincoCoreLanguage + ") cannot be destroyed since the XincoCoreData " + xincoCoreDataListOrphanCheckXincoCoreData + " in its xincoCoreDataList field has a non-nullable xincoCoreLanguage field.");
             }

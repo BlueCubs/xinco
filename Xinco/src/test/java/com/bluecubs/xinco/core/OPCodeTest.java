@@ -1,5 +1,10 @@
 package com.bluecubs.xinco.core;
 
+import static com.bluecubs.xinco.core.OPCode.CHECKIN;
+import static com.bluecubs.xinco.core.OPCode.getOPCode;
+import static com.bluecubs.xinco.core.OPCode.valueOf;
+import static com.bluecubs.xinco.core.OPCode.values;
+import static java.lang.System.out;
 import org.junit.*;
 import static org.junit.Assert.assertTrue;
 
@@ -33,8 +38,8 @@ public class OPCodeTest {
      */
     @Test
     public void testValues() {
-        System.out.println("values");
-        assertTrue(OPCode.values().length > 0);
+        out.println("values");
+        assertTrue(values().length > 0);
     }
 
     /**
@@ -42,9 +47,9 @@ public class OPCodeTest {
      */
     @Test
     public void testGetOPCode() {
-        System.out.println("getOPCode");
-        assertTrue(OPCode.getOPCode(1) != null);
-        assertTrue(OPCode.getOPCode(0) == null);
+        out.println("getOPCode");
+        assertTrue(getOPCode(1) != null);
+        assertTrue(getOPCode(0) == null);
     }
 
     /**
@@ -52,8 +57,8 @@ public class OPCodeTest {
      */
     @Test
     public void testGetName() {
-        System.out.println("getName");
-        assertTrue(OPCode.getOPCode(1).getName() != null);
+        out.println("getName");
+        assertTrue(getOPCode(1).getName() != null);
     }
 
     /**
@@ -61,9 +66,9 @@ public class OPCodeTest {
      */
     @Test
     public void testValueOf() {
-        System.out.println("valueOf");
-        OPCode expResult = OPCode.CHECKIN;
-        OPCode result = OPCode.valueOf(OPCode.CHECKIN.name());
+        out.println("valueOf");
+        OPCode expResult = CHECKIN;
+        OPCode result = valueOf(CHECKIN.name());
         assertTrue(expResult == result);
     }
 }

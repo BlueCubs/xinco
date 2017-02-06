@@ -30,6 +30,8 @@ package com.bluecubs.xinco.core.server.persistence;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.*;
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.GenerationType.TABLE;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -54,7 +56,7 @@ public class XincoDependencyBehavior implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoDependencyBehaviorGen")
+    @GeneratedValue(strategy = TABLE, generator = "XincoDependencyBehaviorGen")
     @TableGenerator(name = "XincoDependencyBehaviorGen", table = "xinco_id",
     pkColumnName = "tablename",
     valueColumnName = "last_id",
@@ -71,7 +73,7 @@ public class XincoDependencyBehavior implements Serializable {
     @Size(max = 45)
     @Column(name = "description")
     private String description;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoDependencyBehavior")
+    @OneToMany(cascade = ALL, mappedBy = "xincoDependencyBehavior")
     private List<XincoDependencyType> xincoDependencyTypeList;
 
     public XincoDependencyBehavior() {

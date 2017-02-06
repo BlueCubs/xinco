@@ -30,6 +30,7 @@ package com.bluecubs.xinco.core.server.persistence;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
+import static javax.persistence.TemporalType.TIMESTAMP;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -55,7 +56,7 @@ public class XincoCoreUserModifiedRecord implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "mod_Time")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TIMESTAMP)
     private Date modTime;
     @Basic(optional = false)
     @NotNull

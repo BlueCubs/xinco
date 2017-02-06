@@ -1,8 +1,13 @@
 package com.bluecubs.xinco.core.server;
 
+import static com.bluecubs.xinco.core.server.XincoCoreNodeServer.findXincoCoreNodes;
+import static com.bluecubs.xinco.core.server.XincoCoreNodeServer.getXincoCoreNodeParents;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreNodeJpaController;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -26,10 +31,10 @@ public class XincoCoreNodeServerTest extends AbstractXincoDataBaseTestCase {
      */
     public void testGetXincoCoreNodeParents() {
         try {
-            assertTrue(XincoCoreNodeServer.getXincoCoreNodeParents(1).size() == 1);
-            assertTrue(XincoCoreNodeServer.getXincoCoreNodeParents(2).size() == 2);
+            assertTrue(getXincoCoreNodeParents(1).size() == 1);
+            assertTrue(getXincoCoreNodeParents(2).size() == 2);
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreNodeServerTest.class.getSimpleName()).log(Level.SEVERE, null, e);
+            getLogger(XincoCoreNodeServerTest.class.getSimpleName()).log(SEVERE, null, e);
             fail();
         }
     }
@@ -42,7 +47,7 @@ public class XincoCoreNodeServerTest extends AbstractXincoDataBaseTestCase {
             XincoCoreNodeServer instance = new XincoCoreNodeServer(1);
             assertTrue((instance.getXincoCoreNodes()).size() > 0);
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreNodeServerTest.class.getSimpleName()).log(Level.SEVERE, null, e);
+            getLogger(XincoCoreNodeServerTest.class.getSimpleName()).log(SEVERE, null, e);
             fail();
         }
     }
@@ -56,7 +61,7 @@ public class XincoCoreNodeServerTest extends AbstractXincoDataBaseTestCase {
             instance.fillXincoCoreData();
             assertTrue(instance.getXincoCoreData().size() > 0);
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreNodeServerTest.class.getSimpleName()).log(Level.SEVERE, null, e);
+            getLogger(XincoCoreNodeServerTest.class.getSimpleName()).log(SEVERE, null, e);
             fail();
         }
     }
@@ -66,9 +71,9 @@ public class XincoCoreNodeServerTest extends AbstractXincoDataBaseTestCase {
      */
     public void testFindXincoCoreNodes() {
         try {
-            assertTrue(XincoCoreNodeServer.findXincoCoreNodes("xincoRoot", 1).size() > 0);
+            assertTrue(findXincoCoreNodes("xincoRoot", 1).size() > 0);
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreNodeServerTest.class.getSimpleName()).log(Level.SEVERE, null, e);
+            getLogger(XincoCoreNodeServerTest.class.getSimpleName()).log(SEVERE, null, e);
             fail();
         }
     }
@@ -88,7 +93,7 @@ public class XincoCoreNodeServerTest extends AbstractXincoDataBaseTestCase {
             instance.setDesignation(designation.replaceAll(":", ""));
             instance.write2DB();
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreNodeServerTest.class.getSimpleName()).log(Level.SEVERE, null, e);
+            getLogger(XincoCoreNodeServerTest.class.getSimpleName()).log(SEVERE, null, e);
             fail();
         }
     }
@@ -104,9 +109,9 @@ public class XincoCoreNodeServerTest extends AbstractXincoDataBaseTestCase {
             int id = instance.write2DB();
             assertTrue(id > 0);
             instance.deleteFromDB(true, userID);
-            assertTrue(new XincoCoreNodeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreNode(id) == null);
+            assertTrue(new XincoCoreNodeJpaController(getEntityManagerFactory()).findXincoCoreNode(id) == null);
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreNodeServerTest.class.getSimpleName()).log(Level.SEVERE, null, e);
+            getLogger(XincoCoreNodeServerTest.class.getSimpleName()).log(SEVERE, null, e);
             fail();
         }
     }

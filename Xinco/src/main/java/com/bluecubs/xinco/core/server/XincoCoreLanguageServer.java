@@ -33,6 +33,9 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
+import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLanguageJpaController;
 import com.bluecubs.xinco.core.server.service.XincoCoreLanguage;
 import java.sql.Timestamp;
@@ -41,7 +44,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 public class XincoCoreLanguageServer extends XincoCoreLanguage {
 
@@ -53,7 +58,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
         try {
             parameters.clear();
             parameters.put("id", attrID);
-            result = XincoDBManager.namedQuery("XincoCoreLanguage.findById", parameters);
+            result = namedQuery("XincoCoreLanguage.findById", parameters);
             //throw exception if no result found
             if (result.size() > 0) {
                 com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage xcl =
@@ -65,7 +70,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
                 throw new XincoException("XincoCoreLanguage with id: " + attrID + " doesn't exist!");
             }
         } catch (Exception ex) {
-            Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreLanguageServer.class.getName()).log(SEVERE, null, ex);
             throw new XincoException(ex.getLocalizedMessage());
         }
     }
@@ -86,7 +91,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     //write to db
     public int write2DB() throws XincoException {
         try {
-            XincoCoreLanguageJpaController controller = new XincoCoreLanguageJpaController(XincoDBManager.getEntityManagerFactory());
+            XincoCoreLanguageJpaController controller = new XincoCoreLanguageJpaController(getEntityManagerFactory());
             com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage xcl;
             if (getId() > 0) {
                 xcl = controller.findXincoCoreLanguage(getId());
@@ -107,7 +112,7 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
                 setId(xcl.getId());
             }
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.SEVERE, null, e);
+            getLogger(XincoCoreLanguageServer.class.getName()).log(SEVERE, null, e);
             throw new XincoException(e.getMessage());
         }
         return getId();
@@ -116,9 +121,9 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     //delete from db
     public static int deleteFromDB(XincoCoreLanguage attrCL, int userID) throws XincoException {
         try {
-            new XincoCoreLanguageJpaController(XincoDBManager.getEntityManagerFactory()).destroy(attrCL.getId());
+            new XincoCoreLanguageJpaController(getEntityManagerFactory()).destroy(attrCL.getId());
         } catch (Exception ex) {
-            Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreLanguageServer.class.getName()).log(SEVERE, null, ex);
             throw new XincoException();
         }
         return 0;
@@ -126,14 +131,14 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
 
     //create complete list of languages
     public static ArrayList<XincoCoreLanguageServer> getXincoCoreLanguages() {
-        ArrayList<XincoCoreLanguageServer> coreLanguages = new ArrayList<XincoCoreLanguageServer>();
+        ArrayList<XincoCoreLanguageServer> coreLanguages = new ArrayList<>();
         try {
-            result = XincoDBManager.createdQuery("SELECT xcl FROM XincoCoreLanguage xcl ORDER BY xcl.designation");
+            result = createdQuery("SELECT xcl FROM XincoCoreLanguage xcl ORDER BY xcl.designation");
             for (Object lang : result) {
                 coreLanguages.add(new XincoCoreLanguageServer((com.bluecubs.xinco.core.server.persistence.XincoCoreLanguage) lang));
             }
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreLanguageServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreLanguageServer.class.getName()).log(SEVERE, null, ex);
             coreLanguages.clear();
         }
         return coreLanguages;
@@ -143,12 +148,12 @@ public class XincoCoreLanguageServer extends XincoCoreLanguage {
     public static boolean isLanguageUsed(XincoCoreLanguage xcl) {
         boolean is_used;
         try {
-            is_used = ((Long) XincoDBManager.createdQuery("select count(xcn) from XincoCoreNode xcn where xcn.xincoCoreLanguage.id = " + xcl.getId()).get(0)) > 0;
+            is_used = ((Long) createdQuery("select count(xcn) from XincoCoreNode xcn where xcn.xincoCoreLanguage.id = " + xcl.getId()).get(0)) > 0;
             if (!is_used) {
-                is_used = ((Long) XincoDBManager.createdQuery("select count(xcd) from XincoCoreData xcd where xcd.xincoCoreLanguage.id = " + xcl.getId()).get(0)) > 0;
+                is_used = ((Long) createdQuery("select count(xcd) from XincoCoreData xcd where xcd.xincoCoreLanguage.id = " + xcl.getId()).get(0)) > 0;
             }
         } catch (Exception ex) {
-            Logger.getLogger(XincoCoreLanguageServer.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreLanguageServer.class.getSimpleName()).log(SEVERE, null, ex);
             is_used = true; // rather lock language in case of error!
         }
         return is_used;

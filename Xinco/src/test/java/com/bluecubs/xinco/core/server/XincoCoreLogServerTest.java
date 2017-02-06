@@ -1,8 +1,11 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import static com.bluecubs.xinco.core.server.XincoCoreLogServer.getXincoCoreLogs;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -33,7 +36,7 @@ public class XincoCoreLogServerTest extends AbstractXincoDataBaseTestCase {
             instance = new XincoCoreLogServer(1);
             assertTrue(instance.getXincoCoreUserId() == user.getId());
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreLogServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreLogServerTest.class.getSimpleName()).log(SEVERE, null, ex);
             fail();
         }
     }
@@ -42,6 +45,6 @@ public class XincoCoreLogServerTest extends AbstractXincoDataBaseTestCase {
      * Test of getXincoCoreLogs method, of class XincoCoreLogServer.
      */
     public void testGetXincoCoreLogs() {
-        assertTrue(XincoCoreLogServer.getXincoCoreLogs(1).size() > 0);
+        assertTrue(getXincoCoreLogs(1).size() > 0);
     }
 }

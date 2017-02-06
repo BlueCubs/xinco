@@ -1,8 +1,13 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import static com.bluecubs.xinco.core.server.XincoCoreLanguageServer.deleteFromDB;
+import static com.bluecubs.xinco.core.server.XincoCoreLanguageServer.getXincoCoreLanguages;
+import static com.bluecubs.xinco.core.server.XincoCoreLanguageServer.isLanguageUsed;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -30,9 +35,9 @@ public class XincoCoreLanguageServerTest extends AbstractXincoDataBaseTestCase {
             int id = instance.write2DB();
             assertTrue(id > 0);
             instance = new XincoCoreLanguageServer(id);
-            assertTrue(XincoCoreLanguageServer.deleteFromDB(instance, 1) == 0);
+            assertTrue(deleteFromDB(instance, 1) == 0);
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreLanguageServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreLanguageServerTest.class.getSimpleName()).log(SEVERE, null, ex);
             fail();
         }
     }
@@ -41,7 +46,7 @@ public class XincoCoreLanguageServerTest extends AbstractXincoDataBaseTestCase {
      * Test of getXincoCoreLanguages method, of class XincoCoreLanguageServer.
      */
     public void testGetXincoCoreLanguages() {
-        assertTrue(XincoCoreLanguageServer.getXincoCoreLanguages().size() > 0);
+        assertTrue(getXincoCoreLanguages().size() > 0);
     }
 
     /**
@@ -49,10 +54,10 @@ public class XincoCoreLanguageServerTest extends AbstractXincoDataBaseTestCase {
      */
     public void testIsLanguageUsed() {
         try {
-            assertFalse(XincoCoreLanguageServer.isLanguageUsed(new XincoCoreLanguageServer(3)));
-            assertTrue(XincoCoreLanguageServer.isLanguageUsed(new XincoCoreLanguageServer(2)));
+            assertFalse(isLanguageUsed(new XincoCoreLanguageServer(3)));
+            assertTrue(isLanguageUsed(new XincoCoreLanguageServer(2)));
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreLanguageServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreLanguageServerTest.class.getSimpleName()).log(SEVERE, null, ex);
             fail();
         }
     }

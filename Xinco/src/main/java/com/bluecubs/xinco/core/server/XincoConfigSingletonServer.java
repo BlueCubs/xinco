@@ -31,14 +31,38 @@
  */
 package com.bluecubs.xinco.core.server;
 
+import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
+import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
+import com.bluecubs.xinco.core.server.index.XincoIndexer;
+import static com.bluecubs.xinco.core.server.index.XincoIndexer.optimizeIndex;
 import com.bluecubs.xinco.core.server.persistence.XincoSetting;
 import java.io.File;
+import static java.lang.System.getProperty;
 import java.util.ArrayList;
 import java.util.logging.Level;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.INFO;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.apache.commons.lang3.SystemUtils;
+import static org.apache.commons.lang3.SystemUtils.IS_OS_LINUX;
+import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
 
 /**
  * This class handles the server configuration of xinco. Edit values in database
@@ -61,8 +85,7 @@ public final class XincoConfigSingletonServer {
             guessLanguage = false;
     private static XincoConfigSingletonServer instance = null;
     private boolean loadDefault;
-    private static final Logger LOG = Logger
-            .getLogger(XincoConfigSingletonServer.class.getSimpleName());
+    private static final Logger LOG = getLogger(XincoConfigSingletonServer.class.getSimpleName());
 
     public static XincoConfigSingletonServer getInstance() {
         if (instance == null) {
@@ -85,8 +108,8 @@ public final class XincoConfigSingletonServer {
     private String formatPath(String p) {
         if (!p.isEmpty()
                 && !(p.substring(p.length() - 1)
-                        .equals(System.getProperty("file.separator")))) {
-            p += System.getProperty("file.separator");
+                        .equals(getProperty("file.separator")))) {
+            p += getProperty("file.separator");
         }
         return p;
     }
@@ -95,34 +118,33 @@ public final class XincoConfigSingletonServer {
         ArrayList<Exception> exceptions = new ArrayList<>();
         File temp;
         try {
-            fileRepositoryPath = XincoSettingServer
-                    .getSetting("xinco/FileRepositoryPath").getStringValue();
+            fileRepositoryPath = getSetting("xinco/FileRepositoryPath").getStringValue();
             if (fileRepositoryPath == null) {
-                if (SystemUtils.IS_OS_WINDOWS) {
+                if (IS_OS_WINDOWS) {
                     fileRepositoryPath = "C:"
-                            + System.getProperty("file.separator") + "Temp";
-                } else if (SystemUtils.IS_OS_LINUX) {
-                    fileRepositoryPath = System.getProperty("file.separator")
+                            + getProperty("file.separator") + "Temp";
+                } else if (IS_OS_LINUX) {
+                    fileRepositoryPath = getProperty("file.separator")
                             + "tmp";
                 }
-                fileRepositoryPath += System.getProperty("file.separator")
-                        + "xinco" + System.getProperty("file.separator")
+                fileRepositoryPath += getProperty("file.separator")
+                        + "xinco" + getProperty("file.separator")
                         + "file_repository";
                 fileRepositoryPath = formatPath(fileRepositoryPath);
                 temp = new File(fileRepositoryPath);
-                LOG.log(Level.INFO, "Using {0} as repository!",
+                LOG.log(INFO, "Using {0} as repository!",
                         temp.getAbsolutePath());
                 temp.mkdirs();
             }
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, null, e);
+            LOG.log(SEVERE, null, e);
             fileRepositoryPath = "";
             exceptions.add(e);
             loadDefault = true;
         }
         //optional: fileIndexPath
         try {
-            fileIndexPath = XincoSettingServer.getSetting("xinco/FileIndexPath")
+            fileIndexPath = getSetting("xinco/FileIndexPath")
                     .getStringValue();
             if (fileIndexPath == null) {
                 fileIndexPath = fileRepositoryPath + "index";
@@ -132,11 +154,13 @@ public final class XincoConfigSingletonServer {
         }
         fileIndexPath = formatPath(fileIndexPath);
         temp = new File(fileIndexPath);
-        LOG.log(Level.INFO, "Using {0} as index!",
+        LOG.log(INFO, "Using {0} as index!",
                 temp.getAbsolutePath());
         temp.mkdirs();
+        //Initialize the index
+        optimizeIndex();
         try {
-            fileArchivePath = XincoSettingServer.getSetting("xinco/FileArchivePath")
+            fileArchivePath = getSetting("xinco/FileArchivePath")
                     .getStringValue();
             if (fileArchivePath == null) {
 
@@ -144,21 +168,21 @@ public final class XincoConfigSingletonServer {
             }
             fileArchivePath = formatPath(fileArchivePath);
             temp = new File(fileArchivePath);
-            LOG.log(Level.INFO, "Using {0} as archieve!",
+            LOG.log(INFO, "Using {0} as archieve!",
                     temp.getAbsolutePath());
             temp.mkdirs();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, null, e);
+            LOG.log(SEVERE, null, e);
             fileArchivePath = "";
             exceptions.add(e);
             loadDefault = true;
         }
         try {
             fileArchivePeriod
-                    = XincoSettingServer.getSetting("xinco/FileArchivePeriod")
+                    = getSetting("xinco/FileArchivePeriod")
                             .getLongValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, null, e);
+            LOG.log(SEVERE, null, e);
             fileArchivePeriod = 14400000;
             exceptions.add(e);
             loadDefault = true;
@@ -166,10 +190,10 @@ public final class XincoConfigSingletonServer {
 
         try {
             fileIndexOptimizerPeriod
-                    = XincoSettingServer.getSetting("xinco/FileIndexOptimizerPeriod")
+                    = getSetting("xinco/FileIndexOptimizerPeriod")
                             .getLongValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, null, e);
+            LOG.log(SEVERE, null, e);
             fileIndexOptimizerPeriod = 14400000;
             exceptions.add(e);
             loadDefault = true;
@@ -177,11 +201,11 @@ public final class XincoConfigSingletonServer {
 
         try {
             fileIndexerCount
-                    = ((Long) XincoDBManager.createdQuery("select count(s) from "
+                    = ((Long) createdQuery("select count(s) from "
                             + "XincoSetting s where s.description like "
                             + "'FileIndexer_%_Class'").get(0));
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, null, e);
+            LOG.log(SEVERE, null, e);
             fileIndexerCount = 4;
             exceptions.add(e);
             loadDefault = true;
@@ -190,15 +214,13 @@ public final class XincoConfigSingletonServer {
         indexFileTypesExt = new ArrayList();
         try {
             for (int i = 0; i < getFileIndexerCount(); i++) {
-                getIndexFileTypesClass().add(XincoSettingServer
-                        .getSetting("FileIndexer_" + (i + 1) + "_Class")
+                getIndexFileTypesClass().add(getSetting("FileIndexer_" + (i + 1) + "_Class")
                         .getStringValue());
-                getIndexFileTypesExt().add(XincoSettingServer
-                        .getSetting("FileIndexer_" + (i + 1) + "_Ext")
+                getIndexFileTypesExt().add(getSetting("FileIndexer_" + (i + 1) + "_Ext")
                         .getStringValue().split(";"));
             }
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, null, e);
+            LOG.log(SEVERE, null, e);
             String[] tsa;
             getIndexFileTypesClass().add("com.bluecubs.xinco.index.filetypes."
                     + "XincoIndexAdobePDF");
@@ -227,10 +249,10 @@ public final class XincoConfigSingletonServer {
             loadDefault = true;
         }
         try {
-            indexNoIndex = XincoSettingServer.getSetting("xinco/IndexNoIndex")
+            indexNoIndex = getSetting("xinco/IndexNoIndex")
                     .getStringValue().split(";");
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, null, e);
+            LOG.log(SEVERE, null, e);
             indexNoIndex = new String[3];
             indexNoIndex[0] = "";
             indexNoIndex[1] = "com";
@@ -240,49 +262,49 @@ public final class XincoConfigSingletonServer {
         }
         try {
             allowOutsideLinks
-                    = XincoSettingServer.getSetting("setting.allowoutsidelinks")
+                    = getSetting("setting.allowoutsidelinks")
                             .isBoolValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, null, e);
+            LOG.log(SEVERE, null, e);
             allowOutsideLinks = true;
             exceptions.add(e);
             loadDefault = true;
         }
         try {
             allowPublisherList
-                    = XincoSettingServer.getSetting("setting.allowpublisherlist")
+                    = getSetting("setting.allowpublisherlist")
                             .isBoolValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, null, e);
+            LOG.log(SEVERE, null, e);
             allowPublisherList = true;
             exceptions.add(e);
             loadDefault = true;
         }
         try {
             guessLanguage
-                    = XincoSettingServer.getSetting("setting.guessLanguage")
+                    = getSetting("setting.guessLanguage")
                             .isBoolValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, null, e);
+            LOG.log(SEVERE, null, e);
             guessLanguage = false;
             exceptions.add(e);
             loadDefault = true;
         }
         try {
             maxSearchResult
-                    = XincoSettingServer.getSetting("xinco/MaxSearchResult")
+                    = getSetting("xinco/MaxSearchResult")
                             .getIntValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, null, e);
+            LOG.log(SEVERE, null, e);
             maxSearchResult = 30;
             exceptions.add(e);
             loadDefault = true;
         }
         try {
-            OOPort = XincoSettingServer.getSetting("setting.OOPort")
+            OOPort = getSetting("setting.OOPort")
                     .getIntValue();
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, null, e);
+            LOG.log(SEVERE, null, e);
             OOPort = 8100;
             exceptions.add(e);
             loadDefault = true;
@@ -294,7 +316,7 @@ public final class XincoConfigSingletonServer {
             for (Exception ex : exceptions) {
                 sb.append("\n").append(ex.getLocalizedMessage());
             }
-            LOG.log(Level.SEVERE, sb.toString());
+            LOG.log(SEVERE, sb.toString());
         }
         showSettings();
     }
@@ -372,15 +394,15 @@ public final class XincoConfigSingletonServer {
     }
 
     private void showSettings() {
-        for (Object o : XincoDBManager.namedQuery("XincoSetting.findAll")) {
+        for (Object o : namedQuery("XincoSetting.findAll")) {
             XincoSetting setting = (XincoSetting) o;
-            LOG.log(Level.FINE, "-------------{0}-------------",
+            LOG.log(FINE, "-------------{0}-------------",
                     setting.getDescription());
-            LOG.log(Level.FINE, "id: {0}", setting.getId());
-            LOG.log(Level.FINE, "int: {0}", setting.getIntValue());
-            LOG.log(Level.FINE, "long: {0}", setting.getLongValue());
-            LOG.log(Level.FINE, "string: {0}", setting.getStringValue());
-            LOG.log(Level.FINE, "string: {0}", setting.getBoolValue());
+            LOG.log(FINE, "id: {0}", setting.getId());
+            LOG.log(FINE, "int: {0}", setting.getIntValue());
+            LOG.log(FINE, "long: {0}", setting.getLongValue());
+            LOG.log(FINE, "string: {0}", setting.getStringValue());
+            LOG.log(FINE, "string: {0}", setting.getBoolValue());
             LOG.fine("--------------------------");
         }
     }

@@ -1,5 +1,7 @@
 package com.bluecubs.xinco.tools;
 
+import static com.bluecubs.xinco.tools.MD5.encrypt;
+import static java.lang.System.out;
 import org.junit.*;
 import static org.junit.Assert.assertNotSame;
 
@@ -33,9 +35,9 @@ public class MD5Test {
      */
     @Test
     public void testEncrypt() throws Exception {
-        System.out.println("encrypt");
+        out.println("encrypt");
         String text = "test";
-        String result = MD5.encrypt(text);
+        String result = encrypt(text);
         assertNotSame(text, result);
     }
 }

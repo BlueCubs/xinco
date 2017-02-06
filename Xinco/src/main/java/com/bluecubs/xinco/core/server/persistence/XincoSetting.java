@@ -31,6 +31,7 @@ import com.bluecubs.xinco.core.server.AuditedEntityListener;
 import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import java.io.Serializable;
 import javax.persistence.*;
+import static javax.persistence.GenerationType.TABLE;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -56,7 +57,7 @@ public class XincoSetting extends XincoAuditedObject implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoSettingGen")
+    @GeneratedValue(strategy = TABLE, generator = "XincoSettingGen")
     @TableGenerator(name = "XincoSettingGen", table = "xinco_id",
     pkColumnName = "tablename",
     valueColumnName = "last_id",

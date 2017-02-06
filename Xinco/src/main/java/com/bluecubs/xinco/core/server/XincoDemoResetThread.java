@@ -27,7 +27,12 @@
  */
 package com.bluecubs.xinco.core.server;
 
+import static com.bluecubs.xinco.core.server.XincoDBManager.getDemoResetPeriod;
+import static com.bluecubs.xinco.core.server.XincoDBManager.isDemo;
+import static com.bluecubs.xinco.core.server.XincoDBManager.nativeQuery;
+import static com.bluecubs.xinco.core.server.XincoDBManager.reload;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  *
@@ -37,12 +42,12 @@ public class XincoDemoResetThread extends Thread {
 
     public static XincoDemoResetThread instance = null;
     public long reset_period = 86400000; //Daily
-    private static final Logger logger = Logger.getLogger(XincoDemoResetThread.class.getName());
+    private static final Logger logger = getLogger(XincoDemoResetThread.class.getName());
 
     @Override
     public void run() {
         while (true) {
-            reset_period = XincoDBManager.getDemoResetPeriod();
+            reset_period = getDemoResetPeriod();
             if (reset_period > 0) {
                 try {
                     sleep(reset_period);
@@ -50,14 +55,14 @@ public class XincoDemoResetThread extends Thread {
                     break;
                 }
                 //Check again this is a demo environment, just in case
-                if (XincoDBManager.isDemo()) {
+                if (isDemo()) {
                     logger.warning("Dropping tables...");
-                    XincoDBManager.nativeQuery("DROP ALL OBJECTS");
+                    nativeQuery("DROP ALL OBJECTS");
                     logger.warning("Done!");
                 }
                 //Reload the database
                 logger.warning("Reloading DB...");
-                XincoDBManager.reload(true);
+                reload(true);
                 logger.warning("Done!");
             }
         }

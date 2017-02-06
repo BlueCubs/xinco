@@ -32,6 +32,8 @@ import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.*;
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.GenerationType.TABLE;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -58,7 +60,7 @@ public class XincoCoreLanguage extends XincoAuditedObject implements Serializabl
     @Id
     @Basic(optional = false)
     @NotNull
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreLanguageGen")
+    @GeneratedValue(strategy = TABLE, generator = "XincoCoreLanguageGen")
     @TableGenerator(name = "XincoCoreLanguageGen", table = "xinco_id",
     pkColumnName = "tablename",
     valueColumnName = "last_id",
@@ -77,9 +79,9 @@ public class XincoCoreLanguage extends XincoAuditedObject implements Serializabl
     @Size(min = 1, max = 255)
     @Column(name = "designation")
     private String designation;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguage")
+    @OneToMany(cascade = ALL, mappedBy = "xincoCoreLanguage")
     private List<XincoCoreNode> xincoCoreNodeList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreLanguage")
+    @OneToMany(cascade = ALL, mappedBy = "xincoCoreLanguage")
     private List<XincoCoreData> xincoCoreDataList;
 
     public XincoCoreLanguage() {

@@ -28,9 +28,12 @@
 package com.bluecubs.xinco.core.server.vaadin.setting;
 
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import com.bluecubs.xinco.core.server.vaadin.Xinco;
+import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import com.vaadin.addon.jpacontainer.EntityContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
+import static com.vaadin.addon.jpacontainer.JPAContainerFactory.make;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.*;
@@ -53,8 +56,8 @@ public class SettingAdminWindow extends Panel implements ComponentContainer {
         VerticalLayout vl = new VerticalLayout();
         addComponent(vl);
         HorizontalLayout toolbar = new HorizontalLayout();
-        container = JPAContainerFactory.make(com.bluecubs.xinco.core.server.persistence.XincoSetting.class,
-                XincoDBManager.getEntityManagerFactory().createEntityManager());
+        container = make(com.bluecubs.xinco.core.server.persistence.XincoSetting.class,
+                getEntityManagerFactory().createEntityManager());
         table = new Table(null, container);
         table.addStyleName("striped");
         com.vaadin.ui.Button newButton =
@@ -63,7 +66,7 @@ public class SettingAdminWindow extends Panel implements ComponentContainer {
             @Override
             public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
                 final BeanItem<com.bluecubs.xinco.core.server.persistence.XincoSetting> newSettingItem =
-                        new BeanItem<com.bluecubs.xinco.core.server.persistence.XincoSetting>(new com.bluecubs.xinco.core.server.persistence.XincoSetting());
+                        new BeanItem<>(new com.bluecubs.xinco.core.server.persistence.XincoSetting());
                 SettingEditor settingEditor =
                         new SettingEditor(newSettingItem);
                 settingEditor.addListener(new SettingEditor.EditorSavedListener() {
@@ -109,6 +112,6 @@ public class SettingAdminWindow extends Panel implements ComponentContainer {
     }
 
     private ResourceBundle getResource() {
-        return Xinco.getInstance().getResource();
+        return getInstance().getResource();
     }
 }

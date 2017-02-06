@@ -1,6 +1,11 @@
 package com.bluecubs.xinco.core.server;
 
+import static com.bluecubs.xinco.core.server.XincoDBManager.close;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getState;
+import static com.bluecubs.xinco.core.server.XincoDBManager.setPU;
 import com.bluecubs.xinco.core.server.db.DBState;
+import static com.bluecubs.xinco.core.server.db.DBState.VALID;
+import static java.lang.Class.forName;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -22,8 +27,8 @@ public abstract class AbstractXincoDataBaseTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        XincoDBManager.setPU("XincoTest");
-        assertTrue(XincoDBManager.getState().equals(DBState.VALID));
+        setPU("XincoTest");
+        assertTrue(getState().equals(VALID));
     }
     
     @Override
@@ -38,7 +43,7 @@ public abstract class AbstractXincoDataBaseTestCase extends TestCase {
                 ((JdbcDataSource) ds).setURL(
                         "jdbc:h2:file:./target/data/xinco-test;AUTO_SERVER=TRUE");
                 //Load the H2 driver
-                Class.forName("org.h2.Driver");
+                forName("org.h2.Driver");
                 conn = ds.getConnection();
                 stmt = conn.createStatement();
                 stmt.executeUpdate("DROP ALL OBJECTS DELETE FILES");
@@ -59,7 +64,7 @@ public abstract class AbstractXincoDataBaseTestCase extends TestCase {
                 }
             }
         }
-        XincoDBManager.close();
+        close();
         //Restore to default to make it atomic.
         deleteDatabase=true;
     }

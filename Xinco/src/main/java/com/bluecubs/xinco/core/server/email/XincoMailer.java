@@ -16,11 +16,17 @@ package com.bluecubs.xinco.core.server.email;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.core.server.XincoSettingServer;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import javax.mail.*;
+import static javax.mail.Message.RecipientType.TO;
+import static javax.mail.Session.getDefaultInstance;
+import static javax.mail.Transport.send;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -32,18 +38,18 @@ public class XincoMailer {
 
         //Set the host smtp address and related properties
         Properties props = new Properties();
-        props.put("mail.smtp.host", XincoSettingServer.getSetting(
+        props.put("mail.smtp.host", getSetting(
                 new XincoCoreUserServer(1),
                 "setting.email.host").getStringValue());
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.port", XincoSettingServer.getSetting(
+        props.put("mail.smtp.port", getSetting(
                 new XincoCoreUserServer(1),
                 "setting.email.port").getIntValue());
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.auth ", "true ");
 
         Authenticator auth = new SMTPAuthenticator();
-        Session session = Session.getDefaultInstance(props, auth);
+        Session session = getDefaultInstance(props, auth);
 
         session.setDebug(debug);
 
@@ -60,13 +66,13 @@ public class XincoMailer {
             addressTo[i] = new InternetAddress(email);
             i++;
         }
-        msg.setRecipients(Message.RecipientType.TO, addressTo);
+        msg.setRecipients(TO, addressTo);
 
 
         // Setting the Subject and Content Type
         msg.setSubject(subject);
         msg.setContent(message, "text/plain");
-        Transport.send(msg);
+        send(msg);
     }
 
     /**
@@ -78,15 +84,15 @@ public class XincoMailer {
         @Override
         public PasswordAuthentication getPasswordAuthentication() {
             try {
-                String username = XincoSettingServer.getSetting(
+                String username = getSetting(
                         new XincoCoreUserServer(1),
                         "setting.email.user").getStringValue();
-                String password = XincoSettingServer.getSetting(
+                String password = getSetting(
                         new XincoCoreUserServer(1),
                         "setting.email.password").getStringValue();
                 return new PasswordAuthentication(username, password);
             } catch (XincoException ex) {
-                Logger.getLogger(XincoMailer.class.getName()).log(Level.SEVERE, null, ex);
+                getLogger(XincoMailer.class.getName()).log(SEVERE, null, ex);
                 return null;
             }
         }

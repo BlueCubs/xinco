@@ -32,6 +32,7 @@
  */
 package com.bluecubs.xinco.core.server.index;
 
+import static com.bluecubs.xinco.core.server.index.XincoIndexer.indexXincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoCoreData;
 
 /**
@@ -44,7 +45,7 @@ public class XincoIndexThread extends Thread {
 
     @Override
     public void run() {
-        XincoIndexer.indexXincoCoreData(d, index_content);
+        indexXincoCoreData(d, index_content);
     }
 
     public XincoIndexThread(XincoCoreData d, boolean index_content) {

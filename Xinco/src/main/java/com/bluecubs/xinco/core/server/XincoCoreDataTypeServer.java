@@ -33,13 +33,19 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
+import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
+import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeJpaController;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataType;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 public class XincoCoreDataTypeServer extends XincoCoreDataType {
 
@@ -51,7 +57,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
         try {
             parameters.clear();
             parameters.put("id", attrID);
-            result = XincoDBManager.namedQuery("XincoCoreDataType.findById", parameters);
+            result = namedQuery("XincoCoreDataType.findById", parameters);
             //throw exception if no result found
             if (result.size() > 0) {
                 com.bluecubs.xinco.core.server.persistence.XincoCoreDataType xcdt =
@@ -89,16 +95,16 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
     //create complete list of data types
     public static ArrayList getXincoCoreDataTypes() {
         ArrayList<XincoCoreDataTypeServer> coreDataTypes =
-                new ArrayList<XincoCoreDataTypeServer>();
+                new ArrayList<>();
         try {
-            result = XincoDBManager.createdQuery("SELECT xcdt FROM XincoCoreDataType xcdt ORDER BY xcdt.id");
+            result = createdQuery("SELECT xcdt FROM XincoCoreDataType xcdt ORDER BY xcdt.id");
             for (Iterator it = result.iterator(); it.hasNext();) {
                 com.bluecubs.xinco.core.server.persistence.XincoCoreDataType xcdt =
                         (com.bluecubs.xinco.core.server.persistence.XincoCoreDataType) it.next();
                 coreDataTypes.add(new XincoCoreDataTypeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreDataType) xcdt));
             }
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getSimpleName()).log(Level.SEVERE, null, e);
+            getLogger(XincoCoreDataTypeAttributeServer.class.getSimpleName()).log(SEVERE, null, e);
             coreDataTypes.clear();
         }
         return coreDataTypes;
@@ -108,12 +114,12 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
         try {
             parameters.clear();
             parameters.put("id", id);
-            result = XincoDBManager.namedQuery("XincoCoreDataType.findById", parameters);
+            result = namedQuery("XincoCoreDataType.findById", parameters);
             if (!result.isEmpty()) {
                 return new XincoCoreDataTypeServer((com.bluecubs.xinco.core.server.persistence.XincoCoreDataType) result.get(0));
             }
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getSimpleName()).log(Level.SEVERE, null, e);
+            getLogger(XincoCoreDataTypeAttributeServer.class.getSimpleName()).log(SEVERE, null, e);
         }
         return null;
     }
@@ -121,7 +127,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
     //write to db
     public int write2DB() throws XincoException {
         try {
-            XincoCoreDataTypeJpaController controller = new XincoCoreDataTypeJpaController(XincoDBManager.getEntityManagerFactory());
+            XincoCoreDataTypeJpaController controller = new XincoCoreDataTypeJpaController(getEntityManagerFactory());
             com.bluecubs.xinco.core.server.persistence.XincoCoreDataType xcdt;
             if (getId() > 0) {
                 xcdt = controller.findXincoCoreDataType(getId());
@@ -143,7 +149,7 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
             }
             setId(xcdt.getId());
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getSimpleName()).log(Level.SEVERE, null, e);
+            getLogger(XincoCoreDataTypeAttributeServer.class.getSimpleName()).log(SEVERE, null, e);
             throw new XincoException(e.getMessage());
         }
         return getId();
@@ -151,10 +157,10 @@ public class XincoCoreDataTypeServer extends XincoCoreDataType {
 
     public static int deleteFromDB(XincoCoreDataType xcdt) {
         try {
-            new XincoCoreDataTypeJpaController(XincoDBManager.getEntityManagerFactory()).destroy(xcdt.getId());
+            new XincoCoreDataTypeJpaController(getEntityManagerFactory()).destroy(xcdt.getId());
             return 0;
         } catch (Exception ex) {
-            Logger.getLogger(XincoCoreDataTypeAttributeServer.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreDataTypeAttributeServer.class.getSimpleName()).log(SEVERE, null, ex);
             return -1;
         }
     }

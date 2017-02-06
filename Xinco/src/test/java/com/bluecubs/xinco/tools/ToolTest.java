@@ -1,11 +1,25 @@
 package com.bluecubs.xinco.tools;
 
+import static com.bluecubs.xinco.tools.Tool.MAX_PORT_NUMBER;
+import static com.bluecubs.xinco.tools.Tool.compareNumberStrings;
+import static com.bluecubs.xinco.tools.Tool.compareNumberStrings;
+import static com.bluecubs.xinco.tools.Tool.compareNumberStrings;
+import static com.bluecubs.xinco.tools.Tool.compareNumberStrings;
+import static com.bluecubs.xinco.tools.Tool.compareNumberStrings;
+import static com.bluecubs.xinco.tools.Tool.compareNumberStrings;
+import static com.bluecubs.xinco.tools.Tool.compareNumberStrings;
+import static com.bluecubs.xinco.tools.Tool.copyFile;
+import static com.bluecubs.xinco.tools.Tool.isPortAvaialble;
+import static com.bluecubs.xinco.tools.Tool.isValidEmailAddress;
 import java.io.File;
 import java.io.IOException;
+import static java.lang.System.out;
 import java.net.ServerSocket;
 import java.util.Random;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -25,13 +39,13 @@ public class ToolTest {
     public void testCompareNumberStrings() {
         String first = "2.1.0";
         String second = "2.01.00";
-        assertTrue(Tool.compareNumberStrings(first, second));
+        assertTrue(compareNumberStrings(first, second));
         second = "3.1.0";
-        assertFalse(Tool.compareNumberStrings(first, second));
+        assertFalse(compareNumberStrings(first, second));
         second = "2.1";
-        assertFalse(Tool.compareNumberStrings(first, second));
+        assertFalse(compareNumberStrings(first, second));
         second = "M";
-        assertFalse(Tool.compareNumberStrings(first, second));
+        assertFalse(compareNumberStrings(first, second));
     }
 
     /**
@@ -41,7 +55,7 @@ public class ToolTest {
     public void testCompareNumberStrings3() {
         String first = "2,1,0";
         String second = "2,01,00";
-        assertTrue(Tool.compareNumberStrings(first, second, ","));
+        assertTrue(compareNumberStrings(first, second, ","));
     }
 
     /**
@@ -49,19 +63,19 @@ public class ToolTest {
      */
     @Test
     public void testCompareNumberStrings_3args() {
-        System.out.println("compareNumberStrings");
+        out.println("compareNumberStrings");
         String first = "2,1,0";
         String second = "2,01,00";
         String separator = ",";
-        assertTrue(Tool.compareNumberStrings(first, second, separator));
+        assertTrue(compareNumberStrings(first, second, separator));
         separator = ".";
-        assertFalse(Tool.compareNumberStrings(first, second, separator));
+        assertFalse(compareNumberStrings(first, second, separator));
         second = "3.1.0";
-        assertFalse(Tool.compareNumberStrings(first, second, separator));
+        assertFalse(compareNumberStrings(first, second, separator));
         second = "2.1";
-        assertFalse(Tool.compareNumberStrings(first, second, separator));
+        assertFalse(compareNumberStrings(first, second, separator));
         second = "M";
-        assertFalse(Tool.compareNumberStrings(first, second, separator));
+        assertFalse(compareNumberStrings(first, second, separator));
     }
 
     /**
@@ -72,26 +86,26 @@ public class ToolTest {
         ServerSocket ss = null;
         int port = 0;
         try {
-            System.out.println("isPortAvaialble");
+            out.println("isPortAvaialble");
             Random random = new Random();
-            while (port == 0 || !Tool.isPortAvaialble(port)) {
-                port = random.nextInt(Tool.MAX_PORT_NUMBER);
+            while (port == 0 || !isPortAvaialble(port)) {
+                port = random.nextInt(MAX_PORT_NUMBER);
             }
-            System.out.println("Using port: " + port + " for test...");
-            assertTrue(Tool.isPortAvaialble(port));
+            out.println("Using port: " + port + " for test...");
+            assertTrue(isPortAvaialble(port));
             ss = new ServerSocket(port);
-            assertFalse(Tool.isPortAvaialble(port));
+            assertFalse(isPortAvaialble(port));
         } catch (IOException ex) {
-            Logger.getLogger(ToolTest.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(ToolTest.class.getName()).log(SEVERE, null, ex);
             fail();
         } finally {
             try {
                 if (ss != null) {
                     ss.close();
-                    assertTrue(Tool.isPortAvaialble(port));
+                    assertTrue(isPortAvaialble(port));
                 }
             } catch (IOException ex) {
-                Logger.getLogger(ToolTest.class.getName()).log(Level.SEVERE, null, ex);
+                getLogger(ToolTest.class.getName()).log(SEVERE, null, ex);
             }
         }
     }
@@ -101,14 +115,14 @@ public class ToolTest {
      */
     @Test
     public void testCopyFile() throws Exception {
-        System.out.println("copyFile");
+        out.println("copyFile");
         File sourceFile = new File("demo.txt");
         sourceFile.createNewFile();
         sourceFile.deleteOnExit();
         assertTrue(sourceFile.exists());
         File destFile = new File("demo2.txt");
         assertFalse(destFile.exists());
-        Tool.copyFile(sourceFile, destFile);
+        copyFile(sourceFile, destFile);
         destFile.deleteOnExit();
         assertTrue(destFile.exists());
     }
@@ -118,16 +132,16 @@ public class ToolTest {
      */
     @Test
     public void testIsValidEmailAddress() {
-        System.out.println("isValidEmailAddress");
+        out.println("isValidEmailAddress");
         String email = "javier.ortiz.78@gmail.com";
-        assertTrue(Tool.isValidEmailAddress(email));
+        assertTrue(isValidEmailAddress(email));
         email = "javier.ortiz.78@";
-        assertFalse(Tool.isValidEmailAddress(email));
+        assertFalse(isValidEmailAddress(email));
         email = "javier.ortiz.78 gmail.com";
-        assertFalse(Tool.isValidEmailAddress(email));
+        assertFalse(isValidEmailAddress(email));
         email = "javier.ortiz.78@@";
-        assertFalse(Tool.isValidEmailAddress(email));
+        assertFalse(isValidEmailAddress(email));
         email = "@gmail.com";
-        assertFalse(Tool.isValidEmailAddress(email));
+        assertFalse(isValidEmailAddress(email));
     }
 }

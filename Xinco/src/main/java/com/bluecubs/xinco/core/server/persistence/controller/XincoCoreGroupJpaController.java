@@ -69,13 +69,13 @@ public class XincoCoreGroupJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            List<XincoCoreAce> attachedXincoCoreAceList = new ArrayList<XincoCoreAce>();
+            List<XincoCoreAce> attachedXincoCoreAceList = new ArrayList<>();
             for (XincoCoreAce xincoCoreAceListXincoCoreAceToAttach : xincoCoreGroup.getXincoCoreAceList()) {
                 xincoCoreAceListXincoCoreAceToAttach = em.getReference(xincoCoreAceListXincoCoreAceToAttach.getClass(), xincoCoreAceListXincoCoreAceToAttach.getId());
                 attachedXincoCoreAceList.add(xincoCoreAceListXincoCoreAceToAttach);
             }
             xincoCoreGroup.setXincoCoreAceList(attachedXincoCoreAceList);
-            List<XincoCoreUserHasXincoCoreGroup> attachedXincoCoreUserHasXincoCoreGroupList = new ArrayList<XincoCoreUserHasXincoCoreGroup>();
+            List<XincoCoreUserHasXincoCoreGroup> attachedXincoCoreUserHasXincoCoreGroupList = new ArrayList<>();
             for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroupToAttach : xincoCoreGroup.getXincoCoreUserHasXincoCoreGroupList()) {
                 xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroupToAttach = em.getReference(xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroupToAttach.getClass(), xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroupToAttach.getXincoCoreUserHasXincoCoreGroupPK());
                 attachedXincoCoreUserHasXincoCoreGroupList.add(xincoCoreUserHasXincoCoreGroupListXincoCoreUserHasXincoCoreGroupToAttach);
@@ -127,7 +127,7 @@ public class XincoCoreGroupJpaController implements Serializable {
             for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupListOldXincoCoreUserHasXincoCoreGroup : xincoCoreUserHasXincoCoreGroupListOld) {
                 if (!xincoCoreUserHasXincoCoreGroupListNew.contains(xincoCoreUserHasXincoCoreGroupListOldXincoCoreUserHasXincoCoreGroup)) {
                     if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
+                        illegalOrphanMessages = new ArrayList<>();
                     }
                     illegalOrphanMessages.add("You must retain XincoCoreUserHasXincoCoreGroup " + xincoCoreUserHasXincoCoreGroupListOldXincoCoreUserHasXincoCoreGroup + " since its xincoCoreGroup field is not nullable.");
                 }
@@ -135,14 +135,14 @@ public class XincoCoreGroupJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            List<XincoCoreAce> attachedXincoCoreAceListNew = new ArrayList<XincoCoreAce>();
+            List<XincoCoreAce> attachedXincoCoreAceListNew = new ArrayList<>();
             for (XincoCoreAce xincoCoreAceListNewXincoCoreAceToAttach : xincoCoreAceListNew) {
                 xincoCoreAceListNewXincoCoreAceToAttach = em.getReference(xincoCoreAceListNewXincoCoreAceToAttach.getClass(), xincoCoreAceListNewXincoCoreAceToAttach.getId());
                 attachedXincoCoreAceListNew.add(xincoCoreAceListNewXincoCoreAceToAttach);
             }
             xincoCoreAceListNew = attachedXincoCoreAceListNew;
             xincoCoreGroup.setXincoCoreAceList(xincoCoreAceListNew);
-            List<XincoCoreUserHasXincoCoreGroup> attachedXincoCoreUserHasXincoCoreGroupListNew = new ArrayList<XincoCoreUserHasXincoCoreGroup>();
+            List<XincoCoreUserHasXincoCoreGroup> attachedXincoCoreUserHasXincoCoreGroupListNew = new ArrayList<>();
             for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach : xincoCoreUserHasXincoCoreGroupListNew) {
                 xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach = em.getReference(xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach.getClass(), xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach.getXincoCoreUserHasXincoCoreGroupPK());
                 attachedXincoCoreUserHasXincoCoreGroupListNew.add(xincoCoreUserHasXincoCoreGroupListNewXincoCoreUserHasXincoCoreGroupToAttach);
@@ -211,7 +211,7 @@ public class XincoCoreGroupJpaController implements Serializable {
             List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupListOrphanCheck = xincoCoreGroup.getXincoCoreUserHasXincoCoreGroupList();
             for (XincoCoreUserHasXincoCoreGroup xincoCoreUserHasXincoCoreGroupListOrphanCheckXincoCoreUserHasXincoCoreGroup : xincoCoreUserHasXincoCoreGroupListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
+                    illegalOrphanMessages = new ArrayList<>();
                 }
                 illegalOrphanMessages.add("This XincoCoreGroup (" + xincoCoreGroup + ") cannot be destroyed since the XincoCoreUserHasXincoCoreGroup " + xincoCoreUserHasXincoCoreGroupListOrphanCheckXincoCoreUserHasXincoCoreGroup + " in its xincoCoreUserHasXincoCoreGroupList field has a non-nullable xincoCoreGroup field.");
             }

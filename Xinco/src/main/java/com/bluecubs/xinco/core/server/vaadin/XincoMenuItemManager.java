@@ -2,17 +2,25 @@ package com.bluecubs.xinco.core.server.vaadin;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.XincoCoreACEServer;
+import static com.bluecubs.xinco.core.server.XincoCoreACEServer.checkAccess;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
 import com.bluecubs.xinco.core.server.service.XincoCoreACE;
+import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.MenuItem;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  *
@@ -45,38 +53,38 @@ public class XincoMenuItemManager {
     }
 
     private static boolean canAdd(XincoMenuItem item) {
-        String selection = Xinco.getInstance().getXincoTree().getValue() == null ? null : Xinco.getInstance().getXincoTree().getValue().toString();
+        String selection = getInstance().getXincoTree().getValue() == null ? null : getInstance().getXincoTree().getValue().toString();
         boolean add = true;
         boolean hasAccess = false;
         XincoCoreACE tempAce = null;
-        if (Xinco.getInstance().getLoggedUser() != null && selection != null && selection.startsWith("node")) {
+        if (getInstance().getLoggedUser() != null && selection != null && selection.startsWith("node")) {
             XincoCoreNodeServer node = null;
             try {
-                node = new XincoCoreNodeServer(Integer.valueOf(selection.substring(selection.indexOf('-') + 1)));
+                node = new XincoCoreNodeServer(valueOf(selection.substring(selection.indexOf('-') + 1)));
             } catch (XincoException ex) {
-                Logger.getLogger(XincoMenuItemManager.class.getSimpleName()).log(Level.SEVERE, null, ex);
+                getLogger(XincoMenuItemManager.class.getSimpleName()).log(SEVERE, null, ex);
                 add = false;
             }
 
             try {
-                tempAce = XincoCoreACEServer.checkAccess(new XincoCoreUserServer(Xinco.getInstance().getLoggedUser().getId()),
+                tempAce = checkAccess(new XincoCoreUserServer(getInstance().getLoggedUser().getId()),
                         (ArrayList) node.getXincoCoreAcl());
             } catch (XincoException ex) {
-                Logger.getLogger(XincoMenuItemManager.class.getSimpleName()).log(Level.SEVERE, null, ex);
+                getLogger(XincoMenuItemManager.class.getSimpleName()).log(SEVERE, null, ex);
             }
-        } else if (Xinco.getInstance().getLoggedUser() != null && selection != null && selection.startsWith("data")) {
+        } else if (getInstance().getLoggedUser() != null && selection != null && selection.startsWith("data")) {
             XincoCoreDataServer data = null;
             try {
-                data = new XincoCoreDataServer(Integer.valueOf(selection.substring(selection.indexOf('-') + 1)));
+                data = new XincoCoreDataServer(valueOf(selection.substring(selection.indexOf('-') + 1)));
             } catch (XincoException ex) {
-                Logger.getLogger(XincoMenuItemManager.class.getSimpleName()).log(Level.SEVERE, null, ex);
+                getLogger(XincoMenuItemManager.class.getSimpleName()).log(SEVERE, null, ex);
                 add = false;
             }
             try {
-                tempAce = XincoCoreACEServer.checkAccess(new XincoCoreUserServer(Xinco.getInstance().getLoggedUser().getId()),
+                tempAce = checkAccess(new XincoCoreUserServer(getInstance().getLoggedUser().getId()),
                         (ArrayList) data.getXincoCoreAcl());
             } catch (XincoException ex) {
-                Logger.getLogger(XincoMenuItemManager.class.getSimpleName()).log(Level.SEVERE, null, ex);
+                getLogger(XincoMenuItemManager.class.getSimpleName()).log(SEVERE, null, ex);
             }
         }
 
@@ -94,11 +102,11 @@ public class XincoMenuItemManager {
             add = false;
         }
 
-        if (item.isLoggedIn() && Xinco.getInstance().getLoggedUser() == null) {
+        if (item.isLoggedIn() && getInstance().getLoggedUser() == null) {
             add = false;
         }
 
-        if (item.isLoggedIn() && Xinco.getInstance().getLoggedUser() != null && !hasAccess) {
+        if (item.isLoggedIn() && getInstance().getLoggedUser() != null && !hasAccess) {
             add = false;
         }
 
@@ -110,9 +118,9 @@ public class XincoMenuItemManager {
                 && item.getDataTypes() != null) {
             XincoCoreDataServer temp = null;
             try {
-                temp = new XincoCoreDataServer(Integer.valueOf(selection.substring(selection.indexOf('-') + 1)));
+                temp = new XincoCoreDataServer(valueOf(selection.substring(selection.indexOf('-') + 1)));
             } catch (XincoException ex) {
-                Logger.getLogger(XincoMenuItemManager.class.getName()).log(Level.SEVERE, null, ex);
+                getLogger(XincoMenuItemManager.class.getName()).log(SEVERE, null, ex);
                 add = false;
             }
             boolean found = false;
@@ -133,9 +141,9 @@ public class XincoMenuItemManager {
                 && item.getStatuses() != null) {
             XincoCoreDataServer temp = null;
             try {
-                temp = new XincoCoreDataServer(Integer.valueOf(selection.substring(selection.indexOf('-') + 1)));
+                temp = new XincoCoreDataServer(valueOf(selection.substring(selection.indexOf('-') + 1)));
             } catch (XincoException ex) {
-                Logger.getLogger(XincoMenuItemManager.class.getName()).log(Level.SEVERE, null, ex);
+                getLogger(XincoMenuItemManager.class.getName()).log(SEVERE, null, ex);
                 add = false;
             }
             boolean found = false;

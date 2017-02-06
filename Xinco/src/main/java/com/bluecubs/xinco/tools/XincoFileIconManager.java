@@ -34,11 +34,16 @@
 package com.bluecubs.xinco.tools;
 
 import java.io.File;
+import static java.io.File.createTempFile;
+import static java.lang.System.getProperty;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
+import static javax.swing.filechooser.FileSystemView.getFileSystemView;
 
 /**
  *
@@ -61,23 +66,23 @@ public class XincoFileIconManager {
         }
         Icon icon;
         try {
-            if (FileSystemView.getFileSystemView() == null) {
+            if (getFileSystemView() == null) {
                 return null;
             } else {
                 //Create a temporary file with the specified extension
-                file = File.createTempFile("icon", "." + ext);
-                if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+                file = createTempFile("icon", "." + ext);
+                if (getProperty("os.name").toLowerCase().contains("mac")) {
                     //For some reason the method above doesn't work on Mac. 
                     //Use alternate method.
                     icon = new JFileChooser().getIcon(file);
                 } else {
-                    icon = FileSystemView.getFileSystemView().getSystemIcon(file);
+                    icon = getFileSystemView().getSystemIcon(file);
                 }
                 //Delete the temporary file
                 file.delete();
             }
         } catch (Exception ioe) {
-            Logger.getLogger(XincoFileIconManager.class.getSimpleName()).log(Level.SEVERE, null, ioe);
+            getLogger(XincoFileIconManager.class.getSimpleName()).log(SEVERE, null, ioe);
             return null;
         }
         return icon;

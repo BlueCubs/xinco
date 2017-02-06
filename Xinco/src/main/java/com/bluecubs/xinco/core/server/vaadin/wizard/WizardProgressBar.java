@@ -22,8 +22,8 @@ public class WizardProgressBar extends ProgressIndicator implements
     }
 
     private void recalculateProgress() {
-        setValue(new Float(new Float(wizard.getProgress() + 1)
-                / new Float(wizard.getSteps().size())));
+        setValue(new Float(wizard.getProgress() + 1)
+                / new Float(wizard.getSteps().size()));
         requestRepaint();
     }
 

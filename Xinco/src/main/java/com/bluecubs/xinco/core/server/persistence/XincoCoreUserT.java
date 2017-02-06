@@ -30,6 +30,7 @@ package com.bluecubs.xinco.core.server.persistence;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
+import static javax.persistence.TemporalType.DATE;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -103,7 +104,7 @@ public class XincoCoreUserT implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "last_modified")
-    @Temporal(TemporalType.DATE)
+    @Temporal(DATE)
     private Date lastModified;
 
     public XincoCoreUserT() {

@@ -1,5 +1,6 @@
 package com.bluecubs.xinco.core.server.vaadin;
 
+import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import com.vaadin.terminal.ThemeResource;
 
 /**
@@ -64,7 +65,7 @@ public class XincoMenuItem {
      * @return the name
      */
     public String getName() {
-        return Xinco.getInstance().getResource().getString(name);
+        return getInstance().getResource().getString(name);
     }
 
     /**
@@ -142,7 +143,7 @@ public class XincoMenuItem {
      * @return the groupName
      */
     public String getGroupName() {
-        return Xinco.getInstance().getResource().getString(groupName);
+        return getInstance().getResource().getString(groupName);
     }
 
     /**

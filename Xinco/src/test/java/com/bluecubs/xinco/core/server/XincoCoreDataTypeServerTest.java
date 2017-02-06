@@ -1,10 +1,14 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import static com.bluecubs.xinco.core.server.XincoCoreDataTypeServer.deleteFromDB;
+import static com.bluecubs.xinco.core.server.XincoCoreDataTypeServer.getXincoCoreDataTypes;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
 import java.util.ArrayList;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -30,9 +34,9 @@ public class XincoCoreDataTypeServerTest extends AbstractXincoDataBaseTestCase {
         try {
             XincoCoreDataTypeServer instance = new XincoCoreDataTypeServer(0, "Test", "Test desc", new ArrayList<XincoCoreDataTypeAttribute>());
             assertTrue(instance.write2DB() > 0);
-            XincoCoreDataTypeServer.deleteFromDB(instance);
+            deleteFromDB(instance);
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreGroupServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreGroupServerTest.class.getSimpleName()).log(SEVERE, null, ex);
             fail();
         }
     }
@@ -41,6 +45,6 @@ public class XincoCoreDataTypeServerTest extends AbstractXincoDataBaseTestCase {
      * Test of getXincoCoreDataTypes method, of class XincoCoreDataTypeServer.
      */
     public void testGetXincoCoreDataTypes() {
-        assertTrue(XincoCoreDataTypeServer.getXincoCoreDataTypes().size() > 0);
+        assertTrue(getXincoCoreDataTypes().size() > 0);
     }
 }

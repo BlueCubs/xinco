@@ -28,18 +28,31 @@
 package com.bluecubs.xinco.core.server.vaadin;
 
 import com.bluecubs.xinco.core.server.XincoAddAttributeServer;
+import static com.bluecubs.xinco.core.server.XincoAddAttributeServer.getXincoAddAttributes;
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
+import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.*;
 import de.essendi.vaadin.ui.component.numberfield.NumberField;
+import static java.lang.Integer.MAX_VALUE;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
+import static java.lang.Integer.valueOf;
 import java.util.Calendar;
+import static java.util.Calendar.DST_OFFSET;
+import static java.util.Calendar.MILLISECOND;
+import static java.util.Calendar.ZONE_OFFSET;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
+import static java.util.logging.Level.FINE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import static javax.xml.datatype.DatatypeFactory.newInstance;
 
 /**
  *
@@ -51,49 +64,46 @@ class ArchiveDialog extends CustomComponent {
     private final DateField date = new DateField();
     private final NumberField days = new NumberField();
     private static final Logger LOG =
-            Logger.getLogger(ArchiveDialog.class.getName());
+            getLogger(ArchiveDialog.class.getName());
 
     ArchiveDialog() {
-        days.setCaption(
-                Xinco.getInstance().getResource()
+        days.setCaption(getInstance().getResource()
                 .getString("window.archive.archivedays") + ":");
         days.setDecimalAllowed(false);
         days.setGroupingUsed(false);
         days.setMinValue(1);
-        days.setMaxValue(Integer.MAX_VALUE);
-        archiveModel = new Select(Xinco.getInstance().getResource()
+        days.setMaxValue(MAX_VALUE);
+        archiveModel = new Select(getInstance().getResource()
                 .getString("window.archive.archivingmodel") + ":");
-        com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(Xinco
-                .getInstance().getResource().getString("window.archive"));
+        com.vaadin.ui.Panel panel = new com.vaadin.ui.Panel(getInstance().getResource().getString("window.archive"));
         panel.setContent(new VerticalLayout());
-        CheckBox revisionModelCheckbox = new CheckBox(Xinco.getInstance()
+        CheckBox revisionModelCheckbox = new CheckBox(getInstance()
                 .getResource().getString("window.archive.revisionmodel"));
         revisionModelCheckbox.setValue(true);
         panel.addComponent(revisionModelCheckbox);
         java.util.List<XincoAddAttribute> attributes;
-        if (Xinco.getInstance().getXincoCoreData().getId() == 0) {
+        if (getInstance().getXincoCoreData().getId() == 0) {
             // Is a new data, there's nothing yet in the database.
             // Load local values.
             attributes =
-                    Xinco.getInstance().getXincoCoreData()
+                    getInstance().getXincoCoreData()
                     .getXincoAddAttributes();
         } else {
-            attributes = XincoAddAttributeServer.getXincoAddAttributes(
-                    Xinco.getInstance().getXincoCoreData().getId());
+            attributes = getXincoAddAttributes(getInstance().getXincoCoreData().getId());
         }
         int i = 0;
         archiveModel.addItem(i);
-        archiveModel.setItemCaption(i, Xinco.getInstance().getResource()
+        archiveModel.setItemCaption(i, getInstance().getResource()
                 .getString("window.archive.archivingmodel.none"));
         //Set as default
         archiveModel.setValue(i);
         i++;
         archiveModel.addItem(i);
-        archiveModel.setItemCaption(i, Xinco.getInstance().getResource()
+        archiveModel.setItemCaption(i, getInstance().getResource()
                 .getString("window.archive.archivingmodel.archivedate"));
         i++;
         archiveModel.addItem(i);
-        archiveModel.setItemCaption(i, Xinco.getInstance().getResource()
+        archiveModel.setItemCaption(i, getInstance().getResource()
                 .getString("window.archive.archivingmodel.archivedays"));
         i++;
         panel.addComponent(archiveModel);
@@ -101,7 +111,7 @@ class ArchiveDialog extends CustomComponent {
         // Set the date and time to present
         date.setValue(new Date());
         date.setDateFormat("dd-MM-yyyy");
-        date.setCaption(Xinco.getInstance().getResource()
+        date.setCaption(getInstance().getResource()
                 .getString("window.archive.archivedate") + ":");
         panel.addComponent(date);
         //Disabled by default
@@ -114,10 +124,10 @@ class ArchiveDialog extends CustomComponent {
         Calendar realcal = (attributes.get(5))
                 .getAttribDatetime().toGregorianCalendar();
         Calendar ngc = new GregorianCalendar();
-        cal.add(Calendar.MILLISECOND, (ngc.get(Calendar.ZONE_OFFSET)
-                - realcal.get(Calendar.ZONE_OFFSET))
-                - (ngc.get(Calendar.DST_OFFSET)
-                + realcal.get(Calendar.DST_OFFSET)));
+        cal.add(MILLISECOND, (ngc.get(ZONE_OFFSET)
+                - realcal.get(ZONE_OFFSET))
+                - (ngc.get(DST_OFFSET)
+                + realcal.get(DST_OFFSET)));
         date.setValue(cal.getTime());
 
         panel.addComponent(days);
@@ -126,7 +136,7 @@ class ArchiveDialog extends CustomComponent {
         archiveModel.addListener(new ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
-                switch (Integer.valueOf(event.getProperty().toString())) {
+                switch (valueOf(event.getProperty().toString())) {
                     case 1:
                         //Enable date
                         date.setEnabled(true);
@@ -170,28 +180,28 @@ class ArchiveDialog extends CustomComponent {
     private int getDays() {
         return days.isEnabled()
                 && !days.getValue().toString().isEmpty()
-                ? Integer.valueOf(days.getValue().toString())
+                ? valueOf(days.getValue().toString())
                 : 0;
     }
 
     public void updateAttributes() throws DatatypeConfigurationException {
         //Archive model
         String model = getArchiveModel().getValue().toString();
-        LOG.log(Level.FINE, "Archive model: {0}", model);
-        Xinco.getInstance().getXincoCoreData().getXincoAddAttributes().get(4)
-                .setAttribUnsignedint(Integer.valueOf(model));
+        LOG.log(FINE, "Archive model: {0}", model);
+        getInstance().getXincoCoreData().getXincoAddAttributes().get(4)
+                .setAttribUnsignedint(valueOf(model));
         //Archieve date
         Date archiveDate = getDate();
-        LOG.log(Level.FINE, "Archive date: {0}", archiveDate);
+        LOG.log(FINE, "Archive date: {0}", archiveDate);
         GregorianCalendar c = new GregorianCalendar();
         c.setTime(archiveDate);
-        Xinco.getInstance().getXincoCoreData().getXincoAddAttributes()
-                .get(5).setAttribDatetime(DatatypeFactory.newInstance()
+        getInstance().getXincoCoreData().getXincoAddAttributes()
+                .get(5).setAttribDatetime(newInstance()
                 .newXMLGregorianCalendar(c));
         //Archieve dayss 
         int tempDays = getDays();
-        LOG.log(Level.FINE, "Archive days: {0}", tempDays);
-        Xinco.getInstance().getXincoCoreData().getXincoAddAttributes().get(6)
-                .setAttribUnsignedint(Integer.valueOf(tempDays));
+        LOG.log(FINE, "Archive days: {0}", tempDays);
+        getInstance().getXincoCoreData().getXincoAddAttributes().get(6)
+                .setAttribUnsignedint(tempDays);
     }
 }

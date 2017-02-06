@@ -33,6 +33,9 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
+import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreAceJpaController;
 import com.bluecubs.xinco.core.server.service.XincoCoreACE;
 import com.bluecubs.xinco.core.server.service.XincoCoreGroup;
@@ -41,18 +44,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 public class XincoCoreACEServer extends XincoCoreACE {
 
     private HashMap parameters = new HashMap();
     private static List result;
     private static final Logger LOG =
-            Logger.getLogger(XincoCoreACEServer.class.getSimpleName());
+            getLogger(XincoCoreACEServer.class.getSimpleName());
     //create single ace object for data structures
 
     public XincoCoreACEServer(int attrID) throws XincoException {
-        XincoCoreAceJpaController controller = new XincoCoreAceJpaController(XincoDBManager.getEntityManagerFactory());
+        XincoCoreAceJpaController controller = new XincoCoreAceJpaController(getEntityManagerFactory());
         com.bluecubs.xinco.core.server.persistence.XincoCoreAce ace = controller.findXincoCoreAce(attrID);
         if (ace != null) {
             setId(ace.getId());
@@ -120,7 +126,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
             if (getId() > 0) {
                 parameters.clear();
                 parameters.put("id", getId());
-                result = XincoDBManager.namedQuery("XincoCoreAce.findById", parameters);
+                result = namedQuery("XincoCoreAce.findById", parameters);
                 ace = (com.bluecubs.xinco.core.server.persistence.XincoCoreAce) result.get(0);
             } else {
                 ace = new com.bluecubs.xinco.core.server.persistence.XincoCoreAce(getId());
@@ -143,13 +149,13 @@ public class XincoCoreACEServer extends XincoCoreACE {
             ace.setExecutePermission(isExecutePermission());
             ace.setAdminPermission(isAdminPermission());
             if (create) {
-                new XincoCoreAceJpaController(XincoDBManager.getEntityManagerFactory()).create(ace);
+                new XincoCoreAceJpaController(getEntityManagerFactory()).create(ace);
             } else {
-                new XincoCoreAceJpaController(XincoDBManager.getEntityManagerFactory()).edit(ace);
+                new XincoCoreAceJpaController(getEntityManagerFactory()).edit(ace);
             }
             setId(ace.getId());
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreACEServer.class.getSimpleName()).log(Level.SEVERE, null, e);
+            getLogger(XincoCoreACEServer.class.getSimpleName()).log(SEVERE, null, e);
             throw new XincoException(e.getMessage());
         }
 
@@ -160,10 +166,10 @@ public class XincoCoreACEServer extends XincoCoreACE {
     //remove from db
     public static int removeFromDB(XincoCoreACE attrCACE, int userID) throws XincoException {
         try {
-            XincoCoreAceJpaController controller = new XincoCoreAceJpaController(XincoDBManager.getEntityManagerFactory());
+            XincoCoreAceJpaController controller = new XincoCoreAceJpaController(getEntityManagerFactory());
             controller.destroy(attrCACE.getId());
         } catch (Exception ex) {
-            Logger.getLogger(XincoCoreACEServer.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreACEServer.class.getSimpleName()).log(SEVERE, null, ex);
             throw new XincoException(ex.getMessage());
         }
         return 0;
@@ -171,9 +177,9 @@ public class XincoCoreACEServer extends XincoCoreACE {
 
     //create complete ACL for node or data
     public static ArrayList<XincoCoreACEServer> getXincoCoreACL(int attrID, String attrT) {
-        ArrayList<XincoCoreACEServer> core_acl = new ArrayList<XincoCoreACEServer>();
+        ArrayList<XincoCoreACEServer> core_acl = new ArrayList<>();
         try {
-            result = XincoDBManager.createdQuery("SELECT xca FROM XincoCoreAce xca WHERE xca." + attrT
+            result = createdQuery("SELECT xca FROM XincoCoreAce xca WHERE xca." + attrT
                     + "=" + attrID + "");
             //TODO: Uncomment when bug is fixed
             /**
@@ -189,7 +195,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                 core_acl.add(new XincoCoreACEServer(ace));
             }
         } catch (Exception ex) {
-            Logger.getLogger(XincoCoreACEServer.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreACEServer.class.getSimpleName()).log(SEVERE, null, ex);
             core_acl.clear();
         }
         return core_acl;
@@ -217,7 +223,7 @@ public class XincoCoreACEServer extends XincoCoreACE {
                     if (((XincoCoreACE) attrACL.get(i)).getXincoCoreGroupId()
                             == ((XincoCoreGroup) attrU.getXincoCoreGroups().get(j)).getId()) {
                         match_ace = true;
-                        LOG.log(Level.FINE,
+                        LOG.log(FINE,
                                 "User has permission as member of group: {0}",
                                 ((XincoCoreGroup) attrU.getXincoCoreGroups().get(j)).getDesignation());
                         break;

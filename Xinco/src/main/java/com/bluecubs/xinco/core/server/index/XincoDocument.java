@@ -33,7 +33,9 @@
 package com.bluecubs.xinco.core.server.index;
 
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import static com.bluecubs.xinco.core.server.XincoCoreDataServer.getXincoCoreDataPath;
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
 import com.bluecubs.xinco.core.server.index.filetypes.XincoIndexFileType;
 import com.bluecubs.xinco.core.server.index.filetypes.XincoIndexGenericFile;
 import com.bluecubs.xinco.core.server.index.filetypes.XincoIndexText;
@@ -42,11 +44,17 @@ import com.bluecubs.xinco.core.server.service.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
 import java.io.File;
 import java.io.Reader;
+import static java.lang.Class.forName;
 import java.util.ArrayList;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import static org.apache.lucene.document.Field.Index.ANALYZED;
+import static org.apache.lucene.document.Field.Index.NOT_ANALYZED;
+import static org.apache.lucene.document.Field.Store.YES;
 
 /**
  * A utility for making Lucene Documents from a File.
@@ -54,7 +62,7 @@ import org.apache.lucene.document.Field;
 public class XincoDocument {
 
     private static final Logger logger =
-            Logger.getLogger(XincoDocument.class.getSimpleName());
+            getLogger(XincoDocument.class.getSimpleName());
 
     public static Document getXincoDocument(XincoCoreData d, boolean indexContent)
             throws java.io.FileNotFoundException {
@@ -67,9 +75,9 @@ public class XincoDocument {
         doc = new Document();
 
         //add XincoCoreData information
-        doc.add(new Field("id", (new Integer(d.getId())).toString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-        doc.add(new Field("designation", d.getDesignation(), Field.Store.YES, Field.Index.ANALYZED));
-        doc.add(new Field("language", (new Integer(d.getXincoCoreLanguage().getId())).toString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+        doc.add(new Field("id", (new Integer(d.getId())).toString(), YES, NOT_ANALYZED));
+        doc.add(new Field("designation", d.getDesignation(), YES, ANALYZED));
+        doc.add(new Field("language", (new Integer(d.getXincoCoreLanguage().getId())).toString(), YES, NOT_ANALYZED));
 
         //add content of file
         if (indexContent && (d.getXincoCoreDataType().getId() == 1) && (d.getStatusNumber() != 3)) { //process non-archived file
@@ -86,9 +94,9 @@ public class XincoDocument {
             }
             //check which indexer to use for file extension
             fileType = 0; // default: index as TEXT
-            for (l = 0; l < XincoDBManager.CONFIG.getFileIndexerCount(); l++) {
-                for (i = 0; i < ((String[]) XincoDBManager.CONFIG.getIndexFileTypesExt().get(l)).length; i++) {
-                    if (((String[]) XincoDBManager.CONFIG.getIndexFileTypesExt().get(l))[i].compareTo(file_ext) == 0) {
+            for (l = 0; l < CONFIG.getFileIndexerCount(); l++) {
+                for (i = 0; i < ((String[]) CONFIG.getIndexFileTypesExt().get(l)).length; i++) {
+                    if (((String[]) CONFIG.getIndexFileTypesExt().get(l))[i].compareTo(file_ext) == 0) {
                         fileType = l + 1; // file-type specific indexing
                         break;
                     }
@@ -98,8 +106,8 @@ public class XincoDocument {
                 }
             }
             if (fileType == 0) {
-                for (i = 0; i < XincoDBManager.CONFIG.getIndexNoIndex().length; i++) {
-                    if (XincoDBManager.CONFIG.getIndexNoIndex()[i].compareTo(file_ext) == 0) {
+                for (i = 0; i < CONFIG.getIndexNoIndex().length; i++) {
+                    if (CONFIG.getIndexNoIndex()[i].compareTo(file_ext) == 0) {
                         fileType = -1; // NO indexing
                         break;
                     }
@@ -112,29 +120,29 @@ public class XincoDocument {
             if (fileType == 0) {
                 // index as TEXT
                 xift = new XincoIndexText();
-                doc.add(new Field("file", xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.CONFIG.fileRepositoryPath, d.getId(), "" + d.getId())))));
+                doc.add(new Field("file", xift.getFileContentReader(new File(getXincoCoreDataPath(CONFIG.fileRepositoryPath, d.getId(), "" + d.getId())))));
             } else if (fileType > 0) {
                 try {
                     // file-type specific indexing
-                    xift = (XincoIndexFileType) Class.forName((String) XincoDBManager.CONFIG.getIndexFileTypesClass().get(fileType - 1)).newInstance();
-                    ContentReader = xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.CONFIG.fileRepositoryPath, d.getId(), "" + d.getId())));
+                    xift = (XincoIndexFileType) forName((String) CONFIG.getIndexFileTypesClass().get(fileType - 1)).newInstance();
+                    ContentReader = xift.getFileContentReader(new File(getXincoCoreDataPath(CONFIG.fileRepositoryPath, d.getId(), "" + d.getId())));
                     if (ContentReader != null) {
                         doc.add(new Field("file", ContentReader));
                     } else {
-                        ContentString = xift.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.CONFIG.fileRepositoryPath, d.getId(), "" + d.getId())));
+                        ContentString = xift.getFileContentString(new File(getXincoCoreDataPath(CONFIG.fileRepositoryPath, d.getId(), "" + d.getId())));
                         if (ContentString != null) {
-                            doc.add(new Field("file", ContentString, Field.Store.YES, Field.Index.ANALYZED));
+                            doc.add(new Field("file", ContentString, YES, ANALYZED));
                         }
                     }
                 } catch (ClassNotFoundException ex) {
                     //Try the generic method
                     XincoIndexGenericFile generic = new XincoIndexGenericFile();
-                    ContentString = generic.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.CONFIG.fileRepositoryPath, d.getId(), "" + d.getId())));
+                    ContentString = generic.getFileContentString(new File(getXincoCoreDataPath(CONFIG.fileRepositoryPath, d.getId(), "" + d.getId())));
                     if (ContentString != null) {
-                        doc.add(new Field("file", ContentString, Field.Store.YES, Field.Index.ANALYZED));
+                        doc.add(new Field("file", ContentString, YES, ANALYZED));
                     }
                 } catch (Exception ie) {
-                    logger.log(Level.SEVERE, d.toString(), ie);
+                    logger.log(SEVERE, d.toString(), ie);
                 }
             }
         }
@@ -142,22 +150,22 @@ public class XincoDocument {
         //add attributes
         for (i = 0; i < ((ArrayList) d.getXincoAddAttributes()).size(); i++) {
             if (((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDataType().toLowerCase().compareTo("int") == 0) {
-                doc.add(new Field(((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDesignation(), "" + ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(i)).getAttribInt(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+                doc.add(new Field(((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDesignation(), "" + ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(i)).getAttribInt(), YES, NOT_ANALYZED));
             }
             if (((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDataType().toLowerCase().compareTo("unsignedint") == 0) {
-                doc.add(new Field(((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDesignation(), "" + ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(i)).getAttribUnsignedint(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+                doc.add(new Field(((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDesignation(), "" + ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(i)).getAttribUnsignedint(), YES, NOT_ANALYZED));
             }
             if (((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDataType().toLowerCase().compareTo("double") == 0) {
-                doc.add(new Field(((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDesignation(), "" + ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(i)).getAttribDouble(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+                doc.add(new Field(((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDesignation(), "" + ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(i)).getAttribDouble(), YES, NOT_ANALYZED));
             }
             if (((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDataType().toLowerCase().compareTo("varchar") == 0) {
-                doc.add(new Field(((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDesignation(), ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(i)).getAttribVarchar(), Field.Store.YES, Field.Index.ANALYZED));
+                doc.add(new Field(((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDesignation(), ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(i)).getAttribVarchar(), YES, ANALYZED));
             }
             if (((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDataType().toLowerCase().compareTo("text") == 0) {
-                doc.add(new Field(((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDesignation(), ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(i)).getAttribText(), Field.Store.YES, Field.Index.ANALYZED));
+                doc.add(new Field(((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDesignation(), ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(i)).getAttribText(), YES, ANALYZED));
             }
             if (((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDataType().toLowerCase().compareTo("datetime") == 0) {
-                doc.add(new Field(((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDesignation(), "" + ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(i)).getAttribDatetime(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+                doc.add(new Field(((XincoCoreDataTypeAttribute) ((ArrayList) d.getXincoCoreDataType().getXincoCoreDataTypeAttributes()).get(i)).getDesignation(), "" + ((XincoAddAttribute) ((ArrayList) d.getXincoAddAttributes()).get(i)).getAttribDatetime(), YES, NOT_ANALYZED));
             }
         }
         return doc;

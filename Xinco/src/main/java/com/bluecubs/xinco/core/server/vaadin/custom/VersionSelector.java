@@ -2,9 +2,11 @@ package com.bluecubs.xinco.core.server.vaadin.custom;
 
 import com.bluecubs.xinco.core.server.service.XincoVersion;
 import com.bluecubs.xinco.core.server.vaadin.Xinco;
+import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.*;
+import static java.lang.Integer.MAX_VALUE;
 import org.vaadin.risto.stepper.IntStepper;
 
 /**
@@ -45,17 +47,17 @@ public class VersionSelector extends CustomComponent {
         panel.setContent(new VerticalLayout());
         panel.addComponent(new Label(getString("general.version.postfix") + ":"));
         high.setValue(version.getVersionHigh());
-        high.setMaxValue(Integer.MAX_VALUE);
+        high.setMaxValue(MAX_VALUE);
         high.setMinValue(version.getVersionHigh());
         high.setStepAmount(1);
         panel.addComponent(high);
         mid.setValue(version.getVersionMid());
-        mid.setMaxValue(Integer.MAX_VALUE);
+        mid.setMaxValue(MAX_VALUE);
         mid.setMinValue(version.getVersionMid());
         mid.setStepAmount(1);
         panel.addComponent(mid);
         low.setValue(version.getVersionLow());
-        low.setMaxValue(Integer.MAX_VALUE);
+        low.setMaxValue(MAX_VALUE);
         low.setMinValue(version.getVersionLow());
         low.setStepAmount(1);
         panel.addComponent(low);
@@ -85,7 +87,7 @@ public class VersionSelector extends CustomComponent {
     }
 
     private String getString(String key) {
-        return Xinco.getInstance().getResource().getString(key);
+        return getInstance().getResource().getString(key);
     }
 
     public void increaseHigh() {
@@ -135,15 +137,15 @@ public class VersionSelector extends CustomComponent {
 
     private void update() {
         high.setValue(version.getVersionHigh());
-        high.setMaxValue(Integer.MAX_VALUE);
+        high.setMaxValue(MAX_VALUE);
         high.setMinValue(version.getVersionHigh());
         high.setStepAmount(1);
         mid.setValue(version.getVersionMid());
-        mid.setMaxValue(Integer.MAX_VALUE);
+        mid.setMaxValue(MAX_VALUE);
         mid.setMinValue(version.getVersionMid());
         mid.setStepAmount(1);
         low.setValue(version.getVersionLow());
-        low.setMaxValue(Integer.MAX_VALUE);
+        low.setMaxValue(MAX_VALUE);
         low.setMinValue(version.getVersionLow());
         low.setStepAmount(1);
         postfix.setValue(version.getVersionPostfix() == null ? ""

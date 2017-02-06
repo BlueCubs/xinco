@@ -2,7 +2,9 @@ package com.bluecubs.xinco.core.server;
 
 import java.util.HashMap;
 import java.util.Locale;
+import static java.util.Locale.getDefault;
 import java.util.ResourceBundle;
+import static java.util.ResourceBundle.getBundle;
 import java.util.StringTokenizer;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -46,9 +48,8 @@ public final class BrowserDataExtractor extends HttpServlet {
     }
 
     public void initialize() {
-        supportedLanguages = new HashMap<String, String>();
-        ResourceBundle lrb = ResourceBundle.getBundle(
-                "com.bluecubs.xinco.messages.XincoMessagesLocale", Locale.getDefault());
+        supportedLanguages = new HashMap<>();
+        ResourceBundle lrb = getBundle("com.bluecubs.xinco.messages.XincoMessagesLocale", getDefault());
         String[] locales = lrb.getString("AvailableLocales").split(",");
         for (String loc : locales) {
             if (!loc.trim().isEmpty()) {
@@ -83,14 +84,19 @@ public final class BrowserDataExtractor extends HttpServlet {
     }
 
     private void setName() {
-        if (company.equals("Microsoft")) {
-            name = "Microsoft Internet Explorer";
-        } else if (company.equals("Netscape Communications")) {
-            name = "Netscape Navigator";
-        } else if (company.equals("Operasoftware")) {
-            name = "Operasoftware Opera";
-        } else {
-            name = "unknown";
+        switch (company) {
+            case "Microsoft":
+                name = "Microsoft Internet Explorer";
+                break;
+            case "Netscape Communications":
+                name = "Netscape Navigator";
+                break;
+            case "Operasoftware":
+                name = "Operasoftware Opera";
+                break;
+            default:
+                name = "unknown";
+                break;
         }
     }
 

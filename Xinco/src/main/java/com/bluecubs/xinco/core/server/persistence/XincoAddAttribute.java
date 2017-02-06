@@ -32,6 +32,7 @@ import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
+import static javax.persistence.TemporalType.TIMESTAMP;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -72,7 +73,7 @@ public class XincoAddAttribute extends XincoAuditedObject implements Serializabl
     @Column(name = "attrib_text")
     private String attribText;
     @Column(name = "attrib_datetime")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TIMESTAMP)
     private Date attribDatetime;
     @JoinColumn(name = "xinco_core_data_id", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
