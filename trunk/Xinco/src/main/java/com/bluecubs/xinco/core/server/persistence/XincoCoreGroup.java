@@ -32,6 +32,8 @@ import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.*;
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.GenerationType.TABLE;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -57,7 +59,7 @@ public class XincoCoreGroup extends XincoAuditedObject implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreGroupGen")
+    @GeneratedValue(strategy = TABLE, generator = "XincoCoreGroupGen")
     @TableGenerator(name = "XincoCoreGroupGen", table = "xinco_id",
     pkColumnName = "tablename",
     valueColumnName = "last_id",
@@ -77,7 +79,7 @@ public class XincoCoreGroup extends XincoAuditedObject implements Serializable {
     private int statusNumber;
     @OneToMany(mappedBy = "xincoCoreGroup")
     private List<XincoCoreAce> xincoCoreAceList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreGroup")
+    @OneToMany(cascade = ALL, mappedBy = "xincoCoreGroup")
     private List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList;
 
     public XincoCoreGroup() {

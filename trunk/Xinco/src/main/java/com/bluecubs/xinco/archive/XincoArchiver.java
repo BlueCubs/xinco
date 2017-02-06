@@ -29,17 +29,27 @@
 package com.bluecubs.xinco.archive;
 
 import com.bluecubs.xinco.core.OPCode;
+import static com.bluecubs.xinco.core.OPCode.ARCHIVED;
+import static com.bluecubs.xinco.core.OPCode.CREATION;
+import static com.bluecubs.xinco.core.OPCode.getOPCode;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
+import static com.bluecubs.xinco.core.server.XincoCoreDataServer.getXincoCoreDataPath;
 import com.bluecubs.xinco.core.server.XincoCoreLogServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import java.io.*;
+import static java.lang.System.getProperty;
 import java.util.ArrayList;
 import java.util.Calendar;
+import static java.util.Calendar.DAY_OF_MONTH;
+import static java.util.Calendar.MONTH;
+import static java.util.Calendar.YEAR;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * This class handles document archiving for Xinco. Edit configuration values in
@@ -64,7 +74,7 @@ public final class XincoArchiver {
     static FileOutputStream fcos = null;
     static byte[] fcbuf = null;
     static ResourceBundle rb =
-            ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
+            getBundle("com.bluecubs.xinco.messages.XincoMessages");
 
     private XincoArchiver() {
     }
@@ -77,16 +87,16 @@ public final class XincoArchiver {
             xdataTemp = d;
             xnodeTempArrayList = v;
             Calendar ngc = new GregorianCalendar();
-            archiveName = ngc.get(Calendar.YEAR) + "-"
-                    + (ngc.get(Calendar.MONTH) + 1)
-                    + "-" + ngc.get(Calendar.DAY_OF_MONTH);
-            archiveBaseDir = XincoDBManager.CONFIG.fileArchivePath
+            archiveName = ngc.get(YEAR) + "-"
+                    + (ngc.get(MONTH) + 1)
+                    + "-" + ngc.get(DAY_OF_MONTH);
+            archiveBaseDir = CONFIG.fileArchivePath
                     + archiveName;
             //archive data
             archiveFileDir = "";
             for (i = xnodeTempArrayList.size() - 1; i >= 0; i--) {
                 archiveFileDir = archiveFileDir
-                        + System.getProperty("file.separator")
+                        + getProperty("file.separator")
                         + ((XincoCoreNodeServer) xnodeTempArrayList.get(i))
                         .getDesignation();
             }
@@ -115,16 +125,16 @@ public final class XincoArchiver {
                         + (xdataTemp.getXincoAddAttributes().isEmpty() ? "" : "_"
                         + ((XincoAddAttribute) ((ArrayList) xdataTemp.getXincoAddAttributes()).get(0))
                         .getAttribVarchar());
-                if ((new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.CONFIG.fileRepositoryPath, 
+                if ((new File(getXincoCoreDataPath(CONFIG.fileRepositoryPath, 
                         ((Integer) orgFileIDs.get(k)),
                         ((String) orgFileNames.get(k))))).exists()) {
                     fcis = new FileInputStream(
-                            new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.CONFIG.fileRepositoryPath, 
+                            new File(getXincoCoreDataPath(CONFIG.fileRepositoryPath, 
                                     ((Integer) orgFileIDs.get(k)),
                             ((String) orgFileNames.get(k)))));
                     fcos = new FileOutputStream(new File(archiveBaseDir
                             + archiveFileDir
-                            + System.getProperty("file.separator") + fileName));
+                            + getProperty("file.separator") + fileName));
                     fcbuf = new byte[4096];
                     len = 0;
                     while ((len = fcis.read(fcbuf)) != -1) {
@@ -133,7 +143,7 @@ public final class XincoArchiver {
                     fcis.close();
                     fcos.close();
                     //delete
-                    (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.CONFIG.fileRepositoryPath, 
+                    (new File(getXincoCoreDataPath(CONFIG.fileRepositoryPath, 
                             ((Integer) orgFileIDs.get(k)),
                             ((String) orgFileNames.get(k))))).delete();
                 }
@@ -150,8 +160,8 @@ public final class XincoArchiver {
                     xlogTemp = ((XincoCoreLogServer) ((ArrayList) xdataTemp.getXincoCoreLogs()).get(
                             ((ArrayList) xdataTemp.getXincoCoreLogs()).size() - 1));
                     if (xlogTemp != null) {
-                        xlogTemp.setOpCode(OPCode.ARCHIVED.ordinal() + 1);
-                        xlogTemp.setOpDescription(rb.getString(OPCode.getOPCode(
+                        xlogTemp.setOpCode(ARCHIVED.ordinal() + 1);
+                        xlogTemp.setOpDescription(rb.getString(getOPCode(
                                 xlogTemp.getOpCode()).getName()));
                         xlogTemp.setXincoCoreUserId(1);
                         xlogTemp.write2DB();
@@ -165,7 +175,7 @@ public final class XincoArchiver {
                 } else {
                     throw new XincoException(
                             "Not the expected amount of log entries. "
-                            + "At least should have " + OPCode.CREATION.name()
+                            + "At least should have " + CREATION.name()
                             + " log entry present");
                 }
             }

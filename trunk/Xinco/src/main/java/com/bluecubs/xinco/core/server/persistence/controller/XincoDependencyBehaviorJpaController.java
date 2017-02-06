@@ -64,7 +64,7 @@ public class XincoDependencyBehaviorJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            List<XincoDependencyType> attachedXincoDependencyTypeList = new ArrayList<XincoDependencyType>();
+            List<XincoDependencyType> attachedXincoDependencyTypeList = new ArrayList<>();
             for (XincoDependencyType xincoDependencyTypeListXincoDependencyTypeToAttach : xincoDependencyBehavior.getXincoDependencyTypeList()) {
                 xincoDependencyTypeListXincoDependencyTypeToAttach = em.getReference(xincoDependencyTypeListXincoDependencyTypeToAttach.getClass(), xincoDependencyTypeListXincoDependencyTypeToAttach.getId());
                 attachedXincoDependencyTypeList.add(xincoDependencyTypeListXincoDependencyTypeToAttach);
@@ -100,7 +100,7 @@ public class XincoDependencyBehaviorJpaController implements Serializable {
             for (XincoDependencyType xincoDependencyTypeListOldXincoDependencyType : xincoDependencyTypeListOld) {
                 if (!xincoDependencyTypeListNew.contains(xincoDependencyTypeListOldXincoDependencyType)) {
                     if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
+                        illegalOrphanMessages = new ArrayList<>();
                     }
                     illegalOrphanMessages.add("You must retain XincoDependencyType " + xincoDependencyTypeListOldXincoDependencyType + " since its xincoDependencyBehavior field is not nullable.");
                 }
@@ -108,7 +108,7 @@ public class XincoDependencyBehaviorJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            List<XincoDependencyType> attachedXincoDependencyTypeListNew = new ArrayList<XincoDependencyType>();
+            List<XincoDependencyType> attachedXincoDependencyTypeListNew = new ArrayList<>();
             for (XincoDependencyType xincoDependencyTypeListNewXincoDependencyTypeToAttach : xincoDependencyTypeListNew) {
                 xincoDependencyTypeListNewXincoDependencyTypeToAttach = em.getReference(xincoDependencyTypeListNewXincoDependencyTypeToAttach.getClass(), xincoDependencyTypeListNewXincoDependencyTypeToAttach.getId());
                 attachedXincoDependencyTypeListNew.add(xincoDependencyTypeListNewXincoDependencyTypeToAttach);
@@ -160,7 +160,7 @@ public class XincoDependencyBehaviorJpaController implements Serializable {
             List<XincoDependencyType> xincoDependencyTypeListOrphanCheck = xincoDependencyBehavior.getXincoDependencyTypeList();
             for (XincoDependencyType xincoDependencyTypeListOrphanCheckXincoDependencyType : xincoDependencyTypeListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
+                    illegalOrphanMessages = new ArrayList<>();
                 }
                 illegalOrphanMessages.add("This XincoDependencyBehavior (" + xincoDependencyBehavior + ") cannot be destroyed since the XincoDependencyType " + xincoDependencyTypeListOrphanCheckXincoDependencyType + " in its xincoDependencyTypeList field has a non-nullable xincoDependencyBehavior field.");
             }

@@ -32,6 +32,8 @@ import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.*;
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.GenerationType.TABLE;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -56,7 +58,7 @@ public class XincoCoreData extends XincoAuditedObject implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreDataGen")
+    @GeneratedValue(strategy = TABLE, generator = "XincoCoreDataGen")
     @TableGenerator(name = "XincoCoreDataGen", table = "xinco_id",
     pkColumnName = "tablename",
     valueColumnName = "last_id",
@@ -74,13 +76,13 @@ public class XincoCoreData extends XincoAuditedObject implements Serializable {
     @NotNull
     @Column(name = "status_number")
     private int statusNumber;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreData")
+    @OneToMany(cascade = ALL, mappedBy = "xincoCoreData")
     private List<XincoCoreDataHasDependency> xincoCoreDataHasDependencyList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreData1")
+    @OneToMany(cascade = ALL, mappedBy = "xincoCoreData1")
     private List<XincoCoreDataHasDependency> xincoCoreDataHasDependencyList1;
     @OneToMany(mappedBy = "xincoCoreData")
     private List<XincoCoreAce> xincoCoreAceList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreData")
+    @OneToMany(cascade = ALL, mappedBy = "xincoCoreData")
     private List<XincoCoreLog> xincoCoreLogList;
     @JoinColumn(name = "xinco_core_data_type_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
@@ -91,7 +93,7 @@ public class XincoCoreData extends XincoAuditedObject implements Serializable {
     @JoinColumn(name = "xinco_core_node_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private XincoCoreNode xincoCoreNode;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreData")
+    @OneToMany(cascade = ALL, mappedBy = "xincoCoreData")
     private List<XincoAddAttribute> xincoAddAttributeList;
 
     public XincoCoreData() {

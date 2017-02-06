@@ -30,19 +30,26 @@ package com.bluecubs.xinco.archive;
 
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
+import static com.bluecubs.xinco.core.server.XincoCoreNodeServer.getXincoCoreNodeParents;
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
+import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
 import com.bluecubs.xinco.core.server.persistence.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreData;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreLog;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import static java.lang.System.currentTimeMillis;
 import java.util.Calendar;
+import static java.util.Calendar.DAY_OF_YEAR;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  * This class runs document archiving in a separate thread (only one archiving
@@ -57,7 +64,7 @@ public final class XincoArchiveThread extends Thread {
     static FileOutputStream fcos = null;
     private static List result;
     private static final Logger LOG
-            = Logger.getLogger(XincoArchiveThread.class.getSimpleName());
+            = getLogger(XincoArchiveThread.class.getSimpleName());
 
     @Override
     public void run() {
@@ -65,7 +72,7 @@ public final class XincoArchiveThread extends Thread {
         firstRun = new GregorianCalendar();
         while (true) {
             try {
-                archive_period = XincoDBManager.CONFIG.fileArchivePeriod;
+                archive_period = CONFIG.fileArchivePeriod;
                 //exit archiver if period = 0
                 if (archive_period == 0) {
                     break;
@@ -73,14 +80,14 @@ public final class XincoArchiveThread extends Thread {
                 archiveData();
                 lastRun = new GregorianCalendar();
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, null, e);
+                LOG.log(SEVERE, null, e);
                 //continue, wait and try again...
                 archive_period = 14400000;
             }
             try {
                 sleep(archive_period);
             } catch (Exception se) {
-                LOG.log(Level.SEVERE, null, se);
+                LOG.log(SEVERE, null, se);
                 break;
             }
         }
@@ -121,7 +128,7 @@ public final class XincoArchiveThread extends Thread {
             for (j = 0; j < querycount; j++) {
                 //select data with expired archiving date
                 if (j == 1) {
-                    result = XincoDBManager.createdQuery(query[j]);
+                    result = createdQuery(query[j]);
                     //Now process the date part of the query in plain JAVA
                     int delay = 0;
                     for (Object o : result) {
@@ -136,23 +143,23 @@ public final class XincoArchiveThread extends Thread {
                         for (XincoCoreLog log : data.getXincoCoreLogList()) {
                             GregorianCalendar c = new GregorianCalendar();
                             c.setTime(log.getOpDatetime());
-                            c.add(Calendar.DAY_OF_YEAR, delay);
-                            if (c.getTime().before(new Date(System.currentTimeMillis()))) {
+                            c.add(DAY_OF_YEAR, delay);
+                            if (c.getTime().before(new Date(currentTimeMillis()))) {
                                 XincoArchiver.archiveData(new XincoCoreDataServer(data.getId()),
-                                        XincoCoreNodeServer.getXincoCoreNodeParents(data.getXincoCoreNode().getId()));
+                                        getXincoCoreNodeParents(data.getXincoCoreNode().getId()));
                                 break;
                             }
                         }
                     }
                 } else {
-                    result = XincoDBManager.createdQuery(query[j]);
+                    result = createdQuery(query[j]);
                     for (Object o : result) {
                         XincoCoreData data = (XincoCoreData) o;
                         for (XincoAddAttribute attr : data.getXincoAddAttributeList()) {
                             if (attr.getXincoAddAttributePK().getAttributeId() == 6
-                                    && attr.getAttribDatetime().before(new Date(System.currentTimeMillis()))) {
+                                    && attr.getAttribDatetime().before(new Date(currentTimeMillis()))) {
                                 XincoArchiver.archiveData(new XincoCoreDataServer(data.getId()),
-                                        XincoCoreNodeServer.getXincoCoreNodeParents(data.getXincoCoreNode().getId()));
+                                        getXincoCoreNodeParents(data.getXincoCoreNode().getId()));
                                 break;
                             }
                         }
@@ -161,7 +168,7 @@ public final class XincoArchiveThread extends Thread {
             }
             return true;
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, null, e);
+            LOG.log(SEVERE, null, e);
             return false;
         } finally {
             try {
@@ -172,7 +179,7 @@ public final class XincoArchiveThread extends Thread {
                     fcos.close();
                 }
             } catch (IOException fe) {
-                LOG.log(Level.SEVERE, null, fe);
+                LOG.log(SEVERE, null, fe);
             }
         }
     }

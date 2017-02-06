@@ -1,11 +1,16 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import static com.bluecubs.xinco.core.server.XincoCoreUserServer.getXincoCoreUsers;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
 import java.sql.Timestamp;
+import static java.util.Calendar.DATE;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -34,7 +39,7 @@ public class XincoCoreUserServerTest extends AbstractXincoDataBaseTestCase {
             XincoCoreUserServer instance = new XincoCoreUserServer(1);
             assertTrue(instance.getAttempts() >= 0);
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreUserServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreUserServerTest.class.getSimpleName()).log(SEVERE, null, ex);
             fail();
         }
     }
@@ -55,7 +60,7 @@ public class XincoCoreUserServerTest extends AbstractXincoDataBaseTestCase {
             instance.setAttempts(0);
             instance.write2DB();
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreUserServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreUserServerTest.class.getSimpleName()).log(SEVERE, null, ex);
             fail();
         }
     }
@@ -64,7 +69,7 @@ public class XincoCoreUserServerTest extends AbstractXincoDataBaseTestCase {
      * Test of getXincoCoreUsers method, of class XincoCoreUserServer.
      */
     public void testGetXincoCoreUsers() {
-        assertTrue(XincoCoreUserServer.getXincoCoreUsers().size() > 0);
+        assertTrue(getXincoCoreUsers().size() > 0);
     }
 
     /**
@@ -86,8 +91,8 @@ public class XincoCoreUserServerTest extends AbstractXincoDataBaseTestCase {
             assertFalse(instance.isPasswordUsable(newPass));
             //Change last modified out of invalid range
             GregorianCalendar cal = new GregorianCalendar();
-            int val = XincoSettingServer.getSetting("password.aging").getIntValue() + 1;
-            cal.add(GregorianCalendar.DATE, -val);
+            int val = getSetting("password.aging").getIntValue() + 1;
+            cal.add(DATE, -val);
             instance.setLastModified(new Timestamp(cal.getTimeInMillis()));
             instance.setUserpassword(newPass + "*");
             instance.setHashPassword(true);
@@ -111,7 +116,7 @@ public class XincoCoreUserServerTest extends AbstractXincoDataBaseTestCase {
             XincoCoreUserServer instance = new XincoCoreUserServer("admin", "admin");
             assertTrue((instance.getXincoCoreGroups()).size() >= 0);
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreUserServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreUserServerTest.class.getSimpleName()).log(SEVERE, null, ex);
             fail();
         }
     }

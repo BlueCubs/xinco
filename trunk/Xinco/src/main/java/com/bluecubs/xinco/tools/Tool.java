@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import static java.lang.Integer.parseInt;
+import static java.lang.Integer.parseInt;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.nio.channels.FileChannel;
@@ -15,8 +17,12 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import javax.imageio.ImageIO;
+import static javax.imageio.ImageIO.getImageReadersBySuffix;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
@@ -24,6 +30,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import static javax.xml.datatype.DatatypeFactory.newInstance;
 
 /**
  *
@@ -34,7 +41,7 @@ public class Tool {
     public static int MIN_PORT_NUMBER = 1;
     public static int MAX_PORT_NUMBER = 65535;
     private static final Logger LOG =
-            Logger.getLogger(Tool.class.getName());
+            getLogger(Tool.class.getName());
 
     private Tool() {
     }
@@ -68,8 +75,8 @@ public class Tool {
         } else {
             try {
                 while (firstST.hasMoreTokens()) {
-                    int firstInt = Integer.parseInt(firstST.nextToken());
-                    int secondInt = Integer.parseInt(secondST.nextToken());
+                    int firstInt = parseInt(firstST.nextToken());
+                    int secondInt = parseInt(secondST.nextToken());
                     //Both numbers let's continue
                     if (firstInt != secondInt) {
                         return false;
@@ -97,7 +104,7 @@ public class Tool {
             ds.setReuseAddress(true);
             return true;
         } catch (IOException e) {
-            LOG.log(Level.FINE, null, e);
+            LOG.log(FINE, null, e);
         } finally {
             if (ds != null) {
                 ds.close();
@@ -110,7 +117,7 @@ public class Tool {
                     /*
                      * should not be thrown
                      */
-                    LOG.log(Level.SEVERE, null, e);
+                    LOG.log(SEVERE, null, e);
                 }
             }
         }
@@ -163,7 +170,7 @@ public class Tool {
                 result = false;
             }
         } catch (AddressException ex) {
-            LOG.log(Level.FINE, null, ex);
+            LOG.log(FINE, null, ex);
             result = false;
         }
         return result;
@@ -197,7 +204,7 @@ public class Tool {
     public static Dimension getImageDim(final String path) {
         Dimension result = null;
         String suffix = getFileSuffix(path);
-        Iterator<ImageReader> iter = ImageIO.getImageReadersBySuffix(suffix);
+        Iterator<ImageReader> iter = getImageReadersBySuffix(suffix);
         if (iter.hasNext()) {
             ImageReader reader = iter.next();
             try {
@@ -208,7 +215,7 @@ public class Tool {
                 int height = reader.getHeight(reader.getMinIndex());
                 result = new Dimension(width, height);
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, null, e);
+                LOG.log(SEVERE, null, e);
             } finally {
                 reader.dispose();
             }
@@ -235,10 +242,7 @@ public class Tool {
         //add specific attributes
         data.getXincoAddAttributes().clear();
         XincoAddAttribute xaa;
-        for (Iterator<XincoCoreDataTypeAttribute> it =
-                data.getXincoCoreDataType().getXincoCoreDataTypeAttributes()
-                .iterator(); it.hasNext();) {
-            XincoCoreDataTypeAttribute attr = it.next();
+        for (XincoCoreDataTypeAttribute attr : data.getXincoCoreDataType().getXincoCoreDataTypeAttributes()) {
             try {
                 xaa = new XincoAddAttribute();
                 xaa.setAttributeId(attr.getAttributeId());
@@ -246,15 +250,14 @@ public class Tool {
                 xaa.setAttribText("");
                 GregorianCalendar calendar = new GregorianCalendar();
                 calendar.setTime(new Date());
-                DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
-                xaa.setAttribDatetime(DatatypeFactory.newInstance()
-                        .newXMLGregorianCalendar(calendar));
+                newInstance().newXMLGregorianCalendar(calendar);
+                xaa.setAttribDatetime(newInstance().newXMLGregorianCalendar(calendar));
                 data.getXincoAddAttributes().add(xaa);
             } catch (DatatypeConfigurationException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.log(SEVERE, null, ex);
             }
         }
-        LOG.log(Level.FINE,
+        LOG.log(FINE,
                 "Added {0} attributes!", data.getXincoAddAttributes().size());
     }
 }

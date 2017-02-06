@@ -4,7 +4,10 @@ import com.bluecubs.xinco.core.server.vaadin.wizard.event.*;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.*;
+import static com.vaadin.ui.Alignment.BOTTOM_RIGHT;
 import java.util.*;
+import static java.util.Collections.unmodifiableList;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * Component for displaying multi-step wizard style user interface.
@@ -32,11 +35,11 @@ import java.util.*;
  */
 public final class XincoWizard extends CustomComponent {
 
-    private final List<WizardStep> steps = new ArrayList<WizardStep>();
+    private final List<WizardStep> steps = new ArrayList<>();
     private final List<WizardProgressListener> listeners =
-            new ArrayList<WizardProgressListener>();
+            new ArrayList<>();
     private final Map<String, WizardStep> idMap =
-            new HashMap<String, WizardStep>();
+            new HashMap<>();
     private VerticalLayout mainLayout;
     private Panel contentPanel;
     private Button nextButton;
@@ -57,7 +60,7 @@ public final class XincoWizard extends CustomComponent {
     @Override
     public void setLocale(Locale locale) {
         super.setLocale(locale);
-        xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages", getLocale());
+        xerb = getBundle("com.bluecubs.xinco.messages.XincoMessages", getLocale());
     }
 
     private void init() {
@@ -79,7 +82,7 @@ public final class XincoWizard extends CustomComponent {
 
         mainLayout.addComponent(contentPanel);
         mainLayout.addComponent(footer);
-        mainLayout.setComponentAlignment(footer, Alignment.BOTTOM_RIGHT);
+        mainLayout.setComponentAlignment(footer, BOTTOM_RIGHT);
 
         mainLayout.setExpandRatio(contentPanel, 1.0f);
         mainLayout.setSizeFull();
@@ -237,7 +240,7 @@ public final class XincoWizard extends CustomComponent {
             }
             //Recreate list and id map
             idMap.clear();
-            List<WizardStep> newSteps = new ArrayList<WizardStep>();
+            List<WizardStep> newSteps = new ArrayList<>();
             for (WizardStep ws : steps) {
                 if (newSteps.size() == pos) {
                     //Insert new step
@@ -289,7 +292,7 @@ public final class XincoWizard extends CustomComponent {
     }
 
     public List<WizardStep> getSteps() {
-        return Collections.unmodifiableList(steps);
+        return unmodifiableList(steps);
     }
 
     public boolean removeStep(WizardStep step) {

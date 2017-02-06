@@ -4,10 +4,13 @@
  */
 package com.bluecubs.xinco.core.server.vaadin;
 
+import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  *
@@ -18,11 +21,11 @@ public class XincoActivityActionListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            if (Xinco.getInstance() != null) {
-                Xinco.getInstance().setLock();
+            if (getInstance() != null) {
+                getInstance().setLock();
             }
         } catch (Throwable ex) {
-            Logger.getLogger(XincoActivityActionListener.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoActivityActionListener.class.getName()).log(SEVERE, null, ex);
         }
     }
 }

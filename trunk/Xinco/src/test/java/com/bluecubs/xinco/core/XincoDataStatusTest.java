@@ -4,6 +4,9 @@
  */
 package com.bluecubs.xinco.core;
 
+import static com.bluecubs.xinco.core.XincoDataStatus.valueOf;
+import static com.bluecubs.xinco.core.XincoDataStatus.values;
+import static java.lang.System.out;
 import org.junit.*;
 import static org.junit.Assert.assertTrue;
 
@@ -37,8 +40,8 @@ public class XincoDataStatusTest {
      */
     @Test
     public void testValues() {
-        System.out.println("values");
-        assertTrue(XincoDataStatus.values().length > 0);
+        out.println("values");
+        assertTrue(values().length > 0);
     }
 
     /**
@@ -46,7 +49,7 @@ public class XincoDataStatusTest {
      */
     @Test
     public void testValueOf() {
-        System.out.println("valueOf");
-        assertTrue(XincoDataStatus.valueOf(XincoDataStatus.values()[0].name()) != null);
+        out.println("valueOf");
+        assertTrue(valueOf(values()[0].name()) != null);
     }
 }

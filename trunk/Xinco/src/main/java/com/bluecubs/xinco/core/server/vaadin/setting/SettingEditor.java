@@ -28,19 +28,26 @@
 package com.bluecubs.xinco.core.server.vaadin.setting;
 
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import com.bluecubs.xinco.core.server.persistence.XincoSetting;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoSettingJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.vaadin.Xinco;
+import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import com.vaadin.data.Item;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import java.io.Serializable;
+import static java.lang.Integer.valueOf;
+import static java.lang.String.format;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import static java.util.Arrays.asList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  *
@@ -59,7 +66,7 @@ class SettingEditor extends Window implements Button.ClickListener {
         editorForm.setWriteThrough(false);
         editorForm.setImmediate(true);
         editorForm.setItemDataSource(settingItem,
-                Arrays.asList("id", "description",
+                asList("id", "description",
                 "stringValue", "longValue", "boolValue", "intValue"));
         saveButton = new Button(getResource().getString("general.save"), this);
         cancelButton = new Button(getResource().getString("general.cancel"), this);
@@ -91,7 +98,7 @@ class SettingEditor extends Window implements Button.ClickListener {
      * @return the caption of the editor window
      */
     private String buildCaption() {
-        return String.format("%s",
+        return format("%s",
                 settingItem.getItemProperty("description").getValue());
     }
 
@@ -99,7 +106,7 @@ class SettingEditor extends Window implements Button.ClickListener {
     public void buttonClick(ClickEvent event) {
         if (event.getButton() == saveButton) {
             XincoSetting setting =
-                    new XincoSettingJpaController(XincoDBManager.getEntityManagerFactory()).findXincoSetting(Integer.valueOf(editorForm.getField("id").getValue().toString()));
+                    new XincoSettingJpaController(getEntityManagerFactory()).findXincoSetting(valueOf(editorForm.getField("id").getValue().toString()));
             boolean modified = false;
             if (setting.getLongValue() != ((Long) editorForm.getField("longValue").getValue())) {
                 modified = true;
@@ -119,11 +126,11 @@ class SettingEditor extends Window implements Button.ClickListener {
             }
             if (modified) {
                 try {
-                    new XincoSettingJpaController(XincoDBManager.getEntityManagerFactory()).edit(setting);
+                    new XincoSettingJpaController(getEntityManagerFactory()).edit(setting);
                 } catch (NonexistentEntityException ex) {
-                    Logger.getLogger(SettingEditor.class.getName()).log(Level.SEVERE, null, ex);
+                    getLogger(SettingEditor.class.getName()).log(SEVERE, null, ex);
                 } catch (Exception ex) {
-                    Logger.getLogger(SettingEditor.class.getName()).log(Level.SEVERE, null, ex);
+                    getLogger(SettingEditor.class.getName()).log(SEVERE, null, ex);
                 }
             }
             fireEvent(new EditorSavedEvent(this, settingItem));
@@ -165,6 +172,6 @@ class SettingEditor extends Window implements Button.ClickListener {
     }
 
     private ResourceBundle getResource() {
-        return Xinco.getInstance().getResource();
+        return getInstance().getResource();
     }
 }

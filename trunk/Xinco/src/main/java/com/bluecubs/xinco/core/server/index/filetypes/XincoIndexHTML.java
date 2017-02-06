@@ -38,7 +38,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import org.apache.lucene.demo.html.HTMLParser;
 
 public class XincoIndexHTML implements XincoIndexFileType {
@@ -54,7 +56,7 @@ public class XincoIndexHTML implements XincoIndexFileType {
         try {
             fis = new FileInputStream(f);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(XincoIndexHTML.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoIndexHTML.class.getName()).log(SEVERE, null, ex);
         }
         Reader reader;
         try {

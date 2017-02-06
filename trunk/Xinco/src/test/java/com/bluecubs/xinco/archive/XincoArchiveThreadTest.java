@@ -1,21 +1,33 @@
 package com.bluecubs.xinco.archive;
 
+import static com.bluecubs.xinco.archive.XincoArchiver.archiveData;
 import com.bluecubs.xinco.core.OPCode;
+import static com.bluecubs.xinco.core.OPCode.CREATION;
+import static com.bluecubs.xinco.core.OPCode.getOPCode;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.*;
+import static com.bluecubs.xinco.core.server.XincoCoreDataServer.isArchived;
+import static com.bluecubs.xinco.core.server.XincoCoreDataServer.isArchived;
+import static com.bluecubs.xinco.core.server.XincoCoreNodeServer.getXincoCoreNodeParents;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLanguageJpaController;
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.service.XincoCoreLog;
+import static java.lang.System.out;
 import java.util.Calendar;
+import static java.util.Calendar.DAY_OF_YEAR;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import static javax.xml.datatype.DatatypeFactory.newInstance;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,25 +51,25 @@ public class XincoArchiveThreadTest extends AbstractXincoDataBaseTestCase {
     }
 
     private void addAttributes(XincoCoreDataServer xcds) throws DatatypeConfigurationException {
-        System.out.println("Adding default attributes...");
+        out.println("Adding default attributes...");
         XincoAddAttributeServer xaa;
         for (int i = 0; i < xcds.getXincoCoreDataType().getXincoCoreDataTypeAttributes().size(); i++) {
             GregorianCalendar calendar = new GregorianCalendar();
             calendar.setTime(new Date());
-            DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
+            newInstance().newXMLGregorianCalendar(calendar);
             xaa = new XincoAddAttributeServer(xcds.getId(),
                     (xcds.getXincoCoreDataType().getXincoCoreDataTypeAttributes().get(i)).getAttributeId(),
                     0, 0, 0, "", "",
-                    DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
+                    newInstance().newXMLGregorianCalendar(calendar));
             xaa.write2DB();
             xcds.getXincoAddAttributes().add(new XincoAddAttributeServer(
                     xaa.getXincoCoreDataId(), xaa.getAttributeId()));
         }
         xcds.write2DB();
-        System.out.println("Making data old enough to archive");
+        out.println("Making data old enough to archive");
         XincoAddAttributeServer attr;
         GregorianCalendar c = new GregorianCalendar();
-        DatatypeFactory factory = DatatypeFactory.newInstance();
+        DatatypeFactory factory = newInstance();
         for (int i = 1; i < 8; i++) {
             switch (i) {
                 case 5:
@@ -67,7 +79,7 @@ public class XincoArchiveThreadTest extends AbstractXincoDataBaseTestCase {
                     break;
                 case 6:
                     c.setTime(new Date());
-                    c.add(Calendar.DAY_OF_YEAR, -1);
+                    c.add(DAY_OF_YEAR, -1);
                     attr = new XincoAddAttributeServer(xcds.getId(),
                             6, 0, 0, 0, "", "", factory.newXMLGregorianCalendar(c));
                     break;
@@ -87,20 +99,20 @@ public class XincoArchiveThreadTest extends AbstractXincoDataBaseTestCase {
     @Test
     public void testArchiveData() {
         try {
-            System.out.println("archiveData");
+            out.println("archiveData");
             //Add data
             XincoCoreDataServer xcds = new XincoCoreDataServer(0, 1, 1, 1, "Test Data", 1);
             assertTrue(xcds.write2DB() > 0);
-            System.out.println("Archiving");
-            assertFalse(XincoArchiver.archiveData(new XincoCoreDataServer(xcds.getId()),
-                    XincoCoreNodeServer.getXincoCoreNodeParents(xcds.getXincoCoreNodeId())));
-            System.out.println("Done!");
-            assertFalse(XincoCoreDataServer.isArchived(xcds));
+            out.println("Archiving");
+            assertFalse(archiveData(new XincoCoreDataServer(xcds.getId()),
+                    getXincoCoreNodeParents(xcds.getXincoCoreNodeId())));
+            out.println("Done!");
+            assertFalse(isArchived(xcds));
             addAttributes(xcds);
-            System.out.println("Archiving");
+            out.println("Archiving");
             try {
-                XincoArchiver.archiveData(new XincoCoreDataServer(xcds.getId()),
-                        XincoCoreNodeServer.getXincoCoreNodeParents(xcds.getXincoCoreNodeId()));
+                archiveData(new XincoCoreDataServer(xcds.getId()),
+                        getXincoCoreNodeParents(xcds.getXincoCoreNodeId()));
                 fail();
             } catch (XincoException ex) {
                 //This should happen
@@ -110,7 +122,7 @@ public class XincoArchiveThreadTest extends AbstractXincoDataBaseTestCase {
             c.setTime(new Date());
             XincoCoreLogServer xcls =
                     new XincoCoreLogServerBuilder().setXincoCoreDataId(xcds.getId())
-                    .setOpCode(OPCode.CREATION.ordinal() + 1)
+                    .setOpCode(CREATION.ordinal() + 1)
                     .setOperationDate(c)
                     .setOperationDescription("")
                     .setVersionHigh(1)
@@ -122,17 +134,14 @@ public class XincoArchiveThreadTest extends AbstractXincoDataBaseTestCase {
             xcls.write2DB();
             xcds.getXincoCoreLogs().add((XincoCoreLog) xcls);
             xcds.write2DB();
-            assertTrue(XincoArchiver.archiveData(new XincoCoreDataServer(xcds.getId()),
-                    XincoCoreNodeServer.getXincoCoreNodeParents(xcds.getXincoCoreNodeId())));
-            System.out.println("Done!");
+            assertTrue(archiveData(new XincoCoreDataServer(xcds.getId()),
+                    getXincoCoreNodeParents(xcds.getXincoCoreNodeId())));
+            out.println("Done!");
             xcds.loadLogs();
             show(xcds);
-            assertTrue(XincoCoreDataServer.isArchived(xcds));
-        } catch (XincoException ex) {
-            Logger.getLogger(XincoArchiveThreadTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail();
-        } catch (Exception ex) {
-            Logger.getLogger(XincoArchiveThreadTest.class.getName()).log(Level.SEVERE, null, ex);
+            assertTrue(isArchived(xcds));
+        } catch (XincoException | Exception ex) {
+            getLogger(XincoArchiveThreadTest.class.getName()).log(SEVERE, null, ex);
             fail();
         }
     }
@@ -146,34 +155,34 @@ public class XincoArchiveThreadTest extends AbstractXincoDataBaseTestCase {
 
     private void show(XincoCoreDataServer xcds) {
         try {
-            System.out.println(new XincoCoreDataJpaController(
-                    XincoDBManager.getEntityManagerFactory()).findXincoCoreData(
+            out.println(new XincoCoreDataJpaController(
+                    getEntityManagerFactory()).findXincoCoreData(
                     xcds.getId()).getDesignation());
-            System.out.println("Designation: " + xcds.getDesignation());
-            System.out.println("Status Number: " + xcds.getStatusNumber());
-            System.out.println(new XincoCoreDataTypeJpaController(
-                    XincoDBManager.getEntityManagerFactory()).findXincoCoreDataType(
+            out.println("Designation: " + xcds.getDesignation());
+            out.println("Status Number: " + xcds.getStatusNumber());
+            out.println(new XincoCoreDataTypeJpaController(
+                    getEntityManagerFactory()).findXincoCoreDataType(
                     xcds.getXincoCoreDataType().getId()).getDescription());
-            System.out.println(new XincoCoreLanguageJpaController(
-                    XincoDBManager.getEntityManagerFactory()).findXincoCoreLanguage(
+            out.println(new XincoCoreLanguageJpaController(
+                    getEntityManagerFactory()).findXincoCoreLanguage(
                     xcds.getXincoCoreLanguage().getId()).getDesignation());
-            System.out.println("Attributes:");
+            out.println("Attributes:");
             for (XincoAddAttribute attr : xcds.getXincoAddAttributes()) {
-                System.out.println("Attribute ID: " + attr.getAttributeId());
-                System.out.println("unsigned int: " + attr.getAttribUnsignedint());
-                System.out.println("date time: " + attr.getAttribDatetime());
+                out.println("Attribute ID: " + attr.getAttributeId());
+                out.println("unsigned int: " + attr.getAttribUnsignedint());
+                out.println("date time: " + attr.getAttribDatetime());
             }
-            System.out.println("Logs:");
+            out.println("Logs:");
             for (Iterator<Object> it = xcds.getXincoCoreLogs().iterator(); it.hasNext();) {
                 XincoCoreLog log = (XincoCoreLog) it.next();
-                System.out.println("ID: " + log.getId());
-                System.out.println("Code: " + log.getOpCode() + " Desc: "
-                        + OPCode.getOPCode(log.getOpCode()).name());
-                System.out.println("Description: " + log.getOpDescription());
-                System.out.println("Data ID: " + log.getXincoCoreDataId());
+                out.println("ID: " + log.getId());
+                out.println("Code: " + log.getOpCode() + " Desc: "
+                        + getOPCode(log.getOpCode()).name());
+                out.println("Description: " + log.getOpDescription());
+                out.println("Data ID: " + log.getXincoCoreDataId());
             }
         } catch (XincoException ex) {
-            Logger.getLogger(XincoArchiveThreadTest.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoArchiveThreadTest.class.getName()).log(SEVERE, null, ex);
         }
     }
 }

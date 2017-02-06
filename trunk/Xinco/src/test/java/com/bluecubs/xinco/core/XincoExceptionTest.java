@@ -1,7 +1,9 @@
 package com.bluecubs.xinco.core;
 
+import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.Arrays;
+import static java.util.Arrays.asList;
 import org.junit.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -36,7 +38,7 @@ public class XincoExceptionTest {
      */
     @Test
     public void testToString() {
-        System.out.println("toString");
+        out.println("toString");
         String expResult = "test";
         XincoException instance = new XincoException(expResult);
         String result = instance.toString();
@@ -44,8 +46,8 @@ public class XincoExceptionTest {
         instance = new XincoException();
         result = instance.toString();
         assertEquals("", result);
-        instance = new XincoException(new ArrayList<String>(
-                Arrays.asList("1", "2", "3", "4", "5")));
+        instance = new XincoException(new ArrayList<>(
+                asList("1", "2", "3", "4", "5")));
         assertTrue(!instance.toString().isEmpty());
     }
 }

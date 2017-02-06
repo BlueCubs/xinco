@@ -1,9 +1,15 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import static com.bluecubs.xinco.core.server.XincoCoreACEServer.checkAccess;
+import static com.bluecubs.xinco.core.server.XincoCoreACEServer.getXincoCoreACL;
+import static com.bluecubs.xinco.core.server.XincoCoreACEServer.removeFromDB;
+import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -29,9 +35,9 @@ public class XincoCoreACEServerTest extends AbstractXincoDataBaseTestCase {
         try {
             int attrID = 1;
             String attrT = "xincoCoreUser.id";
-            assertTrue(XincoCoreACEServer.getXincoCoreACL(attrID, attrT).size() > 0);
+            assertTrue(getXincoCoreACL(attrID, attrT).size() > 0);
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreACEServerTest.class.getSimpleName()).log(Level.SEVERE, null, e);
+            getLogger(XincoCoreACEServerTest.class.getSimpleName()).log(SEVERE, null, e);
             fail();
         }
     }
@@ -43,9 +49,9 @@ public class XincoCoreACEServerTest extends AbstractXincoDataBaseTestCase {
         try {
             XincoCoreUserServer user = new XincoCoreUserServer(1);
             XincoCoreNodeServer node = new XincoCoreNodeServer(2);
-            assertTrue(XincoCoreACEServer.checkAccess(user, (ArrayList) node.getXincoCoreAcl()).isReadPermission());
+            assertTrue(checkAccess(user, (ArrayList) node.getXincoCoreAcl()).isReadPermission());
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreACEServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreACEServerTest.class.getSimpleName()).log(SEVERE, null, ex);
             fail();
         }
     }
@@ -55,14 +61,14 @@ public class XincoCoreACEServerTest extends AbstractXincoDataBaseTestCase {
      */
     public void testWrite2DB() {
         try {
-            System.out.println("write2DB");
+            out.println("write2DB");
             XincoCoreACEServer instance = new XincoCoreACEServer(0, 0, 1, 1, 0, true, true, true, true);
             instance.setChangerID(1);
             int id = instance.write2DB();
             assertTrue(id > 0);
-            assertTrue(XincoCoreACEServer.removeFromDB(instance, 1) == 0);
+            assertTrue(removeFromDB(instance, 1) == 0);
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreACEServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreACEServerTest.class.getSimpleName()).log(SEVERE, null, ex);
             fail();
         }
     }

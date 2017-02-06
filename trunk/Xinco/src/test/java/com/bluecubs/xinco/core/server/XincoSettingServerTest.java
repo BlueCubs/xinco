@@ -1,7 +1,12 @@
 package com.bluecubs.xinco.core.server;
 
+import static com.bluecubs.xinco.core.server.XincoSettingServer.deleteFromDB;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSettings;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  *
@@ -29,9 +34,9 @@ public class XincoSettingServerTest extends AbstractXincoDataBaseTestCase {
             instance = new XincoSettingServer(instance.getId());
             assertEquals(designation + "2", instance.getDescription());
             //Clean up
-            XincoSettingServer.deleteFromDB(instance);
+            deleteFromDB(instance);
         } catch (Exception ex) {
-            Logger.getLogger(XincoSettingServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoSettingServerTest.class.getSimpleName()).log(SEVERE, null, ex);
             fail();
         }
     }
@@ -43,7 +48,7 @@ public class XincoSettingServerTest extends AbstractXincoDataBaseTestCase {
      */
     public void testGetSetting() throws Exception {
         String desc = "password.aging";
-        assertTrue(XincoSettingServer.getSetting(new XincoCoreUserServer(1), desc) != null);
+        assertTrue(getSetting(new XincoCoreUserServer(1), desc) != null);
     }
 
     /**
@@ -52,6 +57,6 @@ public class XincoSettingServerTest extends AbstractXincoDataBaseTestCase {
      * @throws Exception
      */
     public void testGetSettings() throws Exception {
-        assertTrue(XincoSettingServer.getSettings(new XincoCoreUserServer(1)).size() > 0);
+        assertTrue(getSettings(new XincoCoreUserServer(1)).size() > 0);
     }
 }

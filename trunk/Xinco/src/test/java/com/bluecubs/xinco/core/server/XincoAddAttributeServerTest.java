@@ -1,8 +1,10 @@
 package com.bluecubs.xinco.core.server;
 
+import static com.bluecubs.xinco.core.server.XincoAddAttributeServer.getXincoAddAttributes;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
+import static javax.xml.datatype.DatatypeFactory.newInstance;
 import org.junit.Test;
 
 /**
@@ -38,14 +40,14 @@ public class XincoAddAttributeServerTest extends AbstractXincoDataBaseTestCase {
         XincoAddAttributeServer xaa;
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.setTime(new Date());
-        DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
+        newInstance().newXMLGregorianCalendar(calendar);
         xaa = new XincoAddAttributeServer(xcds.getId(),
                 (xcds.getXincoCoreDataType().getXincoCoreDataTypeAttributes().get(0)).getAttributeId(),
                 0, 0, 0, "", "",
-                DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
+                newInstance().newXMLGregorianCalendar(calendar));
         xaa.write2DB();
         assertTrue(new XincoAddAttributeServer(xcds.getId(),
                 (xcds.getXincoCoreDataType().getXincoCoreDataTypeAttributes().get(0)).getAttributeId()) != null);
-        assertTrue(XincoAddAttributeServer.getXincoAddAttributes(xaa.getAttributeId()) != null);
+        assertTrue(getXincoAddAttributes(xaa.getAttributeId()) != null);
     }
 }

@@ -30,6 +30,8 @@ package com.bluecubs.xinco.core.server.persistence;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
+import static javax.persistence.GenerationType.TABLE;
+import static javax.persistence.TemporalType.TIMESTAMP;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -57,7 +59,7 @@ public class XincoCoreLog implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreLogGen")
+    @GeneratedValue(strategy = TABLE, generator = "XincoCoreLogGen")
     @TableGenerator(name = "XincoCoreLogGen", table = "xinco_id",
     pkColumnName = "tablename",
     valueColumnName = "last_id",
@@ -73,7 +75,7 @@ public class XincoCoreLog implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "op_datetime")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TIMESTAMP)
     private Date opDatetime;
     @Basic(optional = false)
     @NotNull

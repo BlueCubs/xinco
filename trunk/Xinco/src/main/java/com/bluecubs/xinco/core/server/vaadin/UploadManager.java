@@ -28,15 +28,20 @@
 package com.bluecubs.xinco.core.server.vaadin;
 
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
+import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Window.Notification;
+import static com.vaadin.ui.Window.Notification.TYPE_ERROR_MESSAGE;
 import java.io.File;
+import static java.io.File.createTempFile;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import static java.lang.System.getProperty;
 
 /**
  *
@@ -51,13 +56,13 @@ class UploadManager extends CustomComponent implements Upload.SucceededListener,
     @Override
     public OutputStream receiveUpload(String filename, String MIMEType) {
         FileOutputStream fos; // Output stream to write to
-        Xinco.getInstance().setFileName(filename);
+        getInstance().setFileName(filename);
         try {
             //Create upload folder if needed
-            File uploads = new File(XincoDBManager.CONFIG.fileRepositoryPath + System.getProperty("file.separator"));
+            File uploads = new File(CONFIG.fileRepositoryPath + getProperty("file.separator"));
             uploads.mkdirs();
             uploads.deleteOnExit();
-            file = File.createTempFile("xinco", ".xtf", uploads);
+            file = createTempFile("xinco", ".xtf", uploads);
         } catch (IOException ex) {
             return null;
         }
@@ -73,15 +78,15 @@ class UploadManager extends CustomComponent implements Upload.SucceededListener,
 
     @Override
     public void uploadSucceeded(SucceededEvent event) {
-        Xinco.getInstance().setFileToLoad(file);
+        getInstance().setFileToLoad(file);
         success = true;
     }
 
     @Override
     public void uploadFailed(FailedEvent event) {
-        getApplication().getMainWindow().showNotification(Xinco.getInstance().getResource().getString("datawizard.unabletoloadfile"), Notification.TYPE_ERROR_MESSAGE);
+        getApplication().getMainWindow().showNotification(getInstance().getResource().getString("datawizard.unabletoloadfile"), TYPE_ERROR_MESSAGE);
         file = null;
-        Xinco.getInstance().setFileName(null);
+        getInstance().setFileName(null);
         success = false;
     }
 
@@ -96,7 +101,7 @@ class UploadManager extends CustomComponent implements Upload.SucceededListener,
      * @return the fileName
      */
     public String getFileName() {
-        return Xinco.getInstance().getFileName();
+        return getInstance().getFileName();
     }
 
     /**

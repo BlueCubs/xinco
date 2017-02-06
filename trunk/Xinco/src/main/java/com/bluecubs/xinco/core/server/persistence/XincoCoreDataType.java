@@ -32,6 +32,8 @@ import com.bluecubs.xinco.core.server.XincoAuditedObject;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.*;
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.GenerationType.TABLE;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -56,7 +58,7 @@ public class XincoCoreDataType extends XincoAuditedObject implements Serializabl
     @Id
     @Basic(optional = false)
     @NotNull
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreDataTypeGen")
+    @GeneratedValue(strategy = TABLE, generator = "XincoCoreDataTypeGen")
     @TableGenerator(name = "XincoCoreDataTypeGen", table = "xinco_id",
     pkColumnName = "tablename",
     valueColumnName = "last_id",
@@ -75,9 +77,9 @@ public class XincoCoreDataType extends XincoAuditedObject implements Serializabl
     @Size(min = 1, max = 255)
     @Column(name = "description")
     private String description;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreDataType")
+    @OneToMany(cascade = ALL, mappedBy = "xincoCoreDataType")
     private List<XincoCoreDataTypeAttribute> xincoCoreDataTypeAttributeList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreDataType")
+    @OneToMany(cascade = ALL, mappedBy = "xincoCoreDataType")
     private List<XincoCoreData> xincoCoreDataList;
 
     public XincoCoreDataType() {

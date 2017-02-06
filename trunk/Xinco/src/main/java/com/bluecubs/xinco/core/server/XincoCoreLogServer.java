@@ -33,6 +33,9 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
+import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLogJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaController;
@@ -40,9 +43,12 @@ import com.bluecubs.xinco.core.server.service.XincoCoreLog;
 import com.bluecubs.xinco.core.server.service.XincoVersion;
 import java.util.*;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import static javax.xml.datatype.DatatypeFactory.newInstance;
 
 public class XincoCoreLogServer extends XincoCoreLog {
 
@@ -54,7 +60,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
         try {
             parameters.clear();
             parameters.put("id", attrID);
-            result = XincoDBManager.namedQuery("XincoCoreLog.findById", parameters);
+            result = namedQuery("XincoCoreLog.findById", parameters);
             //throw exception if no result found
             if (result.size() > 0) {
                 com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl =
@@ -63,7 +69,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 setXincoCoreDataId(xcl.getXincoCoreData().getId());
                 setXincoCoreUserId(xcl.getXincoCoreUser().getId());
                 setOpCode(xcl.getOpCode());
-                DatatypeFactory factory = DatatypeFactory.newInstance();
+                DatatypeFactory factory = newInstance();
                 GregorianCalendar cal = new GregorianCalendar();
                 cal.setTime(xcl.getOpDatetime());
                 setOpDatetime(factory.newXMLGregorianCalendar(cal));
@@ -77,7 +83,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 throw new XincoException("Invalid id: " + attrID);
             }
         } catch (Exception ex) {
-            Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreLogServer.class.getName()).log(SEVERE, null, ex);
             throw new XincoException(ex.getMessage());
         }
     }
@@ -88,7 +94,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
             setXincoCoreDataId(xcl.getXincoCoreData().getId());
             setXincoCoreUserId(xcl.getXincoCoreUser().getId());
             setOpCode(xcl.getOpCode());
-            DatatypeFactory factory = DatatypeFactory.newInstance();
+            DatatypeFactory factory = newInstance();
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTime(xcl.getOpDatetime());
             setOpDatetime(factory.newXMLGregorianCalendar(cal));
@@ -99,7 +105,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
             getVersion().setVersionLow(xcl.getVersionLow());
             getVersion().setVersionPostfix(xcl.getVersionPostfix());
         } catch (DatatypeConfigurationException ex) {
-            Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreLogServer.class.getName()).log(SEVERE, null, ex);
         }
     }
 
@@ -115,7 +121,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
             setXincoCoreDataId(attrCDID);
             setXincoCoreUserId(attrUID);
             setOpCode(attrOC);
-            DatatypeFactory factory = DatatypeFactory.newInstance();
+            DatatypeFactory factory = newInstance();
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTime(attrODT == null ? new Date() : attrODT.getTime());
             setOpDatetime(factory.newXMLGregorianCalendar(cal));
@@ -126,19 +132,19 @@ public class XincoCoreLogServer extends XincoCoreLog {
             getVersion().setVersionLow(attrVL);
             getVersion().setVersionPostfix(attrVP);
         } catch (DatatypeConfigurationException ex) {
-            Logger.getLogger(XincoCoreLogServer.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreLogServer.class.getName()).log(SEVERE, null, ex);
         }
     }
 
     //write to db
     public int write2DB() throws XincoException {
         try {
-            XincoCoreLogJpaController controller = new XincoCoreLogJpaController(XincoDBManager.getEntityManagerFactory());
+            XincoCoreLogJpaController controller = new XincoCoreLogJpaController(getEntityManagerFactory());
             com.bluecubs.xinco.core.server.persistence.XincoCoreLog xcl;
             if (getId() > 0) {
                 xcl = controller.findXincoCoreLog(getId());
-                xcl.setXincoCoreData(new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreData(getXincoCoreDataId()));
-                xcl.setXincoCoreUser(new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(getXincoCoreUserId()));
+                xcl.setXincoCoreData(new XincoCoreDataJpaController(getEntityManagerFactory()).findXincoCoreData(getXincoCoreDataId()));
+                xcl.setXincoCoreUser(new XincoCoreUserJpaController(getEntityManagerFactory()).findXincoCoreUser(getXincoCoreUserId()));
                 xcl.setOpCode(getOpCode());
                 xcl.setOpDatetime(new Date());
                 xcl.setOpDescription(getOpDescription().replaceAll("'", "\\\\'"));
@@ -149,8 +155,8 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 controller.edit(xcl);
             } else {
                 xcl = new com.bluecubs.xinco.core.server.persistence.XincoCoreLog();
-                xcl.setXincoCoreData(new XincoCoreDataJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreData(getXincoCoreDataId()));
-                xcl.setXincoCoreUser(new XincoCoreUserJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreUser(getXincoCoreUserId()));
+                xcl.setXincoCoreData(new XincoCoreDataJpaController(getEntityManagerFactory()).findXincoCoreData(getXincoCoreDataId()));
+                xcl.setXincoCoreUser(new XincoCoreUserJpaController(getEntityManagerFactory()).findXincoCoreUser(getXincoCoreUserId()));
                 xcl.setOpCode(getOpCode());
                 xcl.setOpDatetime(new Date());
                 xcl.setOpDescription(getOpDescription().replaceAll("'", "\\\\'"));
@@ -162,7 +168,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
             }
             setId(xcl.getId());
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreLogServer.class.getSimpleName()).log(Level.SEVERE, null, e);
+            getLogger(XincoCoreLogServer.class.getSimpleName()).log(SEVERE, null, e);
             throw new XincoException(e.getMessage());
         }
         return getId();
@@ -172,11 +178,11 @@ public class XincoCoreLogServer extends XincoCoreLog {
     public static List<XincoCoreLogServer> getXincoCoreLogs(int attrID) {
 
         ArrayList<XincoCoreLogServer> coreLog = 
-                new ArrayList<XincoCoreLogServer>();
+                new ArrayList<>();
         GregorianCalendar cal;
 
         try {
-            result = XincoDBManager.createdQuery(
+            result = createdQuery(
                     "SELECT xcl FROM XincoCoreLog xcl WHERE "
                     + "xcl.xincoCoreData.id=" + attrID + " order by xcl.id");
             for (Iterator it = result.iterator(); it.hasNext();) {
@@ -187,7 +193,7 @@ public class XincoCoreLogServer extends XincoCoreLog {
                 coreLog.add(new XincoCoreLogServer(xcl));
             }
         } catch (Exception e) {
-            Logger.getLogger(XincoCoreLogServer.class.getSimpleName());
+            getLogger(XincoCoreLogServer.class.getSimpleName());
             coreLog.clear();
         }
         return coreLog;

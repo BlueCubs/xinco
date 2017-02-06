@@ -1,12 +1,17 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import static com.bluecubs.xinco.core.server.XincoCoreDataTypeAttributeServer.deleteFromDB;
+import static com.bluecubs.xinco.core.server.XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttribute;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreDataTypeAttributePK;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeAttributeJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -30,19 +35,19 @@ public class XincoCoreDataTypeAttributeServerTest extends AbstractXincoDataBaseT
      */
     public void testWrite2DB() {
         try {
-            XincoCoreDataTypeAttribute findXincoCoreDataTypeAttribute = new XincoCoreDataTypeAttributeJpaController(XincoDBManager.getEntityManagerFactory()).findXincoCoreDataTypeAttribute(new XincoCoreDataTypeAttributePK(1, 20));
+            XincoCoreDataTypeAttribute findXincoCoreDataTypeAttribute = new XincoCoreDataTypeAttributeJpaController(getEntityManagerFactory()).findXincoCoreDataTypeAttribute(new XincoCoreDataTypeAttributePK(1, 20));
             if (findXincoCoreDataTypeAttribute != null) {
-                new XincoCoreDataTypeAttributeJpaController(XincoDBManager.getEntityManagerFactory()).destroy(findXincoCoreDataTypeAttribute.getXincoCoreDataTypeAttributePK());
+                new XincoCoreDataTypeAttributeJpaController(getEntityManagerFactory()).destroy(findXincoCoreDataTypeAttribute.getXincoCoreDataTypeAttributePK());
             }
             XincoCoreDataTypeAttributeServer instance = new XincoCoreDataTypeAttributeServer(1, 20, "Test", "Test", 1);
             int result = instance.write2DB();
             assertTrue(result > 0);
-            assertTrue(XincoCoreDataTypeAttributeServer.deleteFromDB(instance, 1) == 0);
+            assertTrue(deleteFromDB(instance, 1) == 0);
         } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreDataTypeAttributeServerTest.class.getSimpleName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreDataTypeAttributeServerTest.class.getSimpleName()).log(SEVERE, null, ex);
             fail();
         } catch (NonexistentEntityException ex) {
-            Logger.getLogger(XincoCoreDataTypeAttributeServerTest.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(XincoCoreDataTypeAttributeServerTest.class.getName()).log(SEVERE, null, ex);
             fail();
         }
     }
@@ -52,6 +57,6 @@ public class XincoCoreDataTypeAttributeServerTest extends AbstractXincoDataBaseT
      * XincoCoreDataTypeAttributeServer.
      */
     public void testGetXincoCoreDataTypeAttributes() {
-        assertTrue(XincoCoreDataTypeAttributeServer.getXincoCoreDataTypeAttributes(1).size() > 0);
+        assertTrue(getXincoCoreDataTypeAttributes(1).size() > 0);
     }
 }

@@ -29,7 +29,9 @@ package com.bluecubs.xinco.core.server.index.filetypes;
 
 import java.io.*;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
@@ -56,19 +58,13 @@ public class XincoIndexGenericFile implements XincoIndexFileType {
             Parser parser = new AutoDetectParser();
             Metadata metadata = new Metadata();
             StringWriter writer = new StringWriter();
-            FileInputStream fis = new FileInputStream(f);
-            WriteOutContentHandler woch = new WriteOutContentHandler(writer);
-            parser.parse(fis, woch, metadata, new ParseContext());
-            result = writer.toString();
-            fis.close();
-        } catch (IOException ex) {
-            Logger.getLogger(XincoIndexGenericFile.class.getName()).log(Level.SEVERE, null, ex);
-            result = null;
-        } catch (SAXException ex) {
-            Logger.getLogger(XincoIndexGenericFile.class.getName()).log(Level.SEVERE, null, ex);
-            result = null;
-        } catch (TikaException ex) {
-            Logger.getLogger(XincoIndexGenericFile.class.getName()).log(Level.SEVERE, null, ex);
+            try (FileInputStream fis = new FileInputStream(f)) {
+                WriteOutContentHandler woch = new WriteOutContentHandler(writer);
+                parser.parse(fis, woch, metadata, new ParseContext());
+                result = writer.toString();
+            }
+        } catch (IOException | SAXException | TikaException ex) {
+            getLogger(XincoIndexGenericFile.class.getName()).log(SEVERE, null, ex);
             result = null;
         }
         return result;

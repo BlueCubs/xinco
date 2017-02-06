@@ -33,10 +33,14 @@
 package com.bluecubs.xinco.core.server.index;
 
 import com.bluecubs.xinco.core.server.XincoDBManager;
+import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
+import static com.bluecubs.xinco.core.server.index.XincoIndexer.optimizeIndex;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
+import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  * This class runs index optimizing in a separate thread (only one thread is
@@ -55,14 +59,14 @@ public class XincoIndexOptimizeThread extends Thread {
         firstRun = new GregorianCalendar();
         while (true) {
             try {
-                index_period = XincoDBManager.CONFIG.getFileIndexOptimizerPeriod();
+                index_period = CONFIG.getFileIndexOptimizerPeriod();
                 //exit indexer if period = 0
                 if (index_period > 0) {
-                    XincoIndexer.optimizeIndex();
+                    optimizeIndex();
                     lastRun = new GregorianCalendar();
                 }
             } catch (Exception e) {
-                Logger.getLogger(XincoIndexOptimizeThread.class.getSimpleName()).log(Level.WARNING, null, e);
+                getLogger(XincoIndexOptimizeThread.class.getSimpleName()).log(WARNING, null, e);
             }
             try {
                 sleep(index_period);

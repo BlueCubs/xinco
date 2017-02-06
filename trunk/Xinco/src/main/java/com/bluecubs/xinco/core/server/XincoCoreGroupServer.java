@@ -33,6 +33,10 @@
 package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
+import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
+import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
+import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
 import com.bluecubs.xinco.core.server.persistence.XincoCoreUserHasXincoCoreGroup;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreGroupJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.IllegalOrphanException;
@@ -41,7 +45,9 @@ import com.bluecubs.xinco.core.server.service.XincoCoreGroup;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 public class XincoCoreGroupServer extends XincoCoreGroup {
 
@@ -53,7 +59,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
         try {
             parameters.clear();
             parameters.put("id", attrID);
-            result = XincoDBManager.namedQuery("XincoCoreGroup.findById", parameters);
+            result = namedQuery("XincoCoreGroup.findById", parameters);
             //throw exception if no result found
             if (result.size() > 0) {
                 com.bluecubs.xinco.core.server.persistence.XincoCoreGroup xcg =
@@ -85,7 +91,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
     //write to db
     public int write2DB() throws XincoException {
         try {
-            XincoCoreGroupJpaController controller = new XincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory());
+            XincoCoreGroupJpaController controller = new XincoCoreGroupJpaController(getEntityManagerFactory());
             com.bluecubs.xinco.core.server.persistence.XincoCoreGroup xcg;
             if (getId() > 0) {
                 xcg = controller.findXincoCoreGroup(getId());
@@ -113,14 +119,10 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
 
     public static int deleteFromDB(XincoCoreGroup group) {
         try {
-            new XincoCoreGroupJpaController(XincoDBManager.getEntityManagerFactory()).destroy(group.getId());
+            new XincoCoreGroupJpaController(getEntityManagerFactory()).destroy(group.getId());
             return 0;
-        } catch (XincoException ex) {
-            Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalOrphanException ex) {
-            Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(XincoCoreGroupServer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (XincoException | IllegalOrphanException | NonexistentEntityException ex) {
+            getLogger(XincoCoreGroupServer.class.getName()).log(SEVERE, null, ex);
         }
         return -1;
     }
@@ -129,7 +131,7 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
     public static ArrayList getXincoCoreGroups() {
         ArrayList coreGroups = new ArrayList();
         try {
-            result = XincoDBManager.createdQuery("SELECT xcg FROM XincoCoreGroup xcg ORDER BY xcg.designation");
+            result = createdQuery("SELECT xcg FROM XincoCoreGroup xcg ORDER BY xcg.designation");
             for (Object o : result) {
                 coreGroups.add(new XincoCoreGroupServer((com.bluecubs.xinco.core.server.persistence.XincoCoreGroup) o));
             }
@@ -142,9 +144,9 @@ public class XincoCoreGroupServer extends XincoCoreGroup {
     protected static List<XincoCoreUserServer> getMembersOfGroup(int id) {
         parameters.clear();
         parameters.put("xincoCoreGroupId", id);
-        result = XincoDBManager.namedQuery("XincoCoreUserHasXincoCoreGroup.findByXincoCoreGroupId",
+        result = namedQuery("XincoCoreUserHasXincoCoreGroup.findByXincoCoreGroupId",
                 parameters);
-        ArrayList<XincoCoreUserServer> users = new ArrayList<XincoCoreUserServer>();
+        ArrayList<XincoCoreUserServer> users = new ArrayList<>();
         for (Iterator it = result.iterator(); it.hasNext();) {
             XincoCoreUserHasXincoCoreGroup xcuhg = (XincoCoreUserHasXincoCoreGroup) it.next();
             users.add(new XincoCoreUserServer(xcuhg.getXincoCoreUser()));

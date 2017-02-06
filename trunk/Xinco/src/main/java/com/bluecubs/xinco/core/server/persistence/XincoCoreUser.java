@@ -32,6 +32,9 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.GenerationType.TABLE;
+import static javax.persistence.TemporalType.DATE;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -63,7 +66,7 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "XincoCoreUserGen")
+    @GeneratedValue(strategy = TABLE, generator = "XincoCoreUserGen")
     @TableGenerator(name = "XincoCoreUserGen", table = "xinco_id",
     pkColumnName = "tablename",
     valueColumnName = "last_id",
@@ -110,15 +113,15 @@ public class XincoCoreUser extends XincoAuditedObject implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "last_modified")
-    @Temporal(TemporalType.DATE)
+    @Temporal(DATE)
     private Date lastModified;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreUser")
+    @OneToMany(cascade = ALL, mappedBy = "xincoCoreUser")
     private List<XincoCoreUserModifiedRecord> xincoCoreUserModifiedRecordList;
     @OneToMany(mappedBy = "xincoCoreUser")
     private List<XincoCoreAce> xincoCoreAceList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreUser")
+    @OneToMany(cascade = ALL, mappedBy = "xincoCoreUser")
     private List<XincoCoreLog> xincoCoreLogList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "xincoCoreUser")
+    @OneToMany(cascade = ALL, mappedBy = "xincoCoreUser")
     private List<XincoCoreUserHasXincoCoreGroup> xincoCoreUserHasXincoCoreGroupList;
 
     public XincoCoreUser() {

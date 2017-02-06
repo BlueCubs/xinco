@@ -29,17 +29,30 @@ package com.bluecubs.xinco.core.server.rendering;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.*;
+import static com.bluecubs.xinco.core.server.XincoCoreDataServer.getXincoCoreDataPath;
+import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
+import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
+import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoDependencyTypeJpaController;
 import com.bluecubs.xinco.core.server.service.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoCoreUser;
 import com.bluecubs.xinco.core.server.service.XincoWebService;
 import com.bluecubs.xinco.tools.Tool;
+import static com.bluecubs.xinco.tools.Tool.MIN_PORT_NUMBER;
+import static com.bluecubs.xinco.tools.Tool.addDefaultAddAttributes;
+import static com.bluecubs.xinco.tools.Tool.copyFile;
+import static com.bluecubs.xinco.tools.Tool.isPortAvaialble;
 import java.io.File;
 import java.io.FileInputStream;
+import static java.lang.System.getProperty;
 import java.util.Locale;
+import static java.util.Locale.getDefault;
 import java.util.logging.Level;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import org.artofsolving.jodconverter.OfficeDocumentConverter;
@@ -62,7 +75,7 @@ public class XincoRenderingThread extends Thread {
     private File xincoFile;
     private static int port;
     private static final Logger LOG =
-            Logger.getLogger(XincoRenderingThread.class.getName());
+            getLogger(XincoRenderingThread.class.getName());
 
     public XincoRenderingThread(XincoCoreData original, XincoCoreUser user) {
         this.original = original;
@@ -71,17 +84,16 @@ public class XincoRenderingThread extends Thread {
 
     @Override
     public void run() {
-        port = XincoSettingServer.getSetting(new XincoCoreUserServer(1),
+        port = getSetting(new XincoCoreUserServer(1),
                 "setting.OOPort").getIntValue();
         if (port >= 0 && !original.getXincoAddAttributes().isEmpty()
                 && !original.getXincoAddAttributes().get(0).getAttribVarchar()
-                .toLowerCase(Locale.getDefault()).endsWith(".pdf")) {
+                .toLowerCase(getDefault()).endsWith(".pdf")) {
             try {
-                xincoFile = new File(XincoCoreDataServer.getXincoCoreDataPath(
-                        XincoDBManager.CONFIG.fileRepositoryPath,
+                xincoFile = new File(getXincoCoreDataPath(CONFIG.fileRepositoryPath,
                         original.getId(),
                         "" + original.getId()));
-                LOG.log(Level.FINE, "Creating PDF rendering");
+                LOG.log(FINE, "Creating PDF rendering");
                 //Enter the rendering into the system
                 rendering = new XincoCoreDataServer(0,
                         original.getXincoCoreNodeId(),
@@ -96,30 +108,26 @@ public class XincoRenderingThread extends Thread {
                 rendering.setXincoCoreNodeId(original.getXincoCoreNodeId());
                 rendering = (XincoCoreDataServer) service.setXincoCoreData(
                         rendering, user);
-                LOG.log(Level.FINE, "Rendering id: {0}", rendering.getId());
+                LOG.log(FINE, "Rendering id: {0}", rendering.getId());
                 //Mark as a rendering
                 dependency =
                         new XincoCoreDataHasDependencyServer(
-                        new XincoCoreDataJpaController(XincoDBManager
-                        .getEntityManagerFactory()).findXincoCoreData(
+                        new XincoCoreDataJpaController(getEntityManagerFactory()).findXincoCoreData(
                         original.getId()),
-                        new XincoCoreDataJpaController(XincoDBManager
-                        .getEntityManagerFactory()).findXincoCoreData(
+                        new XincoCoreDataJpaController(getEntityManagerFactory()).findXincoCoreData(
                         rendering.getId()),
-                        new XincoDependencyTypeJpaController(XincoDBManager
-                        .getEntityManagerFactory()).findXincoDependencyType(5));//rendering
+                        new XincoDependencyTypeJpaController(getEntityManagerFactory()).findXincoDependencyType(5));//rendering
                 dependency.write2DB();
-                LOG.log(Level.FINE, "Marked as rendering");
+                LOG.log(FINE, "Marked as rendering");
                 //Now create the pdf rendering
                 //First save a temporary file
                 String renderingFileName = rendering.getId() + ".pdf";
-                rendition = new File(XincoCoreDataServer.getXincoCoreDataPath(
-                        XincoDBManager.CONFIG.fileRepositoryPath,
+                rendition = new File(getXincoCoreDataPath(CONFIG.fileRepositoryPath,
                         rendering.getId(),
                         renderingFileName));
                 //Convert to pdf
                 getPDFRendering(xincoFile, rendition);
-                Tool.addDefaultAddAttributes(rendering);
+                addDefaultAddAttributes(rendering);
                 // update attributes
                 rendering.getXincoAddAttributes().get(0)
                         .setAttribVarchar(rendering.getDesignation());
@@ -134,14 +142,14 @@ public class XincoRenderingThread extends Thread {
                         .setAttribUnsignedint(0);
                 service.setXincoCoreData(rendering, user);
                 //Rename the file (remove extension) to meet Xinco file system
-                Tool.copyFile(rendition, new File(
+                copyFile(rendition, new File(
                         rendition.getParentFile().getAbsolutePath()
-                        + System.getProperty("file.separator")
+                        + getProperty("file.separator")
                         + rendering.getId()));
                 rendition.delete();
-                LOG.log(Level.FINE, "Converted the file!");
+                LOG.log(FINE, "Converted the file!");
             } catch (Exception ex) {
-                LOG.log(Level.WARNING, null, ex);
+                LOG.log(WARNING, null, ex);
                 //Cleanup
                 if (dependency != null) {
                     dependency.deleteFromDB();
@@ -162,11 +170,11 @@ public class XincoRenderingThread extends Thread {
             //Make sure the port is available
             boolean valid = false;
             while (!valid) {
-                valid = Tool.isPortAvaialble(port);
+                valid = isPortAvaialble(port);
                 if (!valid) {
                     //Use another port
                     port++;
-                    port = port % Tool.MIN_PORT_NUMBER;
+                    port = port % MIN_PORT_NUMBER;
                     if (port == 0) {
                         port++;
                     }
@@ -199,7 +207,7 @@ public class XincoRenderingThread extends Thread {
 
     private static void disable() {
         XincoSettingServer setting = 
-                XincoSettingServer.getSetting(new XincoCoreUserServer(1), 
+                getSetting(new XincoCoreUserServer(1), 
                 "setting.OOPort");
         setting.setIntValue(-1);
         setting.write2DB();

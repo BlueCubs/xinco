@@ -91,31 +91,31 @@ public class XincoCoreDataJpaController implements Serializable {
                 xincoCoreNode = em.getReference(xincoCoreNode.getClass(), xincoCoreNode.getId());
                 xincoCoreData.setXincoCoreNode(xincoCoreNode);
             }
-            List<XincoCoreDataHasDependency> attachedXincoCoreDataHasDependencyList = new ArrayList<XincoCoreDataHasDependency>();
+            List<XincoCoreDataHasDependency> attachedXincoCoreDataHasDependencyList = new ArrayList<>();
             for (XincoCoreDataHasDependency xincoCoreDataHasDependencyListXincoCoreDataHasDependencyToAttach : xincoCoreData.getXincoCoreDataHasDependencyList()) {
                 xincoCoreDataHasDependencyListXincoCoreDataHasDependencyToAttach = em.getReference(xincoCoreDataHasDependencyListXincoCoreDataHasDependencyToAttach.getClass(), xincoCoreDataHasDependencyListXincoCoreDataHasDependencyToAttach.getXincoCoreDataHasDependencyPK());
                 attachedXincoCoreDataHasDependencyList.add(xincoCoreDataHasDependencyListXincoCoreDataHasDependencyToAttach);
             }
             xincoCoreData.setXincoCoreDataHasDependencyList(attachedXincoCoreDataHasDependencyList);
-            List<XincoCoreDataHasDependency> attachedXincoCoreDataHasDependencyList1 = new ArrayList<XincoCoreDataHasDependency>();
+            List<XincoCoreDataHasDependency> attachedXincoCoreDataHasDependencyList1 = new ArrayList<>();
             for (XincoCoreDataHasDependency xincoCoreDataHasDependencyList1XincoCoreDataHasDependencyToAttach : xincoCoreData.getXincoCoreDataHasDependencyList1()) {
                 xincoCoreDataHasDependencyList1XincoCoreDataHasDependencyToAttach = em.getReference(xincoCoreDataHasDependencyList1XincoCoreDataHasDependencyToAttach.getClass(), xincoCoreDataHasDependencyList1XincoCoreDataHasDependencyToAttach.getXincoCoreDataHasDependencyPK());
                 attachedXincoCoreDataHasDependencyList1.add(xincoCoreDataHasDependencyList1XincoCoreDataHasDependencyToAttach);
             }
             xincoCoreData.setXincoCoreDataHasDependencyList1(attachedXincoCoreDataHasDependencyList1);
-            List<XincoCoreAce> attachedXincoCoreAceList = new ArrayList<XincoCoreAce>();
+            List<XincoCoreAce> attachedXincoCoreAceList = new ArrayList<>();
             for (XincoCoreAce xincoCoreAceListXincoCoreAceToAttach : xincoCoreData.getXincoCoreAceList()) {
                 xincoCoreAceListXincoCoreAceToAttach = em.getReference(xincoCoreAceListXincoCoreAceToAttach.getClass(), xincoCoreAceListXincoCoreAceToAttach.getId());
                 attachedXincoCoreAceList.add(xincoCoreAceListXincoCoreAceToAttach);
             }
             xincoCoreData.setXincoCoreAceList(attachedXincoCoreAceList);
-            List<XincoCoreLog> attachedXincoCoreLogList = new ArrayList<XincoCoreLog>();
+            List<XincoCoreLog> attachedXincoCoreLogList = new ArrayList<>();
             for (XincoCoreLog xincoCoreLogListXincoCoreLogToAttach : xincoCoreData.getXincoCoreLogList()) {
                 xincoCoreLogListXincoCoreLogToAttach = em.getReference(xincoCoreLogListXincoCoreLogToAttach.getClass(), xincoCoreLogListXincoCoreLogToAttach.getId());
                 attachedXincoCoreLogList.add(xincoCoreLogListXincoCoreLogToAttach);
             }
             xincoCoreData.setXincoCoreLogList(attachedXincoCoreLogList);
-            List<XincoAddAttribute> attachedXincoAddAttributeList = new ArrayList<XincoAddAttribute>();
+            List<XincoAddAttribute> attachedXincoAddAttributeList = new ArrayList<>();
             for (XincoAddAttribute xincoAddAttributeListXincoAddAttributeToAttach : xincoCoreData.getXincoAddAttributeList()) {
                 xincoAddAttributeListXincoAddAttributeToAttach = em.getReference(xincoAddAttributeListXincoAddAttributeToAttach.getClass(), xincoAddAttributeListXincoAddAttributeToAttach.getXincoAddAttributePK());
                 attachedXincoAddAttributeList.add(xincoAddAttributeListXincoAddAttributeToAttach);
@@ -218,7 +218,7 @@ public class XincoCoreDataJpaController implements Serializable {
             for (XincoCoreDataHasDependency xincoCoreDataHasDependencyListOldXincoCoreDataHasDependency : xincoCoreDataHasDependencyListOld) {
                 if (!xincoCoreDataHasDependencyListNew.contains(xincoCoreDataHasDependencyListOldXincoCoreDataHasDependency)) {
                     if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
+                        illegalOrphanMessages = new ArrayList<>();
                     }
                     illegalOrphanMessages.add("You must retain XincoCoreDataHasDependency " + xincoCoreDataHasDependencyListOldXincoCoreDataHasDependency + " since its xincoCoreData field is not nullable.");
                 }
@@ -226,7 +226,7 @@ public class XincoCoreDataJpaController implements Serializable {
             for (XincoCoreDataHasDependency xincoCoreDataHasDependencyList1OldXincoCoreDataHasDependency : xincoCoreDataHasDependencyList1Old) {
                 if (!xincoCoreDataHasDependencyList1New.contains(xincoCoreDataHasDependencyList1OldXincoCoreDataHasDependency)) {
                     if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
+                        illegalOrphanMessages = new ArrayList<>();
                     }
                     illegalOrphanMessages.add("You must retain XincoCoreDataHasDependency " + xincoCoreDataHasDependencyList1OldXincoCoreDataHasDependency + " since its xincoCoreData1 field is not nullable.");
                 }
@@ -234,7 +234,7 @@ public class XincoCoreDataJpaController implements Serializable {
             for (XincoCoreLog xincoCoreLogListOldXincoCoreLog : xincoCoreLogListOld) {
                 if (!xincoCoreLogListNew.contains(xincoCoreLogListOldXincoCoreLog)) {
                     if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
+                        illegalOrphanMessages = new ArrayList<>();
                     }
                     illegalOrphanMessages.add("You must retain XincoCoreLog " + xincoCoreLogListOldXincoCoreLog + " since its xincoCoreData field is not nullable.");
                 }
@@ -242,7 +242,7 @@ public class XincoCoreDataJpaController implements Serializable {
             for (XincoAddAttribute xincoAddAttributeListOldXincoAddAttribute : xincoAddAttributeListOld) {
                 if (!xincoAddAttributeListNew.contains(xincoAddAttributeListOldXincoAddAttribute)) {
                     if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
+                        illegalOrphanMessages = new ArrayList<>();
                     }
                     illegalOrphanMessages.add("You must retain XincoAddAttribute " + xincoAddAttributeListOldXincoAddAttribute + " since its xincoCoreData field is not nullable.");
                 }
@@ -262,35 +262,35 @@ public class XincoCoreDataJpaController implements Serializable {
                 xincoCoreNodeNew = em.getReference(xincoCoreNodeNew.getClass(), xincoCoreNodeNew.getId());
                 xincoCoreData.setXincoCoreNode(xincoCoreNodeNew);
             }
-            List<XincoCoreDataHasDependency> attachedXincoCoreDataHasDependencyListNew = new ArrayList<XincoCoreDataHasDependency>();
+            List<XincoCoreDataHasDependency> attachedXincoCoreDataHasDependencyListNew = new ArrayList<>();
             for (XincoCoreDataHasDependency xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach : xincoCoreDataHasDependencyListNew) {
                 xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach = em.getReference(xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach.getClass(), xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach.getXincoCoreDataHasDependencyPK());
                 attachedXincoCoreDataHasDependencyListNew.add(xincoCoreDataHasDependencyListNewXincoCoreDataHasDependencyToAttach);
             }
             xincoCoreDataHasDependencyListNew = attachedXincoCoreDataHasDependencyListNew;
             xincoCoreData.setXincoCoreDataHasDependencyList(xincoCoreDataHasDependencyListNew);
-            List<XincoCoreDataHasDependency> attachedXincoCoreDataHasDependencyList1New = new ArrayList<XincoCoreDataHasDependency>();
+            List<XincoCoreDataHasDependency> attachedXincoCoreDataHasDependencyList1New = new ArrayList<>();
             for (XincoCoreDataHasDependency xincoCoreDataHasDependencyList1NewXincoCoreDataHasDependencyToAttach : xincoCoreDataHasDependencyList1New) {
                 xincoCoreDataHasDependencyList1NewXincoCoreDataHasDependencyToAttach = em.getReference(xincoCoreDataHasDependencyList1NewXincoCoreDataHasDependencyToAttach.getClass(), xincoCoreDataHasDependencyList1NewXincoCoreDataHasDependencyToAttach.getXincoCoreDataHasDependencyPK());
                 attachedXincoCoreDataHasDependencyList1New.add(xincoCoreDataHasDependencyList1NewXincoCoreDataHasDependencyToAttach);
             }
             xincoCoreDataHasDependencyList1New = attachedXincoCoreDataHasDependencyList1New;
             xincoCoreData.setXincoCoreDataHasDependencyList1(xincoCoreDataHasDependencyList1New);
-            List<XincoCoreAce> attachedXincoCoreAceListNew = new ArrayList<XincoCoreAce>();
+            List<XincoCoreAce> attachedXincoCoreAceListNew = new ArrayList<>();
             for (XincoCoreAce xincoCoreAceListNewXincoCoreAceToAttach : xincoCoreAceListNew) {
                 xincoCoreAceListNewXincoCoreAceToAttach = em.getReference(xincoCoreAceListNewXincoCoreAceToAttach.getClass(), xincoCoreAceListNewXincoCoreAceToAttach.getId());
                 attachedXincoCoreAceListNew.add(xincoCoreAceListNewXincoCoreAceToAttach);
             }
             xincoCoreAceListNew = attachedXincoCoreAceListNew;
             xincoCoreData.setXincoCoreAceList(xincoCoreAceListNew);
-            List<XincoCoreLog> attachedXincoCoreLogListNew = new ArrayList<XincoCoreLog>();
+            List<XincoCoreLog> attachedXincoCoreLogListNew = new ArrayList<>();
             for (XincoCoreLog xincoCoreLogListNewXincoCoreLogToAttach : xincoCoreLogListNew) {
                 xincoCoreLogListNewXincoCoreLogToAttach = em.getReference(xincoCoreLogListNewXincoCoreLogToAttach.getClass(), xincoCoreLogListNewXincoCoreLogToAttach.getId());
                 attachedXincoCoreLogListNew.add(xincoCoreLogListNewXincoCoreLogToAttach);
             }
             xincoCoreLogListNew = attachedXincoCoreLogListNew;
             xincoCoreData.setXincoCoreLogList(xincoCoreLogListNew);
-            List<XincoAddAttribute> attachedXincoAddAttributeListNew = new ArrayList<XincoAddAttribute>();
+            List<XincoAddAttribute> attachedXincoAddAttributeListNew = new ArrayList<>();
             for (XincoAddAttribute xincoAddAttributeListNewXincoAddAttributeToAttach : xincoAddAttributeListNew) {
                 xincoAddAttributeListNewXincoAddAttributeToAttach = em.getReference(xincoAddAttributeListNewXincoAddAttributeToAttach.getClass(), xincoAddAttributeListNewXincoAddAttributeToAttach.getXincoAddAttributePK());
                 attachedXincoAddAttributeListNew.add(xincoAddAttributeListNewXincoAddAttributeToAttach);
@@ -416,28 +416,28 @@ public class XincoCoreDataJpaController implements Serializable {
             List<XincoCoreDataHasDependency> xincoCoreDataHasDependencyListOrphanCheck = xincoCoreData.getXincoCoreDataHasDependencyList();
             for (XincoCoreDataHasDependency xincoCoreDataHasDependencyListOrphanCheckXincoCoreDataHasDependency : xincoCoreDataHasDependencyListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
+                    illegalOrphanMessages = new ArrayList<>();
                 }
                 illegalOrphanMessages.add("This XincoCoreData (" + xincoCoreData + ") cannot be destroyed since the XincoCoreDataHasDependency " + xincoCoreDataHasDependencyListOrphanCheckXincoCoreDataHasDependency + " in its xincoCoreDataHasDependencyList field has a non-nullable xincoCoreData field.");
             }
             List<XincoCoreDataHasDependency> xincoCoreDataHasDependencyList1OrphanCheck = xincoCoreData.getXincoCoreDataHasDependencyList1();
             for (XincoCoreDataHasDependency xincoCoreDataHasDependencyList1OrphanCheckXincoCoreDataHasDependency : xincoCoreDataHasDependencyList1OrphanCheck) {
                 if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
+                    illegalOrphanMessages = new ArrayList<>();
                 }
                 illegalOrphanMessages.add("This XincoCoreData (" + xincoCoreData + ") cannot be destroyed since the XincoCoreDataHasDependency " + xincoCoreDataHasDependencyList1OrphanCheckXincoCoreDataHasDependency + " in its xincoCoreDataHasDependencyList1 field has a non-nullable xincoCoreData1 field.");
             }
             List<XincoCoreLog> xincoCoreLogListOrphanCheck = xincoCoreData.getXincoCoreLogList();
             for (XincoCoreLog xincoCoreLogListOrphanCheckXincoCoreLog : xincoCoreLogListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
+                    illegalOrphanMessages = new ArrayList<>();
                 }
                 illegalOrphanMessages.add("This XincoCoreData (" + xincoCoreData + ") cannot be destroyed since the XincoCoreLog " + xincoCoreLogListOrphanCheckXincoCoreLog + " in its xincoCoreLogList field has a non-nullable xincoCoreData field.");
             }
             List<XincoAddAttribute> xincoAddAttributeListOrphanCheck = xincoCoreData.getXincoAddAttributeList();
             for (XincoAddAttribute xincoAddAttributeListOrphanCheckXincoAddAttribute : xincoAddAttributeListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
+                    illegalOrphanMessages = new ArrayList<>();
                 }
                 illegalOrphanMessages.add("This XincoCoreData (" + xincoCoreData + ") cannot be destroyed since the XincoAddAttribute " + xincoAddAttributeListOrphanCheckXincoAddAttribute + " in its xincoAddAttributeList field has a non-nullable xincoCoreData field.");
             }

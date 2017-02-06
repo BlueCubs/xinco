@@ -83,19 +83,19 @@ public class XincoCoreNodeJpaController implements Serializable {
                 xincoCoreNodeRel = em.getReference(xincoCoreNodeRel.getClass(), xincoCoreNodeRel.getId());
                 xincoCoreNode.setXincoCoreNode(xincoCoreNodeRel);
             }
-            List<XincoCoreNode> attachedXincoCoreNodeList = new ArrayList<XincoCoreNode>();
+            List<XincoCoreNode> attachedXincoCoreNodeList = new ArrayList<>();
             for (XincoCoreNode xincoCoreNodeListXincoCoreNodeToAttach : xincoCoreNode.getXincoCoreNodeList()) {
                 xincoCoreNodeListXincoCoreNodeToAttach = em.getReference(xincoCoreNodeListXincoCoreNodeToAttach.getClass(), xincoCoreNodeListXincoCoreNodeToAttach.getId());
                 attachedXincoCoreNodeList.add(xincoCoreNodeListXincoCoreNodeToAttach);
             }
             xincoCoreNode.setXincoCoreNodeList(attachedXincoCoreNodeList);
-            List<XincoCoreAce> attachedXincoCoreAceList = new ArrayList<XincoCoreAce>();
+            List<XincoCoreAce> attachedXincoCoreAceList = new ArrayList<>();
             for (XincoCoreAce xincoCoreAceListXincoCoreAceToAttach : xincoCoreNode.getXincoCoreAceList()) {
                 xincoCoreAceListXincoCoreAceToAttach = em.getReference(xincoCoreAceListXincoCoreAceToAttach.getClass(), xincoCoreAceListXincoCoreAceToAttach.getId());
                 attachedXincoCoreAceList.add(xincoCoreAceListXincoCoreAceToAttach);
             }
             xincoCoreNode.setXincoCoreAceList(attachedXincoCoreAceList);
-            List<XincoCoreData> attachedXincoCoreDataList = new ArrayList<XincoCoreData>();
+            List<XincoCoreData> attachedXincoCoreDataList = new ArrayList<>();
             for (XincoCoreData xincoCoreDataListXincoCoreDataToAttach : xincoCoreNode.getXincoCoreDataList()) {
                 xincoCoreDataListXincoCoreDataToAttach = em.getReference(xincoCoreDataListXincoCoreDataToAttach.getClass(), xincoCoreDataListXincoCoreDataToAttach.getId());
                 attachedXincoCoreDataList.add(xincoCoreDataListXincoCoreDataToAttach);
@@ -170,7 +170,7 @@ public class XincoCoreNodeJpaController implements Serializable {
             for (XincoCoreData xincoCoreDataListOldXincoCoreData : xincoCoreDataListOld) {
                 if (!xincoCoreDataListNew.contains(xincoCoreDataListOldXincoCoreData)) {
                     if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
+                        illegalOrphanMessages = new ArrayList<>();
                     }
                     illegalOrphanMessages.add("You must retain XincoCoreData " + xincoCoreDataListOldXincoCoreData + " since its xincoCoreNode field is not nullable.");
                 }
@@ -186,21 +186,21 @@ public class XincoCoreNodeJpaController implements Serializable {
                 xincoCoreNodeRelNew = em.getReference(xincoCoreNodeRelNew.getClass(), xincoCoreNodeRelNew.getId());
                 xincoCoreNode.setXincoCoreNode(xincoCoreNodeRelNew);
             }
-            List<XincoCoreNode> attachedXincoCoreNodeListNew = new ArrayList<XincoCoreNode>();
+            List<XincoCoreNode> attachedXincoCoreNodeListNew = new ArrayList<>();
             for (XincoCoreNode xincoCoreNodeListNewXincoCoreNodeToAttach : xincoCoreNodeListNew) {
                 xincoCoreNodeListNewXincoCoreNodeToAttach = em.getReference(xincoCoreNodeListNewXincoCoreNodeToAttach.getClass(), xincoCoreNodeListNewXincoCoreNodeToAttach.getId());
                 attachedXincoCoreNodeListNew.add(xincoCoreNodeListNewXincoCoreNodeToAttach);
             }
             xincoCoreNodeListNew = attachedXincoCoreNodeListNew;
             xincoCoreNode.setXincoCoreNodeList(xincoCoreNodeListNew);
-            List<XincoCoreAce> attachedXincoCoreAceListNew = new ArrayList<XincoCoreAce>();
+            List<XincoCoreAce> attachedXincoCoreAceListNew = new ArrayList<>();
             for (XincoCoreAce xincoCoreAceListNewXincoCoreAceToAttach : xincoCoreAceListNew) {
                 xincoCoreAceListNewXincoCoreAceToAttach = em.getReference(xincoCoreAceListNewXincoCoreAceToAttach.getClass(), xincoCoreAceListNewXincoCoreAceToAttach.getId());
                 attachedXincoCoreAceListNew.add(xincoCoreAceListNewXincoCoreAceToAttach);
             }
             xincoCoreAceListNew = attachedXincoCoreAceListNew;
             xincoCoreNode.setXincoCoreAceList(xincoCoreAceListNew);
-            List<XincoCoreData> attachedXincoCoreDataListNew = new ArrayList<XincoCoreData>();
+            List<XincoCoreData> attachedXincoCoreDataListNew = new ArrayList<>();
             for (XincoCoreData xincoCoreDataListNewXincoCoreDataToAttach : xincoCoreDataListNew) {
                 xincoCoreDataListNewXincoCoreDataToAttach = em.getReference(xincoCoreDataListNewXincoCoreDataToAttach.getClass(), xincoCoreDataListNewXincoCoreDataToAttach.getId());
                 attachedXincoCoreDataListNew.add(xincoCoreDataListNewXincoCoreDataToAttach);
@@ -302,7 +302,7 @@ public class XincoCoreNodeJpaController implements Serializable {
             List<XincoCoreData> xincoCoreDataListOrphanCheck = xincoCoreNode.getXincoCoreDataList();
             for (XincoCoreData xincoCoreDataListOrphanCheckXincoCoreData : xincoCoreDataListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
+                    illegalOrphanMessages = new ArrayList<>();
                 }
                 illegalOrphanMessages.add("This XincoCoreNode (" + xincoCoreNode + ") cannot be destroyed since the XincoCoreData " + xincoCoreDataListOrphanCheckXincoCoreData + " in its xincoCoreDataList field has a non-nullable xincoCoreNode field.");
             }
