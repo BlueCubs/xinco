@@ -3,7 +3,6 @@ package com.bluecubs.xinco.core.server;
 import static com.bluecubs.xinco.core.server.XincoDBManager.close;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getState;
 import static com.bluecubs.xinco.core.server.XincoDBManager.setPU;
-import com.bluecubs.xinco.core.server.db.DBState;
 import static com.bluecubs.xinco.core.server.db.DBState.VALID;
 import static java.lang.Class.forName;
 import java.sql.Connection;

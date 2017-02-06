@@ -2,9 +2,7 @@ package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
 import static com.bluecubs.xinco.core.server.XincoDependencyTypeServer.deleteFromDB;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 import org.junit.Test;
 

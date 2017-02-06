@@ -1,7 +1,6 @@
 package com.bluecubs.xinco.core.server.vaadin.custom;
 
 import com.bluecubs.xinco.core.server.service.XincoVersion;
-import com.bluecubs.xinco.core.server.vaadin.Xinco;
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;

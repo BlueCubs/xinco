@@ -26,8 +26,8 @@
  *
  * Modifications:
  *
- * Who? When? What? Javier A. Ortiz 01/04/2007 Added methods for result set
- * manipulation and formating
+ * $Date:$
+ * $Author:$
  *
  *************************************************************
  */
@@ -37,10 +37,6 @@ import com.bluecubs.xinco.core.XincoException;
 import static com.bluecubs.xinco.core.server.XincoConfigSingletonServer.getInstance;
 import static com.bluecubs.xinco.core.server.XincoIdServer.getIds;
 import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
-import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
-import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
-import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
-import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
 import com.bluecubs.xinco.core.server.db.DBState;
 import static com.bluecubs.xinco.core.server.db.DBState.ERROR;
 import static com.bluecubs.xinco.core.server.db.DBState.NEED_INIT;
@@ -48,11 +44,8 @@ import static com.bluecubs.xinco.core.server.db.DBState.NEED_MANUAL_UPDATE;
 import static com.bluecubs.xinco.core.server.db.DBState.START_UP;
 import static com.bluecubs.xinco.core.server.db.DBState.UPDATED;
 import static com.bluecubs.xinco.core.server.db.DBState.VALID;
-import com.bluecubs.xinco.tools.MD5;
 import static com.bluecubs.xinco.tools.MD5.encrypt;
-import gudusoft.gsqlparser.EDbVendor;
 import static gudusoft.gsqlparser.EDbVendor.dbvmysql;
-import gudusoft.gsqlparser.ESqlStatementType;
 import static gudusoft.gsqlparser.ESqlStatementType.sstcreatetable;
 import static gudusoft.gsqlparser.ESqlStatementType.sstinvalid;
 import static gudusoft.gsqlparser.ESqlStatementType.sstmysqlcommit;
@@ -76,10 +69,7 @@ import java.util.*;
 import static java.util.Locale.getDefault;
 import java.util.Map.Entry;
 import static java.util.ResourceBundle.getBundle;
-import static java.util.ResourceBundle.getBundle;
-import static java.util.ResourceBundle.getBundle;
 import java.util.logging.Level;
-import static java.util.logging.Level.CONFIG;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.SEVERE;
@@ -96,7 +86,6 @@ import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
 import org.flywaydb.core.api.MigrationInfo;
-import org.flywaydb.core.api.MigrationState;
 import static org.flywaydb.core.api.MigrationState.SUCCESS;
 import org.h2.jdbcx.JdbcDataSource;
 
@@ -149,7 +138,7 @@ public class XincoDBManager {
             LOG.log(INFO,
                     "Waiting for DB initialization. Current state: {0}",
                     (getState() != null
-                    ? getState().name() : null));
+                            ? getState().name() : null));
             try {
                 sleep(10000);
             } catch (InterruptedException ex) {
@@ -193,9 +182,9 @@ public class XincoDBManager {
             }
         } finally {
             try {
-                if (LOG.isLoggable(CONFIG)) {
+                if (LOG.isLoggable(Level.CONFIG)) {
                     for (XincoIdServer next : getIds()) {
-                        LOG.log(CONFIG,
+                        LOG.log(Level.CONFIG,
                                 "{0}, {1}, {2}", new Object[]{next.getId(),
                                     next.getTablename(), next.getLastId()});
                     }
@@ -451,9 +440,9 @@ public class XincoDBManager {
         //Now run them
         if (!statements.isEmpty()) {
             for (String statement : statements) {
-                LOG.log(CONFIG, "Executing statement: {0}", statement);
+                LOG.log(Level.CONFIG, "Executing statement: {0}", statement);
                 nativeQuery(statement);
-                LOG.log(CONFIG, "Done!", statement);
+                LOG.log(Level.CONFIG, "Done!", statement);
             }
         } else {
             throw new XincoException("Nothing to execute!");

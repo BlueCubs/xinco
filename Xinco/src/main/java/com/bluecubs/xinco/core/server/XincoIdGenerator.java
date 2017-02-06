@@ -1,10 +1,8 @@
 package com.bluecubs.xinco.core.server;
 
 import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
-import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
 import com.bluecubs.xinco.core.server.persistence.XincoId;
 import java.util.HashMap;
-import java.util.logging.Level;
 import static java.util.logging.Level.FINE;
 import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;

@@ -8,7 +8,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import static java.lang.Integer.parseInt;
-import static java.lang.Integer.parseInt;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.nio.channels.FileChannel;
@@ -16,12 +15,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
-import javax.imageio.ImageIO;
 import static javax.imageio.ImageIO.getImageReadersBySuffix;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.FileImageInputStream;
@@ -29,7 +26,6 @@ import javax.imageio.stream.ImageInputStream;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import static javax.xml.datatype.DatatypeFactory.newInstance;
 
 /**

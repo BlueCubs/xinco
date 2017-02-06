@@ -27,7 +27,6 @@
  */
 package com.bluecubs.xinco.core.server.vaadin;
 
-import com.bluecubs.xinco.core.server.XincoAddAttributeServer;
 import static com.bluecubs.xinco.core.server.XincoAddAttributeServer.getXincoAddAttributes;
 import com.bluecubs.xinco.core.server.service.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;

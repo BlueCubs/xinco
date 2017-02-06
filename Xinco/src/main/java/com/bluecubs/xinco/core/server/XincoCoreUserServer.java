@@ -40,29 +40,20 @@ package com.bluecubs.xinco.core.server;
 
 import com.bluecubs.xinco.core.XincoException;
 import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
-import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
-import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
-import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
-import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
 import static com.bluecubs.xinco.core.server.XincoIdServer.getNextId;
-import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
-import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
 import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
 import com.bluecubs.xinco.core.server.persistence.*;
 import com.bluecubs.xinco.core.server.persistence.controller.*;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.PreexistingEntityException;
 import com.bluecubs.xinco.core.server.service.XincoCoreUser;
-import com.bluecubs.xinco.tools.MD5;
 import static com.bluecubs.xinco.tools.MD5.encrypt;
 import static java.lang.System.currentTimeMillis;
 import java.sql.Timestamp;
 import java.util.*;
 import static java.util.Calendar.getInstance;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 //Status list (in DB)
 //1 = unlocked

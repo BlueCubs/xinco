@@ -1,12 +1,10 @@
 package com.bluecubs.xinco.archive;
 
 import static com.bluecubs.xinco.archive.XincoArchiver.archiveData;
-import com.bluecubs.xinco.core.OPCode;
 import static com.bluecubs.xinco.core.OPCode.CREATION;
 import static com.bluecubs.xinco.core.OPCode.getOPCode;
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.*;
-import static com.bluecubs.xinco.core.server.XincoCoreDataServer.isArchived;
 import static com.bluecubs.xinco.core.server.XincoCoreDataServer.isArchived;
 import static com.bluecubs.xinco.core.server.XincoCoreNodeServer.getXincoCoreNodeParents;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
@@ -16,14 +14,11 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreLanguageJp
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import com.bluecubs.xinco.core.server.service.XincoCoreLog;
 import static java.lang.System.out;
-import java.util.Calendar;
 import static java.util.Calendar.DAY_OF_YEAR;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;

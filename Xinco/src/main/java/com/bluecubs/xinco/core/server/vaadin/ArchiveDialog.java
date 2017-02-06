@@ -27,7 +27,6 @@
  */
 package com.bluecubs.xinco.core.server.vaadin;
 
-import com.bluecubs.xinco.core.server.XincoAddAttributeServer;
 import static com.bluecubs.xinco.core.server.XincoAddAttributeServer.getXincoAddAttributes;
 import com.bluecubs.xinco.core.server.service.XincoAddAttribute;
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
@@ -37,21 +36,16 @@ import com.vaadin.ui.*;
 import de.essendi.vaadin.ui.component.numberfield.NumberField;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.valueOf;
-import static java.lang.Integer.valueOf;
-import static java.lang.Integer.valueOf;
-import static java.lang.Integer.valueOf;
 import java.util.Calendar;
 import static java.util.Calendar.DST_OFFSET;
 import static java.util.Calendar.MILLISECOND;
 import static java.util.Calendar.ZONE_OFFSET;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.logging.Level;
 import static java.util.logging.Level.FINE;
 import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import static javax.xml.datatype.DatatypeFactory.newInstance;
 
 /**

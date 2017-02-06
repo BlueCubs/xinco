@@ -32,14 +32,11 @@
  */
 package com.bluecubs.xinco.core.server.index;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
 import static com.bluecubs.xinco.core.server.index.XincoIndexer.optimizeIndex;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.logging.Level;
 import static java.util.logging.Level.WARNING;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 
 /**

@@ -32,7 +32,6 @@
  */
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.core.OPCode;
 import static com.bluecubs.xinco.core.OPCode.ARCHIVED;
 import static com.bluecubs.xinco.core.OPCode.CREATION;
 import com.bluecubs.xinco.core.XincoException;
@@ -41,11 +40,6 @@ import static com.bluecubs.xinco.core.server.XincoCoreDataHasDependencyServer.ge
 import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
 import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
-import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
-import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
-import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
-import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
-import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
 import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
 import com.bluecubs.xinco.core.server.persistence.XincoAddAttributePK;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoAddAttributeJpaController;
@@ -61,7 +55,6 @@ import static java.lang.System.getProperty;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;

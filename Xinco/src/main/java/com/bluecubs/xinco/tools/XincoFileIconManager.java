@@ -36,13 +36,10 @@ package com.bluecubs.xinco.tools;
 import java.io.File;
 import static java.io.File.createTempFile;
 import static java.lang.System.getProperty;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileSystemView;
 import static javax.swing.filechooser.FileSystemView.getFileSystemView;
 
 /**

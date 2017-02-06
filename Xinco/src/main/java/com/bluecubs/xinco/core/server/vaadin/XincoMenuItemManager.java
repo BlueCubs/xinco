@@ -1,7 +1,6 @@
 package com.bluecubs.xinco.core.server.vaadin;
 
 import com.bluecubs.xinco.core.XincoException;
-import com.bluecubs.xinco.core.server.XincoCoreACEServer;
 import static com.bluecubs.xinco.core.server.XincoCoreACEServer.checkAccess;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
@@ -11,15 +10,10 @@ import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.MenuItem;
 import static java.lang.Integer.valueOf;
-import static java.lang.Integer.valueOf;
-import static java.lang.Integer.valueOf;
-import static java.lang.Integer.valueOf;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeMap;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 
 /**

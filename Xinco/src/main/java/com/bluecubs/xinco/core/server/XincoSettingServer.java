@@ -4,7 +4,6 @@ import com.bluecubs.xinco.core.XincoException;
 import static com.bluecubs.xinco.core.server.XincoCoreUserServer.validCredentials;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
-import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoSettingJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
 import com.bluecubs.xinco.core.server.service.XincoCoreUser;
@@ -12,9 +11,7 @@ import com.bluecubs.xinco.core.server.service.XincoSetting;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 
 /**

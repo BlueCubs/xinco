@@ -33,7 +33,6 @@
 package com.bluecubs.xinco.core.server.index.filetypes;
 
 import java.io.*;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;

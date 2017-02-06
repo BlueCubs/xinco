@@ -5,9 +5,7 @@ import static com.bluecubs.xinco.core.server.XincoCoreDataTypeServer.deleteFromD
 import static com.bluecubs.xinco.core.server.XincoCoreDataTypeServer.getXincoCoreDataTypes;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
 import java.util.ArrayList;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 import junit.framework.Test;
 import junit.framework.TestSuite;

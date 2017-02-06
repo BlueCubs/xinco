@@ -7,9 +7,7 @@ package com.bluecubs.xinco.core.server.vaadin;
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 
 /**

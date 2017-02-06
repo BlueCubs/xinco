@@ -3,7 +3,6 @@ package com.bluecubs.xinco.core.server;
 import static com.bluecubs.xinco.core.server.XincoAddAttributeServer.getXincoAddAttributes;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import javax.xml.datatype.DatatypeFactory;
 import static javax.xml.datatype.DatatypeFactory.newInstance;
 import org.junit.Test;
 

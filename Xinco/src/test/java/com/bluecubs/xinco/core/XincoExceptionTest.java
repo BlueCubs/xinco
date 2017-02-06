@@ -2,7 +2,6 @@ package com.bluecubs.xinco.core;
 
 import static java.lang.System.out;
 import java.util.ArrayList;
-import java.util.Arrays;
 import static java.util.Arrays.asList;
 import org.junit.*;
 import static org.junit.Assert.assertEquals;

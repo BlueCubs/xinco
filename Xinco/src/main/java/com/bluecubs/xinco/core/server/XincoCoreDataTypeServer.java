@@ -36,15 +36,12 @@ import com.bluecubs.xinco.core.XincoException;
 import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
-import static com.bluecubs.xinco.core.server.XincoDBManager.namedQuery;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreDataTypeJpaController;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataType;
 import com.bluecubs.xinco.core.server.service.XincoCoreDataTypeAttribute;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 
 public class XincoCoreDataTypeServer extends XincoCoreDataType {

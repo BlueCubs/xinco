@@ -33,9 +33,7 @@ import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
-import java.util.logging.Level;
 import static java.util.logging.Level.WARNING;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 
 /**

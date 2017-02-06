@@ -4,9 +4,7 @@ import static com.bluecubs.xinco.core.server.XincoCoreNodeServer.findXincoCoreNo
 import static com.bluecubs.xinco.core.server.XincoCoreNodeServer.getXincoCoreNodeParents;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreNodeJpaController;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 import junit.framework.Test;
 import junit.framework.TestSuite;

@@ -15,13 +15,10 @@ package com.bluecubs.xinco.core.server.email;
 
 import com.bluecubs.xinco.core.XincoException;
 import com.bluecubs.xinco.core.server.XincoCoreUserServer;
-import com.bluecubs.xinco.core.server.XincoSettingServer;
 import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 import javax.mail.*;
 import static javax.mail.Message.RecipientType.TO;
