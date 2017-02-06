@@ -55,7 +55,7 @@ public class XincoIndexOptimizeThread extends Thread {
         firstRun = new GregorianCalendar();
         while (true) {
             try {
-                index_period = XincoDBManager.config.getFileIndexOptimizerPeriod();
+                index_period = XincoDBManager.CONFIG.getFileIndexOptimizerPeriod();
                 //exit indexer if period = 0
                 if (index_period > 0) {
                     XincoIndexer.optimizeIndex();

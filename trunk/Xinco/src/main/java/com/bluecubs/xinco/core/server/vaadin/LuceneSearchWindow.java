@@ -81,7 +81,7 @@ public class LuceneSearchWindow extends Window {
                 fixTable();
             }
         });
-        dataSource = new LuceneContainer(XincoDBManager.config.fileIndexPath);
+        dataSource = new LuceneContainer(XincoDBManager.CONFIG.fileIndexPath);
         table.setContainerDataSource(dataSource);
         //Collapse some columns by default
         table.setColumnCollapsingAllowed(true);

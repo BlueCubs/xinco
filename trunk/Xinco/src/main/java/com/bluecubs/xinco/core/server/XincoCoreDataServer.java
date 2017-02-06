@@ -74,7 +74,7 @@ public final class XincoCoreDataServer extends XincoCoreData {
         for (Iterator<Object> it = temp.getXincoCoreLogs().iterator(); it.hasNext();) {
             XincoCoreLog log = (XincoCoreLog) it.next();
             if (log.getVersion().getVersionMid() == 0) {
-                return XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, xincoCoreDataId, xincoCoreDataId + "-" + log.getId());
+                return XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.CONFIG.fileRepositoryPath, xincoCoreDataId, xincoCoreDataId + "-" + log.getId());
             }
         }
         throw new XincoException("No major log history for XincoCoreData with id: " + xincoCoreDataId);
@@ -246,7 +246,7 @@ public final class XincoCoreDataServer extends XincoCoreData {
             for (Object o : result) {
                 data.add(new XincoCoreDataServer(((com.bluecubs.xinco.core.server.persistence.XincoAddAttribute) o).getXincoCoreData().getId()));
                 i++;
-                if (i >= XincoDBManager.config.getMaxSearchResult()) {
+                if (i >= XincoDBManager.CONFIG.getMaxSearchResult()) {
                     break;
                 }
             }
@@ -376,7 +376,7 @@ public final class XincoCoreDataServer extends XincoCoreData {
             //delete file / file = 1
             if (getXincoCoreDataType().getId() == 1) {
                 try {
-                    (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, getId(), "" + getId()))).delete();
+                    (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.CONFIG.fileRepositoryPath, getId(), "" + getId()))).delete();
                 } catch (Exception dfe) {
                     Logger.getLogger(XincoCoreDataServer.class.getSimpleName()).log(Level.WARNING, null, dfe);
                     // continue, file might not exist
@@ -385,7 +385,7 @@ public final class XincoCoreDataServer extends XincoCoreData {
                 for (int i = 0; i < getXincoCoreLogs().size(); i++) {
                     if ((((XincoCoreLog) getXincoCoreLogs().get(i)).getOpCode() == 1) || (((XincoCoreLog) getXincoCoreLogs().get(i)).getOpCode() == 5)) {
                         try {
-                            (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, getId(), getId() + "-" + ((XincoCoreLog) getXincoCoreLogs().get(i)).getId()))).delete();
+                            (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.CONFIG.fileRepositoryPath, getId(), getId() + "-" + ((XincoCoreLog) getXincoCoreLogs().get(i)).getId()))).delete();
                         } catch (Exception drfe) {
                             Logger.getLogger(XincoCoreDataServer.class.getSimpleName()).log(Level.WARNING, null, drfe);
                             // continue, delete next revision

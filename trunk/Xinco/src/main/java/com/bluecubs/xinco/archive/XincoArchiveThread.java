@@ -65,7 +65,7 @@ public final class XincoArchiveThread extends Thread {
         firstRun = new GregorianCalendar();
         while (true) {
             try {
-                archive_period = XincoDBManager.config.fileArchivePeriod;
+                archive_period = XincoDBManager.CONFIG.fileArchivePeriod;
                 //exit archiver if period = 0
                 if (archive_period == 0) {
                     break;

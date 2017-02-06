@@ -54,7 +54,7 @@ class UploadManager extends CustomComponent implements Upload.SucceededListener,
         Xinco.getInstance().setFileName(filename);
         try {
             //Create upload folder if needed
-            File uploads = new File(XincoDBManager.config.fileRepositoryPath + System.getProperty("file.separator"));
+            File uploads = new File(XincoDBManager.CONFIG.fileRepositoryPath + System.getProperty("file.separator"));
             uploads.mkdirs();
             uploads.deleteOnExit();
             file = File.createTempFile("xinco", ".xtf", uploads);

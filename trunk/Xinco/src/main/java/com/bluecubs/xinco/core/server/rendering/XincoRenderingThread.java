@@ -78,7 +78,7 @@ public class XincoRenderingThread extends Thread {
                 .toLowerCase(Locale.getDefault()).endsWith(".pdf")) {
             try {
                 xincoFile = new File(XincoCoreDataServer.getXincoCoreDataPath(
-                        XincoDBManager.config.fileRepositoryPath,
+                        XincoDBManager.CONFIG.fileRepositoryPath,
                         original.getId(),
                         "" + original.getId()));
                 LOG.log(Level.FINE, "Creating PDF rendering");
@@ -114,7 +114,7 @@ public class XincoRenderingThread extends Thread {
                 //First save a temporary file
                 String renderingFileName = rendering.getId() + ".pdf";
                 rendition = new File(XincoCoreDataServer.getXincoCoreDataPath(
-                        XincoDBManager.config.fileRepositoryPath,
+                        XincoDBManager.CONFIG.fileRepositoryPath,
                         rendering.getId(),
                         renderingFileName));
                 //Convert to pdf
