@@ -236,7 +236,7 @@ public class XincoWebService {
                 }
                 in = new CheckedInputStream(new FileInputStream(
                         XincoCoreDataServer.getXincoCoreDataPath(
-                        XincoDBManager.config.fileRepositoryPath,
+                        XincoDBManager.CONFIG.fileRepositoryPath,
                         data.getId(), data.getId() + revision)), new CRC32());
                 out = new ByteArrayOutputStream();
                 byte[] buf = new byte[4096];
@@ -283,7 +283,7 @@ public class XincoWebService {
             if (ace.isWritePermission()) {
                 in = new ByteArrayInputStream(in1);
                 xincoFile = new File(XincoCoreDataServer.getXincoCoreDataPath(
-                        XincoDBManager.config.fileRepositoryPath, data.getId(),
+                        XincoDBManager.CONFIG.fileRepositoryPath, data.getId(),
                         "" + data.getId()));
                 CheckedOutputStream out = new CheckedOutputStream(
                         new FileOutputStream(xincoFile), new CRC32());
@@ -316,11 +316,11 @@ public class XincoWebService {
                         fcis = new FileInputStream(
                                 new File(XincoCoreDataServer
                                 .getXincoCoreDataPath(
-                                XincoDBManager.config.fileRepositoryPath,
+                                XincoDBManager.CONFIG.fileRepositoryPath,
                                 data.getId(), "" + data.getId())));
                         fcos = new FileOutputStream(new File(XincoCoreDataServer
                                 .getXincoCoreDataPath(
-                                XincoDBManager.config.fileRepositoryPath,
+                                XincoDBManager.CONFIG.fileRepositoryPath,
                                 data.getId(), data.getId() + "-" + MaxLogId)));
                         byte[] fcbuf = new byte[4096];
                         while ((len = fcis.read(fcbuf)) != -1) {

@@ -80,7 +80,7 @@ public final class XincoArchiver {
             archiveName = ngc.get(Calendar.YEAR) + "-"
                     + (ngc.get(Calendar.MONTH) + 1)
                     + "-" + ngc.get(Calendar.DAY_OF_MONTH);
-            archiveBaseDir = XincoDBManager.config.fileArchivePath
+            archiveBaseDir = XincoDBManager.CONFIG.fileArchivePath
                     + archiveName;
             //archive data
             archiveFileDir = "";
@@ -115,11 +115,11 @@ public final class XincoArchiver {
                         + (xdataTemp.getXincoAddAttributes().isEmpty() ? "" : "_"
                         + ((XincoAddAttribute) ((ArrayList) xdataTemp.getXincoAddAttributes()).get(0))
                         .getAttribVarchar());
-                if ((new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, 
+                if ((new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.CONFIG.fileRepositoryPath, 
                         ((Integer) orgFileIDs.get(k)),
                         ((String) orgFileNames.get(k))))).exists()) {
                     fcis = new FileInputStream(
-                            new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, 
+                            new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.CONFIG.fileRepositoryPath, 
                                     ((Integer) orgFileIDs.get(k)),
                             ((String) orgFileNames.get(k)))));
                     fcos = new FileOutputStream(new File(archiveBaseDir
@@ -133,7 +133,7 @@ public final class XincoArchiver {
                     fcis.close();
                     fcos.close();
                     //delete
-                    (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, 
+                    (new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.CONFIG.fileRepositoryPath, 
                             ((Integer) orgFileIDs.get(k)),
                             ((String) orgFileNames.get(k))))).delete();
                 }

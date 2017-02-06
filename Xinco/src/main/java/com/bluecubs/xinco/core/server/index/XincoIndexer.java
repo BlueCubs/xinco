@@ -71,7 +71,7 @@ public class XincoIndexer {
             XincoIndexer.removeXincoCoreData(d);
             //add document to index
             writer = new IndexWriter(
-                    FSDirectory.open(new File(XincoDBManager.config.fileIndexPath)),
+                    FSDirectory.open(new File(XincoDBManager.CONFIG.fileIndexPath)),
                     new IndexWriterConfig(version,
                     new StandardAnalyzer(version)));
             writer.addDocument(XincoDocument.getXincoDocument(d, index_content));
@@ -94,14 +94,14 @@ public class XincoIndexer {
     public static synchronized boolean removeXincoCoreData(XincoCoreData d) {
         IndexReader reader = null;
         IndexWriter writer = null;
-        File indexDirectory = new File(XincoDBManager.config.fileIndexPath);
+        File indexDirectory = new File(XincoDBManager.CONFIG.fileIndexPath);
         if (indexDirectory.exists()) {
             //check if document exists in index and delete
             try {
                 reader = IndexReader.open(
-                        FSDirectory.open(new File(XincoDBManager.config.fileIndexPath)));
+                        FSDirectory.open(new File(XincoDBManager.CONFIG.fileIndexPath)));
                 writer = new IndexWriter(
-                        FSDirectory.open(new File(XincoDBManager.config.fileIndexPath)),
+                        FSDirectory.open(new File(XincoDBManager.CONFIG.fileIndexPath)),
                         new IndexWriterConfig(version,
                         new StandardAnalyzer(version)));
                 writer.deleteDocuments(new Term("id", "" + d.getId()));
@@ -136,14 +136,14 @@ public class XincoIndexer {
             //optimize index
             writer = new IndexWriter(
                     FSDirectory.open(
-                    new File(XincoDBManager.config.fileIndexPath)),
+                    new File(XincoDBManager.CONFIG.fileIndexPath)),
                     new IndexWriterConfig(version,
                     new StandardAnalyzer(version)));
             writer.close();
             result = true;
         } catch (FileNotFoundException e) {
             logger.log(Level.INFO, "No index found at: {0}. Nothing to index.",
-                    XincoDBManager.config.fileIndexPath);
+                    XincoDBManager.CONFIG.fileIndexPath);
         } catch (Exception e) {
             logger.log(Level.SEVERE, null, e);
         } finally {
@@ -167,7 +167,7 @@ public class XincoIndexer {
         try {
             reader = IndexReader.open(
                     FSDirectory.open(
-                    new File(XincoDBManager.config.fileIndexPath)));
+                    new File(XincoDBManager.CONFIG.fileIndexPath)));
             searcher = new IndexSearcher(reader);
             Analyzer analyzer = new StandardAnalyzer(version);
 
@@ -181,7 +181,7 @@ public class XincoIndexer {
             Query query = parser.parse(queryString);
 
             TopScoreDocCollector collector = TopScoreDocCollector.create(
-                    XincoDBManager.config.getMaxSearchResult(), true);
+                    XincoDBManager.CONFIG.getMaxSearchResult(), true);
             searcher.search(query, collector);
             ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
@@ -193,7 +193,7 @@ public class XincoIndexer {
                     // don't add non-existing data
                     logger.log(Level.WARNING, null, xcde);
                 }
-                if (i >= XincoDBManager.config.getMaxSearchResult()) {
+                if (i >= XincoDBManager.CONFIG.getMaxSearchResult()) {
                     break;
                 }
             }

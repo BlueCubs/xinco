@@ -86,9 +86,9 @@ public class XincoDocument {
             }
             //check which indexer to use for file extension
             fileType = 0; // default: index as TEXT
-            for (l = 0; l < XincoDBManager.config.getFileIndexerCount(); l++) {
-                for (i = 0; i < ((String[]) XincoDBManager.config.getIndexFileTypesExt().get(l)).length; i++) {
-                    if (((String[]) XincoDBManager.config.getIndexFileTypesExt().get(l))[i].compareTo(file_ext) == 0) {
+            for (l = 0; l < XincoDBManager.CONFIG.getFileIndexerCount(); l++) {
+                for (i = 0; i < ((String[]) XincoDBManager.CONFIG.getIndexFileTypesExt().get(l)).length; i++) {
+                    if (((String[]) XincoDBManager.CONFIG.getIndexFileTypesExt().get(l))[i].compareTo(file_ext) == 0) {
                         fileType = l + 1; // file-type specific indexing
                         break;
                     }
@@ -98,8 +98,8 @@ public class XincoDocument {
                 }
             }
             if (fileType == 0) {
-                for (i = 0; i < XincoDBManager.config.getIndexNoIndex().length; i++) {
-                    if (XincoDBManager.config.getIndexNoIndex()[i].compareTo(file_ext) == 0) {
+                for (i = 0; i < XincoDBManager.CONFIG.getIndexNoIndex().length; i++) {
+                    if (XincoDBManager.CONFIG.getIndexNoIndex()[i].compareTo(file_ext) == 0) {
                         fileType = -1; // NO indexing
                         break;
                     }
@@ -112,16 +112,16 @@ public class XincoDocument {
             if (fileType == 0) {
                 // index as TEXT
                 xift = new XincoIndexText();
-                doc.add(new Field("file", xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, d.getId(), "" + d.getId())))));
+                doc.add(new Field("file", xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.CONFIG.fileRepositoryPath, d.getId(), "" + d.getId())))));
             } else if (fileType > 0) {
                 try {
                     // file-type specific indexing
-                    xift = (XincoIndexFileType) Class.forName((String) XincoDBManager.config.getIndexFileTypesClass().get(fileType - 1)).newInstance();
-                    ContentReader = xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, d.getId(), "" + d.getId())));
+                    xift = (XincoIndexFileType) Class.forName((String) XincoDBManager.CONFIG.getIndexFileTypesClass().get(fileType - 1)).newInstance();
+                    ContentReader = xift.getFileContentReader(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.CONFIG.fileRepositoryPath, d.getId(), "" + d.getId())));
                     if (ContentReader != null) {
                         doc.add(new Field("file", ContentReader));
                     } else {
-                        ContentString = xift.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, d.getId(), "" + d.getId())));
+                        ContentString = xift.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.CONFIG.fileRepositoryPath, d.getId(), "" + d.getId())));
                         if (ContentString != null) {
                             doc.add(new Field("file", ContentString, Field.Store.YES, Field.Index.ANALYZED));
                         }
@@ -129,7 +129,7 @@ public class XincoDocument {
                 } catch (ClassNotFoundException ex) {
                     //Try the generic method
                     XincoIndexGenericFile generic = new XincoIndexGenericFile();
-                    ContentString = generic.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.config.fileRepositoryPath, d.getId(), "" + d.getId())));
+                    ContentString = generic.getFileContentString(new File(XincoCoreDataServer.getXincoCoreDataPath(XincoDBManager.CONFIG.fileRepositoryPath, d.getId(), "" + d.getId())));
                     if (ContentString != null) {
                         doc.add(new Field("file", ContentString, Field.Store.YES, Field.Index.ANALYZED));
                     }
