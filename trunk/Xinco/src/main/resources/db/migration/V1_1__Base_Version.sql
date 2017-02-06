@@ -96,9 +96,9 @@ INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (8, 'general.copyright.date', 0, '2004-2012', 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (9, 'setting.enable.savepassword', NULL, NULL, 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (10, 'system.password', NULL, 'system', 0, 0);
-INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (11, 'xinco/FileRepositoryPath', NULL, 'C:\\\\Temp\\\\xinco\\\\file_repository\\\\', 0, 0);
-INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (12, 'xinco/FileIndexPath', NULL, 'C:\\\\Temp\\\\xinco\\\\file_repository\\\\index\\\\', 0, 0);
-INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (13, 'xinco/FileArchivePath', NULL, 'C:\\\\Temp\\\\xinco\\\\file_repository\\\\archive\\\\', 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (11, 'xinco/FileRepositoryPath', NULL, NULL, 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (12, 'xinco/FileIndexPath', NULL, NULL, 0, 0);
+INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (13, 'xinco/FileArchivePath', NULL, NULL, 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (14, 'xinco/FileArchivePeriod', NULL, NULL, 0, 14400000);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (15, 'xinco/FileIndexer_1_Class', NULL, 'com.bluecubs.xinco.index.filetypes.XincoIndexGenericFile', 0, 0);
 INSERT INTO `xinco_setting` (`id`, `description`, `int_value`, `string_value`, `bool_value`, `long_value`) VALUES (16, 'xinco/FileIndexer_1_Ext', NULL, 'pdf', 0, 0);
