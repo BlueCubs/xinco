@@ -27,12 +27,9 @@
  */
 package com.bluecubs.xinco.core.server.vaadin.setting;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
-import com.bluecubs.xinco.core.server.vaadin.Xinco;
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import com.vaadin.addon.jpacontainer.EntityContainer;
-import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import static com.vaadin.addon.jpacontainer.JPAContainerFactory.make;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;

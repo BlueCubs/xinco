@@ -32,9 +32,7 @@
  */
 package com.bluecubs.xinco.core.server.index;
 
-import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import static com.bluecubs.xinco.core.server.XincoCoreDataServer.getXincoCoreDataPath;
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
 import com.bluecubs.xinco.core.server.index.filetypes.XincoIndexFileType;
 import com.bluecubs.xinco.core.server.index.filetypes.XincoIndexGenericFile;
@@ -46,7 +44,6 @@ import java.io.File;
 import java.io.Reader;
 import static java.lang.Class.forName;
 import java.util.ArrayList;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;

@@ -3,9 +3,7 @@ package com.bluecubs.xinco.core.server;
 import static com.bluecubs.xinco.core.server.XincoSettingServer.deleteFromDB;
 import static com.bluecubs.xinco.core.server.XincoSettingServer.getSetting;
 import static com.bluecubs.xinco.core.server.XincoSettingServer.getSettings;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 
 /**

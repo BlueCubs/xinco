@@ -34,7 +34,6 @@
 package com.bluecubs.xinco.core.server.index;
 
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
 import static com.bluecubs.xinco.core.server.index.XincoDocument.getXincoDocument;
 import com.bluecubs.xinco.core.server.service.XincoCoreData;
@@ -43,7 +42,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import static java.lang.Integer.parseInt;
 import java.util.ArrayList;
-import java.util.logging.Level;
 import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
@@ -64,7 +62,6 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopScoreDocCollector;
 import static org.apache.lucene.search.TopScoreDocCollector.create;
-import org.apache.lucene.store.FSDirectory;
 import static org.apache.lucene.store.FSDirectory.open;
 import org.apache.lucene.util.Version;
 import static org.apache.lucene.util.Version.LUCENE_34;

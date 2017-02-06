@@ -1,18 +1,14 @@
 package com.bluecubs.xinco.core.server;
 
-import com.bluecubs.xinco.core.OPCode;
 import static com.bluecubs.xinco.core.OPCode.CREATION;
 import com.bluecubs.xinco.core.XincoException;
 import static com.bluecubs.xinco.core.server.XincoCoreDataServer.findXincoCoreData;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.out;
-import java.util.Calendar;
 import static java.util.Calendar.DAY_OF_YEAR;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;

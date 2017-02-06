@@ -9,7 +9,6 @@ import com.bluecubs.xinco.core.server.service.XincoCoreACE;
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
 import static com.vaadin.ui.Window.Notification.TYPE_WARNING_MESSAGE;
 import static java.lang.Integer.valueOf;

@@ -27,14 +27,12 @@
  */
 package com.bluecubs.xinco.core.server.vaadin;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
-import com.vaadin.ui.Window.Notification;
 import static com.vaadin.ui.Window.Notification.TYPE_ERROR_MESSAGE;
 import java.io.File;
 import static java.io.File.createTempFile;

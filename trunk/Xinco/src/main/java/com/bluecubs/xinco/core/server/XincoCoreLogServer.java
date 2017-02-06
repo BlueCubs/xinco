@@ -42,9 +42,7 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoCoreUserJpaCon
 import com.bluecubs.xinco.core.server.service.XincoCoreLog;
 import com.bluecubs.xinco.core.server.service.XincoVersion;
 import java.util.*;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;

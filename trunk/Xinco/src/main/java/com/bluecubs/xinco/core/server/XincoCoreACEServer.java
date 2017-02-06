@@ -43,7 +43,6 @@ import com.bluecubs.xinco.core.server.service.XincoCoreUser;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;

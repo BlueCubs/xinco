@@ -38,7 +38,6 @@ import com.bluecubs.xinco.core.server.persistence.controller.XincoDependencyType
 import com.bluecubs.xinco.core.server.service.XincoCoreData;
 import com.bluecubs.xinco.core.server.service.XincoCoreUser;
 import com.bluecubs.xinco.core.server.service.XincoWebService;
-import com.bluecubs.xinco.tools.Tool;
 import static com.bluecubs.xinco.tools.Tool.MIN_PORT_NUMBER;
 import static com.bluecubs.xinco.tools.Tool.addDefaultAddAttributes;
 import static com.bluecubs.xinco.tools.Tool.copyFile;
@@ -46,9 +45,7 @@ import static com.bluecubs.xinco.tools.Tool.isPortAvaialble;
 import java.io.File;
 import java.io.FileInputStream;
 import static java.lang.System.getProperty;
-import java.util.Locale;
 import static java.util.Locale.getDefault;
-import java.util.logging.Level;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;

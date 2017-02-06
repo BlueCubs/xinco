@@ -27,12 +27,10 @@
  */
 package com.bluecubs.xinco.core.server.vaadin.setting;
 
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import static com.bluecubs.xinco.core.server.XincoDBManager.getEntityManagerFactory;
 import com.bluecubs.xinco.core.server.persistence.XincoSetting;
 import com.bluecubs.xinco.core.server.persistence.controller.XincoSettingJpaController;
 import com.bluecubs.xinco.core.server.persistence.controller.exceptions.NonexistentEntityException;
-import com.bluecubs.xinco.core.server.vaadin.Xinco;
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import com.vaadin.data.Item;
 import com.vaadin.ui.*;
@@ -41,12 +39,9 @@ import java.io.Serializable;
 import static java.lang.Integer.valueOf;
 import static java.lang.String.format;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import static java.util.Arrays.asList;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 
 /**

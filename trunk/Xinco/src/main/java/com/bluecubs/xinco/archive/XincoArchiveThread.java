@@ -29,9 +29,7 @@
 package com.bluecubs.xinco.archive;
 
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
-import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
 import static com.bluecubs.xinco.core.server.XincoCoreNodeServer.getXincoCoreNodeParents;
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
 import static com.bluecubs.xinco.core.server.XincoDBManager.createdQuery;
 import com.bluecubs.xinco.core.server.persistence.XincoAddAttribute;
@@ -46,7 +44,6 @@ import static java.util.Calendar.DAY_OF_YEAR;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;

@@ -28,17 +28,14 @@
  */
 package com.bluecubs.xinco.core.server.vaadin;
 
-import com.bluecubs.xinco.core.server.XincoCoreACEServer;
 import static com.bluecubs.xinco.core.server.XincoCoreACEServer.checkAccess;
 import com.bluecubs.xinco.core.server.XincoCoreDataServer;
 import com.bluecubs.xinco.core.server.XincoCoreNodeServer;
-import com.bluecubs.xinco.core.server.XincoDBManager;
 import static com.bluecubs.xinco.core.server.XincoDBManager.CONFIG;
 import com.bluecubs.xinco.core.server.service.XincoCoreACE;
 import static com.bluecubs.xinco.core.server.vaadin.Xinco.getInstance;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
