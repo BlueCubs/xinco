@@ -21,13 +21,13 @@
  *
  * Name:            XincoConfigSingletonServer
  *
- * Description:     configuration class on server side 
+ * Description:     configuration class on server side
  *
  * Original Author: Alexander Manes
  * Date:            2004
  *
  * Modifications:
- * 
+ *
  * Who?             When?             What?
  * -                -                 -
  *
@@ -35,15 +35,15 @@
  */
 package com.bluecubs.xinco.conf;
 
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
-import java.util.Vector;
 import javax.naming.NamingException;
 
 /**
- * This class handles the server configuration of xinco.
- * Edit values in context.xml
+ * This class handles the server configuration of xinco. Edit values in
+ * context.xml
  */
 public class XincoConfigSingletonServer {
 
@@ -58,6 +58,8 @@ public class XincoConfigSingletonServer {
     public String[] IndexNoIndex = null;
     public String JNDIDB = null;
     public int MaxSearchResult = 0;
+    public int passwordMax = -1;
+    public int passwordMin = -1;
     private boolean allowOutsideLinks = true, allowPublisherList = true,
             guessLanguage = false;
     private static XincoConfigSingletonServer instance = null;
@@ -84,7 +86,7 @@ public class XincoConfigSingletonServer {
         //optional: FileIndexPath
         try {
             FileIndexPath = (String) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexPath");
-        } catch (Exception ce) {
+        } catch (NamingException ce) {
             FileIndexPath = FileRepositoryPath + "index";
         }
         if (!(FileIndexPath.substring(FileIndexPath.length() - 1).equals(System.getProperty("file.separator")))) {
@@ -100,19 +102,19 @@ public class XincoConfigSingletonServer {
             FileArchivePath = FileArchivePath + System.getProperty("file.separator");
         }
         try {
-            FileArchivePeriod = ((Long) (new InitialContext()).lookup("java:comp/env/xinco/FileArchivePeriod")).longValue();
+            FileArchivePeriod = ((Long) (new InitialContext()).lookup("java:comp/env/xinco/FileArchivePeriod"));
         } catch (NamingException ex) {
             FileArchivePeriod = 14400000;
             Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            FileIndexOptimizerPeriod = ((Long) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexOptimizerPeriod")).longValue();
+            FileIndexOptimizerPeriod = ((Long) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexOptimizerPeriod"));
         } catch (NamingException ex) {
             FileIndexOptimizerPeriod = 14400000;
             Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            FileIndexerCount = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexerCount")).intValue();
+            FileIndexerCount = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexerCount"));
         } catch (NamingException ex) {
             FileIndexerCount = 4;
             Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -132,10 +134,10 @@ public class XincoConfigSingletonServer {
             try {
                 IndexFileTypesExt.add(((String) (new InitialContext()).lookup("java:comp/env/xinco/FileIndexer_" + (i + 1) + "_Ext")).split(";"));
             } catch (NamingException ex) {
-                String[] tsa = null;
+                String[] tsa;
                 tsa = new String[1];
                 tsa[0] = "pdf";
-                IndexFileTypesExt.add(tsa); 
+                IndexFileTypesExt.add(tsa);
                 tsa = new String[1];
                 tsa[0] = "doc";
                 IndexFileTypesExt.add(tsa);
@@ -155,9 +157,9 @@ public class XincoConfigSingletonServer {
             IndexNoIndex = ((String) (new InitialContext()).lookup("java:comp/env/xinco/IndexNoIndex")).split(";");
         } catch (NamingException ex) {
             IndexNoIndex = new String[3];
-        IndexNoIndex[0] = "";
-        IndexNoIndex[1] = "com";
-        IndexNoIndex[2] = "exe";
+            IndexNoIndex[0] = "";
+            IndexNoIndex[1] = "com";
+            IndexNoIndex[2] = "exe";
             Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
@@ -185,9 +187,21 @@ public class XincoConfigSingletonServer {
             Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            MaxSearchResult = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/MaxSearchResult")).intValue();
+            MaxSearchResult = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/MaxSearchResult"));
         } catch (NamingException ex) {
             MaxSearchResult = 30;
+            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            passwordMax = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/passMax"));
+        } catch (NamingException ex) {
+            passwordMax = -1;
+            Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            passwordMin = ((Integer) (new InitialContext()).lookup("java:comp/env/xinco/passMin"));
+        } catch (NamingException ex) {
+            passwordMin = -1;
             Logger.getLogger(XincoConfigSingletonServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

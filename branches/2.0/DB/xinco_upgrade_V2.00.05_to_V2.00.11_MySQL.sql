@@ -1,0 +1,2 @@
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(36,'password.max',-1,null,false,null);
+INSERT INTO xinco_setting (id, description, int_value, string_value, bool_value, long_value) VALUES(37,'password.min',-1,null,false,null);
