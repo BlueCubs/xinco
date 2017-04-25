@@ -67,5 +67,9 @@
   <Environment name="xinco/JNDIDB" override="false" type="java.lang.String" value="java:comp/env/jdbc/XincoDB"/>
   <!-- Max. number of returned search results -->
   <Environment name="xinco/MaxSearchResult" override="false" type="java.lang.Integer" value="100"/>
+  <!-- Password minimum size, use -1 to disable it -->
+  <Environment name="xinco/passMin" override="false" type="java.lang.Integer" value="-1"/>
+  <!-- Password maximum size, use -1 to disable it -->
+  <Environment name="xinco/passMax" override="false" type="java.lang.Integer" value="-1"/>
   <!-- ################# ###################### #################-->
 </Context>

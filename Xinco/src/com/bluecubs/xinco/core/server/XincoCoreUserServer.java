@@ -33,15 +33,14 @@
  *                                    write2DB, XincoCoreUserServer, XincoCoreUserServer (x 2), getXincoCoreUsers
  * Javier A. Ortiz 11/06/2006         Moved the logic of locking an account due to login attempts from the XincoAdminServlet
  * Alexander Manes 11/12/2006         Moved the new user features to core class
- * Javier A. Ortiz 11/20/2006         Undo previous changes and corrected a bug that increased twice 
+ * Javier A. Ortiz 11/20/2006         Undo previous changes and corrected a bug that increased twice
  *                                    the attempts in the DB when wrong password was used
- * Javier A. Ortiz 01/08/2010         
+ * Javier A. Ortiz 01/08/2010
  *************************************************************
  */
 package com.bluecubs.xinco.core.server;
 
-import java.util.Vector;
-
+import com.bluecubs.xinco.conf.XincoConfigSingletonServer;
 import com.bluecubs.xinco.core.*;
 import com.bluecubs.xinco.tools.DateTool;
 import com.bluecubs.xinco.tools.MD5;
@@ -53,22 +52,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
-
-//Status list (in DB)
+import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-//1 = unlocked
-//2 = locked
-//3 = aged password
-//Temporary statuses
-//-1 = aged password modified, ready to turn unlocked
+
 public class XincoCoreUserServer extends XincoCoreUser {
 
     private String sql;
     private boolean hashPassword = true;
     private boolean increaseAttempts = false;
-    private ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages"), settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
+    private ResourceBundle xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages"),
+            settings = ResourceBundle.getBundle("com.bluecubs.xinco.settings.settings");
     private java.sql.Timestamp lastModified;
     private int attempts;
 
@@ -82,7 +77,10 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 getXinco_core_groups().addElement(new XincoCoreGroupServer(rs.getInt("xinco_core_group_id"), DBM));
             }
             stmt.close();
-        } catch (Exception e) {
+        } catch (XincoException e) {
+            getXinco_core_groups().removeAllElements();
+            throw new XincoException();
+        } catch (SQLException e) {
             getXinco_core_groups().removeAllElements();
             throw new XincoException();
         }
@@ -104,16 +102,15 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 stmt.executeUpdate(sql);
                 stmt.close();
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new XincoException();
         }
     }
 
     //create user object and login
     public XincoCoreUserServer(String attrUN, String attrUPW, XincoDBManager DBM) throws XincoException {
-        Statement stmt = null;
-        ResultSet rs = null;
-        GregorianCalendar cal = null;
+        Statement stmt;
+        ResultSet rs;
         try {
             stmt = DBM.con.createStatement();
             sql = "SELECT * FROM xinco_core_user WHERE username='"
@@ -231,7 +228,10 @@ public class XincoCoreUserServer extends XincoCoreUser {
             }
             stmt.close();
             fillXincoCoreGroups(DBM);
-        } catch (Exception e) {
+        } catch (XincoException e) {
+            getXinco_core_groups().removeAllElements();
+            throw new XincoException();
+        } catch (SQLException e) {
             getXinco_core_groups().removeAllElements();
             throw new XincoException();
         }
@@ -252,7 +252,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
             setAttempts(attrAN);
             setLastModified(attrTS);
             fillXincoCoreGroups(DBM);
-        } catch (Exception e) {
+        } catch (XincoException e) {
             getXinco_core_groups().removeAllElements();
             throw new XincoException();
         }
@@ -298,7 +298,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
     public int write2DB(XincoDBManager DBM) throws XincoException {
         sql = "";
         xerb = ResourceBundle.getBundle("com.bluecubs.xinco.messages.XincoMessages");
-        Timestamp ts = null;
+        Timestamp ts;
         try {
             Statement stmt;
             if (getStatus_number() == 4) {
@@ -307,7 +307,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 setAttempts(0);
                 setChange(true);
                 setReason("audit.user.account.aged");
-                ts = new Timestamp(System.currentTimeMillis());
             }
             //Increase login attempts
             if (increaseAttempts) {
@@ -333,7 +332,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 }
                 setLastModified(ts);
                 //Sometimes password got re-hashed
-                String password = "";
+                String password;
                 if (hashPassword) {
                     password = "userpassword=MD5('"
                             + getUserpassword().replaceAll("'", "\\\\'") + "')";
@@ -397,7 +396,9 @@ public class XincoCoreUserServer extends XincoCoreUser {
                         rs.getInt("attempts"), rs.getTimestamp("last_modified"), DBM));
             }
             stmt.close();
-        } catch (Exception e) {
+        } catch (XincoException e) {
+            coreUsers.removeAllElements();
+        } catch (SQLException e) {
             coreUsers.removeAllElements();
         }
         return coreUsers;
@@ -420,9 +421,18 @@ public class XincoCoreUserServer extends XincoCoreUser {
     }
 
     public boolean isPasswordUsable(String newPass) {
-        ResultSet rs = null;
+        ResultSet rs;
         sql = null;
         boolean passwordIsUsable = false;
+        //Check for password size
+        if ((XincoConfigSingletonServer.getInstance().passwordMax > 0
+                && newPass.length() > XincoConfigSingletonServer
+                .getInstance().passwordMax)
+                || (XincoConfigSingletonServer.getInstance().passwordMin > 0
+                && newPass.length() < XincoConfigSingletonServer
+                .getInstance().passwordMin)) {
+            return passwordIsUsable;
+        }
         try {
             XincoDBManager DBM = new XincoDBManager();
             Statement stmt = DBM.con.createStatement();
@@ -444,7 +454,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
             GregorianCalendar current = new GregorianCalendar(),
                     last = new GregorianCalendar();
             current.setTime(new Date());
-            int unusable_period=Integer.valueOf(settings.getString("password.unusable_period"));
+            int unusable_period = Integer.valueOf(settings.getString("password.unusable_period"));
             while (rs.next()) {
                 last.setTime(rs.getDate("last_modified"));
                 if (DateTool.getDifference(current, last, TimeUnit.DAYS)
