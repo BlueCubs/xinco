@@ -128,7 +128,7 @@ public class XincoCoreUserServer extends XincoCoreUser {
                 setName(rs.getString("name"));
                 setFirstname(rs.getString("firstname"));
                 setEmail(rs.getString("email"));
-                int status = 0;
+                int status = rs.getInt("status_number");
                 if (rs.getInt("status_number") != 2) {
                     Calendar cal2 = GregorianCalendar.getInstance(), now = GregorianCalendar.getInstance();
                     cal2.setTime(rs.getTimestamp("last_modified"));
@@ -137,8 +137,6 @@ public class XincoCoreUserServer extends XincoCoreUser {
                     long age = Long.parseLong(settings.getString("password.aging"));
                     if (diffDays >= age) {
                         status = 3;
-                    } else {
-                        status = 1;
                     }
                     setAttempts(0);
                 } else {
