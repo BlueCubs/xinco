@@ -45,5 +45,14 @@
                 <goal>release:perform</goal>
             </goals>
         </action>
-    
+    <action>
+        <actionName>CUSTOM-Update Widgetset</actionName>
+        <displayName>Update Widgetset</displayName>
+        <goals>
+            <goal>clean:clean</goal>
+            <goal>gwt:clean</goal>
+            <goal>vaadin:update-widgetset</goal>
+            <goal>gwt:compile</goal>  
+        </goals>
+    </action>
 </actions>
